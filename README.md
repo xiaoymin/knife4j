@@ -49,7 +49,7 @@ Swagger-UI默认效果图如下：
 
 
 
-`swagger-bootstrap-ui`下载地址：[下载](http://192.168.11.110:8081/nexus/service/local/repositories/thirdparty/content/com/drore/cloud/cloud-document-ui/1.0/cloud-document-ui-1.0.jar)
+`swagger-bootstrap-ui`下载地址：[下载](https://github.com/xiaoymin/Swagger-Bootstrap-UI/releases)
 
 
 
