@@ -229,7 +229,7 @@ public class SwaggerConfiguration {
 
 </servlet-mapping>
 
-<!-- 配置cloud-document-ui的url请求路径-->
+<!-- 配置swagger-bootstrap-ui的url请求路径-->
 
 <servlet-mapping>
 
