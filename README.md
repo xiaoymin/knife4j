@@ -49,7 +49,7 @@ Swagger-UI默认效果图如下：
 
 
 
-`swagger-bootstrap-ui`下载地址：[下载](https://github.com/xiaoymin/Swagger-Bootstrap-UI/releases)
+`swagger-bootstrap-ui`下载地址：[下载](http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases)
 
 
 
@@ -123,54 +123,7 @@ Swagger-UI默认效果图如下：
 * Spring项目中启用swagger,代码如下：
 
 
-
-1.XML方式
-
-
-
-```java
-
-
-
-<bean class="com.drore.configuration.SwaggerConfiguration"/>
-
-<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
-
-<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-
- <property name="favorPathExtension" value="false" />
-
- <property name="favorParameter" value="false" />
-
- <property name="ignoreAcceptHeader" value="false" />
-
- <property name="mediaTypes" >
-
- <value>
-
- atom=application/atom+xml
-
- html=text/html
-
- json=application/json
-
- *=*/*
-
- </value>
-
- </property>
-
-</bean>
-
-
-
-```
-
-
-
-
-
-2.注解方式
+1.注解方式
 
 
 
