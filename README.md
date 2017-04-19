@@ -6,7 +6,7 @@
 
 
 
-`swagger-bootstrap-ui`是`Swagger`的前端UI实现,目的是替换`Swagger`默认的UI实现`Swagger-UI`,规范前后端开发流程,减少交流成本,提高工作开发效率.
+`swagger-bootstrap-ui`是`Swagger`的前端UI实现,目的是替换`Swagger`默认的UI实现`Swagger-UI`,使文档更友好一点儿....
 
 
 
