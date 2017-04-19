@@ -10,7 +10,7 @@
 
 
 
-`swagger-bootstrap-ui` 只是`Swagger`的UI实现,并不是替换`Swagger`功能,所以后端模块依然是依赖`Swagger`的,需要配合`Swagger`的注解达到效果,[注解说明](/swagger-annotation.html)
+`swagger-bootstrap-ui` 只是`Swagger`的UI实现,并不是替换`Swagger`功能,所以后端模块依然是依赖`Swagger`的,需要配合`Swagger`的注解达到效果,[注解说明](swagger-annotation.md)
 
 
 
@@ -41,7 +41,7 @@ Swagger-UI默认效果图如下：
 
 
 
-![](/assets/swagger.png)
+![](https://xiaoymin.github.io/cloud-sdk-doc/assets/swagger.png)
 
 
 
