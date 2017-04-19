@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Title</title>
+    <link rel="shortcut icon" href="webjars/drore-document-ui/images/api.ico"/>
+    <link rel="stylesheet" type="text/css" href="webjars/drore-document-ui/drore/DUI.css"/>
+    <script type="text/javascript" src="webjars/drore-document-ui/jquery/jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="webjars/drore-document-ui/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="webjars/drore-document-ui/ace/bootstrap.min.js"></script>
+</head>
+<body>
+<div style="width: 90%;margin: 0px auto;margin-top: 20px;">
+    <div class="input-group m-bot15">
+        <span class="input-group-btn"><button class="btn btn-default" type="button">POST</button></span>
+        <input type="text" class="form-control"/>
+        <span class="input-group-btn"><button class="btn btn-default btn-primary" type="button"> 发 送 </button></span>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            请求参数
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover table-bordered table-text-center">
+                <tr>
+                    <th></th>
+                    <th>参数名称</th>
+                    <th>参数值</th>
+                    <th>操作</th>
+                </tr>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="checkbox">
+                            <label><input type="checkbox" value="" checked></label>
+                        </div>
+                    </td>
+                    <td><input class="form-control" value="id"/></td>
+                    <td><input class="form-control" placeholder="Search W3School"/></td>
+                    <td>
+                        <button class="btn btn-danger btn-circle btn-lg" type="button"><strong>×</strong>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="checkbox">
+                            <label><input type="checkbox" value="" checked></label>
+                        </div>
+                    </td>
+                    <td><input class="form-control" value="id"/></td>
+                    <td><input class="form-control" placeholder="Search W3School"/></td>
+                    <td>
+                        <button class="btn btn-danger btn-circle btn-lg" type="button"><strong>×</strong>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="responsebody">
+        <div id="myTab" class="tabs-container" >
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#tab1" aria-expanded="false"> 响应内容 </a></li>
+                <li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> Cookies</a></li>
+                <li class=""><a data-toggle="tab" href="#tab3" aria-expanded="true"> Headers </a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="tab1" class="tab-pane active">
+                    <div class="panel-body">
+                         <pre>
+
+
+                         </pre>
+                    </div>
+                </div>
+                <div id="tab2" class="tab-pane">
+                    <div class="panel-body"><strong>正在开发中,敬请期待......</strong></div>
+                </div>
+                <div id="tab3" class="tab-pane">
+                    <div class="panel-body">
+                        <table class="table table-hover table-bordered table-text-center">
+                            <tr>
+                                <th>请求头</th>
+                                <th>value</th>
+                            </tr>
+                            <tr>
+                                <th class="active">Content-type</th>
+                                <td>application/json;charset=UTF-8</td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        var data={
+            "success": true,
+            "data": {
+                "address": "杭州市余杭区西湖区天目山路518号西溪国家湿地公园内",
+                "virtual_url": "",
+                "level": "5A",
+                "creator": "\"SYS\"",
+                "name": "西溪湿地洪园",
+                "synch_status": "INIT",
+                "busis_tel": "0571-89081140",
+                "baidu_x": "120.056691",
+                "wechat_serv_no": "杭州西溪湿地洪园",
+                "fax": "0571-89081767",
+                "complaint_tel": "0571-89081193",
+                "sos_tel": "0571-88730167",
+                "website_url": "http://www.xixisd.com/",
+                "modifier": "SYS",
+                "logo_image": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/e1248600989746e5b2c91f5bef1996e8.jpg",
+                "baidu_y": "30.27121",
+                "wechat_sub_no": "西溪湿地洪园",
+                "datafrom": "\"1\"",
+                "id": "79e737f098a542e9907a4dbd3c0e9669",
+                "is_deleted": "N",
+                "contact_way": "0571-89081177",
+                "infor_tel": "0571-89081177",
+                "modified_time": "2017-04-06 13:21:24",
+                "geog_env": "",
+                "create_time": "2017-03-02 11:23:59",
+                "sina_no": "西溪湿地洪园官方微博",
+                "open_time": "4月1日至10月31日，开闭园时间为7:30-18:30（园区16:45停售电瓶船票，17:30停售门票，游客禁止入园。）   11月1日至3月31日，开闭园时间为8:00-17:30（园区16:15停售电瓶船票，16:30停售门票，游客禁止入园。）",
+                "panorama_url": "",
+                "cms_material_info": [
+                    {
+                        "parent_id": "79e737f098a542e9907a4dbd3c0e9669",
+                        "media_size_mb": "0MB",
+                        "synch_status": "INIT",
+                        "modifier": "SYS",
+                        "from_ip": "192.168.11.110",
+                        "create_time": "2017-03-16 10:17:16",
+                        "id": "3ab304b4ea6544d9b468ca15dcf8744c",
+                        "media_size_kb": "316kb",
+                        "media_name": "849b7f90b67c40b094d7c6dc2b908ff8.jpg",
+                        "description": "",
+                        "modified_time": "2017-04-06 13:21:24",
+                        "is_deleted": "N",
+                        "url": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/849b7f90b67c40b094d7c6dc2b908ff8.jpg",
+                        "media_type": "jpg",
+                        "media_size": 323665,
+                        "sort": 52,
+                        "creator": "\"SYS\"",
+                        "parent_name": null,
+                        "thumb_fullsize": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/849b7f90b67c40b094d7c6dc2b908ff8_fullsize.jpg",
+                        "original_name": "西溪湿地全景.jpg",
+                        "show_sort": 0,
+                        "thumb_small": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/849b7f90b67c40b094d7c6dc2b908ff8_small.jpg",
+                        "thumb_medium": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/849b7f90b67c40b094d7c6dc2b908ff8_medium.jpg",
+                        "datafrom": "\"1\"",
+                        "media_id": null
+                    },
+                    {
+                        "parent_id": "79e737f098a542e9907a4dbd3c0e9669",
+                        "media_size_mb": "0MB",
+                        "synch_status": "INIT",
+                        "modifier": "SYS",
+                        "from_ip": "192.168.11.110",
+                        "create_time": "2017-03-16 16:06:05",
+                        "id": "adef35777f1f45d3b4de56043250c7bc",
+                        "media_size_kb": "154kb",
+                        "media_name": "ce0a0a3c6f2f41f092ffb0b5de30afaf.jpg",
+                        "description": "",
+                        "modified_time": "2017-04-06 13:21:24",
+                        "is_deleted": "N",
+                        "url": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/ce0a0a3c6f2f41f092ffb0b5de30afaf.jpg",
+                        "media_type": "jpg",
+                        "media_size": 158022,
+                        "sort": 132,
+                        "creator": "\"SYS\"",
+                        "parent_name": null,
+                        "thumb_fullsize": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/ce0a0a3c6f2f41f092ffb0b5de30afaf_fullsize.jpg",
+                        "original_name": "middle_135811_19741340085491608_2c141bc61171859ad8cf4a102cecb4c7.jpg",
+                        "show_sort": 1,
+                        "thumb_small": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/ce0a0a3c6f2f41f092ffb0b5de30afaf_small.jpg",
+                        "thumb_medium": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/ce0a0a3c6f2f41f092ffb0b5de30afaf_medium.jpg",
+                        "datafrom": "\"1\"",
+                        "media_id": null
+                    },
+                    {
+                        "parent_id": "79e737f098a542e9907a4dbd3c0e9669",
+                        "media_size_mb": "0MB",
+                        "synch_status": "INIT",
+                        "modifier": "SYS",
+                        "from_ip": "192.168.11.110",
+                        "create_time": "2017-03-16 16:05:59",
+                        "id": "b42c2f3f325f4763803a101e2227d731",
+                        "media_size_kb": "142kb",
+                        "media_name": "fa7eab8d14d640aa83dfe3a270a89c5d.jpg",
+                        "description": "",
+                        "modified_time": "2017-04-06 13:21:24",
+                        "is_deleted": "N",
+                        "url": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/fa7eab8d14d640aa83dfe3a270a89c5d.jpg",
+                        "media_type": "jpg",
+                        "media_size": 146383,
+                        "sort": 131,
+                        "creator": "\"SYS\"",
+                        "parent_name": null,
+                        "thumb_fullsize": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/fa7eab8d14d640aa83dfe3a270a89c5d_fullsize.jpg",
+                        "original_name": "8cb0b2e1-d816-407a-994b-5e1b1db178b5.jpg",
+                        "show_sort": 2,
+                        "thumb_small": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/fa7eab8d14d640aa83dfe3a270a89c5d_small.jpg",
+                        "thumb_medium": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/fa7eab8d14d640aa83dfe3a270a89c5d_medium.jpg",
+                        "datafrom": "\"1\"",
+                        "media_id": null
+                    },
+                    {
+                        "parent_id": "79e737f098a542e9907a4dbd3c0e9669",
+                        "media_size_mb": "0MB",
+                        "synch_status": "INIT",
+                        "modifier": "SYS",
+                        "from_ip": "192.168.11.110",
+                        "create_time": "2017-03-16 16:04:34",
+                        "id": "c1d4aeb62ad5487dac1b0a3403d68618",
+                        "media_size_kb": "268kb",
+                        "media_name": "337e8b91dab34106b2274d67d45f116c.jpg",
+                        "description": "",
+                        "modified_time": "2017-04-06 13:21:24",
+                        "is_deleted": "N",
+                        "url": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/337e8b91dab34106b2274d67d45f116c.jpg",
+                        "media_type": "jpg",
+                        "media_size": 275003,
+                        "sort": 129,
+                        "creator": "\"SYS\"",
+                        "parent_name": null,
+                        "thumb_fullsize": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/337e8b91dab34106b2274d67d45f116c_fullsize.jpg",
+                        "original_name": "overview1.jpg",
+                        "show_sort": 3,
+                        "thumb_small": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/337e8b91dab34106b2274d67d45f116c_small.jpg",
+                        "thumb_medium": "http://oss.drore.com/material/8cf93ef485cf43b4aab096fb252fdd14/201703/16/337e8b91dab34106b2274d67d45f116c_medium.jpg",
+                        "datafrom": "\"1\"",
+                        "media_id": null
+                    }
+                ]
+            },
+            "errCode": null,
+            "errMsg": null,
+            "id": null,
+            "errorMessage": null,
+            "message": null
+        };
+        console.log("api")
+        var pre=$('<pre></pre>')
+        pre.html(JSON.stringify(data,null,2));
+        $("#tab1").find("div").html("")
+        $("#tab1").find("div").append(pre)
+    })
+</script>
+</body>
+</html>

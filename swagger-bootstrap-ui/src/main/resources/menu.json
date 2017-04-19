@@ -1,0 +1,4239 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "西溪湿地洪园微信",
+    "version": "1.0",
+    "title": "测试西溪湿地洪园微信RESTful APIs",
+    "termsOfService": "http://www.xxsdhy.com/",
+    "contact": {
+      "name": "xiaoym@drore.com"
+    },
+    "license": {}
+  },
+  "host": "192.168.11.123:8280",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "地址管理",
+      "description": "地址管理"
+    },
+    {
+      "name": "用户下单",
+      "description": "用户下单"
+    },
+    {
+      "name": "商城首页",
+      "description": "商城首页"
+    },
+    {
+      "name": "景区接口",
+      "description": "景区接口"
+    },
+    {
+      "name": "用户中心",
+      "description": "用户中心"
+    },
+    {
+      "name": "天气",
+      "description": "天气"
+    },
+    {
+      "name": "评价",
+      "description": "评价"
+    },
+    {
+      "name": "公共接口",
+      "description": "公共接口"
+    },
+    {
+      "name": "旅游攻略",
+      "description": "旅游攻略"
+    },
+    {
+      "name": "活动",
+      "description": "活动"
+    },
+    {
+      "name": "素材",
+      "description": "素材"
+    },
+    {
+      "name": "验证码",
+      "description": "验证码"
+    },
+    {
+      "name": "便民服务",
+      "description": "便民服务"
+    },
+    {
+      "name": "sos求助",
+      "description": "SOS求助"
+    },
+    {
+      "name": "导游",
+      "description": "导游"
+    },
+    {
+      "name": "微信授权",
+      "description": "微信授权"
+    },
+    {
+      "name": "导游的预约订单查询",
+      "description": "导游的预约订单查询"
+    },
+    {
+      "name": "微信支付",
+      "description": "微信支付"
+    },
+    {
+      "name": "旅游产品明细和优惠券",
+      "description": "旅游产品明细和优惠券"
+    },
+    {
+      "name": "优惠券",
+      "description": "优惠券"
+    }
+  ],
+  "paths": {
+    "/api/activity/judgeList": {
+      "post": {
+        "tags": [
+          "活动"
+        ],
+        "summary": "活动评价列表",
+        "description": "根据活动id获取评价列表",
+        "operationId": "listUsingPOST_3",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "activity_id",
+            "description": "活动id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "current_page",
+            "description": "页码",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "page_size",
+            "description": "页码大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Pagination«Map»"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/auth/getCodeReq": {
+      "get": {
+        "tags": [
+          "微信授权"
+        ],
+        "summary": "获取用户个人信息",
+        "description": "授权获取用户个人信息,url会重定向并回调openid到前端,url参数是全路径,即包括http://域名.部分",
+        "operationId": "getCodeReqUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "url",
+            "description": "授权页面",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/auth/getUserReq": {
+      "get": {
+        "tags": [
+          "微信授权"
+        ],
+        "summary": "微信Auth2登录",
+        "description": "需在微信客户端打开",
+        "operationId": "getUserReqUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/auth/sign": {
+      "post": {
+        "tags": [
+          "微信授权"
+        ],
+        "summary": "签名",
+        "description": "传参url,授权当前页面,以便调用jssdk",
+        "operationId": "signUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "url",
+            "description": "授权页面",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/cms/display/getDisplay": {
+      "post": {
+        "tags": [
+          "商城首页"
+        ],
+        "summary": "获取商城列表",
+        "description": "（根据名称）获取商城列表接口",
+        "operationId": "getDisplayUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "name",
+            "description": "商品名称",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/cms/guideOrder/queryGuideOrder": {
+      "post": {
+        "tags": [
+          "导游的预约订单查询"
+        ],
+        "summary": "查询导游的预约订单",
+        "description": "（根据导游用户名id）获取导游的预约订单",
+        "operationId": "queryGuideOrderUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "guideUserId",
+            "description": "导游用户名id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/cms/image/code": {
+      "get": {
+        "tags": [
+          "验证码"
+        ],
+        "summary": "生成验证码",
+        "operationId": "getCodeUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/cms/material/uploadMaterial": {
+      "post": {
+        "tags": [
+          "素材"
+        ],
+        "summary": "文件素材上传接口",
+        "operationId": "uploadMaterialUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "file",
+            "description": "文件流对象,接收数组格式",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MultipartFile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/cms/service/detail": {
+      "post": {
+        "tags": [
+          "公共接口"
+        ],
+        "summary": "查询数据详情",
+        "description": "根据service的json业务规则,查询单表或多表的list数据",
+        "operationId": "detailUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "service",
+            "description": "string类型的json字符串结构",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/cms/service/list": {
+      "post": {
+        "tags": [
+          "公共接口"
+        ],
+        "summary": "查询数据列表",
+        "description": "根据service的json业务规则,查询单表或多表的list数据",
+        "operationId": "listUsingPOST_2",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "service",
+            "description": "string类型的json字符串结构",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PaginationMap«Map«string,object»»"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/common/weather": {
+      "post": {
+        "tags": [
+          "天气"
+        ],
+        "summary": "获取天气",
+        "description": "根据城市名称获取天气接口",
+        "operationId": "weatherUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "cityName",
+            "description": "城市名称",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/convenience/rent": {
+      "post": {
+        "tags": [
+          "便民服务"
+        ],
+        "summary": "便民服务下单",
+        "description": "租用便民服务下单",
+        "operationId": "listUsingPOST_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "rentTime",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "rentNum",
+            "in": "query",
+            "description": "租用数量",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "foregift",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "isReturn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "memberId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "goodsId",
+            "in": "query",
+            "description": "租用物品id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "goodsName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "goodsPic",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "orderOn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "linkName",
+            "in": "query",
+            "description": "联系人",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "linkTel",
+            "in": "query",
+            "description": "联系方式",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "isFree",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "isReturnForegift",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "creator",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "modifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "modifiedTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "isDeleted",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "datafrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "synchStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/coupon/list": {
+      "post": {
+        "tags": [
+          "优惠券"
+        ],
+        "summary": "获取优惠券列表",
+        "description": "产品id获取优惠券列表",
+        "operationId": "listUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "current_page",
+            "description": "页码",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "page_size",
+            "description": "页码大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "productId",
+            "description": "旅游产品id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Pagination«CouponInfo»"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/coupon/recive": {
+      "post": {
+        "tags": [
+          "优惠券"
+        ],
+        "summary": "领取优惠券",
+        "description": "会员id领取优惠券",
+        "operationId": "reciveUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "couponId",
+            "description": "优惠券id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/scenic/jgqk": {
+      "post": {
+        "tags": [
+          "景区接口"
+        ],
+        "summary": "景区概况",
+        "description": "景区概况",
+        "operationId": "gkUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/scenic/spot/detail": {
+      "post": {
+        "tags": [
+          "景区接口"
+        ],
+        "summary": "景点详情",
+        "description": "根据景点id查询景点详情",
+        "operationId": "scenicDetailUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "detailId",
+            "description": "详情id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/tour/detail": {
+      "post": {
+        "tags": [
+          "旅游攻略"
+        ],
+        "summary": "获取攻略详情",
+        "description": "根据详情id获取",
+        "operationId": "detailUsingPOST_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "id",
+            "description": "详情id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/address/del": {
+      "post": {
+        "tags": [
+          "地址管理"
+        ],
+        "summary": "删除地址",
+        "description": "根据地址pkid删除地址",
+        "operationId": "del_addressUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "id",
+            "description": "地址主键id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/address/save": {
+      "post": {
+        "tags": [
+          "地址管理"
+        ],
+        "summary": "新加会员地址",
+        "operationId": "save_addressUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nation",
+            "in": "query",
+            "description": "国家",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "province",
+            "in": "query",
+            "description": "省份",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "description": "城市",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "area",
+            "in": "query",
+            "description": "区域",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "description": "详细地址",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "fullName",
+            "in": "query",
+            "description": "收货人",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tel",
+            "in": "query",
+            "description": "联系方式",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "isDefault",
+            "in": "query",
+            "description": "是否默认地址",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "street",
+            "in": "query",
+            "description": "街道",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "zipcode",
+            "in": "query",
+            "description": "邮编",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "creator",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "modifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "modifiedTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "isDeleted",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "datafrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "synchStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/address/sel": {
+      "get": {
+        "tags": [
+          "地址管理"
+        ],
+        "summary": "查询会员地址列表",
+        "operationId": "sel_addressUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "current_page",
+            "in": "query",
+            "description": "current_page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "page_size",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/address/update": {
+      "post": {
+        "tags": [
+          "地址管理"
+        ],
+        "summary": "修改会员地址",
+        "description": "根据地址参数信息修改会员地址信息",
+        "operationId": "update_addressUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nation",
+            "in": "query",
+            "description": "国家",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "province",
+            "in": "query",
+            "description": "省份",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "description": "城市",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "area",
+            "in": "query",
+            "description": "区域",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "description": "详细地址",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "fullName",
+            "in": "query",
+            "description": "收货人",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tel",
+            "in": "query",
+            "description": "联系方式",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "isDefault",
+            "in": "query",
+            "description": "是否默认地址",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "street",
+            "in": "query",
+            "description": "街道",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "zipcode",
+            "in": "query",
+            "description": "邮编",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "creator",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "modifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "modifiedTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "isDeleted",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "datafrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "synchStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/bookGuideOrder": {
+      "post": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "导游预订",
+        "description": "导游下订单",
+        "operationId": "bookguideorderUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "orderNo",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sex",
+            "in": "query",
+            "description": "导游性别",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "languages",
+            "in": "query",
+            "description": "导游语种",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "description": "导游等级",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "remark",
+            "in": "query",
+            "description": "备注",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "playTime",
+            "in": "query",
+            "description": "游玩时间,前端可做简单表单验证,时间必须大于今天",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "playNum",
+            "in": "query",
+            "description": "游玩人数",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "linkTel",
+            "in": "query",
+            "description": "联系方式",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "certificateNo",
+            "in": "query",
+            "description": "身份证号",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "isAgree",
+            "in": "query",
+            "description": "是否同意《定金支付条款》",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "guideId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "orderExpireTime",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "orderStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "guideTime",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "linkName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payMethod",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payTime",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subscribeMoney",
+            "in": "query",
+            "description": "押金金额",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "serviceDuration",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "serviceStatus",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "serviceEndTime",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "serviceStartTime",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "isEvaluate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "creator",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "modifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "modifiedTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "isDeleted",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "datafrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "synchStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/config": {
+      "get": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "导游配置信息",
+        "description": "导游配置信息,获取导游预约押金,导游语言设置",
+        "operationId": "configUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/detail": {
+      "get": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "导游预约详情",
+        "description": "导游预约详情",
+        "operationId": "detailUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/evaluate": {
+      "post": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "评价导游",
+        "description": "评价导游",
+        "operationId": "evaluateUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "data",
+            "in": "query",
+            "description": "data",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/evaluate_detail": {
+      "get": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "评价导游详情",
+        "description": "评价导游详情",
+        "operationId": "evaluate_detailUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/get_service_time": {
+      "get": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "获取已经服务时间",
+        "description": "获取已经服务时间",
+        "operationId": "get_service_timeUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "order_no",
+            "in": "query",
+            "description": "order_no",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/over": {
+      "get": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "导游服务结束",
+        "description": "导游服务结束",
+        "operationId": "overUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/service_list": {
+      "get": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "我的导游服务列表",
+        "description": "导游列表",
+        "operationId": "service_listUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "user_id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "page_size",
+            "description": "page_size",
+            "required": false,
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "in": "body",
+            "name": "current_page",
+            "description": "current_page",
+            "required": false,
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "in": "body",
+            "name": "order_no",
+            "description": "order_no",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/start": {
+      "get": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "导游服务开始",
+        "description": "导游服务开始",
+        "operationId": "startUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/statistics": {
+      "get": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "统计",
+        "description": "统计",
+        "operationId": "statisticsUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "user_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/guide/travel_detail": {
+      "get": {
+        "tags": [
+          "导游"
+        ],
+        "summary": "travel_detail",
+        "operationId": "travel_detailUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/judge/activity": {
+      "post": {
+        "tags": [
+          "评价"
+        ],
+        "summary": "评论活动",
+        "operationId": "activityUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "activityId",
+            "in": "query",
+            "description": "评论活动id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "points",
+            "in": "query",
+            "description": "评分",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "评论内容",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "travelType",
+            "in": "query",
+            "description": "旅游类型id,单选id,只能传一个",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "longt",
+            "in": "query",
+            "description": "经度",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "lat",
+            "in": "query",
+            "description": "纬度",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "description": "用户当前详细位置",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mediaIds",
+            "in": "query",
+            "description": "图片id集合,逗号分隔,例如id01,id02,id03",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/judge/guide": {
+      "post": {
+        "tags": [
+          "评价"
+        ],
+        "summary": "评论导游",
+        "operationId": "guideUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "guideOrderId",
+            "in": "query",
+            "description": "评价订单编号",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "guideId",
+            "in": "query",
+            "description": "导游编号",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "comprehensive",
+            "in": "query",
+            "description": "综合评价",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "serviceAttitude",
+            "in": "query",
+            "description": "服务态度",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "内容丰富",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "explainProfess",
+            "in": "query",
+            "description": "讲解专业性",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "securityInfo",
+            "in": "query",
+            "description": "安全提醒",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "zlsServ",
+            "in": "query",
+            "description": "站立式服务",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "transferServ",
+            "in": "query",
+            "description": "接送服务",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "suggestion",
+            "in": "query",
+            "description": "您的建议",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "creator",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "modifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "modifiedTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "isDeleted",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "datafrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "synchStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/judge/scenic": {
+      "post": {
+        "tags": [
+          "评价"
+        ],
+        "summary": "评价景点",
+        "description": "根据用户输入评价景点",
+        "operationId": "scenicUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "scenicSpotId",
+            "in": "query",
+            "description": "评论景点id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "用户id,前端不需要传",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nickName",
+            "in": "query",
+            "description": "用户昵称,前端不需要传",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "headimage",
+            "in": "query",
+            "description": "用户头像,前端不需要传",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "judgeTime",
+            "in": "query",
+            "description": "评论时间,前端不需要传",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "评论内容,前端不需要传",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tagIds",
+            "in": "query",
+            "description": "评论tagid集合,以逗号分隔传递给后端,id01,id02,id03...",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "creator",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "modifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "modifiedTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "isDeleted",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "datafrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "synchStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/order/bookIntegralProduct": {
+      "post": {
+        "tags": [
+          "用户下单"
+        ],
+        "summary": "预订积分产品",
+        "description": "输入预订资料信息,预订积分产品",
+        "operationId": "bookIntegralProductUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "query",
+            "description": "产品id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "buyNum",
+            "in": "query",
+            "description": "购买数量",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "linkName",
+            "in": "query",
+            "description": "联系人姓名",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "linkTel",
+            "in": "query",
+            "description": "联系人电话",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "idCard",
+            "in": "query",
+            "description": "身份证号",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "remark",
+            "in": "query",
+            "description": "说明",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/order/bookTouristProduct": {
+      "post": {
+        "tags": [
+          "用户下单"
+        ],
+        "summary": "预订旅游产品",
+        "description": "输入预订资料信息,预订旅游产品",
+        "operationId": "bookTouristProductUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "query",
+            "description": "产品id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "buyNum",
+            "in": "query",
+            "description": "购买数量",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "linkName",
+            "in": "query",
+            "description": "联系人姓名",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "linkTel",
+            "in": "query",
+            "description": "联系人电话",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "idCard",
+            "in": "query",
+            "description": "身份证号",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "playTime",
+            "in": "query",
+            "description": "游玩时间",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "remark",
+            "in": "query",
+            "description": "说明",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/pay/guide/wxpay": {
+      "post": {
+        "tags": [
+          "微信支付"
+        ],
+        "summary": "导游微信支付",
+        "description": "根据系统导游订单号,调用微信支付",
+        "operationId": "guidewxpayUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "orderId",
+            "description": "订单id",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/pay/wx_notify_callback": {
+      "get": {
+        "tags": [
+          "微信支付"
+        ],
+        "summary": "微信异步回调url",
+        "description": "微信异步回调url,修改订单状态",
+        "operationId": "weixin_notify_callbackUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "head": {
+        "tags": [
+          "微信支付"
+        ],
+        "summary": "微信异步回调url",
+        "description": "微信异步回调url,修改订单状态",
+        "operationId": "weixin_notify_callbackUsingHEAD",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "微信支付"
+        ],
+        "summary": "微信异步回调url",
+        "description": "微信异步回调url,修改订单状态",
+        "operationId": "weixin_notify_callbackUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "微信支付"
+        ],
+        "summary": "微信异步回调url",
+        "description": "微信异步回调url,修改订单状态",
+        "operationId": "weixin_notify_callbackUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "微信支付"
+        ],
+        "summary": "微信异步回调url",
+        "description": "微信异步回调url,修改订单状态",
+        "operationId": "weixin_notify_callbackUsingDELETE",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "options": {
+        "tags": [
+          "微信支付"
+        ],
+        "summary": "微信异步回调url",
+        "description": "微信异步回调url,修改订单状态",
+        "operationId": "weixin_notify_callbackUsingOPTIONS",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "微信支付"
+        ],
+        "summary": "微信异步回调url",
+        "description": "微信异步回调url,修改订单状态",
+        "operationId": "weixin_notify_callbackUsingPATCH",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/macro/pay/wxpay": {
+      "post": {
+        "tags": [
+          "微信支付"
+        ],
+        "summary": "微信支付",
+        "description": "根据系统订单号,调用微信支付",
+        "operationId": "wxpayUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "orderId",
+            "description": "订单id",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/product/getCouponByPid": {
+      "post": {
+        "tags": [
+          "旅游产品明细和优惠券"
+        ],
+        "summary": "根据产品id查询优惠券",
+        "description": "根据产品id查询优惠券",
+        "operationId": "getCouponByPidUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "page_size",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "current_page",
+            "in": "query",
+            "description": "current_page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "body",
+            "name": "productId",
+            "description": "旅游产品id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/product/getProductById": {
+      "post": {
+        "tags": [
+          "旅游产品明细和优惠券"
+        ],
+        "summary": "根据产品id查询旅游产品明细",
+        "description": "根据产品id查询旅游产品明细",
+        "operationId": "getProductByIdUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "id",
+            "description": "旅游产品id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/sos/helpful": {
+      "post": {
+        "tags": [
+          "sos求助"
+        ],
+        "summary": "SOS求助",
+        "description": "填写手机号码,发布求助",
+        "operationId": "helpfulUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "当前微信用户id,前端不需要传",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "linkTel",
+            "in": "query",
+            "description": "SOS求助联系方式",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "longt",
+            "in": "query",
+            "description": "经度",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "lat",
+            "in": "query",
+            "description": "纬度",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "状态,前端不需要传",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "creator",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "modifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "modifiedTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "isDeleted",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "datafrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "synchStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/deleteJudge": {
+      "post": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "删除评价",
+        "description": "根据评价id删除活动评价",
+        "operationId": "deleteJudgeUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "type",
+            "description": "scenic:景点评价，activity:活动,guide:导游",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "judge_id",
+            "description": "评价id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/deleteOrder": {
+      "post": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "删除订单",
+        "description": "根据订单id删除订单",
+        "operationId": "deleteOrderUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "order_id",
+            "description": "订单id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/modify": {
+      "post": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "修改个人资料",
+        "description": "key/value结构的会员中心个人资料修改",
+        "operationId": "modifyUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "openid",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "headimgurl",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nickname",
+            "in": "query",
+            "description": "昵称",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sex",
+            "in": "query",
+            "description": "性别",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "province",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "points",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "lastLoginTime",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "lastLoginIp",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tel",
+            "in": "query",
+            "description": "联系电话",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "idcard",
+            "in": "query",
+            "description": "身份证号码",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "邮箱",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "creator",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "modifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "modifiedTime",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "isDeleted",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "datafrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "synchStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/myCouponList": {
+      "post": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "我的优惠券",
+        "description": "获取我的优惠券列表",
+        "operationId": "myCoupListUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "current_page",
+            "description": "页码",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "page_size",
+            "description": "页码大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Pagination«Map»"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/myGuide": {
+      "post": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "我的导游",
+        "description": "获取我的导游列表",
+        "operationId": "myGuideUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "current_page",
+            "description": "页码",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "page_size",
+            "description": "页码大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/myIntegral": {
+      "post": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "我的积分",
+        "description": "获取我的个人积分明细",
+        "operationId": "myIntrgralUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "current_page",
+            "description": "页码",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "page_size",
+            "description": "页码大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/myJudge": {
+      "post": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "我的评价",
+        "description": "获取我的评价列表",
+        "operationId": "myJudgeUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "type",
+            "description": "scenic:景点评价，activity:活动,guide:导游",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "current_page",
+            "description": "页码",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "page_size",
+            "description": "页码大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/myRent": {
+      "post": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "我的便民租用",
+        "description": "获取我的便民租用列表",
+        "operationId": "myRentUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "current_page",
+            "description": "页码",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "page_size",
+            "description": "页码大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "return_flag",
+            "description": "归还flag,Y:归还,N:未归还,空值则会查询全部",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/my_order": {
+      "post": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "我的订单",
+        "description": "查询我的订单",
+        "operationId": "my_orderUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "orderInfo",
+            "description": "orderInfo",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/OrderInfo"
+            }
+          },
+          {
+            "in": "body",
+            "name": "current_page",
+            "description": "页码",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "page_size",
+            "description": "页码大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Pagination«Map»"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/order_info": {
+      "post": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "订单明细",
+        "description": "根据订单号查询我的订单明细",
+        "operationId": "order_infoUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "order_id",
+            "description": "订单编号",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/macro/user/self": {
+      "get": {
+        "tags": [
+          "用户中心"
+        ],
+        "summary": "获取个人资料",
+        "description": "登录后获取会员个人资料",
+        "operationId": "selfUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PaginationMap«Map«string,object»»": {
+      "properties": {
+        "columns": {
+          "type": "object"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "current_page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Map«string,object»"
+          }
+        },
+        "errCode": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "page_size": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "success": {
+          "type": "boolean"
+        },
+        "total_page": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Pagination«CouponInfo»": {
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "current_page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CouponInfo"
+          }
+        },
+        "errCode": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "page_size": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "success": {
+          "type": "boolean"
+        },
+        "total_page": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "RestMessage": {
+      "properties": {
+        "data": {
+          "type": "object"
+        },
+        "errCode": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "errMsg": {
+          "type": "string"
+        },
+        "errorMessage": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "CouponInfo": {
+      "properties": {
+        "createTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "creator": {
+          "type": "string"
+        },
+        "datafrom": {
+          "type": "string"
+        },
+        "endTime": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "isDeleted": {
+          "type": "string"
+        },
+        "isLimit": {
+          "type": "string"
+        },
+        "isLimitPrice": {
+          "type": "string"
+        },
+        "isShareLink": {
+          "type": "string"
+        },
+        "isUseProduct": {
+          "type": "string"
+        },
+        "limitNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "limitPrice": {
+          "type": "number",
+          "format": "double"
+        },
+        "modifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "modifier": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "original_use": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "format": "double"
+        },
+        "receiveNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "remark": {
+          "type": "string"
+        },
+        "sort": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "startTime": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "synchStatus": {
+          "type": "string"
+        },
+        "totalNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "used_num": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Map«string,object»": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "Pagination«Map»": {
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "current_page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Map"
+          }
+        },
+        "errCode": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "page_size": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "success": {
+          "type": "boolean"
+        },
+        "total_page": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Map": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      }
+    }
+  }
+}
