@@ -6,7 +6,7 @@
 
     <groupId>com.drore.cloud</groupId>
     <artifactId>swagger-bootstrap-ui</artifactId>
-    <version>1.2</version>
+    <version>1.0</version>
     <description>
         依赖swagger-ui,重写ui实现
     </description>
