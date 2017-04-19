@@ -23,7 +23,7 @@
 
 
 
-![](https://xiaoymin.github.io/cloud-sdk-doc/assets/docs.jpg)
+![](https://xiaoymin.github.io/cloud-sdk-doc/assets/apidoc.jpg)
 
 * 在线调试功能,效果图如下:
 
