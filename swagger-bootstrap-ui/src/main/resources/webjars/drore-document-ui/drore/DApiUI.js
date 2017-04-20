@@ -527,7 +527,21 @@
             ptable.append(phead);
             var pbody=$('<tbody></tbody>');
             $.each(apiInfo.parameters,function (i, param) {
-                var ptr=$('<tr><td>'+param.name+'</td><td>'+DApiUI.getStringValue(param['description'])+'</td><td>'+DApiUI.getDefaultRequiredType(param['type'])+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
+                //判断是否有type属性,如果有,则后端为实体类形参
+                var ptype="string";
+                if(param.hasOwnProperty("type")){
+                    ptype=param["type"];
+                }else{
+                    ///判断是有schma
+                    if(param.hasOwnProperty("schema")){
+                        var schema=param["schema"];
+                        //是否有type
+                        if(schema.hasOwnProperty("type")){
+                            ptype=schema["type"];
+                        }
+                    }
+                }
+                var ptr=$('<tr><td>'+param.name+'</td><td>'+DApiUI.getStringValue(param['description'])+'</td><td>'+ptype+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
                 pbody.append(ptr);
             })
             ptable.append(pbody);
