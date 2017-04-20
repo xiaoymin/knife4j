@@ -8,7 +8,7 @@
 
     DApiUI.init=function () {
         $.ajax({
-            url:"/v2/api-docs",
+            url:"v2/api-docs",
             //url:"menu.json",
             dataType:"json",
             type:"get",
@@ -290,9 +290,20 @@
             })
             DApiUI.log("获取参数..")
             DApiUI.log(params);
+            DApiUI.log(apiInfo)
 
+            //组装请求url
+            var url=DApiUI.getStringValue(apiInfo.url);
+            var cacheData=DApiUI.getDoc().data("data");
+            if(typeof (cacheData.basePath)!="undefined"&&cacheData.basePath!=""){
+                if(cacheData.basePath!="/"){
+                    DApiUI.log("NOT ROOT PATH:");
+                    url=cacheData.basePath+DApiUI.getStringValue(apiInfo.url);
+                }
+            }
+            DApiUI.log("请求url："+url);
             $.ajax({
-                url:DApiUI.getStringValue(apiInfo.url),
+                url:url,
                 type:DApiUI.getStringValue(apiInfo.methodType),
                 data:params,
                 success:function (data,status,xhr) {
@@ -344,17 +355,6 @@
                         jsondiv.JSONView(xhr["responseJSON"]);
                         pre.html(JSON.stringify(xhr["responseJSON"],null,2));
                         resp1.find(".panel-body").append(jsondiv);
-                        //$("#headJsonDiv").show();
-                       /* $("#headJsonDiv").show();
-                        resp1.find(".panel-body").append($("#headJsonDiv"))
-                        setTimeout(function () {
-                            $("#enterValue").val(JSON.stringify(xhr["responseJSON"]));
-                            console.log($("#enterValue").val())
-                            console.log("click事件")
-                            $("#enterOk").click();
-                        }, 100)*/
-
-
                     }else{
                         //判断content-type
                         //如果是image资源
@@ -432,13 +432,9 @@
                         //如果存在该对象,服务端返回为json格式
                         resp1.find(".panel-body").html("")
                         DApiUI.log(xhr["responseJSON"])
-                        /*var pre=$('<pre></pre>')
-                        pre.html(JSON.stringify(xhr["responseJSON"],null,2));*/
                         var jsondiv=$('<div></div>')
                         jsondiv.JSONView(xhr["responseJSON"]);
-                        //pre.html(JSON.stringify(xhr["responseJSON"],null,2));
                         resp1.find(".panel-body").append(jsondiv);
-                        //resp1.find(".panel-body").append(pre);
                     }else{
                         //判断是否是text
                         var regex=new RegExp('.*?text.*','g');

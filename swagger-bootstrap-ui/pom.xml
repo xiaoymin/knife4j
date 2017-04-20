@@ -26,13 +26,6 @@
         <skipTests>true</skipTests>
         <destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</destDir>
     </properties>
-    <!-- maven 打包自动上传 -->
-    <distributionManagement>
-        <repository>
-            <id>nexus-drore-team-3rd</id>
-            <url>http://192.168.11.110:8081/nexus/content/repositories/thirdparty/</url>
-        </repository>
-    </distributionManagement>
     <build>
         <resources>
             <resource>
