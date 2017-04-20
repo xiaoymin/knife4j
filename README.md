@@ -45,6 +45,12 @@ Swagger-UI默认效果图如下：
 
 
 
+## demo演示
+
+[swagger-bootstarp-ui-demo](http://git.oschina.net/xiaoym/swagger-bootstrap-ui-demo)
+
+
+
 ## 下载
 
 
