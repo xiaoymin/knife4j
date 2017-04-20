@@ -1,16 +1,16 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "西溪湿地洪园微信",
+    "description": "Swagger-Bootstrap-UI-前后端api接口文档",
     "version": "1.0",
-    "title": "测试西溪湿地洪园微信RESTful APIs",
-    "termsOfService": "http://www.xxsdhy.com/",
+    "title": "Swagger-Bootstrap-UI-RESTful APIs",
+    "termsOfService": "http://www.xx.com/",
     "contact": {
-      "name": "xiaoym@drore.com"
+      "name": "xiaoymin@foxmail.com"
     },
     "license": {}
   },
-  "host": "192.168.11.123:8280",
+  "host": "127.0.0.1:8280",
   "basePath": "/",
   "tags": [
     {

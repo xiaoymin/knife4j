@@ -14,10 +14,9 @@
             type:"get",
             async:false,
             success:function (data) {
-                console.log("chengg");
                 //var menu=JSON.parse(data)
                 var menu=data;
-                console.log(menu);
+                DApiUI.log(menu);
                 DApiUI.createDescription(menu);
                 DApiUI.initTreeMenu(menu);
                 DApiUI.eachPath(menu);
