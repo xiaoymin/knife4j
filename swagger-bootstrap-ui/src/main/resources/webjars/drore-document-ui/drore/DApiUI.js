@@ -228,10 +228,10 @@
             var tbody=$('<tbody id="paramBody"></tbody>');
             $.each(apiInfo.parameters,function (i, param) {
                 var tr=$('<tr></tr>');
-
+                tr.data("data",param);
                 var checkbox=$('<td><div class="checkbox"><label><input type="checkbox" value="" checked></label></div></td>');
                 var key=$('<td><input class="form-control p-key" value="'+param.name+'"/></td>')
-                var value=$('<td><input class="form-control p-value" placeholder="'+DApiUI.getStringValue(param['description'])+'"/></td>');
+                var value=$('<td><input class="form-control p-value" data-apiUrl="'+apiInfo.url+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"/></td>');
                 var oper=$('<td><button class="btn btn-danger btn-circle btn-lg" type="button"><strong>×</strong></button></td>');
                 //删除事件
                 oper.find("button").on("click",function (e) {
@@ -239,6 +239,33 @@
                     var that=$(this);
                     that.parent().parent().remove();
                 })
+                //判断参数类型,针对path参数
+                if(param["in"]=="path"){
+                    //赋予change事件
+                    value.find("input").on("keyup",function () {
+                        var t=$(this);
+                        var name=t.data("name");
+                        var apiUrl=t.attr("data-apiUrl");
+                        var realValue=apiUrl.replace("{"+name+"}",t.val());
+                        //查找是否还存在其他path参数
+                        $("#paramBody").find("tr").each(function (i, itr) {
+                            var itrthat=$(this);
+                            var itrdata=itrthat.data("data");
+                            var itrname=itrdata["name"];
+                            if(itrdata["in"]=="path"&&itrdata["name"]!=name){
+                                //查找value值
+                                var itrtdvalue=itrthat.find(".p-value").val();
+                                if(itrtdvalue!=""){
+                                    realValue=realValue.replace("{"+itrname+"}",itrtdvalue);
+                                }
+                            }
+                        })
+                        DApiUI.log(realValue);
+                        $("#txtreqUrl").val(realValue);
+                        DApiUI.log("keyup。。。。")
+                    })
+
+                }
                 tr.append(checkbox).append(key).append(value).append(oper);
                 tbody.append(tr);
             })
@@ -274,24 +301,6 @@
             var paramBody=DApiUI.getDoc().find("#tab2").find("#paramBody")
             DApiUI.log("paramsbody..")
             DApiUI.log(paramBody)
-
-            paramBody.find("tr").each(function () {
-                var paramtr=$(this);
-                var cked=paramtr.find("td:first").find(":checked").prop("checked");
-                DApiUI.log(cked)
-                if (cked){
-                    //获取key
-                    var key=paramtr.find("td:eq(1)").find("input").val();
-                    //获取value
-                    var value=paramtr.find("td:eq(2)").find("input").val();
-                    params[key]=value;
-                    DApiUI.log("key:"+key+",value:"+value);
-                }
-            })
-            DApiUI.log("获取参数..")
-            DApiUI.log(params);
-            DApiUI.log(apiInfo)
-
             //组装请求url
             var url=DApiUI.getStringValue(apiInfo.url);
             var cacheData=DApiUI.getDoc().data("data");
@@ -301,6 +310,31 @@
                     url=cacheData.basePath+DApiUI.getStringValue(apiInfo.url);
                 }
             }
+
+
+            paramBody.find("tr").each(function () {
+                var paramtr=$(this);
+                var cked=paramtr.find("td:first").find(":checked").prop("checked");
+                DApiUI.log(cked)
+                if (cked){
+                    var trdata=paramtr.data("data");
+                    //获取key
+                    //var key=paramtr.find("td:eq(1)").find("input").val();
+                    var key=trdata["name"];
+                    //获取value
+                    var value=paramtr.find("td:eq(2)").find("input").val();
+                    if(trdata["in"]=="path"){
+                        url=url.replace("{"+key+"}",value);
+                    }else{
+                        params[key]=value;
+                    }
+                    DApiUI.log("key:"+key+",value:"+value);
+                }
+            })
+            DApiUI.log("获取参数..")
+            DApiUI.log(params);
+            DApiUI.log(apiInfo)
+
             DApiUI.log("请求url："+url);
             $.ajax({
                 url:url,
