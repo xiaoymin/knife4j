@@ -16,10 +16,12 @@
             success:function (data) {
                 //var menu=JSON.parse(data)
                 var menu=data;
+                DApiUI.definitions(menu);
                 DApiUI.log(menu);
                 DApiUI.createDescription(menu);
                 DApiUI.initTreeMenu(menu);
                 DApiUI.eachPath(menu);
+
             }
         })
     }
@@ -117,7 +119,6 @@
                     tagInfo.childrens.push(methodApi);
                 }
             })
-            DApiUI.log("子标签数量:"+tagInfo.childrens.length);
             var len=tagInfo.childrens.length;
             if(len==0){
                 var li=$('<li ><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> '+tagInfo.name+' </span></a></li>');
@@ -582,9 +583,16 @@
             ptd.append(ptable);
             args.append(ptd);
         }else{
-            args.append($("<td>暂无</td>"));
+            args.append($('<td  style="text-align: left">暂无</td>'));
         }
         tbody.append(args);
+        //响应数据结构
+        var responseConstruct=$('<tr><th class="active" style="text-align: right;">响应Model</th></tr>');
+        var responseConstructtd=$('<td  style="text-align: left"></td>')
+        responseConstructtd.append(DApiUI.createResponseDefinition(apiInfo));
+        responseConstruct.append(responseConstructtd);
+
+        tbody.append(responseConstruct)
 
         //响应状态码
         var response=$('<tr><th class="active" style="text-align: right;">响应</th></tr>');
@@ -626,6 +634,181 @@
         DApiUI.getDoc().find("#tab1").find(".panel-body").append(table);
         //DApiUI.getDoc().append(table);
 
+    }
+
+
+    DApiUI.createResponseDefinition=function (apiInfo) {
+        var resp=apiInfo.responses;
+        var div=$("<div class='panel'>暂无</div>")
+        if(resp.hasOwnProperty("200")){
+            var ok=resp["200"];
+            if(ok.hasOwnProperty("schema")){
+                var schema=ok["schema"];
+                var ref=schema["$ref"];
+                var regex=new RegExp("#/definitions/(.*)$","ig");
+                if(regex.test(ref)) {
+                    var refType = RegExp.$1;
+                    var definitionsArray=DApiUI.getDoc().data("definitionsArray");
+                    for(var i=0;i<definitionsArray.length;i++){
+                        var definition=definitionsArray[i];
+                        if(definition.key==refType){
+                            div.html("")
+                            div.JSONView(definition.value);
+                        }
+                    }
+                }
+            }
+        }
+        return div;
+    }
+
+
+
+    DApiUI.definitions=function (menu) {
+        var definitionsArray=new Array();
+        DApiUI.log("definitionsArray....")
+        if(menu!=null&&typeof (menu)!="undefined"&&menu.hasOwnProperty("definitions")){
+            var definitions=menu["definitions"];
+            for(var definition in definitions){
+                var defiType=new definitionType();
+                defiType.key=definition;
+                //获取value
+                var value=definitions[definition];
+                if (checkUndefined(value)){
+                    //是否有properties
+                    if(value.hasOwnProperty("properties")){
+                        var properties=value["properties"];
+                        var defiTypeValue={};
+                        for(var property in properties){
+                            var propobj=properties[property];
+                            //默认string类型
+                            var propValue="";
+                            //判断是否有类型
+                            if(propobj.hasOwnProperty("type")){
+                                var type=propobj["type"];
+                                if(checkIsBasicType(type)){
+                                    propValue=getBasicTypeValue(type);
+                                }else{
+                                    if(type=="array"){
+                                        propValue=new Array();
+                                        var items=propobj["items"];
+                                        var ref=items["$ref"];
+                                        var regex=new RegExp("#/definitions/(.*)$","ig");
+                                        if(regex.test(ref)){
+                                            var refType=RegExp.$1;
+                                            propValue.push(findRefDefinition(refType,definitions));
+                                        }
+                                    }
+                                }
+
+                            }else{
+                                if(propobj.hasOwnProperty("$ref")){
+                                    var ref=propobj["$ref"];
+                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                    if(regex.test(ref)) {
+                                        var refType = RegExp.$1;
+                                        propValue=findRefDefinition(refType,definitions);
+                                    }
+                                }else{
+                                    propValue={};
+                                }
+                            }
+                            defiTypeValue[property]=propValue;
+                        }
+                        defiType.value=defiTypeValue;
+                    }else{
+                        defiType.value={};
+                    }
+                }
+                definitionsArray.push(defiType);
+            }
+        }
+        DApiUI.getDoc().data("definitionsArray",definitionsArray);
+    }
+
+    function checkIsBasicType(type) {
+        var basicTypes=["string","integer","number","object","boolean"];
+        var flag=false;
+        if($.inArray(type,basicTypes)>-1){
+            flag=true;
+        }
+        return flag;
+    }
+
+    function getBasicTypeValue(type) {
+        var propValue="";
+        //是否是基本类型
+        if(type=="integer"){
+            propValue=0;
+        }
+        if(type=="boolean"){
+            propValue=true;
+        }
+        if(type=="object"){
+            propValue={};
+        }
+        if(type=="number"){
+            propValue=parseFloat(0);
+        }
+        return propValue;
+    }
+
+    function findRefDefinition(definitionName, definitions) {
+        var defaultValue="";
+        for(var definition in definitions){
+            if(definitionName==definition){
+                var value=definitions[definition];
+                //是否有properties
+                if(value.hasOwnProperty("properties")){
+                    var properties=value["properties"];
+                    var defiTypeValue={};
+                    for(var property in properties){
+                        var propobj=properties[property];
+                        //默认string类型
+                        var propValue="";
+                        //判断是否有类型
+                        if(propobj.hasOwnProperty("type")){
+                            var type=propobj["type"];
+                            if(checkIsBasicType(type)){
+                                propValue=getBasicTypeValue(type);
+                            }else{
+                                if(type=="array"){
+                                    propValue=new Array();
+                                    var items=propobj["items"];
+                                    var ref=items["$ref"];
+                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                    if(regex.test(ref)){
+                                        var refType=RegExp.$1;
+                                        propValue.push(findRefDefinition(refType,definitions));
+                                    }
+                                }
+                            }
+
+                        }else{
+
+                        }
+                        defiTypeValue[property]=propValue;
+                    }
+                    defaultValue=defiTypeValue;
+                }else{
+                    defaultValue={};
+                }
+            }
+        }
+        return defaultValue;
+    }
+    function checkUndefined(obj) {
+        var flag=false;
+        if(obj!=null&&typeof (obj)!="undefined"){
+            flag=true;
+        }
+        return flag;
+    }
+
+
+    function definitionType() {
+        this.key="";
+        this.value={};
     }
 
 
