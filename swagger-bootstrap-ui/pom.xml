@@ -6,7 +6,7 @@
 
     <groupId>com.drore.cloud</groupId>
     <artifactId>swagger-bootstrap-ui</artifactId>
-    <version>1.1</version>
+    <version>1.0</version>
     <name>swagger-bootstrap-ui</name>
     <description>Swagger-Bootstrap-UI is the front of the UI Swagger implementation, using jQuery+bootstrap implementation, the purpose is to replace the default UI Swagger implementation of the Swagger-UI, so that the document is more friendly...</description>
     <url>https://git.oschina.net/xiaoym/swagger-bootstrap-ui</url>
