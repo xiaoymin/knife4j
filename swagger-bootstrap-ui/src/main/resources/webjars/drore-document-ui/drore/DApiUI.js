@@ -170,6 +170,20 @@
                 apiInfo.url=key;
                 methodApis.push(apiInfo);
             }
+            if(obj.hasOwnProperty("put")){
+                //put
+                var apiInfo=new ApiInfo(obj["put"]);
+                apiInfo.methodType="put";
+                apiInfo.url=key;
+                methodApis.push(apiInfo);
+            }
+            if(obj.hasOwnProperty("delete")){
+                //delete
+                var apiInfo=new ApiInfo(obj["delete"]);
+                apiInfo.methodType="delete";
+                apiInfo.url=key;
+                methodApis.push(apiInfo);
+            }
         }
         console.log(methodApis);
         return methodApis;
@@ -319,15 +333,26 @@
                 DApiUI.log(cked)
                 if (cked){
                     var trdata=paramtr.data("data");
+                    DApiUI.log("trdata....")
+                    DApiUI.log(trdata);
                     //获取key
                     //var key=paramtr.find("td:eq(1)").find("input").val();
                     var key=trdata["name"];
                     //获取value
                     var value=paramtr.find("td:eq(2)").find("input").val();
-                    if(trdata["in"]=="path"){
-                        url=url.replace("{"+key+"}",value);
+                    //delete方式参数url传递
+                    if(apiInfo.methodType=="delete"){
+                        if (url.indexOf("?")>-1){
+                            url=url+"&"+key+"="+value;
+                        }else{
+                            url+="?"+key+"="+value;
+                        }
                     }else{
-                        params[key]=value;
+                        if(trdata["in"]=="path"){
+                            url=url.replace("{"+key+"}",value);
+                        }else{
+                            params[key]=value;
+                        }
                     }
                     DApiUI.log("key:"+key+",value:"+value);
                 }
