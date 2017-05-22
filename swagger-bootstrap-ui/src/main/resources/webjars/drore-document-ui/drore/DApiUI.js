@@ -8,19 +8,20 @@
 
     DApiUI.init=function () {
         $.ajax({
-            url:"/v2/api-docs",
+            url:"v2/api-docs",
             //url:"menu.json",
             dataType:"json",
             type:"get",
             async:false,
             success:function (data) {
-                console.log("chengg");
                 //var menu=JSON.parse(data)
                 var menu=data;
-                console.log(menu);
+                DApiUI.definitions(menu);
+                DApiUI.log(menu);
                 DApiUI.createDescription(menu);
                 DApiUI.initTreeMenu(menu);
                 DApiUI.eachPath(menu);
+
             }
         })
     }
@@ -118,7 +119,6 @@
                     tagInfo.childrens.push(methodApi);
                 }
             })
-            DApiUI.log("子标签数量:"+tagInfo.childrens.length);
             var len=tagInfo.childrens.length;
             if(len==0){
                 var li=$('<li ><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> '+tagInfo.name+' </span></a></li>');
@@ -167,6 +167,20 @@
                 //post 方式
                 var apiInfo=new ApiInfo(obj["post"]);
                 apiInfo.methodType="post";
+                apiInfo.url=key;
+                methodApis.push(apiInfo);
+            }
+            if(obj.hasOwnProperty("put")){
+                //put
+                var apiInfo=new ApiInfo(obj["put"]);
+                apiInfo.methodType="put";
+                apiInfo.url=key;
+                methodApis.push(apiInfo);
+            }
+            if(obj.hasOwnProperty("delete")){
+                //delete
+                var apiInfo=new ApiInfo(obj["delete"]);
+                apiInfo.methodType="delete";
                 apiInfo.url=key;
                 methodApis.push(apiInfo);
             }
@@ -229,10 +243,10 @@
             var tbody=$('<tbody id="paramBody"></tbody>');
             $.each(apiInfo.parameters,function (i, param) {
                 var tr=$('<tr></tr>');
-
+                tr.data("data",param);
                 var checkbox=$('<td><div class="checkbox"><label><input type="checkbox" value="" checked></label></div></td>');
                 var key=$('<td><input class="form-control p-key" value="'+param.name+'"/></td>')
-                var value=$('<td><input class="form-control p-value" placeholder="'+DApiUI.getStringValue(param['description'])+'"/></td>');
+                var value=$('<td><input class="form-control p-value" data-apiUrl="'+apiInfo.url+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"/></td>');
                 var oper=$('<td><button class="btn btn-danger btn-circle btn-lg" type="button"><strong>×</strong></button></td>');
                 //删除事件
                 oper.find("button").on("click",function (e) {
@@ -240,6 +254,33 @@
                     var that=$(this);
                     that.parent().parent().remove();
                 })
+                //判断参数类型,针对path参数
+                if(param["in"]=="path"){
+                    //赋予change事件
+                    value.find("input").on("keyup",function () {
+                        var t=$(this);
+                        var name=t.data("name");
+                        var apiUrl=t.attr("data-apiUrl");
+                        var realValue=apiUrl.replace("{"+name+"}",t.val());
+                        //查找是否还存在其他path参数
+                        $("#paramBody").find("tr").each(function (i, itr) {
+                            var itrthat=$(this);
+                            var itrdata=itrthat.data("data");
+                            var itrname=itrdata["name"];
+                            if(itrdata["in"]=="path"&&itrdata["name"]!=name){
+                                //查找value值
+                                var itrtdvalue=itrthat.find(".p-value").val();
+                                if(itrtdvalue!=""){
+                                    realValue=realValue.replace("{"+itrname+"}",itrtdvalue);
+                                }
+                            }
+                        })
+                        DApiUI.log(realValue);
+                        $("#txtreqUrl").val(realValue);
+                        DApiUI.log("keyup。。。。")
+                    })
+
+                }
                 tr.append(checkbox).append(key).append(value).append(oper);
                 tbody.append(tr);
             })
@@ -275,25 +316,54 @@
             var paramBody=DApiUI.getDoc().find("#tab2").find("#paramBody")
             DApiUI.log("paramsbody..")
             DApiUI.log(paramBody)
+            //组装请求url
+            var url=DApiUI.getStringValue(apiInfo.url);
+            var cacheData=DApiUI.getDoc().data("data");
+            if(typeof (cacheData.basePath)!="undefined"&&cacheData.basePath!=""){
+                if(cacheData.basePath!="/"){
+                    DApiUI.log("NOT ROOT PATH:");
+                    url=cacheData.basePath+DApiUI.getStringValue(apiInfo.url);
+                }
+            }
+
 
             paramBody.find("tr").each(function () {
                 var paramtr=$(this);
                 var cked=paramtr.find("td:first").find(":checked").prop("checked");
                 DApiUI.log(cked)
                 if (cked){
+                    var trdata=paramtr.data("data");
+                    DApiUI.log("trdata....")
+                    DApiUI.log(trdata);
                     //获取key
-                    var key=paramtr.find("td:eq(1)").find("input").val();
+                    //var key=paramtr.find("td:eq(1)").find("input").val();
+                    var key=trdata["name"];
                     //获取value
                     var value=paramtr.find("td:eq(2)").find("input").val();
-                    params[key]=value;
+                    //delete方式参数url传递
+                    if(apiInfo.methodType=="delete"){
+                        if (url.indexOf("?")>-1){
+                            url=url+"&"+key+"="+value;
+                        }else{
+                            url+="?"+key+"="+value;
+                        }
+                    }else{
+                        if(trdata["in"]=="path"){
+                            url=url.replace("{"+key+"}",value);
+                        }else{
+                            params[key]=value;
+                        }
+                    }
                     DApiUI.log("key:"+key+",value:"+value);
                 }
             })
             DApiUI.log("获取参数..")
             DApiUI.log(params);
+            DApiUI.log(apiInfo)
 
+            DApiUI.log("请求url："+url);
             $.ajax({
-                url:DApiUI.getStringValue(apiInfo.url),
+                url:url,
                 type:DApiUI.getStringValue(apiInfo.methodType),
                 data:params,
                 success:function (data,status,xhr) {
@@ -345,17 +415,6 @@
                         jsondiv.JSONView(xhr["responseJSON"]);
                         pre.html(JSON.stringify(xhr["responseJSON"],null,2));
                         resp1.find(".panel-body").append(jsondiv);
-                        //$("#headJsonDiv").show();
-                       /* $("#headJsonDiv").show();
-                        resp1.find(".panel-body").append($("#headJsonDiv"))
-                        setTimeout(function () {
-                            $("#enterValue").val(JSON.stringify(xhr["responseJSON"]));
-                            console.log($("#enterValue").val())
-                            console.log("click事件")
-                            $("#enterOk").click();
-                        }, 100)*/
-
-
                     }else{
                         //判断content-type
                         //如果是image资源
@@ -433,13 +492,9 @@
                         //如果存在该对象,服务端返回为json格式
                         resp1.find(".panel-body").html("")
                         DApiUI.log(xhr["responseJSON"])
-                        /*var pre=$('<pre></pre>')
-                        pre.html(JSON.stringify(xhr["responseJSON"],null,2));*/
                         var jsondiv=$('<div></div>')
                         jsondiv.JSONView(xhr["responseJSON"]);
-                        //pre.html(JSON.stringify(xhr["responseJSON"],null,2));
                         resp1.find(".panel-body").append(jsondiv);
-                        //resp1.find(".panel-body").append(pre);
                     }else{
                         //判断是否是text
                         var regex=new RegExp('.*?text.*','g');
@@ -532,16 +587,37 @@
             ptable.append(phead);
             var pbody=$('<tbody></tbody>');
             $.each(apiInfo.parameters,function (i, param) {
-                var ptr=$('<tr><td>'+param.name+'</td><td>'+DApiUI.getStringValue(param['description'])+'</td><td>'+DApiUI.getDefaultRequiredType(param['type'])+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
+                //判断是否有type属性,如果有,则后端为实体类形参
+                var ptype="string";
+                if(param.hasOwnProperty("type")){
+                    ptype=param["type"];
+                }else{
+                    ///判断是有schma
+                    if(param.hasOwnProperty("schema")){
+                        var schema=param["schema"];
+                        //是否有type
+                        if(schema.hasOwnProperty("type")){
+                            ptype=schema["type"];
+                        }
+                    }
+                }
+                var ptr=$('<tr><td>'+param.name+'</td><td>'+DApiUI.getStringValue(param['description'])+'</td><td>'+ptype+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
                 pbody.append(ptr);
             })
             ptable.append(pbody);
             ptd.append(ptable);
             args.append(ptd);
         }else{
-            args.append($("<td>暂无</td>"));
+            args.append($('<td  style="text-align: left">暂无</td>'));
         }
         tbody.append(args);
+        //响应数据结构
+        var responseConstruct=$('<tr><th class="active" style="text-align: right;">响应Model</th></tr>');
+        var responseConstructtd=$('<td  style="text-align: left"></td>')
+        responseConstructtd.append(DApiUI.createResponseDefinition(apiInfo));
+        responseConstruct.append(responseConstructtd);
+
+        tbody.append(responseConstruct)
 
         //响应状态码
         var response=$('<tr><th class="active" style="text-align: right;">响应</th></tr>');
@@ -583,6 +659,181 @@
         DApiUI.getDoc().find("#tab1").find(".panel-body").append(table);
         //DApiUI.getDoc().append(table);
 
+    }
+
+
+    DApiUI.createResponseDefinition=function (apiInfo) {
+        var resp=apiInfo.responses;
+        var div=$("<div class='panel'>暂无</div>")
+        if(resp.hasOwnProperty("200")){
+            var ok=resp["200"];
+            if(ok.hasOwnProperty("schema")){
+                var schema=ok["schema"];
+                var ref=schema["$ref"];
+                var regex=new RegExp("#/definitions/(.*)$","ig");
+                if(regex.test(ref)) {
+                    var refType = RegExp.$1;
+                    var definitionsArray=DApiUI.getDoc().data("definitionsArray");
+                    for(var i=0;i<definitionsArray.length;i++){
+                        var definition=definitionsArray[i];
+                        if(definition.key==refType){
+                            div.html("")
+                            div.JSONView(definition.value);
+                        }
+                    }
+                }
+            }
+        }
+        return div;
+    }
+
+
+
+    DApiUI.definitions=function (menu) {
+        var definitionsArray=new Array();
+        DApiUI.log("definitionsArray....")
+        if(menu!=null&&typeof (menu)!="undefined"&&menu.hasOwnProperty("definitions")){
+            var definitions=menu["definitions"];
+            for(var definition in definitions){
+                var defiType=new definitionType();
+                defiType.key=definition;
+                //获取value
+                var value=definitions[definition];
+                if (checkUndefined(value)){
+                    //是否有properties
+                    if(value.hasOwnProperty("properties")){
+                        var properties=value["properties"];
+                        var defiTypeValue={};
+                        for(var property in properties){
+                            var propobj=properties[property];
+                            //默认string类型
+                            var propValue="";
+                            //判断是否有类型
+                            if(propobj.hasOwnProperty("type")){
+                                var type=propobj["type"];
+                                if(checkIsBasicType(type)){
+                                    propValue=getBasicTypeValue(type);
+                                }else{
+                                    if(type=="array"){
+                                        propValue=new Array();
+                                        var items=propobj["items"];
+                                        var ref=items["$ref"];
+                                        var regex=new RegExp("#/definitions/(.*)$","ig");
+                                        if(regex.test(ref)){
+                                            var refType=RegExp.$1;
+                                            propValue.push(findRefDefinition(refType,definitions));
+                                        }
+                                    }
+                                }
+
+                            }else{
+                                if(propobj.hasOwnProperty("$ref")){
+                                    var ref=propobj["$ref"];
+                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                    if(regex.test(ref)) {
+                                        var refType = RegExp.$1;
+                                        propValue=findRefDefinition(refType,definitions);
+                                    }
+                                }else{
+                                    propValue={};
+                                }
+                            }
+                            defiTypeValue[property]=propValue;
+                        }
+                        defiType.value=defiTypeValue;
+                    }else{
+                        defiType.value={};
+                    }
+                }
+                definitionsArray.push(defiType);
+            }
+        }
+        DApiUI.getDoc().data("definitionsArray",definitionsArray);
+    }
+
+    function checkIsBasicType(type) {
+        var basicTypes=["string","integer","number","object","boolean"];
+        var flag=false;
+        if($.inArray(type,basicTypes)>-1){
+            flag=true;
+        }
+        return flag;
+    }
+
+    function getBasicTypeValue(type) {
+        var propValue="";
+        //是否是基本类型
+        if(type=="integer"){
+            propValue=0;
+        }
+        if(type=="boolean"){
+            propValue=true;
+        }
+        if(type=="object"){
+            propValue={};
+        }
+        if(type=="number"){
+            propValue=parseFloat(0);
+        }
+        return propValue;
+    }
+
+    function findRefDefinition(definitionName, definitions) {
+        var defaultValue="";
+        for(var definition in definitions){
+            if(definitionName==definition){
+                var value=definitions[definition];
+                //是否有properties
+                if(value.hasOwnProperty("properties")){
+                    var properties=value["properties"];
+                    var defiTypeValue={};
+                    for(var property in properties){
+                        var propobj=properties[property];
+                        //默认string类型
+                        var propValue="";
+                        //判断是否有类型
+                        if(propobj.hasOwnProperty("type")){
+                            var type=propobj["type"];
+                            if(checkIsBasicType(type)){
+                                propValue=getBasicTypeValue(type);
+                            }else{
+                                if(type=="array"){
+                                    propValue=new Array();
+                                    var items=propobj["items"];
+                                    var ref=items["$ref"];
+                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                    if(regex.test(ref)){
+                                        var refType=RegExp.$1;
+                                        propValue.push(findRefDefinition(refType,definitions));
+                                    }
+                                }
+                            }
+
+                        }else{
+
+                        }
+                        defiTypeValue[property]=propValue;
+                    }
+                    defaultValue=defiTypeValue;
+                }else{
+                    defaultValue={};
+                }
+            }
+        }
+        return defaultValue;
+    }
+    function checkUndefined(obj) {
+        var flag=false;
+        if(obj!=null&&typeof (obj)!="undefined"){
+            flag=true;
+        }
+        return flag;
+    }
+
+
+    function definitionType() {
+        this.key="";
+        this.value={};
     }
 
 
