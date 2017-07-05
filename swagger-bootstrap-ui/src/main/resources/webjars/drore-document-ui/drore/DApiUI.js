@@ -185,7 +185,7 @@
                 methodApis.push(apiInfo);
             }
         }
-        console.log(methodApis);
+        //console.log(methodApis);
         return methodApis;
 
     }
@@ -440,8 +440,8 @@
                             }
                         }
                     }
-                    console.log(bodyparams)
-                    console.log(params)
+                    //console.log(bodyparams)
+                    //console.log(params)
                     DApiUI.log("key:"+key+",value:"+value);
                 }
             })
@@ -451,7 +451,7 @@
 
             DApiUI.log("请求url："+url);
             var reqdata=null;
-            console.log(paramBody.attr("reqtype"))
+            //console.log(paramBody.attr("reqtype"))
             var contType="application/json; charset=UTF-8";
             if(paramBody.attr("reqtype")!=null&&paramBody.attr("reqtype")!=undefined&&paramBody.attr("reqtype")=="body"){
                 reqdata=bodyparams;
@@ -459,7 +459,7 @@
                 reqdata=params;
                 contType="application/x-www-form-urlencoded; charset=UTF-8";
             }
-            console.log(reqdata)
+            //console.log(reqdata)
 
             $.ajax({
                 url:url,
@@ -972,7 +972,7 @@
 
     DApiUI.log=function (msg) {
         if (window.console){
-            console.log(msg);
+            //console.log(msg);
         }
     }
     DApiUI.init();
