@@ -116,7 +116,7 @@ Swagger-UI默认效果图如下：
 
  <artifactId>swagger-bootstrap-ui</artifactId>
 
- <version>1.0</version>
+ <version>1.3</version>
 
 </dependency>
 
