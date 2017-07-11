@@ -666,7 +666,7 @@
 
     DApiUI.createApiInfoTable=function (apiInfo) {
         var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
-        var thead=$('<thead><tr><th colspan="2" style="text-align:center">Swagger-Bootstrap-UI-前后端api接口文档</th></tr></thead>');
+        var thead=$('<thead><tr><th colspan="2" style="text-align:center">API接口文档</th></tr></thead>');
         table.append(thead);
         var tbody=$('<tbody></tbody>');
 
@@ -824,7 +824,10 @@
                             //判断是否有类型
                             if(propobj.hasOwnProperty("type")){
                                 var type=propobj["type"];
-                                if(checkIsBasicType(type)){
+                                //判断是否有example
+                                if(propobj.hasOwnProperty("example")){
+                                    propValue=propobj["example"];
+                                }else if(checkIsBasicType(type)){
                                     propValue=getBasicTypeValue(type);
                                 }else{
                                     if(type=="array"){
@@ -911,7 +914,10 @@
                         //判断是否有类型
                         if(propobj.hasOwnProperty("type")){
                             var type=propobj["type"];
-                            if(checkIsBasicType(type)){
+                            //判断是否有example
+                            if(propobj.hasOwnProperty("example")) {
+                                propValue = propobj["example"];
+                            }else if(checkIsBasicType(type)){
                                 propValue=getBasicTypeValue(type);
                             }else{
                                 if(type=="array"){
