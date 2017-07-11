@@ -67,11 +67,18 @@
      */
     DApiUI.createDescription=function (menu) {
         var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
-        var thead=$('<thead><tr><th colspan="2" style="text-align:center">Swagger-Bootstrap-UI-前后端api接口文档</th></tr></thead>');
+        //获取标题
+        var title=menu.info.title;
+        if (typeof (title)==undefined||title==null||title==""){
+            title="Swagger-Bootstrap-UI-前后端api接口文档";
+        }
+        //修改title
+        $("title").html("").html(title)
+        var thead=$('<thead><tr><th colspan="2" style="text-align:center">'+title+'</th></tr></thead>');
         table.append(thead);
         var tbody=$('<tbody></tbody>');
-        var title=$('<tr><th class="active">项目名称</th><td style="text-align: left">'+menu.info.title+'</td></tr>');
-        tbody.append(title);
+        //var title=$('<tr><th class="active">项目名称</th><td style="text-align: left">'+menu.info.title+'</td></tr>');
+        //tbody.append(title);
         var description=$('<tr><th class="active">简介</th><td style="text-align: left">'+menu.info.description+'</td></tr>');
         tbody.append(description);
         var author=$('<tr><th class="active">作者</th><td style="text-align: left">'+menu.info.contact.name+'</td></tr>')
@@ -386,6 +393,7 @@
             DApiUI.log("发送请求");
             //
             var params={};
+            var headerparams={};
             var bodyparams="";
 
             //获取参数
@@ -436,7 +444,11 @@
                             if(trdata["in"]=="body"){
                                 bodyparams+=value;
                             }else{
-                                params[key]=value;
+                                if(trdata["in"]=="header"){
+                                    headerparams[key]=value;
+                                }else{
+                                    params[key]=value;
+                                }
                             }
                         }
                     }
@@ -463,6 +475,7 @@
 
             $.ajax({
                 url:url,
+                headers:headerparams,
                 type:DApiUI.getStringValue(apiInfo.methodType),
                 data:reqdata,
                 contentType:contType,
