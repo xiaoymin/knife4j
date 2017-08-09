@@ -4,7 +4,7 @@
     "description": "Swagger-Bootstrap-UI-前后端api接口文档",
     "version": "1.0",
     "title": "Swagger-Bootstrap-UI-RESTful APIs",
-    "termsOfService": "http://www.xx.com/",
+    "termsOfService": "http://localhost:9888/",
     "contact": {
       "name": "xiaoymin@foxmail.com"
     },

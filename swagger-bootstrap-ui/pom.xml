@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.drore.cloud</groupId>
+    <groupId>com.bycdao.cloud</groupId>
     <artifactId>swagger-bootstrap-ui</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
     <name>swagger-bootstrap-ui</name>
     <description>Swagger-Bootstrap-UI is the front of the UI Swagger implementation, using jQuery+bootstrap implementation, the purpose is to replace the default UI Swagger implementation of the Swagger-UI, so that the document is more friendly...</description>
     <url>https://git.oschina.net/xiaoym/swagger-bootstrap-ui</url>
