@@ -858,7 +858,10 @@
                                         var regex=new RegExp("#/definitions/(.*)$","ig");
                                         if(regex.test(ref)){
                                             var refType=RegExp.$1;
-                                            propValue.push(findRefDefinition(refType,definitions));
+                                            //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                            if(refType!=definition){
+                                                propValue.push(findRefDefinition(refType,definitions));
+                                            }
                                         }
                                     }
                                 }
@@ -869,7 +872,13 @@
                                     var regex=new RegExp("#/definitions/(.*)$","ig");
                                     if(regex.test(ref)) {
                                         var refType = RegExp.$1;
-                                        propValue=findRefDefinition(refType,definitions);
+                                        //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                        if(refType!=definition){
+                                            propValue=findRefDefinition(refType,definitions);
+                                        }else{
+                                            propValue={};
+                                        }
+
                                     }
                                 }else{
                                     propValue={};
