@@ -9,7 +9,7 @@
     DApiUI.init=function () {
         $.ajax({
             url:"v2/api-docs",
-            //url:"menu.json",
+            //url:"menu1.json",
             dataType:"json",
             type:"get",
             async:false,
@@ -79,15 +79,19 @@
         var tbody=$('<tbody></tbody>');
         //var title=$('<tr><th class="active">项目名称</th><td style="text-align: left">'+menu.info.title+'</td></tr>');
         //tbody.append(title);
-        var description=$('<tr><th class="active">简介</th><td style="text-align: left">'+menu.info.description+'</td></tr>');
+        var description=$('<tr><th class="active">简介</th><td style="text-align: left">'+DApiUI.toString(menu.info.description,"")+'</td></tr>');
         tbody.append(description);
-        var author=$('<tr><th class="active">作者</th><td style="text-align: left">'+menu.info.contact.name+'</td></tr>')
+        var name="";
+        if (typeof (menu.info.contact)!=undefined){
+            name=menu.info.contact;
+        }
+        var author=$('<tr><th class="active">作者</th><td style="text-align: left">'+name+'</td></tr>')
         tbody.append(author);
-        var version=$('<tr><th class="active">版本</th><td style="text-align: left">'+menu.info.version+'</td></tr>')
+        var version=$('<tr><th class="active">版本</th><td style="text-align: left">'+DApiUI.toString(menu.info.version,"")+'</td></tr>')
         tbody.append(version);
-        var host=$('<tr><th class="active">host</th><td style="text-align: left">'+menu.host+'</td></tr>')
+        var host=$('<tr><th class="active">host</th><td style="text-align: left">'+DApiUI.toString(menu.host,"")+'</td></tr>')
         tbody.append(host)
-        var service=$('<tr><th class="active">服务url</th><td style="text-align: left">'+menu.info.termsOfService+'</td></tr>')
+        var service=$('<tr><th class="active">服务url</th><td style="text-align: left">'+DApiUI.toString(menu.info.termsOfService,"")+'</td></tr>')
         tbody.append(service);
         table.append(tbody);
 
@@ -98,6 +102,17 @@
         DApiUI.getDoc().append(div);
         DApiUI.getDoc().data("data",menu);
     }
+
+    DApiUI.toString=function (obj, defaultStr) {
+        if (obj!=null && typeof (obj)!="undefined"){
+            return obj.toString();
+        }
+        if (obj==undefined){
+            return defaultStr;
+        }
+        return defaultStr;
+    }
+
 
     /***
      * 初始化菜单树
@@ -957,7 +972,9 @@
                                     var regex=new RegExp("#/definitions/(.*)$","ig");
                                     if(regex.test(ref)){
                                         var refType=RegExp.$1;
-                                        propValue.push(findRefDefinition(refType,definitions));
+                                        if(refType!=definitionName){
+                                            propValue.push(findRefDefinition(refType,definitions));
+                                        }
                                     }
                                 }
                             }
