@@ -747,6 +747,12 @@
                         //是否有type
                         if(schema.hasOwnProperty("type")){
                             ptype=schema["type"];
+                        }else if(schema.hasOwnProperty("$ref")){
+                            //是否是ref
+                            var regex=new RegExp("#/definitions/(.*)$","ig");
+                            if(regex.test(schema["$ref"])) {
+                                ptype=RegExp.$1;
+                            }
                         }
                     }
                 }
