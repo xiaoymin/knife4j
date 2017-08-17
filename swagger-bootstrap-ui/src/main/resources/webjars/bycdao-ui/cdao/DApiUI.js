@@ -83,7 +83,7 @@
         tbody.append(description);
         var name="";
         if (typeof (menu.info.contact)!=undefined){
-            name=menu.info.contact;
+            name=menu.info.contact.name;
         }
         var author=$('<tr><th class="active">作者</th><td style="text-align: left">'+name+'</td></tr>')
         tbody.append(author);
@@ -452,10 +452,15 @@
                     //var value=paramtr.find("td:eq(2)").find("input").val();
                     //delete方式参数url传递
                     if(apiInfo.methodType=="delete"){
-                        if (url.indexOf("?")>-1){
-                            url=url+"&"+key+"="+value;
+                        //判断是否是path参数
+                        if(trdata["in"]=="path"){
+                            url=url.replace("{"+key+"}",value);
                         }else{
-                            url+="?"+key+"="+value;
+                            if (url.indexOf("?")>-1){
+                                url=url+"&"+key+"="+value;
+                            }else{
+                                url+="?"+key+"="+value;
+                            }
                         }
                     }else{
                         if(trdata["in"]=="path"){
