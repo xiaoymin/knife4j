@@ -103,6 +103,13 @@
         DApiUI.getDoc().data("data",menu);
     }
 
+    /***
+     * 获取菜单结构
+     */
+    DApiUI.getMenuConstructs=function () {
+        return DApiUI.getDoc().data("data");
+    }
+
     DApiUI.toString=function (obj, defaultStr) {
         if (obj!=null && typeof (obj)!="undefined"){
             return obj.toString();
@@ -776,8 +783,16 @@
         var responseConstructtd=$('<td  style="text-align: left"></td>')
         responseConstructtd.append(DApiUI.createResponseDefinition(apiInfo));
         responseConstruct.append(responseConstructtd);
-
         tbody.append(responseConstruct)
+
+        //响应参数 add by xiaoymin 2017-8-20 16:17:18
+
+        var respParams=$('<tr><th class="active" style="text-align: right;">响应参数说明</th></tr>');
+        var respPart=$('<td  style="text-align: left"></td>');
+        respPart.append(DApiUI.createResponseDefinitionDetail(apiInfo));
+        respParams.append(respPart);
+
+        tbody.append(respParams);
 
         //响应状态码
         var response=$('<tr><th class="active" style="text-align: right;">响应</th></tr>');
@@ -821,10 +836,68 @@
 
     }
 
+    /***
+     * 响应参数详情
+     * @param apiInfo
+     */
+    DApiUI.createResponseDefinitionDetail=function(apiInfo){
+        var resp=apiInfo.responses;
+        var div=$("<div class='panel'></div>");
+        if(resp.hasOwnProperty("200")) {
+            var ok = resp["200"];
+            if (ok.hasOwnProperty("schema")) {
+                var schema = ok["schema"];
+                var ref = schema["$ref"];
+                var regex = new RegExp("#/definitions/(.*)$", "ig");
+                if (regex.test(ref)) {
+                    var refType = RegExp.$1;
+                    var definitionsArray=DApiUI.getDoc().data("definitionsArray");
+                    var mcs=DApiUI.getMenuConstructs();
+                    for(var k in mcs.definitions){
+                        if(refType==k){
+                            var table=$("<table class=\"table table-bordered\">");
+                            table.append('<thead><tr><th>参数名称</th><th>类型</th><th>说明</th></tr></thead>');
+                            var tp=mcs.definitions[refType];
+                            var props=tp["properties"];
+
+                            var tbody=$("<tbody></tbody>")
+                            for(var prop in props){
+
+                                var pvalue=props[prop];
+                                var tr=$("<tr></tr>")
+
+                                tr.append($("<td>"+prop+"</td>"))
+
+                                var type=DApiUI.toString(pvalue.type,"string");
+                                tr.append($("<td>"+type+"</td>"));
+
+                                tr.append($("<td>"+DApiUI.toString(pvalue.description,"")+"</td>"));
+
+                                /*if(type=="string"||type=="integer"||type=="boolean"||type=="int32"){
+                                    tr.append($("<td>"+DApiUI.toString(pvalue.type,"string")+"</td>"));
+                                }else{
+                                    if(type=="object"||type=="array"){
+                                        tr.append($("<td>"+type+"</td>"));
+                                    }else{
+                                        tr.append($("<td></td>"));
+                                    }
+                                }*/
+                                tbody.append(tr);
+                            }
+                            table.append(tbody);
+                            div.append(table)
+                        }
+                    }
+                }
+            }
+        }
+        return div;
+    }
+
 
     DApiUI.createResponseDefinition=function (apiInfo) {
         var resp=apiInfo.responses;
-        var div=$("<div class='panel'>暂无</div>")
+        var div=$("<div class='panel'>暂无</div>");
         if(resp.hasOwnProperty("200")){
             var ok=resp["200"];
             if(ok.hasOwnProperty("schema")){
@@ -846,7 +919,6 @@
         }
         return div;
     }
-
 
 
     DApiUI.definitions=function (menu) {
