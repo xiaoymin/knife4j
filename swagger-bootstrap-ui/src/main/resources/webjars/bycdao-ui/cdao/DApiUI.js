@@ -33,22 +33,15 @@
      */
     DApiUI.creatabTab=function () {
         var divcontent=$('<div id="myTab" class="tabs-container" style="width:95%;margin:0px auto;"></div>');
-
         var ul=$('<ul class="nav nav-tabs"></ul>')
-        var liapi=$('<li><a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a></li>');
-        ul.append(liapi);
-        var lidebug=$('<li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>');
-        ul.append(lidebug);
-
+        ul.append($('<li><a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a></li>'));
+        ul.append($('<li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>'));
         divcontent.append(ul);
-
         var tabcontent=$('<div class="tab-content"></div>');
-        var tab1content=$('<div id="tab1" class="tab-pane"><div class="panel-body"><strong>接口详细说明</strong><p>Bootstrap 使用到的某些 HTML 元素和 CSS 属性需要将页面设置为 HTML5 文档类型。在你项目中的每个页面都要参照下面的格式进行设置。</p></div></div>');
-        tabcontent.append(tab1content);
-        var tab2content=$('<div id="tab2" class="tab-pane"><div class="panel-body"><strong>正在开发中,敬请期待......</strong></div></div>');
-        tabcontent.append(tab2content);
-        divcontent.append(tabcontent);
 
+        tabcontent.append($('<div id="tab1" class="tab-pane"><div class="panel-body"><strong>接口详细说明</strong><p>Bootstrap 使用到的某些 HTML 元素和 CSS 属性需要将页面设置为 HTML5 文档类型。在你项目中的每个页面都要参照下面的格式进行设置。</p></div></div>'));
+        tabcontent.append($('<div id="tab2" class="tab-pane"><div class="panel-body"><strong>正在开发中,敬请期待......</strong></div></div>'));
+        divcontent.append(tabcontent);
         //内容覆盖
         DApiUI.getDoc().html("");
         DApiUI.getDoc().append(divcontent);
@@ -60,6 +53,29 @@
 
     }
 
+    /***
+     * 检查对象属性,in并赋予默认值
+     * @param obj
+     * @param key
+     * @param defaultValue
+     * @param checkEmpty
+     * @returns {*}
+     */
+    DApiUI.getValue=function (obj,key,defaultValue,checkEmpty) {
+        var val=defaultValue;
+        if(obj!=null&&obj!=undefined){
+            if (obj.hasOwnProperty(key)){
+                val=obj[key];
+                if (checkEmpty){
+                    if (val==null||val==""){
+                        val=defaultValue;
+                    }
+                }
+            }
+        }
+        return val;
+    }
+
 
     /***
      * 创建简介table页面
@@ -67,34 +83,29 @@
      */
     DApiUI.createDescription=function (menu) {
         var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
-        //获取标题
-        var title=menu.info.title;
-        if (typeof (title)==undefined||title==null||title==""){
-            title="Swagger-Bootstrap-UI-前后端api接口文档";
+        var title="",description="",name="",version="",termsOfService="";
+        var host=DApiUI.getValue(menu,"host","",true);
+        if (menu.hasOwnProperty("info")){
+            var info=menu.info;
+            title=DApiUI.getValue(info,"title","Swagger-Bootstrap-UI-前后端api接口文档",true);
+            description=DApiUI.getValue(info,"description","",true);
+            if(info.hasOwnProperty("contact")){
+                var contact=info["contact"];
+                name=DApiUI.getValue(contact,"name","",true);
+            }
+            version=DApiUI.getValue(info,"version","",true);
+            termsOfService=DApiUI.getValue(info,"termsOfService","",true);
         }
         //修改title
         $("title").html("").html(title)
-        var thead=$('<thead><tr><th colspan="2" style="text-align:center">'+title+'</th></tr></thead>');
-        table.append(thead);
+        table.append($('<thead><tr><th colspan="2" style="text-align:center">'+title+'</th></tr></thead>'));
         var tbody=$('<tbody></tbody>');
-        //var title=$('<tr><th class="active">项目名称</th><td style="text-align: left">'+menu.info.title+'</td></tr>');
-        //tbody.append(title);
-        var description=$('<tr><th class="active">简介</th><td style="text-align: left">'+DApiUI.toString(menu.info.description,"")+'</td></tr>');
-        tbody.append(description);
-        var name="";
-        if (typeof (menu.info.contact)!=undefined){
-            name=menu.info.contact.name;
-        }
-        var author=$('<tr><th class="active">作者</th><td style="text-align: left">'+name+'</td></tr>')
-        tbody.append(author);
-        var version=$('<tr><th class="active">版本</th><td style="text-align: left">'+DApiUI.toString(menu.info.version,"")+'</td></tr>')
-        tbody.append(version);
-        var host=$('<tr><th class="active">host</th><td style="text-align: left">'+DApiUI.toString(menu.host,"")+'</td></tr>')
-        tbody.append(host)
-        var service=$('<tr><th class="active">服务url</th><td style="text-align: left">'+DApiUI.toString(menu.info.termsOfService,"")+'</td></tr>')
-        tbody.append(service);
+        tbody.append($('<tr><th class="active">简介</th><td style="text-align: left">'+description+'</td></tr>'));
+        tbody.append($('<tr><th class="active">作者</th><td style="text-align: left">'+name+'</td></tr>'));
+        tbody.append($('<tr><th class="active">版本</th><td style="text-align: left">'+version+'</td></tr>'));
+        tbody.append($('<tr><th class="active">host</th><td style="text-align: left">'+host+'</td></tr>'))
+        tbody.append($('<tr><th class="active">服务url</th><td style="text-align: left">'+termsOfService+'</td></tr>'));
         table.append(tbody);
-
         var div=$('<div  style="width:95%;margin:0px auto;"></div>')
         div.append(table);
         //内容覆盖
