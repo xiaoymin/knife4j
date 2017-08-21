@@ -748,6 +748,8 @@
             ptable.append(phead);
             var pbody=$('<tbody></tbody>');
             $.each(apiInfo.parameters,function (i, param) {
+                //判断是否是ref,如果是，列出他的属性说明
+                var refflag=false;
                 //判断是否有type属性,如果有,则后端为实体类形参
                 var ptype="string";
                 if(param.hasOwnProperty("type")){
@@ -763,13 +765,40 @@
                             //是否是ref
                             var regex=new RegExp("#/definitions/(.*)$","ig");
                             if(regex.test(schema["$ref"])) {
+                                refflag=true;
                                 ptype=RegExp.$1;
                             }
                         }
                     }
                 }
-                var ptr=$('<tr><td>'+param.name+'</td><td>'+DApiUI.getStringValue(param['description'])+'</td><td>'+ptype+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
-                pbody.append(ptr);
+                var ptr=null;
+                //列出属性
+                if (refflag){
+                    ptr=$('<tr><td>'+param.name+'</td><td style="text-align: center;">'+DApiUI.getStringValue(param['description'])+'</td><td>'+ptype+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
+                    pbody.append(ptr);
+                    var definitionsArray=DApiUI.getDoc().data("definitionsArray");
+                    var mcs=DApiUI.getMenuConstructs();
+                    for(var k in mcs.definitions){
+                        if(ptype==k){
+                            var tp=mcs.definitions[ptype];
+                            var props=tp["properties"];
+                            for(var prop in props){
+                                var pvalue=props[prop];
+                                var tr=$("<tr></tr>")
+                                tr.append($("<td style='text-align: right;'>"+prop+"</td>"))
+                                tr.append($("<td>"+DApiUI.toString(pvalue.description,"")+"</td>"));
+                                var type=DApiUI.toString(pvalue.type,"string");
+                                tr.append($("<td>"+type+"</td>"));
+                                tr.append($("<td>"+DApiUI.getStringValue(param['in'])+"</td>"));
+                                tr.append($("<td>"+param['required']+"</td>"));
+                                pbody.append(tr);
+                            }
+                        }
+                    }
+                }else{
+                    ptr=$('<tr><td>'+param.name+'</td><td style="text-align: center;">'+DApiUI.getStringValue(param['description'])+'</td><td>'+ptype+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
+                    pbody.append(ptr);
+                }
             })
             ptable.append(pbody);
             ptd.append(ptable);
