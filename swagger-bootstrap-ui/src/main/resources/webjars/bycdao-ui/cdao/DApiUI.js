@@ -902,27 +902,41 @@
 
                             var tbody=$("<tbody></tbody>")
                             for(var prop in props){
-
                                 var pvalue=props[prop];
                                 var tr=$("<tr></tr>")
-
-                                tr.append($("<td>"+prop+"</td>"))
-
-                                var type=DApiUI.toString(pvalue.type,"string");
-                                tr.append($("<td>"+type+"</td>"));
-
-                                tr.append($("<td>"+DApiUI.toString(pvalue.description,"")+"</td>"));
-
-                                /*if(type=="string"||type=="integer"||type=="boolean"||type=="int32"){
-                                    tr.append($("<td>"+DApiUI.toString(pvalue.type,"string")+"</td>"));
-                                }else{
-                                    if(type=="object"||type=="array"){
-                                        tr.append($("<td>"+type+"</td>"));
-                                    }else{
-                                        tr.append($("<td></td>"));
+                                //只遍历一级属性
+                                //判断是否是ref
+                                if(pvalue.hasOwnProperty("$ref")){
+                                    var param_ref = pvalue["$ref"];
+                                    var regex1 = new RegExp("#/definitions/(.*)$", "ig");
+                                    if(regex1.test((param_ref))){
+                                        var ptype=RegExp.$1;
+                                        tr.append($("<td>"+prop+"</td>"))
+                                        tr.append($("<td>"+ptype+"</td>"))
+                                        tr.append($("<td></td>"))
+                                        tbody.append(tr);
+                                        for(var j in mcs.definitions) {
+                                            if (ptype == j) {
+                                                var tpp=mcs.definitions[ptype];
+                                                var pp_props=tpp["properties"];
+                                                for(var prop1 in pp_props) {
+                                                    var tr1=$("<tr></tr>")
+                                                    var pvalue1 = pp_props[prop1];
+                                                    tr1.append($("<td style='text-align: right;'>" + prop1 + "</td>"));
+                                                    tr1.append($("<td>"+DApiUI.getValue(pvalue1,"type","string",true)+"</td>"));
+                                                    tr1.append($("<td>"+DApiUI.getValue(pvalue1,"description","",true)+"</td>"));
+                                                    tbody.append(tr1);
+                                                }
+                                            }
+                                        }
                                     }
-                                }*/
-                                tbody.append(tr);
+                                }else{
+                                    tr.append($("<td>"+prop+"</td>"))
+                                    var type=DApiUI.toString(pvalue.type,"string");
+                                    tr.append($("<td>"+type+"</td>"));
+                                    tr.append($("<td>"+DApiUI.toString(pvalue.description,"")+"</td>"));
+                                    tbody.append(tr);
+                                }
                             }
                             table.append(tbody);
                             div.append(table)
