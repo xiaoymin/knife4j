@@ -8,8 +8,8 @@
 
     DApiUI.init=function () {
         $.ajax({
-            url:"v2/api-docs",
-            //url:"menu1.json",
+            //url:"v2/api-docs",
+            url:"menu1.json",
             dataType:"json",
             type:"get",
             async:false,
@@ -742,11 +742,15 @@
         var methodType=$('<tr><th class="active" style="text-align: right;">请求方式</th><td style="text-align: left"><code>'+DApiUI.getStringValue(apiInfo.methodType)+'</code></td></tr>');
         tbody.append(methodType);
 
+        var consumesArr=DApiUI.getValue(apiInfo,"consumes",new Array(),true);
 
-        var consumes=$('<tr><th class="active" style="text-align: right;">consumes</th><td style="text-align: left"><code>'+apiInfo.consumes.join(",")+'</code></td></tr>');
+
+        var consumes=$('<tr><th class="active" style="text-align: right;">consumes</th><td style="text-align: left"><code>'+consumesArr+'</code></td></tr>');
         tbody.append(consumes);
 
-        var produces=$('<tr><th class="active" style="text-align: right;">produces</th><td style="text-align: left"><code>'+apiInfo.produces.join(",")+'</code></td></tr>');
+        var producesArr=DApiUI.getValue(apiInfo,"produces",new Array(),true);
+
+        var produces=$('<tr><th class="active" style="text-align: right;">produces</th><td style="text-align: left"><code>'+producesArr+'</code></td></tr>');
         tbody.append(produces);
 
         //请求参数
