@@ -9,7 +9,7 @@
     DApiUI.init=function () {
         $.ajax({
             url:"v2/api-docs",
-            //url:"menu.json",
+            //url:"menu1.json",
             dataType:"json",
             type:"get",
             async:false,
@@ -33,22 +33,15 @@
      */
     DApiUI.creatabTab=function () {
         var divcontent=$('<div id="myTab" class="tabs-container" style="width:95%;margin:0px auto;"></div>');
-
         var ul=$('<ul class="nav nav-tabs"></ul>')
-        var liapi=$('<li><a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a></li>');
-        ul.append(liapi);
-        var lidebug=$('<li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>');
-        ul.append(lidebug);
-
+        ul.append($('<li><a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a></li>'));
+        ul.append($('<li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>'));
         divcontent.append(ul);
-
         var tabcontent=$('<div class="tab-content"></div>');
-        var tab1content=$('<div id="tab1" class="tab-pane"><div class="panel-body"><strong>接口详细说明</strong><p>Bootstrap 使用到的某些 HTML 元素和 CSS 属性需要将页面设置为 HTML5 文档类型。在你项目中的每个页面都要参照下面的格式进行设置。</p></div></div>');
-        tabcontent.append(tab1content);
-        var tab2content=$('<div id="tab2" class="tab-pane"><div class="panel-body"><strong>正在开发中,敬请期待......</strong></div></div>');
-        tabcontent.append(tab2content);
-        divcontent.append(tabcontent);
 
+        tabcontent.append($('<div id="tab1" class="tab-pane"><div class="panel-body"><strong>接口详细说明</strong><p>Bootstrap 使用到的某些 HTML 元素和 CSS 属性需要将页面设置为 HTML5 文档类型。在你项目中的每个页面都要参照下面的格式进行设置。</p></div></div>'));
+        tabcontent.append($('<div id="tab2" class="tab-pane"><div class="panel-body"><strong>正在开发中,敬请期待......</strong></div></div>'));
+        divcontent.append(tabcontent);
         //内容覆盖
         DApiUI.getDoc().html("");
         DApiUI.getDoc().append(divcontent);
@@ -60,6 +53,29 @@
 
     }
 
+    /***
+     * 检查对象属性,in并赋予默认值
+     * @param obj
+     * @param key
+     * @param defaultValue
+     * @param checkEmpty
+     * @returns {*}
+     */
+    DApiUI.getValue=function (obj,key,defaultValue,checkEmpty) {
+        var val=defaultValue;
+        if(obj!=null&&obj!=undefined){
+            if (obj.hasOwnProperty(key)){
+                val=obj[key];
+                if (checkEmpty){
+                    if (val==null||val==""){
+                        val=defaultValue;
+                    }
+                }
+            }
+        }
+        return val;
+    }
+
 
     /***
      * 创建简介table页面
@@ -67,23 +83,29 @@
      */
     DApiUI.createDescription=function (menu) {
         var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
-        var thead=$('<thead><tr><th colspan="2" style="text-align:center">Swagger-Bootstrap-UI-前后端api接口文档</th></tr></thead>');
-        table.append(thead);
+        var title="",description="",name="",version="",termsOfService="";
+        var host=DApiUI.getValue(menu,"host","",true);
+        if (menu.hasOwnProperty("info")){
+            var info=menu.info;
+            title=DApiUI.getValue(info,"title","Swagger-Bootstrap-UI-前后端api接口文档",true);
+            description=DApiUI.getValue(info,"description","",true);
+            if(info.hasOwnProperty("contact")){
+                var contact=info["contact"];
+                name=DApiUI.getValue(contact,"name","",true);
+            }
+            version=DApiUI.getValue(info,"version","",true);
+            termsOfService=DApiUI.getValue(info,"termsOfService","",true);
+        }
+        //修改title
+        $("title").html("").html(title)
+        table.append($('<thead><tr><th colspan="2" style="text-align:center">'+title+'</th></tr></thead>'));
         var tbody=$('<tbody></tbody>');
-        var title=$('<tr><th class="active">项目名称</th><td style="text-align: left">'+menu.info.title+'</td></tr>');
-        tbody.append(title);
-        var description=$('<tr><th class="active">简介</th><td style="text-align: left">'+menu.info.description+'</td></tr>');
-        tbody.append(description);
-        var author=$('<tr><th class="active">作者</th><td style="text-align: left">'+menu.info.contact.name+'</td></tr>')
-        tbody.append(author);
-        var version=$('<tr><th class="active">版本</th><td style="text-align: left">'+menu.info.version+'</td></tr>')
-        tbody.append(version);
-        var host=$('<tr><th class="active">host</th><td style="text-align: left">'+menu.host+'</td></tr>')
-        tbody.append(host)
-        var service=$('<tr><th class="active">服务url</th><td style="text-align: left">'+menu.info.termsOfService+'</td></tr>')
-        tbody.append(service);
+        tbody.append($('<tr><th class="active">简介</th><td style="text-align: left">'+description+'</td></tr>'));
+        tbody.append($('<tr><th class="active">作者</th><td style="text-align: left">'+name+'</td></tr>'));
+        tbody.append($('<tr><th class="active">版本</th><td style="text-align: left">'+version+'</td></tr>'));
+        tbody.append($('<tr><th class="active">host</th><td style="text-align: left">'+host+'</td></tr>'))
+        tbody.append($('<tr><th class="active">服务url</th><td style="text-align: left">'+termsOfService+'</td></tr>'));
         table.append(tbody);
-
         var div=$('<div  style="width:95%;margin:0px auto;"></div>')
         div.append(table);
         //内容覆盖
@@ -91,6 +113,24 @@
         DApiUI.getDoc().append(div);
         DApiUI.getDoc().data("data",menu);
     }
+
+    /***
+     * 获取菜单结构
+     */
+    DApiUI.getMenuConstructs=function () {
+        return DApiUI.getDoc().data("data");
+    }
+
+    DApiUI.toString=function (obj, defaultStr) {
+        if (obj!=null && typeof (obj)!="undefined"){
+            return obj.toString();
+        }
+        if (obj==undefined){
+            return defaultStr;
+        }
+        return defaultStr;
+    }
+
 
     /***
      * 初始化菜单树
@@ -185,7 +225,7 @@
                 methodApis.push(apiInfo);
             }
         }
-        console.log(methodApis);
+        //console.log(methodApis);
         return methodApis;
 
     }
@@ -220,6 +260,41 @@
         }
         return str;
     }
+
+
+    /***
+     * 格式化json
+     * @param text_value
+     */
+    function formatterJson(text_value) {
+        var res="";
+        for(var i=0,j=0,k=0,ii,ele;i<text_value.length;i++)
+        {//k:缩进，j:""个数
+            ele=text_value.charAt(i);
+            if(j%2==0&&ele=="}")
+            {
+                k--;
+                for(ii=0;ii<k;ii++) ele="    "+ele;
+                ele="\n"+ele;
+            }
+            else if(j%2==0&&ele=="{")
+            {
+                ele+="\n";
+                k++;
+                //debugger;
+                for(ii=0;ii<k;ii++) ele+="    ";
+            }
+            else if(j%2==0&&ele==",")
+            {
+                ele+="\n";
+                for(ii=0;ii<k;ii++) ele+="    ";
+            }
+            else if(ele=="\"") j++;
+            res+=ele;
+        }
+        return res;
+
+    }
     /**
      * 创建调试面板
      */
@@ -244,10 +319,50 @@
             $.each(apiInfo.parameters,function (i, param) {
                 var tr=$('<tr></tr>');
                 tr.data("data",param);
-                var checkbox=$('<td><div class="checkbox"><label><input type="checkbox" value="" checked></label></div></td>');
-                var key=$('<td><input class="form-control p-key" value="'+param.name+'"/></td>')
-                var value=$('<td><input class="form-control p-value" data-apiUrl="'+apiInfo.url+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"/></td>');
-                var oper=$('<td><button class="btn btn-danger btn-circle btn-lg" type="button"><strong>×</strong></button></td>');
+                //判断parame的in类型
+                //query--text
+                //body--textarea
+                var checkbox=$('<td width="5%"><div class="checkbox"><label><input type="checkbox" value="" checked></label></div></td>');
+                var key=$('<td width="20%"><input class="form-control p-key"   value="'+param.name+'"/></td>')
+                //var value=$('<td><input class="form-control p-value" data-apiUrl="'+apiInfo.url+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"/></td>');
+                var value=$('<td></td>');
+
+                var val=null;
+                if(param["in"]=="body"){
+                    tbody.attr("reqtype","body");
+                    val=$('<textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-apiUrl="'+apiInfo.url+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"></textarea>')
+                    //判断是否有schma
+                    if(param.hasOwnProperty("schema")){
+                        var schema=param["schema"];
+                        var ref=schema["$ref"];
+                        var regex=new RegExp("#/definitions/(.*)$","ig");
+                        if(regex.test(ref)) {
+                            var refType = RegExp.$1;
+                            var definitionsArray=DApiUI.getDoc().data("definitionsArray");
+                            var deftion=null;
+                            for(var i=0;i<definitionsArray.length;i++){
+                                var definition=definitionsArray[i];
+                                if(definition.key==refType){
+                                    deftion=definition.value;
+                                    break;
+                                }
+                            }
+                            //遍历proprietary
+                            for(var k in deftion){
+                                deftion[k]="";
+                            }
+                            if(deftion!=null){
+                                //赋值
+                                val.val(formatterJson(JSON.stringify(deftion)));
+                            }
+                        }
+                    }
+
+                }else{
+                    val=$('<input class="form-control p-value" data-apiUrl="'+apiInfo.url+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"/>');
+                }
+                value.append(val);
+                var oper=$('<td width="5%"><button class="btn btn-danger btn-circle btn-lg" type="button"><strong>×</strong></button></td>');
                 //删除事件
                 oper.find("button").on("click",function (e) {
                     e.preventDefault();
@@ -311,6 +426,12 @@
             DApiUI.log("发送请求");
             //
             var params={};
+            var headerparams={};
+            var bodyparams="";
+            //modify by xiaoyumin 2017-8-9 11:28:16
+            //增加表单验证
+            var validateflag=false;
+            var validateobj={};
 
             //获取参数
             var paramBody=DApiUI.getDoc().find("#tab2").find("#paramBody")
@@ -332,6 +453,7 @@
                 var cked=paramtr.find("td:first").find(":checked").prop("checked");
                 DApiUI.log(cked)
                 if (cked){
+                    //如果选中
                     var trdata=paramtr.data("data");
                     DApiUI.log("trdata....")
                     DApiUI.log(trdata);
@@ -339,20 +461,53 @@
                     //var key=paramtr.find("td:eq(1)").find("input").val();
                     var key=trdata["name"];
                     //获取value
-                    var value=paramtr.find("td:eq(2)").find("input").val();
+                    var value="";
+                    if(trdata["in"]=="body"){
+                        value=paramtr.find("td:eq(2)").find("textarea").val();
+                    }else{
+                        value=paramtr.find("td:eq(2)").find("input").val();
+                    }
+                    //var value=paramtr.find("td:eq(2)").find("input").val();
                     //delete方式参数url传递
                     if(apiInfo.methodType=="delete"){
-                        if (url.indexOf("?")>-1){
-                            url=url+"&"+key+"="+value;
+                        //判断是否是path参数
+                        if(trdata["in"]=="path"){
+                            url=url.replace("{"+key+"}",value);
                         }else{
-                            url+="?"+key+"="+value;
+                            if (url.indexOf("?")>-1){
+                                url=url+"&"+key+"="+value;
+                            }else{
+                                url+="?"+key+"="+value;
+                            }
                         }
                     }else{
                         if(trdata["in"]=="path"){
                             url=url.replace("{"+key+"}",value);
                         }else{
-                            params[key]=value;
+                            if(trdata["in"]=="body"){
+                                bodyparams+=value;
+                            }else{
+                                if(trdata["in"]=="header"){
+                                    headerparams[key]=value;
+                                }else{
+                                    params[key]=value;
+                                }
+                            }
                         }
+                    }
+                    //判断是否required
+                    if (trdata.hasOwnProperty("required")){
+                        var required=trdata["required"];
+                        if (required){
+                            //必须,验证value是否为空
+                            if(value==null||value==""){
+                                validateflag=true;
+                                var des=trdata["name"]
+                                validateobj={message:des+"不能为空"};
+                                return false;
+                            }
+                        }
+
                     }
                     DApiUI.log("key:"+key+",value:"+value);
                 }
@@ -362,10 +517,27 @@
             DApiUI.log(apiInfo)
 
             DApiUI.log("请求url："+url);
+            var reqdata=null;
+            //console.log(paramBody.attr("reqtype"))
+            var contType="application/json; charset=UTF-8";
+            if(paramBody.attr("reqtype")!=null&&paramBody.attr("reqtype")!=undefined&&paramBody.attr("reqtype")=="body"){
+                reqdata=bodyparams;
+            }else{
+                reqdata=params;
+                contType="application/x-www-form-urlencoded; charset=UTF-8";
+            }
+            //console.log(reqdata)
+            if(validateflag){
+                layer.msg(validateobj.message);
+                return;
+            }
+
             $.ajax({
                 url:url,
+                headers:headerparams,
                 type:DApiUI.getStringValue(apiInfo.methodType),
-                data:params,
+                data:reqdata,
+                contentType:contType,
                 success:function (data,status,xhr) {
                     var resptab=$('<div id="resptab" class="tabs-container" ></div>')
                     var ulresp=$('<ul class="nav nav-tabs">' +
@@ -553,7 +725,7 @@
 
     DApiUI.createApiInfoTable=function (apiInfo) {
         var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
-        var thead=$('<thead><tr><th colspan="2" style="text-align:center">Swagger-Bootstrap-UI-前后端api接口文档</th></tr></thead>');
+        var thead=$('<thead><tr><th colspan="2" style="text-align:center">API接口文档</th></tr></thead>');
         table.append(thead);
         var tbody=$('<tbody></tbody>');
 
@@ -570,11 +742,15 @@
         var methodType=$('<tr><th class="active" style="text-align: right;">请求方式</th><td style="text-align: left"><code>'+DApiUI.getStringValue(apiInfo.methodType)+'</code></td></tr>');
         tbody.append(methodType);
 
+        var consumesArr=DApiUI.getValue(apiInfo,"consumes",new Array(),true);
 
-        var consumes=$('<tr><th class="active" style="text-align: right;">consumes</th><td style="text-align: left"><code>'+apiInfo.consumes.join(",")+'</code></td></tr>');
+
+        var consumes=$('<tr><th class="active" style="text-align: right;">consumes</th><td style="text-align: left"><code>'+consumesArr+'</code></td></tr>');
         tbody.append(consumes);
 
-        var produces=$('<tr><th class="active" style="text-align: right;">produces</th><td style="text-align: left"><code>'+apiInfo.produces.join(",")+'</code></td></tr>');
+        var producesArr=DApiUI.getValue(apiInfo,"produces",new Array(),true);
+
+        var produces=$('<tr><th class="active" style="text-align: right;">produces</th><td style="text-align: left"><code>'+producesArr+'</code></td></tr>');
         tbody.append(produces);
 
         //请求参数
@@ -587,6 +763,8 @@
             ptable.append(phead);
             var pbody=$('<tbody></tbody>');
             $.each(apiInfo.parameters,function (i, param) {
+                //判断是否是ref,如果是，列出他的属性说明
+                var refflag=false;
                 //判断是否有type属性,如果有,则后端为实体类形参
                 var ptype="string";
                 if(param.hasOwnProperty("type")){
@@ -598,11 +776,44 @@
                         //是否有type
                         if(schema.hasOwnProperty("type")){
                             ptype=schema["type"];
+                        }else if(schema.hasOwnProperty("$ref")){
+                            //是否是ref
+                            var regex=new RegExp("#/definitions/(.*)$","ig");
+                            if(regex.test(schema["$ref"])) {
+                                refflag=true;
+                                ptype=RegExp.$1;
+                            }
                         }
                     }
                 }
-                var ptr=$('<tr><td>'+param.name+'</td><td>'+DApiUI.getStringValue(param['description'])+'</td><td>'+ptype+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
-                pbody.append(ptr);
+                var ptr=null;
+                //列出属性
+                if (refflag){
+                    ptr=$('<tr><td>'+param.name+'</td><td style="text-align: center;">'+DApiUI.getStringValue(param['description'])+'</td><td>'+ptype+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
+                    pbody.append(ptr);
+                    var definitionsArray=DApiUI.getDoc().data("definitionsArray");
+                    var mcs=DApiUI.getMenuConstructs();
+                    for(var k in mcs.definitions){
+                        if(ptype==k){
+                            var tp=mcs.definitions[ptype];
+                            var props=tp["properties"];
+                            for(var prop in props){
+                                var pvalue=props[prop];
+                                var tr=$("<tr></tr>")
+                                tr.append($("<td style='text-align: right;'>"+prop+"</td>"))
+                                tr.append($("<td>"+DApiUI.toString(pvalue.description,"")+"</td>"));
+                                var type=DApiUI.toString(pvalue.type,"string");
+                                tr.append($("<td>"+type+"</td>"));
+                                tr.append($("<td>"+DApiUI.getStringValue(param['in'])+"</td>"));
+                                tr.append($("<td>"+param['required']+"</td>"));
+                                pbody.append(tr);
+                            }
+                        }
+                    }
+                }else{
+                    ptr=$('<tr><td>'+param.name+'</td><td style="text-align: center;">'+DApiUI.getStringValue(param['description'])+'</td><td>'+ptype+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
+                    pbody.append(ptr);
+                }
             })
             ptable.append(pbody);
             ptd.append(ptable);
@@ -616,8 +827,16 @@
         var responseConstructtd=$('<td  style="text-align: left"></td>')
         responseConstructtd.append(DApiUI.createResponseDefinition(apiInfo));
         responseConstruct.append(responseConstructtd);
-
         tbody.append(responseConstruct)
+
+        //响应参数 add by xiaoymin 2017-8-20 16:17:18
+
+        var respParams=$('<tr><th class="active" style="text-align: right;">响应参数说明</th></tr>');
+        var respPart=$('<td  style="text-align: left"></td>');
+        respPart.append(DApiUI.createResponseDefinitionDetail(apiInfo));
+        respParams.append(respPart);
+
+        tbody.append(respParams);
 
         //响应状态码
         var response=$('<tr><th class="active" style="text-align: right;">响应</th></tr>');
@@ -661,10 +880,82 @@
 
     }
 
+    /***
+     * 响应参数详情
+     * @param apiInfo
+     */
+    DApiUI.createResponseDefinitionDetail=function(apiInfo){
+        var resp=apiInfo.responses;
+        var div=$("<div class='panel'></div>");
+        if(resp.hasOwnProperty("200")) {
+            var ok = resp["200"];
+            if (ok.hasOwnProperty("schema")) {
+                var schema = ok["schema"];
+                var ref = schema["$ref"];
+                var regex = new RegExp("#/definitions/(.*)$", "ig");
+                if (regex.test(ref)) {
+                    var refType = RegExp.$1;
+                    var definitionsArray=DApiUI.getDoc().data("definitionsArray");
+                    var mcs=DApiUI.getMenuConstructs();
+                    for(var k in mcs.definitions){
+                        if(refType==k){
+                            var table=$("<table class=\"table table-bordered\">");
+                            table.append('<thead><tr><th>参数名称</th><th>类型</th><th>说明</th></tr></thead>');
+                            var tp=mcs.definitions[refType];
+                            var props=tp["properties"];
+
+                            var tbody=$("<tbody></tbody>")
+                            for(var prop in props){
+                                var pvalue=props[prop];
+                                var tr=$("<tr></tr>")
+                                //只遍历一级属性
+                                //判断是否是ref
+                                if(pvalue.hasOwnProperty("$ref")){
+                                    var param_ref = pvalue["$ref"];
+                                    var regex1 = new RegExp("#/definitions/(.*)$", "ig");
+                                    if(regex1.test((param_ref))){
+                                        var ptype=RegExp.$1;
+                                        tr.append($("<td>"+prop+"</td>"))
+                                        tr.append($("<td>"+ptype+"</td>"))
+                                        tr.append($("<td></td>"))
+                                        tbody.append(tr);
+                                        for(var j in mcs.definitions) {
+                                            if (ptype == j) {
+                                                var tpp=mcs.definitions[ptype];
+                                                var pp_props=tpp["properties"];
+                                                for(var prop1 in pp_props) {
+                                                    var tr1=$("<tr></tr>")
+                                                    var pvalue1 = pp_props[prop1];
+                                                    tr1.append($("<td style='text-align: right;'>" + prop1 + "</td>"));
+                                                    tr1.append($("<td>"+DApiUI.getValue(pvalue1,"type","string",true)+"</td>"));
+                                                    tr1.append($("<td>"+DApiUI.getValue(pvalue1,"description","",true)+"</td>"));
+                                                    tbody.append(tr1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    tr.append($("<td>"+prop+"</td>"))
+                                    var type=DApiUI.toString(pvalue.type,"string");
+                                    tr.append($("<td>"+type+"</td>"));
+                                    tr.append($("<td>"+DApiUI.toString(pvalue.description,"")+"</td>"));
+                                    tbody.append(tr);
+                                }
+                            }
+                            table.append(tbody);
+                            div.append(table)
+                        }
+                    }
+                }
+            }
+        }
+        return div;
+    }
+
 
     DApiUI.createResponseDefinition=function (apiInfo) {
         var resp=apiInfo.responses;
-        var div=$("<div class='panel'>暂无</div>")
+        var div=$("<div class='panel'>暂无</div>");
         if(resp.hasOwnProperty("200")){
             var ok=resp["200"];
             if(ok.hasOwnProperty("schema")){
@@ -686,7 +977,6 @@
         }
         return div;
     }
-
 
 
     DApiUI.definitions=function (menu) {
@@ -711,7 +1001,10 @@
                             //判断是否有类型
                             if(propobj.hasOwnProperty("type")){
                                 var type=propobj["type"];
-                                if(checkIsBasicType(type)){
+                                //判断是否有example
+                                if(propobj.hasOwnProperty("example")){
+                                    propValue=propobj["example"];
+                                }else if(checkIsBasicType(type)){
                                     propValue=getBasicTypeValue(type);
                                 }else{
                                     if(type=="array"){
@@ -721,7 +1014,10 @@
                                         var regex=new RegExp("#/definitions/(.*)$","ig");
                                         if(regex.test(ref)){
                                             var refType=RegExp.$1;
-                                            propValue.push(findRefDefinition(refType,definitions));
+                                            //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                            if(refType!=definition){
+                                                propValue.push(findRefDefinition(refType,definitions));
+                                            }
                                         }
                                     }
                                 }
@@ -732,7 +1028,13 @@
                                     var regex=new RegExp("#/definitions/(.*)$","ig");
                                     if(regex.test(ref)) {
                                         var refType = RegExp.$1;
-                                        propValue=findRefDefinition(refType,definitions);
+                                        //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                        if(refType!=definition){
+                                            propValue=findRefDefinition(refType,definitions);
+                                        }else{
+                                            propValue={};
+                                        }
+
                                     }
                                 }else{
                                     propValue={};
@@ -749,6 +1051,10 @@
             }
         }
         DApiUI.getDoc().data("definitionsArray",definitionsArray);
+    }
+
+    DApiUI.getDefinitions=function () {
+        return DApiUI.getDoc().data("definitionsArray");
     }
 
     function checkIsBasicType(type) {
@@ -794,7 +1100,10 @@
                         //判断是否有类型
                         if(propobj.hasOwnProperty("type")){
                             var type=propobj["type"];
-                            if(checkIsBasicType(type)){
+                            //判断是否有example
+                            if(propobj.hasOwnProperty("example")) {
+                                propValue = propobj["example"];
+                            }else if(checkIsBasicType(type)){
                                 propValue=getBasicTypeValue(type);
                             }else{
                                 if(type=="array"){
@@ -804,7 +1113,9 @@
                                     var regex=new RegExp("#/definitions/(.*)$","ig");
                                     if(regex.test(ref)){
                                         var refType=RegExp.$1;
-                                        propValue.push(findRefDefinition(refType,definitions));
+                                        if(refType!=definitionName){
+                                            propValue.push(findRefDefinition(refType,definitions));
+                                        }
                                     }
                                 }
                             }
@@ -868,7 +1179,7 @@
 
     DApiUI.log=function (msg) {
         if (window.console){
-            console.log(msg);
+            //console.log(msg);
         }
     }
     DApiUI.init();

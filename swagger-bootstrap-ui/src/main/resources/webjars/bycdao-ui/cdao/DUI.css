@@ -4259,16 +4259,16 @@ textarea::-moz-placeholder {
 textarea:-ms-input-placeholder {
   color: #999;
 }
-.drore-top {
+.bycdao-top {
   position: fixed;
   width: 100%;
   z-index: 99998;
 }
-.drore-logo {
+.bycdao-logo {
   font-size: 20px;
   margin: 0px 10px!important;
 }
-.drore-left {
+.bycdao-left {
   width: 200px;
   margin-top: 60px;
   position: fixed;
@@ -4285,7 +4285,7 @@ textarea:-ms-input-placeholder {
 body {
   background: #f3f3f4;
 }
-.drore-main {
+.bycdao-main {
   margin-left: 200px;
   padding-top: 60px;
   padding-left: 15px;
@@ -4438,24 +4438,24 @@ body.body-small .navbar-top-links li:last-child {
 .nav.navbar-top-links .dropdown-alerts a {
   font-size: 12px;
 }
-.drore-top .navbar-inverse .navbar-nav > .active > a,
-.drore-top .navbar-inverse .navbar-nav a:hover,
-.drore-top .navbar-inverse .navbar-nav > .active > a:focus {
+.bycdao-top .navbar-inverse .navbar-nav > .active > a,
+.bycdao-top .navbar-inverse .navbar-nav a:hover,
+.bycdao-top .navbar-inverse .navbar-nav > .active > a:focus {
   color: #fff;
   background-color: #264e99;
   line-height: 30px;
   height: 60px;
 }
-.drore-top .navbar-inverse .navbar-nav a {
+.bycdao-top .navbar-inverse .navbar-nav a {
   line-height: 30px;
   height: 60px;
   color: #fff;
   font-size: 16px;
 }
-.drore-top .navbar-inverse .navbar-nav a span {
+.bycdao-top .navbar-inverse .navbar-nav a span {
   margin-left: 10px;
 }
-.drore-left .list-group-item {
+.bycdao-left .list-group-item {
   border-radius: 0;
   background: #e9ecf4;
   color: #505050;
@@ -4463,29 +4463,29 @@ body.body-small .navbar-top-links li:last-child {
   border-bottom: 2px solid #dadee9;
   border-top: 1px solid #fff;
 }
-.drore-left .list-group-item a {
+.bycdao-left .list-group-item a {
   color: #505050;
 }
-.drore-left .list-group-item:last-child {
+.bycdao-left .list-group-item:last-child {
   border: none;
   border-top: 1px solid #fff;
 }
-.drore-left .list-group-item.active {
+.bycdao-left .list-group-item.active {
   color: #2e5db7;
 }
-.drore-left .list-group-item.active,
-.drore-left .list-group-item:hover,
-.drore-left .list-group-item.active:focus {
+.bycdao-left .list-group-item.active,
+.bycdao-left .list-group-item:hover,
+.bycdao-left .list-group-item.active:focus {
   z-index: 2;
   color: #fff;
   background-color: #337ab7;
   border-color: #337ab7;
 }
-.drore-left .list-group-item:hover span.glyphicon {
+.bycdao-left .list-group-item:hover span.glyphicon {
   font-size: 16px;
   transition: ease 1s;
 }
-.drore-left .list-group-item {
+.bycdao-left .list-group-item {
   cursor: pointer;
 }
 .nav-tabs {
@@ -4791,13 +4791,13 @@ table.table-mail tr td {
   width: 60px;
   outline: 0;
 }
-.drore-form-s {
+.bycdao-form-s {
   width: 300px;
 }
-.drore-form {
+.bycdao-form {
   width: 500px;
 }
-.drore-form-l {
+.bycdao-form-l {
   width: 800px;
 }
 .btn-white {
@@ -7027,7 +7027,7 @@ button.dim:active:before {
   font-size: 14px;
   box-shadow: none;
 }
-.drore-main iframe {
+.bycdao-main iframe {
   border: none;
   width: 100%!important;
   height: 88%;
@@ -11778,198 +11778,198 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 .fa-percent:before {
   content: "\f295";
 }
-.drore-skin1 .navbar-inverse {
+.bycdao-skin1 .navbar-inverse {
   background-color: #424f63;
 }
-.drore-skin1 .navbar-inverse .navbar-nav > .active a {
+.bycdao-skin1 .navbar-inverse .navbar-nav > .active a {
   background-color: #343e4e;
 }
-.drore-skin1 .navbar-inverse .navbar-nav a:hover {
+.bycdao-skin1 .navbar-inverse .navbar-nav a:hover {
   background-color: #343e4e;
 }
-.drore-skin1 .navbar-inverse .navbar-nav a:focus {
+.bycdao-skin1 .navbar-inverse .navbar-nav a:focus {
   background-color: #343e4e !important;
 }
-.drore-skin1 .drore-left {
+.bycdao-skin1 .bycdao-left {
   background: #506078;
 }
-.drore-skin1 .left-nav {
+.bycdao-skin1 .left-nav {
   background: #506078;
 }
-.drore-skin1 .left-nav a:hover {
+.bycdao-skin1 .left-nav a:hover {
   background-color: #343e4e !important;
 }
-.drore-skin1 .left-nav a:focus {
+.bycdao-skin1 .left-nav a:focus {
   background-color: #343e4e !important;
 }
-.drore-skin1 .left-nav > li.active {
+.bycdao-skin1 .left-nav > li.active {
   background: #343e4e;
 }
-.drore-skin1 .left-nav ul {
+.bycdao-skin1 .left-nav ul {
   background: #404d60;
 }
-.drore-skin1 .left-nav li.active {
+.bycdao-skin1 .left-nav li.active {
   border-left: 4px #ffffff solid;
 }
-.drore-skin1 .nav > li > a:focus {
+.bycdao-skin1 .nav > li > a:focus {
   background-color: #343e4e;
 }
-.drore-skin1 .nav > li > a:hover {
+.bycdao-skin1 .nav > li > a:hover {
   background-color: #343e4e;
 }
-.drore-skin2 .navbar-inverse {
+.bycdao-skin2 .navbar-inverse {
   background-color: #33a8a9;
 }
-.drore-skin2 .navbar-inverse .navbar-nav > .active a {
+.bycdao-skin2 .navbar-inverse .navbar-nav > .active a {
   background-color: #2b8d8e;
 }
-.drore-skin2 .navbar-inverse .navbar-nav a:hover {
+.bycdao-skin2 .navbar-inverse .navbar-nav a:hover {
   background-color: #2b8d8e;
 }
-.drore-skin2 .navbar-inverse .navbar-nav a:focus {
+.bycdao-skin2 .navbar-inverse .navbar-nav a:focus {
   background-color: #2b8d8e !important;
 }
-.drore-skin2 .drore-left {
+.bycdao-skin2 .bycdao-left {
   background: #3cc3c4;
 }
-.drore-skin2 .left-nav {
+.bycdao-skin2 .left-nav {
   background: #3cc3c4;
 }
-.drore-skin2 .left-nav a:hover {
+.bycdao-skin2 .left-nav a:hover {
   background-color: #2b8d8e !important;
 }
-.drore-skin2 .left-nav a:focus {
+.bycdao-skin2 .left-nav a:focus {
   background-color: #2b8d8e !important;
 }
-.drore-skin2 .left-nav > li.active {
+.bycdao-skin2 .left-nav > li.active {
   background: #2b8d8e;
 }
-.drore-skin2 .left-nav ul {
+.bycdao-skin2 .left-nav ul {
   background: #32a4a5;
 }
-.drore-skin2 .left-nav li.active {
+.bycdao-skin2 .left-nav li.active {
   border-left: 4px #ffffff solid;
 }
-.drore-skin2 .nav > li > a:focus {
+.bycdao-skin2 .nav > li > a:focus {
   background-color: #2b8d8e;
 }
-.drore-skin2 .nav > li > a:hover {
+.bycdao-skin2 .nav > li > a:hover {
   background-color: #2b8d8e;
 }
-.drore-skin3 .navbar-inverse {
+.bycdao-skin3 .navbar-inverse {
   background-color: #cf473f;
 }
-.drore-skin3 .navbar-inverse .navbar-nav > .active a {
+.bycdao-skin3 .navbar-inverse .navbar-nav > .active a {
   background-color: #bb372f;
 }
-.drore-skin3 .navbar-inverse .navbar-nav a:hover {
+.bycdao-skin3 .navbar-inverse .navbar-nav a:hover {
   background-color: #bb372f;
 }
-.drore-skin3 .navbar-inverse .navbar-nav a:focus {
+.bycdao-skin3 .navbar-inverse .navbar-nav a:focus {
   background-color: #bb372f !important;
 }
-.drore-skin3 .drore-left {
+.bycdao-skin3 .bycdao-left {
   background: #d6625c;
 }
-.drore-skin3 .left-nav {
+.bycdao-skin3 .left-nav {
   background: #d6625c;
 }
-.drore-skin3 .left-nav a:hover {
+.bycdao-skin3 .left-nav a:hover {
   background-color: #bb372f !important;
 }
-.drore-skin3 .left-nav a:focus {
+.bycdao-skin3 .left-nav a:focus {
   background-color: #bb372f !important;
 }
-.drore-skin3 .left-nav > li.active {
+.bycdao-skin3 .left-nav > li.active {
   background: #bb372f;
 }
-.drore-skin3 .left-nav ul {
+.bycdao-skin3 .left-nav ul {
   background: #ce433b;
 }
-.drore-skin3 .left-nav li.active {
+.bycdao-skin3 .left-nav li.active {
   border-left: 4px #ffffff solid;
 }
-.drore-skin3 .nav > li > a:focus {
+.bycdao-skin3 .nav > li > a:focus {
   background-color: #bb372f;
 }
-.drore-skin3 .nav > li > a:hover {
+.bycdao-skin3 .nav > li > a:hover {
   background-color: #bb372f;
 }
-.drore-skin4 .navbar-inverse {
+.bycdao-skin4 .navbar-inverse {
   background-color: #405375;
 }
-.drore-skin4 .navbar-inverse .navbar-nav > .active a {
+.bycdao-skin4 .navbar-inverse .navbar-nav > .active a {
   background-color: #33435e;
 }
-.drore-skin4 .navbar-inverse .navbar-nav a:hover {
+.bycdao-skin4 .navbar-inverse .navbar-nav a:hover {
   background-color: #33435e;
 }
-.drore-skin4 .navbar-inverse .navbar-nav a:focus {
+.bycdao-skin4 .navbar-inverse .navbar-nav a:focus {
   background-color: #33435e !important;
 }
-.drore-skin4 .drore-left {
+.bycdao-skin4 .bycdao-left {
   background: #4d638c;
 }
-.drore-skin4 .left-nav {
+.bycdao-skin4 .left-nav {
   background: #4d638c;
 }
-.drore-skin4 .left-nav a:hover {
+.bycdao-skin4 .left-nav a:hover {
   background-color: #33435e !important;
 }
-.drore-skin4 .left-nav a:focus {
+.bycdao-skin4 .left-nav a:focus {
   background-color: #33435e !important;
 }
-.drore-skin4 .left-nav > li.active {
+.bycdao-skin4 .left-nav > li.active {
   background: #33435e;
 }
-.drore-skin4 .left-nav ul {
+.bycdao-skin4 .left-nav ul {
   background: #3e5172;
 }
-.drore-skin4 .left-nav li.active {
+.bycdao-skin4 .left-nav li.active {
   border-left: 4px #ffffff solid;
 }
-.drore-skin4 .nav > li > a:focus {
+.bycdao-skin4 .nav > li > a:focus {
   background-color: #33435e;
 }
-.drore-skin4 .nav > li > a:hover {
+.bycdao-skin4 .nav > li > a:hover {
   background-color: #33435e;
 }
-.drore-skin5 .navbar-inverse {
+.bycdao-skin5 .navbar-inverse {
   background-color: #cc8f3a;
 }
-.drore-skin5 .navbar-inverse .navbar-nav > .active a {
+.bycdao-skin5 .navbar-inverse .navbar-nav > .active a {
   background-color: #b47c2f;
 }
-.drore-skin5 .navbar-inverse .navbar-nav a:hover {
+.bycdao-skin5 .navbar-inverse .navbar-nav a:hover {
   background-color: #b47c2f;
 }
-.drore-skin5 .navbar-inverse .navbar-nav a:focus {
+.bycdao-skin5 .navbar-inverse .navbar-nav a:focus {
   background-color: #b47c2f !important;
 }
-.drore-skin5 .drore-left {
+.bycdao-skin5 .bycdao-left {
   background: #d39f56;
 }
-.drore-skin5 .left-nav {
+.bycdao-skin5 .left-nav {
   background: #d39f56;
 }
-.drore-skin5 .left-nav a:hover {
+.bycdao-skin5 .left-nav a:hover {
   background-color: #b47c2f !important;
 }
-.drore-skin5 .left-nav a:focus {
+.bycdao-skin5 .left-nav a:focus {
   background-color: #b47c2f !important;
 }
-.drore-skin5 .left-nav > li.active {
+.bycdao-skin5 .left-nav > li.active {
   background: #b47c2f;
 }
-.drore-skin5 .left-nav ul {
+.bycdao-skin5 .left-nav ul {
   background: #cb8d36;
 }
-.drore-skin5 .left-nav li.active {
+.bycdao-skin5 .left-nav li.active {
   border-left: 4px #ffffff solid;
 }
-.drore-skin5 .nav > li > a:focus {
+.bycdao-skin5 .nav > li > a:focus {
   background-color: #b47c2f;
 }
-.drore-skin5 .nav > li > a:hover {
+.bycdao-skin5 .nav > li > a:hover {
   background-color: #b47c2f;
 }
