@@ -8,8 +8,8 @@
 
     DApiUI.init=function () {
         $.ajax({
-            //url:"v2/api-docs",
-            url:"menu1.json",
+            url:"v2/api-docs",
+            //url:"menu1.json",
             dataType:"json",
             type:"get",
             async:false,
