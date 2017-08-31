@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.bycdao.cloud</groupId>
+    <groupId>com.github.xiaoymin</groupId>
     <artifactId>swagger-bootstrap-ui</artifactId>
     <version>1.5</version>
     <name>swagger-bootstrap-ui</name>
