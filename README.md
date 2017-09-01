@@ -109,19 +109,11 @@ Swagger-UI默认效果图如下：
 
 
 ```java
-
 <dependency>
-
- <groupId>com.bycdao.cloud</groupId>
-
- <artifactId>swagger-bootstrap-ui</artifactId>
-
- <version>1.5</version>
-
+  <groupId>com.github.xiaoymin</groupId>
+  <artifactId>swagger-bootstrap-ui</artifactId>
+  <version>1.5</version>
 </dependency>
-
-
-
 ```
 
 
@@ -245,18 +237,14 @@ public class SwaggerConfiguration {
 
 </servlet-mapping>
 
-
 ```
-* 新版本版本未上传到maven中央仓库
-
-
 # 鸣谢
 
 特别感谢以下大牛开发的js/css、html前端框架，美观、易用
 
-|  框架 | 网站   |
-| ------------ | ------------ |
-|  *jquery* |  [http://jquery.com/](http://jquery.com/ "http://jquery.com/")  |
-|  *bootstrap* | [http://getbootstrap.com](http://getbootstrap.com "http://getbootstrap.com")  |
-|  *layer* | [http://layer.layui.com/](http://layer.layui.com/ "http://layer.layui.com/")  |
-|  *jsonview* | [https://github.com/yesmeck/jquery-jsonview](https://github.com/yesmeck/jquery-jsonview "https://github.com/yesmeck/jquery-jsonview")  |
+| 框架          | 网站                                       |
+| ----------- | ---------------------------------------- |
+| *jquery*    | [http://jquery.com/](http://jquery.com/ "http://jquery.com/") |
+| *bootstrap* | [http://getbootstrap.com](http://getbootstrap.com "http://getbootstrap.com") |
+| *layer*     | [http://layer.layui.com/](http://layer.layui.com/ "http://layer.layui.com/") |
+| *jsonview*  | [https://github.com/yesmeck/jquery-jsonview](https://github.com/yesmeck/jquery-jsonview "https://github.com/yesmeck/jquery-jsonview") |
