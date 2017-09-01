@@ -106,14 +106,13 @@ Swagger-UI默认效果图如下：
 
 <dependency>
 
- <groupId>com.drore.cloud</groupId>
+ <groupId>com.github.xiaoymin</groupId>
 
  <artifactId>swagger-bootstrap-ui</artifactId>
 
- <version>1.0</version>
+ <version>1.5</version>
 
 </dependency>
-
 
 
 ```
@@ -285,7 +284,6 @@ public class SwaggerConfiguration {
  <url-pattern>/v2/api-docs</url-pattern>
 
 </servlet-mapping>
-
 
 
 ```
