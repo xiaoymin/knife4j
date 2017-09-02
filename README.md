@@ -6,7 +6,7 @@
 
 
 
-`swagger-bootstrap-ui`是`Swagger`的前端UI实现,目的是替换`Swagger`默认的UI实现`Swagger-UI`,规范前后端开发流程,减少交流成本,提高工作开发效率.
+`swagger-bootstrap-ui`是`Swagger`的前端UI实现,目的是替换`Swagger`默认的UI实现`Swagger-UI`,使文档更友好一点儿....
 
 
 
@@ -45,11 +45,17 @@ Swagger-UI默认效果图如下：
 
 
 
+## demo演示
+
+[swagger-bootstarp-ui-demo](http://git.oschina.net/xiaoym/swagger-bootstrap-ui-demo)
+
+
+
 ## 下载
 
 
 
-`swagger-bootstrap-ui`下载地址：[下载](https://github.com/xiaoymin/Swagger-Bootstrap-UI/releases)
+`swagger-bootstrap-ui`下载地址：[下载](http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases)
 
 
 
@@ -103,18 +109,11 @@ Swagger-UI默认效果图如下：
 
 
 ```java
-
 <dependency>
-
- <groupId>com.github.xiaoymin</groupId>
-
- <artifactId>swagger-bootstrap-ui</artifactId>
-
- <version>1.5</version>
-
+  <groupId>com.github.xiaoymin</groupId>
+  <artifactId>swagger-bootstrap-ui</artifactId>
+  <version>1.5</version>
 </dependency>
-
-
 ```
 
 
@@ -122,54 +121,7 @@ Swagger-UI默认效果图如下：
 * Spring项目中启用swagger,代码如下：
 
 
-
-1.XML方式
-
-
-
-```java
-
-
-
-<bean class="com.drore.configuration.SwaggerConfiguration"/>
-
-<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
-
-<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-
- <property name="favorPathExtension" value="false" />
-
- <property name="favorParameter" value="false" />
-
- <property name="ignoreAcceptHeader" value="false" />
-
- <property name="mediaTypes" >
-
- <value>
-
- atom=application/atom+xml
-
- html=text/html
-
- json=application/json
-
- *=*/*
-
- </value>
-
- </property>
-
-</bean>
-
-
-
-```
-
-
-
-
-
-2.注解方式
+1.注解方式
 
 
 
@@ -193,7 +145,7 @@ public class SwaggerConfiguration {
 
  .select()
 
- .apis(RequestHandlerSelectors.basePackage("com.drore.cloud"))
+ .apis(RequestHandlerSelectors.basePackage("com.bycdao.cloud"))
 
  .paths(PathSelectors.any())
 
@@ -211,7 +163,7 @@ public class SwaggerConfiguration {
 
  .description("swagger-bootstrap-ui")
 
- .termsOfServiceUrl("http://api.test.com/")
+ .termsOfServiceUrl("http://localhost:8999/")
 
  .contact("developer@mail.com")
 
@@ -275,7 +227,7 @@ public class SwaggerConfiguration {
 
 </servlet-mapping>
 
-<!-- 配置cloud-document-ui的url请求路径-->
+<!-- 配置swagger-bootstrap-ui的url请求路径-->
 
 <servlet-mapping>
 
@@ -285,5 +237,14 @@ public class SwaggerConfiguration {
 
 </servlet-mapping>
 
-
 ```
+# 鸣谢
+
+特别感谢以下大牛开发的js/css、html前端框架，美观、易用
+
+| 框架          | 网站                                       |
+| ----------- | ---------------------------------------- |
+| *jquery*    | [http://jquery.com/](http://jquery.com/ "http://jquery.com/") |
+| *bootstrap* | [http://getbootstrap.com](http://getbootstrap.com "http://getbootstrap.com") |
+| *layer*     | [http://layer.layui.com/](http://layer.layui.com/ "http://layer.layui.com/") |
+| *jsonview*  | [https://github.com/yesmeck/jquery-jsonview](https://github.com/yesmeck/jquery-jsonview "https://github.com/yesmeck/jquery-jsonview") |
