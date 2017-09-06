@@ -112,7 +112,7 @@ Swagger-UI默认效果图如下：
 <dependency>
   <groupId>com.github.xiaoymin</groupId>
   <artifactId>swagger-bootstrap-ui</artifactId>
-  <version>1.5</version>
+  <version>1.6</version>
 </dependency>
 ```
 
