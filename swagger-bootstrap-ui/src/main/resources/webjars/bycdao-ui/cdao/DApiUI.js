@@ -32,7 +32,7 @@
      * 创建面板
      */
     DApiUI.creatabTab=function () {
-        var divcontent=$('<div id="myTab" class="tabs-container" style="width:95%;margin:0px auto;"></div>');
+        var divcontent=$('<div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;"></div>');
         var ul=$('<ul class="nav nav-tabs"></ul>')
         ul.append($('<li><a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a></li>'));
         ul.append($('<li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>'));
@@ -106,7 +106,7 @@
         tbody.append($('<tr><th class="active">host</th><td style="text-align: left">'+host+'</td></tr>'))
         tbody.append($('<tr><th class="active">服务url</th><td style="text-align: left">'+termsOfService+'</td></tr>'));
         table.append(tbody);
-        var div=$('<div  style="width:95%;margin:0px auto;"></div>')
+        var div=$('<div  style="width:99%;margin:0px auto;"></div>')
         div.append(table);
         //内容覆盖
         DApiUI.getDoc().html("");
@@ -171,9 +171,10 @@
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
                 $.each(tagInfo.childrens,function (i, children) {
-                    var childrenLi=$('<li class="menuLi"></li>');
-                    var childrenA=$('<a href="javascript:void(0)"><i class="icon-double-angle-right"></i>'+children.summary+'</a>');
-                    childrenLi.append(childrenA);
+                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div>'+children.methodType.toUpperCase()+'-<code>'+children.url+'</code></div><div>'+children.summary+'</div></div></li>');
+                    //console.log(children)
+                    //var childrenA=$('<a href="javascript:void(0)"><i class="icon-double-angle-right"></i><div  ><h5><span class="method">['+children.methodType+']</span></h5></div>'+children.summary+'('+children.url+')</a>');
+                    //childrenLi.append(childrenA);
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })
@@ -309,7 +310,9 @@
         //请求参数
         var divp=$('<div class="panel panel-primary"><div class="panel-heading">请求参数</div></div>')
 
-        var divpbody=$('<div class="panel-body"></div>')
+        var divpbody=$('<div class="panel-body"></div>');
+        //是否是文件上传
+        var fileform=false;
         //判断是否有请求参数
         if(typeof (apiInfo.parameters)!='undefined'&&apiInfo.parameters!=null){
             var table=$('<table class="table table-hover table-bordered table-text-center"></table>')
@@ -330,7 +333,7 @@
                 var val=null;
                 if(param["in"]=="body"){
                     tbody.attr("reqtype","body");
-                    val=$('<textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-apiUrl="'+apiInfo.url+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"></textarea>')
+                    val=$('<textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-apiUrl="'+apiInfo.url+'" name="'+param.name+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"></textarea>')
                     //判断是否有schma
                     if(param.hasOwnProperty("schema")){
                         var schema=param["schema"];
@@ -338,28 +341,41 @@
                         var regex=new RegExp("#/definitions/(.*)$","ig");
                         if(regex.test(ref)) {
                             var refType = RegExp.$1;
-                            var definitionsArray=DApiUI.getDoc().data("definitionsArray");
-                            var deftion=null;
-                            for(var i=0;i<definitionsArray.length;i++){
-                                var definition=definitionsArray[i];
-                                if(definition.key==refType){
-                                    deftion=definition.value;
-                                    break;
+                            //这里判断refType是否是MultipartFile类型,如果是该类型,上传组件
+                            if(refType=="MultipartFile"){
+                                fileform=true;
+                                val=$('<input name="'+param.name+'" type="file" class="form-control p-value" data-apiUrl="'+apiInfo.url+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"/>');
+                            }else{
+                                //find in definitionsArray
+                                var definitionsArray=DApiUI.getDoc().data("definitionsArray");
+                                var deftion=null;
+                                for(var i=0;i<definitionsArray.length;i++){
+                                    var definition=definitionsArray[i];
+                                    if(definition.key==refType){
+                                        deftion=definition.value;
+                                        break;
+                                    }
                                 }
-                            }
-                            //遍历proprietary
-                            for(var k in deftion){
-                                deftion[k]="";
-                            }
-                            if(deftion!=null){
-                                //赋值
-                                val.val(formatterJson(JSON.stringify(deftion)));
+                                //遍历proprietary
+                                for(var k in deftion){
+                                    deftion[k]="";
+                                }
+                                if(deftion!=null){
+                                    //赋值
+                                    val.val(formatterJson(JSON.stringify(deftion)));
+                                }
                             }
                         }
                     }
 
                 }else{
-                    val=$('<input class="form-control p-value" data-apiUrl="'+apiInfo.url+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"/>');
+                    val=$('<input class="form-control p-value" name="'+param.name+'" data-apiUrl="'+apiInfo.url+'" data-name="'+param.name+'" placeholder="'+DApiUI.getStringValue(param['description'])+'"/>');
+                    //判断是否有defaultvalue
+                    if(param.hasOwnProperty("default")){
+                        var defaultValue=param["default"];
+                        val.val(defaultValue);
+                    }
+                    //这里判断param类型,如果是int类型,只能输入数字
                 }
                 value.append(val);
                 var oper=$('<td width="5%"><button class="btn btn-danger btn-circle btn-lg" type="button"><strong>×</strong></button></td>');
@@ -400,18 +416,30 @@
                 tbody.append(tr);
             })
             table.append(tbody);
-            divpbody.append(table);
+            //如果有文件上传,追加form表单
+            if(fileform){
+                var form=$('<form id="uploadForm"  target="uploadIframe" action="'+apiInfo.url+'" type="" enctype="multipart/form-data" method="'+apiInfo.methodType+'"></form>');
+                form.append(table);
+                divpbody.append(form);
+            }else{
+                divpbody.append(table);
+            }
         }else{
             divpbody.append($('<strong>暂无参数</strong>'))
         }
         divp.append(divpbody);
-
-
+        //
+        if(fileform){
+            //追加iframe
+            var resptabframe=$('<div id="resptab" class="tabs-container" ><iframe name="uploadIframe" id="uploadIframe" style="border: none;height: 1%;display: none;"></iframe></div>')
+            divp.append(resptabframe);
+        }
         div.append(divp);
-
         //创建reesponsebody
         var respcleanDiv=$('<div id="responsebody"></div>');
+
         div.append(respcleanDiv);
+
 
         DApiUI.getDoc().find("#tab2").find(".panel-body").html("")
         DApiUI.getDoc().find("#tab2").find(".panel-body").append(div);
@@ -464,6 +492,21 @@
                     var value="";
                     if(trdata["in"]=="body"){
                         value=paramtr.find("td:eq(2)").find("textarea").val();
+                        //这里需要判断schema
+                        if(trdata.hasOwnProperty("schema")){
+                            var schema=trdata["schema"];
+                            if(schema.hasOwnProperty("$ref")){
+                                var ref=schema["$ref"];
+                                var regex=new RegExp("#/definitions/(.*)$","ig");
+                                if(regex.test(ref)) {
+                                    var refType = RegExp.$1;
+                                    //这里判断refType是否是MultipartFile类型,如果是该类型,上传组件
+                                    if (refType == "MultipartFile") {
+                                        value=paramtr.find("td:eq(2)").find("input").val();
+                                    }
+                                }
+                            }
+                        }
                     }else{
                         value=paramtr.find("td:eq(2)").find("input").val();
                     }
@@ -531,76 +574,180 @@
                 layer.msg(validateobj.message);
                 return;
             }
-
-            $.ajax({
-                url:url,
-                headers:headerparams,
-                type:DApiUI.getStringValue(apiInfo.methodType),
-                data:reqdata,
-                contentType:contType,
-                success:function (data,status,xhr) {
-                    var resptab=$('<div id="resptab" class="tabs-container" ></div>')
-                    var ulresp=$('<ul class="nav nav-tabs">' +
-                        '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
-                        '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
-                        '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
-
-                    resptab.append(ulresp);
-                    var respcontent=$('<div class="tab-content"></div>');
-
-                    var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
-                    var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
-                    var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
-
-                    respcontent.append(resp1).append(resp2).append(resp3);
-
-                    resptab.append(respcontent)
-
-                    respcleanDiv.append(resptab);
-                    DApiUI.log(xhr);
-                    DApiUI.log(xhr.getAllResponseHeaders());
-                    var allheaders=xhr.getAllResponseHeaders();
-                    if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-                        var headers=allheaders.split("\r\n");
-                        var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                        for(var i=0;i<headers.length;i++){
-                            var header=headers[i];
-                            if(header!=null&&header!=""){
-                                var headerValu=header.split(":");
-                                var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
-                                headertable.append(headertr);
-                            }
-                        }
-                        //设置Headers内容
-                        resp3.find(".panel-body").html("")
-                        resp3.find(".panel-body").append(headertable);
+            //判断是否有表单
+            var form=$("#uploadForm");
+            if(form.length>0){
+                form[0].submit();
+                //console.log("表单提交")
+                //iframe监听change事件
+                $("#uploadIframe").on("load",function () {
+                    //console.log("uploadIframe changed....")
+                    $(this).unbind('load');
+                    var framebody=$(this).contents().find("body");
+                    var ret=framebody.html();
+                    //是否存在pre标签
+                    if(framebody.find("pre").length>0){
+                        ret=framebody.find("pre").html();
                     }
-                    var contentType=xhr.getResponseHeader("Content-Type");
-                    DApiUI.log("Content-Type:"+contentType);
-                    DApiUI.log(xhr.hasOwnProperty("responseJSON"))
-                    if (xhr.hasOwnProperty("responseJSON")){
-                        //如果存在该对象,服务端返回为json格式
-                        resp1.find(".panel-body").html("")
-                        DApiUI.log(xhr["responseJSON"])
-                        var pre=$('<pre></pre>')
-                        var jsondiv=$('<div></div>')
-                        jsondiv.JSONView(xhr["responseJSON"]);
-                        pre.html(JSON.stringify(xhr["responseJSON"],null,2));
+                    var res;
+                    try{
+                        res=JSON.parse(ret);
+                        //console.log(res)
+                        var resptab=$('<div id="resptab" class="tabs-container" ></div>')
+                        var ulresp=$('<ul class="nav nav-tabs">' +
+                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li></ul>')
+                        resptab.append(ulresp);
+                        var respcontent=$('<div class="tab-content"></div>');
+                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"></div></div>');
+                        respcontent.append(resp1);
+                        resptab.append(respcontent)
+                        respcleanDiv.append(resptab);
+
+                        var jsondiv=$('<div></div>');
+                        jsondiv.JSONView(res);
                         resp1.find(".panel-body").append(jsondiv);
-                    }else{
-                        //判断content-type
-                        //如果是image资源
-                        var regex=new RegExp('image/(jpeg|jpg|png|gif)','g');
-                        if(regex.test(contentType)){
-                            var d=DApiUI.getDoc().data("data");
-                            var imgUrl="http://"+d.host+apiInfo.url;
-                            var img = document.createElement("img");
-                            img.onload = function(e) {
-                                window.URL.revokeObjectURL(img.src); // 清除释放
-                            };
-                            img.src = imgUrl;
+                        resptab.find("a:first").tab("show");
+                    }catch (err){
+                        //nothing to do,default to show
+                        respcleanDiv.html(ret);
+                    }
+                })
+            }else{
+                $.ajax({
+                    url:url,
+                    headers:headerparams,
+                    type:DApiUI.getStringValue(apiInfo.methodType),
+                    data:reqdata,
+                    contentType:contType,
+                    success:function (data,status,xhr) {
+                        var resptab=$('<div id="resptab" class="tabs-container" ></div>')
+                        var ulresp=$('<ul class="nav nav-tabs">' +
+                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
+
+                        resptab.append(ulresp);
+                        var respcontent=$('<div class="tab-content"></div>');
+
+                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
+                        var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
+                        var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
+
+                        respcontent.append(resp1).append(resp2).append(resp3);
+
+                        resptab.append(respcontent)
+
+                        respcleanDiv.append(resptab);
+                        DApiUI.log(xhr);
+                        DApiUI.log(xhr.getAllResponseHeaders());
+                        var allheaders=xhr.getAllResponseHeaders();
+                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+                            var headers=allheaders.split("\r\n");
+                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
+                            for(var i=0;i<headers.length;i++){
+                                var header=headers[i];
+                                if(header!=null&&header!=""){
+                                    var headerValu=header.split(":");
+                                    var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
+                                    headertable.append(headertr);
+                                }
+                            }
+                            //设置Headers内容
+                            resp3.find(".panel-body").html("")
+                            resp3.find(".panel-body").append(headertable);
+                        }
+                        var contentType=xhr.getResponseHeader("Content-Type");
+                        DApiUI.log("Content-Type:"+contentType);
+                        DApiUI.log(xhr.hasOwnProperty("responseJSON"))
+                        if (xhr.hasOwnProperty("responseJSON")){
+                            //如果存在该对象,服务端返回为json格式
                             resp1.find(".panel-body").html("")
-                            resp1.find(".panel-body")[0].appendChild(img);
+                            DApiUI.log(xhr["responseJSON"])
+                            var pre=$('<pre></pre>')
+                            var jsondiv=$('<div></div>')
+                            jsondiv.JSONView(xhr["responseJSON"]);
+                            pre.html(JSON.stringify(xhr["responseJSON"],null,2));
+                            resp1.find(".panel-body").append(jsondiv);
+                        }else{
+                            //判断content-type
+                            //如果是image资源
+                            var regex=new RegExp('image/(jpeg|jpg|png|gif)','g');
+                            if(regex.test(contentType)){
+                                var d=DApiUI.getDoc().data("data");
+                                var imgUrl="http://"+d.host+apiInfo.url;
+                                var img = document.createElement("img");
+                                img.onload = function(e) {
+                                    window.URL.revokeObjectURL(img.src); // 清除释放
+                                };
+                                img.src = imgUrl;
+                                resp1.find(".panel-body").html("")
+                                resp1.find(".panel-body")[0].appendChild(img);
+                            }else{
+                                //判断是否是text
+                                var regex=new RegExp('.*?text.*','g');
+                                if(regex.test(contentType)){
+                                    resp1.find(".panel-body").html("")
+                                    resp1.find(".panel-body").html(xhr.responseText);
+                                }
+                            }
+
+                        }
+
+                        DApiUI.log("tab show...")
+                        resptab.find("a:first").tab("show");
+                    },
+                    error:function (xhr, textStatus, errorThrown) {
+                        DApiUI.log("error.....")
+                        DApiUI.log(xhr);
+                        DApiUI.log(textStatus);
+                        DApiUI.log(errorThrown);
+                        var resptab=$('<div id="resptab" class="tabs-container" ></div>')
+                        var ulresp=$('<ul class="nav nav-tabs">' +
+                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
+
+                        resptab.append(ulresp);
+                        var respcontent=$('<div class="tab-content"></div>');
+
+                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
+                        var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
+                        var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
+
+                        respcontent.append(resp1).append(resp2).append(resp3);
+
+                        resptab.append(respcontent)
+
+                        respcleanDiv.append(resptab);
+                        DApiUI.log(xhr);
+                        DApiUI.log(xhr.getAllResponseHeaders());
+                        var allheaders=xhr.getAllResponseHeaders();
+                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+                            var headers=allheaders.split("\r\n");
+                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
+                            for(var i=0;i<headers.length;i++){
+                                var header=headers[i];
+                                if(header!=null&&header!=""){
+                                    var headerValu=header.split(":");
+                                    var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
+                                    headertable.append(headertr);
+                                }
+                            }
+                            //设置Headers内容
+                            resp3.find(".panel-body").html("")
+                            resp3.find(".panel-body").append(headertable);
+                        }
+                        var contentType=xhr.getResponseHeader("Content-Type");
+                        DApiUI.log("Content-Type:"+contentType);
+                        var jsonRegex="";
+                        DApiUI.log(xhr.hasOwnProperty("responseJSON"))
+                        if (xhr.hasOwnProperty("responseJSON")){
+                            //如果存在该对象,服务端返回为json格式
+                            resp1.find(".panel-body").html("")
+                            DApiUI.log(xhr["responseJSON"])
+                            var jsondiv=$('<div></div>')
+                            jsondiv.JSONView(xhr["responseJSON"]);
+                            resp1.find(".panel-body").append(jsondiv);
                         }else{
                             //判断是否是text
                             var regex=new RegExp('.*?text.*','g');
@@ -609,77 +756,12 @@
                                 resp1.find(".panel-body").html(xhr.responseText);
                             }
                         }
+                        DApiUI.log("tab show...")
+                        resptab.find("a:first").tab("show");
 
                     }
-
-                    DApiUI.log("tab show...")
-                    resptab.find("a:first").tab("show");
-                },
-                error:function (xhr, textStatus, errorThrown) {
-                    DApiUI.log("error.....")
-                    DApiUI.log(xhr);
-                    DApiUI.log(textStatus);
-                    DApiUI.log(errorThrown);
-                    var resptab=$('<div id="resptab" class="tabs-container" ></div>')
-                    var ulresp=$('<ul class="nav nav-tabs">' +
-                        '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
-                        '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
-                        '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
-
-                    resptab.append(ulresp);
-                    var respcontent=$('<div class="tab-content"></div>');
-
-                    var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
-                    var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
-                    var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
-
-                    respcontent.append(resp1).append(resp2).append(resp3);
-
-                    resptab.append(respcontent)
-
-                    respcleanDiv.append(resptab);
-                    DApiUI.log(xhr);
-                    DApiUI.log(xhr.getAllResponseHeaders());
-                    var allheaders=xhr.getAllResponseHeaders();
-                    if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-                        var headers=allheaders.split("\r\n");
-                        var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                        for(var i=0;i<headers.length;i++){
-                            var header=headers[i];
-                            if(header!=null&&header!=""){
-                                var headerValu=header.split(":");
-                                var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
-                                headertable.append(headertr);
-                            }
-                        }
-                        //设置Headers内容
-                        resp3.find(".panel-body").html("")
-                        resp3.find(".panel-body").append(headertable);
-                    }
-                    var contentType=xhr.getResponseHeader("Content-Type");
-                    DApiUI.log("Content-Type:"+contentType);
-                    var jsonRegex="";
-                    DApiUI.log(xhr.hasOwnProperty("responseJSON"))
-                    if (xhr.hasOwnProperty("responseJSON")){
-                        //如果存在该对象,服务端返回为json格式
-                        resp1.find(".panel-body").html("")
-                        DApiUI.log(xhr["responseJSON"])
-                        var jsondiv=$('<div></div>')
-                        jsondiv.JSONView(xhr["responseJSON"]);
-                        resp1.find(".panel-body").append(jsondiv);
-                    }else{
-                        //判断是否是text
-                        var regex=new RegExp('.*?text.*','g');
-                        if(regex.test(contentType)){
-                            resp1.find(".panel-body").html("")
-                            resp1.find(".panel-body").html(xhr.responseText);
-                        }
-                    }
-                    DApiUI.log("tab show...")
-                    resptab.find("a:first").tab("show");
-
-                }
-            })
+                })
+            }
         })
 
     }
@@ -964,13 +1046,30 @@
                 var regex=new RegExp("#/definitions/(.*)$","ig");
                 if(regex.test(ref)) {
                     var refType = RegExp.$1;
+                    //这里去definitionsArrar查找,如果未找到,直接展示refType
+                    var flag=false;
+                    var htmlValue=refType;
                     var definitionsArray=DApiUI.getDoc().data("definitionsArray");
                     for(var i=0;i<definitionsArray.length;i++){
                         var definition=definitionsArray[i];
                         if(definition.key==refType){
-                            div.html("")
-                            div.JSONView(definition.value);
+                            flag=true;
+                            htmlValue=definition.value;
+                            break;
+
                         }
+                    }
+                    div.html("")
+                    if (flag){
+                        div.JSONView(htmlValue);
+                    }else{
+                        div.html(refType);
+                    }
+                }else{
+                    //未发现ref属性
+                    if(schema.hasOwnProperty("type")){
+                        div.html("")
+                        div.html(schema["type"]);
                     }
                 }
             }
@@ -1179,7 +1278,7 @@
 
     DApiUI.log=function (msg) {
         if (window.console){
-            //console.log(msg);
+            console.log(msg);
         }
     }
     DApiUI.init();
