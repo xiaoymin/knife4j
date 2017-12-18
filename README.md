@@ -23,11 +23,11 @@
 
 
 
-![](https://xiaoymin.github.io/images/apidoc.jpg)
+![](https://static.oschina.net/uploads/space/2017/1218/160550_m8iQ_254762.jpg)
 
 * 在线调试功能,效果图如下:
 
-![](https://xiaoymin.github.io/images/debug1.jpg)
+![](https://static.oschina.net/uploads/space/2017/1218/160754_zeO9_254762.jpg)
 
 ## Swagger简介
 
@@ -41,7 +41,7 @@ Swagger-UI默认效果图如下：
 
 
 
-![](https://xiaoymin.github.io/cloud-sdk-doc/assets/swagger.png)
+![](https://static.oschina.net/uploads/img/201209/19062008_PluY.png)
 
 
 
