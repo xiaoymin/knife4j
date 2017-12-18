@@ -23,11 +23,11 @@
 
 
 
-![](https://xiaoymin.github.io/cloud-sdk-doc/assets/apidoc.jpg)
+![](https://xiaoymin.github.io/images/apidoc.jpg)
 
 * 在线调试功能,效果图如下:
 
-![](https://xiaoymin.github.io/cloud-sdk-doc/assets/debug1.jpg)
+![](https://xiaoymin.github.io/images/debug1.jpg)
 
 ## Swagger简介
 
