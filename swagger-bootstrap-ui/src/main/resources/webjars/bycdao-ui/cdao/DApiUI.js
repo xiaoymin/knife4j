@@ -7,23 +7,25 @@
     var DApiUI={};
 
     DApiUI.init=function () {
+        DApiUI.createGroupTab();
+    }
+
+    /**
+     * 创建分组
+     */
+    DApiUI.createGroupTab=function () {
         $.ajax({
-            url:"v2/api-docs",
-            //url:"menu1.json",
-            dataType:"json",
+            url:"swagger-resources",
             type:"get",
             async:false,
             success:function (data) {
-                //var menu=JSON.parse(data)
-                var menu=data;
-                DApiUI.definitions(menu);
-                DApiUI.log(menu);
-                DApiUI.createDescription(menu);
-                DApiUI.initTreeMenu(menu);
-                DApiUI.eachPath(menu);
-
+                //获取分组名称
+                var groupData=data;
+                DApiUI.initGroupSele(groupData);
             }
+
         })
+
     }
 
 
@@ -133,20 +135,73 @@
 
 
     /***
-     * 初始化菜单树
+     * 初始化分组菜单
      * @param menu
      */
-    DApiUI.initTreeMenu=function (menu) {
+    DApiUI.initGroupSele=function (groupData) {
         //遍历tags
         var tags=new Array();
+        //创建分组flag
+        var groupli=$('<li  class="active"></li>');
+        var groupSele=$("<select id='groupSel' style='width:100%;'></select>");
+        $.each(groupData,function (i, group) {
+            var groupOption=$("<option data-url='"+group.location+"' data-name='"+group.name+"'>"+group.name+"</option>");
+            groupSele.append(groupOption);
+        })
+        groupli.append(groupSele);
+        groupSele.on("change",function () {
+            var that=$(this);
+            DApiUI.log(that)
+            var apiurl=that.find("option:selected").attr("data-url");
+            DApiUI.log("分组：：");
+            DApiUI.log(apiurl);
+            DApiUI.initApiTree(apiurl);
+        })
+        DApiUI.getMenu().html("");
+        DApiUI.getMenu().append(groupli);
+        var url=groupData[0].location;
+        //默认加载第一个url
+        DApiUI.initApiTree(url);
+    }
+
+    DApiUI.initApiTree=function (url) {
+        var idx=url.indexOf("/");
+        if(idx==0){
+            url=url.substr(1);
+        }
+        DApiUI.log("截取后的url:"+url);
+        $.ajax({
+            //url:"v2/api-docs",
+            url:url,
+            dataType:"json",
+            type:"get",
+            async:false,
+            success:function (data) {
+                //var menu=JSON.parse(data)
+                var menu=data;
+                DApiUI.definitions(menu);
+                DApiUI.log(menu);
+                DApiUI.createDescription(menu);
+                DApiUI.createDetailMenu(menu);
+                DApiUI.eachPath(menu);
+            }
+        })
+    }
+
+    /***
+     * 创建分组详情菜单
+     * @param menu
+     */
+    DApiUI.createDetailMenu=function (menu) {
+        DApiUI.getMenu().find(".detailMenu").remove();
+
         //简介li
-        var dli=$('<li  class="active"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> 简介 </span></a></li>')
+        var dli=$('<li  class="active detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> 简介 </span></a></li>')
         dli.on("click",function () {
             DApiUI.log("简介click")
             DApiUI.createDescription(menu);
             dli.addClass("active");
         })
-        DApiUI.getMenu().html("");
         DApiUI.getMenu().append(dli);
         var methodApis=DApiUI.eachPath(menu);
 
@@ -161,11 +216,11 @@
             })
             var len=tagInfo.childrens.length;
             if(len==0){
-                var li=$('<li ><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> '+tagInfo.name+' </span></a></li>');
+                var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> '+tagInfo.name+' </span></a></li>');
                 DApiUI.getMenu().append(li);
             }else{
                 //存在子标签
-                var li=$('<li></li>');
+                var li=$('<li  class="detailMenu"></li>');
                 var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt"></i><span class="menu-text">'+tagInfo.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                 li.append(titleA);
                 //循环树
@@ -418,7 +473,13 @@
             table.append(tbody);
             //如果有文件上传,追加form表单
             if(fileform){
-                var form=$('<form id="uploadForm"  target="uploadIframe" action="'+apiInfo.url+'" type="" enctype="multipart/form-data" method="'+apiInfo.methodType+'"></form>');
+                //文件上传使用相对路径
+                var uploadurltemp=apiInfo.url;
+                if (uploadurltemp.indexOf("/")==0){
+                    uploadurltemp=uploadurltemp.substr(1);
+                }
+                DApiUI.log("upload上传接口截取后:"+uploadurltemp)
+                var form=$('<form id="uploadForm"  target="uploadIframe" action="'+uploadurltemp+'" type="" enctype="multipart/form-data" method="'+apiInfo.methodType+'"></form>');
                 form.append(table);
                 divpbody.append(form);
             }else{
