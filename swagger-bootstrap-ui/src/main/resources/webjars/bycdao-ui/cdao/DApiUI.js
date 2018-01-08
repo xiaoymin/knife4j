@@ -183,7 +183,6 @@
                 DApiUI.log(menu);
                 DApiUI.createDescription(menu);
                 DApiUI.createDetailMenu(menu);
-                DApiUI.eachPath(menu);
             }
         })
     }
@@ -210,9 +209,11 @@
             //查找childrens
             $.each(methodApis,function (i, methodApi) {
                 //判断tags是否相同
-                if(methodApi.tag==tagInfo.name){
-                    tagInfo.childrens.push(methodApi);
-                }
+                $.each(methodApi.tag,function(i,tagName){
+                    if(tagName==tagInfo.name){
+                        tagInfo.childrens.push(methodApi);
+                    }
+                })
             })
             var len=tagInfo.childrens.length;
             if(len==0){
@@ -1363,7 +1364,7 @@
      */
     function ApiInfo(options) {
         //判断options
-        this.tag="";
+        this.tag=[];
         this.url="";
         this.description="";
         this.operationId="";
@@ -1374,7 +1375,7 @@
         this.consumes=new Array();
         this.summary="";
         if(options!=null&& typeof (options)!='undefined' ){
-            this.tag=options.tags[0];
+            this.tag=options.tags;
             this.description=options.description;
             this.operationId=options.operationId;
             this.summary=options.summary;
