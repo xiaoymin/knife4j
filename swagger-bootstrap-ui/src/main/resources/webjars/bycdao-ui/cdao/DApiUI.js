@@ -991,7 +991,26 @@
             var phead=$('<thead><th>状态码</th><th>说明</th><th>schema</th></thead>');
             ptable.append(phead);
             var pbody=$('<tbody></tbody>');
-            if(resp.hasOwnProperty("200")){
+            for(var status in resp){
+                var rescrobj=resp[status];
+                var schematd=$("<td></td>");
+                //判断是否存在schma
+                if (rescrobj.hasOwnProperty("schema")){
+                    var schema=rescrobj["schema"];
+                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                    if(regex.test(schema["$ref"])) {
+                        var ptype=RegExp.$1;
+                        schematd.append(ptype);
+                    }
+                }
+                var tr=$("<tr></tr>")
+                var statusTd=$("<td>"+status+"</td>");
+                var description=$("<td>"+rescrobj["description"]+"</td>");
+                tr.append(statusTd).append(description).append(schematd);
+                pbody.append(tr);
+
+            }
+            /*if(resp.hasOwnProperty("200")){
                 var ptr=$('<tr><td>200</td><td>http响应成功</td><td></td></tr>');
                 pbody.append(ptr);
             }
@@ -1004,7 +1023,7 @@
             //403
             pbody.append($('<tr><td>403</td><td>Forbidden 资源不可用</td><td></td></tr>'));
             //500
-            pbody.append($('<tr><td>500</td><td>服务器内部错误,请联系Java后台开发人员!!!</td><td></td></tr>'));
+            pbody.append($('<tr><td>500</td><td>服务器内部错误,请联系Java后台开发人员!!!</td><td></td></tr>'));*/
             ptable.append(pbody);
             ptd.append(ptable);
             response.append(ptd);
@@ -1131,7 +1150,39 @@
                     //未发现ref属性
                     if(schema.hasOwnProperty("type")){
                         div.html("")
-                        div.html(schema["type"]);
+                        var type=schema["type"];
+                        if (type=="array"){
+                            var items=schema["items"];
+                            ref=items["$ref"];
+                            var regex=new RegExp("#/definitions/(.*)$","ig");
+                            if(regex.test(ref)) {
+                                var refType = RegExp.$1;
+                                //这里去definitionsArrar查找,如果未找到,直接展示refType
+                                var flag = false;
+                                var htmlValue = refType;
+                                var definitionsArray = DApiUI.getDoc().data("definitionsArray");
+                                for (var i = 0; i < definitionsArray.length; i++) {
+                                    var definition = definitionsArray[i];
+                                    if (definition.key == refType) {
+                                        flag = true;
+                                        htmlValue = definition.value;
+                                        break;
+
+                                    }
+                                }
+                                div.html("")
+                                if (flag) {
+                                    var obj=new Array();
+                                    obj.push(htmlValue);
+                                    div.JSONView(obj);
+                                } else {
+                                    div.html(refType);
+                                }
+                            }
+
+                        }else{
+                            div.html(type);
+                        }
                     }
                 }
             }
