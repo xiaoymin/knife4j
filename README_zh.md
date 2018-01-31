@@ -1,39 +1,71 @@
 # swagger-bootstrap-ui
 
-## English introduction | [中文说明](README_zh.md)
-
-## introduction
-
-`Swagger-bootstrap-ui` is the Swagger front-end UI implementation, the purpose is to replace the Swagger default UI implementation Swagger-UI, make the document more friendly....
-
-`Swagger-bootstrap-ui` is just the UI implementation of Swagger, instead of replacing Swagger function. So the back-end module still depends on Swagger, and it needs to cooperate with Swagger's annotation to achieve the effect, [annotation explanation](swagger-annotation.md).
-
-## function
 
 
-* The interface document is illustrated with the effect diagram as follows：
+## 简介
+
+
+
+`swagger-bootstrap-ui`是`Swagger`的前端UI实现,目的是替换`Swagger`默认的UI实现`Swagger-UI`,使文档更友好一点儿....
+
+
+
+`swagger-bootstrap-ui` 只是`Swagger`的UI实现,并不是替换`Swagger`功能,所以后端模块依然是依赖`Swagger`的,需要配合`Swagger`的注解达到效果,[注解说明](swagger-annotation.md)
+
+
+
+
+
+## 功能
+
+
+* 接口文档说明,效果图如下：
 
 
 
 ![](https://static.oschina.net/uploads/space/2017/1218/160550_m8iQ_254762.jpg)
 
-* Online debugging function, the effect diagram is as follows:
+* 在线调试功能,效果图如下:
 
 ![](https://static.oschina.net/uploads/space/2017/1218/160754_zeO9_254762.jpg)
 
-## 
+## Swagger简介
 
-## demo
 
-see [swagger-bootstarp-ui-demo](http://git.oschina.net/xiaoym/swagger-bootstrap-ui-demo)
 
-## download
+Swagger 是一个规范和完整的框架，用于生成、描述、调用和可视化 RESTful 风格的 Web 服务。总体目标是使客户端和文件系统作为服务器以同样的速度来更新。文件的方法，参数和模型紧密集成到服务器端的代码，允许API来始终保持同步。Swagger 让部署管理和使用功能强大的API从未如此简单。
 
-download address: [http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases](http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases)
 
-## use
 
-* First, you need to introduce the configuration package information of swagger, as follows：
+Swagger-UI默认效果图如下：
+
+
+
+![](https://static.oschina.net/uploads/img/201209/19062008_PluY.png)
+
+
+
+## demo演示
+
+[swagger-bootstarp-ui-demo](http://git.oschina.net/xiaoym/swagger-bootstrap-ui-demo)
+
+
+
+## 下载
+
+
+
+`swagger-bootstrap-ui`下载地址：[下载](http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases)
+
+
+
+## 使用说明
+
+
+
+
+
+* 首先需要引入swagger的配置包信息,如下：
 
 
 
@@ -51,7 +83,7 @@ download address: [http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases](
 
 
 
-<!-- Here swagger-ui is the default implementation of swagger, and this jar can be replaced with the following swagger-bootstrap-ui substitution--->
+<!-- 这里swagger-ui是swagger的默认实现,这个jar可以不用引入,使用下面的swagger-bootstrap-ui替代--->
 
 <dependency>
 
@@ -72,7 +104,7 @@ download address: [http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases](
 
 
 
-* The jar package dependency of swagger-bootstrap-ui is referenced in the Maven project, as follows：
+* maven项目中引用`swagger-bootstrap-ui`的jar包依赖,如下：
 
 
 
@@ -86,10 +118,12 @@ download address: [http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases](
 
 
 
-* Swagger is enabled in the Spring project, and the code is as follows：
+* Spring项目中启用swagger,代码如下：
 
 
-1.Annotation
+1.注解方式
+
+
 
 ```java
 
@@ -149,15 +183,15 @@ public class SwaggerConfiguration {
 
 
 
-* swagger-bootstrap-ui default access address：`http://${host}:${port}/doc.html`
+* `swagger-bootstrap-ui`默认访问地址是：`http://${host}:${port}/doc.html`
 
 
 
-## attention
+## 注意事项
 
 
 
-* Request address swagger package given by default is `/v2/api-docs`, so the swagger-bootstrap-ui call back is `/v2/api-docs`, not with the suffix, and the need to return to the JSON data frame if spring boot can be used directly without modification, if MVC is Spring, the configuration of the DispatcherServlet in web.xml, you need an additional URL matching rules are as follows：
+* swagger封装给出的请求地址默认是`/v2/api-docs`,所以`swagger-bootstrap-ui`调用后台也是`/v2/api-docs`,不能带后缀,且需返回json格式数据,框架如果是spring boot的可以不用修改,直接使用,如果是Spring MVC在web.xml中配置了`DispatcherServlet`,则需要追加一个url匹配规则,如下：
 
 
 
@@ -183,7 +217,7 @@ public class SwaggerConfiguration {
 
 
 
-<!--Default configuration,.Htm|.do|.json and so on configuration-->
+<!--默认配置,.htm|.do|.json等等配置-->
 
 <servlet-mapping>
 
@@ -193,7 +227,7 @@ public class SwaggerConfiguration {
 
 </servlet-mapping>
 
-<!-- Configuring the URL request path for swagger-bootstrap-ui-->
+<!-- 配置swagger-bootstrap-ui的url请求路径-->
 
 <servlet-mapping>
 
@@ -204,11 +238,11 @@ public class SwaggerConfiguration {
 </servlet-mapping>
 
 ```
-## thanks
+# 鸣谢
 
-Especially thanks to the js/css and HTML front-end frame developed by the following Daniel, beautiful and easy to use
+特别感谢以下大牛开发的js/css、html前端框架，美观、易用
 
-| frame       | website                                  |
+| 框架          | 网站                                       |
 | ----------- | ---------------------------------------- |
 | *jquery*    | [http://jquery.com/](http://jquery.com/ "http://jquery.com/") |
 | *bootstrap* | [http://getbootstrap.com](http://getbootstrap.com "http://getbootstrap.com") |
