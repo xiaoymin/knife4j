@@ -2,13 +2,13 @@
 
 ## English introduction | [中文说明](README_zh.md)
 
-## introduction
+## Introduction
 
 `Swagger-bootstrap-ui` is the Swagger front-end UI implementation, the purpose is to replace the Swagger default UI implementation Swagger-UI, make the document more friendly....
 
 `Swagger-bootstrap-ui` is just the UI implementation of Swagger, instead of replacing Swagger function. So the back-end module still depends on Swagger, and it needs to cooperate with Swagger's annotation to achieve the effect, [annotation explanation](swagger-annotation.md).
 
-## function
+## Functions
 
 
 * The interface document is illustrated with the effect diagram as follows：
@@ -23,15 +23,15 @@
 
 ## 
 
-## demo
+## Demo
 
 see [swagger-bootstarp-ui-demo](http://git.oschina.net/xiaoym/swagger-bootstrap-ui-demo)
 
-## download
+## Download
 
 download address: [http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases](http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases)
 
-## use
+## Use
 
 * First, you need to introduce the configuration package information of swagger, as follows：
 
@@ -153,7 +153,7 @@ public class SwaggerConfiguration {
 
 
 
-## attention
+## Attention
 
 
 
@@ -204,7 +204,7 @@ public class SwaggerConfiguration {
 </servlet-mapping>
 
 ```
-## thanks
+## Thanks
 
 Especially thanks to the js/css and HTML front-end frame developed by the following Daniel, beautiful and easy to use
 
