@@ -1,4 +1,6 @@
-# swagger-bootstrap-ui
+swagger-bootstrap-ui
+=========================
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.xiaoymin/swagger-bootstrap-ui/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.xiaoymin/swagger-bootstrap-ui)
 
 
 
