@@ -281,6 +281,43 @@
                 apiInfo.url=key;
                 methodApis.push(apiInfo);
             }
+            //扩展 支持http其余请求方法接口
+            //add by xiaoymin 2018-4-28 07:16:12
+            if (obj.hasOwnProperty("patch")){
+                //patch
+                var apiInfo=new ApiInfo(obj["patch"]);
+                apiInfo.methodType="patch";
+                apiInfo.url=key;
+                methodApis.push(apiInfo);
+            }
+            if (obj.hasOwnProperty("options")){
+                //OPTIONS
+                var apiInfo=new ApiInfo(obj["options"]);
+                apiInfo.methodType="options";
+                apiInfo.url=key;
+                methodApis.push(apiInfo);
+            }
+            if (obj.hasOwnProperty("trace")){
+                //TRACE
+                var apiInfo=new ApiInfo(obj["trace"]);
+                apiInfo.methodType="trace";
+                apiInfo.url=key;
+                methodApis.push(apiInfo);
+            }
+            if (obj.hasOwnProperty("head")){
+                //HEAD
+                var apiInfo=new ApiInfo(obj["head"]);
+                apiInfo.methodType="head";
+                apiInfo.url=key;
+                methodApis.push(apiInfo);
+            }
+            if (obj.hasOwnProperty("connect")){
+                //CONNECT
+                var apiInfo=new ApiInfo(obj["connect"]);
+                apiInfo.methodType="connect";
+                apiInfo.url=key;
+                methodApis.push(apiInfo);
+            }
         }
         //console.log(methodApis);
         return methodApis;
@@ -902,10 +939,11 @@
         //判断是否有请求参数
         if(typeof (apiInfo.parameters)!='undefined'&&apiInfo.parameters!=null){
             var ptd=$("<td></td>");
-            var ptable=$('<table class="table table-bordered"></table>')
+            var ptable=$('<table class="table table-bordered" id="requestModelTable"></table>')
             var phead=$('<thead><th>参数名称</th><th>说明</th><th>类型</th><th>in</th><th>是否必须</th></thead>');
             ptable.append(phead);
             var pbody=$('<tbody></tbody>');
+            var requestArrs=new Array();
             $.each(apiInfo.parameters,function (i, param) {
                 //判断是否是ref,如果是，列出他的属性说明
                 var refflag=false;
@@ -932,7 +970,9 @@
                 }
                 var ptr=null;
                 //列出属性
-                if (refflag){
+                var pobject={id:generUUID(),field:param.name,description:DApiUI.getStringValue(param['description']),type:ptype,in:DApiUI.getStringValue(param['in']),required:param['required'],pid:""};
+                requestArrs.push(pobject);
+                /*if (refflag){
                     ptr=$('<tr><td>'+param.name+'</td><td style="text-align: center;">'+DApiUI.getStringValue(param['description'])+'</td><td>'+ptype+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
                     pbody.append(ptr);
                     var definitionsArray=DApiUI.getDoc().data("definitionsArray");
@@ -957,8 +997,38 @@
                 }else{
                     ptr=$('<tr><td>'+param.name+'</td><td style="text-align: center;">'+DApiUI.getStringValue(param['description'])+'</td><td>'+ptype+'</td><td>'+DApiUI.getStringValue(param['in'])+'</td><td>'+param['required']+'</td></tr>');
                     pbody.append(ptr);
+                }*/
+                if (refflag){
+                    var mcs=DApiUI.getMenuConstructs();
+                    for(var k in mcs.definitions){
+                        if(ptype==k){
+                            var tp=mcs.definitions[ptype];
+                            var props=tp["properties"];
+                            for(var prop in props){
+                                var pvalue=props[prop];
+                                var type=DApiUI.toString(pvalue.type,"string");
+                                var cobj={id:generUUID(),field:prop,description:DApiUI.toString(pvalue.description,""),type:type,in:DApiUI.getStringValue(param['in']),required:param['required'],pid:pobject.id};
+                                requestArrs.push(cobj);
+                            }
+                        }
+                    }
                 }
             })
+            if(requestArrs.length>0){
+                for(var i=0;i<requestArrs.length;i++){
+                    var arrInfo=requestArrs[i];
+                    var treeClassId="treegrid-"+arrInfo.id;
+                    var treeClassPId="";
+                    if (arrInfo.pid!=""){
+                        treeClassPId="treegrid-parent-"+arrInfo.pid;
+                    }
+                    var tr=$("<tr class='"+treeClassId+" "+treeClassPId+"'></tr>");
+                    tr.append("<td>"+arrInfo.field+"</td><td>"+arrInfo.description+"</td><td>"+arrInfo.type+"</td><td>"+arrInfo.in+"</td><td>"+arrInfo.required+"</td>");
+                    pbody.append(tr);
+                }
+            }else{
+                tbody.append("<tr><td colspan='5'>暂无</td></tr>")
+            }
             ptable.append(pbody);
             ptd.append(ptable);
             args.append(ptd);
@@ -974,7 +1044,6 @@
         tbody.append(responseConstruct)
 
         //响应参数 add by xiaoymin 2017-8-20 16:17:18
-
         var respParams=$('<tr><th class="active" style="text-align: right;">响应参数说明</th></tr>');
         var respPart=$('<td  style="text-align: left"></td>');
         respPart.append(DApiUI.createResponseDefinitionDetail(apiInfo));
@@ -1041,6 +1110,15 @@
         DApiUI.getDoc().find("#tab1").find(".panel-body").append(table);
         //DApiUI.getDoc().append(table);
 
+        setTimeout(function () {
+            DApiUI.log("执行treegrid方法...")
+            //请求参数调用treegruid方法
+            $("#requestModelTable").treegrid({
+                expanderExpandedClass: 'glyphicon glyphicon-minus',
+                expanderCollapsedClass: 'glyphicon glyphicon-plus'
+            });
+        },100);
+
     }
 
     /***
@@ -1062,13 +1140,35 @@
                     var mcs=DApiUI.getMenuConstructs();
                     for(var k in mcs.definitions){
                         if(refType==k){
-                            var table=$("<table class=\"table table-bordered\">");
+                            var table=$("<table class=\"table table-bordered\" id='modelPropertisTab'>");
                             table.append('<thead><tr><th>参数名称</th><th>类型</th><th>说明</th></tr></thead>');
                             var tp=mcs.definitions[refType];
                             var props=tp["properties"];
 
+                            var arrInfos=new Array();
+
                             var tbody=$("<tbody></tbody>")
-                            for(var prop in props){
+                            for(var prop in props) {
+                                deepTree("", prop, props, mcs.definitions, arrInfos);
+                            }
+                            if(arrInfos.length>0){
+                                for(var i=0;i<arrInfos.length;i++){
+                                    var arrInfo=arrInfos[i];
+                                    var treeClassId="treegrid-"+arrInfo.id;
+                                    var treeClassPId="";
+                                    if (arrInfo.pid!=""){
+                                        treeClassPId="treegrid-parent-"+arrInfo.pid;
+                                    }
+                                    var tr=$("<tr class='"+treeClassId+" "+treeClassPId+"'></tr>");
+                                    tr.append("<td>"+arrInfo.field+"</td><td>"+arrInfo.type+"</td><td>"+arrInfo.description+"</td>");
+                                    tbody.append(tr);
+                                }
+                            }else{
+                                tbody.append("<tr><td colspan='3'>暂无</td></tr>")
+                            }
+
+                            /*for(var prop in props){
+                                deepTree("",prop,props,mcs.definitions,arrInfos);
                                 var pvalue=props[prop];
                                 var tr=$("<tr></tr>")
                                 //只遍历一级属性
@@ -1104,15 +1204,113 @@
                                     tr.append($("<td>"+DApiUI.toString(pvalue.description,"")+"</td>"));
                                     tbody.append(tr);
                                 }
-                            }
+                            }*/
+                            DApiUI.log("deepTree")
+                            DApiUI.log(arrInfos)
                             table.append(tbody);
                             div.append(table)
+                            setTimeout(function () {
+                                DApiUI.log("执行treegrid方法...")
+                                table.treegrid({
+                                    expanderExpandedClass: 'glyphicon glyphicon-minus',
+                                    expanderCollapsedClass: 'glyphicon glyphicon-plus'
+                                });
+                            },100);
                         }
                     }
                 }
             }
         }
         return div;
+    }
+
+
+    function deepTree(pid,prop,props,definitions,arrs) {
+        var regex1 = new RegExp("#/definitions/(.*)$", "ig");
+        var pvalue=props[prop];
+        if(pvalue.hasOwnProperty("$ref")) {
+            DApiUI.log("deepTree--ref---"+prop)
+            var param_ref = pvalue["$ref"];
+            if (regex1.test((param_ref))) {
+                var ptype=RegExp.$1;
+                var arrObj={id:generUUID(),field:prop,type:ptype,description:"",pid:pid};
+                arrs.push(arrObj);
+                for(var j in definitions) {
+                    if (ptype == j) {
+                        var tpp=definitions[ptype];
+                        var pp_props=tpp["properties"];
+                        for(var prop1 in pp_props) {
+                            if(prop1!=prop){
+                                deepTree(arrObj.id,prop1,pp_props,definitions,arrs);
+                            }
+                        }
+                    }
+                }
+            }
+        }else{
+            DApiUI.log("deepTree--single---"+prop)
+            //属性名称prop
+            var id=generUUID();
+            var type=DApiUI.toString(pvalue.type,"string");
+            var description=DApiUI.toString(pvalue.description,"");
+            var obj={id:id,type:type,field:prop,description:description,pid:pid};
+            arrs.push(obj);
+            //判断是否是数组
+            if(type=="array"){
+                DApiUI.log("array...")
+                var items=pvalue["items"];
+                DApiUI.log(pvalue);
+                DApiUI.log(items);
+                DApiUI.log(pvalue.items);
+                if(items.hasOwnProperty("$ref")) {
+                    var item_ref = items["$ref"];
+                    DApiUI.log(item_ref);
+                    if (regex1.test((item_ref))) {
+                        var ptype=RegExp.$1;
+                        DApiUI.log(ptype);
+                        //获取到对象类名
+                        for(var j in definitions) {
+                            if (ptype == j) {
+                                var tpp=definitions[ptype];
+                                var pp_props=tpp["properties"];
+                                for(var prop1 in pp_props) {
+                                    if(prop1!=prop){
+                                        deepTree(obj.id,prop1,pp_props,definitions,arrs);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+
+    function randomNumber() {
+        return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    }
+
+    /***
+     *
+     * 生成uuid
+     * @returns {string}
+     */
+    function generUUID() {
+        return (randomNumber()+randomNumber()+"-"+randomNumber()+"-"+randomNumber()+"-"+randomNumber()+"-"+randomNumber()+randomNumber()+randomNumber());
+    }
+
+    /***
+     * 递归
+     */
+    function deepProperties(ref,obj) {
+        var regex=new RegExp("#/definitions/(.*)$","ig");
+        if(regex.test(ref)) {
+            var refType = RegExp.$1;
+            var definitionsArray=DApiUI.getDoc().data("definitionsArray");
+
+        }
     }
 
 
@@ -1228,7 +1426,9 @@
                                             var refType=RegExp.$1;
                                             //这里需要递归判断是否是本身,如果是,则退出递归查找
                                             if(refType!=definition){
-                                                propValue.push(findRefDefinition(refType,definitions));
+                                                propValue.push(findRefDefinition(refType,definitions,false));
+                                            }else{
+                                                propValue.push(findRefDefinition(refType,definitions,true));
                                             }
                                         }
                                     }
@@ -1242,9 +1442,9 @@
                                         var refType = RegExp.$1;
                                         //这里需要递归判断是否是本身,如果是,则退出递归查找
                                         if(refType!=definition){
-                                            propValue=findRefDefinition(refType,definitions);
+                                            propValue=findRefDefinition(refType,definitions,false);
                                         }else{
-                                            propValue={};
+                                            propValue=findRefDefinition(refType,definitions,true);
                                         }
 
                                     }
@@ -1296,7 +1496,7 @@
         return propValue;
     }
 
-    function findRefDefinition(definitionName, definitions) {
+    function findRefDefinition(definitionName, definitions,flag) {
         var defaultValue="";
         for(var definition in definitions){
             if(definitionName==definition){
@@ -1325,9 +1525,15 @@
                                     var regex=new RegExp("#/definitions/(.*)$","ig");
                                     if(regex.test(ref)){
                                         var refType=RegExp.$1;
-                                        if(refType!=definitionName){
-                                            propValue.push(findRefDefinition(refType,definitions));
+                                        if (!flag){
+                                            //非递归查找
+                                            if(refType!=definitionName){
+                                                propValue.push(findRefDefinition(refType,definitions,flag));
+                                            }else{
+                                                propValue.push(findRefDefinition(refType,definitions,true));
+                                            }
                                         }
+
                                     }
                                 }
                             }
