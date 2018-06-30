@@ -1,6 +1,6 @@
 /**
  * Created by xiaoym on 2017/4/17.
- * Updated by xujiya on 2018/6/30.
+ * Updated by xujiya on 2018/6/30. 
  */
 
 (function ($) {
