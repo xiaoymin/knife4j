@@ -3,6 +3,8 @@
  */
 
 (function ($) {
+
+
     //初始化类
     var DApiUI={};
 
@@ -117,6 +119,38 @@
     }
 
     /***
+     * 离线文档功能页面
+     * @param menu
+     */
+    DApiUI.createMarkdownTab=function (menu) {
+        var description="swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.";
+        var divdes=$('<div class="alert alert-info" role="alert">'+description+'</div>');
+        var div=$('<div  style="width:99%;margin:0px auto;"></div>');
+        div.append(divdes);
+        //toolbar按钮组
+        var toolbarDiv=$('<div class="input-inline" style="margin-bottom:10px;">');
+        var copyBtn=$('<button class="btn btn-primary" type="button" id="btnCopy"  data-clipboard-action="copy" data-clipboard-target="#txtDoc">拷贝文档</button></div>');
+        toolbarDiv.append(copyBtn);
+        div.append(toolbarDiv);
+        //添加textarea
+        var txtDiv=$("<div class='input-inline'><textarea class='form-control' style='width: 100%;height: 100%;' id='txtDoc'></textarea></div>")
+        div.append(txtDiv);
+        //内容覆盖
+        DApiUI.getDoc().html("");
+        DApiUI.getDoc().append(div);
+        DApiUI.getDoc().data("data",menu);
+        //初始化copy按钮功能
+        var clipboard = new ClipboardJS('#btnCopy');
+        clipboard.on('success', function(e) {
+            layer.msg("复制成功")
+        });
+        clipboard.on('error', function(e) {
+            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+        });
+
+    }
+
+    /***
      * 获取菜单结构
      */
     DApiUI.getMenuConstructs=function () {
@@ -202,6 +236,15 @@
             dli.addClass("active");
         })
         DApiUI.getMenu().append(dli);
+        //离线文档功能
+        var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
+        mddocli.on("click",function () {
+            DApiUI.log("离线文档功能click")
+            DApiUI.createMarkdownTab(menu);
+            DApiUI.getMenu().find("li").removeClass("active");
+            mddocli.addClass("active");
+        })
+        DApiUI.getMenu().append(mddocli);
         var methodApis=DApiUI.eachPath(menu);
 
         $.each(menu.tags,function (i, tag) {
