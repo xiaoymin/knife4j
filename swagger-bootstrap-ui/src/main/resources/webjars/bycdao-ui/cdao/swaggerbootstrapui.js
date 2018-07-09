@@ -125,9 +125,17 @@
         dli.on("click",function () {
             that.log("简介click")
             that.createDescriptionElement();
+            that.getMenu().find("li").removeClass("active");
             dli.addClass("active");
         })
         that.getMenu().append(dli);
+        //全局参数菜单功能
+        var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
+        globalArgsLi.on("click",function () {
+            console.log("全局参数设置....");
+
+        })
+        that.getMenu().append(globalArgsLi);
         //离线文档功能
         var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
         mddocli.on("click",function () {
@@ -137,44 +145,214 @@
             mddocli.addClass("active");
         })
         that.getMenu().append(mddocli);
-        var methodApis=DApiUI.eachPath(menu);
 
         $.each(that.currentInstance.tags,function (i, tag) {
-            var tagInfo=new TagInfo(tag.name,tag.description);
-            //查找childrens
-            $.each(methodApis,function (i, methodApi) {
-                //判断tags是否相同
-                $.each(methodApi.tag,function(i,tagName){
-                    if(tagName==tagInfo.name){
-                        tagInfo.childrens.push(methodApi);
-                    }
-                })
-            })
-            var len=tagInfo.childrens.length;
+            var len=tag.childrens.length;
             if(len==0){
-                var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> '+tagInfo.name+' </span></a></li>');
-                DApiUI.getMenu().append(li);
+                var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                that.getMenu().append(li);
             }else{
                 //存在子标签
                 var li=$('<li  class="detailMenu"></li>');
-                var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt"></i><span class="menu-text">'+tagInfo.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt"></i><span class="menu-text">'+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                 li.append(titleA);
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
-                $.each(tagInfo.childrens,function (i, children) {
-                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div>'+children.methodType.toUpperCase()+'-<code>'+children.url+'</code></div><div>'+children.summary+'</div></div></li>');
-                    //console.log(children)
-                    //var childrenA=$('<a href="javascript:void(0)"><i class="icon-double-angle-right"></i><div  ><h5><span class="method">['+children.methodType+']</span></h5></div>'+children.summary+'('+children.url+')</a>');
-                    //childrenLi.append(childrenA);
+                $.each(tag.childrens,function (i, children) {
+                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left">'+children.methodType.toUpperCase()+'</span><span class="swu-menu swu-left"><code>'+children.url+'</code></span></div><div>'+children.summary+'</div></div></li>');
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })
                 li.append(ul);
-                DApiUI.getMenu().append(li);
+                that.getMenu().append(li);
             }
         })
-        DApiUI.log("菜单初始化完成...")
-        DApiUI.initLiClick();
+        that.log("菜单初始化完成...")
+        //DApiUI.initLiClick();
+        that.initializationMenuClickEvents();
+    }
+    /***
+     * 初始化菜单点击事件
+     */
+    SwaggerBootstrapUi.prototype.initializationMenuClickEvents=function () {
+        var that=this;
+        that.getMenu().find(".menuLi").bind("click",function (e) {
+            e.preventDefault();
+            var menu=$(this);
+            var data=menu.data("data");
+            that.log("Li标签click事件");
+            that.log(data);
+            //获取parent-Li的class属性值
+            var parentLi=menu.parent().parent();
+            that.log(parentLi);
+            var className=parentLi.prop("class");
+            that.log(className)
+            that.getMenu().find("li").removeClass("active");
+            //parentLi.addClass("active");
+            menu.addClass("active");
+            that.createApiInfoTable(data);
+            //DApiUI.createDebugTab(data);
+        })
+    }
+
+    SwaggerBootstrapUi.prototype.createApiInfoTable=function (apiInfo) {
+        var that=this;
+        var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
+        var thead=$('<thead><tr><th colspan="2" style="text-align:center">API接口文档</th></tr></thead>');
+        table.append(thead);
+        var tbody=$('<tbody></tbody>');
+
+        var url=$('<tr><th class="active" style="text-align: right;">接口url</th><td style="text-align: left"><code>'+$.getStringValue(apiInfo.url)+'</code></td></tr>');
+        tbody.append(url);
+
+        var summary=$('<tr><th class="active" style="text-align: right;">接口名称</th><td style="text-align: left">'+$.getStringValue(apiInfo.summary)+'</td></tr>');
+        tbody.append(summary);
+
+
+        var description=$('<tr><th class="active" style="text-align: right;">说明</th><td style="text-align: left">'+$.getStringValue(apiInfo.description)+'</td></tr>');
+        tbody.append(description);
+
+        var methodType=$('<tr><th class="active" style="text-align: right;">请求方式</th><td style="text-align: left"><code>'+$.getStringValue(apiInfo.methodType)+'</code></td></tr>');
+        tbody.append(methodType);
+
+        var consumesArr=$.getValue(apiInfo,"consumes",new Array(),true);
+        var consumes=$('<tr><th class="active" style="text-align: right;">consumes</th><td style="text-align: left"><code>'+consumesArr+'</code></td></tr>');
+        tbody.append(consumes);
+        var producesArr=$.getValue(apiInfo,"produces",new Array(),true);
+        var produces=$('<tr><th class="active" style="text-align: right;">produces</th><td style="text-align: left"><code>'+producesArr+'</code></td></tr>');
+        tbody.append(produces);
+        //请求参数
+        var args=$('<tr><th class="active" style="text-align: right;">请求参数</th></tr>');
+        //判断是否有请求参数
+        if(typeof (apiInfo.parameters)!='undefined'&&apiInfo.parameters!=null){
+            var ptd=$("<td></td>");
+            var ptable=$('<table class="table table-bordered" id="requestModelTable"></table>')
+            var phead=$('<thead><th>参数名称</th><th>说明</th><th>类型</th><th>in</th><th>是否必须</th></thead>');
+            ptable.append(phead);
+            var pbody=$('<tbody></tbody>');
+            var requestArrs=new Array();
+            $.each(apiInfo.parameters,function (i, param) {
+                var pobject={id:$.generUUID(),field:param.name,description:$.getStringValue(param['description']),type:param.type,in:$.getStringValue(param['in']),required:param['required'],pid:""};
+                requestArrs.push(pobject);
+                that.log(param);
+                if(param.schema){
+
+                }
+            })
+            if(requestArrs.length>0){
+                for(var i=0;i<requestArrs.length;i++){
+                    var arrInfo=requestArrs[i];
+                    var treeClassId="treegrid-"+arrInfo.id;
+                    var treeClassPId="";
+                    if (arrInfo.pid!=""){
+                        treeClassPId="treegrid-parent-"+arrInfo.pid;
+                    }
+                    var tr=$("<tr class='"+treeClassId+" "+treeClassPId+"'></tr>");
+                    tr.append("<td>"+arrInfo.field+"</td><td>"+arrInfo.description+"</td><td>"+arrInfo.type+"</td><td>"+arrInfo.in+"</td><td>"+arrInfo.required+"</td>");
+                    pbody.append(tr);
+                }
+            }else{
+                pbody.append("<tr><td colspan='5'>暂无</td></tr>")
+            }
+            ptable.append(pbody);
+            ptd.append(ptable);
+            args.append(ptd);
+        }else{
+            args.append($('<td  style="text-align: left">暂无</td>'));
+        }
+        tbody.append(args);
+        //响应数据结构
+        var responseConstruct=$('<tr><th class="active" style="text-align: right;">响应Model</th></tr>');
+        var responseConstructtd=$('<td  style="text-align: left"></td>')
+        /*responseConstructtd.append(DApiUI.createResponseDefinition(apiInfo));
+        responseConstruct.append(responseConstructtd);*/
+        tbody.append(responseConstruct)
+
+        //响应参数 add by xiaoymin 2017-8-20 16:17:18
+        var respParams=$('<tr><th class="active" style="text-align: right;">响应参数说明</th></tr>');
+        var respPart=$('<td  style="text-align: left"></td>');
+        /*respPart.append(DApiUI.createResponseDefinitionDetail(apiInfo));*/
+        respParams.append(respPart);
+
+        tbody.append(respParams);
+
+        //响应状态码
+       /* var response=$('<tr><th class="active" style="text-align: right;">响应</th></tr>');
+        if(typeof (apiInfo.responses)!='undefined'&&apiInfo.responses!=null){
+            var resp=apiInfo.responses;
+            var ptd=$("<td></td>");
+            var ptable=$('<table class="table table-bordered"></table>')
+            var phead=$('<thead><th>状态码</th><th>说明</th><th>schema</th></thead>');
+            ptable.append(phead);
+            var pbody=$('<tbody></tbody>');
+            for(var status in resp){
+                var rescrobj=resp[status];
+                var schematd=$("<td></td>");
+                //判断是否存在schma
+                if (rescrobj.hasOwnProperty("schema")){
+                    var schema=rescrobj["schema"];
+                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                    if(regex.test(schema["$ref"])) {
+                        var ptype=RegExp.$1;
+                        schematd.append(ptype);
+                    }
+                }
+                var tr=$("<tr></tr>")
+                var statusTd=$("<td>"+status+"</td>");
+                var description=$("<td>"+rescrobj["description"]+"</td>");
+                tr.append(statusTd).append(description).append(schematd);
+                pbody.append(tr);
+
+            }
+            ptable.append(pbody);
+            ptd.append(ptable);
+            response.append(ptd);
+        }else{
+            response.append($("<td>暂无</td>"));
+        }
+        tbody.append(response);*/
+        table.append(tbody);
+
+        that.creatabTab();
+        //内容覆盖
+        //DApiUI.getDoc().html("");
+        //查找接口doc
+        that.getDoc().find("#tab1").find(".panel-body").html("")
+        that.getDoc().find("#tab1").find(".panel-body").append(table);
+        //DApiUI.getDoc().append(table);
+
+        setTimeout(function () {
+            that.log("执行treegrid方法...")
+            //请求参数调用treegruid方法
+            $("#requestModelTable").treegrid({
+                expanderExpandedClass: 'glyphicon glyphicon-minus',
+                expanderCollapsedClass: 'glyphicon glyphicon-plus'
+            });
+        },100);
+
+    }
+
+    SwaggerBootstrapUi.prototype.creatabTab=function () {
+        var that=this;
+        var divcontent=$('<div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;"></div>');
+        var ul=$('<ul class="nav nav-tabs"></ul>')
+        ul.append($('<li><a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a></li>'));
+        ul.append($('<li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>'));
+        divcontent.append(ul);
+        var tabcontent=$('<div class="tab-content"></div>');
+
+        tabcontent.append($('<div id="tab1" class="tab-pane"><div class="panel-body"><strong>接口详细说明</strong><p>Bootstrap 使用到的某些 HTML 元素和 CSS 属性需要将页面设置为 HTML5 文档类型。在你项目中的每个页面都要参照下面的格式进行设置。</p></div></div>'));
+        tabcontent.append($('<div id="tab2" class="tab-pane"><div class="panel-body"><strong>正在开发中,敬请期待......</strong></div></div>'));
+        divcontent.append(tabcontent);
+        //内容覆盖
+        that.getDoc().html("");
+        that.getDoc().append(divcontent);
+        that.log("动态激活...")
+        //liapi.addClass("active");
+        that.log("动态激活12...")
+        that.getDoc().find("#myTab a:first").tab('show')
+        //$('#myTab a:first').tab('show')
+
     }
     /***
      * 创建简介页面
@@ -397,12 +575,23 @@
                             minfo.in=m.in;
                             minfo.require=m.require;
                             if (m.hasOwnProperty("schema")){
-                                //存在schema属性,请求对象是实体类
-                                minfo.schema=true;
-                                var ref=m["schema"]["$ref"];
-                                var className=$.getClassName(ref);
-                                var def=that.getDefinitionByName(className);
-                                minfo.value=def.value;
+                                var schemaObject=m["schema"];
+                                if (schemaObject.hasOwnProperty("$ref")){
+                                    var ref=m["schema"]["$ref"];
+                                    var className=$.getClassName(ref);
+                                    var def=that.getDefinitionByName(className);
+                                    if(def!=null){
+                                        //存在schema属性,请求对象是实体类
+                                        minfo.schema=true;
+                                        minfo.def=def;
+                                        minfo.value=def.value;
+                                    }
+                                }else{
+                                    if (schemaObject.hasOwnProperty("type")){
+                                        minfo.type=schemaObject["type"];
+                                    }
+                                    minfo.value="";
+                                }
                             }
                             swpinfo.parameters.push(minfo);
                         })
@@ -412,9 +601,19 @@
             }
 
         }
-
+        //tag分组
+        $.each(that.currentInstance.tags,function (i, tag) {
+            //查找childrens
+            $.each(that.currentInstance.paths, function (k, methodApi) {
+                //判断tags是否相同
+                $.each(methodApi.tags, function (x, tagName) {
+                    if (tagName == tag.name) {
+                        tag.childrens.push(methodApi);
+                    }
+                })
+            })
+        });
     }
-
     /***
      * 根据类名查找definition
      */
@@ -429,7 +628,6 @@
         })
         return def;
     }
-
     /***
      * 递归查询definition
      * @param refType
@@ -499,26 +697,25 @@
         var that=this;
         //创建分组flag
         var groupli=$('<li  class="active"></li>');
-        var groupSele=$("<select id='groupSel' style='width:100%;'></select>");
+        var groupSele=$("<select id='groupSel' style='width:100%;' class=\"form-control\"></select>");
         $.each(that.instances,function (i, group) {
             var groupOption=$("<option data-url='"+group.location+"' data-name='"+group.name+"'>"+group.name+"</option>");
             groupSele.append(groupOption);
         })
         groupli.append(groupSele);
         groupSele.on("change",function () {
-            var that=$(this);
-            that.log(that)
-            var name=that.find("option:selected").attr("data-name");
+            var t=$(this);
+            var name=t.find("option:selected").attr("data-name");
             that.log("分组：：");
             that.log(name);
             var instance=that.selectInstanceByGroupName(name);
-            $.log(instance);
+            that.log(instance);
             that.analysisApi(instance);
         })
         that.getMenu().html("");
         that.getMenu().append(groupli);
         //默认加载第一个url
-        that.analysisApi(that.group[0]);
+        that.analysisApi(that.instances[0]);
     }
     /***
      * 获取当前分组实例
@@ -642,8 +839,8 @@
     var SwaggerBootstrapUiTag=function (name, description) {
         this.name=name;
         this.description=description;
+        this.childrens=new Array();
     }
-
     /***
      * Swagger接口基础信息
      * @constructor
@@ -659,7 +856,6 @@
         this.tags=null;
         this.parameters=new Array();
     }
-
     /***
      * Swagger请求参数
      * @constructor
@@ -671,6 +867,8 @@
         this.in=null;
         this.schema=false;
         this.value=null;
+        //引用类
+        this.def=null;
 
     }
     /***
@@ -737,10 +935,21 @@
                 return ptype;
             }
             return null;
+        },
+        getStringValue:function (obj) {
+            var str="";
+            if(typeof (obj)!='undefined'&&obj!=null){
+                str=obj.toString();
+            }
+            return str;
+        },
+        randomNumber:function() {
+            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        },
+        generUUID:function () {
+            return ($.randomNumber()+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+$.randomNumber()+$.randomNumber());
         }
     })
-
-
     /**
      * 运行
      */
