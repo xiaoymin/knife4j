@@ -1001,6 +1001,17 @@
                         //是否有type
                         if(schema.hasOwnProperty("type")){
                             ptype=schema["type"];
+                            if(ptype=="array"){
+                                var itm=schema["items"];
+                                if (itm.hasOwnProperty("$ref")){
+                                    //是否是ref
+                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                    if(regex.test(itm["$ref"])) {
+                                        refflag=true;
+                                        ptype=RegExp.$1;
+                                    }
+                                }
+                            }
                         }else if(schema.hasOwnProperty("$ref")){
                             //是否是ref
                             var regex=new RegExp("#/definitions/(.*)$","ig");
@@ -1042,7 +1053,8 @@
                     pbody.append(ptr);
                 }*/
                 if (refflag){
-                    var mcs=DApiUI.getMenuConstructs();
+                    myFun(pobject, ptype, param, requestArrs);
+                   /* var mcs=DApiUI.getMenuConstructs();
                     for(var k in mcs.definitions){
                         if(ptype==k){
                             var tp=mcs.definitions[ptype];
@@ -1054,7 +1066,7 @@
                                 requestArrs.push(cobj);
                             }
                         }
-                    }
+                    }*/
                 }
             })
             if(requestArrs.length>0){
@@ -1687,7 +1699,42 @@
 
     }
 
-
+    /*create by xujingyang 2018/06/30  修复参数类属性还是实体类不显示的问题，递归获取*/
+    function myFun(pobject, ptype, param, requestArrs) {
+        var mcs = DApiUI.getMenuConstructs();
+        for (var k in mcs.definitions) {
+            if (ptype == k) {
+                var tp = mcs.definitions[ptype];
+                var props = tp["properties"];
+                for (var prop in props) {
+                    var pvalue = props[prop];
+                    var type = DApiUI.toString(pvalue.type, "string");
+                    var cobj = {
+                        id: generUUID(),
+                        field: prop,
+                        description: DApiUI.toString(pvalue.description, ""),
+                        type: type,
+                        in: DApiUI.getStringValue(param['in']),
+                        required: param['required'],
+                        pid: pobject.id
+                    };
+                    requestArrs.push(cobj);
+                    if (pvalue.hasOwnProperty("items")) {
+                        var myItems = pvalue["items"];
+                        if (myItems.hasOwnProperty("$ref")) {
+                            //是否是ref
+                            var regex = new RegExp("#/definitions/(.*)$", "ig");
+                            if (regex.test(myItems["$ref"])) {
+                                refflag = true;
+                                ptype2 = RegExp.$1;
+                                myFun(cobj, ptype2, param, requestArrs);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 
 })(jQuery)
