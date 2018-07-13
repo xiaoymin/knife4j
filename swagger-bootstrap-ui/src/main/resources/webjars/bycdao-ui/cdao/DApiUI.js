@@ -493,12 +493,16 @@
                                     }
                                 }
                                 //遍历proprietary
-                                for(var k in deftion){
-                                    deftion[k]="";
-                                }
-                                if(deftion!=null){
+                                /*create by xjy 此处不能要，不然json数据丢了*/
+                                /*create by xjy 此处不能要，不然json数据丢了*/
+                                /* for (var k in deftion) {
+                                     deftion[k] = "";
+                                 }*/
+                                if (deftion != null) {
                                     //赋值
-                                    val.val(formatterJson(JSON.stringify(deftion)));
+                                    /*create by xjy 新的格式化*/
+                                    // val.val(formatterJson(JSON.stringify(deftion)));
+                                    val.val(JSON.stringify(deftion,null,4));
                                 }
                             }
                         }
@@ -992,6 +996,7 @@
                 var refflag=false;
                 //判断是否有type属性,如果有,则后端为实体类形参
                 var ptype="string";
+                var refType="";
                 if(param.hasOwnProperty("type")){
                     ptype=param["type"];
                 }else{
@@ -1008,7 +1013,7 @@
                                     var regex=new RegExp("#/definitions/(.*)$","ig");
                                     if(regex.test(itm["$ref"])) {
                                         refflag=true;
-                                        ptype=RegExp.$1;
+                                        refType=RegExp.$1;
                                     }
                                 }
                             }
@@ -1053,7 +1058,7 @@
                     pbody.append(ptr);
                 }*/
                 if (refflag){
-                    myFun(pobject, ptype, param, requestArrs);
+                    myFun(pobject, refType, param, requestArrs);
                    /* var mcs=DApiUI.getMenuConstructs();
                     for(var k in mcs.definitions){
                         if(ptype==k){
