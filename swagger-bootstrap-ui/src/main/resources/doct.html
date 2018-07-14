@@ -16,6 +16,7 @@
     <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
     <script src="webjars/bycdao-ui/jquery/marked.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
+    <script src="webjars/bycdao-ui/layui/layui.js"></script>
 </head>
 <body style="overflow: hidden;">
 <div class="bycdao-left" style="height: 100%px;overflow-y: auto;">
@@ -198,6 +199,26 @@
 </div>
 
 <div class="bycdao-main" id="content"  style="height: 100%;overflow-y: auto;">
+
+    <script id="demo" type="text/html">
+        <h3>{{ d.title }}</h3>
+        <ul>
+            {{#  layui.each(d.list, function(index, item){ }}
+            <li>
+                <span>{{ item.modname }}</span>
+                <span>{{ item.alias }}：</span>
+                <span>{{ item.site || '' }}</span>
+            </li>
+            {{#  }); }}
+            {{#  if(d.list.length === 0){ }}
+            无数据
+            {{#  } }}
+        </ul>
+    </script>
+
+    <div id="view">d</div>
+
+
     <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
         <ul class="nav nav-tabs">
             <li class="active">
@@ -293,8 +314,25 @@
 <script type="text/javascript" src="webjars/bycdao-ui/ace/ace.min.js"></script>
 <!--<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js"></script>-->
 <!----jsonhandle-->
+
+
+
+
 <script>
     $(function () {
+        layui.use('laytpl', function(){
+            var laytpl = layui.laytpl;
+            //第三步：渲染模版
+            var data = { //数据
+                "title":"Layui常用模块"
+                ,"list":[{"modname":"弹层","alias":"layer","site":"layer.layui.com"},{"modname":"表单","alias":"form"}]
+            }
+            var getTpl = demo.innerHTML
+                ,view = document.getElementById('view');
+            laytpl(getTpl).render(data, function(html){
+                view.innerHTML = html;
+            });
+        })
         //md2Html的配置
         hljs.configure({useBR: false});
         hljs.initHighlightingOnLoad();

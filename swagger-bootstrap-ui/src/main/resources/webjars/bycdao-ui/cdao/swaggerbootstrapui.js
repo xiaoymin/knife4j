@@ -197,138 +197,85 @@
 
     SwaggerBootstrapUi.prototype.createApiInfoTable=function (apiInfo) {
         var that=this;
-        var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
-        var thead=$('<thead><tr><th colspan="2" style="text-align:center">API接口文档</th></tr></thead>');
-        table.append(thead);
-        var tbody=$('<tbody></tbody>');
+        that.log(apiInfo);
 
-        var url=$('<tr><th class="active" style="text-align: right;">接口url</th><td style="text-align: left"><code>'+$.getStringValue(apiInfo.url)+'</code></td></tr>');
-        tbody.append(url);
-
-        var summary=$('<tr><th class="active" style="text-align: right;">接口名称</th><td style="text-align: left">'+$.getStringValue(apiInfo.summary)+'</td></tr>');
-        tbody.append(summary);
-
-
-        var description=$('<tr><th class="active" style="text-align: right;">说明</th><td style="text-align: left">'+$.getStringValue(apiInfo.description)+'</td></tr>');
-        tbody.append(description);
-
-        var methodType=$('<tr><th class="active" style="text-align: right;">请求方式</th><td style="text-align: left"><code>'+$.getStringValue(apiInfo.methodType)+'</code></td></tr>');
-        tbody.append(methodType);
-
-        var consumesArr=$.getValue(apiInfo,"consumes",new Array(),true);
-        var consumes=$('<tr><th class="active" style="text-align: right;">consumes</th><td style="text-align: left"><code>'+consumesArr+'</code></td></tr>');
-        tbody.append(consumes);
-        var producesArr=$.getValue(apiInfo,"produces",new Array(),true);
-        var produces=$('<tr><th class="active" style="text-align: right;">produces</th><td style="text-align: left"><code>'+producesArr+'</code></td></tr>');
-        tbody.append(produces);
-        //请求参数
-        var args=$('<tr><th class="active" style="text-align: right;">请求参数</th></tr>');
-        //判断是否有请求参数
-        if(typeof (apiInfo.parameters)!='undefined'&&apiInfo.parameters!=null){
-            var ptd=$("<td></td>");
-            var ptable=$('<table class="table table-bordered" id="requestModelTable"></table>')
-            var phead=$('<thead><th>参数名称</th><th>说明</th><th>类型</th><th>in</th><th>是否必须</th></thead>');
-            ptable.append(phead);
-            var pbody=$('<tbody></tbody>');
-            var requestArrs=new Array();
-            $.each(apiInfo.parameters,function (i, param) {
-                var pobject={id:$.generUUID(),field:param.name,description:$.getStringValue(param['description']),type:param.type,in:$.getStringValue(param['in']),required:param['required'],pid:""};
-                requestArrs.push(pobject);
-                that.log(param);
-                if(param.schema){
-
-                }
-            })
-            if(requestArrs.length>0){
-                for(var i=0;i<requestArrs.length;i++){
-                    var arrInfo=requestArrs[i];
-                    var treeClassId="treegrid-"+arrInfo.id;
-                    var treeClassPId="";
-                    if (arrInfo.pid!=""){
-                        treeClassPId="treegrid-parent-"+arrInfo.pid;
-                    }
-                    var tr=$("<tr class='"+treeClassId+" "+treeClassPId+"'></tr>");
-                    tr.append("<td>"+arrInfo.field+"</td><td>"+arrInfo.description+"</td><td>"+arrInfo.type+"</td><td>"+arrInfo.in+"</td><td>"+arrInfo.required+"</td>");
-                    pbody.append(tr);
-                }
-            }else{
-                pbody.append("<tr><td colspan='5'>暂无</td></tr>")
-            }
-            ptable.append(pbody);
-            ptd.append(ptable);
-            args.append(ptd);
-        }else{
-            args.append($('<td  style="text-align: left">暂无</td>'));
-        }
-        tbody.append(args);
-        //响应数据结构
-        var responseConstruct=$('<tr><th class="active" style="text-align: right;">响应Model</th></tr>');
-        var responseConstructtd=$('<td  style="text-align: left"></td>')
-        /*responseConstructtd.append(DApiUI.createResponseDefinition(apiInfo));
-        responseConstruct.append(responseConstructtd);*/
-        tbody.append(responseConstruct)
-
-        //响应参数 add by xiaoymin 2017-8-20 16:17:18
-        var respParams=$('<tr><th class="active" style="text-align: right;">响应参数说明</th></tr>');
-        var respPart=$('<td  style="text-align: left"></td>');
-        /*respPart.append(DApiUI.createResponseDefinitionDetail(apiInfo));*/
-        respParams.append(respPart);
-
-        tbody.append(respParams);
-
-        //响应状态码
-       /* var response=$('<tr><th class="active" style="text-align: right;">响应</th></tr>');
-        if(typeof (apiInfo.responses)!='undefined'&&apiInfo.responses!=null){
-            var resp=apiInfo.responses;
-            var ptd=$("<td></td>");
-            var ptable=$('<table class="table table-bordered"></table>')
-            var phead=$('<thead><th>状态码</th><th>说明</th><th>schema</th></thead>');
-            ptable.append(phead);
-            var pbody=$('<tbody></tbody>');
-            for(var status in resp){
-                var rescrobj=resp[status];
-                var schematd=$("<td></td>");
-                //判断是否存在schma
-                if (rescrobj.hasOwnProperty("schema")){
-                    var schema=rescrobj["schema"];
-                    var regex=new RegExp("#/definitions/(.*)$","ig");
-                    if(regex.test(schema["$ref"])) {
-                        var ptype=RegExp.$1;
-                        schematd.append(ptype);
-                    }
-                }
-                var tr=$("<tr></tr>")
-                var statusTd=$("<td>"+status+"</td>");
-                var description=$("<td>"+rescrobj["description"]+"</td>");
-                tr.append(statusTd).append(description).append(schematd);
-                pbody.append(tr);
-
-            }
-            ptable.append(pbody);
-            ptd.append(ptable);
-            response.append(ptd);
-        }else{
-            response.append($("<td>暂无</td>"));
-        }
-        tbody.append(response);*/
-        table.append(tbody);
-
-        that.creatabTab();
-        //内容覆盖
-        //DApiUI.getDoc().html("");
+        that.createTabElement();
         //查找接口doc
         that.getDoc().find("#tab1").find(".panel-body").html("")
-        that.getDoc().find("#tab1").find(".panel-body").append(table);
-        //DApiUI.getDoc().append(table);
-
         setTimeout(function () {
-            that.log("执行treegrid方法...")
-            //请求参数调用treegruid方法
-            $("#requestModelTable").treegrid({
-                expanderExpandedClass: 'glyphicon glyphicon-minus',
-                expanderCollapsedClass: 'glyphicon glyphicon-plus'
-            });
-        },100);
+            var html = template('contentScript', apiInfo);
+            that.getDoc().find("#tab1").find(".panel-body").html(html)
+            that.markdownDocInit();
+        },100)
+
+        that.log("currentInstance2..................")
+        that.log(that.currentInstance);
+
+    }
+
+    SwaggerBootstrapUi.prototype.markdownDocInit=function () {
+        var that=this;
+        //md2Html的配置
+        hljs.configure({useBR: false});
+        hljs.initHighlightingOnLoad();
+        marked.setOptions({
+            renderer: new marked.Renderer(),
+            gfm: true,
+            emoji: true,
+            tables: true,
+            breaks: false,
+            pedantic: false,
+            sanitize: true,
+            smartLists: true,
+            smartypants: false,
+            highlight: function (code, lang) {
+                try {
+                    if (lang)
+                        return hljs.highlight(lang, code).value;
+                } catch (e) {
+                    return hljs.highlightAuto(code).value;
+                }
+                return hljs.highlightAuto(code).value;
+            }
+        });
+        $("#docText").each(function(){
+            var md = $(this).val();
+            if(md){
+                $("#contentDoc").html(marked(md));
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            }
+        });
+        $("code").css("background-color", "transparent");
+    }
+
+    SwaggerBootstrapUi.prototype.createTabElement=function () {
+        var that=this;
+        var divcontent=$('<div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;"></div>');
+        var ul=$('<ul class="nav nav-tabs"></ul>')
+        ul.append($('<li><a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a></li>'));
+        ul.append($('<li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>'));
+        divcontent.append(ul);
+        var tabcontent=$('<div class="tab-content"></div>');
+
+        tabcontent.append($('<div id="tab1" class="tab-pane"><div class="panel-body"><strong>接口详细说明</strong><p>Bootstrap 使用到的某些 HTML 元素和 CSS 属性需要将页面设置为 HTML5 文档类型。在你项目中的每个页面都要参照下面的格式进行设置。</p></div></div>'));
+        tabcontent.append($('<div id="tab2" class="tab-pane"><div class="panel-body"><strong>正在开发中,敬请期待......</strong></div></div>'));
+        divcontent.append(tabcontent);
+        //内容覆盖
+        that.getDoc().html("");
+        that.getDoc().append(divcontent);
+        that.log("动态激活...")
+        //liapi.addClass("active");
+        that.log("动态激活12...")
+        that.getDoc().find("#myTab a:first").tab('show')
+
+    }
+    /***
+     * 创建markdown文本框
+     * @param apiInfo
+     */
+    SwaggerBootstrapUi.prototype.createMarkdownTxt=function (apiInfo) {
 
     }
 
@@ -454,6 +401,7 @@
                                         var regex=new RegExp("#/definitions/(.*)$","ig");
                                         if(regex.test(ref)){
                                             var refType=RegExp.$1;
+                                            spropObj.refType=refType;
                                             //这里需要递归判断是否是本身,如果是,则退出递归查找
                                             if(refType!=name){
                                                 propValue.push(that.findRefDefinition(refType,definitions,false));
@@ -471,6 +419,7 @@
                                     var regex=new RegExp("#/definitions/(.*)$","ig");
                                     if(regex.test(ref)) {
                                         var refType = RegExp.$1;
+                                        spropObj.refType=refType;
                                         //这里需要递归判断是否是本身,如果是,则退出递归查找
                                         if(refType!=name){
                                             propValue=that.findRefDefinition(refType,definitions,false);
@@ -483,7 +432,6 @@
                                     propValue={};
                                 }
                             }
-
                             spropObj.value=propValue;
                             //addprop
                             swud.properties.push(spropObj);
@@ -573,28 +521,129 @@
                             minfo.name=m.name;
                             minfo.type=m.type;
                             minfo.in=m.in;
-                            minfo.require=m.require;
+                            minfo.require=m.required;
+                            minfo.description=m.description;
                             if (m.hasOwnProperty("schema")){
+                                //存在schema属性,请求对象是实体类
+                                minfo.schema=true;
                                 var schemaObject=m["schema"];
-                                if (schemaObject.hasOwnProperty("$ref")){
-                                    var ref=m["schema"]["$ref"];
+                                var schemaType=schemaObject["type"];
+                                if (schemaType=="array"){
+                                    minfo.type=schemaType;
+                                    var schItem=schemaObject["items"];
+                                    var ref=schItem["$ref"];
                                     var className=$.getClassName(ref);
+                                    minfo.schemaValue=className;
                                     var def=that.getDefinitionByName(className);
                                     if(def!=null){
-                                        //存在schema属性,请求对象是实体类
-                                        minfo.schema=true;
                                         minfo.def=def;
                                         minfo.value=def.value;
                                     }
                                 }else{
-                                    if (schemaObject.hasOwnProperty("type")){
-                                        minfo.type=schemaObject["type"];
+                                    if (schemaObject.hasOwnProperty("$ref")){
+                                        var ref=m["schema"]["$ref"];
+                                        var className=$.getClassName(ref);
+                                        minfo.type=className;
+                                        var def=that.getDefinitionByName(className);
+                                        if(def!=null){
+                                            minfo.def=def;
+                                            minfo.value=def.value;
+                                        }
+                                    }else{
+                                        if (schemaObject.hasOwnProperty("type")){
+                                            minfo.type=schemaObject["type"];
+                                        }
+                                        minfo.value="";
                                     }
-                                    minfo.value="";
                                 }
+
                             }
                             swpinfo.parameters.push(minfo);
+                            //判断当前属性是否是schema
+                            if(minfo.schema){
+                                deepRefParameter(minfo,that,minfo.def,swpinfo);
+                            }
                         })
+                    }
+
+                    var definitionType=null;
+                    var arr=false;
+                    //解析responsecode
+                    if(typeof (apiInfo.responses)!='undefined'&&apiInfo.responses!=null){
+                        var resp=apiInfo.responses;
+                        for(var status in resp) {
+                            var swaggerResp=new SwaggerBootstrapUiResponseCode();
+                            var rescrobj = resp[status];
+                            swaggerResp.code=status;
+                            swaggerResp.description=rescrobj["description"];
+                            if (rescrobj.hasOwnProperty("schema")){
+                                var schema=rescrobj["schema"];
+                                //单引用类型
+                                //判断是否是数组类型
+                                var regex=new RegExp("#/definitions/(.*)$","ig");
+                                if(schema.hasOwnProperty("$ref")){
+                                    if(regex.test(schema["$ref"])) {
+                                        var ptype=RegExp.$1;
+                                        definitionType=ptype;
+                                        swaggerResp.schema=ptype;
+                                    }
+                                }else if(schema.hasOwnProperty("type")){
+                                    var t=schema["type"];
+                                    if (t=="array"){
+                                        arr=true;
+                                        if(schema.hasOwnProperty("items")){
+                                            var items=schema["items"];
+                                            if(regex.test(items["$ref"])) {
+                                                var ptype=RegExp.$1;
+                                                definitionType=ptype;
+                                                swaggerResp.schema=ptype;
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                            swpinfo.responseCodes.push(swaggerResp);
+                        }
+                    }
+
+                    if (definitionType!=null){
+                        //查询
+                        for(var i=0;i<that.currentInstance.difArrs.length;i++){
+                            var ref=that.currentInstance.difArrs[i];
+                            if(ref.name==definitionType){
+                                if (arr){
+                                    var na=new Array();
+                                    na.push(ref.value);
+                                    swpinfo.responseValue=JSON.stringify(na,null,4);
+                                }else{
+                                    swpinfo.responseValue=JSON.stringify(ref.value,null,4);
+                                }
+                            }
+                        }
+                        //响应参数
+                        var def=that.getDefinitionByName(definitionType);
+                        if (def!=null){
+                            if(def.hasOwnProperty("properties")){
+                                var props=def["properties"];
+                                $.each(props,function (i, p) {
+                                    var resParam=new SwaggerBootstrapUiParameter();
+                                    resParam.name=p.name;
+                                    if (!checkParamArrsExists(swpinfo.responseParameters,resParam)){
+                                        swpinfo.responseParameters.push(resParam);
+                                        resParam.type=p.type;
+                                        resParam.description=p.description;
+                                        if(!$.checkIsBasicType(p.refType)){
+                                            resParam.schemaValue=p.refType;
+                                            var deepDef=that.getDefinitionByName(p.refType);
+                                            deepResponseRefParameter(swpinfo,that,deepDef,resParam);
+                                        }
+                                    }
+                                })
+
+                            }
+                        }
+
                     }
                     that.currentInstance.paths.push(swpinfo);
                 }
@@ -613,6 +662,92 @@
                 })
             })
         });
+    }
+
+
+    /***
+     * 是否已经存在
+     * @param arr
+     * @param param
+     * @returns {boolean}
+     */
+    function checkParamArrsExists(arr, param) {
+        var flag=false;
+        if(arr!=null&&arr.length>0){
+            $.each(arr,function (i, a) {
+                if(a.name==param.name){
+                    flag=true;
+                }
+            })
+        }
+        return flag;
+    }
+
+    function deepResponseRefParameter(swpinfo, that, def,resParam) {
+        if (def!=null){
+            if(def.hasOwnProperty("properties")){
+                var refParam=new SwaggerBootstrapUiRefParameter();
+                refParam.name=def.name;
+                if(!checkParamArrsExists(swpinfo.responseRefParameters,refParam)){
+                    swpinfo.responseRefParameters.push(refParam);
+                    if(def.hasOwnProperty("properties")){
+                        var props=def["properties"];
+                        $.each(props,function (i, p) {
+                            var refp=new SwaggerBootstrapUiParameter();
+                            refp.name=p.name;
+                            refp.type=p.type;
+                            refp.description=p.description;
+                            //add之前需要判断是否已添加,递归情况有可能重复
+                            refParam.params.push(refp);
+                            //判断类型是否基础类型
+                            if(!$.checkIsBasicType(p.refType)){
+                                refp.schemaValue=p.refType;
+                                if(resParam.name!=refp.name){
+                                    var deepDef=that.getDefinitionByName(p.refType);
+                                    deepResponseRefParameter(swpinfo,that,deepDef,refp);
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+
+    /***
+     * 递归查询
+     * @param minfo
+     * @param that
+     * @param def
+     */
+    function deepRefParameter(minfo,that,def,apiInfo) {
+        if (def!=null){
+            var refParam=new SwaggerBootstrapUiRefParameter();
+            refParam.name=def.name;
+            if(!checkParamArrsExists(apiInfo.refparameters,refParam)){
+                apiInfo.refparameters.push(refParam);
+                if(def.hasOwnProperty("properties")){
+                    var props=def["properties"];
+                    $.each(props,function (i, p) {
+                        var refp=new SwaggerBootstrapUiParameter();
+                        refp.name=p.name;
+                        refp.type=p.type;
+                        refp.in=minfo.in;
+                        refp.require=minfo.require;
+                        refp.description=p.description;
+                        refParam.params.push(refp);
+                        //判断类型是否基础类型
+                        if(!$.checkIsBasicType(p.refType)){
+                            refp.schemaValue=p.refType;
+                            if(minfo.name!=refp.name){
+                                var deepDef=that.getDefinitionByName(p.refType);
+                                deepRefParameter(refp,that,deepDef,apiInfo);
+                            }
+                        }
+                    })
+                }
+            }
+        }
     }
     /***
      * 根据类名查找definition
@@ -822,6 +957,7 @@
         this.basic=true;
         this.name="";
         this.type="";
+        this.refType=null;
         this.description="";
         this.example="";
         this.format="";
@@ -855,7 +991,24 @@
         this.produces=null;
         this.tags=null;
         this.parameters=new Array();
+        //针对parameter属性有引用类型的参数,继续以table 的形式展现
+        //存放SwaggerBootstrapUiRefParameter 集合
+        this.refparameters=new Array();
+        this.responseCodes=new Array();
+        this.responseValue=null;
+        //响应字段说明
+        this.responseParameters=new Array();
+        this.responseRefParameters=new Array();
+
+
     }
+
+    var SwaggerBootstrapUiRefParameter=function () {
+        this.name=null;
+        //存放SwaggerBootstrapUiParameter集合
+        this.params=new Array();
+    }
+
     /***
      * Swagger请求参数
      * @constructor
@@ -866,11 +1019,23 @@
         this.type=null;
         this.in=null;
         this.schema=false;
+        this.schemaValue=null;
         this.value=null;
         //引用类
         this.def=null;
-
+        //des
+        this.description=null;
     }
+    /***
+     * 响应码
+     * @constructor
+     */
+    var SwaggerBootstrapUiResponseCode=function () {
+        this.code=null;
+        this.description=null;
+        this.schema=null;
+    }
+
     /***
      * 公共方法
      */
@@ -892,8 +1057,10 @@
         checkIsBasicType:function(type) {
             var basicTypes=["string","integer","number","object","boolean"];
             var flag=false;
-            if($.inArray(type,basicTypes)>-1){
-                flag=true;
+            if(type!=null){
+                if($.inArray(type,basicTypes)>-1){
+                    flag=true;
+                }
             }
             return flag;
         },
@@ -950,6 +1117,10 @@
             return ($.randomNumber()+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+$.randomNumber()+$.randomNumber());
         }
     })
+
+
+    window.SwaggerBootstrapUi=SwaggerBootstrapUi;
+
     /**
      * 运行
      */

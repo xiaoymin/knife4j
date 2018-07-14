@@ -16,186 +16,144 @@
     <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
     <script src="webjars/bycdao-ui/jquery/marked.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
+    <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
 </head>
 <body style="overflow: hidden;">
 <div class="bycdao-left" style="height: 100%px;overflow-y: auto;">
     <ul class="nav nav-list" id="menu">
-        <li class="">
-            <select id="groupSel" style="width:100%;" class="form-control">
-                <option data-url="/v2/api-docs?group=分组接口" data-name="分组接口">分组接口</option>
-                <option data-url="/v2/api-docs?group=默认接口" data-name="默认接口">默认接口</option>
-            </select>
+        <li >
+            <a href="javascript:void(0)">
+                <i class="icon-text-width"></i>
+                <span class="menu-text"> 简介 </span>
+            </a>
         </li>
-        <li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> 简介 </span></a></li>
-        <li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> 全局参数设置 </span></a></li>
-        <li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> 离线文档(MD) </span></a></li>
-        <li class="detailMenu">
-            <a href="#" class="dropdown-toggle"><i class="icon-file-alt"></i><span class="menu-text">测试C<span class="badge badge-primary ">5</span></span><b class="arrow icon-angle-down"></b></a>
-            <ul class="submenu" style="display: block;">
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">GET</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
+        <li class="active">
+            <a href="#" class="dropdown-toggle">
+                <i class="icon-file-alt"></i>
+                <span class="menu-text">
+									其他页面
+									<span class="badge badge-primary ">3</span>
+								</span>
+                <b class="arrow icon-angle-down"></b>
+            </a>
+            <ul class="submenu">
+                <li>
+                    <a href="javascript:void(0)">
+                        <i class="icon-double-angle-right"></i>
+                        帮助
+                    </a>
                 </li>
 
-            </ul>
-        </li>
-        <li class="detailMenu"><a href="#" class="dropdown-toggle"><i class="icon-file-alt"></i><span class="menu-text">测试C<span class="badge badge-primary ">5</span></span><b class="arrow icon-angle-down"></b></a>
-            <ul class="submenu" style="display: block;">
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">GET</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
+                <li>
+                    <a href="javascript:void(0)">
+                        <i class="icon-double-angle-right"></i>
+                        404错误页面
+                    </a>
                 </li>
 
-            </ul>
-        </li>
-        <li class="detailMenu"><a href="#" class="dropdown-toggle"><i class="icon-file-alt"></i><span class="menu-text">测试C<span class="badge badge-primary ">5</span></span><b class="arrow icon-angle-down"></b></a>
-            <ul class="submenu" style="display: block;">
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
+                <li>
+                    <a href="javascript:void(0)">
+                        <i class="icon-double-angle-right"></i>
+                        500错误页面
+                    </a>
                 </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">GET</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-
-            </ul>
-        </li>
-        <li class="detailMenu"><a href="#" class="dropdown-toggle"><i class="icon-file-alt"></i><span class="menu-text">测试C<span class="badge badge-primary ">5</span></span><b class="arrow icon-angle-down"></b></a>
-            <ul class="submenu" style="display: block;">
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">GET</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-                <li class="menuLi list-group-item">
-                    <div class="mhed">
-                        <div class="swu-hei">
-                            <span class="swu-menu swu-left">POST</span>
-                            <span class="swu-menu swu-left"><code>/api/testc/resp</code></span>
-                        </div>
-                        <div>获取资源详细信息</div>
-                    </div>
-                </li>
-
             </ul>
         </li>
     </ul>
 </div>
+
+<script type="text/html" id="contentScript">
+    <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
+        <div style="    float: left;width: 90%;font-size: 20px;">{{summary}}</div>
+        <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a style="cursor: pointer;text-decoration: none;
+" href="javascript:void(0);">复制文档</a></div>
+    </div>
+    <div class="swbu-main" itemprop="articleBody">
+        <div id="contentDoc"></div>
+        <!--<textarea rows="10" cols="10" id="docText">-->
+        <textarea rows="10" cols="10" id="docText" style="display: none;">
+
+**接口说明**:{{description}}
+
+
+**接口地址**:`{{url}}`
+
+
+**请求方式**：`{{methodType}}`
+
+
+**consumes**:`{{consumes}}`
+
+
+**produces**:`{{produces}}`
+
+
+**请求参数**：
+{{ if parameters}}
+| 参数名称         | 说明                             |    类型|  schema  | in |是否必须                         |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+{{each parameters}}| {{$value.name}}         |      {{$value.description}}      |      {{$value.type}}   | {{$value.schemaValue}}     |    {{$value.in}}        |       {{$value.require}}                    |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if refparameters && refparameters.length>0 }}
+**属性参数说明**
+  {{each refparameters}}
+**{{$value.name}}**
+
+| 参数名称         | 说明                             |    类型 |  schema | in |是否必须                         |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+{{each $value.params}}| {{$value.name}}         |      {{$value.description}}      |      {{$value.type}}  | {{$value.schemaValue}}      |    {{$value.in}}        |       {{$value.require}}        |
+            {{/each}}
+{{/each}}
+
+{{/if}}
+
+**响应数据**:
+
+```json
+{{responseValue}}
+```
+
+**响应参数说明**:
+{{ if responseParameters}}
+| 参数名称         | 说明                             |    类型 |  schema |
+| ------------ | -------------------|-------|----------- |
+{{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if responseRefParameters && responseRefParameters.length>0 }}
+**属性参数说明**
+  {{each responseRefParameters}}
+**{{$value.name}}**
+
+| 参数名称         |  说明          |   类型  |  schema |
+| ------------ | ------------------|--------|----------- |
+{{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{/each}}
+
+{{/if}}
+
+**响应状态码说明**:
+{{ if responseCodes}}
+| 状态码         | 说明                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
+{{/each}}
+{{else}}
+暂无
+{{/if}}
+
+
+</textarea>
+    </div>
+</script>
 
 <div class="bycdao-main" id="content"  style="height: 100%;overflow-y: auto;">
     <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
@@ -207,77 +165,8 @@
         </ul>
         <div class="tab-content">
             <div id="tab1" class="tab-pane active">
-                <div class="panel-body">
-                    <div style="padding: 20px 0; border-bottom: 1px dashed #ccc">
-                        <h1 id="swbu-title" itemprop="name">获取菜单</h1>
-                    </div>
-                    <div class="swbu-main" itemprop="articleBody">
-                        <div id="contentDoc"></div>
-                        <textarea rows="" cols="" id="docText" style="display: none;">
-**接口说明**:获取菜单,考虑递归的情况
+                <div class="panel-body" id="tabBody">
 
-**接口地址**:`/api/menu/getMenu`
-
-**请求方式**：`POST`
-
-**consumes**:`application/json`
-
-**produces**:`*/*`
-
-**请求参数**：暂无
-
-**响应格式**:
-
-```json
-{
-    "code": "8200",
-    "message": "Success",
-    "data": {
-        "count": 90,
-        "page_size": 10,
-        "current_page": 1,
-        "data": [
-            {
-                "code": "330000000000",
-                "is_deleted": 0,
-                "modified_time": null,
-                "create_time": "2018-06-08 17:15:43.0",
-                "modified_id": null,
-                "parent_id": "root",
-                "name": "浙江省",
-                "creator_id": "",
-                "description": "浙江省",
-                "id": "454695033216434176"
-            }
-        ],
-        "total_page": 9,
-        "errCode": null,
-        "success": true,
-        "message": null
-    }
-}
-```
-**响应参数说明**:
-
-| 参数         | 说明                             |
-| ------------ | -------------------------------- |
-| dsId         | 数据源id                         |
-| tableName    | 实体表名称，模糊查询字段，可为空 |
-| current_page | 当前页码，默认1                  |
-| page_size    | 页码大小,默认10                  |
-
-**响应状态码说明**:
-
-| 状态码         | 说明                             |    schema                         |
-| ------------ | -------------------------------- |---------------------- |
-| 200         | OK                        |                           |
-| 201    | Created |                           |
-| 401 | Unauthorized                  |                           |
-| 403    | Forbidden                  |                              |
-| 404    | Not Found                 |                              |
-
-</textarea>
-                    </div>
                 </div>
             </div>
             <div id="tab2" class="tab-pane">
@@ -293,39 +182,7 @@
 <!----jsonhandle-->
 <script>
     $(function () {
-        //md2Html的配置
-        hljs.configure({useBR: false});
-        hljs.initHighlightingOnLoad();
-        marked.setOptions({
-            renderer: new marked.Renderer(),
-            gfm: true,
-            emoji: true,
-            tables: true,
-            breaks: false,
-            pedantic: false,
-            sanitize: true,
-            smartLists: true,
-            smartypants: false,
-            highlight: function (code, lang) {
-                try {
-                    if (lang)
-                        return hljs.highlight(lang, code).value;
-                } catch (e) {
-                    return hljs.highlightAuto(code).value;
-                }
-                return hljs.highlightAuto(code).value;
-            }
-        });
-        $("#docText").each(function(){
-            var md = $(this).val();
-            if(md){
-                $("#contentDoc").html(marked(md));
-                $('pre code').each(function(i, block) {
-                    hljs.highlightBlock(block);
-                });
-            }
-        });
-        $("code").css("background-color", "transparent");
+
     })
 </script>
 </body>
