@@ -61,11 +61,105 @@
         </li>
     </ul>
 </div>
+<!--离线文档说明-->
+<script type="text/html" id="offLinecontentScript">
+    <div  style="width:99%;margin:0px auto;">
+        <div class="alert alert-info" role="alert">swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.</div>
+        <div class="input-inline" style="margin-bottom:10px;">
+            <button class="btn btn-primary" type="button" id="btnCopy"  >拷贝文档</button>
+        </div>
+        <div class='input-inline'>
+            <textarea class='form-control' style='width: 100%;height: 100%;' id="txtOffLineDoc">
+# 简介
 
+**标题**：{{title}}
+
+**简介**：{{description}}
+
+**HOST**:{{host}}
+
+**联系人**:{{contact}}
+
+**接口路径**：{{location}}
+<% for( i = 0; i < tags.length; i++) { var tag=tags[i] ; %># <%= tag.name %><% for( j = 0; j < paths.length; j++) {var path=paths[j]; if(path.tags.indexOf(tag.name)>-1){ %>
+## <%= path.summary %>
+
+**接口说明**:<%= path.description %>
+
+
+**接口地址**:`<%= path.url %>`
+
+
+**请求方式**：`<%= path.methodType %>`
+
+
+**consumes**:`<%= path.consumes %>`
+
+
+**produces**:`<%= path.produces %>`
+
+**请求参数**：
+<% if(path.parameters!=null && path.parameters.length>0){ %>
+| 参数名称         | 说明     |     in |  是否必须      |  类型   |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+<% for( a = 0; a < path.parameters.length; a++) {var param=path.parameters[a]; %>|<%=param.name%>| <%=param.description%>  | <%=param.in%> | <%=param.require%> |<%=param.type%>  | <%=param.schemaValue%>   |
+                <%}%>
+<%}else{%>暂无<%}%><% if(path.refparameters!=null && path.refparameters.length>0){ %>
+**schema属性说明**
+<% for( a = 0; a < path.refparameters.length; a++) { var ref=path.refparameters[a];%>
+**<%=ref.name%>**
+| 参数名称         | 说明    |     in |  是否必须   |  类型  |  schema |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+<% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%>| <%=rp.description%>  | <%=rp.in%> | <%=rp.require%> |<%=rp.type%>  | <%=rp.schemaValue%>   |
+                <%}}}%>
+**响应数据**:
+
+```json
+<%= path.responseValue %>
+```
+**响应参数说明**:
+<% if(path.responseParameters!=null && path.responseParameters.length>0){ %>
+| 参数名称         | 说明                             |    类型 |  schema |
+| ------------ | -------------------|-------|----------- |
+<% for( a = 0; a < path.responseParameters.length; a++) { var param=path.responseParameters[a];%>|<%=param.name%>| <%=param.description%>  |<%=param.type%>  | <%=param.schemaValue%>   |
+<%}}else{%>
+暂无
+<%}%>
+<% if(path.responseRefParameters!=null && path.responseRefParameters.length>0){ %>
+**schema属性说明**
+<% for( a = 0; a < path.responseRefParameters.length; a++) { var ref=path.responseRefParameters[a];%>
+**<%=ref.name%>**
+| 参数名称         |  说明          |   类型  |  schema |
+| ------------ | ------------------|--------|----------- |
+<% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
+                <%}%>
+<%}}%>
+**响应状态码说明**:
+<% if(path.responseCodes!=null && path.responseCodes.length>0){ %>
+| 状态码         | 说明                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+<% for( a = 0; a < path.responseCodes.length; a++) { var param=path.responseCodes[a];%>| <%=param.code%> | <%=param.description%>  |<%=param.schema%>|
+                <%}%>
+<%}else{%>
+暂无
+<%}%>
+        <%}%>
+    <%}%>
+<%}%>
+
+
+
+
+            </textarea>
+        </div>
+    </div>
+</script>
+
+<!--文档说明-->
 <script type="text/html" id="contentScript">
     <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
         <div style="    float: left;width: 90%;font-size: 20px;">{{summary}}</div>
-        <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a style="cursor: pointer;text-decoration: none;
+        <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHref" style="cursor: pointer;text-decoration: none;
 " href="javascript:void(0);">复制文档</a></div>
     </div>
     <div class="swbu-main" itemprop="articleBody">
@@ -89,23 +183,23 @@
 
 
 **请求参数**：
-{{ if parameters}}
-| 参数名称         | 说明                             |    类型|  schema  | in |是否必须                         |
+{{ if parameters && parameters.length>0 }}
+| 参数名称         | 说明     |     in |  是否必须      |  类型   |  schema  |
 | ------------ | -------------------------------- |-----------|--------|----|--- |
-{{each parameters}}| {{$value.name}}         |      {{$value.description}}      |      {{$value.type}}   | {{$value.schemaValue}}     |    {{$value.in}}        |       {{$value.require}}                    |
+{{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
             {{/each}}
 {{else}}
 暂无
 {{/if}}
 
 {{ if refparameters && refparameters.length>0 }}
-**属性参数说明**
+**schema属性说明**
   {{each refparameters}}
 **{{$value.name}}**
 
-| 参数名称         | 说明                             |    类型 |  schema | in |是否必须                         |
+| 参数名称         | 说明    |     in |  是否必须   |  类型  |  schema |
 | ------------ | -------------------------------- |-----------|--------|----|--- |
-{{each $value.params}}| {{$value.name}}         |      {{$value.description}}      |      {{$value.type}}  | {{$value.schemaValue}}      |    {{$value.in}}        |       {{$value.require}}        |
+{{each $value.params}}| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |
             {{/each}}
 {{/each}}
 
@@ -118,7 +212,7 @@
 ```
 
 **响应参数说明**:
-{{ if responseParameters}}
+{{ if responseParameters && responseParameters.length>0 }}
 | 参数名称         | 说明                             |    类型 |  schema |
 | ------------ | -------------------|-------|----------- |
 {{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
@@ -128,7 +222,7 @@
 {{/if}}
 
 {{ if responseRefParameters && responseRefParameters.length>0 }}
-**属性参数说明**
+**schema属性说明**
   {{each responseRefParameters}}
 **{{$value.name}}**
 

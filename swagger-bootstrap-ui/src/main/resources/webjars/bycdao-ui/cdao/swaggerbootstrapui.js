@@ -197,8 +197,6 @@
 
     SwaggerBootstrapUi.prototype.createApiInfoTable=function (apiInfo) {
         var that=this;
-        that.log(apiInfo);
-
         that.createTabElement();
         //查找接口doc
         that.getDoc().find("#tab1").find(".panel-body").html("")
@@ -207,9 +205,21 @@
             that.getDoc().find("#tab1").find(".panel-body").html(html)
             that.markdownDocInit();
         },100)
-
         that.log("currentInstance2..................")
         that.log(that.currentInstance);
+        //实现复制文档功能
+        //初始化copy按钮功能
+        var clipboard = new ClipboardJS('#copyDocHref',{
+            text:function () {
+                return $("#docText").val();
+            }
+        });
+        clipboard.on('success', function(e) {
+            layer.msg("复制成功")
+        });
+        clipboard.on('error', function(e) {
+            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+        });
 
     }
 
@@ -329,7 +339,7 @@
      */
     SwaggerBootstrapUi.prototype.createMarkdownTab=function () {
         var that=this;
-        var description="swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.";
+        /*var description="swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.";
         var divdes=$('<div class="alert alert-info" role="alert">'+description+'</div>');
         var div=$('<div  style="width:99%;margin:0px auto;"></div>');
         div.append(divdes);
@@ -340,19 +350,25 @@
         div.append(toolbarDiv);
         //添加textarea
         var txtDiv=$("<div class='input-inline'><textarea class='form-control' style='width: 100%;height: 100%;' id='txtDoc'></textarea></div>")
-        div.append(txtDiv);
+        div.append(txtDiv);*/
         //内容覆盖
         that.getDoc().html("");
-        that.getDoc().append(div);
-        //初始化copy按钮功能
-        var clipboard = new ClipboardJS('#btnCopy');
+        console.log(that.currentInstance)
+        setTimeout(function () {
+            var html = template('offLinecontentScript', that.currentInstance);
+            that.getDoc().html(html);
+        },100)
+        var clipboard = new ClipboardJS('#btnCopy',{
+            text:function () {
+                return $("#txtOffLineDoc").val();
+            }
+        });
         clipboard.on('success', function(e) {
             layer.msg("复制成功")
         });
         clipboard.on('error', function(e) {
             layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
         });
-
     }
     /***
      * 解析实例属性
