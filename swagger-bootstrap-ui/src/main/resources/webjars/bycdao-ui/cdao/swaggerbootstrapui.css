@@ -1,5 +1,5 @@
 .bycdao-left {
-    width: 300px;
+    width: 310px;
     margin-top: 0px;
     position: fixed;
     background: #337ab7;
@@ -7,7 +7,7 @@
     transition: all 0.2s;
 }
 .bycdao-main {
-    margin-left: 300px;
+    margin-left: 310px;
     padding-top: 5px;
     /* padding-left: 15px;*/
     padding-right: 15px;

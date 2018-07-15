@@ -22,7 +22,7 @@
     <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
 </head>
 <body style="overflow: hidden;">
-<div class="bycdao-left" style="height: 100%px;overflow-y: auto;">
+<div class="bycdao-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
     <ul class="nav nav-list" id="menu">
         <li >
             <a href="javascript:void(0)">
@@ -266,7 +266,7 @@
         </div>
         <div style="margin-top: 15px;">
             <div class="swbu-main">
-                <%if(parameters!=null && parameters.length>0){ var fileform=false;%>
+                <%if((parameters!=null && parameters.length>0)||(globalParameters!=null && globalParameters.length>0)){ var fileform=false;%>
                 <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
                 <%  if(param.type=="MultipartFile"){ fileform=true;}%>
                 <%}%>
@@ -283,6 +283,39 @@
                         </tr>
                         </thead>
                         <tbody id="paramBody">
+                        <!--遍历 是否有全局参数--->
+                        <%if(globalParameters!=null && globalParameters.length>0){ %>
+                            <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                                <%if(param.in!="header"){%>
+                                    <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                                        <td width="5%">
+                                            <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                                        </td>
+                                        <td width="35%">
+                                            <input class="form-control p-key" value="<%=param.name%>">
+                                        </td>
+                                        <td>
+                                            <%if(param.in=="body"){  %>
+                                            <%if(param.type=="MultipartFile"){%>
+                                            <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                            <%}else {%>
+                                            <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                                      name="<%=param.name%>" data-name="<%=param.name%>"
+                                                      placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                            <%}%>
+                                            <%}else{%>
+                                            <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                                   data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                            <%}%>
+                                        </td>
+                                        <td width="5%">
+                                            <button class="btn btn-danger btn-circle btn-small" type="button"><strong>×</strong></button>
+                                        </td>
+                                    </tr>
+                                <%}%>
+                            <%}%>
+                        <%}%>
+
                         <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
                         <%if(param.in!="header"){%>
                             <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>">
@@ -324,12 +357,43 @@
                         <thead>
                         <tr>
                             <th></th>
-                            <th>参数名称</th>
+                            <th>参数名称1</th>
                             <th>参数值</th>
                             <th>操作</th>
                         </tr>
                         </thead>
                         <tbody id="paramBody">
+                        <!--遍历 是否有全局参数--->
+                        <%if(globalParameters!=null && globalParameters.length>0){ %>
+                        <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                            <td width="5%">
+                                <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                            </td>
+                            <td width="35%">
+                                <input class="form-control p-key" value="<%=param.name%>">
+                            </td>
+                            <td>
+                                <%if(param.in=="body"){  %>
+                                    <%if(param.type=="MultipartFile"){%>
+                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                    <%}else {%>
+                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                              name="<%=param.name%>" data-name="<%=param.name%>"
+                                              placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                    <%}%>
+                                <%}else{%>
+                                <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                       data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                <%}%>
+                            </td>
+                            <td width="5%">
+                                <button class="btn btn-danger btn-circle btn-small" type="button"><strong>×</strong></button>
+                            </td>
+                        </tr>
+                        <%}%>
+                        <%}%>
+
                         <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
                         <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
                             <td width="5%">
@@ -368,6 +432,42 @@
         </div>
     </div>
 </script>
+<!--全局参数-->
+<script type="text/html" id="GlobalParamScript">
+    <div  style="width:99%;margin:0px auto;">
+        <div class="alert alert-info" role="alert">swagger-bootstrap-ui 提供全局参数Debug功能,默认提供header(请求头)、query(form)两种方式的入参.<br /><br />
+            在此添加全局参数后,默认Debug调试tab页会带上该参数,该全局参数只在该分组下有效,不同的分组需要分别设置</div>
+        <div class="input-inline" style="margin-bottom:10px;">
+            <button class="btn btn-primary" type="button" id="btnAddParam"  >添加参数</button>
+        </div>
+        <div style="margin-top: 15px;">
+            <div class="swbu-main">
+                <table class="" id="globalTable">
+                    <thead>
+                    <tr>
+                        <th>参数名称</th>
+                        <th>参数值</th>
+                        <th>参数类型</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="globalTabBody">
+                    <%if(globalParameters!=null && globalParameters.length>0){ %>
+                    <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                    <tr>
+                        <td><input class="form-control p-key" value="<%=param.name%>" data-old='<%=param.name%>'></td>
+                        <td><input class="form-control p-key" value="<%=param.value%>"></td>
+                        <td><select class='form-control'><option value='header'<%if(param.in=="header"){%>  selected  <%}%> >header</option><option value='query' <%if(param.in=="query"){%>  selected  <%}%>>query</option></select></td>
+                        <td><button class="btn btn-circle btn-info btn-small btn-save" type="button">保存</button>&nbsp;&nbsp;<button class="btn btn-circle btn-small btn-cancel" type="button">取消</button></td>
+                    </tr>
+
+                    <%}}%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</script>
 
 <div class="bycdao-main" id="content"  style="height: 100%;overflow-y: auto;">
     <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
@@ -394,10 +494,5 @@
 <script type="text/javascript" src="webjars/bycdao-ui/ace/ace.min.js"></script>
 <script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js"></script>
 <!----jsonhandle-->
-<script>
-    $(function () {
-
-    })
-</script>
 </body>
 </html>

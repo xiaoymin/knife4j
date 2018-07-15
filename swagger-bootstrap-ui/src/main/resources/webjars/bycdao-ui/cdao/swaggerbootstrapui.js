@@ -132,8 +132,9 @@
         //全局参数菜单功能
         var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
         globalArgsLi.on("click",function () {
-            console.log("全局参数设置....");
-
+            that.getMenu().find("li").removeClass("active");
+            globalArgsLi.addClass("active");
+            that.createGlobalParametersElement();
         })
         that.getMenu().append(globalArgsLi);
         //离线文档功能
@@ -170,6 +171,192 @@
         that.log("菜单初始化完成...")
         //DApiUI.initLiClick();
         that.initializationMenuClickEvents();
+    }
+    /***
+     * 创建全局参数
+     */
+    SwaggerBootstrapUi.prototype.createGlobalParametersElement=function () {
+        var that=this;
+        that.log(that.currentInstance)
+        //内容覆盖
+        that.getDoc().html("");
+        setTimeout(function () {
+            var html = template('GlobalParamScript', that.currentInstance);
+            that.getDoc().html(html);
+
+            that.log("注册btnAddParam-click事件")
+            that.log(that.getDoc().find("#btnAddParam"))
+            //初始化添加按钮click事件
+            that.getDoc().find("#btnAddParam").on("click",function (e) {
+                e.preventDefault();
+                that.log("btnAddParam-click")
+                var tr=$("<tr></tr>");
+                //输入参数名称
+                var nameTd=$("<td><input class=\"form-control p-key\" value=\"\" data-old=''></td>");
+                //参数值
+                var valueTd=$("<td><input class=\"form-control p-key\" value=\"\"></td>");
+                //参数类型
+                var typeTd=$("<td><select class='form-control'><option value='header'>header</option><option value='query'>query</option></select></td>");
+                //操作
+                var operateTd=$("<td>&nbsp;&nbsp;</td>")
+                var btnSave=$("<button class=\"btn btn-circle btn-info btn-small btn-save\" type=\"button\">保存</button>");
+                var btnCancel=$("<button class=\"btn btn-circle btn-small btn-cancel\" type=\"button\">取消</button>");
+                operateTd.append(btnSave).append("&nbsp;&nbsp;").append(btnCancel);
+                tr.append(nameTd).append(valueTd).append(typeTd).append(operateTd);
+                that.getDoc().find("#globalTabBody").append(tr);
+                //保存事件
+                btnSave.on("click",function (e) {
+                    e.preventDefault();
+                    var save=$(this);
+                    var ptr=save.parent().parent();
+                    var name=ptr.find("td:eq(0)").find("input:first").val();
+                    var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
+                    var value=ptr.find("td:eq(1)").find("input:first").val();
+                    var type=ptr.find("td:eq(2)").find("select:first").val();
+                    that.log("name:"+name+",value:"+value+",type:"+type+",oldname:"+oldname);
+                    if(name==null||name==""){
+                        layer.msg("请输入全局参数名称");
+                        return false;
+                    }
+                    if(value==null||value==""){
+                        layer.msg("请输入全局参数值");
+                        return false;
+                    }
+                    var globalParameterInstance=new SwaggerBootstrapUiParameter();
+                    globalParameterInstance.name=name;
+                    globalParameterInstance.in=type;
+                    globalParameterInstance.value=value;
+                    globalParameterInstance.type="string";
+                    globalParameterInstance.require=true;
+                    //判断old
+                    if(oldname!=null&&oldname!=""&&oldname!=name){
+                        //删除旧参数
+                        that.deleteGlobalParamsByName(oldname);
+                    }
+                    if (!that.checkGlobalParamExists(globalParameterInstance)){
+                        that.currentInstance.globalParameters.push(globalParameterInstance);
+                    }else{
+                        //存在,更新该参数的值
+                        that.updateGlobalParams(globalParameterInstance);
+                    }
+                    that.log("目前全局参数..")
+                    that.log(that.currentInstance.globalParameters);
+                    layer.msg("保存成功")
+                })
+                //取消时间
+                btnCancel.on("click",function (e) {
+                    e.preventDefault();
+                    var cancel=$(this);
+                    that.log(cancel)
+                    var ptr=cancel.parent().parent();
+                    var name=ptr.find("td:eq(0)").find("input:first").val();
+                    var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
+                    if(oldname!=name){
+                        that.deleteGlobalParamsByName(oldname)
+                    }
+                    if(name!=undefined&& name!=null&&name!=""){
+                        that.deleteGlobalParamsByName(name);
+                    }
+                    cancel.parent().parent().remove();
+                    layer.msg("删除成功")
+                })
+            })
+
+            //全局保存事件
+            that.getDoc().find(".btn-save").on("click",function (e) {
+                var save=$(this);
+                var ptr=save.parent().parent();
+                var name=ptr.find("td:eq(0)").find("input:first").val();
+                var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
+                var value=ptr.find("td:eq(1)").find("input:first").val();
+                var type=ptr.find("td:eq(2)").find("select:first").val();
+                that.log("name:"+name+",value:"+value+",type:"+type+",oldname:"+oldname);
+                if(name==null||name==""){
+                    layer.msg("请输入全局参数名称");
+                    return false;
+                }
+                if(value==null||value==""){
+                    layer.msg("请输入全局参数值");
+                    return false;
+                }
+                var globalParameterInstance=new SwaggerBootstrapUiParameter();
+                globalParameterInstance.name=name;
+                globalParameterInstance.in=type;
+                globalParameterInstance.value=value;
+                that.log(oldname!=name)
+                //判断old
+                if(oldname!=name){
+                    console.log("delete?")
+                    //删除旧参数
+                    that.deleteGlobalParamsByName(oldname);
+                }
+                if (!that.checkGlobalParamExists(globalParameterInstance)){
+                    that.currentInstance.globalParameters.push(globalParameterInstance);
+                }else{
+                    //存在,更新该参数的值
+                    that.updateGlobalParams(globalParameterInstance);
+                }
+                that.log("目前全局参数..")
+                that.log(that.currentInstance.globalParameters);
+                layer.msg("保存成功")
+            })
+            //全局取消事件
+            that.getDoc().find(".btn-cancel").on("click",function (e) {
+                e.preventDefault();
+                var cancel=$(this);
+                that.log(cancel)
+                var ptr=cancel.parent().parent();
+                var name=ptr.find("td:eq(0)").find("input:first").val();
+                var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
+                if(oldname!=null&&oldname!=""){
+                    that.deleteGlobalParamsByName(oldname)
+                }
+                if(name!=undefined&& name!=null&&name!=""){
+                    that.deleteGlobalParamsByName(name);
+                }
+                cancel.parent().parent().remove();
+                layer.msg("删除成功")
+            })
+
+        },100)
+
+
+    }
+    /***
+     * 判断全局参数是否存在
+     * @param param
+     */
+    SwaggerBootstrapUi.prototype.checkGlobalParamExists=function (param) {
+        var that=this;
+        var flag=false;
+        $.each(that.currentInstance.globalParameters,function (i, gp) {
+            if(gp.name==param.name){
+                flag=true;
+            }
+        })
+        return flag;
+    }
+    SwaggerBootstrapUi.prototype.updateGlobalParams=function (param) {
+        var that=this;
+        $.each(that.currentInstance.globalParameters,function (i, gp) {
+            if(gp.name==param.name){
+                gp.in=param.in;
+                gp.value=param.value;
+            }
+        })
+    }
+    /***
+     * 根据名称删除全局参数数组
+     * @param name
+     */
+    SwaggerBootstrapUi.prototype.deleteGlobalParamsByName=function (name) {
+        var that=this;
+        for(var i=0;i<that.currentInstance.globalParameters.length;i++){
+            var gp=that.currentInstance.globalParameters[i];
+            if (gp.name==name){
+                that.currentInstance.globalParameters.splice(i,1);
+            }
+        }
     }
     /***
      * 初始化菜单点击事件
@@ -221,6 +408,8 @@
         });
 
         //创建调试页面
+        //赋值全局参数
+        apiInfo.globalParameters=that.currentInstance.globalParameters;
         that.getDoc().find("#tab2").find(".panel-body").html("");
         var html = template('DebugScript', apiInfo);
         that.getDoc().find("#tab2").find(".panel-body").html(html);
@@ -669,7 +858,6 @@
         div.append(txtDiv);*/
         //内容覆盖
         that.getDoc().html("");
-        console.log(that.currentInstance)
         setTimeout(function () {
             var html = template('offLinecontentScript', that.currentInstance);
             that.getDoc().html(html);
@@ -1275,6 +1463,9 @@
         //接口url信息
         //存储SwaggerBootstrapUiApiInfo 集合
         this.paths=new Array();
+        //全局参数,存放SwaggerBootstrapUiParameter集合
+        this.globalParameters=new Array();
+
     }
     /***
      * 返回对象解析属性
