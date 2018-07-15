@@ -200,7 +200,7 @@
                 //操作
                 var operateTd=$("<td>&nbsp;&nbsp;</td>")
                 var btnSave=$("<button class=\"btn btn-circle btn-info btn-small btn-save\" type=\"button\">保存</button>");
-                var btnCancel=$("<button class=\"btn btn-circle btn-small btn-cancel\" type=\"button\">取消</button>");
+                var btnCancel=$("<button class=\"btn btn-circle  btn-danger btn-small btn-cancel\" type=\"button\">删除</button>");
                 operateTd.append(btnSave).append("&nbsp;&nbsp;").append(btnCancel);
                 tr.append(nameTd).append(valueTd).append(typeTd).append(operateTd);
                 that.getDoc().find("#globalTabBody").append(tr);
@@ -726,6 +726,38 @@
 
 
         })
+        //删除按钮功能实现
+        that.getDoc().find("#tab2").find(".btn-param-delete").on("click",function (e) {
+            e.preventDefault();
+            var btndelete=$(this);
+            btndelete.parent().parent().remove();
+        })
+        //path替换url-功能
+        that.getDoc().find("#tab2").find(".p-path").on("keyup",function (e) {
+            var t=$(this);
+            var name=t.data("name");
+            var apiUrl=$("#txtreqUrl").data("originalurl");
+            var realValue=apiUrl.replace("{"+name+"}",t.val());
+            //查找是否还存在其他path参数
+            $("#paramBody").find("tr").each(function (i, itr) {
+                var itrthat=$(this);
+                var itrdata={name:itrthat.data("name"),in:itrthat.data("in"),required:itrthat.data("required"),type:itrthat.data("type")};
+                //var itrdata=itrthat.data("data");
+                var itrname=itrdata["name"];
+                if(itrdata["in"]=="path"&&itrdata["name"]!=name){
+                    //查找value值
+                    var itrtdvalue=itrthat.find(".p-value").val();
+                    if(itrtdvalue!=""){
+                        realValue=realValue.replace("{"+itrname+"}",itrtdvalue);
+                    }
+                }
+            })
+            that.log(realValue);
+            $("#txtreqUrl").val(realValue);
+            that.log("keyup。。。。")
+
+        })
+
     }
 
     SwaggerBootstrapUi.prototype.markdownDocInit=function () {
@@ -783,7 +815,7 @@
         that.log("动态激活...")
         //liapi.addClass("active");
         that.log("动态激活12...")
-        that.getDoc().find("#myTab a:eq(1)").tab('show')
+        that.getDoc().find("#myTab a:first").tab('show')
 
     }
     /***
@@ -821,7 +853,7 @@
      */
     SwaggerBootstrapUi.prototype.createDescriptionElement=function () {
         var that=this;
-        var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
+        /*var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
         //修改title
         $("title").html("").html(that.currentInstance.title)
         table.append($('<thead><tr><th colspan="2" style="text-align:center">'+that.currentInstance.title+'</th></tr></thead>'));
@@ -833,11 +865,57 @@
         tbody.append($('<tr><th class="active">服务url</th><td style="text-align: left">'+that.currentInstance.termsOfService+'</td></tr>'));
         table.append(tbody);
         var div=$('<div  style="width:99%;margin:0px auto;"></div>')
-        div.append(table);
+        div.append(table);*/
         //内容覆盖
         that.getDoc().html("");
-        that.getDoc().append(div);
+        //that.getDoc().append(div);
+
+        setTimeout(function () {
+            var html = template('SwaggerBootstrapUiIntroScript', that.currentInstance);
+            that.getDoc().html(html)
+            //that.introMarkdownDocInit();
+        },100)
+
+
     }
+
+    SwaggerBootstrapUi.prototype.introMarkdownDocInit=function () {
+        var that=this;
+        //md2Html的配置
+        hljs.configure({useBR: false});
+        hljs.initHighlightingOnLoad();
+        marked.setOptions({
+            renderer: new marked.Renderer(),
+            gfm: true,
+            emoji: true,
+            tables: true,
+            breaks: false,
+            pedantic: false,
+            sanitize: true,
+            smartLists: true,
+            smartypants: false,
+            highlight: function (code, lang) {
+                try {
+                    if (lang)
+                        return hljs.highlight(lang, code).value;
+                } catch (e) {
+                    return hljs.highlightAuto(code).value;
+                }
+                return hljs.highlightAuto(code).value;
+            }
+        });
+        $("#docSbuText").each(function(){
+            var md = $(this).val();
+            if(md){
+                $("#sbuDescriptionDoc").html(marked(md));
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            }
+        });
+        $("code").css("background-color", "transparent");
+    }
+
     /***
      * 创建离线文档页面
      * 点击离线文档菜单时,创建该页面
