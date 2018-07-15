@@ -15,11 +15,11 @@ swagger-bootstrap-ui
 
 
 
-![](https://static.oschina.net/uploads/space/2017/1218/160550_m8iQ_254762.jpg)
+![](https://static.oschina.net/uploads/space/2018/0716/075136_60JO_254762.png)
 
 * 在线调试功能,效果图如下:
 
-![](https://static.oschina.net/uploads/space/2017/1218/160754_zeO9_254762.jpg)
+![](https://static.oschina.net/uploads/space/2018/0716/075225_WazR_254762.png)
 
 ## demo演示
 
