@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap/css/bootstrap.min.css" />
     <script type="text/javascript" src="webjars/bycdao-ui/jquery/clipboard/clipboard.min.js"></script>
     <script type="text/javascript" src="webjars/bycdao-ui/layer3.0.3/layer.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/jsonview/jquery.jsonview.min.css" />
+    <script type="text/javascript" src="webjars/bycdao-ui/jsonview/jquery.jsonview.min.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/layer3.0.3/skin/default/layer.css" />
     <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/docco.css" />
     <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/style.css" />
@@ -16,6 +18,7 @@
     <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
     <script src="webjars/bycdao-ui/jquery/marked.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
+
     <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
 </head>
 <body style="overflow: hidden;">
@@ -246,6 +249,123 @@
 
 
 </textarea>
+    </div>
+</script>
+
+<!--Debug调试tab-->
+<script type="text/html" id="DebugScript">
+    <div style="width: 100%;margin: 0px auto;margin-top: 10px;">
+        <div class="input-group m-bot15">
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-info" type="button">{{methodType}}</button>
+            </span>
+            <input type="text" id="txtreqUrl" class="form-control" value="<%=url.substring(1)%>">
+            <span class="input-group-btn">
+                <button id="btnRequest" class="btn btn-default btn-primary" type="button"> 发 送 </button>
+            </span>
+        </div>
+        <div style="margin-top: 15px;">
+            <div class="swbu-main">
+                <%if(parameters!=null && parameters.length>0){ var fileform=false;%>
+                <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
+                <%  if(param.type=="MultipartFile"){ fileform=true;}%>
+                <%}%>
+
+                <%if(fileform){%>
+                <form id="uploadForm"  target="uploadIframe" action="<%=url.substring(1)%>" type="" enctype="multipart/form-data" method="{{methodType}}">
+                    <table class="">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>参数名称</th>
+                            <th>参数值</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="paramBody">
+                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
+                        <%if(param.in!="header"){%>
+                            <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>">
+                                <td width="5%">
+                                    <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                                </td>
+                                <td width="35%">
+                                    <input class="form-control p-key" value="<%=param.name%>">
+                                </td>
+                                <td>
+                                    <%if(param.in=="body"){  %>
+                                    <%if(param.type=="MultipartFile"){%>
+                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                    <%}else {%>
+                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                              name="<%=param.name%>" data-name="<%=param.name%>"
+                                              placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                    <%}%>
+                                    <%}else{%>
+                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                           data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                    <%}%>
+                                </td>
+                                <td width="5%">
+                                    <button class="btn btn-danger btn-circle btn-small" type="button"><strong>×</strong></button>
+                                </td>
+                            </tr>
+                        <%}%>
+
+                        <%}%>
+                        </tbody>
+                    </table>
+                </form>
+                <div id="resptab" class="tabs-container" >
+                    <iframe name="uploadIframe" id="uploadIframe" style="border: none;height: 1%;display: none;"></iframe>
+                </div>
+                <%}else{%>
+                    <table class="">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>参数名称</th>
+                            <th>参数值</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="paramBody">
+                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
+                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                            <td width="5%">
+                                <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                            </td>
+                            <td width="35%">
+                                <input class="form-control p-key" value="<%=param.name%>">
+                            </td>
+                            <td>
+                                <%if(param.in=="body"){  %>
+                                <%if(param.type=="MultipartFile"){%>
+                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                <%}else {%>
+                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                          name="<%=param.name%>" data-name="<%=param.name%>"
+                                          placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                <%}%>
+                                <%}else{%>
+                                <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                       data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                <%}%>
+                            </td>
+                            <td width="5%">
+                                <button class="btn btn-danger btn-circle btn-small" type="button"><strong>×</strong></button>
+                            </td>
+                        </tr>
+                        <%}%>
+                        </tbody>
+                    </table>
+                <%}%>
+
+                <%}%>
+            </div>
+        </div>
+        <div id="responsebody">
+        </div>
     </div>
 </script>
 

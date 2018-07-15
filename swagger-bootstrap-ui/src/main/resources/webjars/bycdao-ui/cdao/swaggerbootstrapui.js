@@ -205,7 +205,6 @@
             that.getDoc().find("#tab1").find(".panel-body").html(html)
             that.markdownDocInit();
         },100)
-        that.log("currentInstance2..................")
         that.log(that.currentInstance);
         //实现复制文档功能
         //初始化copy按钮功能
@@ -221,6 +220,323 @@
             layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
         });
 
+        //创建调试页面
+        that.getDoc().find("#tab2").find(".panel-body").html("");
+        var html = template('DebugScript', apiInfo);
+        that.getDoc().find("#tab2").find(".panel-body").html(html);
+        that.requestSend(apiInfo);
+
+    }
+
+    /***
+     * 发送请求
+     * @constructor
+     */
+    SwaggerBootstrapUi.prototype.requestSend=function (apiInfo) {
+        var that=this;
+        var btnRequest=that.getDoc().find("#tab2").find(".panel-body").find("#btnRequest");
+        var respcleanDiv=that.getDoc().find("#tab2").find(".panel-body").find("#responsebody");
+        btnRequest.on("click",function (e) {
+            e.preventDefault();
+            respcleanDiv.html("")
+
+            var params={};
+            var headerparams={};
+            var bodyparams="";
+            //modify by xiaoyumin 2017-8-9 11:28:16
+            //增加表单验证
+            var validateflag=false;
+            var validateobj={};
+
+            //获取参数
+            var paramBody=that.getDoc().find("#tab2").find("#paramBody")
+            that.log("paramsbody..")
+            that.log(paramBody)
+            //获取url
+            var url=$("#txtreqUrl").val();
+            if(url==null||url==""){
+                layer.msg("请求url地址不能为空");
+                return false;
+            }
+            var bodyRequest=false;
+            paramBody.find("tr").each(function () {
+                var paramtr=$(this);
+                var cked=paramtr.find("td:first").find(":checked").prop("checked");
+                that.log(cked)
+                if (cked){
+                    //如果选中
+                    var trdata={name:paramtr.data("name"),in:paramtr.data("in"),required:paramtr.data("required"),type:paramtr.data("type")};
+                    that.log("trdata....")
+                    that.log(trdata);
+                    //获取key
+                    //var key=paramtr.find("td:eq(1)").find("input").val();
+                    var key=trdata["name"];
+                    //获取value
+                    var value="";
+                    if(trdata["in"]=="body"){
+                        value=paramtr.find("td:eq(2)").find("textarea").val();
+                        //这里需要判断schema
+                        //直接判断那类型
+                        if(trdata.type=="MultipartFile"){
+                            value=paramtr.find("td:eq(2)").find("input").val();
+                        }
+                    }else{
+                        value=paramtr.find("td:eq(2)").find("input").val();
+                    }
+
+                    if(apiInfo.methodType=="delete"){
+                        //判断是否是path参数
+                        if(trdata["in"]=="path"){
+                            url=url.replace("{"+key+"}",value);
+                        }else{
+                            if (url.indexOf("?")>-1){
+                                url=url+"&"+key+"="+value;
+                            }else{
+                                url+="?"+key+"="+value;
+                            }
+                        }
+                    }else{
+                        if(trdata["in"]=="path"){
+                            url=url.replace("{"+key+"}",value);
+                        }else{
+                            if(trdata["in"]=="body"){
+                                bodyparams+=value;
+                                bodyRequest=true;
+                            }else{
+                                if(trdata["in"]=="header"){
+                                    headerparams[key]=value;
+                                }else{
+                                    params[key]=value;
+                                }
+                            }
+                        }
+                    }
+                    //判断是否required
+                    if (trdata.hasOwnProperty("required")){
+                        var required=trdata["required"];
+                        if (required){
+                            //必须,验证value是否为空
+                            if(value==null||value==""){
+                                validateflag=true;
+                                var des=trdata["name"]
+                                validateobj={message:des+"不能为空"};
+                                return false;
+                            }
+                        }
+
+                    }
+                    that.log("key:"+key+",value:"+value);
+                }
+            })
+            that.log("获取参数..")
+            that.log(params);
+            that.log(apiInfo)
+            that.log("请求url："+url);
+            var reqdata=null;
+            var contType="application/json; charset=UTF-8";
+            if(bodyRequest){
+                reqdata=bodyparams;
+            }else{
+                reqdata=params;
+                contType="application/x-www-form-urlencoded; charset=UTF-8";
+            }
+            //console.log(reqdata)
+            if(validateflag){
+                layer.msg(validateobj.message);
+                return;
+            }
+
+            //判断是否有表单
+            var form=$("#uploadForm");
+            if(form.length>0){
+                form[0].submit();
+                //console.log("表单提交")
+                //iframe监听change事件
+                $("#uploadIframe").on("load",function () {
+                    //console.log("uploadIframe changed....")
+                    $(this).unbind('load');
+                    var framebody=$(this).contents().find("body");
+                    var ret=framebody.html();
+                    //是否存在pre标签
+                    if(framebody.find("pre").length>0){
+                        ret=framebody.find("pre").html();
+                    }
+                    var res;
+                    try{
+                        res=JSON.parse(ret);
+                        //console.log(res)
+                        var resptab=$('<div id="resptab" class="tabs-container" ></div>')
+                        var ulresp=$('<ul class="nav nav-tabs">' +
+                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li></ul>')
+                        resptab.append(ulresp);
+                        var respcontent=$('<div class="tab-content"></div>');
+                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"></div></div>');
+                        respcontent.append(resp1);
+                        resptab.append(respcontent)
+                        respcleanDiv.append(resptab);
+
+                        var jsondiv=$('<div></div>');
+                        jsondiv.JSONView(res);
+                        resp1.find(".panel-body").append(jsondiv);
+                        resptab.find("a:first").tab("show");
+                    }catch (err){
+                        //nothing to do,default to show
+                        respcleanDiv.html(ret);
+                    }
+                })
+            }else{
+                $.ajax({
+                    url:url,
+                    headers:headerparams,
+                    type:$.getStringValue(apiInfo.methodType),
+                    data:reqdata,
+                    contentType:contType,
+                    success:function (data,status,xhr) {
+                        var resptab=$('<div id="resptab" class="tabs-container" ></div>')
+                        var ulresp=$('<ul class="nav nav-tabs">' +
+                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
+
+                        resptab.append(ulresp);
+                        var respcontent=$('<div class="tab-content"></div>');
+
+                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
+                        var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
+                        var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
+
+                        respcontent.append(resp1).append(resp2).append(resp3);
+
+                        resptab.append(respcontent)
+
+                        respcleanDiv.append(resptab);
+                        that.log(xhr);
+                        that.log(xhr.getAllResponseHeaders());
+                        var allheaders=xhr.getAllResponseHeaders();
+                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+                            var headers=allheaders.split("\r\n");
+                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
+                            for(var i=0;i<headers.length;i++){
+                                var header=headers[i];
+                                if(header!=null&&header!=""){
+                                    var headerValu=header.split(":");
+                                    var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
+                                    headertable.append(headertr);
+                                }
+                            }
+                            //设置Headers内容
+                            resp3.find(".panel-body").html("")
+                            resp3.find(".panel-body").append(headertable);
+                        }
+                        var contentType=xhr.getResponseHeader("Content-Type");
+                        that.log("Content-Type:"+contentType);
+                        that.log(xhr.hasOwnProperty("responseJSON"))
+                        if (xhr.hasOwnProperty("responseJSON")){
+                            //如果存在该对象,服务端返回为json格式
+                            resp1.find(".panel-body").html("")
+                            that.log(xhr["responseJSON"])
+                            var pre=$('<pre></pre>')
+                            var jsondiv=$('<div></div>')
+                            jsondiv.JSONView(xhr["responseJSON"]);
+                            pre.html(JSON.stringify(xhr["responseJSON"],null,2));
+                            resp1.find(".panel-body").append(jsondiv);
+                        }else{
+                            //判断content-type
+                            //如果是image资源
+                            var regex=new RegExp('image/(jpeg|jpg|png|gif)','g');
+                            if(regex.test(contentType)){
+                                var d=DApiUI.getDoc().data("data");
+                                var imgUrl="http://"+d.host+apiInfo.url;
+                                var img = document.createElement("img");
+                                img.onload = function(e) {
+                                    window.URL.revokeObjectURL(img.src); // 清除释放
+                                };
+                                img.src = imgUrl;
+                                resp1.find(".panel-body").html("")
+                                resp1.find(".panel-body")[0].appendChild(img);
+                            }else{
+                                //判断是否是text
+                                var regex=new RegExp('.*?text.*','g');
+                                if(regex.test(contentType)){
+                                    resp1.find(".panel-body").html("")
+                                    resp1.find(".panel-body").html(xhr.responseText);
+                                }
+                            }
+
+                        }
+
+                        that.log("tab show...")
+                        resptab.find("a:first").tab("show");
+                    },
+                    error:function (xhr, textStatus, errorThrown) {
+                        that.log("error.....")
+                        that.log(xhr);
+                        that.log(textStatus);
+                        that.log(errorThrown);
+                        var resptab=$('<div id="resptab" class="tabs-container" ></div>')
+                        var ulresp=$('<ul class="nav nav-tabs">' +
+                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
+
+                        resptab.append(ulresp);
+                        var respcontent=$('<div class="tab-content"></div>');
+
+                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
+                        var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
+                        var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
+
+                        respcontent.append(resp1).append(resp2).append(resp3);
+
+                        resptab.append(respcontent)
+
+                        respcleanDiv.append(resptab);
+                        that.log(xhr);
+                        that.log(xhr.getAllResponseHeaders());
+                        var allheaders=xhr.getAllResponseHeaders();
+                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+                            var headers=allheaders.split("\r\n");
+                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
+                            for(var i=0;i<headers.length;i++){
+                                var header=headers[i];
+                                if(header!=null&&header!=""){
+                                    var headerValu=header.split(":");
+                                    var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
+                                    headertable.append(headertr);
+                                }
+                            }
+                            //设置Headers内容
+                            resp3.find(".panel-body").html("")
+                            resp3.find(".panel-body").append(headertable);
+                        }
+                        var contentType=xhr.getResponseHeader("Content-Type");
+                        that.log("Content-Type:"+contentType);
+                        var jsonRegex="";
+                        that.log(xhr.hasOwnProperty("responseJSON"))
+                        if (xhr.hasOwnProperty("responseJSON")){
+                            //如果存在该对象,服务端返回为json格式
+                            resp1.find(".panel-body").html("")
+                            that.log(xhr["responseJSON"])
+                            var jsondiv=$('<div></div>')
+                            jsondiv.JSONView(xhr["responseJSON"]);
+                            resp1.find(".panel-body").append(jsondiv);
+                        }else{
+                            //判断是否是text
+                            var regex=new RegExp('.*?text.*','g');
+                            if(regex.test(contentType)){
+                                resp1.find(".panel-body").html("")
+                                resp1.find(".panel-body").html(xhr.responseText);
+                            }
+                        }
+                        that.log("tab show...")
+                        resptab.find("a:first").tab("show");
+
+                    }
+                })
+            }
+
+
+        })
     }
 
     SwaggerBootstrapUi.prototype.markdownDocInit=function () {
@@ -278,7 +594,7 @@
         that.log("动态激活...")
         //liapi.addClass("active");
         that.log("动态激活12...")
-        that.getDoc().find("#myTab a:first").tab('show')
+        that.getDoc().find("#myTab a:eq(1)").tab('show')
 
     }
     /***
@@ -572,7 +888,20 @@
                                         minfo.value="";
                                     }
                                 }
-
+                            }
+                            if(minfo.in=="body"){
+                                //判断属性是否是array
+                                if(minfo.type=="array"){
+                                    var txtArr=new Array();
+                                    txtArr.push(minfo.value);
+                                    //JSON显示
+                                    minfo.txtValue=JSON.stringify(txtArr,null,4)
+                                }else{
+                                    //引用类型
+                                    if(!$.checkIsBasicType(minfo.type)){
+                                        minfo.txtValue=JSON.stringify(minfo.value,null,4);
+                                    }
+                                }
                             }
                             swpinfo.parameters.push(minfo);
                             //判断当前属性是否是schema
@@ -1041,6 +1370,8 @@
         this.def=null;
         //des
         this.description=null;
+        //文本框值
+        this.txtValue=null;
     }
     /***
      * 响应码
