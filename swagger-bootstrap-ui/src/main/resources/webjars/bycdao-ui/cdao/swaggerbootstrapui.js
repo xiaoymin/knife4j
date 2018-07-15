@@ -286,7 +286,6 @@
                 that.log(oldname!=name)
                 //判断old
                 if(oldname!=name){
-                    console.log("delete?")
                     //删除旧参数
                     that.deleteGlobalParamsByName(oldname);
                 }
