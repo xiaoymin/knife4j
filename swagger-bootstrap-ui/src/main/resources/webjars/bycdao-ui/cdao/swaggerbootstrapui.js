@@ -1490,7 +1490,8 @@
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
         if(window.console){
-            console.log(msg);
+            //正式版不开启console功能
+            //console.log(msg);
         }
     }
     /***
