@@ -5,62 +5,24 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
     <title>Swagger-Bootstrap-UI-前后端api接口文档</title>
     <link rel="shortcut icon" href="webjars/bycdao-ui/images/api.ico"/>
-    <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/cdao/DUI.css" />
     <script type="text/javascript" src="webjars/bycdao-ui/jquery/jquery-1.9.1.min.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="webjars/bycdao-ui/ace/ace.min.css" />
+    <script type="text/javascript" src="webjars/bycdao-ui/jquery/clipboard/clipboard.min.js"></script>
+    <script type="text/javascript" src="webjars/bycdao-ui/layer3.0.3/layer.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/jsonview/jquery.jsonview.min.css" />
     <script type="text/javascript" src="webjars/bycdao-ui/jsonview/jquery.jsonview.min.js"></script>
-
-    <script type="text/javascript" src="webjars/bycdao-ui/layer3.0.3/layer.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/layer3.0.3/skin/default/layer.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/docco.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/style.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/default.css" />
+    <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
+    <script src="webjars/bycdao-ui/jquery/marked.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
 
-    <style type="text/css">
-        .bycdao-left {
-            width: 270px;
-            margin-top: 0px;
-            position: fixed;
-            /* background: #337ab7; */
-            height: 100%;
-            transition: all 0.2s;
-        }
-        .bycdao-main {
-            margin-left: 270px;
-            padding-top: 5px;
-           /* padding-left: 15px;*/
-            padding-right: 15px;
-            background: #f3f3f4;
-            transition: all 0.2s;
-        }
-
-        .tab-content {
-            /* border: 1px solid #c5d0dc; */
-            /* padding: 16px 12px; */
-            position: relative;
-            z-index: 11;
-        }
-
-        .nav-tabs>li>a:hover {
-            /* background-color: #FFF; */
-            /* color: #4c8fbd; */
-            /* border-color: #c5d0dc; */
-        }
-        .menuLi{
-            border: 1px solid #f3f3f4;
-            /* padding: 1px 2px; */
-            margin-bottom: 2px;
-            margin-top: 2px;
-        }
-        .menuLi .mhed{
-            cursor: pointer;
-            padding-left: 30px;
-        }
-
-
-    </style>
+    <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
 </head>
 <body style="overflow: hidden;">
-<div class="bycdao-left" style="height: 100%px;overflow-y: auto;">
+<div class="bycdao-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
     <ul class="nav nav-list" id="menu">
         <li >
             <a href="javascript:void(0)">
@@ -102,56 +64,473 @@
         </li>
     </ul>
 </div>
+<!--离线文档说明-->
+<script type="text/html" id="offLinecontentScript">
+    <div  style="width:99%;margin:0px auto;">
+        <div class="alert alert-info" role="alert">swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.</div>
+        <div class="input-inline" style="margin-bottom:10px;">
+            <button class="btn btn-primary" type="button" id="btnCopy"  >拷贝文档</button>
+        </div>
+        <div class='input-inline'>
+            <textarea class='form-control' style='width: 100%;height: 100%;' id="txtOffLineDoc">
+# 简介
 
+**标题**：{{title}}
+
+**简介**：{{description}}
+
+**HOST**:{{host}}
+
+**联系人**:{{contact}}
+
+**接口路径**：{{location}}
+<% for( i = 0; i < tags.length; i++) { var tag=tags[i] ; %># <%= tag.name %><% for( j = 0; j < paths.length; j++) {var path=paths[j]; if(path.tags.indexOf(tag.name)>-1){ %>
+## <%= path.summary %>
+
+**接口说明**:<%= path.description %>
+
+
+**接口地址**:`<%= path.url %>`
+
+
+**请求方式**：`<%= path.methodType %>`
+
+
+**consumes**:`<%= path.consumes %>`
+
+
+**produces**:`<%= path.produces %>`
+
+**请求参数**：
+<% if(path.parameters!=null && path.parameters.length>0){ %>
+| 参数名称         | 说明     |     in |  是否必须      |  类型   |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+<% for( a = 0; a < path.parameters.length; a++) {var param=path.parameters[a]; %>|<%=param.name%>| <%=param.description%>  | <%=param.in%> | <%=param.require%> |<%=param.type%>  | <%=param.schemaValue%>   |
+                <%}%>
+<%}else{%>暂无<%}%><% if(path.refparameters!=null && path.refparameters.length>0){ %>
+**schema属性说明**
+<% for( a = 0; a < path.refparameters.length; a++) { var ref=path.refparameters[a];%>
+**<%=ref.name%>**
+| 参数名称         | 说明    |     in |  是否必须   |  类型  |  schema |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+<% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%>| <%=rp.description%>  | <%=rp.in%> | <%=rp.require%> |<%=rp.type%>  | <%=rp.schemaValue%>   |
+                <%}}}%>
+**响应数据**:
+
+```json
+<%= path.responseValue %>
+```
+**响应参数说明**:
+<% if(path.responseParameters!=null && path.responseParameters.length>0){ %>
+| 参数名称         | 说明                             |    类型 |  schema |
+| ------------ | -------------------|-------|----------- |
+<% for( a = 0; a < path.responseParameters.length; a++) { var param=path.responseParameters[a];%>|<%=param.name%>| <%=param.description%>  |<%=param.type%>  | <%=param.schemaValue%>   |
+<%}}else{%>
+暂无
+<%}%>
+<% if(path.responseRefParameters!=null && path.responseRefParameters.length>0){ %>
+**schema属性说明**
+<% for( a = 0; a < path.responseRefParameters.length; a++) { var ref=path.responseRefParameters[a];%>
+**<%=ref.name%>**
+| 参数名称         |  说明          |   类型  |  schema |
+| ------------ | ------------------|--------|----------- |
+<% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
+                <%}%>
+<%}}%>
+**响应状态码说明**:
+<% if(path.responseCodes!=null && path.responseCodes.length>0){ %>
+| 状态码         | 说明                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+<% for( a = 0; a < path.responseCodes.length; a++) { var param=path.responseCodes[a];%>| <%=param.code%> | <%=param.description%>  |<%=param.schema%>|
+                <%}%>
+<%}else{%>
+暂无
+<%}%>
+        <%}%>
+    <%}%>
+<%}%>
+
+
+
+
+            </textarea>
+        </div>
+    </div>
+</script>
+
+<!--文档说明-->
+<script type="text/html" id="contentScript">
+    <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
+        <div style="    float: left;width: 90%;font-size: 20px;">{{summary}}</div>
+        <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHref" style="cursor: pointer;text-decoration: none;
+" href="javascript:void(0);">复制文档</a></div>
+    </div>
+    <div class="swbu-main" itemprop="articleBody">
+        <div id="contentDoc"></div>
+        <!--<textarea rows="10" cols="10" id="docText">-->
+        <textarea rows="10" cols="10" id="docText" style="display: none;">
+
+**接口说明**:{{description}}
+
+
+**接口地址**:`{{url}}`
+
+
+**请求方式**：`{{methodType}}`
+
+
+**consumes**:`{{consumes}}`
+
+
+**produces**:`{{produces}}`
+
+
+**请求参数**：
+{{ if parameters && parameters.length>0 }}
+| 参数名称         | 说明     |     in |  是否必须      |  类型   |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+{{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if refparameters && refparameters.length>0 }}
+**schema属性说明**
+  {{each refparameters}}
+**{{$value.name}}**
+
+| 参数名称         | 说明    |     in |  是否必须   |  类型  |  schema |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+{{each $value.params}}| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |
+            {{/each}}
+{{/each}}
+
+{{/if}}
+
+**响应数据**:
+
+```json
+{{responseValue}}
+```
+
+**响应参数说明**:
+{{ if responseParameters && responseParameters.length>0 }}
+| 参数名称         | 说明                             |    类型 |  schema |
+| ------------ | -------------------|-------|----------- |
+{{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if responseRefParameters && responseRefParameters.length>0 }}
+**schema属性说明**
+  {{each responseRefParameters}}
+**{{$value.name}}**
+
+| 参数名称         |  说明          |   类型  |  schema |
+| ------------ | ------------------|--------|----------- |
+{{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{/each}}
+
+{{/if}}
+
+**响应状态码说明**:
+{{ if responseCodes}}
+| 状态码         | 说明                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
+{{/each}}
+{{else}}
+暂无
+{{/if}}
+
+
+</textarea>
+    </div>
+</script>
+
+<!--Debug调试tab-->
+<script type="text/html" id="DebugScript">
+    <div style="width: 100%;margin: 0px auto;margin-top: 10px;">
+        <div class="input-group m-bot15">
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-info" type="button">{{methodType}}</button>
+            </span>
+            <input type="text" id="txtreqUrl" data-originalurl="<%=url.substring(1)%>" class="form-control" value="<%=url.substring(1)%>">
+            <span class="input-group-btn">
+                <button id="btnRequest" class="btn btn-default btn-primary" type="button"> 发 送 </button>
+            </span>
+        </div>
+        <div style="margin-top: 15px;">
+            <div class="swbu-main">
+                <%if((parameters!=null && parameters.length>0)||(globalParameters!=null && globalParameters.length>0)){ var fileform=false;%>
+                <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
+                <%  if(param.type=="MultipartFile"){ fileform=true;}%>
+                <%}%>
+
+                <%if(fileform){%>
+                <form id="uploadForm"  target="uploadIframe" action="<%=url.substring(1)%>" type="" enctype="multipart/form-data" method="{{methodType}}">
+                    <table class="">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>参数名称</th>
+                            <th>参数值</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="paramBody">
+                        <!--遍历 是否有全局参数--->
+                        <%if(globalParameters!=null && globalParameters.length>0){ %>
+                            <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                                <%if(param.in!="header"){%>
+                                    <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                                        <td width="5%">
+                                            <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                                        </td>
+                                        <td width="35%">
+                                            <input class="form-control p-key" value="<%=param.name%>">
+                                        </td>
+                                        <td>
+                                            <%if(param.in=="body"){  %>
+                                            <%if(param.type=="MultipartFile"){%>
+                                            <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                            <%}else {%>
+                                            <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                                      name="<%=param.name%>" data-name="<%=param.name%>"
+                                                      placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                            <%}%>
+                                            <%}else{%>
+                                            <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                                   data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                            <%}%>
+                                        </td>
+                                        <td width="5%">
+                                            <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
+                                        </td>
+                                    </tr>
+                                <%}%>
+                            <%}%>
+                        <%}%>
+
+                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
+                        <%if(param.in!="header"){%>
+                            <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>">
+                                <td width="5%">
+                                    <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                                </td>
+                                <td width="35%">
+                                    <input class="form-control p-key" value="<%=param.name%>">
+                                </td>
+                                <td>
+                                    <%if(param.in=="body"){  %>
+                                    <%if(param.type=="MultipartFile"){%>
+                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                    <%}else {%>
+                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                              name="<%=param.name%>" data-name="<%=param.name%>"
+                                              placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                    <%}%>
+                                    <%}else{%>
+                                    <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                           data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                    <%}%>
+                                </td>
+                                <td width="5%">
+                                    <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
+                                </td>
+                            </tr>
+                        <%}%>
+
+                        <%}%>
+                        </tbody>
+                    </table>
+                </form>
+                <div id="resptab" class="tabs-container" >
+                    <iframe name="uploadIframe" id="uploadIframe" style="border: none;height: 1%;display: none;"></iframe>
+                </div>
+                <%}else{%>
+                    <table class="">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>参数名称</th>
+                            <th>参数值</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="paramBody">
+                        <!--遍历 是否有全局参数--->
+                        <%if(globalParameters!=null && globalParameters.length>0){ %>
+                        <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                            <td width="5%">
+                                <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                            </td>
+                            <td width="35%">
+                                <input class="form-control p-key" value="<%=param.name%>">
+                            </td>
+                            <td>
+                                <%if(param.in=="body"){  %>
+                                    <%if(param.type=="MultipartFile"){%>
+                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                    <%}else {%>
+                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                              name="<%=param.name%>" data-name="<%=param.name%>"
+                                              placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                    <%}%>
+                                <%}else{%>
+                                <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                       data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                <%}%>
+                            </td>
+                            <td width="5%">
+                                <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
+                            </td>
+                        </tr>
+                        <%}%>
+                        <%}%>
+
+                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
+                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                            <td width="5%">
+                                <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                            </td>
+                            <td width="35%">
+                                <input class="form-control p-key" value="<%=param.name%>">
+                            </td>
+                            <td>
+                                <%if(param.in=="body"){  %>
+                                <%if(param.type=="MultipartFile"){%>
+                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                <%}else {%>
+                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                          name="<%=param.name%>" data-name="<%=param.name%>"
+                                          placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                <%}%>
+                                <%}else{%>
+                                <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                       data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                <%}%>
+                            </td>
+                            <td width="5%">
+                                <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
+                            </td>
+                        </tr>
+                        <%}%>
+                        </tbody>
+                    </table>
+                <%}%>
+
+                <%}%>
+            </div>
+        </div>
+        <div id="responsebody">
+        </div>
+    </div>
+</script>
+<!--全局参数-->
+<script type="text/html" id="GlobalParamScript">
+    <div  style="width:99%;margin:0px auto;">
+        <div class="alert alert-info" role="alert">swagger-bootstrap-ui 提供全局参数Debug功能,目前默认提供header(请求头)、query(form)两种方式的入参.<br /><br />
+            在此添加全局参数后,默认Debug调试tab页会带上该参数,该全局参数只在该分组下有效,不同的分组需要分别设置</div>
+        <div class="input-inline" style="margin-bottom:10px;">
+            <button class="btn btn-primary" type="button" id="btnAddParam"  >添加参数</button>
+        </div>
+        <div style="margin-top: 15px;">
+            <div class="swbu-main">
+                <table class="" id="globalTable">
+                    <thead>
+                    <tr>
+                        <th>参数名称</th>
+                        <th>参数值</th>
+                        <th>参数类型</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="globalTabBody">
+                    <%if(globalParameters!=null && globalParameters.length>0){ %>
+                    <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                    <tr>
+                        <td><input class="form-control p-key" value="<%=param.name%>" data-old='<%=param.name%>'></td>
+                        <td><input class="form-control p-key" value="<%=param.value%>"></td>
+                        <td><select class='form-control'><option value='header'<%if(param.in=="header"){%>  selected  <%}%> >header</option><option value='query' <%if(param.in=="query"){%>  selected  <%}%>>query</option></select></td>
+                        <td><button class="btn btn-circle btn-info btn-small btn-save" type="button">保存</button>&nbsp;&nbsp;<button class="btn btn-circle btn-danger btn-small btn-cancel" type="button">删除</button></td>
+                    </tr>
+
+                    <%}}%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!--SwaggerBootstrapUi简介-->
+<script type="text/html" id="SwaggerBootstrapUiIntroScript">
+    <div  style="width:99%;margin:0px auto;">
+        <div class="alert alert-info" role="alert" style="width: 90%;margin: 0px auto;margin-top: 20px;"><a href="https://www.oschina.net/p/swagger-bootstrap-ui" target="_blank">swagger-bootstrap-ui</a>是Swagger的前端UI实现,目的是替换Swagger默认的UI实现,使文档更友好一点儿....</div>
+        <div style="margin-top: 15px;">
+            <div class="swbu-main" itemprop="sbuarticleBody">
+                <div id="sbuDescriptionDoc" style="width: 90%;margin: 0px auto;">
+                    <table>
+                        <tr>
+                            <td colspan="2" style="text-align: center;">{{title}}</td>
+                        </tr>
+                        <tr>
+                            <td>简介</td>
+                            <td>{{description}}</td>
+                        </tr>
+                        <tr>
+                            <td>作者</td>
+                            <td>{{contact}}</td>
+                        </tr>
+                        <tr>
+                            <td>版本</td>
+                            <td>{{version}}</td>
+                        </tr>
+                        <tr>
+                            <td>host</td>
+                            <td>{{host}}</td>
+                        </tr>
+                        <tr>
+                            <td>服务url</td>
+                            <td>{{termsOfService}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <!--<textarea rows="10" cols="10" id="docText">-->
+
+        </div>
+    </div>
+</script>
 <div class="bycdao-main" id="content"  style="height: 100%;overflow-y: auto;">
-    <table class="table table-hover table-bordered table-text-center">
-        <thead>
-        <tr>
-            <th colspan="2" style="text-align:center">Swagger-Bootstrap-UI-前后端api接口文档</th>
-        </tr>
+    <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a>
+            </li>
+            <li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab1" class="tab-pane active">
+                <div class="panel-body" id="tabBody">
 
-        </thead>
-        <tbody>
-        <tr>
-            <th class="active">项目名称</th>
-            <td style="text-align: left">Swagger-Bootstrap-UI RESTful APIs</td>
-        </tr>
-        <tr>
-            <th class="active">简介</th>
-            <td style="text-align: left">Swagger-Bootstrap-UI RESTful APIs</td>
-        </tr>
-        <tr>
-            <th class="active">作者</th>
-            <td style="text-align: left">developer@gmail.com</td>
-        </tr>
-        <tr>
-            <th class="active">版本</th>
-            <td style="text-align: left">1.0</td>
-        </tr>
-        <tr>
-            <th class="active">host</th>
-            <td style="text-align: left">127.0.0.1:8280</td>
-        </tr>
-        <tr>
-            <th class="active">服务url</th>
-            <td style="text-align: left">http://localhost:8800/</td>
-        </tr>
-        </tbody>
-    </table>
+                </div>
+            </div>
+            <div id="tab2" class="tab-pane">
+                <div class="panel-body"><strong>正在开发中,敬请期待......</strong>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript" src="webjars/bycdao-ui/ace/bootstrap.min.js"></script>
 <script type="text/javascript" src="webjars/bycdao-ui/ace/ace.min.js"></script>
-
-<script type="text/javascript" src="webjars/bycdao-ui/jquery/treegrid/jquery.treegrid.min.js"></script>
-<script type="text/javascript" src="webjars/bycdao-ui/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
-<link rel="stylesheet" href="webjars/bycdao-ui/jquery/treegrid/jquery.treegrid.css" />
-
-
-<script type="text/javascript" src="webjars/bycdao-ui/cdao/DApiUI.js"></script>
-
-
-
-
+<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js"></script>
 <!----jsonhandle-->
 </body>
 </html>
