@@ -1121,6 +1121,10 @@
                             minfo.in=m.in;
                             minfo.require=m.required;
                             minfo.description=m.description;
+                            //判断你是否有默认值(后台)
+                            if(m.hasOwnProperty("default")){
+                                minfo.txtValue=m["default"];
+                            }
                             if (m.hasOwnProperty("schema")){
                                 //存在schema属性,请求对象是实体类
                                 minfo.schema=true;
