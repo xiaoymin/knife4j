@@ -226,6 +226,7 @@
                     globalParameterInstance.name=name;
                     globalParameterInstance.in=type;
                     globalParameterInstance.value=value;
+                    globalParameterInstance.txtValue=value;
                     globalParameterInstance.type="string";
                     globalParameterInstance.require=true;
                     //判断old
@@ -1491,7 +1492,7 @@
     SwaggerBootstrapUi.prototype.log=function (msg) {
         if(window.console){
             //正式版不开启console功能
-            //console.log(msg);
+            console.log(msg);
         }
     }
     /***
