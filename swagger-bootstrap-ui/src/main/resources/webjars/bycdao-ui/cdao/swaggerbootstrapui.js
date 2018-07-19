@@ -34,10 +34,18 @@
         $.ajax({
             url:that.url,
             type:"get",
+            dataType:"json",
             async:false,
             success:function (data) {
-                //获取分组名称
-                var groupData=data;
+                var t=typeof(data);
+                var groupData=null;
+                if(t=="string"){
+                    groupData=JSON.parse(data);
+                }else{
+                    groupData=data;
+                }
+                that.log("响应分组json数据");
+                that.log(groupData);
                 $.each(groupData,function (i, group) {
                     var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
                     that.instances.push(g);
