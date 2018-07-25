@@ -97,9 +97,8 @@
                 api=api.substr(1);
             }
             that.log("截取后的url:"+api);
-            api="/webjars/bycdao-ui/demo/d2.json";
-            that.log("截取后的url:"+api);
-
+            /*api="/webjars/bycdao-ui/demo/d2.json";
+            that.log("截取后的url:"+api);*/
             $.ajax({
                 //url:"v2/api-docs",
                 url:api,
@@ -108,7 +107,13 @@
                 async:false,
                 success:function (data) {
                     //var menu=JSON.parse(data)
-                    var menu=data;
+                    var t=typeof(data);
+                    var menu=null;
+                    if(t=="string"){
+                        menu=JSON.parse(data);
+                    }else{
+                        menu=data;
+                    }
                     that.setInstanceBasicPorperties(menu);
                     that.analysisDefinition(menu);
                     //DApiUI.definitions(menu);
@@ -354,6 +359,7 @@
             if(gp.name==param.name){
                 gp.in=param.in;
                 gp.value=param.value;
+                gp.txtValue=param.value;
             }
         })
     }
@@ -424,6 +430,7 @@
         clipboard.on('error', function(e) {
             layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
         });
+        that.log(that.currentInstance);
 
         //创建调试页面
         //赋值全局参数
@@ -472,7 +479,7 @@
                 that.log(cked)
                 if (cked){
                     //如果选中
-                    var trdata={name:paramtr.data("name"),in:paramtr.data("in"),required:paramtr.data("required"),type:paramtr.data("type")};
+                    var trdata={name:paramtr.data("name"),in:paramtr.data("in"),required:paramtr.data("required"),type:paramtr.data("type"),emflag:paramtr.data("emflag")};
                     that.log("trdata....")
                     that.log(trdata);
                     //获取key
@@ -488,7 +495,11 @@
                             value=paramtr.find("td:eq(2)").find("input").val();
                         }
                     }else{
-                        value=paramtr.find("td:eq(2)").find("input").val();
+                        if(trdata.emflag){
+                            value=paramtr.find("td:eq(2)").find("select option:selected").val();
+                        }else{
+                            value=paramtr.find("td:eq(2)").find("input").val();
+                        }
                     }
 
                     if(apiInfo.methodType=="delete"){
@@ -591,7 +602,8 @@
                         respcleanDiv.html(ret);
                     }
                 })
-            }else{
+            }
+            else{
                 $.ajax({
                     url:url,
                     headers:headerparams,
@@ -999,6 +1011,7 @@
                             spropObj.description=$.propValue("description",propobj,"");
                             spropObj.example=$.propValue("example",propobj,"");
                             spropObj.format=$.propValue("format",propobj,"");
+                            spropObj.required=$.propValue("required",propobj,false);
 
                             //默认string类型
                             var propValue="";
@@ -1193,6 +1206,13 @@
                     minfo.in=m.in;
                     minfo.require=m.required;
                     minfo.description=m.description;
+                    //判断是否有枚举类型
+                    if(m.hasOwnProperty("enum")){
+                        that.log("包括枚举类型...")
+                        that.log(m.enum);
+                        minfo.enum=m.enum;
+                        that.log(minfo);
+                    }
                     //判断你是否有默认值(后台)
                     if(m.hasOwnProperty("default")){
                         minfo.txtValue=m["default"];
@@ -1413,7 +1433,7 @@
                         refp.name=p.name;
                         refp.type=p.type;
                         refp.in=minfo.in;
-                        refp.require=minfo.require;
+                        refp.require=p.required;
                         refp.description=p.description;
                         refParam.params.push(refp);
                         //判断类型是否基础类型
@@ -1671,6 +1691,8 @@
         this.description="";
         this.example="";
         this.format="";
+        //是否必须
+        this.required=false;
         //默认值
         this.value=null;
         //引用类
@@ -1738,6 +1760,8 @@
         this.description=null;
         //文本框值
         this.txtValue=null;
+        //枚举类型
+        this.enum=null;
     }
     /***
      * 响应码

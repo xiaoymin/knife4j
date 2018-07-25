@@ -316,9 +316,9 @@
                             <%}%>
                         <%}%>
 
-                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
+                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;}%>
                         <%if(param.in!="header"){%>
-                            <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>">
+                            <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>"  data-emflag="<%=emflag%>">
                                 <td width="5%">
                                     <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                                 </td>
@@ -335,8 +335,16 @@
                                               placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                     <%}%>
                                     <%}else{%>
-                                    <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
-                                           data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <% if(param.enum!=null){%>
+                                        <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>">
+                                            <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
+                                            <option value="<%=em%>"><%=em%></option>
+                                            <%}%>
+                                        </select>
+                                        <%}else{%>
+                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                               data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <%}%>
                                     <%}%>
                                 </td>
                                 <td width="5%">
@@ -394,8 +402,8 @@
                         <%}%>
                         <%}%>
 
-                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
-                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} %>
+                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-emflag="<%=emflag%>">
                             <td width="5%">
                                 <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                             </td>
@@ -412,8 +420,16 @@
                                           placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                 <%}%>
                                 <%}else{%>
+                                    <% if(param.enum!=null){%>
+                                        <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>">
+                                            <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
+                                            <option value="<%=em%>"><%=em%></option>
+                                            <%}%>
+                                        </select>
+                                    <%}else{%>
                                 <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                    <%}%>
                                 <%}%>
                             </td>
                             <td width="5%">
