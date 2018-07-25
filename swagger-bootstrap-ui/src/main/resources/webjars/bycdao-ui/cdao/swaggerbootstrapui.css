@@ -197,6 +197,7 @@ code {
 .swu-menu{
     display: block;
     width: 55px;
+    white-space: nowrap;
 }
 .swu-hei{
     height: 20px;

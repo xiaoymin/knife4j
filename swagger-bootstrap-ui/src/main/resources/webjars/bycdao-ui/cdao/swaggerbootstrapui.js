@@ -403,6 +403,12 @@
             var html = template('contentScript', apiInfo);
             that.getDoc().find("#tab1").find(".panel-body").html(html)
             that.markdownDocInit();
+            //初始化apiInfo响应数据
+            that.log("初始化apiInfo响应数据")
+            that.log(apiInfo)
+            if(apiInfo.responseJson!=null){
+                $(".language-json:first").JSONView(apiInfo.responseJson);
+            }
         },100)
         that.log(that.currentInstance);
         //实现复制文档功能
@@ -1302,8 +1308,10 @@
                             var na=new Array();
                             na.push(ref.value);
                             swpinfo.responseValue=JSON.stringify(na,null,4);
+                            swpinfo.responseJson=na;
                         }else{
                             swpinfo.responseValue=JSON.stringify(ref.value,null,4);
+                            swpinfo.responseJson=ref.value;
                         }
                     }
                 }
@@ -1698,6 +1706,7 @@
         this.refparameters=new Array();
         this.responseCodes=new Array();
         this.responseValue=null;
+        this.responseJson=null;
         //响应字段说明
         this.responseParameters=new Array();
         this.responseRefParameters=new Array();
