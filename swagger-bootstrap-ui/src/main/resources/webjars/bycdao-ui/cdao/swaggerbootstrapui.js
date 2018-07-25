@@ -48,6 +48,7 @@
                 that.log(groupData);
                 $.each(groupData,function (i, group) {
                     var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
+                    g.url=group.url;
                     that.instances.push(g);
                 })
             }
@@ -89,7 +90,7 @@
         //赋值
         that.currentInstance=instance;
         if(!that.currentInstance.load){
-            var api=instance.location;
+            var api=instance.url;
             //这里判断url请求是否已加载过
             //防止出现根路径的情况
             var idx=api.indexOf("/");
@@ -1660,6 +1661,8 @@
         this.name=name;
         //分组url地址
         this.location=location;
+        //不分组是url地址
+        this.url=null;
         this.groupVersion=version;
         //分组url请求实例
         this.basePath="";
