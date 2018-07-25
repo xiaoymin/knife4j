@@ -1183,6 +1183,24 @@
     }
 
     /***
+     * 根据api接口自定义tags添加
+     * @param name
+     */
+    SwaggerBootstrapUi.prototype.mergeApiInfoSelfTags=function (name) {
+        var that=this;
+        var flag=false;
+        $.each(that.currentInstance.tags,function (i, tag) {
+            if(tag.name==name){
+                flag=true;
+            }
+        })
+        if(!flag){
+            var ntag=new SwaggerBootstrapUiTag(name,name);
+            that.currentInstance.tags.push(ntag);
+        }
+    }
+
+    /***
      * 创建对象实例,返回SwaggerBootstrapUiApiInfo实例
      */
     SwaggerBootstrapUi.prototype.createApiInfoInstance=function(path,mtype,apiInfo){
@@ -1360,6 +1378,10 @@
 
             }
             //that.currentInstance.paths.push(swpinfo);
+            for(var i=0;i<apiInfo.tags.length;i++){
+                var tagName=apiInfo.tags[i];
+                that.mergeApiInfoSelfTags(tagName);
+            }
         }
         return swpinfo;
     }
