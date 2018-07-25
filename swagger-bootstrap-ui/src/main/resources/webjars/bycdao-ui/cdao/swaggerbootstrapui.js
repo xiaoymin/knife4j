@@ -97,6 +97,9 @@
                 api=api.substr(1);
             }
             that.log("截取后的url:"+api);
+            api="/webjars/bycdao-ui/demo/d2.json";
+            that.log("截取后的url:"+api);
+
             $.ajax({
                 //url:"v2/api-docs",
                 url:api,
@@ -972,6 +975,7 @@
             for(var name in definitions){
                 var swud=new SwaggerBootstrapUiDefinition();
                 swud.name=name;
+                that.log("开始解析Definition:"+name);
                 //获取value
                 var value=definitions[name];
                 if ($.checkUndefined(value)){
@@ -1001,6 +1005,8 @@
                                 }else if($.checkIsBasicType(type)){
                                     propValue=$.getBasicTypeValue(type);
                                 }else{
+                                    that.log("解析属性："+property);
+                                    that.log(propobj);
                                     if(type=="array"){
                                         propValue=new Array();
                                         var items=propobj["items"];
@@ -1010,10 +1016,13 @@
                                             var refType=RegExp.$1;
                                             spropObj.refType=refType;
                                             //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                            var globalArr=new Array();
+                                            //添加类本身
+                                            globalArr.push(name);
                                             if(refType!=name){
-                                                propValue.push(that.findRefDefinition(refType,definitions,false));
+                                                propValue.push(that.findRefDefinition(refType,definitions,false,globalArr));
                                             }else{
-                                                propValue.push(that.findRefDefinition(refType,definitions,true));
+                                                propValue.push(that.findRefDefinition(refType,definitions,true,name,globalArr));
                                             }
                                         }
                                     }
@@ -1021,6 +1030,8 @@
 
                             }
                             else{
+                                that.log("解析属性："+property);
+                                that.log(propobj);
                                 if(propobj.hasOwnProperty("$ref")){
                                     var ref=propobj["$ref"];
                                     var regex=new RegExp("#/definitions/(.*)$","ig");
@@ -1028,10 +1039,13 @@
                                         var refType = RegExp.$1;
                                         spropObj.refType=refType;
                                         //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                        var globalArr=new Array();
+                                        //添加类本身
+                                        globalArr.push(name);
                                         if(refType!=name){
-                                            propValue=that.findRefDefinition(refType,definitions,false);
+                                            propValue=that.findRefDefinition(refType,definitions,false,globalArr);
                                         }else{
-                                            propValue=that.findRefDefinition(refType,definitions,true);
+                                            propValue=that.findRefDefinition(refType,definitions,true,globalArr);
                                         }
 
                                     }
@@ -1427,11 +1441,14 @@
      * @param definitions
      * @param flag
      */
-    SwaggerBootstrapUi.prototype.findRefDefinition=function (definitionName, definitions, flag) {
+    SwaggerBootstrapUi.prototype.findRefDefinition=function (definitionName, definitions, flag,globalArr) {
         var that=this;
         var defaultValue="";
         for(var definition in definitions){
-            if(definitionName==definition){
+            if(definitionName==definition ){
+                //不解析本身
+                that.log("解析definitionName:"+definitionName);
+                that.log("是否递归："+flag);
                 var value=definitions[definition];
                 //是否有properties
                 if(value.hasOwnProperty("properties")){
@@ -1458,11 +1475,13 @@
                                     if(regex.test(ref)){
                                         var refType=RegExp.$1;
                                         if (!flag){
-                                            //非递归查找
-                                            if(refType!=definitionName){
-                                                propValue.push(that.findRefDefinition(refType,definitions,flag));
+                                            //判断是否存在集合中
+                                            if($.inArray(refType,globalArr) != -1){
+                                                //存在
+                                                propValue.push({});
                                             }else{
-                                                propValue.push(that.findRefDefinition(refType,definitions,true));
+                                                globalArr.push(definitionName);
+                                                propValue.push(that.findRefDefinition(refType,definitions,flag,globalArr));
                                             }
                                         }
 
@@ -1470,7 +1489,8 @@
                                 }
                             }
 
-                        }else{
+                        }
+                        else{
                             //存在ref
                             if(propobj.hasOwnProperty("$ref")){
                                 var ref=propobj["$ref"];
@@ -1478,10 +1498,14 @@
                                 if(regex.test(ref)) {
                                     var refType = RegExp.$1;
                                     //这里需要递归判断是否是本身,如果是,则退出递归查找
-                                    if(refType!=definitionName){
-                                        propValue=that.findRefDefinition(refType,definitions,false);
-                                    }else{
-                                        propValue=that.findRefDefinition(refType,definitions,true);
+                                    if(!flag){
+                                        if($.inArray(refType,globalArr) != -1){
+                                            //存在
+                                            propValue={};
+                                        }else{
+                                            globalArr.push(definitionName);
+                                            propValue=that.findRefDefinition(refType,definitions,flag,globalArr);
+                                        }
                                     }
                                 }
                             }else{
@@ -1555,7 +1579,7 @@
     SwaggerBootstrapUi.prototype.log=function (msg) {
         if(window.console){
             //正式版不开启console功能
-            //console.log(msg);
+            console.log(msg);
         }
     }
     /***
