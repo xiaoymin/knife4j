@@ -91,6 +91,9 @@
         that.currentInstance=instance;
         if(!that.currentInstance.load){
             var api=instance.url;
+            if (api==undefined||api==null||api==""){
+                api=instance.location;
+            }
             //这里判断url请求是否已加载过
             //防止出现根路径的情况
             var idx=api.indexOf("/");
@@ -1267,6 +1270,9 @@
                             if(def!=null){
                                 minfo.def=def;
                                 minfo.value=def.value;
+                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                    minfo.description=def.description;
+                                }
                             }
                         }else{
                             if (schemaObject.hasOwnProperty("$ref")){
@@ -1278,6 +1284,9 @@
                                 if(def!=null){
                                     minfo.def=def;
                                     minfo.value=def.value;
+                                    if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                        minfo.description=def.description;
+                                    }
                                 }
                             }else{
                                 if (schemaObject.hasOwnProperty("type")){
