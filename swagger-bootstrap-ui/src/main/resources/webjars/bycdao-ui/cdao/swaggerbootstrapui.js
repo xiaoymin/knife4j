@@ -1000,6 +1000,12 @@
                 if ($.checkUndefined(value)){
                     swud.description=$.propValue("description",value,"");
                     swud.type=$.propValue("type",value,"");
+                    swud.title=$.propValue("title",value,"");
+                    //判断是否有required属性
+                    if(value.hasOwnProperty("required")){
+                        swud.required=value["required"];
+                    }
+
                     //是否有properties
                     if(value.hasOwnProperty("properties")){
                         var properties=value["properties"];
@@ -1013,7 +1019,13 @@
                             spropObj.example=$.propValue("example",propobj,"");
                             spropObj.format=$.propValue("format",propobj,"");
                             spropObj.required=$.propValue("required",propobj,false);
-
+                            if(swud.required.length>0){
+                                //有required属性,需要再判断一次
+                                if($.inArray(spropObj.name,swud.required)>-1){
+                                    //存在
+                                    spropObj.required=true;
+                                }
+                            }
                             //默认string类型
                             var propValue="";
                             //判断是否有类型
@@ -1699,9 +1711,10 @@
         this.type="";
         //属性 --SwaggerBootstrapUiProperty 集合
         this.properties=new Array();
-
         this.value=null;
-
+        //add by xiaoymin 2018-8-1 13:35:32
+        this.required=new Array();
+        this.title="";
     }
     /***
      * definition对象属性
