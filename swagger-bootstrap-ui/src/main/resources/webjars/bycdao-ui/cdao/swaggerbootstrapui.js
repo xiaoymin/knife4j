@@ -1296,6 +1296,28 @@
                             }
                         }
                     }
+                    if(m.hasOwnProperty("items")){
+                        var items=m["items"];
+                        if(items.hasOwnProperty("$ref")){
+                            var ref=items["$ref"];
+                            var className=$.getClassName(ref);
+                            minfo.type=className;
+                            minfo.schemaValue=className;
+                            var def=that.getDefinitionByName(className);
+                            if(def!=null){
+                                minfo.def=def;
+                                minfo.value=def.value;
+                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                    minfo.description=def.description;
+                                }
+                            }
+                        }else{
+                            if (items.hasOwnProperty("type")){
+                                minfo.type=items["type"];
+                            }
+                            minfo.value="";
+                        }
+                    }
                     if(minfo.in=="body"){
                         //判断属性是否是array
                         if(minfo.type=="array"){
@@ -1651,7 +1673,7 @@
     SwaggerBootstrapUi.prototype.log=function (msg) {
         if(window.console){
             //正式版不开启console功能
-            //console.log(msg);
+            console.log(msg);
         }
     }
     /***

@@ -295,17 +295,17 @@
                                             <input class="form-control p-key" value="<%=param.name%>">
                                         </td>
                                         <td>
-                                            <%if(param.in=="body"){  %>
                                             <%if(param.type=="MultipartFile"){%>
-                                            <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
-                                            <%}else {%>
-                                            <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                            <%}else{%>
+                                                <%if(param.in=="body"){  %>
+                                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
                                                       name="<%=param.name%>" data-name="<%=param.name%>"
                                                       placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
-                                            <%}%>
-                                            <%}else{%>
-                                            <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
-                                                   data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                                <%}else{%>
+                                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                                    data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                                <%}%>
                                             <%}%>
                                         </td>
                                         <td width="5%">
@@ -326,25 +326,17 @@
                                     <input class="form-control p-key" value="<%=param.name%>">
                                 </td>
                                 <td>
-                                    <%if(param.in=="body"){  %>
                                     <%if(param.type=="MultipartFile"){%>
                                     <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
-                                    <%}else {%>
+                                    <%}else{%>
+                                    <%if(param.in=="body"){  %>
                                     <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
                                               name="<%=param.name%>" data-name="<%=param.name%>"
                                               placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
-                                    <%}%>
                                     <%}else{%>
-                                        <% if(param.enum!=null){%>
-                                        <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>">
-                                            <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
-                                            <option value="<%=em%>"><%=em%></option>
-                                            <%}%>
-                                        </select>
-                                        <%}else{%>
-                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
-                                               data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
-                                        <%}%>
+                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                           data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                    <%}%>
                                     <%}%>
                                 </td>
                                 <td width="5%">
@@ -382,17 +374,17 @@
                                 <input class="form-control p-key" value="<%=param.name%>">
                             </td>
                             <td>
+                                <%if(param.type=="MultipartFile"){%>
+                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                <%}else{%>
                                 <%if(param.in=="body"){  %>
-                                    <%if(param.type=="MultipartFile"){%>
-                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
-                                    <%}else {%>
-                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
-                                              name="<%=param.name%>" data-name="<%=param.name%>"
-                                              placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
-                                    <%}%>
+                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                          name="<%=param.name%>" data-name="<%=param.name%>"
+                                          placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                 <%}else{%>
                                 <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                <%}%>
                                 <%}%>
                             </td>
                             <td width="5%">
@@ -411,14 +403,19 @@
                                 <input class="form-control p-key" value="<%=param.name%>">
                             </td>
                             <td>
-                                <%if(param.in=="body"){  %>
-                                <%if(param.type=="MultipartFile"){%>
-                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
-                                <%}else {%>
-                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
-                                          name="<%=param.name%>" data-name="<%=param.name%>"
-                                          placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
-                                <%}%>
+                                <%if(param.in=="body"||param.in=="formdata"||param.in=="formData"){  %>
+                                    <%if(param.type=="MultipartFile"){%>
+                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                    <%}else {%>
+                                        <%if(param.in=="body"){  %>
+                                        <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                                  name="<%=param.name%>" data-name="<%=param.name%>"
+                                                  placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                        <%}else {%>
+                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                               data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <%}%>
+                                    <%}%>
                                 <%}else{%>
                                     <% if(param.enum!=null){%>
                                         <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>">
