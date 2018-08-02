@@ -1,3 +1,56 @@
+.sbu-header{
+    height: 60px;
+    background-color: #4887bd;
+    color: white;
+    line-height: 60px;
+    vertical-align: middle;
+}
+.sbu-header-left{
+    width:30%;
+    float: left;
+}
+.sbu-header-left span{
+    font-size: 1.5em;
+    font-weight: 700;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    max-width: 300px;
+    text-decoration: none;
+    font-family: Titillium Web,sans-serif;
+    color: #fff;
+    margin-left:20px;
+}
+.sbu-header-left span a{
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+}
+.sub-header-left span a:hover{
+    text-decoration: none;
+}
+
+.sbu-header-right{
+    width:70%;
+    float:right;
+    vertical-align: middle;
+    height: 60px;
+    line-height: 60px;
+}
+.sbu-header-right select{
+    width:300px;
+    float: right;
+   /* margin-right: 25px;*/
+    margin-top:13px;
+}
+
+.sbu-header-right .sbu-header-group{
+    width:400px;
+    float: right;
+    /*margin-right: 25px;*/
+    top: 50%;
+}
+
 .bycdao-left {
     width: 310px;
     margin-top: 0px;
@@ -12,6 +65,9 @@
     /* padding-left: 15px;*/
     padding-right: 15px;
     transition: all 0.2s;
+}
+.bycdao-main ul li a i{
+    cursor: pointer;
 }
 
 .tab-content {

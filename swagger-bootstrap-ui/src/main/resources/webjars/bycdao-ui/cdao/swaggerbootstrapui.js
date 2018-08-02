@@ -9,6 +9,9 @@
         this.url="swagger-resources";
         //文档id
         this.docId="content";
+        //tabid
+        this.tabId="tabUl";
+        this.tabContentId="tabContent";
 
         this.menuId="menu";
         //实例分组
@@ -142,7 +145,7 @@
         var that=this;
         that.getMenu().find(".detailMenu").remove();
         //简介li
-        var dli=$('<li  class="active detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> 简介 </span></a></li>')
+        var dli=$('<li  class="active detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-icon_home"></i><span class="menu-text"> 简介 </span></a></li>')
         dli.on("click",function () {
             that.log("简介click")
             that.createDescriptionElement();
@@ -151,7 +154,7 @@
         })
         that.getMenu().append(dli);
         //全局参数菜单功能
-        var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
+        var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
         globalArgsLi.on("click",function () {
             that.getMenu().find("li").removeClass("active");
             globalArgsLi.addClass("active");
@@ -159,7 +162,7 @@
         })
         that.getMenu().append(globalArgsLi);
         //离线文档功能
-        var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
+        var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-iconset0118\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
         mddocli.on("click",function () {
             that.log("离线文档功能click")
             that.createMarkdownTab();
@@ -171,12 +174,12 @@
         $.each(that.currentInstance.tags,function (i, tag) {
             var len=tag.childrens.length;
             if(len==0){
-                var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
                 that.getMenu().append(li);
             }else{
                 //存在子标签
                 var li=$('<li  class="detailMenu"></li>');
-                var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt"></i><span class="menu-text">'+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                 li.append(titleA);
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
@@ -1222,6 +1225,7 @@
     SwaggerBootstrapUi.prototype.createApiInfoInstance=function(path,mtype,apiInfo){
         var that=this;
         var swpinfo=new SwaggerBootstrapUiApiInfo();
+        swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=path;
         swpinfo.methodType=mtype;
         if(apiInfo!=null){
@@ -1623,7 +1627,7 @@
     SwaggerBootstrapUi.prototype.createGroupElement=function () {
         var that=this;
         //创建分组flag
-        var groupli=$('<li  class="active"></li>');
+        /*var groupli=$('<li  class="active"></li>');
         var groupSele=$("<select id='groupSel' style='width:100%;' class=\"form-control\"></select>");
         $.each(that.instances,function (i, group) {
             var groupOption=$("<option data-url='"+group.location+"' data-name='"+group.name+"'>"+group.name+"</option>");
@@ -1640,7 +1644,28 @@
             that.analysisApi(instance);
         })
         that.getMenu().html("");
-        that.getMenu().append(groupli);
+        that.getMenu().append(groupli);*/
+        that.getMenu().html("");
+        //修改动态创建分组,改为实际赋值
+        var groupSele=$("#sbu-group-sel");
+        $.each(that.instances,function (i, group) {
+            //这里分组url需要判断,先获取url，获取不到再获取location属性
+            var url=group.url;
+            if(url==undefined||url==null||url==""){
+                url=group.location;
+            }
+            var groupOption=$("<option data-url='"+url+"' data-name='"+group.name+"'>"+group.name+"</option>");
+            groupSele.append(groupOption);
+        })
+        groupSele.on("change",function () {
+            var t=$(this);
+            var name=t.find("option:selected").attr("data-name");
+            that.log("分组：：");
+            that.log(name);
+            var instance=that.selectInstanceByGroupName(name);
+            that.log(instance);
+            that.analysisApi(instance);
+        })
         //默认加载第一个url
         that.analysisApi(that.instances[0]);
     }
@@ -1689,6 +1714,12 @@
      */
     SwaggerBootstrapUi.prototype.getDoc=function () {
         return $("#"+this.docId);
+    }
+    SwaggerBootstrapUi.prototype.getTab=function () {
+        return $("#"+this.tabId);
+    }
+    SwaggerBootstrapUi.prototype.getTabContent=function () {
+        return $("#"+this.tabContentId);
     }
     /***
      * swagger 分组对象
@@ -1801,6 +1832,8 @@
         //响应字段说明
         this.responseParameters=new Array();
         this.responseRefParameters=new Array();
+        //新增菜单id
+        this.id="";
 
 
     }
