@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-    <title>Swagger-Bootstrap-UI-前后端api接口文档</title>
+    <title>Swagger-Bootstrap-UI</title>
     <link rel="shortcut icon" href="webjars/bycdao-ui/images/api.ico"/>
     <script type="text/javascript" src="webjars/bycdao-ui/jquery/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="webjars/bycdao-ui/ace/bootstrap.min.js"></script>
+    <script type="text/javascript" src="webjars/bycdao-ui/ace/ace.min.js"></script>
+
     <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap/css/bootstrap.min.css" />
     <script type="text/javascript" src="webjars/bycdao-ui/jquery/clipboard/clipboard.min.js"></script>
     <script type="text/javascript" src="webjars/bycdao-ui/layer3.0.3/layer.js"></script>
@@ -18,11 +21,25 @@
     <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
     <script src="webjars/bycdao-ui/jquery/marked.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
-
+    <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css">
     <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
 </head>
 <body style="overflow: hidden;">
-<div class="bycdao-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
+<div class="sbu-header">
+    <div class="sbu-header-left">
+        <span><a href="https://gitee.com/xiaoym/swagger-bootstrap-ui" target="_blank">swagger-bootstrap-ui</a></span>
+    </div>
+    <div class="sbu-header-right">
+        <div class="form-group sbu-header-group">
+            <label class="col-sm-4 control-label">选择分组</label>
+            <div class="col-sm-8">
+                <select  class="form-control" id="sbu-group-sel">
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bycdao-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
     <ul class="nav nav-list" id="menu">
         <li >
             <a href="javascript:void(0)">
@@ -259,7 +276,7 @@
             <span class="input-group-btn">
                 <button class="btn btn-default btn-info" type="button">{{methodType}}</button>
             </span>
-            <input type="text" id="txtreqUrl" data-originalurl="<%=url.substring(1)%>" class="form-control" value="<%=url.substring(1)%>">
+            <input type="text" id="txtreqUrl" data-originalurl="<%=originalUrl.substring(1)%>" class="form-control" value="<%=url.substring(1)%>">
             <span class="input-group-btn">
                 <button id="btnRequest" class="btn btn-default btn-primary" type="button"> 发 送 </button>
             </span>
@@ -295,17 +312,17 @@
                                             <input class="form-control p-key" value="<%=param.name%>">
                                         </td>
                                         <td>
-                                            <%if(param.in=="body"){  %>
                                             <%if(param.type=="MultipartFile"){%>
-                                            <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
-                                            <%}else {%>
-                                            <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                            <%}else{%>
+                                                <%if(param.in=="body"){  %>
+                                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
                                                       name="<%=param.name%>" data-name="<%=param.name%>"
                                                       placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
-                                            <%}%>
-                                            <%}else{%>
-                                            <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
-                                                   data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                                <%}else{%>
+                                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                                    data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                                <%}%>
                                             <%}%>
                                         </td>
                                         <td width="5%">
@@ -326,25 +343,17 @@
                                     <input class="form-control p-key" value="<%=param.name%>">
                                 </td>
                                 <td>
-                                    <%if(param.in=="body"){  %>
                                     <%if(param.type=="MultipartFile"){%>
                                     <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
-                                    <%}else {%>
+                                    <%}else{%>
+                                    <%if(param.in=="body"){  %>
                                     <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
                                               name="<%=param.name%>" data-name="<%=param.name%>"
                                               placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
-                                    <%}%>
                                     <%}else{%>
-                                        <% if(param.enum!=null){%>
-                                        <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>">
-                                            <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
-                                            <option value="<%=em%>"><%=em%></option>
-                                            <%}%>
-                                        </select>
-                                        <%}else{%>
-                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
-                                               data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
-                                        <%}%>
+                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                           data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                    <%}%>
                                     <%}%>
                                 </td>
                                 <td width="5%">
@@ -382,17 +391,17 @@
                                 <input class="form-control p-key" value="<%=param.name%>">
                             </td>
                             <td>
+                                <%if(param.type=="MultipartFile"){%>
+                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                <%}else{%>
                                 <%if(param.in=="body"){  %>
-                                    <%if(param.type=="MultipartFile"){%>
-                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
-                                    <%}else {%>
-                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
-                                              name="<%=param.name%>" data-name="<%=param.name%>"
-                                              placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
-                                    <%}%>
+                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                          name="<%=param.name%>" data-name="<%=param.name%>"
+                                          placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                 <%}else{%>
                                 <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                <%}%>
                                 <%}%>
                             </td>
                             <td width="5%">
@@ -411,19 +420,24 @@
                                 <input class="form-control p-key" value="<%=param.name%>">
                             </td>
                             <td>
-                                <%if(param.in=="body"){  %>
-                                <%if(param.type=="MultipartFile"){%>
-                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
-                                <%}else {%>
-                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
-                                          name="<%=param.name%>" data-name="<%=param.name%>"
-                                          placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
-                                <%}%>
+                                <%if(param.in=="body"||param.in=="formdata"||param.in=="formData"){  %>
+                                    <%if(param.type=="MultipartFile"){%>
+                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                    <%}else {%>
+                                        <%if(param.in=="body"){  %>
+                                        <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                                  name="<%=param.name%>" data-name="<%=param.name%>"
+                                                  placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                        <%}else {%>
+                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                               data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <%}%>
+                                    <%}%>
                                 <%}else{%>
                                     <% if(param.enum!=null){%>
                                         <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>">
                                             <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
-                                            <option value="<%=em%>"><%=em%></option>
+                                            <option value="<%=em%>" <%if(param.txtValue==em){%> selected <%}%> ><%=em%></option>
                                             <%}%>
                                         </select>
                                     <%}else{%>
@@ -487,11 +501,10 @@
 
 <!--SwaggerBootstrapUi简介-->
 <script type="text/html" id="SwaggerBootstrapUiIntroScript">
-    <div  style="width:99%;margin:0px auto;">
-        <div class="alert alert-info" role="alert" style="width: 90%;margin: 0px auto;margin-top: 20px;"><a href="https://www.oschina.net/p/swagger-bootstrap-ui" target="_blank">swagger-bootstrap-ui</a>是Swagger的前端UI实现,目的是替换Swagger默认的UI实现,使文档更友好一点儿....</div>
+    <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
         <div style="margin-top: 15px;">
             <div class="swbu-main" itemprop="sbuarticleBody">
-                <div id="sbuDescriptionDoc" style="width: 90%;margin: 0px auto;">
+                <div id="sbuDescriptionDoc" style="width: 98%;margin: 0px auto;">
                     <table>
                         <tr>
                             <td colspan="2" style="text-align: center;">{{title}}</td>
@@ -520,25 +533,50 @@
                             <td>服务url</td>
                             <td>{{termsOfService}}</td>
                         </tr>
+                        <tr>
+                            <td>分组名称</td>
+                            <td>{{name}}</td>
+                        </tr>
+                        <tr>
+                            <td>分组url</td>
+                            <td>{{url}}</td>
+                        </tr>
+                        <tr>
+                            <td>分组location</td>
+                            <td>{{location}}</td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">接口统计信息</td>
+                            <td>
+                                <table>
+                                    <%if(pathArrs!=null && pathArrs.length>0){ %>
+                                        <% for( a = 0; a < pathArrs.length ; a++ ) {var param=pathArrs[a]; %>
+                                        <tr>
+                                            <td style="width: 10%;"><%=param.method%></td>
+                                            <td><span class="label label-primary"><%=param.count%></span></td>
+                                        </tr>
+                                    <%}}%>
+                                </table>
+                            </td>
+                        </tr>
                     </table>
                 </div>
-                <!--<textarea rows="10" cols="10" id="docText">-->
-
+            </div>
         </div>
     </div>
 </script>
-<div class="bycdao-main" id="content"  style="height: 100%;overflow-y: auto;">
+<div class="bycdao-main" id="content"  style="height: 100%;overflow-y: auto;margin-top:2px;">
+    <!--<button id="btnAddTab">增加Tab</button>
     <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs" id="tabUl">
             <li class="active">
                 <a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a>
             </li>
             <li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>
         </ul>
-        <div class="tab-content">
+        <div class="tab-content" id="tabContent">
             <div id="tab1" class="tab-pane active">
                 <div class="panel-body" id="tabBody">
-
                 </div>
             </div>
             <div id="tab2" class="tab-pane">
@@ -546,10 +584,42 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 </div>
-<script type="text/javascript" src="webjars/bycdao-ui/ace/bootstrap.min.js"></script>
-<script type="text/javascript" src="webjars/bycdao-ui/ace/ace.min.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        /*$('.nav-tabs').scrollingTabs();
+
+        $("#btnAddTab").on("click",function (e) {
+            e.preventDefault();
+            var ul=$("#tabUl");
+            var tabContent=$("#tabContent")
+            var tabId="addTab"+Math.round(Math.random()*1000000);
+
+            var addLi=$('<li class=""><a data-toggle="tab" href="#'+tabId+'" aria-expanded="true"> 在线调试'+tabId+' <i class="iconfont icon-guanbi" style="cursor: pointer"></i></a></li>')
+            ul.append(addLi);
+
+            var div=$("<div id=\""+tabId+"\" class=\"tab-pane\"><div class=\"panel-body\"><strong>正在开发中,敬请期待"+tabId+"......</strong></div></div>");
+            tabContent.append(div);
+
+
+            //ul.find("li").removeClass("active");
+            //addLi.addClass("active");
+            //$('#myTab a[href="#profile"]').tab('show')
+            ul.find("a[href='#"+tabId+"']").tab("show");
+            console.log(ul.find("a[href='#"+tabId+"']"))
+
+            $('.nav-tabs').scrollingTabs('refresh');
+
+
+        })*/
+    })
+</script>
+
+
+
+
 <script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js"></script>
 <!----jsonhandle-->
 </body>

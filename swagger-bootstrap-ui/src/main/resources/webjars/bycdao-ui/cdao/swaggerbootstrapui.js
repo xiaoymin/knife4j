@@ -9,6 +9,9 @@
         this.url="swagger-resources";
         //文档id
         this.docId="content";
+        //tabid
+        this.tabId="tabUl";
+        this.tabContentId="tabContent";
 
         this.menuId="menu";
         //实例分组
@@ -48,6 +51,7 @@
                 that.log(groupData);
                 $.each(groupData,function (i, group) {
                     var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
+                    g.url=group.url;
                     that.instances.push(g);
                 })
             }
@@ -89,7 +93,10 @@
         //赋值
         that.currentInstance=instance;
         if(!that.currentInstance.load){
-            var api=instance.location;
+            var api=instance.url;
+            if (api==undefined||api==null||api==""){
+                api=instance.location;
+            }
             //这里判断url请求是否已加载过
             //防止出现根路径的情况
             var idx=api.indexOf("/");
@@ -138,7 +145,7 @@
         var that=this;
         that.getMenu().find(".detailMenu").remove();
         //简介li
-        var dli=$('<li  class="active detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> 简介 </span></a></li>')
+        var dli=$('<li  class="active detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-icon_home"></i><span class="menu-text"> 主页 </span></a></li>')
         dli.on("click",function () {
             that.log("简介click")
             that.createDescriptionElement();
@@ -147,7 +154,7 @@
         })
         that.getMenu().append(dli);
         //全局参数菜单功能
-        var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
+        var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
         globalArgsLi.on("click",function () {
             that.getMenu().find("li").removeClass("active");
             globalArgsLi.addClass("active");
@@ -155,7 +162,7 @@
         })
         that.getMenu().append(globalArgsLi);
         //离线文档功能
-        var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
+        var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-iconset0118\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
         mddocli.on("click",function () {
             that.log("离线文档功能click")
             that.createMarkdownTab();
@@ -167,12 +174,12 @@
         $.each(that.currentInstance.tags,function (i, tag) {
             var len=tag.childrens.length;
             if(len==0){
-                var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
                 that.getMenu().append(li);
             }else{
                 //存在子标签
                 var li=$('<li  class="detailMenu"></li>');
-                var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt"></i><span class="menu-text">'+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                 li.append(titleA);
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
@@ -395,12 +402,12 @@
             that.getMenu().find("li").removeClass("active");
             //parentLi.addClass("active");
             menu.addClass("active");
-            that.createApiInfoTable(data);
+            that.createApiInfoTable(data,menu);
             //DApiUI.createDebugTab(data);
         })
     }
 
-    SwaggerBootstrapUi.prototype.createApiInfoTable=function (apiInfo) {
+    SwaggerBootstrapUi.prototype.createApiInfoTable=function (apiInfo,menu) {
         var that=this;
         that.createTabElement();
         //查找接口doc
@@ -438,7 +445,7 @@
         that.getDoc().find("#tab2").find(".panel-body").html("");
         var html = template('DebugScript', apiInfo);
         that.getDoc().find("#tab2").find(".panel-body").html(html);
-        that.requestSend(apiInfo);
+        that.requestSend(apiInfo,menu);
 
     }
 
@@ -446,8 +453,10 @@
      * 发送请求
      * @constructor
      */
-    SwaggerBootstrapUi.prototype.requestSend=function (apiInfo) {
+    SwaggerBootstrapUi.prototype.requestSend=function (apiInfo,eleObject) {
         var that=this;
+        that.log("发送之前...")
+        that.log(apiInfo)
         var btnRequest=that.getDoc().find("#tab2").find(".panel-body").find("#btnRequest");
         var respcleanDiv=that.getDoc().find("#tab2").find(".panel-body").find("#responsebody");
         btnRequest.on("click",function (e) {
@@ -494,11 +503,14 @@
                         if(trdata.type=="MultipartFile"){
                             value=paramtr.find("td:eq(2)").find("input").val();
                         }
+                        that.updateRequestParameter(trdata.name,value,apiInfo);
                     }else{
                         if(trdata.emflag){
                             value=paramtr.find("td:eq(2)").find("select option:selected").val();
+                            that.updateRequestParameter(trdata.name,value,apiInfo);
                         }else{
                             value=paramtr.find("td:eq(2)").find("input").val();
+                            that.updateRequestParameter(trdata.name,value,apiInfo);
                         }
                     }
 
@@ -506,6 +518,7 @@
                         //判断是否是path参数
                         if(trdata["in"]=="path"){
                             url=url.replace("{"+key+"}",value);
+                            apiInfo.url=url;
                         }else{
                             if (url.indexOf("?")>-1){
                                 url=url+"&"+key+"="+value;
@@ -516,6 +529,7 @@
                     }else{
                         if(trdata["in"]=="path"){
                             url=url.replace("{"+key+"}",value);
+                            apiInfo.url=url;
                         }else{
                             if(trdata["in"]=="body"){
                                 bodyparams+=value;
@@ -563,7 +577,9 @@
                 layer.msg(validateobj.message);
                 return;
             }
-
+            that.log("发送之后bai...")
+            that.log(apiInfo)
+            eleObject.data("data",apiInfo);
             //判断是否有表单
             var form=$("#uploadForm");
             if(form.length>0){
@@ -789,6 +805,19 @@
         })
 
     }
+    /***
+     * 更新key值
+     * @param key
+     * @param value
+     * @param apiInfo
+     */
+    SwaggerBootstrapUi.prototype.updateRequestParameter=function (key, value, apiInfo) {
+        $.each(apiInfo.parameters,function (i, p) {
+            if(p.name==key){
+                p.txtValue=value;
+            }
+        })
+    }
 
     SwaggerBootstrapUi.prototype.markdownDocInit=function () {
         var that=this;
@@ -999,6 +1028,12 @@
                 if ($.checkUndefined(value)){
                     swud.description=$.propValue("description",value,"");
                     swud.type=$.propValue("type",value,"");
+                    swud.title=$.propValue("title",value,"");
+                    //判断是否有required属性
+                    if(value.hasOwnProperty("required")){
+                        swud.required=value["required"];
+                    }
+
                     //是否有properties
                     if(value.hasOwnProperty("properties")){
                         var properties=value["properties"];
@@ -1012,7 +1047,13 @@
                             spropObj.example=$.propValue("example",propobj,"");
                             spropObj.format=$.propValue("format",propobj,"");
                             spropObj.required=$.propValue("required",propobj,false);
-
+                            if(swud.required.length>0){
+                                //有required属性,需要再判断一次
+                                if($.inArray(spropObj.name,swud.required)>-1){
+                                    //存在
+                                    spropObj.required=true;
+                                }
+                            }
                             //默认string类型
                             var propValue="";
                             //判断是否有类型
@@ -1103,6 +1144,8 @@
                     apiInfo=pathObject["get"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"get",apiInfo));
+                        that.methodCountAndDown("GET");
+
                     }
                 }
                 if(pathObject.hasOwnProperty("post")){
@@ -1110,6 +1153,7 @@
                     apiInfo=pathObject["post"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"post",apiInfo));
+                        that.methodCountAndDown("POST");
                     }
                 }
                 if(pathObject.hasOwnProperty("put")){
@@ -1117,6 +1161,7 @@
                     apiInfo=pathObject["put"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"put",apiInfo));
+                        that.methodCountAndDown("PUT");
                     }
                 }
                 if(pathObject.hasOwnProperty("delete")){
@@ -1124,6 +1169,7 @@
                     apiInfo=pathObject["delete"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"delete",apiInfo));
+                        that.methodCountAndDown("DELETE");
                     }
                 }
                 if (pathObject.hasOwnProperty("patch")){
@@ -1133,6 +1179,7 @@
                     apiInfo=pathObject["patch"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"patch",apiInfo));
+                        that.methodCountAndDown("PATCH");
                     }
                 }
                 if (pathObject.hasOwnProperty("options")){
@@ -1140,6 +1187,7 @@
                     apiInfo=pathObject["options"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"options",apiInfo));
+                        that.methodCountAndDown("OPTIONS");
                     }
                 }
                 if (pathObject.hasOwnProperty("trace")){
@@ -1147,6 +1195,7 @@
                     apiInfo=pathObject["trace"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"trace",apiInfo));
+                        that.methodCountAndDown("TRACE");
                     }
                 }
                 if (pathObject.hasOwnProperty("head")){
@@ -1154,6 +1203,7 @@
                     apiInfo=pathObject["head"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"head",apiInfo));
+                        that.methodCountAndDown("HEAD");
                     }
                 }
                 if (pathObject.hasOwnProperty("connect")){
@@ -1161,6 +1211,7 @@
                     apiInfo=pathObject["connect"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"connect",apiInfo));
+                        that.methodCountAndDown("CONNECT");
                     }
 
                 }
@@ -1180,6 +1231,28 @@
                 })
             })
         });
+    }
+
+    /***
+     * 计数
+     * @param method
+     */
+    SwaggerBootstrapUi.prototype.methodCountAndDown=function (method) {
+        var that=this;
+        var flag=false;
+        $.each(that.currentInstance.pathArrs,function (i, a) {
+            if(a.method==method){
+                flag=true;
+                //计数加1
+                a.count=a.count+1;
+            }
+        })
+        if(!flag){
+            var me=new SwaggerBootstrapUiPathCountDownLatch();
+            me.method=method;
+            me.count=1;
+            that.currentInstance.pathArrs.push(me);
+        }
     }
 
     /***
@@ -1206,7 +1279,9 @@
     SwaggerBootstrapUi.prototype.createApiInfoInstance=function(path,mtype,apiInfo){
         var that=this;
         var swpinfo=new SwaggerBootstrapUiApiInfo();
+        swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=path;
+        swpinfo.originalUrl=path;
         swpinfo.methodType=mtype;
         if(apiInfo!=null){
             swpinfo.consumes=apiInfo.consumes;
@@ -1254,6 +1329,9 @@
                             if(def!=null){
                                 minfo.def=def;
                                 minfo.value=def.value;
+                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                    minfo.description=def.description;
+                                }
                             }
                         }else{
                             if (schemaObject.hasOwnProperty("$ref")){
@@ -1265,6 +1343,9 @@
                                 if(def!=null){
                                     minfo.def=def;
                                     minfo.value=def.value;
+                                    if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                        minfo.description=def.description;
+                                    }
                                 }
                             }else{
                                 if (schemaObject.hasOwnProperty("type")){
@@ -1272,6 +1353,28 @@
                                 }
                                 minfo.value="";
                             }
+                        }
+                    }
+                    if(m.hasOwnProperty("items")){
+                        var items=m["items"];
+                        if(items.hasOwnProperty("$ref")){
+                            var ref=items["$ref"];
+                            var className=$.getClassName(ref);
+                            minfo.type=className;
+                            minfo.schemaValue=className;
+                            var def=that.getDefinitionByName(className);
+                            if(def!=null){
+                                minfo.def=def;
+                                minfo.value=def.value;
+                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                    minfo.description=def.description;
+                                }
+                            }
+                        }else{
+                            if (items.hasOwnProperty("type")){
+                                minfo.type=items["type"];
+                            }
+                            minfo.value="";
                         }
                     }
                     if(minfo.in=="body"){
@@ -1579,7 +1682,7 @@
     SwaggerBootstrapUi.prototype.createGroupElement=function () {
         var that=this;
         //创建分组flag
-        var groupli=$('<li  class="active"></li>');
+        /*var groupli=$('<li  class="active"></li>');
         var groupSele=$("<select id='groupSel' style='width:100%;' class=\"form-control\"></select>");
         $.each(that.instances,function (i, group) {
             var groupOption=$("<option data-url='"+group.location+"' data-name='"+group.name+"'>"+group.name+"</option>");
@@ -1596,7 +1699,28 @@
             that.analysisApi(instance);
         })
         that.getMenu().html("");
-        that.getMenu().append(groupli);
+        that.getMenu().append(groupli);*/
+        that.getMenu().html("");
+        //修改动态创建分组,改为实际赋值
+        var groupSele=$("#sbu-group-sel");
+        $.each(that.instances,function (i, group) {
+            //这里分组url需要判断,先获取url，获取不到再获取location属性
+            var url=group.url;
+            if(url==undefined||url==null||url==""){
+                url=group.location;
+            }
+            var groupOption=$("<option data-url='"+url+"' data-name='"+group.name+"'>"+group.name+"</option>");
+            groupSele.append(groupOption);
+        })
+        groupSele.on("change",function () {
+            var t=$(this);
+            var name=t.find("option:selected").attr("data-name");
+            that.log("分组：：");
+            that.log(name);
+            var instance=that.selectInstanceByGroupName(name);
+            that.log(instance);
+            that.analysisApi(instance);
+        })
         //默认加载第一个url
         that.analysisApi(that.instances[0]);
     }
@@ -1646,6 +1770,12 @@
     SwaggerBootstrapUi.prototype.getDoc=function () {
         return $("#"+this.docId);
     }
+    SwaggerBootstrapUi.prototype.getTab=function () {
+        return $("#"+this.tabId);
+    }
+    SwaggerBootstrapUi.prototype.getTabContent=function () {
+        return $("#"+this.tabContentId);
+    }
     /***
      * swagger 分组对象
      * @param name 分组对象名称
@@ -1660,6 +1790,8 @@
         this.name=name;
         //分组url地址
         this.location=location;
+        //不分组是url地址
+        this.url=null;
         this.groupVersion=version;
         //分组url请求实例
         this.basePath="";
@@ -1681,8 +1813,19 @@
         this.paths=new Array();
         //全局参数,存放SwaggerBootstrapUiParameter集合
         this.globalParameters=new Array();
+        //参数统计信息，存放SwaggerBootstrapUiPathCountDownLatch集合
+        this.pathArrs=new Array();
 
     }
+    /***
+     * 计数器
+     * @constructor
+     */
+    var SwaggerBootstrapUiPathCountDownLatch=function () {
+        this.method="";
+        this.count=0;
+    }
+    
     /***
      * 返回对象解析属性
      * @constructor
@@ -1696,9 +1839,10 @@
         this.type="";
         //属性 --SwaggerBootstrapUiProperty 集合
         this.properties=new Array();
-
         this.value=null;
-
+        //add by xiaoymin 2018-8-1 13:35:32
+        this.required=new Array();
+        this.title="";
     }
     /***
      * definition对象属性
@@ -1737,6 +1881,7 @@
      */
     var SwaggerBootstrapUiApiInfo=function () {
         this.url=null;
+        this.originalUrl=null;
         this.methodType=null;
         this.description=null;
         this.summary=null;
@@ -1754,6 +1899,8 @@
         //响应字段说明
         this.responseParameters=new Array();
         this.responseRefParameters=new Array();
+        //新增菜单id
+        this.id="";
 
 
     }
