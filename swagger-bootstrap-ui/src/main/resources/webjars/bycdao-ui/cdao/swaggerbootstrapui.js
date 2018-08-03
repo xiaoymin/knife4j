@@ -402,12 +402,12 @@
             that.getMenu().find("li").removeClass("active");
             //parentLi.addClass("active");
             menu.addClass("active");
-            that.createApiInfoTable(data);
+            that.createApiInfoTable(data,menu);
             //DApiUI.createDebugTab(data);
         })
     }
 
-    SwaggerBootstrapUi.prototype.createApiInfoTable=function (apiInfo) {
+    SwaggerBootstrapUi.prototype.createApiInfoTable=function (apiInfo,menu) {
         var that=this;
         that.createTabElement();
         //查找接口doc
@@ -445,7 +445,7 @@
         that.getDoc().find("#tab2").find(".panel-body").html("");
         var html = template('DebugScript', apiInfo);
         that.getDoc().find("#tab2").find(".panel-body").html(html);
-        that.requestSend(apiInfo);
+        that.requestSend(apiInfo,menu);
 
     }
 
@@ -453,8 +453,10 @@
      * 发送请求
      * @constructor
      */
-    SwaggerBootstrapUi.prototype.requestSend=function (apiInfo) {
+    SwaggerBootstrapUi.prototype.requestSend=function (apiInfo,eleObject) {
         var that=this;
+        that.log("发送之前...")
+        that.log(apiInfo)
         var btnRequest=that.getDoc().find("#tab2").find(".panel-body").find("#btnRequest");
         var respcleanDiv=that.getDoc().find("#tab2").find(".panel-body").find("#responsebody");
         btnRequest.on("click",function (e) {
@@ -501,11 +503,14 @@
                         if(trdata.type=="MultipartFile"){
                             value=paramtr.find("td:eq(2)").find("input").val();
                         }
+                        that.updateRequestParameter(trdata.name,value,apiInfo);
                     }else{
                         if(trdata.emflag){
                             value=paramtr.find("td:eq(2)").find("select option:selected").val();
+                            that.updateRequestParameter(trdata.name,value,apiInfo);
                         }else{
                             value=paramtr.find("td:eq(2)").find("input").val();
+                            that.updateRequestParameter(trdata.name,value,apiInfo);
                         }
                     }
 
@@ -513,6 +518,7 @@
                         //判断是否是path参数
                         if(trdata["in"]=="path"){
                             url=url.replace("{"+key+"}",value);
+                            apiInfo.url=url;
                         }else{
                             if (url.indexOf("?")>-1){
                                 url=url+"&"+key+"="+value;
@@ -523,6 +529,7 @@
                     }else{
                         if(trdata["in"]=="path"){
                             url=url.replace("{"+key+"}",value);
+                            apiInfo.url=url;
                         }else{
                             if(trdata["in"]=="body"){
                                 bodyparams+=value;
@@ -570,7 +577,9 @@
                 layer.msg(validateobj.message);
                 return;
             }
-
+            that.log("发送之后bai...")
+            that.log(apiInfo)
+            eleObject.data("data",apiInfo);
             //判断是否有表单
             var form=$("#uploadForm");
             if(form.length>0){
@@ -795,6 +804,19 @@
 
         })
 
+    }
+    /***
+     * 更新key值
+     * @param key
+     * @param value
+     * @param apiInfo
+     */
+    SwaggerBootstrapUi.prototype.updateRequestParameter=function (key, value, apiInfo) {
+        $.each(apiInfo.parameters,function (i, p) {
+            if(p.name==key){
+                p.txtValue=value;
+            }
+        })
     }
 
     SwaggerBootstrapUi.prototype.markdownDocInit=function () {
@@ -1227,6 +1249,7 @@
         var swpinfo=new SwaggerBootstrapUiApiInfo();
         swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=path;
+        swpinfo.originalUrl=path;
         swpinfo.methodType=mtype;
         if(apiInfo!=null){
             swpinfo.consumes=apiInfo.consumes;
@@ -1815,6 +1838,7 @@
      */
     var SwaggerBootstrapUiApiInfo=function () {
         this.url=null;
+        this.originalUrl=null;
         this.methodType=null;
         this.description=null;
         this.summary=null;
