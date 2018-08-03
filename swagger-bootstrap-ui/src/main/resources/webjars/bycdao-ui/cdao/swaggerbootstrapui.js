@@ -145,7 +145,7 @@
         var that=this;
         that.getMenu().find(".detailMenu").remove();
         //简介li
-        var dli=$('<li  class="active detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-icon_home"></i><span class="menu-text"> 简介 </span></a></li>')
+        var dli=$('<li  class="active detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-icon_home"></i><span class="menu-text"> 主页 </span></a></li>')
         dli.on("click",function () {
             that.log("简介click")
             that.createDescriptionElement();
@@ -1753,7 +1753,7 @@
     SwaggerBootstrapUi.prototype.log=function (msg) {
         if(window.console){
             //正式版不开启console功能
-            //console.log(msg);
+            console.log(msg);
         }
     }
     /***

@@ -123,7 +123,7 @@
 
 .nav-list>li>a>[class*="icon-"]:first-child {
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: unset;
     min-width: 30px;
     text-align: center;
     font-size: 18px;
