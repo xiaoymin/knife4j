@@ -504,7 +504,7 @@
     <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
         <div style="margin-top: 15px;">
             <div class="swbu-main" itemprop="sbuarticleBody">
-                <div id="sbuDescriptionDoc" style="width: 95%;margin: 0px auto;">
+                <div id="sbuDescriptionDoc" style="width: 98%;margin: 0px auto;">
                     <table>
                         <tr>
                             <td colspan="2" style="text-align: center;">{{title}}</td>
@@ -532,6 +532,32 @@
                         <tr>
                             <td>服务url</td>
                             <td>{{termsOfService}}</td>
+                        </tr>
+                        <tr>
+                            <td>分组名称</td>
+                            <td>{{name}}</td>
+                        </tr>
+                        <tr>
+                            <td>分组url</td>
+                            <td>{{url}}</td>
+                        </tr>
+                        <tr>
+                            <td>分组location</td>
+                            <td>{{location}}</td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">接口统计信息</td>
+                            <td>
+                                <table>
+                                    <%if(pathArrs!=null && pathArrs.length>0){ %>
+                                        <% for( a = 0; a < pathArrs.length ; a++ ) {var param=pathArrs[a]; %>
+                                        <tr>
+                                            <td style="width: 10%;"><%=param.method%></td>
+                                            <td><span class="label label-primary"><%=param.count%></span></td>
+                                        </tr>
+                                    <%}}%>
+                                </table>
+                            </td>
                         </tr>
                     </table>
                 </div>

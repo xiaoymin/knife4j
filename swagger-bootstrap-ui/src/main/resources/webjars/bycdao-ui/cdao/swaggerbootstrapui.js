@@ -1144,6 +1144,8 @@
                     apiInfo=pathObject["get"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"get",apiInfo));
+                        that.methodCountAndDown("GET");
+
                     }
                 }
                 if(pathObject.hasOwnProperty("post")){
@@ -1151,6 +1153,7 @@
                     apiInfo=pathObject["post"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"post",apiInfo));
+                        that.methodCountAndDown("POST");
                     }
                 }
                 if(pathObject.hasOwnProperty("put")){
@@ -1158,6 +1161,7 @@
                     apiInfo=pathObject["put"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"put",apiInfo));
+                        that.methodCountAndDown("PUT");
                     }
                 }
                 if(pathObject.hasOwnProperty("delete")){
@@ -1165,6 +1169,7 @@
                     apiInfo=pathObject["delete"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"delete",apiInfo));
+                        that.methodCountAndDown("DELETE");
                     }
                 }
                 if (pathObject.hasOwnProperty("patch")){
@@ -1174,6 +1179,7 @@
                     apiInfo=pathObject["patch"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"patch",apiInfo));
+                        that.methodCountAndDown("PATCH");
                     }
                 }
                 if (pathObject.hasOwnProperty("options")){
@@ -1181,6 +1187,7 @@
                     apiInfo=pathObject["options"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"options",apiInfo));
+                        that.methodCountAndDown("OPTIONS");
                     }
                 }
                 if (pathObject.hasOwnProperty("trace")){
@@ -1188,6 +1195,7 @@
                     apiInfo=pathObject["trace"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"trace",apiInfo));
+                        that.methodCountAndDown("TRACE");
                     }
                 }
                 if (pathObject.hasOwnProperty("head")){
@@ -1195,6 +1203,7 @@
                     apiInfo=pathObject["head"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"head",apiInfo));
+                        that.methodCountAndDown("HEAD");
                     }
                 }
                 if (pathObject.hasOwnProperty("connect")){
@@ -1202,6 +1211,7 @@
                     apiInfo=pathObject["connect"]
                     if(apiInfo!=null){
                         that.currentInstance.paths.push(that.createApiInfoInstance(path,"connect",apiInfo));
+                        that.methodCountAndDown("CONNECT");
                     }
 
                 }
@@ -1221,6 +1231,28 @@
                 })
             })
         });
+    }
+
+    /***
+     * 计数
+     * @param method
+     */
+    SwaggerBootstrapUi.prototype.methodCountAndDown=function (method) {
+        var that=this;
+        var flag=false;
+        $.each(that.currentInstance.pathArrs,function (i, a) {
+            if(a.method==method){
+                flag=true;
+                //计数加1
+                a.count=a.count+1;
+            }
+        })
+        if(!flag){
+            var me=new SwaggerBootstrapUiPathCountDownLatch();
+            me.method=method;
+            me.count=1;
+            that.currentInstance.pathArrs.push(me);
+        }
     }
 
     /***
@@ -1721,7 +1753,7 @@
     SwaggerBootstrapUi.prototype.log=function (msg) {
         if(window.console){
             //正式版不开启console功能
-            console.log(msg);
+            //console.log(msg);
         }
     }
     /***
@@ -1781,8 +1813,19 @@
         this.paths=new Array();
         //全局参数,存放SwaggerBootstrapUiParameter集合
         this.globalParameters=new Array();
+        //参数统计信息，存放SwaggerBootstrapUiPathCountDownLatch集合
+        this.pathArrs=new Array();
 
     }
+    /***
+     * 计数器
+     * @constructor
+     */
+    var SwaggerBootstrapUiPathCountDownLatch=function () {
+        this.method="";
+        this.count=0;
+    }
+    
     /***
      * 返回对象解析属性
      * @constructor
