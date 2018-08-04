@@ -101,7 +101,7 @@
                            //循环树
                            var ul=$('<ul class="submenu"></ul>')
                            $.each(tag.childrens,function (i, children) {
-                               var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left">'+children.methodType.toUpperCase()+'</span><span class="swu-menu swu-left"><code>'+children.url+'</code></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
+                               var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.url+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
                                childrenLi.data("data",children);
                                ul.append(childrenLi);
                            })
@@ -302,7 +302,7 @@
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
                 $.each(tag.childrens,function (i, children) {
-                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left">'+children.methodType.toUpperCase()+'</span><span class="swu-menu swu-left"><code>'+children.url+'</code></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
+                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.url+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })
@@ -1806,24 +1806,6 @@
     SwaggerBootstrapUi.prototype.createGroupElement=function () {
         var that=this;
         //创建分组flag
-        /*var groupli=$('<li  class="active"></li>');
-        var groupSele=$("<select id='groupSel' style='width:100%;' class=\"form-control\"></select>");
-        $.each(that.instances,function (i, group) {
-            var groupOption=$("<option data-url='"+group.location+"' data-name='"+group.name+"'>"+group.name+"</option>");
-            groupSele.append(groupOption);
-        })
-        groupli.append(groupSele);
-        groupSele.on("change",function () {
-            var t=$(this);
-            var name=t.find("option:selected").attr("data-name");
-            that.log("分组：：");
-            that.log(name);
-            var instance=that.selectInstanceByGroupName(name);
-            that.log(instance);
-            that.analysisApi(instance);
-        })
-        that.getMenu().html("");
-        that.getMenu().append(groupli);*/
         that.getMenu().html("");
         //修改动态创建分组,改为实际赋值
         var groupSele=$("#sbu-group-sel");

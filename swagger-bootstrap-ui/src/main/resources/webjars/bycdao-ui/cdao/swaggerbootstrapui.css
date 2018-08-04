@@ -254,7 +254,7 @@ code {
 
 .swu-menu{
     display: block;
-    width: 55px;
+    width: 65px;
     white-space: nowrap;
     font-family: Monaco;
     font-weight: bold;
@@ -372,4 +372,61 @@ code {
     /* border: 1px solid red; */
     width: 37px;
     float: right;
+}
+
+
+.menu-url{
+    background-color: transparent;
+    color: #3b4151;
+    font-size: 14px;
+}
+
+.menu-url-post{
+    color: white;
+    background-color: #61affd;
+    text-align: center;
+    width: 64px;
+    display: inline-block;
+}
+.menu-url-put{
+    color: white;
+    background-color: #fca130;
+    text-align: center;
+    width: 64px;
+    display: inline-block;
+}
+.menu-url-get{
+    color: white;
+    background-color: #0d5aa7;
+    text-align: center;
+    width: 64px;
+    display: inline-block;
+}
+.menu-url-head{
+    color: white;
+    background-color: #9012fe;
+    text-align: center;
+    width: 64px;
+    display: inline-block;
+}
+.menu-url-delete{
+    color: white;
+    background-color:#f93e3e;
+    text-align: center;
+    width: 64px;
+    display: inline-block;
+}
+.menu-url-patch{
+    color: white;
+    background-color: #50e3c2;
+    text-align: center;
+    width: 64px;
+    display: inline-block;
+}
+.menu-url-options{
+    color: white;
+    background-color: #49cc90;
+    text-align: center;
+    width: 64px;
+    display: inline-block;
 }
