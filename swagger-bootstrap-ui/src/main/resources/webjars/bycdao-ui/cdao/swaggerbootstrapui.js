@@ -184,7 +184,7 @@
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
                 $.each(tag.childrens,function (i, children) {
-                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left">'+children.methodType.toUpperCase()+'</span><span class="swu-menu swu-left"><code>'+children.url+'</code></span></div><div>'+children.summary+'</div></div></li>');
+                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left">'+children.methodType.toUpperCase()+'</span><span class="swu-menu swu-left"><code>'+children.url+'</code></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })

@@ -254,6 +254,12 @@ code {
     display: block;
     width: 55px;
     white-space: nowrap;
+    font-family: Monaco;
+    font-weight: bold;
+}
+.swu-menu-api-des{
+    font-size: 12px;
+    font-family: Monaco;
 }
 .swu-hei{
     height: 20px;
@@ -277,4 +283,9 @@ code {
 .font-bold {
     font-weight: bold;
     margin-bottom: 5px;
+}
+
+.jsonview .obj{
+    margin-top: 1px;
+    margin-bottom: 1px;
 }
