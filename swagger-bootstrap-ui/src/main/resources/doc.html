@@ -40,18 +40,16 @@
         <div class="form-group sbu-header-group">
             <div class="col-sm-12" style="text-align: right;">
                 <div class="search bar8">
-                    <form>
-                        <input type="text" placeholder="请输入搜索内容......">
-                        <span title="搜索">
-                            <i class="iconfont icon-sousuo" style="font-size: 32px;"></i>
-                        </span>
-                    </form>
+                    <input type="text" id="searchTxt" placeholder="请输入搜索内容......">
+                    <span title="搜索" id="spanSearch">
+                        <i class="iconfont icon-sousuo" style="font-size: 32px;"></i>
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="bycdao-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
+<div class="bycdao-left" style="height: 90%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
     <ul class="nav nav-list" id="menu">
         <li >
             <a href="javascript:void(0)">
@@ -91,6 +89,9 @@
                 </li>
             </ul>
         </li>
+    </ul>
+    <ul class="nav nav-list" id="searchMenu" style="display: none;">
+
     </ul>
 </div>
 <!--离线文档说明-->
@@ -577,7 +578,7 @@
         </div>
     </div>
 </script>
-<div class="bycdao-main" id="content"  style="height: 100%;overflow-y: auto;margin-top:2px;">
+<div class="bycdao-main" id="content"  style="height: 90%;overflow-y: auto;margin-top:2px;">
     <!--<button id="btnAddTab">增加Tab</button>
     <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
         <ul class="nav nav-tabs" id="tabUl">
