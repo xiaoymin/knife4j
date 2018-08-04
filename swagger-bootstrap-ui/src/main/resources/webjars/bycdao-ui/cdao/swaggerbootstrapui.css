@@ -289,3 +289,85 @@ code {
     margin-top: 1px;
     margin-bottom: 1px;
 }
+
+
+.bar8 form {
+    position: relative;
+    width: 300px;
+    /*margin: 0 auto;*/
+    float: right;
+}
+
+.bar8 input, button {
+    border: none;
+    outline: none;
+}
+
+.bar8 input {
+    width: 50%;
+    height: 42px;
+    /* border: 1px solid red; */
+    /* padding-left: 13px; */
+    margin-right: 37px;
+    margin-top: 3px;
+}
+
+.bar8 button {
+    height: 42px;
+    width: 42px;
+    cursor: pointer;
+    position: absolute;
+}
+
+/*搜索框8*/
+.bar8 {background: #4887bd;}
+.bar8 form {
+    height: 42px;
+}
+.bar8 input {
+    /* width: 0; */
+    padding: 17px 0px 0 17px;
+    /* border-bottom: 2px solid transparent; */
+    background: transparent;
+    transition: .3s linear;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+}
+/*.bar8 input:focus {
+    width: 300px;
+    z-index: 1;
+    !*border-bottom: 2px solid #F9F0DA;*!
+}*/
+.bar8 button {
+
+    top: 0;
+    right: 0;
+    cursor: pointer;
+}
+.bar8 button:before {
+    content: "\f002";
+    font-family: FontAwesome;
+    font-size: 16px;
+    color: #F9F0DA;
+}
+.bar8 input::-webkit-input-placeholder{
+    color:white;
+}
+.bar8 input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+    color:white;
+}
+.bar8 input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+    color:white;
+}
+.bar8 input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
+    color:white;
+}
+.bar8 span{
+    cursor: pointer;
+    display: inherit;
+    /* border: 1px solid red; */
+    width: 37px;
+    float: right;
+}
