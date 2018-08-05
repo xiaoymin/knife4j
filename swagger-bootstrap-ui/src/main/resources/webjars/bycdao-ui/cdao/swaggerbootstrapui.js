@@ -1232,11 +1232,9 @@
                                 }
                             }
                             spropObj.value=propValue;
-                            if(spropObj.type=="integer"||spropObj.type=="number"){
-                                //如果是integer,判断是64位还是32位
-                                if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
-                                    spropObj.type=spropObj.format;
-                                }
+                            //判断是否有format,如果是integer,判断是64位还是32位
+                            if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
+                                spropObj.type=spropObj.format;
                             }
                             //addprop
                             swud.properties.push(spropObj);
