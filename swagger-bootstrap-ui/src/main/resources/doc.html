@@ -54,7 +54,7 @@
     </style>
 </head>
 <body style="overflow: hidden;">
-<div class="sbu-header">
+<div class="sbu-header" id="sbu-header">
     <div class="sbu-header-left">
         <span><a href="https://gitee.com/xiaoym/swagger-bootstrap-ui" target="_blank">swagger-bootstrap-ui</a></span>
     </div>
@@ -612,6 +612,39 @@
     </div>
 </script>
 
+<script type="text/html" id="SwaggerBootstrapUiSecurityScript">
+    <div  style="width:99%;margin:0px auto;">
+        <div style="margin-top: 15px;">
+            <div class="swbu-main">
+                <table class="" >
+                    <thead>
+                    <tr>
+                        <th>参数key</th>
+                        <th>参数名称</th>
+                        <th>in</th>
+                        <th>参数值</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%if(securityArrs!=null && securityArrs.length>0){ %>
+                    <% for( a = 0; a < securityArrs.length ; a++ ) {var param=securityArrs[a]; %>
+                    <tr data-key="<%=param.key%>" data-name="<%=param.name%>">
+                        <td><%=param.key%>(<%=param.type%>)</td>
+                        <td><%=param.name%></td>
+                        <td><%=param.in%></td>
+                        <td><input class="form-control p-key" value="<%=param.value%>"></td>
+                        <td><button class="btn btn-circle btn-info btn-small btn-save" type="button">保存</button></td>
+                    </tr>
+
+                    <%}}%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</script>
 
 <script type="text/javascript">
     $(function () {

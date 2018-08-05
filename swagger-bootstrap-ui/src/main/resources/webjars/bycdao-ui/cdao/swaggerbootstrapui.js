@@ -251,6 +251,8 @@
                 }
             })
         }else{
+            //更新当前缓存security
+            that.updateCurrentInstanceSecuritys();
             that.createDescriptionElement();
             that.createDetailMenu();
         }
@@ -271,6 +273,17 @@
             dli.addClass("active");
         })
         that.getMenu().append(dli);
+        //是否有全局参数
+        if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
+            var securityLi=$('<li  class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-authenticationsystem"></i><span class="menu-text"> Authorize </span></a></li>');
+            securityLi.on("click",function () {
+                that.log("securityLi");
+                that.createSecurityElement();
+                that.getMenu().find("li").removeClass("active");
+                securityLi.addClass("active");
+            })
+            that.getMenu().append(securityLi);
+        }
         //全局参数菜单功能
         var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
         globalArgsLi.on("click",function () {
@@ -279,6 +292,7 @@
             that.createGlobalParametersElement();
         })
         that.getMenu().append(globalArgsLi);
+
         //离线文档功能
         var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-iconset0118\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
         mddocli.on("click",function () {
@@ -738,6 +752,16 @@
                 })
             }
             else{
+                //判断security参数
+                if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
+                    $.each(that.currentInstance.securityArrs,function (i, sa) {
+                        if(sa.in=="header"){
+                            headerparams[sa.name]=sa.value;
+                        }
+                    })
+                }
+                that.log("header....")
+                that.log(headerparams);
                 $.ajax({
                     url:url,
                     headers:headerparams,
@@ -1025,6 +1049,84 @@
         //$('#myTab a:first').tab('show')
 
     }
+    /**
+     * 创建权限页面
+     */
+    SwaggerBootstrapUi.prototype.createSecurityElement=function () {
+        var that=this;
+        that.getDoc().html("");
+        setTimeout(function () {
+            var html = template('SwaggerBootstrapUiSecurityScript', that.currentInstance);
+            that.getDoc().html(html)
+            //保存事件
+            that.getDoc().find(".btn-save").on("click",function (e) {
+                e.preventDefault();
+                that.log("保存auth事件")
+                var save=$(this);
+                var ptr=save.parent().parent();
+                var data={key:ptr.data("key"),name:ptr.data("name")};
+                var value=ptr.find("input").val();
+                if(!value){
+                    layer.msg("值无效");
+                    return false;
+                }
+                var cacheSecurity={};
+                $.each(that.currentInstance.securityArrs,function (i, sa) {
+                    if(sa.key==data.key&&sa.name==data.name){
+                        sa.value=value;
+                        cacheSecurity.key=sa.key;
+                        cacheSecurity.name=sa.name;
+                        cacheSecurity.value=value;
+
+                    }
+                })
+                that.log(that.currentInstance);
+                layer.msg("保存成功");
+                //判断是否有保存instancid
+                var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+                if(cacheSecurityData==undefined||cacheSecurityData==null){
+                    cacheSecurityData=new Array();
+                    cacheSecurityData.push(cacheSecurity);
+                }else{
+                    //存在
+                    var flag=false;
+                    //判断当前id是否存在
+                    $.each(cacheSecurityData,function (i, sa) {
+                        if(sa.key==cacheSecurity.key&&sa.name==cacheSecurity.name){
+                            sa.value=cacheSecurity.value;
+                            flag=true;
+                        }
+                    })
+                    if(!flag){
+                        cacheSecurityData.push(cacheSecurity);
+                    }
+                }
+                //更新
+                $("#sbu-header").data("cacheSecurity",cacheSecurityData);
+                that.log($("#sbu-header").data("cacheSecurity"));
+            })
+        },100)
+        //保存事件
+        that.getDoc().find(".btn-save").on("click",function (e) {
+            e.preventDefault();
+            that.log("保存auth事件")
+            var save=$(this);
+            var ptr=save.parent().parent();
+            var data={key:ptr.data("key"),name:ptr.data("name")};
+            var value=ptr.find("input").val();
+            if(!value){
+                layer.msg("值无效");
+                return false;
+            }
+            $.each(that.currentInstance.securityArrs,function (i, sa) {
+                if(sa.key==data.key&&sa.name==data.name){
+                    sa.value=value;
+                }
+            })
+            that.log(that.currentInstance);
+        })
+
+    }
     /***
      * 创建简介页面
      */
@@ -1135,7 +1237,7 @@
     SwaggerBootstrapUi.prototype.analysisDefinition=function (menu) {
         var that=this;
         //解析definition
-        if(menu!=null&&typeof (menu)!="undefined"&&menu.hasOwnProperty("definitions")){
+        if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("definitions")){
             var definitions=menu["definitions"];
             for(var name in definitions){
                 var swud=new SwaggerBootstrapUiDefinition();
@@ -1247,7 +1349,7 @@
             }
         }
         //解析tags标签
-        if(menu!=null&&typeof (menu)!="undefined"&&menu.hasOwnProperty("tags")){
+        if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("tags")){
             var tags=menu["tags"];
             $.each(tags,function (i, tag) {
                 var swuTag=new SwaggerBootstrapUiTag(tag.name,tag.description);
@@ -1256,7 +1358,7 @@
 
         }
         //解析paths属性
-        if(menu!=null&&typeof (menu)!="undefined"&&menu.hasOwnProperty("paths")){
+        if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("paths")){
             var paths=menu["paths"];
             for(var path in paths){
                 var pathObject=paths[path];
@@ -1341,6 +1443,31 @@
             }
 
         }
+        //解析securityDefinitions属性
+        if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("securityDefinitions")){
+            var securityDefinitions=menu["securityDefinitions"];
+            if(securityDefinitions!=null){
+                //判断是否有缓存cache值
+                var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+                for(var j in securityDefinitions){
+                    var sdf=new SwaggerBootstrapUiSecurityDefinition();
+                    var sdobj=securityDefinitions[j];
+                    sdf.key=j;
+                    sdf.type=sdobj.type;
+                    sdf.name=sdobj.name;
+                    sdf.in=sdobj.in;
+                    if(cacheSecurityData!=null&&cacheSecurityData!=undefined){
+                        //存在缓存值,更新当前值,无需再次授权
+                        $.each(cacheSecurityData,function (i, sa) {
+                            if(sa.key==sdf.key&&sa.name==sdf.name){
+                                sdf.value=sa.value;
+                            }
+                        })
+                    }
+                    that.currentInstance.securityArrs.push(sdf);
+                }
+            }
+        }
         //tag分组
         $.each(that.currentInstance.tags,function (i, tag) {
             //查找childrens
@@ -1353,6 +1480,26 @@
                 })
             })
         });
+    }
+    /***
+     * 更新当前实例的security对象
+     */
+    SwaggerBootstrapUi.prototype.updateCurrentInstanceSecuritys=function () {
+        var that=this;
+        if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
+            //判断是否有缓存cache值
+            var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+            if(cacheSecurityData!=null&&cacheSecurityData!=undefined){
+                $.each(cacheSecurityData,function (i, ca) {
+                    $.each(that.currentInstance.securityArrs,function (j, sa) {
+                        if(ca.key==sa.key&&ca.name==sa.name){
+                            sa.value=ca.value;
+                        }
+                    })
+                })
+
+            }
+        }
     }
 
     /***
@@ -1892,6 +2039,7 @@
      * @constructor
      */
     var SwaggerBootstrapUiInstance=function (name, location, version) {
+        this.id="SwaggerBootstrapUiInstance"+Math.round(Math.random()*1000000);
         //默认未加载
         this.load=false;
         //分组名称
@@ -1923,7 +2071,8 @@
         this.globalParameters=new Array();
         //参数统计信息，存放SwaggerBootstrapUiPathCountDownLatch集合
         this.pathArrs=new Array();
-
+        //权限信息
+        this.securityArrs=new Array();
     }
     /***
      * 计数器
@@ -1952,6 +2101,18 @@
         this.required=new Array();
         this.title="";
     }
+    /**
+     * 权限验证
+     * @constructor
+     */
+    var SwaggerBootstrapUiSecurityDefinition=function () {
+        this.key="";
+        this.type="";
+        this.in="";
+        this.name="";
+        this.value="";
+    }
+
     /***
      * definition对象属性
      * @constructor
