@@ -23,9 +23,38 @@
     <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
     <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css">
     <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
+    <style type="text/css">
+        #container {
+            width: 100%;
+            height: 90%;
+            /* Disable selection so it doesn't get annoying */
+          /*  -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: moz-none;
+            -ms-user-select: none;
+            user-select: none;*/
+        }
+        #container .left {
+            position: absolute;
+        }
+        #container .right {
+            position: fixed;
+            width: 100%;
+        }
+        #container #handle {
+            position: absolute;
+            left: 310px;
+            /* bottom: 0; */
+            width: 8px;
+            height: 90%;
+            /*background-color: #1a1a1a;*/
+            cursor: w-resize;
+        }
+    </style>
 </head>
 <body style="overflow: hidden;">
-<div class="sbu-header">
+<div class="sbu-header" id="sbu-header">
     <div class="sbu-header-left">
         <span><a href="https://gitee.com/xiaoym/swagger-bootstrap-ui" target="_blank">swagger-bootstrap-ui</a></span>
     </div>
@@ -37,49 +66,66 @@
                 </select>
             </div>
         </div>
+        <div class="form-group sbu-header-group">
+            <div class="col-sm-12" style="text-align: right;">
+                <div class="search bar8">
+                    <input type="text" id="searchTxt" placeholder="请输入搜索内容......">
+                    <span title="搜索" id="spanSearch">
+                        <i class="iconfont icon-sousuo" style="font-size: 32px;"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div class="bycdao-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
-    <ul class="nav nav-list" id="menu">
-        <li >
-            <a href="javascript:void(0)">
-                <i class="icon-text-width"></i>
-                <span class="menu-text"> 简介 </span>
-            </a>
-        </li>
-        <li class="active">
-            <a href="#" class="dropdown-toggle">
-                <i class="icon-file-alt"></i>
-                <span class="menu-text">
+<div id="container">
+    <div class="bycdao-left left" style="height: 90%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
+        <ul class="nav nav-list" id="menu">
+            <li >
+                <a href="javascript:void(0)">
+                    <i class="icon-text-width"></i>
+                    <span class="menu-text"> 简介 </span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="#" class="dropdown-toggle">
+                    <i class="icon-file-alt"></i>
+                    <span class="menu-text">
 									其他页面
 									<span class="badge badge-primary ">3</span>
 								</span>
-                <b class="arrow icon-angle-down"></b>
-            </a>
-            <ul class="submenu">
-                <li>
-                    <a href="javascript:void(0)">
-                        <i class="icon-double-angle-right"></i>
-                        帮助
-                    </a>
-                </li>
+                    <b class="arrow icon-angle-down"></b>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="javascript:void(0)">
+                            <i class="icon-double-angle-right"></i>
+                            帮助
+                        </a>
+                    </li>
 
-                <li>
-                    <a href="javascript:void(0)">
-                        <i class="icon-double-angle-right"></i>
-                        404错误页面
-                    </a>
-                </li>
+                    <li>
+                        <a href="javascript:void(0)">
+                            <i class="icon-double-angle-right"></i>
+                            404错误页面
+                        </a>
+                    </li>
 
-                <li>
-                    <a href="javascript:void(0)">
-                        <i class="icon-double-angle-right"></i>
-                        500错误页面
-                    </a>
-                </li>
-            </ul>
-        </li>
-    </ul>
+                    <li>
+                        <a href="javascript:void(0)">
+                            <i class="icon-double-angle-right"></i>
+                            500错误页面
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav nav-list" id="searchMenu" style="display: none;">
+        </ul>
+    </div>
+    <div id="handle"></div>
+    <div class="bycdao-main right" id="content"  style="height: 90%;overflow-y: auto;margin-top:2px;">
+    </div>
 </div>
 <!--离线文档说明-->
 <script type="text/html" id="offLinecontentScript">
@@ -565,55 +611,63 @@
         </div>
     </div>
 </script>
-<div class="bycdao-main" id="content"  style="height: 100%;overflow-y: auto;margin-top:2px;">
-    <!--<button id="btnAddTab">增加Tab</button>
-    <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
-        <ul class="nav nav-tabs" id="tabUl">
-            <li class="active">
-                <a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a>
-            </li>
-            <li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>
-        </ul>
-        <div class="tab-content" id="tabContent">
-            <div id="tab1" class="tab-pane active">
-                <div class="panel-body" id="tabBody">
-                </div>
-            </div>
-            <div id="tab2" class="tab-pane">
-                <div class="panel-body"><strong>正在开发中,敬请期待......</strong>
-                </div>
+
+<script type="text/html" id="SwaggerBootstrapUiSecurityScript">
+    <div  style="width:99%;margin:0px auto;">
+        <div style="margin-top: 15px;">
+            <div class="swbu-main">
+                <table class="" >
+                    <thead>
+                    <tr>
+                        <th>参数key</th>
+                        <th>参数名称</th>
+                        <th>in</th>
+                        <th>参数值</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%if(securityArrs!=null && securityArrs.length>0){ %>
+                    <% for( a = 0; a < securityArrs.length ; a++ ) {var param=securityArrs[a]; %>
+                    <tr data-key="<%=param.key%>" data-name="<%=param.name%>">
+                        <td><%=param.key%>(<%=param.type%>)</td>
+                        <td><%=param.name%></td>
+                        <td><%=param.in%></td>
+                        <td><input class="form-control p-key" value="<%=param.value%>"></td>
+                        <td><button class="btn btn-circle btn-info btn-small btn-save" type="button">保存</button></td>
+                    </tr>
+
+                    <%}}%>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>-->
-</div>
+    </div>
+
+</script>
 
 <script type="text/javascript">
     $(function () {
-        /*$('.nav-tabs').scrollingTabs();
-
-        $("#btnAddTab").on("click",function (e) {
-            e.preventDefault();
-            var ul=$("#tabUl");
-            var tabContent=$("#tabContent")
-            var tabId="addTab"+Math.round(Math.random()*1000000);
-
-            var addLi=$('<li class=""><a data-toggle="tab" href="#'+tabId+'" aria-expanded="true"> 在线调试'+tabId+' <i class="iconfont icon-guanbi" style="cursor: pointer"></i></a></li>')
-            ul.append(addLi);
-
-            var div=$("<div id=\""+tabId+"\" class=\"tab-pane\"><div class=\"panel-body\"><strong>正在开发中,敬请期待"+tabId+"......</strong></div></div>");
-            tabContent.append(div);
-
-
-            //ul.find("li").removeClass("active");
-            //addLi.addClass("active");
-            //$('#myTab a[href="#profile"]').tab('show')
-            ul.find("a[href='#"+tabId+"']").tab("show");
-            console.log(ul.find("a[href='#"+tabId+"']"))
-
-            $('.nav-tabs').scrollingTabs('refresh');
-
-
-        })*/
+        var isResizing = false,lastDownX = 0;
+        var container = $('#container'),left = $('.left'),right = $('.right'),handle = $('#handle');
+        //设置rightwidth
+        right.css("width",container.width()-left.width()-8);
+        handle.on('mousedown',function(e) {
+            isResizing = true;
+            lastDownX = e.clientX;
+        });
+        $(document).on('mousemove',function(e) {
+            // we don't want to do anything if we aren't resizing.
+            if (!isResizing) return;
+            var offsetRight = container.width() - (e.clientX - container.offset().left-8);
+            left.css("width",e.clientX)
+            right.css('width', offsetRight-20);
+            right.css("right","1px")
+            handle.css("left",e.clientX)
+        }).on('mouseup', function (e) {
+            // stop resizing
+            isResizing = false;
+        });
     })
 </script>
 

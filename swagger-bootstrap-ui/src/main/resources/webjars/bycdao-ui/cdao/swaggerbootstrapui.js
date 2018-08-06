@@ -12,8 +12,10 @@
         //tabid
         this.tabId="tabUl";
         this.tabContentId="tabContent";
-
+        this.searchEleId="spanSearch";
+        this.searchTxtEleId="searchTxt";
         this.menuId="menu";
+        this.searchMenuId="searchMenu";
         //实例分组
         this.instances=new Array();
         //当前分组实例
@@ -28,6 +30,122 @@
         that.analysisGroup();
         //创建分组元素
         that.createGroupElement();
+        //搜索
+        that.searchEvents();
+    }
+    /***
+     * 搜索按钮事件
+     */
+    SwaggerBootstrapUi.prototype.searchEvents=function () {
+       var that=this;
+       that.log("searchEvents");
+       that.log($("#"+that.searchEleId));
+       $("#"+that.searchEleId).on("click",function (e) {
+           var val=$("#"+that.searchTxtEleId).val();
+           if(val){
+               that.log("搜索值："+val);
+               var regx=".*?"+val+".*";
+               //遍历分组
+               var newTagArrs=new Array();
+               that.log("开始查询...")
+               that.log(new Date());
+               $.each(that.instances,function (i, ins) {
+                   that.log(ins);
+                   var tags=ins.tags;
+                   if(tags!=null&&tags!=undefined&&tags.length>0){
+                       //只需遍历tags即可
+                       $.each(tags,function (j, tag) {
+                           var flag=false;
+                           var sbtag=new SwaggerBootstrapUiTag(tag.name,tag.description);
+                           if($.regexMatchStr(regx,tag.name)){
+                               //如果匹配，全部添加
+                               sbtag.childrens=tag.childrens;
+                           }else{
+                               if(tag.childrens!=null&&tag.childrens.length>0){
+                                   $.each(tag.childrens,function (a, children) {
+                                       //判断url是否匹配,简介是否匹配,类型是否匹配
+                                       var urlflag=$.regexMatchStr(regx,children.url);
+                                       var sumflag=$.regexMatchStr(regx,children.summary);
+                                       var methodflag=$.regexMatchStr(regx,children.methodType);
+                                       var desflag=$.regexMatchStr(regx,children.description);
+                                       if(urlflag||sumflag||methodflag||desflag){
+                                           sbtag.childrens.push(children);
+                                       }
+                                   })
+                               }
+                           }
+                           if(sbtag.childrens.length>0){
+                               newTagArrs.push(sbtag);
+                           }
+                       })
+
+                   }
+               })
+               that.log(new Date());
+               //隐藏
+               that.getMenu().hide();
+               that.getSearchMenu().show();
+               //创建菜单明细按钮
+               that.getSearchMenu().html("");
+               if(newTagArrs.length>0){
+                   $.each(newTagArrs,function (i, tag) {
+                       var len=tag.childrens.length;
+                       if(len==0){
+                           var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                           that.getSearchMenu().append(li);
+                       }else{
+                           //存在子标签
+                           var li=$('<li  class="detailMenu"></li>');
+                           var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                           li.append(titleA);
+                           //循环树
+                           var ul=$('<ul class="submenu"></ul>')
+                           $.each(tag.childrens,function (i, children) {
+                               var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.url+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
+                               childrenLi.data("data",children);
+                               ul.append(childrenLi);
+                           })
+                           li.append(ul);
+                           that.getSearchMenu().append(li);
+                       }
+                   })
+                   that.getSearchMenu().find(".menuLi").bind("click",function (e) {
+                       e.preventDefault();
+                       var menu=$(this);
+                       var data=menu.data("data");
+                       that.log("Li标签click事件");
+                       that.log(data);
+                       //获取parent-Li的class属性值
+                       var parentLi=menu.parent().parent();
+                       that.log(parentLi);
+                       var className=parentLi.prop("class");
+                       that.log(className)
+                       that.getMenu().find("li").removeClass("active");
+                       //parentLi.addClass("active");
+                       menu.addClass("active");
+                       that.createApiInfoTable(data,menu);
+                       //DApiUI.createDebugTab(data);
+                   })
+               }
+           }else{
+               that.getMenu().show();
+           }
+       });
+       //keyup事件
+       $("#"+that.searchTxtEleId).on("keyup",function () {
+           var value=$(this).val();
+           if(!value){
+               that.getMenu().show();
+               that.getSearchMenu().hide();
+           }
+       });
+       //回车事件;
+        $(document).keydown(function(event){
+            if(event.keyCode == 13){ //绑定回车
+                $("#"+that.searchEleId).click();
+            }
+        });
+
     }
     /***
      * 调用swagger的分组接口,获取swagger分组信息,包括分组名称,接口url地址,版本号等
@@ -133,6 +251,8 @@
                 }
             })
         }else{
+            //更新当前缓存security
+            that.updateCurrentInstanceSecuritys();
             that.createDescriptionElement();
             that.createDetailMenu();
         }
@@ -153,6 +273,17 @@
             dli.addClass("active");
         })
         that.getMenu().append(dli);
+        //是否有全局参数
+        if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
+            var securityLi=$('<li  class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-authenticationsystem"></i><span class="menu-text"> Authorize </span></a></li>');
+            securityLi.on("click",function () {
+                that.log("securityLi");
+                that.createSecurityElement();
+                that.getMenu().find("li").removeClass("active");
+                securityLi.addClass("active");
+            })
+            that.getMenu().append(securityLi);
+        }
         //全局参数菜单功能
         var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
         globalArgsLi.on("click",function () {
@@ -161,6 +292,7 @@
             that.createGlobalParametersElement();
         })
         that.getMenu().append(globalArgsLi);
+
         //离线文档功能
         var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-iconset0118\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
         mddocli.on("click",function () {
@@ -184,7 +316,7 @@
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
                 $.each(tag.childrens,function (i, children) {
-                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left">'+children.methodType.toUpperCase()+'</span><span class="swu-menu swu-left"><code>'+children.url+'</code></span></div><div>'+children.summary+'</div></div></li>');
+                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.url+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })
@@ -620,6 +752,16 @@
                 })
             }
             else{
+                //判断security参数
+                if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
+                    $.each(that.currentInstance.securityArrs,function (i, sa) {
+                        if(sa.in=="header"){
+                            headerparams[sa.name]=sa.value;
+                        }
+                    })
+                }
+                that.log("header....")
+                that.log(headerparams);
                 $.ajax({
                     url:url,
                     headers:headerparams,
@@ -907,6 +1049,84 @@
         //$('#myTab a:first').tab('show')
 
     }
+    /**
+     * 创建权限页面
+     */
+    SwaggerBootstrapUi.prototype.createSecurityElement=function () {
+        var that=this;
+        that.getDoc().html("");
+        setTimeout(function () {
+            var html = template('SwaggerBootstrapUiSecurityScript', that.currentInstance);
+            that.getDoc().html(html)
+            //保存事件
+            that.getDoc().find(".btn-save").on("click",function (e) {
+                e.preventDefault();
+                that.log("保存auth事件")
+                var save=$(this);
+                var ptr=save.parent().parent();
+                var data={key:ptr.data("key"),name:ptr.data("name")};
+                var value=ptr.find("input").val();
+                if(!value){
+                    layer.msg("值无效");
+                    return false;
+                }
+                var cacheSecurity={};
+                $.each(that.currentInstance.securityArrs,function (i, sa) {
+                    if(sa.key==data.key&&sa.name==data.name){
+                        sa.value=value;
+                        cacheSecurity.key=sa.key;
+                        cacheSecurity.name=sa.name;
+                        cacheSecurity.value=value;
+
+                    }
+                })
+                that.log(that.currentInstance);
+                layer.msg("保存成功");
+                //判断是否有保存instancid
+                var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+                if(cacheSecurityData==undefined||cacheSecurityData==null){
+                    cacheSecurityData=new Array();
+                    cacheSecurityData.push(cacheSecurity);
+                }else{
+                    //存在
+                    var flag=false;
+                    //判断当前id是否存在
+                    $.each(cacheSecurityData,function (i, sa) {
+                        if(sa.key==cacheSecurity.key&&sa.name==cacheSecurity.name){
+                            sa.value=cacheSecurity.value;
+                            flag=true;
+                        }
+                    })
+                    if(!flag){
+                        cacheSecurityData.push(cacheSecurity);
+                    }
+                }
+                //更新
+                $("#sbu-header").data("cacheSecurity",cacheSecurityData);
+                that.log($("#sbu-header").data("cacheSecurity"));
+            })
+        },100)
+        //保存事件
+        that.getDoc().find(".btn-save").on("click",function (e) {
+            e.preventDefault();
+            that.log("保存auth事件")
+            var save=$(this);
+            var ptr=save.parent().parent();
+            var data={key:ptr.data("key"),name:ptr.data("name")};
+            var value=ptr.find("input").val();
+            if(!value){
+                layer.msg("值无效");
+                return false;
+            }
+            $.each(that.currentInstance.securityArrs,function (i, sa) {
+                if(sa.key==data.key&&sa.name==data.name){
+                    sa.value=value;
+                }
+            })
+            that.log(that.currentInstance);
+        })
+
+    }
     /***
      * 创建简介页面
      */
@@ -1017,7 +1237,7 @@
     SwaggerBootstrapUi.prototype.analysisDefinition=function (menu) {
         var that=this;
         //解析definition
-        if(menu!=null&&typeof (menu)!="undefined"&&menu.hasOwnProperty("definitions")){
+        if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("definitions")){
             var definitions=menu["definitions"];
             for(var name in definitions){
                 var swud=new SwaggerBootstrapUiDefinition();
@@ -1114,6 +1334,10 @@
                                 }
                             }
                             spropObj.value=propValue;
+                            //判断是否有format,如果是integer,判断是64位还是32位
+                            if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
+                                spropObj.type=spropObj.format;
+                            }
                             //addprop
                             swud.properties.push(spropObj);
                             defiTypeValue[property]=propValue;
@@ -1125,7 +1349,7 @@
             }
         }
         //解析tags标签
-        if(menu!=null&&typeof (menu)!="undefined"&&menu.hasOwnProperty("tags")){
+        if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("tags")){
             var tags=menu["tags"];
             $.each(tags,function (i, tag) {
                 var swuTag=new SwaggerBootstrapUiTag(tag.name,tag.description);
@@ -1134,7 +1358,7 @@
 
         }
         //解析paths属性
-        if(menu!=null&&typeof (menu)!="undefined"&&menu.hasOwnProperty("paths")){
+        if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("paths")){
             var paths=menu["paths"];
             for(var path in paths){
                 var pathObject=paths[path];
@@ -1219,6 +1443,31 @@
             }
 
         }
+        //解析securityDefinitions属性
+        if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("securityDefinitions")){
+            var securityDefinitions=menu["securityDefinitions"];
+            if(securityDefinitions!=null){
+                //判断是否有缓存cache值
+                var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+                for(var j in securityDefinitions){
+                    var sdf=new SwaggerBootstrapUiSecurityDefinition();
+                    var sdobj=securityDefinitions[j];
+                    sdf.key=j;
+                    sdf.type=sdobj.type;
+                    sdf.name=sdobj.name;
+                    sdf.in=sdobj.in;
+                    if(cacheSecurityData!=null&&cacheSecurityData!=undefined){
+                        //存在缓存值,更新当前值,无需再次授权
+                        $.each(cacheSecurityData,function (i, sa) {
+                            if(sa.key==sdf.key&&sa.name==sdf.name){
+                                sdf.value=sa.value;
+                            }
+                        })
+                    }
+                    that.currentInstance.securityArrs.push(sdf);
+                }
+            }
+        }
         //tag分组
         $.each(that.currentInstance.tags,function (i, tag) {
             //查找childrens
@@ -1231,6 +1480,26 @@
                 })
             })
         });
+    }
+    /***
+     * 更新当前实例的security对象
+     */
+    SwaggerBootstrapUi.prototype.updateCurrentInstanceSecuritys=function () {
+        var that=this;
+        if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
+            //判断是否有缓存cache值
+            var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+            if(cacheSecurityData!=null&&cacheSecurityData!=undefined){
+                $.each(cacheSecurityData,function (i, ca) {
+                    $.each(that.currentInstance.securityArrs,function (j, sa) {
+                        if(ca.key==sa.key&&ca.name==sa.name){
+                            sa.value=ca.value;
+                        }
+                    })
+                })
+
+            }
+        }
     }
 
     /***
@@ -1682,24 +1951,6 @@
     SwaggerBootstrapUi.prototype.createGroupElement=function () {
         var that=this;
         //创建分组flag
-        /*var groupli=$('<li  class="active"></li>');
-        var groupSele=$("<select id='groupSel' style='width:100%;' class=\"form-control\"></select>");
-        $.each(that.instances,function (i, group) {
-            var groupOption=$("<option data-url='"+group.location+"' data-name='"+group.name+"'>"+group.name+"</option>");
-            groupSele.append(groupOption);
-        })
-        groupli.append(groupSele);
-        groupSele.on("change",function () {
-            var t=$(this);
-            var name=t.find("option:selected").attr("data-name");
-            that.log("分组：：");
-            that.log(name);
-            var instance=that.selectInstanceByGroupName(name);
-            that.log(instance);
-            that.analysisApi(instance);
-        })
-        that.getMenu().html("");
-        that.getMenu().append(groupli);*/
         that.getMenu().html("");
         //修改动态创建分组,改为实际赋值
         var groupSele=$("#sbu-group-sel");
@@ -1763,6 +2014,10 @@
         var menuId=this.menuId;
         return $("#"+menuId);
     }
+    SwaggerBootstrapUi.prototype.getSearchMenu=function () {
+        var that=this;
+        return $("#"+that.searchMenuId);
+    }
     /***
      * 获取当前swagger页面主页面元素
      * @returns {*|HTMLElement}
@@ -1784,6 +2039,7 @@
      * @constructor
      */
     var SwaggerBootstrapUiInstance=function (name, location, version) {
+        this.id="SwaggerBootstrapUiInstance"+Math.round(Math.random()*1000000);
         //默认未加载
         this.load=false;
         //分组名称
@@ -1815,7 +2071,8 @@
         this.globalParameters=new Array();
         //参数统计信息，存放SwaggerBootstrapUiPathCountDownLatch集合
         this.pathArrs=new Array();
-
+        //权限信息
+        this.securityArrs=new Array();
     }
     /***
      * 计数器
@@ -1844,6 +2101,18 @@
         this.required=new Array();
         this.title="";
     }
+    /**
+     * 权限验证
+     * @constructor
+     */
+    var SwaggerBootstrapUiSecurityDefinition=function () {
+        this.key="";
+        this.type="";
+        this.in="";
+        this.name="";
+        this.value="";
+    }
+
     /***
      * definition对象属性
      * @constructor
@@ -1946,6 +2215,16 @@
      * 公共方法
      */
     $.extend({
+        regexMatchStr:function (regex,str) {
+            var flag=false;
+            if(regex!=null&&regex!=undefined&&str!=null&&str!=undefined){
+                var matchResult=str.match(regex);
+                if (matchResult!=null){
+                    flag=true;
+                }
+            }
+            return flag;
+        },
         checkUndefined:function (obj) {
             var flag=false;
             if(obj!=null&&typeof (obj)!="undefined"){
