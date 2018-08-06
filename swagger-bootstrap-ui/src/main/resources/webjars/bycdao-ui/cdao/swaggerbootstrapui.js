@@ -1498,7 +1498,6 @@
                 }
             })
         }
-        flag=true;
         return flag;
     }
     /***
