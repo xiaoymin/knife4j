@@ -1339,8 +1339,11 @@
                                 spropObj.type=spropObj.format;
                             }
                             //addprop
-                            swud.properties.push(spropObj);
-                            defiTypeValue[property]=propValue;
+                            //这里判断去重
+                            if(!that.checkPropertiesExists(swud.properties,spropObj)){
+                                swud.properties.push(spropObj);
+                                defiTypeValue[property]=propValue;
+                            }
                         }
                         swud.value=defiTypeValue;
                     }
@@ -1480,6 +1483,23 @@
                 })
             })
         });
+    }
+    /***
+     * 判断属性是否已经存在
+     * @param properties
+     * @param prop
+     */
+    SwaggerBootstrapUi.prototype.checkPropertiesExists=function (properties, prop) {
+        var flag=false;
+        if(properties!=null&&properties!=undefined&&properties.length>0&&prop!=null&&prop!=undefined){
+            $.each(properties,function (i, p) {
+                if(p.name==prop.name&&p.in==prop.in&&p.type==prop.type){
+                    flag=true;
+                }
+            })
+        }
+        flag=true;
+        return flag;
     }
     /***
      * 更新当前实例的security对象
