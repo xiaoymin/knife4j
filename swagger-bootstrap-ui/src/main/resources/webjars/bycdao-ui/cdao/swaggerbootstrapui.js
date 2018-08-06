@@ -222,7 +222,7 @@
                 api=api.substr(1);
             }
             that.log("截取后的url:"+api);
-            /*api="/webjars/bycdao-ui/demo/d2.json";
+            /*api="/webjars/bycdao-ui/cdao/v1.json";
             that.log("截取后的url:"+api);*/
             $.ajax({
                 //url:"v2/api-docs",
@@ -769,9 +769,16 @@
                     data:reqdata,
                     contentType:contType,
                     success:function (data,status,xhr) {
+                        that.log("success...")
+                        that.log(this);
+                        that.log(data)
+                        var tp=typeof (data);
+                        that.log(typeof (data))
+                        that.log(status)
                         var resptab=$('<div id="resptab" class="tabs-container" ></div>')
                         var ulresp=$('<ul class="nav nav-tabs">' +
                             '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
 
@@ -780,15 +787,19 @@
 
                         var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
                         var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
+                        var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body">暂无</div>');
                         var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
 
-                        respcontent.append(resp1).append(resp2).append(resp3);
+                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4);
 
                         resptab.append(respcontent)
 
                         respcleanDiv.append(resptab);
                         that.log(xhr);
                         that.log(xhr.getAllResponseHeaders());
+                        var mimtype=xhr.overrideMimeType();
+                        that.log("MIME-TYPE..")
+                        that.log(mimtype)
                         var allheaders=xhr.getAllResponseHeaders();
                         if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
                             var headers=allheaders.split("\r\n");
@@ -808,6 +819,33 @@
                         var contentType=xhr.getResponseHeader("Content-Type");
                         that.log("Content-Type:"+contentType);
                         that.log(xhr.hasOwnProperty("responseJSON"))
+                        if(xhr.hasOwnProperty("responseText")){
+                            //json
+                            resp4.find(".panel-body").html(xhr["responseText"]);
+                            if(tp=="string"){
+                                //转二进制
+                                var dv=data.toString(2);
+                                that.log("dv..............")
+                                that.log("base64..............")
+                                var bd=btoa(unescape(encodeURIComponent(data)));
+                                that.log(window.btoa(bd))
+                                if(dv!=undefined&&dv!=null){
+                                    that.log("二进制..");
+                                    bd="data:image/png;"+bd;
+                                    var blob=new Blob([bd],{type:"image/jpeg"});
+                                    that.log(blob);
+                                    var img = document.createElement("img");
+                                    img.onload = function(e) {
+                                        window.URL.revokeObjectURL(img.src); // 清除释放
+                                    };
+                                    img.src = window.URL.createObjectURL(blob);
+                                    resp1.find(".panel-body").html("")
+                                    resp1.find(".panel-body")[0].appendChild(img);
+                                }
+                            }
+
+
+                        }
                         if (xhr.hasOwnProperty("responseJSON")){
                             //如果存在该对象,服务端返回为json格式
                             resp1.find(".panel-body").html("")
@@ -1679,10 +1717,13 @@
                             }
                         }
                     }
-                    swpinfo.parameters.push(minfo);
-                    //判断当前属性是否是schema
-                    if(minfo.schema){
-                        deepRefParameter(minfo,that,minfo.def,swpinfo);
+
+                    if(!checkParamArrsExists(swpinfo.parameters,minfo)){
+                        swpinfo.parameters.push(minfo);
+                        //判断当前属性是否是schema
+                        if(minfo.schema){
+                            deepRefParameter(minfo,that,minfo.def,swpinfo);
+                        }
                     }
                 })
             }
@@ -1776,6 +1817,8 @@
         }
         return swpinfo;
     }
+
+
 
 
     /***
@@ -2023,7 +2066,7 @@
     SwaggerBootstrapUi.prototype.log=function (msg) {
         if(window.console){
             //正式版不开启console功能
-            //console.log(msg);
+            console.log(msg);
         }
     }
     /***
