@@ -222,7 +222,7 @@
                 api=api.substr(1);
             }
             that.log("截取后的url:"+api);
-            /*api="/webjars/bycdao-ui/cdao/v1.json";
+            /*api="/webjars/bycdao-ui/cdao/d1.json";
             that.log("截取后的url:"+api);*/
             $.ajax({
                 //url:"v2/api-docs",
@@ -826,21 +826,22 @@
                                 //转二进制
                                 var dv=data.toString(2);
                                 that.log("dv..............")
+                                that.log(dv.width)
                                 that.log("base64..............")
                                 var bd=btoa(unescape(encodeURIComponent(data)));
                                 that.log(window.btoa(bd))
                                 if(dv!=undefined&&dv!=null){
                                     that.log("二进制..");
-                                    bd="data:image/png;"+bd;
+                                    /*bd="data:image/png;"+bd;
                                     var blob=new Blob([bd],{type:"image/jpeg"});
                                     that.log(blob);
                                     var img = document.createElement("img");
                                     img.onload = function(e) {
                                         window.URL.revokeObjectURL(img.src); // 清除释放
                                     };
-                                    img.src = window.URL.createObjectURL(blob);
+                                    img.src = window.URL.createObjectURL(blob);*/
                                     resp1.find(".panel-body").html("")
-                                    resp1.find(".panel-body")[0].appendChild(img);
+                                    resp1.find(".panel-body")[0].html(bd);
                                 }
                             }
 
@@ -860,7 +861,7 @@
                             //如果是image资源
                             var regex=new RegExp('image/(jpeg|jpg|png|gif)','g');
                             if(regex.test(contentType)){
-                                var d=DApiUI.getDoc().data("data");
+                                var d=that.getDoc().data("data");
                                 var imgUrl="http://"+d.host+apiInfo.url;
                                 var img = document.createElement("img");
                                 img.onload = function(e) {
@@ -1604,10 +1605,18 @@
      */
     SwaggerBootstrapUi.prototype.createApiInfoInstance=function(path,mtype,apiInfo){
         var that=this;
+        //添加basePath
+        var basePath=that.currentInstance.basePath;
+        var fullpath="";
+        if (basePath!=""&&basePath!="/"){
+            //如果非空,非根目录
+            fullpath+=basePath;
+        }
+        fullpath+=path;
         var swpinfo=new SwaggerBootstrapUiApiInfo();
         swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
-        swpinfo.url=path;
-        swpinfo.originalUrl=path;
+        swpinfo.url=fullpath;
+        swpinfo.originalUrl=fullpath;
         swpinfo.methodType=mtype;
         if(apiInfo!=null){
             swpinfo.consumes=apiInfo.consumes;
@@ -2066,7 +2075,7 @@
     SwaggerBootstrapUi.prototype.log=function (msg) {
         if(window.console){
             //正式版不开启console功能
-            console.log(msg);
+            //console.log(msg);
         }
     }
     /***
