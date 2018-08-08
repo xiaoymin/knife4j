@@ -201,6 +201,10 @@
         that.currentInstance.version=version;
         that.currentInstance.termsOfService=termsOfService;
         that.currentInstance.basePath=menu["basePath"];
+        //设置doc.html文档的title属性
+        if(title!=null&&title!=undefined&&title!=""){
+            $("title").html(title);
+        }
     }
     /***
      * 加载swagger的分组详情接口
