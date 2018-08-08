@@ -593,8 +593,8 @@
         var respcleanDiv=that.getDoc().find("#tab2").find(".panel-body").find("#responsebody");
         btnRequest.on("click",function (e) {
             e.preventDefault();
+            var index = layer.load(1);
             respcleanDiv.html("")
-
             var params={};
             var headerparams={};
             var bodyparams="";
@@ -720,6 +720,7 @@
                 //console.log("表单提交")
                 //iframe监听change事件
                 $("#uploadIframe").on("load",function () {
+                    layer.close(index);
                     //console.log("uploadIframe changed....")
                     $(this).unbind('load');
                     var framebody=$(this).contents().find("body");
@@ -770,6 +771,7 @@
                     data:reqdata,
                     contentType:contType,
                     success:function (data,status,xhr) {
+                        layer.close(index);
                         that.log("success...")
                         var statsCode=xhr.status;
                         if(statsCode==200){
@@ -880,6 +882,7 @@
                     },
                     error:function (xhr, textStatus, errorThrown) {
                         that.log("error.....")
+                        layer.close(index);
                         that.log(xhr);
                         var statsCode=xhr.status;
                         if(statsCode==400){
