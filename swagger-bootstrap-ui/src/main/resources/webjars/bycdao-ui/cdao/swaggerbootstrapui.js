@@ -714,6 +714,7 @@
             eleObject.data("data",apiInfo);
             //判断是否有表单
             var form=$("#uploadForm");
+            var startTime=new Date().getTime();
             if(form.length>0){
                 form[0].submit();
                 //console.log("表单提交")
@@ -770,19 +771,35 @@
                     contentType:contType,
                     success:function (data,status,xhr) {
                         that.log("success...")
-                        that.log(this);
-                        that.log(data)
+                        var statsCode=xhr.status;
+                        if(statsCode==200){
+                            statsCode=statsCode+" OK";
+                        }
+                        var endTime=new Date().getTime();
+                        that.log(endTime)
+                        var len=data.toString().gblen();
+                        var diff=endTime-startTime;
                         var tp=typeof (data);
                         that.log(typeof (data))
                         that.log(status)
-                        var resptab=$('<div id="resptab" class="tabs-container" ></div>')
+                        var resptab=$('<div id="resptab" class="tabs-container" ></div>');
                         var ulresp=$('<ul class="nav nav-tabs">' +
                             '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
 
-                        resptab.append(ulresp);
+
+                        var uldiv=$("<div></div>");
+                        uldiv.append(ulresp);
+
+                        //添加响应码div
+                        var respcodeDiv=$("<div style='right: 30px;position: absolute;margin-top: -40px;'><span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>  " +
+                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>" +
+                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span></div>");
+                        uldiv.append(respcodeDiv);
+
+                        resptab.append(uldiv);
                         var respcontent=$('<div class="tab-content"></div>');
 
                         var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
@@ -793,7 +810,6 @@
                         respcontent.append(resp1).append(resp2).append(resp3).append(resp4);
 
                         resptab.append(respcontent)
-
                         respcleanDiv.append(resptab);
                         that.log(xhr);
                         that.log(xhr.getAllResponseHeaders());
@@ -865,28 +881,53 @@
                     error:function (xhr, textStatus, errorThrown) {
                         that.log("error.....")
                         that.log(xhr);
-                        that.log(textStatus);
-                        that.log(errorThrown);
+                        var statsCode=xhr.status;
+                        if(statsCode==400){
+                            statsCode=statsCode+" Not Found";
+                        }
+                        var endTime=new Date().getTime();
+                        that.log(endTime)
+
+                        var diff=endTime-startTime;
+
                         var resptab=$('<div id="resptab" class="tabs-container" ></div>')
                         var ulresp=$('<ul class="nav nav-tabs">' +
                             '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
 
-                        resptab.append(ulresp);
+                        //resptab.append(ulresp);
+                        var uldiv=$("<div></div>");
+                        uldiv.append(ulresp);
+                        var len=0;
+                        var rawTxt="暂无";
+                        if (xhr.hasOwnProperty("responseText")){
+                            len=xhr["responseText"].toString().gblen();
+                            rawTxt=xhr["responseText"];
+
+                        }
+                        //添加响应码div
+                        var respcodeDiv=$("<div style='right: 30px;position: absolute;margin-top: -40px;'><span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>  " +
+                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>" +
+                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span></div>");
+                        uldiv.append(respcodeDiv);
+
+                        resptab.append(uldiv);
+
+
                         var respcontent=$('<div class="tab-content"></div>');
 
                         var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
                         var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
                         var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
-
-                        respcontent.append(resp1).append(resp2).append(resp3);
+                        var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">'+rawTxt+'</div>');
+                        respcontent.append(resp1).append(resp2).append(resp4);
 
                         resptab.append(respcontent)
 
                         respcleanDiv.append(resptab);
                         that.log(xhr);
-                        that.log(xhr.getAllResponseHeaders());
                         var allheaders=xhr.getAllResponseHeaders();
                         if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
                             var headers=allheaders.split("\r\n");
@@ -2424,48 +2465,17 @@
         }
     });
 
-// will support only Firefox: 13.0+ Chrome: 20+ Internet Explorer: 10.0+ Safari: 6.0 Opera: 12.10
-    // use this transport for "binary" data type
-    /*$.ajaxTransport("+binary", function (options, originalOptions, jqXHR) {
-        // check for conditions and support for blob / arraybuffer response type
-        if (window.FormData && ((options.dataType && (options.dataType === 'binary')) || (options.data && ((window.ArrayBuffer && options.data instanceof ArrayBuffer) || (window.Blob && options.data instanceof Blob))))) {
-            return {
-                // create new XMLHttpRequest
-                send: function (headers, callback) {
-                    // setup all variables
-                    var xhr = new XMLHttpRequest(),
-                        url = options.url,
-                        type = options.type,
-                        async = options.async || true,
-                        // blob or arraybuffer. Default is blob
-                        dataType = options.responseType || "blob",
-                        data = options.data || null,
-                        username = options.username || null,
-                        password = options.password || null;
-
-                    xhr.addEventListener('load', function () {
-                        var data = {};
-                        data[options.dataType] = xhr.response;
-                        // make callback and send data
-                        callback(xhr.status, xhr.statusText, data, xhr.getAllResponseHeaders());
-                    });
-
-                    xhr.open(type, url, async, username, password);
-
-                    // setup custom headers
-                    for (var i in headers) {
-                        xhr.setRequestHeader(i, headers[i]);
-                    }
-
-                    xhr.responseType = dataType;
-                    xhr.send(data);
-                },
-                abort: function () {
-                    jqXHR.abort();
-                }
-            };
+    String.prototype.gblen = function() {
+        var len = 0;
+        for (var i=0; i<this.length; i++) {
+            if (this.charCodeAt(i)>127 || this.charCodeAt(i)==94) {
+                len += 2;
+            } else {
+                len ++;
+            }
         }
-    });*/
+        return len;
+    }
     window.SwaggerBootstrapUi=SwaggerBootstrapUi;
 
     /**

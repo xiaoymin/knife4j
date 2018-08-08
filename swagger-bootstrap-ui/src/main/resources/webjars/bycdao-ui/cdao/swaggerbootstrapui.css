@@ -430,3 +430,13 @@ code {
     width: 64px;
     display: inline-block;
 }
+
+.debug-span-label{
+    color:#919191;
+}
+
+.debug-span-value{
+    color:#4dc095;
+    font-size: 12px;
+    font-weight: bold;
+}
