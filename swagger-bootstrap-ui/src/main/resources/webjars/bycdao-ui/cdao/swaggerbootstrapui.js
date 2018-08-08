@@ -593,7 +593,7 @@
         var respcleanDiv=that.getDoc().find("#tab2").find(".panel-body").find("#responsebody");
         btnRequest.on("click",function (e) {
             e.preventDefault();
-            var index = layer.load(1);
+
             respcleanDiv.html("")
             var params={};
             var headerparams={};
@@ -715,6 +715,7 @@
             //判断是否有表单
             var form=$("#uploadForm");
             var startTime=new Date().getTime();
+            var index = layer.load(1);
             if(form.length>0){
                 form[0].submit();
                 //console.log("表单提交")
