@@ -787,7 +787,7 @@
 
                         var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
                         var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
-                        var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body">暂无</div>');
+                        var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
                         var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
 
                         respcontent.append(resp1).append(resp2).append(resp3).append(resp4);
@@ -825,23 +825,25 @@
                             if(tp=="string"){
                                 //转二进制
                                 var dv=data.toString(2);
-                                that.log("dv..............")
-                                that.log(dv.width)
-                                that.log("base64..............")
-                                var bd=btoa(unescape(encodeURIComponent(data)));
-                                that.log(window.btoa(bd))
                                 if(dv!=undefined&&dv!=null){
-                                    that.log("二进制..");
-                                    /*bd="data:image/png;"+bd;
-                                    var blob=new Blob([bd],{type:"image/jpeg"});
-                                    that.log(blob);
-                                    var img = document.createElement("img");
-                                    img.onload = function(e) {
-                                        window.URL.revokeObjectURL(img.src); // 清除释放
-                                    };
-                                    img.src = window.URL.createObjectURL(blob);*/
+                                    that.log("二进制11..");
+                                    var div=$("<div></div>");
+                                    var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
+                                    var downloadDiv=$("<div style='    position: absolute;\n" +
+                                        "    right: 0px;\n" +
+                                        "    width: 100px;\n" +
+                                        "    bottom: 30px;\n" +
+                                        "    text-align: center;'></div>")
+                                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
+                                    button.bind("click",function () {
+                                        window.open(url);
+                                    })
+                                    downloadDiv.append(button);
+                                    div.append(rowDiv).append(downloadDiv);
+                                    that.log(div)
+                                    that.log(div[0])
                                     resp1.find(".panel-body").html("")
-                                    resp1.find(".panel-body")[0].html(bd);
+                                    resp1.find(".panel-body").html(div);
                                 }
                             }
 
@@ -856,31 +858,7 @@
                             jsondiv.JSONView(xhr["responseJSON"]);
                             pre.html(JSON.stringify(xhr["responseJSON"],null,2));
                             resp1.find(".panel-body").append(jsondiv);
-                        }else{
-                            //判断content-type
-                            //如果是image资源
-                            var regex=new RegExp('image/(jpeg|jpg|png|gif)','g');
-                            if(regex.test(contentType)){
-                                var d=that.getDoc().data("data");
-                                var imgUrl="http://"+d.host+apiInfo.url;
-                                var img = document.createElement("img");
-                                img.onload = function(e) {
-                                    window.URL.revokeObjectURL(img.src); // 清除释放
-                                };
-                                img.src = imgUrl;
-                                resp1.find(".panel-body").html("")
-                                resp1.find(".panel-body")[0].appendChild(img);
-                            }else{
-                                //判断是否是text
-                                var regex=new RegExp('.*?text.*','g');
-                                if(regex.test(contentType)){
-                                    resp1.find(".panel-body").html("")
-                                    resp1.find(".panel-body").html(xhr.responseText);
-                                }
-                            }
-
                         }
-
                         that.log("tab show...")
                         resptab.find("a:first").tab("show");
                     },
@@ -985,6 +963,34 @@
 
         })
 
+    }
+
+    function base64Encode(str) {
+        var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        var out = "", i = 0, len = str.length, c1, c2, c3;
+        while (i < len) {
+            c1 = str.charCodeAt(i++) & 0xff;
+            if (i == len) {
+                out += CHARS.charAt(c1 >> 2);
+                out += CHARS.charAt((c1 & 0x3) << 4);
+                out += "==";
+                break;
+            }
+            c2 = str.charCodeAt(i++);
+            if (i == len) {
+                out += CHARS.charAt(c1 >> 2);
+                out += CHARS.charAt(((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4));
+                out += CHARS.charAt((c2 & 0xF) << 2);
+                out += "=";
+                break;
+            }
+            c3 = str.charCodeAt(i++);
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+            out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+            out += CHARS.charAt(c3 & 0x3F);
+        }
+        return out;
     }
     /***
      * 更新key值
@@ -2075,7 +2081,7 @@
     SwaggerBootstrapUi.prototype.log=function (msg) {
         if(window.console){
             //正式版不开启console功能
-            //console.log(msg);
+            console.log(msg);
         }
     }
     /***
@@ -2371,10 +2377,95 @@
         },
         generUUID:function () {
             return ($.randomNumber()+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+$.randomNumber()+$.randomNumber());
+        },
+        base64Encode:function (str) {
+            var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            var out = "", i = 0, len = str.length, c1, c2, c3;
+            while (i < len) {
+                c1 = str.charCodeAt(i++) & 0xff;
+                if (i == len) {
+                    out += CHARS.charAt(c1 >> 2);
+                    out += CHARS.charAt((c1 & 0x3) << 4);
+                    out += "==";
+                    break;
+                }
+                c2 = str.charCodeAt(i++);
+                if (i == len) {
+                    out += CHARS.charAt(c1 >> 2);
+                    out += CHARS.charAt(((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4));
+                    out += CHARS.charAt((c2 & 0xF) << 2);
+                    out += "=";
+                    break;
+                }
+                c3 = str.charCodeAt(i++);
+                out += CHARS.charAt(c1 >> 2);
+                out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+                out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+                out += CHARS.charAt(c3 & 0x3F);
+            }
+            return out;
+        },
+        binToBase64:function (bitString) {
+            var code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split(""); //索引表
+            var result = "";
+            var tail = bitString.length % 6;
+            var bitStringTemp1 = bitString.substr(0, bitString.length - tail);
+            var bitStringTemp2 = bitString.substr(bitString.length - tail, tail);
+            for (var i = 0; i < bitStringTemp1.length; i += 6) {
+                var index = parseInt(bitStringTemp1.substr(i, 6), 2);
+                result += code[index];
+            }
+            bitStringTemp2 += new Array(7 - tail).join("0");
+            if (tail) {
+                result += code[parseInt(bitStringTemp2, 2)];
+                result += new Array((6 - tail) / 2 + 1).join("=");
+            }
+            return result;
         }
-    })
+    });
 
+// will support only Firefox: 13.0+ Chrome: 20+ Internet Explorer: 10.0+ Safari: 6.0 Opera: 12.10
+    // use this transport for "binary" data type
+    /*$.ajaxTransport("+binary", function (options, originalOptions, jqXHR) {
+        // check for conditions and support for blob / arraybuffer response type
+        if (window.FormData && ((options.dataType && (options.dataType === 'binary')) || (options.data && ((window.ArrayBuffer && options.data instanceof ArrayBuffer) || (window.Blob && options.data instanceof Blob))))) {
+            return {
+                // create new XMLHttpRequest
+                send: function (headers, callback) {
+                    // setup all variables
+                    var xhr = new XMLHttpRequest(),
+                        url = options.url,
+                        type = options.type,
+                        async = options.async || true,
+                        // blob or arraybuffer. Default is blob
+                        dataType = options.responseType || "blob",
+                        data = options.data || null,
+                        username = options.username || null,
+                        password = options.password || null;
 
+                    xhr.addEventListener('load', function () {
+                        var data = {};
+                        data[options.dataType] = xhr.response;
+                        // make callback and send data
+                        callback(xhr.status, xhr.statusText, data, xhr.getAllResponseHeaders());
+                    });
+
+                    xhr.open(type, url, async, username, password);
+
+                    // setup custom headers
+                    for (var i in headers) {
+                        xhr.setRequestHeader(i, headers[i]);
+                    }
+
+                    xhr.responseType = dataType;
+                    xhr.send(data);
+                },
+                abort: function () {
+                    jqXHR.abort();
+                }
+            };
+        }
+    });*/
     window.SwaggerBootstrapUi=SwaggerBootstrapUi;
 
     /**
