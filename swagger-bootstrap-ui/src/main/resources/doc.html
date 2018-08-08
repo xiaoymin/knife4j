@@ -55,7 +55,7 @@
 </head>
 <body style="overflow: hidden;">
 <div class="sbu-header" id="sbu-header">
-    <div class="sbu-header-left sbu-header-left-wd">
+    <div class="sbu-header-left sbu-header-left-wd" id="leftGroup">
         <div class="form-group sbu-header-group">
             <div class="col-sm-12">
                 <select  class="form-control" id="sbu-group-sel" style="margin-top: 13px;">
@@ -64,7 +64,7 @@
         </div>
     </div>
     <div class="sbu-header-left" style="width: 410px;">
-        <i class="iconfont icon-msnui-menu" style="font-size: 1.5em"></i>
+        <i class="iconfont icon-msnui-menu" style="font-size: 1.5em;margin-left: 10px;" id="leftCheck" data-display="0"></i>
         <span><a href="https://gitee.com/xiaoym/swagger-bootstrap-ui" target="_blank">swagger-bootstrap-ui</a></span>
     </div>
     <div class="sbu-header-right">
@@ -81,7 +81,7 @@
     </div>
 </div>
 <div id="container">
-    <div class="bycdao-left left" style="height: 90%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
+    <div class="bycdao-left left" id="leftMenu" style="height: 90%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
         <ul class="nav nav-list" id="menu">
             <li >
                 <a href="javascript:void(0)">
@@ -126,7 +126,7 @@
         </ul>
     </div>
     <div id="handle"></div>
-    <div class="bycdao-main right" id="content"  style="height: 90%;overflow-y: auto;margin-top:2px;">
+    <div class="bycdao-main right" id="content"  style="height: 90%;overflow-y: auto;margin-top:2px;right: 0px;">
     </div>
 </div>
 <!--离线文档说明-->
@@ -650,6 +650,10 @@
 
 <script type="text/javascript">
     $(function () {
+        /***
+         * 拖动事件
+         * @type {boolean}
+         */
         var isResizing = false,lastDownX = 0;
         var container = $('#container'),left = $('.left'),right = $('.right'),handle = $('#handle');
         //设置rightwidth
@@ -670,6 +674,41 @@
             // stop resizing
             isResizing = false;
         });
+
+        //菜单点击事件
+        $("#leftCheck").on("click",function (e) {
+            e.preventDefault();
+            var that=$(this);
+            var display=that.data("display");
+            if(display=="0"){
+                //隐藏
+                that.data("display","1");
+                //分组
+                $("#leftGroup").hide("slow")
+                //菜单
+                $("#leftMenu").hide();
+                //handle
+                $("#handle").hide();
+
+                var allwidth=$('#container').width();
+                right.css("width",allwidth)
+            }else{
+                var width=container.width();
+                var leftWidth=left.width();
+                var handleWidth=handle.width();
+                var wid=width-leftWidth-handleWidth;
+                //显示
+                that.data("display","0");
+                //分组
+                $("#leftGroup").show("slow")
+                //菜单
+                $("#leftMenu").show("slow");
+                //handle
+                $("#handle").show("slow");
+                right.css("width",wid);
+                right.css("right","0");
+            }
+        })
     })
 </script>
 

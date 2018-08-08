@@ -780,9 +780,12 @@
                         }
                         var endTime=new Date().getTime();
                         that.log(endTime)
-                        var len=data.toString().gblen();
+                        var len=0;
                         var diff=endTime-startTime;
                         var tp=typeof (data);
+                        if(xhr.hasOwnProperty("responseText")){
+                            len=xhr["responseText"].gblen();
+                        }
                         that.log(typeof (data))
                         that.log(status)
                         var resptab=$('<div id="resptab" class="tabs-container" ></div>');
@@ -886,7 +889,7 @@
                         layer.close(index);
                         that.log(xhr);
                         var statsCode=xhr.status;
-                        if(statsCode==400){
+                        if(statsCode==404){
                             statsCode=statsCode+" Not Found";
                         }
                         var endTime=new Date().getTime();
