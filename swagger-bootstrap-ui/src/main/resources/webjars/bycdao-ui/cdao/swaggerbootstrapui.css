@@ -8,8 +8,10 @@
     min-height: 60px;
 }
 .sbu-header-left{
-    width:30%;
     float: left;
+}
+.sbu-header-left-wd{
+    width: 310px;
 }
 .sbu-header-left span{
     font-size: 1.5em;
@@ -21,19 +23,22 @@
     text-decoration: none;
     font-family: Titillium Web,sans-serif;
     color: #fff;
-    margin-left:20px;
+    /*margin-left:20px;*/
 }
 .sbu-header-left span a{
     color: #fff;
     cursor: pointer;
     text-decoration: none;
 }
+.sbu-header-left i{
+    cursor: pointer;
+}
 .sub-header-left span a:hover{
     text-decoration: none;
 }
 
 .sbu-header-right{
-    width:70%;
+    width:20%;
     float:right;
     vertical-align: middle;
     height: 60px;
