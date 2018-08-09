@@ -581,6 +581,14 @@
         that.getDoc().find("#tab2").find(".panel-body").html("");
         var html = template('DebugScript', apiInfo);
         that.getDoc().find("#tab2").find(".panel-body").html(html);
+        //绑定全选事件
+        $("#parameterCheckAll").on("click",function (e) {
+            var chk=$(this);
+            that.log("是否选中...")
+            var chked=chk.find("input:first").prop("checked");
+            that.log(chked)
+            $("#paramBody").find("input:checkbox").prop("checked",chked);
+        })
         that.requestSend(apiInfo,menu);
 
     }
