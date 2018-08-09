@@ -64,7 +64,7 @@
         </div>
     </div>
     <div class="sbu-header-left" style="width: 410px;">
-        <i class="iconfont icon-msnui-menu" style="font-size: 1.5em;margin-left: 10px;" id="leftCheck" data-display="0"></i>
+        <i class="iconfont icon-zuosuojin1" style="font-size: 1.5em;margin-left: 10px;" id="leftCheck" data-display="0"></i>
         <span><a href="https://gitee.com/xiaoym/swagger-bootstrap-ui" target="_blank">swagger-bootstrap-ui</a></span>
     </div>
     <div class="sbu-header-right">
@@ -81,7 +81,7 @@
     </div>
 </div>
 <div id="container">
-    <div class="bycdao-left left" id="leftMenu" style="height: 90%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
+    <div class="bycdao-left left" id="leftMenu" style="height: 100%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
         <ul class="nav nav-list" id="menu">
             <li >
                 <a href="javascript:void(0)">
@@ -681,6 +681,8 @@
             var that=$(this);
             var display=that.data("display");
             if(display=="0"){
+                that.removeClass("icon-zuosuojin1");
+                that.addClass("icon-yousuojin1");
                 //隐藏
                 that.data("display","1");
                 //分组
@@ -693,6 +695,8 @@
                 var allwidth=$('#container').width();
                 right.css("width",allwidth)
             }else{
+                that.addClass("icon-zuosuojin1");
+                that.removeClass("icon-yousuojin1");
                 var width=container.width();
                 var leftWidth=left.width();
                 var handleWidth=handle.width();

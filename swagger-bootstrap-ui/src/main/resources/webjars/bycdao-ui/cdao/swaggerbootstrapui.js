@@ -1955,6 +1955,10 @@
                         var refp=new SwaggerBootstrapUiParameter();
                         refp.name=p.name;
                         refp.type=p.type;
+                        if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
+                            //修复针对schema类型的参数,显示类型为schema类型
+                            refp.type=p.refType;
+                        }
                         refp.in=minfo.in;
                         refp.require=p.required;
                         refp.description=p.description;
