@@ -710,9 +710,11 @@
             that.log("请求url："+url);
             var reqdata=null;
             var contType="application/json; charset=UTF-8";
+            var paramBodyType="json";
             if(bodyRequest){
                 reqdata=bodyparams;
             }else{
+                paramBodyType="form";
                 reqdata=params;
                 contType="application/x-www-form-urlencoded; charset=UTF-8";
             }
@@ -767,6 +769,11 @@
                 })
             }
             else{
+                //判断produce
+                if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
+                    var first=apiInfo.produces[0];
+                    headerparams["accept"]=first;
+                }
                 //判断security参数
                 if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
                     $.each(that.currentInstance.securityArrs,function (i, sa) {
@@ -805,7 +812,8 @@
                             '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
+                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li>'+
+                            '<li class=""><a data-toggle="tab" href="#tabcurl" aria-expanded="true"> Curl </a></li></ul>')
 
 
                         var uldiv=$("<div></div>");
@@ -824,9 +832,8 @@
                         var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
                         var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
                         var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
-
-                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4);
-
+                        var resp5=$('<div id="tabcurl" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
+                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
                         resptab.append(respcontent)
                         respcleanDiv.append(resptab);
                         that.log(xhr);
@@ -894,6 +901,28 @@
                             resp1.find(".panel-body").append(jsondiv);
                         }
                         that.log("tab show...")
+                        //组件curl功能
+                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType);
+                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
+                        var curlcode=$("<code></code>");
+                        curlcode.html(curl);
+
+                        resp5.find(".panel-body").html("");
+                        resp5.find(".panel-body").append(curlcode).append(cpcurlBotton);
+
+
+                        var clipboard = new ClipboardJS('#btnCopyCurl',{
+                            text:function () {
+                                return curlcode.html();
+                            }
+                        });
+                        clipboard.on('success', function(e) {
+                            layer.msg("复制成功")
+                        });
+                        clipboard.on('error', function(e) {
+                            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                        });
+
                         resptab.find("a:first").tab("show");
                     },
                     error:function (xhr, textStatus, errorThrown) {
@@ -914,7 +943,8 @@
                             '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>')
+                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li>'+
+                            '<li class=""><a data-toggle="tab" href="#tabcurl" aria-expanded="true"> Curl </a></li></ul>')
 
                         //resptab.append(ulresp);
                         var uldiv=$("<div></div>");
@@ -941,7 +971,8 @@
                         var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
                         var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
                         var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">'+rawTxt+'</div>');
-                        respcontent.append(resp1).append(resp2).append(resp4);
+                        var resp5=$('<div id="tabcurl" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
+                        respcontent.append(resp1).append(resp2).append(resp4).append(resp5);
 
                         resptab.append(respcontent)
 
@@ -982,6 +1013,29 @@
                                 resp1.find(".panel-body").html(xhr.responseText);
                             }
                         }
+
+                        //组件curl功能
+                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType);
+                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
+                        var curlcode=$("<code></code>");
+                        curlcode.html(curl);
+
+                        resp5.find(".panel-body").html("");
+                        resp5.find(".panel-body").append(curlcode).append(cpcurlBotton);
+
+
+                        var clipboard = new ClipboardJS('#btnCopyCurl',{
+                            text:function () {
+                                return curlcode.html();
+                            }
+                        });
+                        clipboard.on('success', function(e) {
+                            layer.msg("复制成功")
+                        });
+                        clipboard.on('error', function(e) {
+                            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                        });
+
                         that.log("tab show...")
                         resptab.find("a:first").tab("show");
 
@@ -1024,34 +1078,66 @@
         })
 
     }
-
-    function base64Encode(str) {
-        var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        var out = "", i = 0, len = str.length, c1, c2, c3;
-        while (i < len) {
-            c1 = str.charCodeAt(i++) & 0xff;
-            if (i == len) {
-                out += CHARS.charAt(c1 >> 2);
-                out += CHARS.charAt((c1 & 0x3) << 4);
-                out += "==";
-                break;
+    /***
+     * 构建curl
+     */
+    SwaggerBootstrapUi.prototype.buildCurl=function (apiInfo,headers,reqdata,paramBodyType) {
+        var that=this;
+        var curlified=new Array();
+        var fullurl="http://"+that.currentInstance.host+apiInfo.url;
+        curlified.push( "curl" );
+        curlified.push( "-X", apiInfo.methodType.toUpperCase() );
+        curlified.push( "\""+fullurl+"\"");
+        that.log("curl-------------------header");
+        that.log(headers);
+        if(paramBodyType=="json"){
+            if(apiInfo.consumes!=undefined&&apiInfo.consumes!=null&&apiInfo.consumes.length>0){
+                var first=apiInfo.consumes[0];
+                headers["Content-Type"]=first;
             }
-            c2 = str.charCodeAt(i++);
-            if (i == len) {
-                out += CHARS.charAt(c1 >> 2);
-                out += CHARS.charAt(((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4));
-                out += CHARS.charAt((c2 & 0xF) << 2);
-                out += "=";
-                break;
-            }
-            c3 = str.charCodeAt(i++);
-            out += CHARS.charAt(c1 >> 2);
-            out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
-            out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
-            out += CHARS.charAt(c3 & 0x3F);
         }
-        return out;
+        if(headers!=undefined&&headers!=null&&headers!=""){
+            for(var h in headers){
+                curlified.push( "-H " )
+                curlified.push("\""+h+":"+headers[h]+"\"");
+            }
+        }
+
+
+        that.log("curl-------------------reqdata");
+        that.log(paramBodyType)
+        that.log(reqdata)
+        var tp=typeof (reqdata);
+        if(paramBodyType=="json"){
+            if(tp=="string"){
+                var jobj=JSON.parse(reqdata);
+                var objstr=JSON.stringify( jobj ).replace(/\\n/g, "").replace(/"/g,"\\\"");
+                that.log(objstr);
+                curlified.push( "-d" );
+                curlified.push( "\""+objstr +"\"")
+            }else if(tp=="object"){
+                //object
+                var objstr=JSON.stringify( reqdata ).replace(/\\n/g, "").replace(/"/g,"\\\"");
+                that.log(objstr);
+                curlified.push( "-d" );
+                curlified.push( "\""+objstr +"\"")
+            }
+        }else{
+            //form
+            var formArr=new Array();
+            for(var d in reqdata){
+                formArr.push(d+"="+reqdata[d]);
+            }
+            curlified.push( "-d" );
+            var formStr=formArr.join("&");
+            that.log("表单...")
+            that.log(formStr);
+            that.log(formStr.toString());
+            curlified.push( "\""+formStr +"\"");
+        }
+        return curlified.join(" ");
     }
+
     /***
      * 更新key值
      * @param key
