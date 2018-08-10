@@ -10,6 +10,8 @@ swagger-bootstrap-ui
 
 `Swagger-bootstrap-ui` is just the UI implementation of Swagger, instead of replacing Swagger function. So the back-end module still depends on Swagger, and it needs to cooperate with Swagger's annotation to achieve the effect, [annotation explanation](swagger-annotation.md).
 
+Online experience: [http://swagger-bootstrap-ui.xiaominfo.com/doc.html](http://swagger-bootstrap-ui.xiaominfo.com/doc.html)
+
 ## Functions
 
 
