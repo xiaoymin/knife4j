@@ -588,7 +588,9 @@
             var chked=chk.find("input:first").prop("checked");
             that.log(chked)
             $("#paramBody").find("input:checkbox").prop("checked",chked);
-        })
+        });
+        //如果有文件上传,绑定多文件增加按钮事件
+
         that.requestSend(apiInfo,menu);
 
     }
@@ -1847,7 +1849,7 @@
                         if(items.hasOwnProperty("$ref")){
                             var ref=items["$ref"];
                             var className=$.getClassName(ref);
-                            minfo.type=className;
+                            //minfo.type=className;
                             minfo.schemaValue=className;
                             var def=that.getDefinitionByName(className);
                             if(def!=null){

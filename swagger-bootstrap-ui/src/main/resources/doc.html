@@ -333,7 +333,7 @@
             <div class="swbu-main">
                 <%if((parameters!=null && parameters.length>0)||(globalParameters!=null && globalParameters.length>0)){ var fileform=false;%>
                 <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
-                <%  if(param.type=="MultipartFile"){ fileform=true;}%>
+                <%  if(param.schemaValue=="MultipartFile"){ fileform=true;}%>
                 <%}%>
 
                 <%if(fileform){%>
@@ -364,7 +364,7 @@
                                             <input class="form-control p-key" value="<%=param.name%>">
                                         </td>
                                         <td>
-                                            <%if(param.type=="MultipartFile"){%>
+                                            <%if(param.schemaValue=="MultipartFile"){%>
                                                 <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                             <%}else{%>
                                                 <%if(param.in=="body"){  %>
@@ -395,8 +395,15 @@
                                     <input class="form-control p-key" value="<%=param.name%>">
                                 </td>
                                 <td>
-                                    <%if(param.type=="MultipartFile"){%>
-                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                    <%if(param.schemaValue=="MultipartFile"){%>
+                                    <div class="row">
+                                        <div class="col-lg-10">
+                                            <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>" <%if(param.type=="array"){%> multiple <%}%>/>
+                                        </div>
+                                        <div class="col-lg-2">
+
+                                        </div>
+                                    </div>
                                     <%}else{%>
                                     <%if(param.in=="body"){  %>
                                     <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
@@ -447,7 +454,7 @@
                                 <input class="form-control p-key" value="<%=param.name%>">
                             </td>
                             <td>
-                                <%if(param.type=="MultipartFile"){%>
+                                <%if(param.schemaValue=="MultipartFile"){%>
                                 <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                 <%}else{%>
                                 <%if(param.in=="body"){  %>
@@ -477,7 +484,7 @@
                             </td>
                             <td>
                                 <%if(param.in=="body"||param.in=="formdata"||param.in=="formData"){  %>
-                                    <%if(param.type=="MultipartFile"){%>
+                                    <%if(param.schemaValue=="MultipartFile"){%>
                                     <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                     <%}else {%>
                                         <%if(param.in=="body"){  %>
