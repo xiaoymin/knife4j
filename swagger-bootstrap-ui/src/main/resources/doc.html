@@ -266,9 +266,8 @@
 **{{$value.name}}**
 
 | 参数名称         | 说明    |     in |  是否必须   |  类型  |  schema |
-| ------------ | -------------------------------- |-----------|--------|----|--- |
-{{each $value.params}}| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |
-            {{/each}}
+| ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
+| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
 {{/each}}
 
 {{/if}}

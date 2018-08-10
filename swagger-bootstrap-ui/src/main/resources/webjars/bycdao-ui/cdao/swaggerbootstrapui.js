@@ -1104,8 +1104,6 @@
                 curlified.push("\""+h+":"+headers[h]+"\"");
             }
         }
-
-
         that.log("curl-------------------reqdata");
         that.log(paramBodyType)
         that.log(reqdata)
@@ -1130,12 +1128,14 @@
             for(var d in reqdata){
                 formArr.push(d+"="+reqdata[d]);
             }
-            curlified.push( "-d" );
             var formStr=formArr.join("&");
-            that.log("表单...")
+            that.log("表单...");
             that.log(formStr);
             that.log(formStr.toString());
-            curlified.push( "\""+formStr +"\"");
+            if(formArr.length>0){
+                curlified.push( "-d" );
+                curlified.push( "\""+formStr +"\"");
+            }
         }
         return curlified.join(" ");
     }
@@ -1411,6 +1411,7 @@
         setTimeout(function () {
             var html = template('offLinecontentScript', that.currentInstance);
             that.getDoc().html(html);
+
         },100)
         var clipboard = new ClipboardJS('#btnCopy',{
             text:function () {
@@ -1423,6 +1424,7 @@
         clipboard.on('error', function(e) {
             layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
         });
+
     }
     /***
      * 解析实例属性
@@ -2231,10 +2233,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        if(window.console){
+        /*if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }
+        }*/
     }
     /***
      * 获取菜单元素
