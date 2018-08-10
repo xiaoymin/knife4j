@@ -55,17 +55,19 @@
 </head>
 <body style="overflow: hidden;">
 <div class="sbu-header" id="sbu-header">
-    <div class="sbu-header-left">
-        <span><a href="https://gitee.com/xiaoym/swagger-bootstrap-ui" target="_blank">swagger-bootstrap-ui</a></span>
-    </div>
-    <div class="sbu-header-right">
+    <div class="sbu-header-left sbu-header-left-wd" id="leftGroup">
         <div class="form-group sbu-header-group">
-            <label class="col-sm-4 control-label">选择分组</label>
-            <div class="col-sm-8">
-                <select  class="form-control" id="sbu-group-sel">
+            <div class="col-sm-12">
+                <select  class="form-control" id="sbu-group-sel" style="margin-top: 13px;">
                 </select>
             </div>
         </div>
+    </div>
+    <div class="sbu-header-left" style="width: 410px;">
+        <i class="iconfont icon-zuosuojin1" style="font-size: 1.5em;margin-left: 10px;" id="leftCheck" data-display="0"></i>
+        <span><a href="https://gitee.com/xiaoym/swagger-bootstrap-ui" target="_blank">swagger-bootstrap-ui</a></span>
+    </div>
+    <div class="sbu-header-right">
         <div class="form-group sbu-header-group">
             <div class="col-sm-12" style="text-align: right;">
                 <div class="search bar8">
@@ -79,7 +81,7 @@
     </div>
 </div>
 <div id="container">
-    <div class="bycdao-left left" style="height: 90%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
+    <div class="bycdao-left left" id="leftMenu" style="height: 100%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
         <ul class="nav nav-list" id="menu">
             <li >
                 <a href="javascript:void(0)">
@@ -124,7 +126,7 @@
         </ul>
     </div>
     <div id="handle"></div>
-    <div class="bycdao-main right" id="content"  style="height: 90%;overflow-y: auto;margin-top:2px;">
+    <div class="bycdao-main right" id="content"  style="height: 90%;overflow-y: auto;margin-top:2px;right: 0px;">
     </div>
 </div>
 <!--离线文档说明-->
@@ -233,7 +235,7 @@
         <!--<textarea rows="10" cols="10" id="docText">-->
         <textarea rows="10" cols="10" id="docText" style="display: none;">
 
-**接口说明**:{{description}}
+**接口说明**:`{{description}}`
 
 
 **接口地址**:`{{url}}`
@@ -264,9 +266,8 @@
 **{{$value.name}}**
 
 | 参数名称         | 说明    |     in |  是否必须   |  类型  |  schema |
-| ------------ | -------------------------------- |-----------|--------|----|--- |
-{{each $value.params}}| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |
-            {{/each}}
+| ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
+| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
 {{/each}}
 
 {{/if}}
@@ -331,7 +332,7 @@
             <div class="swbu-main">
                 <%if((parameters!=null && parameters.length>0)||(globalParameters!=null && globalParameters.length>0)){ var fileform=false;%>
                 <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
-                <%  if(param.type=="MultipartFile"){ fileform=true;}%>
+                <%  if(param.schemaValue=="MultipartFile"){ fileform=true;}%>
                 <%}%>
 
                 <%if(fileform){%>
@@ -339,7 +340,11 @@
                     <table class="">
                         <thead>
                         <tr>
-                            <th></th>
+                            <th style="white-space: nowrap;"><div class="checkbox" id="parameterCheckAll">
+                                <label style="font-weight: bold;">
+                                    <input type="checkbox" checked> 全选
+                                </label>
+                            </div></th>
                             <th>参数名称</th>
                             <th>参数值</th>
                             <th>操作</th>
@@ -358,7 +363,7 @@
                                             <input class="form-control p-key" value="<%=param.name%>">
                                         </td>
                                         <td>
-                                            <%if(param.type=="MultipartFile"){%>
+                                            <%if(param.schemaValue=="MultipartFile"){%>
                                                 <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                             <%}else{%>
                                                 <%if(param.in=="body"){  %>
@@ -389,8 +394,15 @@
                                     <input class="form-control p-key" value="<%=param.name%>">
                                 </td>
                                 <td>
-                                    <%if(param.type=="MultipartFile"){%>
-                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                    <%if(param.schemaValue=="MultipartFile"){%>
+                                    <div class="row">
+                                        <div class="col-lg-10">
+                                            <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>" <%if(param.type=="array"){%> multiple <%}%>/>
+                                        </div>
+                                        <div class="col-lg-2">
+
+                                        </div>
+                                    </div>
                                     <%}else{%>
                                     <%if(param.in=="body"){  %>
                                     <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
@@ -419,7 +431,11 @@
                     <table class="">
                         <thead>
                         <tr>
-                            <th></th>
+                            <th style="white-space: nowrap;"><div class="checkbox" id="parameterCheckAll">
+                                <label style="font-weight: bold;">
+                                    <input type="checkbox" checked> 全选
+                                </label>
+                            </div></th>
                             <th>参数名称</th>
                             <th>参数值</th>
                             <th>操作</th>
@@ -437,7 +453,7 @@
                                 <input class="form-control p-key" value="<%=param.name%>">
                             </td>
                             <td>
-                                <%if(param.type=="MultipartFile"){%>
+                                <%if(param.schemaValue=="MultipartFile"){%>
                                 <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                 <%}else{%>
                                 <%if(param.in=="body"){  %>
@@ -467,7 +483,7 @@
                             </td>
                             <td>
                                 <%if(param.in=="body"||param.in=="formdata"||param.in=="formData"){  %>
-                                    <%if(param.type=="MultipartFile"){%>
+                                    <%if(param.schemaValue=="MultipartFile"){%>
                                     <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                     <%}else {%>
                                         <%if(param.in=="body"){  %>
@@ -648,6 +664,10 @@
 
 <script type="text/javascript">
     $(function () {
+        /***
+         * 拖动事件
+         * @type {boolean}
+         */
         var isResizing = false,lastDownX = 0;
         var container = $('#container'),left = $('.left'),right = $('.right'),handle = $('#handle');
         //设置rightwidth
@@ -668,6 +688,45 @@
             // stop resizing
             isResizing = false;
         });
+
+        //菜单点击事件
+        $("#leftCheck").on("click",function (e) {
+            e.preventDefault();
+            var that=$(this);
+            var display=that.data("display");
+            if(display=="0"){
+                that.removeClass("icon-zuosuojin1");
+                that.addClass("icon-yousuojin1");
+                //隐藏
+                that.data("display","1");
+                //分组
+                $("#leftGroup").hide("slow")
+                //菜单
+                $("#leftMenu").hide();
+                //handle
+                $("#handle").hide();
+
+                var allwidth=$('#container').width();
+                right.css("width",allwidth)
+            }else{
+                that.addClass("icon-zuosuojin1");
+                that.removeClass("icon-yousuojin1");
+                var width=container.width();
+                var leftWidth=left.width();
+                var handleWidth=handle.width();
+                var wid=width-leftWidth-handleWidth;
+                //显示
+                that.data("display","0");
+                //分组
+                $("#leftGroup").show("slow")
+                //菜单
+                $("#leftMenu").show("slow");
+                //handle
+                $("#handle").show("slow");
+                right.css("width",wid);
+                right.css("right","0");
+            }
+        })
     })
 </script>
 

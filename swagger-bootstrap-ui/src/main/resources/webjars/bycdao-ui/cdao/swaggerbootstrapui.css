@@ -8,8 +8,10 @@
     min-height: 60px;
 }
 .sbu-header-left{
-    width:30%;
     float: left;
+}
+.sbu-header-left-wd{
+    width: 310px;
 }
 .sbu-header-left span{
     font-size: 1.5em;
@@ -21,19 +23,22 @@
     text-decoration: none;
     font-family: Titillium Web,sans-serif;
     color: #fff;
-    margin-left:20px;
+    /*margin-left:20px;*/
 }
 .sbu-header-left span a{
     color: #fff;
     cursor: pointer;
     text-decoration: none;
 }
+.sbu-header-left i{
+    cursor: pointer;
+}
 .sub-header-left span a:hover{
     text-decoration: none;
 }
 
 .sbu-header-right{
-    width:70%;
+    width:20%;
     float:right;
     vertical-align: middle;
     height: 60px;
@@ -62,7 +67,7 @@
     transition: all 0.2s;
 }
 .bycdao-main {
-    margin-left: 320px;
+    /*margin-left: 320px;*/
     padding-top: 5px;
     /* padding-left: 15px;*/
     padding-right: 15px;
@@ -257,7 +262,7 @@ code {
     width: 65px;
     white-space: nowrap;
     font-family: Monaco;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 .swu-menu-api-des{
     font-size: 12px;
@@ -377,56 +382,66 @@ code {
 
 .menu-url{
     background-color: transparent;
-    color: #3b4151;
+    color: #ab0f3a;
     font-size: 14px;
 }
 
 .menu-url-post{
-    color: white;
-    background-color: #61affd;
+    color: #61affd;
     text-align: center;
     width: 64px;
     display: inline-block;
+    font-weight: bold;
 }
 .menu-url-put{
-    color: white;
-    background-color: #fca130;
+    color: #fca130;
     text-align: center;
     width: 64px;
     display: inline-block;
+    font-weight: bold;
 }
 .menu-url-get{
-    color: white;
-    background-color: #0d5aa7;
+    color: #0d5aa7;
     text-align: center;
     width: 64px;
     display: inline-block;
+    font-weight: bold;
 }
 .menu-url-head{
-    color: white;
-    background-color: #9012fe;
+    color: #9012fe;
     text-align: center;
     width: 64px;
     display: inline-block;
+    font-weight: bold;
 }
 .menu-url-delete{
-    color: white;
-    background-color:#f93e3e;
+    color:#f93e3e;
     text-align: center;
     width: 64px;
     display: inline-block;
+    font-weight: bold;
 }
 .menu-url-patch{
-    color: white;
-    background-color: #50e3c2;
+    color: #50e3c2;
     text-align: center;
     width: 64px;
     display: inline-block;
+    font-weight: bold;
 }
 .menu-url-options{
-    color: white;
-    background-color: #49cc90;
+    color: #49cc90;
     text-align: center;
     width: 64px;
     display: inline-block;
+    font-weight: bold;
+}
+
+.debug-span-label{
+    color:#919191;
+}
+
+.debug-span-value{
+    color:#4dc095;
+    font-size: 12px;
+    font-weight: bold;
 }
