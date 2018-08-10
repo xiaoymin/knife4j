@@ -1764,15 +1764,21 @@
         //添加basePath
         var basePath=that.currentInstance.basePath;
         var fullpath="";
+        var basePathFlag=false;
         if (basePath!=""&&basePath!="/"){
             //如果非空,非根目录
             fullpath+=basePath;
+            basePathFlag=true;
+            fullpath+=path;
+        }else{
+            //截取字符串
+            fullpath=path.substring(1);
         }
-        fullpath+=path;
         var swpinfo=new SwaggerBootstrapUiApiInfo();
         swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=fullpath;
         swpinfo.originalUrl=fullpath;
+        swpinfo.basePathFlag=basePathFlag;
         swpinfo.methodType=mtype;
         if(apiInfo!=null){
             swpinfo.consumes=apiInfo.consumes;
@@ -2382,6 +2388,7 @@
     var SwaggerBootstrapUiApiInfo=function () {
         this.url=null;
         this.originalUrl=null;
+        this.basePathFlag=false;
         this.methodType=null;
         this.description=null;
         this.summary=null;
