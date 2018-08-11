@@ -128,20 +128,15 @@ public class SwaggerConfiguration {
 </servlet-mapping>
 
 ```
-## 鸣谢
-
-特别感谢以下大牛开发的js/css、html前端框架，美观、易用
-
-| 框架          | 网站                                       |
-| ----------- | ---------------------------------------- |
-| *jquery*    | [http://jquery.com/](http://jquery.com/ "http://jquery.com/") |
-| *bootstrap* | [http://getbootstrap.com](http://getbootstrap.com "http://getbootstrap.com") |
-| *layer*     | [http://layer.layui.com/](http://layer.layui.com/ "http://layer.layui.com/") |
-| *jsonview*  | [https://github.com/yesmeck/jquery-jsonview](https://github.com/yesmeck/jquery-jsonview "https://github.com/yesmeck/jquery-jsonview") |
 
 ## 交流
 
+<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=16b81902c23fbca82780fa107da1b6612e2ee44a05c4103c9176ad9d61c2f6bf"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="XM开源技术交流群" title="XM开源技术交流群"></a>
+
+
 ![](static/wechat.jpg)
 
+## 捐赠
 
+无论捐赠金额多少都足够表达您这份心意,非常感谢!!!谢谢~~~:)  [前往捐赠](http://www.xiaominfo.com/donate)
 
