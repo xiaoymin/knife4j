@@ -158,6 +158,8 @@
             dataType:"json",
             async:false,
             success:function (data) {
+                that.log("请求成功");
+                that.log(data);
                 var t=typeof(data);
                 var groupData=null;
                 if(t=="string"){
@@ -172,6 +174,12 @@
                     g.url=group.url;
                     that.instances.push(g);
                 })
+            },
+            error:function (xhr, textStatus, errorThrown) {
+                that.log("error...")
+                that.log(xhr)
+                that.log(textStatus);
+                that.log(errorThrown)
             }
         })
     }
@@ -235,7 +243,9 @@
                 type:"get",
                 async:false,
                 success:function (data) {
-                    //var menu=JSON.parse(data)
+                    //var menu=JSON.parse(data);
+                    that.log("success")
+                    that.log(data);
                     var t=typeof(data);
                     var menu=null;
                     if(t=="string"){
@@ -252,6 +262,27 @@
                     that.currentInstance.load=true;
                     //创建swaggerbootstrapui主菜单
                     that.createDetailMenu();
+                },
+                error:function (xhr, textStatus, errorThrown) {
+                    that.log("error...")
+                    that.log(xhr);
+                    that.log(textStatus);
+                    that.log(errorThrown);
+                    var txt=xhr.responseText;
+                    //替换带[]
+                    that.log("replace...")
+                    var replaceData=txt.replace(/'/g,"\"");
+                    var menu=JSON.parse(replaceData);
+                    that.setInstanceBasicPorperties(menu);
+                    that.analysisDefinition(menu);
+                    //DApiUI.definitions(menu);
+                    that.log(menu);
+                    that.createDescriptionElement();
+                    //当前实例已加载
+                    that.currentInstance.load=true;
+                    //创建swaggerbootstrapui主菜单
+                    that.createDetailMenu();
+
                 }
             })
         }else{
@@ -2239,10 +2270,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
