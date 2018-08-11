@@ -131,10 +131,8 @@ public class SwaggerConfiguration {
 
 ## 交流
 
-<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=16b81902c23fbca82780fa107da1b6612e2ee44a05c4103c9176ad9d61c2f6bf"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="XM开源技术交流群" title="XM开源技术交流群"></a>
+QQ群：<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=16b81902c23fbca82780fa107da1b6612e2ee44a05c4103c9176ad9d61c2f6bf"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="XM开源技术交流群" title="XM开源技术交流群"></a> 608374991
 
-
-![](static/wechat.jpg)
 
 ## 捐赠
 
