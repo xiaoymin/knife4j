@@ -764,6 +764,23 @@
             var startTime=new Date().getTime();
             var index = layer.load(1);
             if(form.length>0){
+                axios.request({
+                    url:url,
+                    headers:headerparams,
+                    method:$.getStringValue(apiInfo.methodType),
+                    data:reqdata,
+                    timeout: 10*60*1000,
+                }).then(function (response) {
+                    that.log("response------------------")
+                    that.log(response);
+                    var data=response.data;
+                    that.log(data);
+                    layer.close(index);
+                }).catch(function (error) {
+                    layer.close(index);
+                    that.log("error-------------------");
+                    that.log(error);
+                })
                 form[0].submit();
                 //console.log("表单提交")
                 //iframe监听change事件
@@ -815,6 +832,7 @@
                         }
                     })
                 }
+                headerparams["Content-Type"]=contType;
                 that.log("header....")
                 that.log(headerparams);
                 $.ajax({
@@ -935,7 +953,7 @@
                         }
                         that.log("tab show...")
                         //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType);
+                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
                         var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
@@ -1005,7 +1023,7 @@
                         var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
                         var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">'+rawTxt+'</div>');
                         var resp5=$('<div id="tabcurl" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
-                        respcontent.append(resp1).append(resp2).append(resp4).append(resp5);
+                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
 
                         resptab.append(respcontent)
 
@@ -1013,7 +1031,11 @@
                         that.log(xhr);
                         var allheaders=xhr.getAllResponseHeaders();
                         if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+                            that.log("header--------------tab--------------------")
+                            that.log(allheaders)
                             var headers=allheaders.split("\r\n");
+                            that.log("headers------------------------")
+                            that.log(headers)
                             var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
                             for(var i=0;i<headers.length;i++){
                                 var header=headers[i];
@@ -1023,6 +1045,7 @@
                                     headertable.append(headertr);
                                 }
                             }
+                            that.log(headertable)
                             //设置Headers内容
                             resp3.find(".panel-body").html("")
                             resp3.find(".panel-body").append(headertable);
@@ -1048,7 +1071,7 @@
                         }
 
                         //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType);
+                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
                         var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
@@ -1114,10 +1137,15 @@
     /***
      * 构建curl
      */
-    SwaggerBootstrapUi.prototype.buildCurl=function (apiInfo,headers,reqdata,paramBodyType) {
+    SwaggerBootstrapUi.prototype.buildCurl=function (apiInfo,headers,reqdata,paramBodyType,url) {
         var that=this;
         var curlified=new Array();
-        var fullurl="http://"+that.currentInstance.host+apiInfo.url;
+        var fullurl="http://"+that.currentInstance.host;
+        //判断url是否是以/开头
+        if(!apiInfo.url.startWith("/")){
+            fullurl+="/";
+        }
+        fullurl+=url;
         curlified.push( "curl" );
         curlified.push( "-X", apiInfo.methodType.toUpperCase() );
         curlified.push( "\""+fullurl+"\"");
@@ -2627,6 +2655,13 @@
         }
         return len;
     }
+
+    String.prototype.startWith=function(str){
+        var reg=new RegExp("^"+str);
+        return reg.test(this);
+    }
+
+
     window.SwaggerBootstrapUi=SwaggerBootstrapUi;
 
     /**
