@@ -388,49 +388,49 @@ code {
 
 .menu-url-post{
     color: #61affd;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-put{
     color: #fca130;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-get{
     color: #0d5aa7;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-head{
     color: #9012fe;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-delete{
     color:#f93e3e;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-patch{
     color: #50e3c2;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-options{
     color: #49cc90;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
