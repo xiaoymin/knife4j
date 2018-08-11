@@ -136,5 +136,7 @@ QQ群：<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=16b81902c23fbca
 
 ## 捐赠
 
-无论捐赠金额多少都足够表达您这份心意,非常感谢!!!谢谢~~~:)  [前往捐赠](http://www.xiaominfo.com/donate)
+无论捐赠金额多少都足够表达您这份心意,非常感谢!!!谢谢~~~:)  
+
+[前往捐赠](http://www.xiaominfo.com/donate)
 
