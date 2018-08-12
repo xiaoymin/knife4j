@@ -1868,6 +1868,14 @@
                         that.log(m.enum);
                         minfo.enum=m.enum;
                         that.log(minfo);
+                        //枚举类型,描述显示可用值
+                        var avaiableArrStr=m.enum.join(",");
+                        if(m.description!=null&&m.description!=undefined&&m.description!=""){
+                            minfo.description=m.description+",可用值:"+avaiableArrStr;
+                        }else{
+                            minfo.description="枚举类型,可用值:"+avaiableArrStr;
+                        }
+
                     }
                     //判断你是否有默认值(后台)
                     if(m.hasOwnProperty("default")){
