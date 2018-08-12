@@ -23,10 +23,11 @@
     <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
     <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css">
     <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
+    <script src="webjars/bycdao-ui/jquery/axios.min.js"></script>
     <style type="text/css">
         #container {
             width: 100%;
-            height: 90%;
+            /*height: 90%;*/
             /* Disable selection so it doesn't get annoying */
           /*  -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -81,7 +82,7 @@
     </div>
 </div>
 <div id="container">
-    <div class="bycdao-left left" id="leftMenu" style="height: 100%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
+    <div class="bycdao-left left" id="leftMenu" style="height: 90%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
         <ul class="nav nav-list" id="menu">
             <li >
                 <a href="javascript:void(0)">
@@ -727,6 +728,40 @@
                 right.css("right","0");
             }
         })
+
+
+        //window resize事件
+        /*$(window).resize(function (e) {
+            var fullWidth=container.width();
+            var leftWidth=left.width();
+            var handleWidth=handle.width();
+            var rightWidth=fullWidth-leftWidth-handleWidth;
+            right.css("width",rightWidth);
+            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
+            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
+            console.log("resize------------height")
+            console.log("window--"+$(window).height())
+            console.log("document--"+$(document).height())
+            console.log("left--"+$("#leftMenu").height())
+        })
+
+        function initHieghtAndWidth() {
+            /!*var fullWidth=container.width();
+            var leftWidth=left.width();
+            var handleWidth=handle.width();
+            var rightWidth=fullWidth-leftWidth-handleWidth;
+            right.css("width",rightWidth);
+            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
+            console.log("init------------height")
+            console.log("window--"+$(window).height())
+            console.log("document--"+$(document).height())
+            console.log("left--"+$("#leftMenu").height())*!/
+
+            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
+            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
+
+        }
+        initHieghtAndWidth();*/
     })
 </script>
 

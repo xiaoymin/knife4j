@@ -26,12 +26,16 @@
      */
     SwaggerBootstrapUi.prototype.main=function () {
         var that=this;
+        that.initWindowWidthAndHeight();
+
+        that.windowResize();
         //加载分组接口
         that.analysisGroup();
         //创建分组元素
         that.createGroupElement();
         //搜索
         that.searchEvents();
+
     }
     /***
      * 搜索按钮事件
@@ -2293,6 +2297,33 @@
     SwaggerBootstrapUi.prototype.addMenu=function () {
 
     }
+
+
+    SwaggerBootstrapUi.prototype.initWindowWidthAndHeight=function () {
+        var that=this;
+        $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
+        $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
+    }
+
+    SwaggerBootstrapUi.prototype.windowResize=function () {
+        var that=this;
+        var container = $('#container'),left = $('.left'),right = $('.right'),handle = $('#handle');
+        //window resize事件
+        $(window).resize(function (e) {
+            var fullWidth=container.width();
+            var leftWidth=left.width();
+            var handleWidth=handle.width();
+            var rightWidth=fullWidth-leftWidth-handleWidth;
+            right.css("width",rightWidth);
+            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
+            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
+            that.log("resize------------height")
+            that.log("window--"+$(window).height())
+            that.log("document--"+$(document).height())
+            that.log("left--"+$("#leftMenu").height())
+        })
+    }
+
     /***
      * 控制台打印
      * @param msg
