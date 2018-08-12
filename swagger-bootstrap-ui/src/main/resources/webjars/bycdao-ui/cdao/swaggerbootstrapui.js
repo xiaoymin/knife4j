@@ -355,7 +355,7 @@
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
                 $.each(tag.childrens,function (i, children) {
-                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.url+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
+                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.showUrl+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })
@@ -1824,6 +1824,7 @@
      */
     SwaggerBootstrapUi.prototype.createApiInfoInstance=function(path,mtype,apiInfo){
         var that=this;
+        var swpinfo=new SwaggerBootstrapUiApiInfo();
         //添加basePath
         var basePath=that.currentInstance.basePath;
         var fullpath="";
@@ -1833,11 +1834,13 @@
             fullpath+=basePath;
             basePathFlag=true;
             fullpath+=path;
+            swpinfo.showUrl=fullpath;
         }else{
             //截取字符串
             fullpath=path.substring(1);
+            swpinfo.showUrl=path;
         }
-        var swpinfo=new SwaggerBootstrapUiApiInfo();
+
         swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=fullpath;
         swpinfo.originalUrl=fullpath;
@@ -2478,6 +2481,7 @@
     var SwaggerBootstrapUiApiInfo=function () {
         this.url=null;
         this.originalUrl=null;
+        this.showUrl="";
         this.basePathFlag=false;
         this.methodType=null;
         this.description=null;
