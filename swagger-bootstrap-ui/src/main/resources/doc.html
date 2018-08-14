@@ -23,10 +23,11 @@
     <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
     <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css">
     <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
+    <script src="webjars/bycdao-ui/jquery/axios.min.js"></script>
     <style type="text/css">
         #container {
             width: 100%;
-            height: 90%;
+            /*height: 90%;*/
             /* Disable selection so it doesn't get annoying */
           /*  -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -81,7 +82,7 @@
     </div>
 </div>
 <div id="container">
-    <div class="bycdao-left left" id="leftMenu" style="height: 100%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
+    <div class="bycdao-left left" id="leftMenu" style="height: 90%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
         <ul class="nav nav-list" id="menu">
             <li >
                 <a href="javascript:void(0)">
@@ -238,7 +239,7 @@
 **接口说明**:`{{description}}`
 
 
-**接口地址**:`{{url}}`
+**接口地址**:`{{showUrl}}`
 
 
 **请求方式**：`{{methodType}}`
@@ -274,9 +275,16 @@
 
 **响应数据**:
 
+{{ if responseBasicType }}
+```text
+{{responseText}}
+```
+{{else}}
 ```json
 {{responseValue}}
 ```
+{{/if}}
+
 
 **响应参数说明**:
 {{ if responseParameters && responseParameters.length>0 }}
@@ -323,7 +331,7 @@
             <span class="input-group-btn">
                 <button class="btn btn-default btn-info" type="button">{{methodType}}</button>
             </span>
-            <input type="text" id="txtreqUrl" data-originalurl="<%=originalUrl.substring(1)%>" class="form-control" value="<%=url.substring(1)%>">
+            <input type="text" id="txtreqUrl" data-originalurl="<%=originalUrl%>" class="form-control" value="<%=url%>">
             <span class="input-group-btn">
                 <button id="btnRequest" class="btn btn-default btn-primary" type="button"> 发 送 </button>
             </span>
@@ -336,7 +344,7 @@
                 <%}%>
 
                 <%if(fileform){%>
-                <form id="uploadForm"  target="uploadIframe" action="<%=url.substring(1)%>" type="" enctype="multipart/form-data" method="{{methodType}}">
+                <form id="uploadForm"  target="uploadIframe" action="<%=url%>" type="" enctype="multipart/form-data" method="{{methodType}}">
                     <table class="">
                         <thead>
                         <tr>
@@ -354,39 +362,36 @@
                         <!--遍历 是否有全局参数--->
                         <%if(globalParameters!=null && globalParameters.length>0){ %>
                             <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
-                                <%if(param.in!="header"){%>
-                                    <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
-                                        <td width="5%">
-                                            <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
-                                        </td>
-                                        <td width="35%">
-                                            <input class="form-control p-key" value="<%=param.name%>">
-                                        </td>
-                                        <td>
-                                            <%if(param.schemaValue=="MultipartFile"){%>
-                                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                                    <td width="5%">
+                                        <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                                    </td>
+                                    <td width="35%">
+                                        <input class="form-control p-key" value="<%=param.name%>">
+                                    </td>
+                                    <td>
+                                        <%if(param.schemaValue=="MultipartFile"){%>
+                                            <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                        <%}else{%>
+                                            <%if(param.in=="body"){  %>
+                                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
+                                                  name="<%=param.name%>" data-name="<%=param.name%>"
+                                                  placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                             <%}else{%>
-                                                <%if(param.in=="body"){  %>
-                                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
-                                                      name="<%=param.name%>" data-name="<%=param.name%>"
-                                                      placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
-                                                <%}else{%>
-                                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
-                                                    data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
-                                                <%}%>
+                                                <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                                data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                             <%}%>
-                                        </td>
-                                        <td width="5%">
-                                            <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
-                                        </td>
-                                    </tr>
-                                <%}%>
+                                        <%}%>
+                                    </td>
+                                    <td width="5%">
+                                        <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
+                                    </td>
+                                </tr>
                             <%}%>
                         <%}%>
 
                         <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;}%>
-                        <%if(param.in!="header"){%>
-                            <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>"  data-emflag="<%=emflag%>">
+                            <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>"  data-emflag="<%=emflag%>" data-schemavalue="<%=param.schemaValue%>">
                                 <td width="5%">
                                     <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                                 </td>
@@ -405,11 +410,11 @@
                                     </div>
                                     <%}else{%>
                                     <%if(param.in=="body"){  %>
-                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
                                               name="<%=param.name%>" data-name="<%=param.name%>"
                                               placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                     <%}else{%>
-                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                            data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                     <%}%>
                                     <%}%>
@@ -418,8 +423,6 @@
                                     <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
                                 </td>
                             </tr>
-                        <%}%>
-
                         <%}%>
                         </tbody>
                     </table>
@@ -457,11 +460,11 @@
                                 <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                 <%}else{%>
                                 <%if(param.in=="body"){  %>
-                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
                                           name="<%=param.name%>" data-name="<%=param.name%>"
                                           placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                 <%}else{%>
-                                <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                 <%}%>
                                 <%}%>
@@ -487,23 +490,23 @@
                                     <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                     <%}else {%>
                                         <%if(param.in=="body"){  %>
-                                        <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url.substring(1)%>"
+                                        <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
                                                   name="<%=param.name%>" data-name="<%=param.name%>"
                                                   placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                         <%}else {%>
-                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                                data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                         <%}%>
                                     <%}%>
                                 <%}else{%>
                                     <% if(param.enum!=null){%>
-                                        <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>">
+                                        <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>">
                                             <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
                                             <option value="<%=em%>" <%if(param.txtValue==em){%> selected <%}%> ><%=em%></option>
                                             <%}%>
                                         </select>
                                     <%}else{%>
-                                <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url.substring(1)%>"
+                                <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                     <%}%>
                                 <%}%>
@@ -727,6 +730,40 @@
                 right.css("right","0");
             }
         })
+
+
+        //window resize事件
+        /*$(window).resize(function (e) {
+            var fullWidth=container.width();
+            var leftWidth=left.width();
+            var handleWidth=handle.width();
+            var rightWidth=fullWidth-leftWidth-handleWidth;
+            right.css("width",rightWidth);
+            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
+            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
+            console.log("resize------------height")
+            console.log("window--"+$(window).height())
+            console.log("document--"+$(document).height())
+            console.log("left--"+$("#leftMenu").height())
+        })
+
+        function initHieghtAndWidth() {
+            /!*var fullWidth=container.width();
+            var leftWidth=left.width();
+            var handleWidth=handle.width();
+            var rightWidth=fullWidth-leftWidth-handleWidth;
+            right.css("width",rightWidth);
+            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
+            console.log("init------------height")
+            console.log("window--"+$(window).height())
+            console.log("document--"+$(document).height())
+            console.log("left--"+$("#leftMenu").height())*!/
+
+            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
+            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
+
+        }
+        initHieghtAndWidth();*/
     })
 </script>
 

@@ -26,12 +26,16 @@
      */
     SwaggerBootstrapUi.prototype.main=function () {
         var that=this;
+        that.initWindowWidthAndHeight();
+
+        that.windowResize();
         //加载分组接口
         that.analysisGroup();
         //创建分组元素
         that.createGroupElement();
         //搜索
         that.searchEvents();
+
     }
     /***
      * 搜索按钮事件
@@ -158,6 +162,8 @@
             dataType:"json",
             async:false,
             success:function (data) {
+                that.log("请求成功");
+                that.log(data);
                 var t=typeof(data);
                 var groupData=null;
                 if(t=="string"){
@@ -172,6 +178,12 @@
                     g.url=group.url;
                     that.instances.push(g);
                 })
+            },
+            error:function (xhr, textStatus, errorThrown) {
+                that.log("error...")
+                that.log(xhr)
+                that.log(textStatus);
+                that.log(errorThrown)
             }
         })
     }
@@ -235,7 +247,9 @@
                 type:"get",
                 async:false,
                 success:function (data) {
-                    //var menu=JSON.parse(data)
+                    //var menu=JSON.parse(data);
+                    that.log("success")
+                    that.log(data);
                     var t=typeof(data);
                     var menu=null;
                     if(t=="string"){
@@ -252,6 +266,27 @@
                     that.currentInstance.load=true;
                     //创建swaggerbootstrapui主菜单
                     that.createDetailMenu();
+                },
+                error:function (xhr, textStatus, errorThrown) {
+                    that.log("error...")
+                    that.log(xhr);
+                    that.log(textStatus);
+                    that.log(errorThrown);
+                    var txt=xhr.responseText;
+                    //替换带[]
+                    that.log("replace...")
+                    var replaceData=txt.replace(/'/g,"\"");
+                    var menu=JSON.parse(replaceData);
+                    that.setInstanceBasicPorperties(menu);
+                    that.analysisDefinition(menu);
+                    //DApiUI.definitions(menu);
+                    that.log(menu);
+                    that.createDescriptionElement();
+                    //当前实例已加载
+                    that.currentInstance.load=true;
+                    //创建swaggerbootstrapui主菜单
+                    that.createDetailMenu();
+
                 }
             })
         }else{
@@ -320,7 +355,7 @@
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
                 $.each(tag.childrens,function (i, children) {
-                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.url+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
+                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.showUrl+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })
@@ -628,13 +663,17 @@
                 return false;
             }
             var bodyRequest=false;
+            //构建一个formdata对象,发送表单
+            var formData=new FormData();
+            var formCurlParams={};
+            var fileUploadFlat=false;
             paramBody.find("tr").each(function () {
                 var paramtr=$(this);
                 var cked=paramtr.find("td:first").find(":checked").prop("checked");
                 that.log(cked)
                 if (cked){
                     //如果选中
-                    var trdata={name:paramtr.data("name"),in:paramtr.data("in"),required:paramtr.data("required"),type:paramtr.data("type"),emflag:paramtr.data("emflag")};
+                    var trdata={name:paramtr.data("name"),in:paramtr.data("in"),required:paramtr.data("required"),type:paramtr.data("type"),emflag:paramtr.data("emflag"),schemavalue:paramtr.data("schemavalue")};
                     that.log("trdata....")
                     that.log(trdata);
                     //获取key
@@ -642,21 +681,71 @@
                     var key=trdata["name"];
                     //获取value
                     var value="";
-                    if(trdata["in"]=="body"){
-                        value=paramtr.find("td:eq(2)").find("textarea").val();
+                    if(trdata["in"]=="body") {
                         //这里需要判断schema
                         //直接判断那类型
-                        if(trdata.type=="MultipartFile"){
-                            value=paramtr.find("td:eq(2)").find("input").val();
+                        if (trdata.schemavalue == "MultipartFile") {
+                            value = paramtr.find("td:eq(2)").find("input").val();
+                            var fileEle = paramtr.find("td:eq(2)").find("input")[0];
+                            fileUploadFlat = true;
+                            that.log("files------------------------------")
+                            var files = fileEle.files;
+                            that.log(files);
+                            if(files.length>1){
+                                //多个
+                                for( var i = 0; i < files.length; i++ ){
+                                    var file = files[i];
+                                    var formKey=key+"["+i+"]";
+                                    that.log("formKey------------------------------")
+                                    that.log(formKey);
+                                    formData.append(key, file);
+                                }
+                            }else if(files.length==1){
+                                formData.append(key, files[0]);
+                            }
+                            formCurlParams[key]=value;
+                        } else {
+                            value = paramtr.find("td:eq(2)").find("textarea").val();
+                            formData.append(key, value);
                         }
-                        that.updateRequestParameter(trdata.name,value,apiInfo);
+                        that.updateRequestParameter(trdata.name, value, apiInfo);
+                    }else if(trdata["in"]=="formData"){
+                        //直接判断那类型
+                        if (trdata.schemavalue == "MultipartFile") {
+                            value = paramtr.find("td:eq(2)").find("input").val();
+                            var fileEle = paramtr.find("td:eq(2)").find("input")[0];
+                            fileUploadFlat = true;
+                            that.log("files-form-data------------------------------");
+                            that.log(fileEle);
+                            var files = fileEle.files;
+                            that.log(files);
+                            if(files.length>1){
+                                //多个
+                                for( var i = 0; i < files.length; i++ ){
+                                    var file = files[i];
+                                    var formKey=key+"["+i+"]";
+                                    that.log("formKey------------------------------")
+                                    that.log(formKey);
+                                    formData.append(key, file);
+                                }
+                            }else if(files.length==1){
+                                formData.append(key, files[0]);
+                            }
+                            formCurlParams[key]=value;
+                        } else {
+                            value = paramtr.find("td:eq(2)").find("textarea").val();
+                            formData.append(key, value);
+                        }
+                        that.updateRequestParameter(trdata.name, value, apiInfo);
                     }else{
                         if(trdata.emflag){
                             value=paramtr.find("td:eq(2)").find("select option:selected").val();
                             that.updateRequestParameter(trdata.name,value,apiInfo);
+                            formData.append(key,value);
                         }else{
                             value=paramtr.find("td:eq(2)").find("input").val();
                             that.updateRequestParameter(trdata.name,value,apiInfo);
+                            formData.append(key,value);
                         }
                     }
 
@@ -684,7 +773,9 @@
                                 if(trdata["in"]=="header"){
                                     headerparams[key]=value;
                                 }else{
-                                    params[key]=value;
+                                    if (trdata.schemavalue != "MultipartFile") {
+                                        params[key]=value;
+                                    }
                                 }
                             }
                         }
@@ -716,9 +807,15 @@
             if(bodyRequest){
                 reqdata=bodyparams;
             }else{
-                paramBodyType="form";
-                reqdata=params;
-                contType="application/x-www-form-urlencoded; charset=UTF-8";
+                if(fileUploadFlat){
+                    contType="multipart/form-data";
+                    paramBodyType="form-data";
+                    reqdata=params;
+                }else{
+                    paramBodyType="form";
+                    reqdata=params;
+                    contType="application/x-www-form-urlencoded; charset=UTF-8";
+                }
             }
             //console.log(reqdata)
             if(validateflag){
@@ -733,42 +830,300 @@
             var startTime=new Date().getTime();
             var index = layer.load(1);
             if(form.length>0){
-                form[0].submit();
-                //console.log("表单提交")
-                //iframe监听change事件
-                $("#uploadIframe").on("load",function () {
+                that.log("form submit------------------------------------------------")
+                //判断produce
+                if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
+                    var first=apiInfo.produces[0];
+                    headerparams["accept"]=first;
+                }
+                //判断security参数
+                if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
+                    $.each(that.currentInstance.securityArrs,function (i, sa) {
+                        if(sa.in=="header"){
+                            headerparams[sa.name]=sa.value;
+                        }
+                    })
+                }
+                //headerparams["Content-Type"]=contType;
+                that.log(headerparams)
+                that.log(reqdata);
+                that.log("formData-------------------------------------------------------");
+                that.log(formData);
+                axios.request({
+                    url:url,
+                    headers:headerparams,
+                    method:$.getStringValue(apiInfo.methodType),
+                    data:formData,
+                    timeout: 10*60*1000,
+                }).then(function (response) {
+                    that.log("form-------------response------------------")
+                    that.log(response);
+                    var data=response.data;
+                    var xhr=response.request;
+                    that.log(data);
                     layer.close(index);
-                    //console.log("uploadIframe changed....")
-                    $(this).unbind('load');
-                    var framebody=$(this).contents().find("body");
-                    var ret=framebody.html();
-                    //是否存在pre标签
-                    if(framebody.find("pre").length>0){
-                        ret=framebody.find("pre").html();
+                    var statsCode=xhr.status;
+                    if(statsCode==200){
+                        statsCode=statsCode+" OK";
                     }
-                    var res;
-                    try{
-                        res=JSON.parse(ret);
-                        //console.log(res)
-                        var resptab=$('<div id="resptab" class="tabs-container" ></div>')
+                    var endTime=new Date().getTime();
+                    that.log(endTime)
+                    var len=0;
+                    var diff=endTime-startTime;
+                    var tp=typeof (data);
+                    if(xhr.hasOwnProperty("responseText")){
+                        len=xhr["responseText"].gblen();
+                    }
+                    that.log(typeof (data))
+                    that.log(status)
+                    var resptab=$('<div id="resptab" class="tabs-container" ></div>');
+                    var ulresp=$('<ul class="nav nav-tabs">' +
+                        '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
+                        '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
+                        '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
+                        '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li>'+
+                        '<li class=""><a data-toggle="tab" href="#tabcurl" aria-expanded="true"> Curl </a></li></ul>')
+
+
+                    var uldiv=$("<div></div>");
+                    uldiv.append(ulresp);
+
+                    //添加响应码div
+                    var respcodeDiv=$("<div style='right: 30px;position: absolute;margin-top: -40px;'><span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>  " +
+                        "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>" +
+                        "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span></div>");
+                    uldiv.append(respcodeDiv);
+
+                    resptab.append(uldiv);
+                    var respcontent=$('<div class="tab-content"></div>');
+
+                    var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
+                    var resp2=$('<div id="tabcookie" class="tab-pane"><div class="panel-body">暂无</div>');
+                    var resp4=$('<div id="tabraw" class="tab-pane"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
+                    var resp3=$('<div id="tabheader" class="tab-pane"><div class="panel-body">暂无</div></div>');
+                    var resp5=$('<div id="tabcurl" class="tab-pane"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
+                    respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
+                    resptab.append(respcontent)
+                    respcleanDiv.append(resptab);
+                    that.log(xhr);
+                    var allheaders=response.headers;
+                    if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+                        var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
+                        for(var hk in allheaders){
+                            var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
+                            headertable.append(headertr);
+                        }
+                        //设置Headers内容
+                        resp3.find(".panel-body").html("")
+                        resp3.find(".panel-body").append(headertable);
+                    }
+                    that.log("responseTextFlag-----------------")
+                    var rtext=xhr["responseText"];
+                    that.log(xhr.hasOwnProperty("responseText"));
+                    that.log(rtext);
+                    if(rtext!=null&&rtext!=undefined){
+                        that.log("xhr---------------responseText-----------------------------")
+                        that.log(xhr["responseText"])
+                        //json
+                        resp4.find(".panel-body").html(rtext);
+                        if(tp=="string"){
+                            //转二进制
+                            var dv=data.toString(2);
+                            if(dv!=undefined&&dv!=null){
+                                that.log("二进制11..");
+                                var div=$("<div></div>");
+                                var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
+                                var downloadDiv=$("<div style='    position: absolute;\n" +
+                                    "    right: 0px;\n" +
+                                    "    width: 100px;\n" +
+                                    "    bottom: 30px;\n" +
+                                    "    text-align: center;'></div>")
+                                var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
+                                button.bind("click",function () {
+                                    window.open(url);
+                                })
+                                downloadDiv.append(button);
+                                div.append(rowDiv).append(downloadDiv);
+                                that.log(div)
+                                that.log(div[0])
+                                resp1.find(".panel-body").html("")
+                                resp1.find(".panel-body").html(div);
+                            }
+                        }
+
+
+                    }
+                    if (response.data!=null&&response.data!=undefined){
+                        //如果存在该对象,服务端返回为json格式
+                        resp1.find(".panel-body").html("")
+                        that.log(xhr["responseJSON"])
+                        var pre=$('<pre></pre>')
+                        var jsondiv=$('<div></div>')
+                        jsondiv.JSONView(response.data);
+                        pre.html(JSON.stringify(response.data,null,2));
+                        resp1.find(".panel-body").append(jsondiv);
+                    }
+                    that.log("tab show...")
+                    //组件curl功能
+                    var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams);
+                    var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
+                    var curlcode=$("<code></code>");
+                    curlcode.html(curl);
+
+                    resp5.find(".panel-body").html("");
+                    resp5.find(".panel-body").append(curlcode).append(cpcurlBotton);
+
+
+                    var clipboard = new ClipboardJS('#btnCopyCurl',{
+                        text:function () {
+                            return curlcode.html();
+                        }
+                    });
+                    clipboard.on('success', function(e) {
+                        layer.msg("复制成功")
+                    });
+                    clipboard.on('error', function(e) {
+                        layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                    });
+
+                    resptab.find("a:first").tab("show");
+                }).catch(function (error) {
+                    layer.close(index);
+                    that.log("form-------------error-------------------");
+                    that.log(error);
+                    that.log(error.response);
+                    if(error.response){
+                        var response=error.response;
+                        var data=response.data;
+                        var xhr=response.request;
+                        that.log(data);
+                        layer.close(index);
+                        var statsCode=xhr.status;
+                        if(statsCode==200){
+                            statsCode=statsCode+" OK";
+                        }
+                        var endTime=new Date().getTime();
+                        that.log(endTime)
+                        var len=0;
+                        var diff=endTime-startTime;
+                        var tp=typeof (data);
+                        if(xhr.hasOwnProperty("responseText")){
+                            len=xhr["responseText"].gblen();
+                        }
+                        that.log(typeof (data))
+                        that.log(status)
+                        var resptab=$('<div id="resptab" class="tabs-container" ></div>');
                         var ulresp=$('<ul class="nav nav-tabs">' +
-                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li></ul>')
-                        resptab.append(ulresp);
+                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li>'+
+                            '<li class=""><a data-toggle="tab" href="#tabcurl" aria-expanded="true"> Curl </a></li></ul>')
+
+
+                        var uldiv=$("<div></div>");
+                        uldiv.append(ulresp);
+
+                        //添加响应码div
+                        var respcodeDiv=$("<div style='right: 30px;position: absolute;margin-top: -40px;'><span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>  " +
+                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>" +
+                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span></div>");
+                        uldiv.append(respcodeDiv);
+
+                        resptab.append(uldiv);
                         var respcontent=$('<div class="tab-content"></div>');
-                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"></div></div>');
-                        respcontent.append(resp1);
+
+                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
+                        var resp2=$('<div id="tabcookie" class="tab-pane"><div class="panel-body">暂无</div>');
+                        var resp4=$('<div id="tabraw" class="tab-pane"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
+                        var resp3=$('<div id="tabheader" class="tab-pane"><div class="panel-body">暂无</div></div>');
+                        var resp5=$('<div id="tabcurl" class="tab-pane"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
+                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
                         resptab.append(respcontent)
                         respcleanDiv.append(resptab);
+                        that.log(xhr);
+                        var allheaders=response.headers;
+                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
+                            for(var hk in allheaders){
+                                var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
+                                headertable.append(headertr);
+                            }
+                            //设置Headers内容
+                            resp3.find(".panel-body").html("")
+                            resp3.find(".panel-body").append(headertable);
+                        }
+                        that.log("responseTextFlag-----------------")
+                        var rtext=xhr["responseText"];
+                        that.log(xhr.hasOwnProperty("responseText"));
+                        that.log(rtext);
+                        if(rtext!=null&&rtext!=undefined){
+                            that.log("xhr---------------responseText-----------------------------")
+                            that.log(xhr["responseText"])
+                            //json
+                            resp4.find(".panel-body").html(rtext);
+                            if(tp=="string"){
+                                //转二进制
+                                var dv=data.toString(2);
+                                if(dv!=undefined&&dv!=null){
+                                    that.log("二进制11..");
+                                    var div=$("<div></div>");
+                                    var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
+                                    var downloadDiv=$("<div style='    position: absolute;\n" +
+                                        "    right: 0px;\n" +
+                                        "    width: 100px;\n" +
+                                        "    bottom: 30px;\n" +
+                                        "    text-align: center;'></div>")
+                                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
+                                    button.bind("click",function () {
+                                        window.open(url);
+                                    })
+                                    downloadDiv.append(button);
+                                    div.append(rowDiv).append(downloadDiv);
+                                    that.log(div)
+                                    that.log(div[0])
+                                    resp1.find(".panel-body").html("")
+                                    resp1.find(".panel-body").html(div);
+                                }
+                            }
+                        }
+                        if (response.data!=null&&response.data!=undefined){
+                            //如果存在该对象,服务端返回为json格式
+                            resp1.find(".panel-body").html("")
+                            that.log(xhr["responseJSON"])
+                            var pre=$('<pre></pre>')
+                            var jsondiv=$('<div></div>')
+                            jsondiv.JSONView(response.data);
+                            pre.html(JSON.stringify(response.data,null,2));
+                            resp1.find(".panel-body").append(jsondiv);
+                        }
+                        that.log("tab show...")
+                        //组件curl功能
+                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams);
+                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
+                        var curlcode=$("<code></code>");
+                        curlcode.html(curl);
 
-                        var jsondiv=$('<div></div>');
-                        jsondiv.JSONView(res);
-                        resp1.find(".panel-body").append(jsondiv);
+                        resp5.find(".panel-body").html("");
+                        resp5.find(".panel-body").append(curlcode).append(cpcurlBotton);
+
+
+                        var clipboard = new ClipboardJS('#btnCopyCurl',{
+                            text:function () {
+                                return curlcode.html();
+                            }
+                        });
+                        clipboard.on('success', function(e) {
+                            layer.msg("复制成功")
+                        });
+                        clipboard.on('error', function(e) {
+                            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                        });
                         resptab.find("a:first").tab("show");
-                    }catch (err){
-                        //nothing to do,default to show
-                        respcleanDiv.html(ret);
                     }
+
                 })
+
             }
             else{
                 //判断produce
@@ -784,6 +1139,7 @@
                         }
                     })
                 }
+                headerparams["Content-Type"]=contType;
                 that.log("header....")
                 that.log(headerparams);
                 $.ajax({
@@ -904,7 +1260,7 @@
                         }
                         that.log("tab show...")
                         //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType);
+                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
                         var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
@@ -974,7 +1330,7 @@
                         var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
                         var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">'+rawTxt+'</div>');
                         var resp5=$('<div id="tabcurl" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
-                        respcontent.append(resp1).append(resp2).append(resp4).append(resp5);
+                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
 
                         resptab.append(respcontent)
 
@@ -982,7 +1338,11 @@
                         that.log(xhr);
                         var allheaders=xhr.getAllResponseHeaders();
                         if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+                            that.log("header--------------tab--------------------")
+                            that.log(allheaders)
                             var headers=allheaders.split("\r\n");
+                            that.log("headers------------------------")
+                            that.log(headers)
                             var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
                             for(var i=0;i<headers.length;i++){
                                 var header=headers[i];
@@ -992,6 +1352,7 @@
                                     headertable.append(headertr);
                                 }
                             }
+                            that.log(headertable)
                             //设置Headers内容
                             resp3.find(".panel-body").html("")
                             resp3.find(".panel-body").append(headertable);
@@ -1017,7 +1378,7 @@
                         }
 
                         //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType);
+                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
                         var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
@@ -1083,10 +1444,15 @@
     /***
      * 构建curl
      */
-    SwaggerBootstrapUi.prototype.buildCurl=function (apiInfo,headers,reqdata,paramBodyType) {
+    SwaggerBootstrapUi.prototype.buildCurl=function (apiInfo,headers,reqdata,paramBodyType,url,formCurlParams) {
         var that=this;
         var curlified=new Array();
-        var fullurl="http://"+that.currentInstance.host+apiInfo.url;
+        var fullurl="http://"+that.currentInstance.host;
+        //判断url是否是以/开头
+        if(!apiInfo.url.startWith("/")){
+            fullurl+="/";
+        }
+        fullurl+=url;
         curlified.push( "curl" );
         curlified.push( "-X", apiInfo.methodType.toUpperCase() );
         curlified.push( "\""+fullurl+"\"");
@@ -1123,18 +1489,43 @@
                 curlified.push( "\""+objstr +"\"")
             }
         }else{
-            //form
-            var formArr=new Array();
-            for(var d in reqdata){
-                formArr.push(d+"="+reqdata[d]);
-            }
-            var formStr=formArr.join("&");
-            that.log("表单...");
-            that.log(formStr);
-            that.log(formStr.toString());
-            if(formArr.length>0){
-                curlified.push( "-d" );
-                curlified.push( "\""+formStr +"\"");
+            //判断是否是文件上传
+            if(formCurlParams!=null&&formCurlParams!=undefined){
+                var formArr=new Array();
+                for(var d in reqdata){
+                    formArr.push(d+"="+reqdata[d]);
+                }
+                var formStr=formArr.join("&");
+                that.log("表单参数...");
+                that.log(formStr);
+                that.log(formStr.toString());
+                if(formArr.length>0){
+                    curlified.push( "-F" );
+                    curlified.push( "\""+formStr +"\"");
+                }
+                var fileArr=new Array();
+                for(var f in formCurlParams){
+                    fileArr.push(f+"="+formCurlParams[f]);
+                }
+                var fileStr=fileArr.join("&");
+                if(fileArr.length>0){
+                    curlified.push( "-F" );
+                    curlified.push( "\""+fileStr +"\"");
+                }
+            }else{
+                //form
+                var formArr=new Array();
+                for(var d in reqdata){
+                    formArr.push(d+"="+reqdata[d]);
+                }
+                var formStr=formArr.join("&");
+                that.log("表单...");
+                that.log(formStr);
+                that.log(formStr.toString());
+                if(formArr.length>0){
+                    curlified.push( "-d" );
+                    curlified.push( "\""+formStr +"\"");
+                }
             }
         }
         return curlified.join(" ");
@@ -1761,18 +2152,27 @@
      */
     SwaggerBootstrapUi.prototype.createApiInfoInstance=function(path,mtype,apiInfo){
         var that=this;
+        var swpinfo=new SwaggerBootstrapUiApiInfo();
         //添加basePath
         var basePath=that.currentInstance.basePath;
         var fullpath="";
+        var basePathFlag=false;
         if (basePath!=""&&basePath!="/"){
             //如果非空,非根目录
             fullpath+=basePath;
+            basePathFlag=true;
+            fullpath+=path;
+            swpinfo.showUrl=fullpath;
+        }else{
+            //截取字符串
+            fullpath=path.substring(1);
+            swpinfo.showUrl=path;
         }
-        fullpath+=path;
-        var swpinfo=new SwaggerBootstrapUiApiInfo();
+
         swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=fullpath;
         swpinfo.originalUrl=fullpath;
+        swpinfo.basePathFlag=basePathFlag;
         swpinfo.methodType=mtype;
         if(apiInfo!=null){
             swpinfo.consumes=apiInfo.consumes;
@@ -1796,6 +2196,14 @@
                         that.log(m.enum);
                         minfo.enum=m.enum;
                         that.log(minfo);
+                        //枚举类型,描述显示可用值
+                        var avaiableArrStr=m.enum.join(",");
+                        if(m.description!=null&&m.description!=undefined&&m.description!=""){
+                            minfo.description=m.description+",可用值:"+avaiableArrStr;
+                        }else{
+                            minfo.description="枚举类型,可用值:"+avaiableArrStr;
+                        }
+
                     }
                     //判断你是否有默认值(后台)
                     if(m.hasOwnProperty("default")){
@@ -1925,6 +2333,13 @@
                                         definitionType=ptype;
                                         swaggerResp.schema=ptype;
                                     }
+                                }
+                            }else{
+                                //判断是否是基础类型
+                                if($.checkIsBasicType(t)){
+                                    //基础类型
+                                    swpinfo.responseText=t;
+                                    swpinfo.responseBasicType=true;
                                 }
                             }
                         }
@@ -2228,6 +2643,33 @@
     SwaggerBootstrapUi.prototype.addMenu=function () {
 
     }
+
+
+    SwaggerBootstrapUi.prototype.initWindowWidthAndHeight=function () {
+        var that=this;
+        $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
+        $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
+    }
+
+    SwaggerBootstrapUi.prototype.windowResize=function () {
+        var that=this;
+        var container = $('#container'),left = $('.left'),right = $('.right'),handle = $('#handle');
+        //window resize事件
+        $(window).resize(function (e) {
+            var fullWidth=container.width();
+            var leftWidth=left.width();
+            var handleWidth=handle.width();
+            var rightWidth=fullWidth-leftWidth-handleWidth;
+            right.css("width",rightWidth);
+            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
+            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
+            that.log("resize------------height")
+            that.log("window--"+$(window).height())
+            that.log("document--"+$(document).height())
+            that.log("left--"+$("#leftMenu").height())
+        })
+    }
+
     /***
      * 控制台打印
      * @param msg
@@ -2382,6 +2824,8 @@
     var SwaggerBootstrapUiApiInfo=function () {
         this.url=null;
         this.originalUrl=null;
+        this.showUrl="";
+        this.basePathFlag=false;
         this.methodType=null;
         this.description=null;
         this.summary=null;
@@ -2396,6 +2840,8 @@
         this.responseCodes=new Array();
         this.responseValue=null;
         this.responseJson=null;
+        this.responseText=null;
+        this.responseBasicType=false;
         //响应字段说明
         this.responseParameters=new Array();
         this.responseRefParameters=new Array();
@@ -2589,6 +3035,13 @@
         }
         return len;
     }
+
+    String.prototype.startWith=function(str){
+        var reg=new RegExp("^"+str);
+        return reg.test(this);
+    }
+
+
     window.SwaggerBootstrapUi=SwaggerBootstrapUi;
 
     /**

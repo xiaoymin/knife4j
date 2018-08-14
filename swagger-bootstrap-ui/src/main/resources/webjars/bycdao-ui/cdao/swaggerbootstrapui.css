@@ -38,7 +38,7 @@
 }
 
 .sbu-header-right{
-    width:20%;
+    /*width:20%;*/
     float:right;
     vertical-align: middle;
     height: 60px;
@@ -52,7 +52,7 @@
 }
 
 .sbu-header-right .sbu-header-group{
-    width:400px;
+   width:350px;
     float: right;
     /*margin-right: 25px;*/
     top: 50%;
@@ -63,7 +63,7 @@
     margin-top: 0px;
     position: fixed;
     background: #337ab7;
-    height: 100%;
+    /*height: 100%;*/
     transition: all 0.2s;
 }
 .bycdao-main {
@@ -333,14 +333,25 @@ code {
 }
 .bar8 input {
     /* width: 0; */
-    padding: 17px 0px 0 17px;
-    /* border-bottom: 2px solid transparent; */
+   /* padding: 17px 0px 0 17px;
+    !* border-bottom: 2px solid transparent; *!
     background: transparent;
     transition: .3s linear;
     position: absolute;
     top: 0;
     right: 0;
+    z-index: 2;*/
+
+    /* width: 0; */
+    padding: 5px 0px 0 17px;
+    /* border-bottom: 2px solid transparent; */
+    background: transparent;
+    transition: .3s linear;
+    position: absolute;
+    top: 11px;
+    right: 0;
     z-index: 2;
+    height: 30px;
 }
 /*.bar8 input:focus {
     width: 300px;
@@ -388,49 +399,49 @@ code {
 
 .menu-url-post{
     color: #61affd;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-put{
     color: #fca130;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-get{
     color: #0d5aa7;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-head{
     color: #9012fe;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-delete{
     color:#f93e3e;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-patch{
     color: #50e3c2;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-options{
     color: #49cc90;
-    text-align: center;
+    text-align: left;
     width: 64px;
     display: inline-block;
     font-weight: bold;
