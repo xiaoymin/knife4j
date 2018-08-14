@@ -275,9 +275,16 @@
 
 **响应数据**:
 
+{{ if responseBasicType }}
+```text
+{{responseText}}
+```
+{{else}}
 ```json
 {{responseValue}}
 ```
+{{/if}}
+
 
 **响应参数说明**:
 {{ if responseParameters && responseParameters.length>0 }}
@@ -355,39 +362,36 @@
                         <!--遍历 是否有全局参数--->
                         <%if(globalParameters!=null && globalParameters.length>0){ %>
                             <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
-                                <%if(param.in!="header"){%>
-                                    <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
-                                        <td width="5%">
-                                            <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
-                                        </td>
-                                        <td width="35%">
-                                            <input class="form-control p-key" value="<%=param.name%>">
-                                        </td>
-                                        <td>
-                                            <%if(param.schemaValue=="MultipartFile"){%>
-                                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                                    <td width="5%">
+                                        <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                                    </td>
+                                    <td width="35%">
+                                        <input class="form-control p-key" value="<%=param.name%>">
+                                    </td>
+                                    <td>
+                                        <%if(param.schemaValue=="MultipartFile"){%>
+                                            <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                        <%}else{%>
+                                            <%if(param.in=="body"){  %>
+                                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
+                                                  name="<%=param.name%>" data-name="<%=param.name%>"
+                                                  placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                             <%}else{%>
-                                                <%if(param.in=="body"){  %>
-                                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
-                                                      name="<%=param.name%>" data-name="<%=param.name%>"
-                                                      placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
-                                                <%}else{%>
-                                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
-                                                    data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
-                                                <%}%>
+                                                <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                                data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                             <%}%>
-                                        </td>
-                                        <td width="5%">
-                                            <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
-                                        </td>
-                                    </tr>
-                                <%}%>
+                                        <%}%>
+                                    </td>
+                                    <td width="5%">
+                                        <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
+                                    </td>
+                                </tr>
                             <%}%>
                         <%}%>
 
                         <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;}%>
-                        <%if(param.in!="header"){%>
-                            <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>"  data-emflag="<%=emflag%>">
+                            <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>"  data-emflag="<%=emflag%>" data-schemavalue="<%=param.schemaValue%>">
                                 <td width="5%">
                                     <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                                 </td>
@@ -419,8 +423,6 @@
                                     <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
                                 </td>
                             </tr>
-                        <%}%>
-
                         <%}%>
                         </tbody>
                     </table>
