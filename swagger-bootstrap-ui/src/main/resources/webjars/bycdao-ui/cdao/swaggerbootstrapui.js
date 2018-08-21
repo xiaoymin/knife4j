@@ -2185,11 +2185,12 @@
                 var pameters=apiInfo["parameters"];
                 $.each(pameters,function (i, m) {
                     var minfo=new SwaggerBootstrapUiParameter();
-                    minfo.name=m.name;
-                    minfo.type=m.type;
-                    minfo.in=m.in;
-                    minfo.require=m.required;
-                    minfo.description=m.description;
+
+                    minfo.name=$.propValue("name",m,"");
+                    minfo.type=$.propValue("type",m,"");
+                    minfo.in=$.propValue("in",m,"");
+                    minfo.require=$.propValue("required",m,false);
+                    minfo.description=$.replaceMultipLineStr($.propValue("description",m,""));
                     //判断是否有枚举类型
                     if(m.hasOwnProperty("enum")){
                         that.log("包括枚举类型...")
@@ -2229,7 +2230,7 @@
                                 minfo.def=def;
                                 minfo.value=def.value;
                                 if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                    minfo.description=def.description;
+                                    minfo.description=$.replaceMultipLineStr(def.description);
                                 }
                             }
                         }else{
@@ -2243,7 +2244,7 @@
                                     minfo.def=def;
                                     minfo.value=def.value;
                                     if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                        minfo.description=def.description;
+                                        minfo.description=$.replaceMultipLineStr(def.description);
                                     }
                                 }
                             }else{
@@ -2266,7 +2267,7 @@
                                 minfo.def=def;
                                 minfo.value=def.value;
                                 if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                    minfo.description=def.description;
+                                    minfo.description=$.replaceMultipLineStr(def.description);
                                 }
                             }
                         }else{
@@ -2376,7 +2377,7 @@
                             if (!checkParamArrsExists(swpinfo.responseParameters,resParam)){
                                 swpinfo.responseParameters.push(resParam);
                                 resParam.type=p.type;
-                                resParam.description=p.description;
+                                resParam.description=$.replaceMultipLineStr(p.description);
                                 if(!$.checkIsBasicType(p.refType)){
                                     resParam.schemaValue=p.refType;
                                     var deepDef=that.getDefinitionByName(p.refType);
@@ -2432,7 +2433,7 @@
                             var refp=new SwaggerBootstrapUiParameter();
                             refp.name=p.name;
                             refp.type=p.type;
-                            refp.description=p.description;
+                            refp.description=$.replaceMultipLineStr(p.description);
                             //add之前需要判断是否已添加,递归情况有可能重复
                             refParam.params.push(refp);
                             //判断类型是否基础类型
@@ -2474,7 +2475,7 @@
                         }
                         refp.in=minfo.in;
                         refp.require=p.required;
-                        refp.description=p.description;
+                        refp.description=$.replaceMultipLineStr(p.description);
                         refParam.params.push(refp);
                         //判断类型是否基础类型
                         if(!$.checkIsBasicType(p.refType)){
@@ -2675,10 +2676,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
@@ -2974,6 +2975,28 @@
         },
         randomNumber:function() {
             return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        },
+        htmlEncode:function (html) {
+            if (html !== null) {
+                return html.toString().replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            } else {
+                return '';
+            }
+        },
+        jsString:function (s) {
+            s = JSON.stringify(s).slice(1, -1);
+            return $.htmlEncode(s);
+        },
+        replaceMultipLineStr:function (str) {
+            if (str!=null&&str!=undefined&&str!=""){
+                var newLinePattern = /(\r\n|\n\r|\r|\n)/g;
+                if (newLinePattern.test(str)) {
+                    var newDes = str.replace(newLinePattern, '\\n');
+                    return newDes;
+                }
+                return str;
+            }
+            return "";
         },
         generUUID:function () {
             return ($.randomNumber()+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+$.randomNumber()+$.randomNumber());
