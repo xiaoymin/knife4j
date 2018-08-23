@@ -2376,12 +2376,15 @@
                             resParam.name=p.name;
                             if (!checkParamArrsExists(swpinfo.responseParameters,resParam)){
                                 swpinfo.responseParameters.push(resParam);
-                                resParam.type=p.type;
                                 resParam.description=$.replaceMultipLineStr(p.description);
                                 if(!$.checkIsBasicType(p.refType)){
                                     resParam.schemaValue=p.refType;
+                                    //存在引用类型,修改默认type
+                                    resParam.type=p.refType;
                                     var deepDef=that.getDefinitionByName(p.refType);
                                     deepResponseRefParameter(swpinfo,that,deepDef,resParam);
+                                }else{
+                                    resParam.type=p.type;
                                 }
                             }
                         })

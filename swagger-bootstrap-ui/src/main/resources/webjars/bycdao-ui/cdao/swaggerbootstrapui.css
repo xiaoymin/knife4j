@@ -58,6 +58,18 @@
     top: 50%;
 }
 
+.sbu-param-query{
+    /*color: #1a1a1a;*/
+}
+
+.sbu-param-header{
+   /* color: #0d5aa7;*/
+}
+
+.sbu-param-body{
+    /*color: #7f0055;*/
+}
+
 .bycdao-left {
     width: 310px;
     margin-top: 0px;
