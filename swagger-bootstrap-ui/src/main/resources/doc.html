@@ -53,6 +53,15 @@
             cursor: w-resize;
         }
     </style>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?08a0203144c393bb4372386953b1c593";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
 </head>
 <body style="overflow: hidden;">
 <div class="sbu-header" id="sbu-header">
@@ -253,7 +262,7 @@
 
 **请求参数**：
 {{ if parameters && parameters.length>0 }}
-| 参数名称         | 说明     |     in |  是否必须      |  类型   |  schema  |
+| 参数名称         | 说明     |     参数类型 |  是否必须      |  类型   |  引用类  |
 | ------------ | -------------------------------- |-----------|--------|----|--- |
 {{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
             {{/each}}
@@ -266,7 +275,7 @@
   {{each refparameters}}
 **{{$value.name}}**
 
-| 参数名称         | 说明    |     in |  是否必须   |  类型  |  schema |
+| 参数名称         | 说明    |     参数类型 |  是否必须   |  类型  |  引用类 |
 | ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
 | {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
 {{/each}}
@@ -288,7 +297,7 @@
 
 **响应参数说明**:
 {{ if responseParameters && responseParameters.length>0 }}
-| 参数名称         | 说明                             |    类型 |  schema |
+| 参数名称         | 说明                             |    类型 |  引用类 |
 | ------------ | -------------------|-------|----------- |
 {{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
             {{/each}}
@@ -301,7 +310,7 @@
   {{each responseRefParameters}}
 **{{$value.name}}**
 
-| 参数名称         |  说明          |   类型  |  schema |
+| 参数名称         |  说明          |   类型  |  引用类 |
 | ------------ | ------------------|--------|----------- |
 {{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
             {{/each}}
@@ -311,7 +320,7 @@
 
 **响应状态码说明**:
 {{ if responseCodes}}
-| 状态码         | 说明                             |    schema                         |
+| 状态码         | 说明                             |    引用类                         |
 | ------------ | -------------------------------- |---------------------- |
 {{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
 {{/each}}
@@ -367,7 +376,7 @@
                                     <td width="5%">
                                         <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                                     </td>
-                                    <td width="7%">
+                                    <td width="10%">
                                         <span class="sbu-param-<%=param.in%>"><%=param.in%></span>
                                     </td>
                                     <td width="25%">
@@ -399,7 +408,7 @@
                                 <td width="5%">
                                     <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                                 </td>
-                                <td width="7%">
+                                <td width="10%">
                                     <span class="sbu-param-<%=param.in%>"><%=param.in%></span>
                                 </td>
                                 <td width="25%">
@@ -460,7 +469,7 @@
                             <td width="5%">
                                 <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                             </td>
-                            <td width="7%">
+                            <td width="10%">
                                 <span class="sbu-param-<%=param.in%>"><%=param.in%></span>
                             </td>
                             <td width="25%">
@@ -492,7 +501,7 @@
                             <td width="5%">
                                 <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                             </td>
-                            <td width="7%">
+                            <td width="10%">
                                 <span class="sbu-param-<%=param.in%>"><%=param.in%></span>
                             </td>
                             <td width="25%">
