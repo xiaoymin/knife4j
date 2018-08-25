@@ -356,7 +356,7 @@
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
                 $.each(tag.childrens,function (i, children) {
-                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.showUrl+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
+                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })
@@ -813,6 +813,22 @@
             var paramBodyType="json";
             if(bodyRequest){
                 reqdata=bodyparams;
+                //body请求,url追加其他param参数
+                var requestArr=new Array();
+                for(var p in params){
+                    requestArr.push(p+"="+params[p]);
+                }
+                if(requestArr.length>0){
+                    var reqStrArr=requestArr.join("&");
+                    that.log("body请求，尚有其他form表单参数................")
+                    that.log(requestArr)
+                    that.log(reqStrArr)
+                    if (url.indexOf("?")>-1){
+                        url=url+"&"+reqStrArr;
+                    }else{
+                        url=url+"?"+reqStrArr;
+                    }
+                }
             }else{
                 if(fileUploadFlat){
                     contType="multipart/form-data";
@@ -1149,6 +1165,9 @@
                 headerparams["Content-Type"]=contType;
                 that.log("header....")
                 that.log(headerparams);
+                that.log("请求参数...........")
+                that.log(params)
+
                 $.ajax({
                     url:url,
                     headers:headerparams,
@@ -2186,7 +2205,7 @@
         swpinfo.url=newurl;
         swpinfo.originalUrl=newurl;
         swpinfo.basePathFlag=basePathFlag;
-        swpinfo.methodType=mtype;
+        swpinfo.methodType=mtype.toUpperCase();
         if(apiInfo!=null){
             swpinfo.consumes=apiInfo.consumes;
             swpinfo.description=apiInfo.description;

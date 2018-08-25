@@ -245,24 +245,23 @@
         <!--<textarea rows="10" cols="10" id="docText">-->
         <textarea rows="10" cols="10" id="docText" style="display: none;">
 
-**接口说明**:`{{description}}`
+**接口地址** `{{showUrl}}`
 
 
-**接口地址**:`{{showUrl}}`
+**请求方式** `{{methodType}}`
 
 
-**请求方式**：`{{methodType}}`
+**consumes** `{{consumes}}`
 
 
-**consumes**:`{{consumes}}`
+**produces** `{{produces}}`
 
 
-**produces**:`{{produces}}`
+**接口描述** `{{description}}`
 
-
-**请求参数**：
+**请求参数**
 {{ if parameters && parameters.length>0 }}
-| 参数名称         | 说明     |     参数类型 |  是否必须      |  类型   |  引用类  |
+| 参数名称         | 说明     |     参数类型 |  是否必须      |  类型   |  schema  |
 | ------------ | -------------------------------- |-----------|--------|----|--- |
 {{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
             {{/each}}
@@ -275,29 +274,28 @@
   {{each refparameters}}
 **{{$value.name}}**
 
-| 参数名称         | 说明    |     参数类型 |  是否必须   |  类型  |  引用类 |
+| 参数名称         | 说明    |     参数类型 |  是否必须   |  类型  |  schema |
 | ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
 | {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
 {{/each}}
 
 {{/if}}
 
-**响应数据**:
 
-{{ if responseBasicType }}
-```text
-{{responseText}}
-```
+**响应状态**
+{{ if responseCodes}}
+| 状态码         | 说明                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
+{{/each}}
 {{else}}
-```json
-{{responseValue}}
-```
+暂无
 {{/if}}
 
 
-**响应参数说明**:
+**响应参数**
 {{ if responseParameters && responseParameters.length>0 }}
-| 参数名称         | 说明                             |    类型 |  引用类 |
+| 参数名称         | 说明                             |    类型 |  schema |
 | ------------ | -------------------|-------|----------- |
 {{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
             {{/each}}
@@ -310,7 +308,7 @@
   {{each responseRefParameters}}
 **{{$value.name}}**
 
-| 参数名称         |  说明          |   类型  |  引用类 |
+| 属性名称         |  说明          |   类型  |  schema |
 | ------------ | ------------------|--------|----------- |
 {{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
             {{/each}}
@@ -318,16 +316,17 @@
 
 {{/if}}
 
-**响应状态码说明**:
-{{ if responseCodes}}
-| 状态码         | 说明                             |    引用类                         |
-| ------------ | -------------------------------- |---------------------- |
-{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
-{{/each}}
-{{else}}
-暂无
-{{/if}}
+**响应示例**
 
+{{ if responseBasicType }}
+```text
+{{responseText}}
+```
+{{else}}
+```json
+{{responseValue}}
+```
+{{/if}}
 
 </textarea>
     </div>
