@@ -293,6 +293,7 @@ code {
     bottom: 0px;
     padding: 0px;
     margin: 0px;
+    white-space: nowrap;
 }
 .swu-hei{
     line-height: 21px;
