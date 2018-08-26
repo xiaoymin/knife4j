@@ -1,3 +1,6 @@
+html {
+    height: 100%;
+}
 .sbu-header{
     height: 10%;
     background-color: #4887bd;
@@ -47,15 +50,27 @@
 .sbu-header-right select{
     width:300px;
     float: right;
-   /* margin-right: 25px;*/
+    /* margin-right: 25px;*/
     margin-top:13px;
 }
 
 .sbu-header-right .sbu-header-group{
-   width:350px;
+    width:350px;
     float: right;
     /*margin-right: 25px;*/
     top: 50%;
+}
+
+.sbu-param-query{
+    /*color: #1a1a1a;*/
+}
+
+.sbu-param-header{
+    /* color: #0d5aa7;*/
+}
+
+.sbu-param-body{
+    /*color: #7f0055;*/
 }
 
 .bycdao-left {
@@ -221,7 +236,7 @@
     position: absolute;
     width: 7px;
     left: 20px;
-    top: 17px;
+    top: 23px;
     border-top: 1px dotted #9dbdd6;
 }
 
@@ -242,6 +257,7 @@ li [class^="icon-"], li [class*=" icon-"], .nav-list li [class^="icon-"], .nav-l
 .menuLi .mhed{
     cursor: pointer;
     padding-left: 30px;
+    font-size: 12px;
 }
 
 code {
@@ -259,17 +275,29 @@ code {
 
 .swu-menu{
     display: block;
-    width: 65px;
+    width: 54px;
     white-space: nowrap;
     font-family: Monaco;
     /*font-weight: bold;*/
+    /* font-size: 12px; */
 }
 .swu-menu-api-des{
-    font-size: 12px;
+    /* font-size: 12px; */
     font-family: Monaco;
+    color: #ab0f3a;
+    height: 21px;
+}
+
+.swu-menu-api-des span{
+    position: absolute;
+    bottom: 0px;
+    padding: 0px;
+    margin: 0px;
+    white-space: nowrap;
 }
 .swu-hei{
-    height: 20px;
+    line-height: 21px;
+    height: 21px;
 }
 .swu-wd-20{
     width: 20px;
@@ -326,21 +354,21 @@ code {
     position: absolute;
 }
 
-/*搜索框8*/
+/*Ã¦ÂÅ“Ã§Â´Â¢Ã¦Â¡â€ 8*/
 .bar8 {background: #4887bd;}
 .bar8 form {
     height: 42px;
 }
 .bar8 input {
     /* width: 0; */
-   /* padding: 17px 0px 0 17px;
-    !* border-bottom: 2px solid transparent; *!
-    background: transparent;
-    transition: .3s linear;
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 2;*/
+    /* padding: 17px 0px 0 17px;
+     !* border-bottom: 2px solid transparent; *!
+     background: transparent;
+     transition: .3s linear;
+     position: absolute;
+     top: 0;
+     right: 0;
+     z-index: 2;*/
 
     /* width: 0; */
     padding: 5px 0px 0 17px;
@@ -393,35 +421,34 @@ code {
 
 .menu-url{
     background-color: transparent;
-    color: #ab0f3a;
-    font-size: 14px;
+    /* color: #ab0f3a; */
 }
 
 .menu-url-post{
     color: #61affd;
     text-align: left;
-    width: 64px;
+    /* width: 64px; */
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-put{
     color: #fca130;
     text-align: left;
-    width: 64px;
+    /* width: 64px; */
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-get{
     color: #0d5aa7;
     text-align: left;
-    width: 64px;
+    /* width: 64px; */
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-head{
     color: #9012fe;
     text-align: left;
-    width: 64px;
+    /* width: 64px; */
     display: inline-block;
     font-weight: bold;
 }
@@ -435,14 +462,14 @@ code {
 .menu-url-patch{
     color: #50e3c2;
     text-align: left;
-    width: 64px;
+    /* width: 64px; */
     display: inline-block;
     font-weight: bold;
 }
 .menu-url-options{
     color: #49cc90;
     text-align: left;
-    width: 64px;
+    /* width: 49px; */
     display: inline-block;
     font-weight: bold;
 }
@@ -455,4 +482,10 @@ code {
     color:#4dc095;
     font-size: 12px;
     font-weight: bold;
+}
+.btn-add-div{
+    margin-top: 5px;
+}
+.btn-add-string{
+    margin-top: 2px;
 }

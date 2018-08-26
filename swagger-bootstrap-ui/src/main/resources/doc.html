@@ -53,6 +53,15 @@
             cursor: w-resize;
         }
     </style>
+    <script>
+        /*var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?08a0203144c393bb4372386953b1c593";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();*/
+    </script>
 </head>
 <body style="overflow: hidden;">
 <div class="sbu-header" id="sbu-header">
@@ -236,24 +245,23 @@
         <!--<textarea rows="10" cols="10" id="docText">-->
         <textarea rows="10" cols="10" id="docText" style="display: none;">
 
-**接口说明**:`{{description}}`
+**接口地址** `{{showUrl}}`
 
 
-**接口地址**:`{{showUrl}}`
+**请求方式** `{{methodType}}`
 
 
-**请求方式**：`{{methodType}}`
+**consumes** `{{consumes}}`
 
 
-**consumes**:`{{consumes}}`
+**produces** `{{produces}}`
 
 
-**produces**:`{{produces}}`
+**接口描述** `{{description}}`
 
-
-**请求参数**：
+**请求参数**
 {{ if parameters && parameters.length>0 }}
-| 参数名称         | 说明     |     in |  是否必须      |  类型   |  schema  |
+| 参数名称         | 说明     |     参数类型 |  是否必须      |  类型   |  schema  |
 | ------------ | -------------------------------- |-----------|--------|----|--- |
 {{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
             {{/each}}
@@ -266,27 +274,26 @@
   {{each refparameters}}
 **{{$value.name}}**
 
-| 参数名称         | 说明    |     in |  是否必须   |  类型  |  schema |
+| 参数名称         | 说明    |     参数类型 |  是否必须   |  类型  |  schema |
 | ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
 | {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
 {{/each}}
 
 {{/if}}
 
-**响应数据**:
 
-{{ if responseBasicType }}
-```text
-{{responseText}}
-```
+**响应状态**
+{{ if responseCodes}}
+| 状态码         | 说明                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
+{{/each}}
 {{else}}
-```json
-{{responseValue}}
-```
+暂无
 {{/if}}
 
 
-**响应参数说明**:
+**响应参数**
 {{ if responseParameters && responseParameters.length>0 }}
 | 参数名称         | 说明                             |    类型 |  schema |
 | ------------ | -------------------|-------|----------- |
@@ -301,7 +308,7 @@
   {{each responseRefParameters}}
 **{{$value.name}}**
 
-| 参数名称         |  说明          |   类型  |  schema |
+| 属性名称         |  说明          |   类型  |  schema |
 | ------------ | ------------------|--------|----------- |
 {{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
             {{/each}}
@@ -309,16 +316,17 @@
 
 {{/if}}
 
-**响应状态码说明**:
-{{ if responseCodes}}
-| 状态码         | 说明                             |    schema                         |
-| ------------ | -------------------------------- |---------------------- |
-{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
-{{/each}}
-{{else}}
-暂无
-{{/if}}
+**响应示例**
 
+{{ if responseBasicType }}
+```text
+{{responseText}}
+```
+{{else}}
+```json
+{{responseValue}}
+```
+{{/if}}
 
 </textarea>
     </div>
@@ -333,7 +341,7 @@
             </span>
             <input type="text" id="txtreqUrl" data-originalurl="<%=originalUrl%>" class="form-control" value="<%=url%>">
             <span class="input-group-btn">
-                <button id="btnRequest" class="btn btn-default btn-primary" type="button"> 发 送 </button>
+                <button  class="btn btn-default btn-primary btnRequest" type="button"> 发 送 </button>
             </span>
         </div>
         <div style="margin-top: 15px;">
@@ -348,11 +356,12 @@
                     <table class="">
                         <thead>
                         <tr>
-                            <th style="white-space: nowrap;"><div class="checkbox" id="parameterCheckAll">
+                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll">
                                 <label style="font-weight: bold;">
                                     <input type="checkbox" checked> 全选
                                 </label>
                             </div></th>
+                            <th>参数类型</th>
                             <th>参数名称</th>
                             <th>参数值</th>
                             <th>操作</th>
@@ -366,7 +375,10 @@
                                     <td width="5%">
                                         <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                                     </td>
-                                    <td width="35%">
+                                    <td width="10%">
+                                        <span class="sbu-param-<%=param.in%>"><%=param.in%></span>
+                                    </td>
+                                    <td width="25%">
                                         <input class="form-control p-key" value="<%=param.name%>">
                                     </td>
                                     <td>
@@ -395,7 +407,10 @@
                                 <td width="5%">
                                     <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                                 </td>
-                                <td width="35%">
+                                <td width="10%">
+                                    <span class="sbu-param-<%=param.in%>"><%=param.in%></span>
+                                </td>
+                                <td width="25%">
                                     <input class="form-control p-key" value="<%=param.name%>">
                                 </td>
                                 <td>
@@ -414,8 +429,16 @@
                                               name="<%=param.name%>" data-name="<%=param.name%>"
                                               placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                     <%}else{%>
-                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
-                                           data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <% if(param.enum!=null){%>
+                                        <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>">
+                                            <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
+                                            <option value="<%=em%>" <%if(param.txtValue==em){%> selected <%}%> ><%=em%></option>
+                                            <%}%>
+                                        </select>
+                                        <%}else{%>
+                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                               data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <%}%>
                                     <%}%>
                                     <%}%>
                                 </td>
@@ -434,11 +457,12 @@
                     <table class="">
                         <thead>
                         <tr>
-                            <th style="white-space: nowrap;"><div class="checkbox" id="parameterCheckAll">
+                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll">
                                 <label style="font-weight: bold;">
                                     <input type="checkbox" checked> 全选
                                 </label>
                             </div></th>
+                            <th>参数类型</th>
                             <th>参数名称</th>
                             <th>参数值</th>
                             <th>操作</th>
@@ -452,7 +476,10 @@
                             <td width="5%">
                                 <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                             </td>
-                            <td width="35%">
+                            <td width="10%">
+                                <span class="sbu-param-<%=param.in%>"><%=param.in%></span>
+                            </td>
+                            <td width="25%">
                                 <input class="form-control p-key" value="<%=param.name%>">
                             </td>
                             <td>
@@ -477,11 +504,14 @@
                         <%}%>
 
                         <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} %>
-                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-emflag="<%=emflag%>">
+                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-type="<%=param.type%>" data-required="<%=param.require%>" data-emflag="<%=emflag%>">
                             <td width="5%">
                                 <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                             </td>
-                            <td width="35%">
+                            <td width="10%">
+                                <span class="sbu-param-<%=param.in%>"><%=param.in%></span>
+                            </td>
+                            <td width="25%">
                                 <input class="form-control p-key" value="<%=param.name%>">
                             </td>
                             <td>
@@ -508,6 +538,10 @@
                                     <%}else{%>
                                 <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <% if(param.type=="array"){%>
+                                <div class="btn-add-div"></div>
+                                <button class="btn btn-default btn-add-string" >增加</button>
+                                        <%}%>
                                     <%}%>
                                 <%}%>
                             </td>
@@ -523,7 +557,7 @@
                 <%}%>
             </div>
         </div>
-        <div id="responsebody">
+        <div class="responsebody">
         </div>
     </div>
 </script>

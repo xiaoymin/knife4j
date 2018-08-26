@@ -213,6 +213,7 @@
         that.currentInstance.version=version;
         that.currentInstance.termsOfService=termsOfService;
         that.currentInstance.basePath=menu["basePath"];
+        //that.currentInstance.basePath="/";
         //设置doc.html文档的title属性
         if(title!=null&&title!=undefined&&title!=""){
             $("title").html(title);
@@ -355,7 +356,7 @@
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
                 $.each(tag.childrens,function (i, children) {
-                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.showUrl+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
+                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })
@@ -616,8 +617,32 @@
         that.getDoc().find("#tab2").find(".panel-body").html("");
         var html = template('DebugScript', apiInfo);
         that.getDoc().find("#tab2").find(".panel-body").html(html);
+        //绑定string-array事件
+        that.getDoc().find("#tab2").find(".panel-body").find(".btn-add-string").on("click",function (e) {
+            e.preventDefault();
+            var btn=$(this);
+            that.log(btn);
+            var parentTd=btn.parent();
+            var parentDiv=btn.parent().find(".btn-add-div");
+            var firstInput=parentTd.find("input:first");
+            var divgroup=$('<div class="input-group" style="    margin-top: 5px;"></div>');
+            var cloneEle=firstInput.clone(true);
+            cloneEle.val("");
+            cloneEle.appendTo(divgroup);
+            var spanBtn=$('<span class="input-group-btn"></span>')
+            var delBtn=$('<button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button">-</button>')
+            spanBtn.append(delBtn);
+            divgroup.append(spanBtn);
+            parentDiv.append(divgroup)
+            delBtn.on("click",function (e) {
+                e.preventDefault();
+                $(this).parent().parent().remove();
+            })
+
+
+        })
         //绑定全选事件
-        $("#parameterCheckAll").on("click",function (e) {
+        that.getDoc().find("#tab2").find(".panel-body").find(".parameterCheckAll").on("click",function (e) {
             var chk=$(this);
             that.log("是否选中...")
             var chked=chk.find("input:first").prop("checked");
@@ -638,8 +663,8 @@
         var that=this;
         that.log("发送之前...")
         that.log(apiInfo)
-        var btnRequest=that.getDoc().find("#tab2").find(".panel-body").find("#btnRequest");
-        var respcleanDiv=that.getDoc().find("#tab2").find(".panel-body").find("#responsebody");
+        var btnRequest=that.getDoc().find("#tab2").find(".panel-body").find(".btnRequest:first");
+        var respcleanDiv=that.getDoc().find("#tab2").find(".panel-body").find(".responsebody:first");
         btnRequest.on("click",function (e) {
             e.preventDefault();
 
@@ -667,13 +692,17 @@
             var formData=new FormData();
             var formCurlParams={};
             var fileUploadFlat=false;
+
+            var queryStringParameterFlag=false;
+            var queryStringParameterArr=new Array();
+
             paramBody.find("tr").each(function () {
                 var paramtr=$(this);
                 var cked=paramtr.find("td:first").find(":checked").prop("checked");
                 that.log(cked)
                 if (cked){
                     //如果选中
-                    var trdata={name:paramtr.data("name"),in:paramtr.data("in"),required:paramtr.data("required"),type:paramtr.data("type"),emflag:paramtr.data("emflag"),schemavalue:paramtr.data("schemavalue")};
+                    var trdata={name:paramtr.find("td:eq(2)").find("input").val(),in:paramtr.data("in"),required:paramtr.data("required"),type:paramtr.data("type"),emflag:paramtr.data("emflag"),schemavalue:paramtr.data("schemavalue")};
                     that.log("trdata....")
                     that.log(trdata);
                     //获取key
@@ -681,12 +710,13 @@
                     var key=trdata["name"];
                     //获取value
                     var value="";
+                    var reqflag=false;
                     if(trdata["in"]=="body") {
                         //这里需要判断schema
                         //直接判断那类型
                         if (trdata.schemavalue == "MultipartFile") {
-                            value = paramtr.find("td:eq(2)").find("input").val();
-                            var fileEle = paramtr.find("td:eq(2)").find("input")[0];
+                            value = paramtr.find("td:eq(3)").find("input").val();
+                            var fileEle = paramtr.find("td:eq(3)").find("input")[0];
                             fileUploadFlat = true;
                             that.log("files------------------------------")
                             var files = fileEle.files;
@@ -705,15 +735,16 @@
                             }
                             formCurlParams[key]=value;
                         } else {
-                            value = paramtr.find("td:eq(2)").find("textarea").val();
+                            value = paramtr.find("td:eq(3)").find("textarea").val();
                             formData.append(key, value);
                         }
                         that.updateRequestParameter(trdata.name, value, apiInfo);
-                    }else if(trdata["in"]=="formData"){
+                    }
+                    else if(trdata["in"]=="formData"){
                         //直接判断那类型
                         if (trdata.schemavalue == "MultipartFile") {
-                            value = paramtr.find("td:eq(2)").find("input").val();
-                            var fileEle = paramtr.find("td:eq(2)").find("input")[0];
+                            value = paramtr.find("td:eq(3)").find("input").val();
+                            var fileEle = paramtr.find("td:eq(3)").find("input")[0];
                             fileUploadFlat = true;
                             that.log("files-form-data------------------------------");
                             that.log(fileEle);
@@ -733,19 +764,30 @@
                             }
                             formCurlParams[key]=value;
                         } else {
-                            value = paramtr.find("td:eq(2)").find("textarea").val();
+                            value = paramtr.find("td:eq(3)").find("textarea").val();
                             formData.append(key, value);
                         }
                         that.updateRequestParameter(trdata.name, value, apiInfo);
                     }else{
                         if(trdata.emflag){
-                            value=paramtr.find("td:eq(2)").find("select option:selected").val();
+                            value=paramtr.find("td:eq(3)").find("select option:selected").val();
                             that.updateRequestParameter(trdata.name,value,apiInfo);
                             formData.append(key,value);
                         }else{
-                            value=paramtr.find("td:eq(2)").find("input").val();
-                            that.updateRequestParameter(trdata.name,value,apiInfo);
-                            formData.append(key,value);
+                            if(trdata["type"]=="array"){
+                                queryStringParameterFlag=true;
+                                reqflag=true;
+                                //数组类型
+                                paramtr.find("td:eq(3)").find("input").each(function (i, x) {
+                                    queryStringParameterArr.push(key+"="+$(this).val())
+                                    //value=$(this).val();
+                                })
+                            }else{
+                                value=paramtr.find("td:eq(3)").find("input").val();
+                                that.updateRequestParameter(trdata.name,value,apiInfo);
+                                formData.append(key,value);
+                                //queryStringParameterArr.push(key+"="+value)
+                            }
                         }
                     }
 
@@ -755,10 +797,15 @@
                             url=url.replace("{"+key+"}",value);
                             apiInfo.url=url;
                         }else{
-                            if (url.indexOf("?")>-1){
-                                url=url+"&"+key+"="+value;
+                            //判断是否是header
+                            if(trdata["in"]=="header"){
+                                headerparams[key]=value;
                             }else{
-                                url+="?"+key+"="+value;
+                                if (url.indexOf("?")>-1){
+                                    url=url+"&"+key+"="+value;
+                                }else{
+                                    url+="?"+key+"="+value;
+                                }
                             }
                         }
                     }else{
@@ -774,7 +821,10 @@
                                     headerparams[key]=value;
                                 }else{
                                     if (trdata.schemavalue != "MultipartFile") {
-                                        params[key]=value;
+                                        //判断数组
+                                        if(trdata["type"]!="array"){
+                                            params[key]=value;
+                                        }
                                     }
                                 }
                             }
@@ -784,12 +834,14 @@
                     if (trdata.hasOwnProperty("required")){
                         var required=trdata["required"];
                         if (required){
-                            //必须,验证value是否为空
-                            if(value==null||value==""){
-                                validateflag=true;
-                                var des=trdata["name"]
-                                validateobj={message:des+"不能为空"};
-                                return false;
+                            if(!reqflag){
+                                //必须,验证value是否为空
+                                if(value==null||value==""){
+                                    validateflag=true;
+                                    var des=trdata["name"]
+                                    validateobj={message:des+"不能为空"};
+                                    return false;
+                                }
                             }
                         }
 
@@ -806,6 +858,22 @@
             var paramBodyType="json";
             if(bodyRequest){
                 reqdata=bodyparams;
+                //body请求,url追加其他param参数
+                var requestArr=new Array();
+                for(var p in params){
+                    requestArr.push(p+"="+params[p]);
+                }
+                if(requestArr.length>0){
+                    var reqStrArr=requestArr.join("&");
+                    that.log("body请求，尚有其他form表单参数................")
+                    that.log(requestArr)
+                    that.log(reqStrArr)
+                    if (url.indexOf("?")>-1){
+                        url=url+"&"+reqStrArr;
+                    }else{
+                        url=url+"?"+reqStrArr;
+                    }
+                }
             }else{
                 if(fileUploadFlat){
                     contType="multipart/form-data";
@@ -815,6 +883,17 @@
                     paramBodyType="form";
                     reqdata=params;
                     contType="application/x-www-form-urlencoded; charset=UTF-8";
+                }
+                //判断query
+                if(queryStringParameterFlag){
+                    if(queryStringParameterArr.length>0){
+                        var reqStrArr=queryStringParameterArr.join("&");
+                        if (url.indexOf("?")>-1){
+                            url=url+"&"+reqStrArr;
+                        }else{
+                            url=url+"?"+reqStrArr;
+                        }
+                    }
                 }
             }
             //console.log(reqdata)
@@ -1142,6 +1221,9 @@
                 headerparams["Content-Type"]=contType;
                 that.log("header....")
                 that.log(headerparams);
+                that.log("请求参数...........")
+                that.log(params)
+
                 $.ajax({
                     url:url,
                     headers:headerparams,
@@ -1219,8 +1301,28 @@
                         that.log("Content-Type:"+contentType);
                         that.log(xhr.hasOwnProperty("responseJSON"))
                         if(xhr.hasOwnProperty("responseText")){
+                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw'>复制</button><br /><br />");
+                            var rawText=$("<span></span>");
+                            rawText.html(xhr["responseText"]);
+
+                            resp4.find(".panel-body").html("");
+                            resp4.find(".panel-body").append(rawCopyBotton).append(rawText);
+
+
+                            var cliprawboard = new ClipboardJS('#btnCopyRaw',{
+                                text:function () {
+                                    return rawText.html();
+                                }
+                            });
+                            cliprawboard.on('success', function(e) {
+                                layer.msg("复制成功")
+                            });
+                            cliprawboard.on('error', function(e) {
+                                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                            });
+
                             //json
-                            resp4.find(".panel-body").html(xhr["responseText"]);
+                            //resp4.find(".panel-body").html(xhr["responseText"]);
                             if(tp=="string"){
                                 //转二进制
                                 var dv=data.toString(2);
@@ -1261,12 +1363,12 @@
                         that.log("tab show...")
                         //组件curl功能
                         var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
+                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl'>复制</button><br /><br />");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
 
                         resp5.find(".panel-body").html("");
-                        resp5.find(".panel-body").append(curlcode).append(cpcurlBotton);
+                        resp5.find(".panel-body").append(cpcurlBotton).append(curlcode);
 
 
                         var clipboard = new ClipboardJS('#btnCopyCurl',{
@@ -1328,13 +1430,33 @@
                         var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
                         var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
                         var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
-                        var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">'+rawTxt+'</div>');
+                        var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
                         var resp5=$('<div id="tabcurl" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
                         respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
-
                         resptab.append(respcontent)
-
                         respcleanDiv.append(resptab);
+                        if(rawTxt!=null){
+                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw'>复制</button><br /><br />");
+                            var rawText=$("<span></span>");
+                            rawText.html(rawTxt);
+
+                            resp4.find(".panel-body").html("");
+                            resp4.find(".panel-body").append(rawCopyBotton).append(rawText);
+
+
+                            var cliprawboard = new ClipboardJS('#btnCopyRaw',{
+                                text:function () {
+                                    return rawText.html();
+                                }
+                            });
+                            cliprawboard.on('success', function(e) {
+                                layer.msg("复制成功")
+                            });
+                            cliprawboard.on('error', function(e) {
+                                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                            });
+                        }
+
                         that.log(xhr);
                         var allheaders=xhr.getAllResponseHeaders();
                         if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
@@ -1379,12 +1501,12 @@
 
                         //组件curl功能
                         var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
+                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl'>复制</button><br /><br />");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
 
                         resp5.find(".panel-body").html("");
-                        resp5.find(".panel-body").append(curlcode).append(cpcurlBotton);
+                        resp5.find(".panel-body").append(cpcurlBotton).append(curlcode);
 
 
                         var clipboard = new ClipboardJS('#btnCopyCurl',{
@@ -1924,6 +2046,13 @@
                             if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
                                 spropObj.type=spropObj.format;
                             }
+                            //判断最终类型
+                            if(spropObj.refType!=null&&spropObj.refType!=""){
+                                //判断基础类型,非数字类型
+                                if(spropObj.type=="string"){
+                                    spropObj.type=spropObj.refType;
+                                }
+                            }
                             //addprop
                             //这里判断去重
                             if(!that.checkPropertiesExists(swud.properties,spropObj)){
@@ -2155,25 +2284,24 @@
         var swpinfo=new SwaggerBootstrapUiApiInfo();
         //添加basePath
         var basePath=that.currentInstance.basePath;
-        var fullpath="";
+        var newfullPath=that.currentInstance.host;
+
         var basePathFlag=false;
         if (basePath!=""&&basePath!="/"){
+            newfullPath+=basePath;
             //如果非空,非根目录
-            fullpath+=basePath;
             basePathFlag=true;
-            fullpath+=path;
-            swpinfo.showUrl=fullpath;
-        }else{
-            //截取字符串
-            fullpath=path.substring(1);
-            swpinfo.showUrl=path;
         }
-
+        newfullPath+=path;
+        //截取字符串
+        var newurl=newfullPath.substring(newfullPath.indexOf("/"));
+        that.log("新的url:"+newurl)
+        swpinfo.showUrl=newurl;
         swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
-        swpinfo.url=fullpath;
-        swpinfo.originalUrl=fullpath;
+        swpinfo.url=newurl;
+        swpinfo.originalUrl=newurl;
         swpinfo.basePathFlag=basePathFlag;
-        swpinfo.methodType=mtype;
+        swpinfo.methodType=mtype.toUpperCase();
         if(apiInfo!=null){
             swpinfo.consumes=apiInfo.consumes;
             swpinfo.description=apiInfo.description;
@@ -2185,11 +2313,12 @@
                 var pameters=apiInfo["parameters"];
                 $.each(pameters,function (i, m) {
                     var minfo=new SwaggerBootstrapUiParameter();
-                    minfo.name=m.name;
-                    minfo.type=m.type;
-                    minfo.in=m.in;
-                    minfo.require=m.required;
-                    minfo.description=m.description;
+
+                    minfo.name=$.propValue("name",m,"");
+                    minfo.type=$.propValue("type",m,"");
+                    minfo.in=$.propValue("in",m,"");
+                    minfo.require=$.propValue("required",m,false);
+                    minfo.description=$.replaceMultipLineStr($.propValue("description",m,""));
                     //判断是否有枚举类型
                     if(m.hasOwnProperty("enum")){
                         that.log("包括枚举类型...")
@@ -2229,7 +2358,7 @@
                                 minfo.def=def;
                                 minfo.value=def.value;
                                 if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                    minfo.description=def.description;
+                                    minfo.description=$.replaceMultipLineStr(def.description);
                                 }
                             }
                         }else{
@@ -2243,7 +2372,7 @@
                                     minfo.def=def;
                                     minfo.value=def.value;
                                     if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                        minfo.description=def.description;
+                                        minfo.description=$.replaceMultipLineStr(def.description);
                                     }
                                 }
                             }else{
@@ -2266,12 +2395,13 @@
                                 minfo.def=def;
                                 minfo.value=def.value;
                                 if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                    minfo.description=def.description;
+                                    minfo.description=$.replaceMultipLineStr(def.description);
                                 }
                             }
                         }else{
                             if (items.hasOwnProperty("type")){
-                                minfo.type=items["type"];
+                                //minfo.type=items["type"];
+                                minfo.schemaValue=items["type"];
                             }
                             minfo.value="";
                         }
@@ -2375,12 +2505,38 @@
                             resParam.name=p.name;
                             if (!checkParamArrsExists(swpinfo.responseParameters,resParam)){
                                 swpinfo.responseParameters.push(resParam);
-                                resParam.type=p.type;
-                                resParam.description=p.description;
-                                if(!$.checkIsBasicType(p.refType)){
-                                    resParam.schemaValue=p.refType;
-                                    var deepDef=that.getDefinitionByName(p.refType);
-                                    deepResponseRefParameter(swpinfo,that,deepDef,resParam);
+                                resParam.description=$.replaceMultipLineStr(p.description);
+                                if(p.type==null||p.type==""){
+                                    if(p.refType!=null){
+                                        if(!$.checkIsBasicType(p.refType)){
+                                            resParam.schemaValue=p.refType;
+                                            //存在引用类型,修改默认type
+                                            resParam.type=p.refType;
+                                            var deepDef=that.getDefinitionByName(p.refType);
+                                            deepResponseRefParameter(swpinfo,that,deepDef,resParam);
+                                        }
+                                    }
+                                }else{
+                                    resParam.type=p.type;
+                                    if(!$.checkIsBasicType(p.type)){
+                                        if(p.refType!=null){
+                                            if(!$.checkIsBasicType(p.refType)){
+                                                resParam.schemaValue=p.refType;
+                                                //存在引用类型,修改默认type
+                                                if(p.type!="array"){
+                                                    resParam.type=p.refType;
+                                                }
+                                                var deepDef=that.getDefinitionByName(p.refType);
+                                                deepResponseRefParameter(swpinfo,that,deepDef,resParam);
+                                            }
+                                        }else{
+                                            resParam.schemaValue=p.type;
+                                            //存在引用类型,修改默认type
+                                            resParam.type=p.type;
+                                            var deepDef=that.getDefinitionByName(p.type);
+                                            deepResponseRefParameter(swpinfo,that,deepDef,resParam);
+                                        }
+                                    }
                                 }
                             }
                         })
@@ -2432,7 +2588,7 @@
                             var refp=new SwaggerBootstrapUiParameter();
                             refp.name=p.name;
                             refp.type=p.type;
-                            refp.description=p.description;
+                            refp.description=$.replaceMultipLineStr(p.description);
                             //add之前需要判断是否已添加,递归情况有可能重复
                             refParam.params.push(refp);
                             //判断类型是否基础类型
@@ -2474,7 +2630,7 @@
                         }
                         refp.in=minfo.in;
                         refp.require=p.required;
-                        refp.description=p.description;
+                        refp.description=$.replaceMultipLineStr(p.description);
                         refParam.params.push(refp);
                         //判断类型是否基础类型
                         if(!$.checkIsBasicType(p.refType)){
@@ -2917,7 +3073,7 @@
             return t;
         },
         checkIsBasicType:function(type) {
-            var basicTypes=["string","integer","number","object","boolean"];
+            var basicTypes=["string","integer","number","object","boolean","int32","int64","float","double"];
             var flag=false;
             if(type!=null){
                 if($.inArray(type,basicTypes)>-1){
@@ -2974,6 +3130,28 @@
         },
         randomNumber:function() {
             return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        },
+        htmlEncode:function (html) {
+            if (html !== null) {
+                return html.toString().replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            } else {
+                return '';
+            }
+        },
+        jsString:function (s) {
+            s = JSON.stringify(s).slice(1, -1);
+            return $.htmlEncode(s);
+        },
+        replaceMultipLineStr:function (str) {
+            if (str!=null&&str!=undefined&&str!=""){
+                var newLinePattern = /(\r\n|\n\r|\r|\n)/g;
+                if (newLinePattern.test(str)) {
+                    var newDes = str.replace(newLinePattern, '\\n');
+                    return newDes;
+                }
+                return str;
+            }
+            return "";
         },
         generUUID:function () {
             return ($.randomNumber()+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+"-"+$.randomNumber()+$.randomNumber()+$.randomNumber());
