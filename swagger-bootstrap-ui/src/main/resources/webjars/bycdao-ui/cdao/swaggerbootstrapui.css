@@ -482,3 +482,9 @@ code {
     font-size: 12px;
     font-weight: bold;
 }
+.btn-add-div{
+    margin-top: 5px;
+}
+.btn-add-string{
+    margin-top: 2px;
+}

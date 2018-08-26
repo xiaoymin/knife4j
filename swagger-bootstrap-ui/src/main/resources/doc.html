@@ -341,7 +341,7 @@
             </span>
             <input type="text" id="txtreqUrl" data-originalurl="<%=originalUrl%>" class="form-control" value="<%=url%>">
             <span class="input-group-btn">
-                <button id="btnRequest" class="btn btn-default btn-primary" type="button"> 发 送 </button>
+                <button  class="btn btn-default btn-primary btnRequest" type="button"> 发 送 </button>
             </span>
         </div>
         <div style="margin-top: 15px;">
@@ -356,7 +356,7 @@
                     <table class="">
                         <thead>
                         <tr>
-                            <th style="white-space: nowrap;"><div class="checkbox" id="parameterCheckAll">
+                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll">
                                 <label style="font-weight: bold;">
                                     <input type="checkbox" checked> 全选
                                 </label>
@@ -429,8 +429,16 @@
                                               name="<%=param.name%>" data-name="<%=param.name%>"
                                               placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                     <%}else{%>
-                                    <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
-                                           data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <% if(param.enum!=null){%>
+                                        <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>">
+                                            <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
+                                            <option value="<%=em%>" <%if(param.txtValue==em){%> selected <%}%> ><%=em%></option>
+                                            <%}%>
+                                        </select>
+                                        <%}else{%>
+                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                               data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <%}%>
                                     <%}%>
                                     <%}%>
                                 </td>
@@ -449,7 +457,7 @@
                     <table class="">
                         <thead>
                         <tr>
-                            <th style="white-space: nowrap;"><div class="checkbox" id="parameterCheckAll">
+                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll">
                                 <label style="font-weight: bold;">
                                     <input type="checkbox" checked> 全选
                                 </label>
@@ -496,7 +504,7 @@
                         <%}%>
 
                         <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} %>
-                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-emflag="<%=emflag%>">
+                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-type="<%=param.type%>" data-required="<%=param.require%>" data-emflag="<%=emflag%>">
                             <td width="5%">
                                 <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
                             </td>
@@ -530,6 +538,10 @@
                                     <%}else{%>
                                 <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <% if(param.type=="array"){%>
+                                <div class="btn-add-div"></div>
+                                <button class="btn btn-default btn-add-string" >增加</button>
+                                        <%}%>
                                     <%}%>
                                 <%}%>
                             </td>
@@ -545,7 +557,7 @@
                 <%}%>
             </div>
         </div>
-        <div id="responsebody">
+        <div class="responsebody">
         </div>
     </div>
 </script>

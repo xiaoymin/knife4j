@@ -617,8 +617,32 @@
         that.getDoc().find("#tab2").find(".panel-body").html("");
         var html = template('DebugScript', apiInfo);
         that.getDoc().find("#tab2").find(".panel-body").html(html);
+        //绑定string-array事件
+        that.getDoc().find("#tab2").find(".panel-body").find(".btn-add-string").on("click",function (e) {
+            e.preventDefault();
+            var btn=$(this);
+            that.log(btn);
+            var parentTd=btn.parent();
+            var parentDiv=btn.parent().find(".btn-add-div");
+            var firstInput=parentTd.find("input:first");
+            var divgroup=$('<div class="input-group" style="    margin-top: 5px;"></div>');
+            var cloneEle=firstInput.clone(true);
+            cloneEle.val("");
+            cloneEle.appendTo(divgroup);
+            var spanBtn=$('<span class="input-group-btn"></span>')
+            var delBtn=$('<button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button">-</button>')
+            spanBtn.append(delBtn);
+            divgroup.append(spanBtn);
+            parentDiv.append(divgroup)
+            delBtn.on("click",function (e) {
+                e.preventDefault();
+                $(this).parent().parent().remove();
+            })
+
+
+        })
         //绑定全选事件
-        $("#parameterCheckAll").on("click",function (e) {
+        that.getDoc().find("#tab2").find(".panel-body").find(".parameterCheckAll").on("click",function (e) {
             var chk=$(this);
             that.log("是否选中...")
             var chked=chk.find("input:first").prop("checked");
@@ -639,8 +663,8 @@
         var that=this;
         that.log("发送之前...")
         that.log(apiInfo)
-        var btnRequest=that.getDoc().find("#tab2").find(".panel-body").find("#btnRequest");
-        var respcleanDiv=that.getDoc().find("#tab2").find(".panel-body").find("#responsebody");
+        var btnRequest=that.getDoc().find("#tab2").find(".panel-body").find(".btnRequest:first");
+        var respcleanDiv=that.getDoc().find("#tab2").find(".panel-body").find(".responsebody:first");
         btnRequest.on("click",function (e) {
             e.preventDefault();
 
@@ -668,6 +692,10 @@
             var formData=new FormData();
             var formCurlParams={};
             var fileUploadFlat=false;
+
+            var queryStringParameterFlag=false;
+            var queryStringParameterArr=new Array();
+
             paramBody.find("tr").each(function () {
                 var paramtr=$(this);
                 var cked=paramtr.find("td:first").find(":checked").prop("checked");
@@ -682,6 +710,7 @@
                     var key=trdata["name"];
                     //获取value
                     var value="";
+                    var reqflag=false;
                     if(trdata["in"]=="body") {
                         //这里需要判断schema
                         //直接判断那类型
@@ -745,9 +774,20 @@
                             that.updateRequestParameter(trdata.name,value,apiInfo);
                             formData.append(key,value);
                         }else{
-                            value=paramtr.find("td:eq(3)").find("input").val();
-                            that.updateRequestParameter(trdata.name,value,apiInfo);
-                            formData.append(key,value);
+                            if(trdata["type"]=="array"){
+                                queryStringParameterFlag=true;
+                                reqflag=true;
+                                //数组类型
+                                paramtr.find("td:eq(3)").find("input").each(function (i, x) {
+                                    queryStringParameterArr.push(key+"="+$(this).val())
+                                    //value=$(this).val();
+                                })
+                            }else{
+                                value=paramtr.find("td:eq(3)").find("input").val();
+                                that.updateRequestParameter(trdata.name,value,apiInfo);
+                                formData.append(key,value);
+                                //queryStringParameterArr.push(key+"="+value)
+                            }
                         }
                     }
 
@@ -781,7 +821,10 @@
                                     headerparams[key]=value;
                                 }else{
                                     if (trdata.schemavalue != "MultipartFile") {
-                                        params[key]=value;
+                                        //判断数组
+                                        if(trdata["type"]!="array"){
+                                            params[key]=value;
+                                        }
                                     }
                                 }
                             }
@@ -791,12 +834,14 @@
                     if (trdata.hasOwnProperty("required")){
                         var required=trdata["required"];
                         if (required){
-                            //必须,验证value是否为空
-                            if(value==null||value==""){
-                                validateflag=true;
-                                var des=trdata["name"]
-                                validateobj={message:des+"不能为空"};
-                                return false;
+                            if(!reqflag){
+                                //必须,验证value是否为空
+                                if(value==null||value==""){
+                                    validateflag=true;
+                                    var des=trdata["name"]
+                                    validateobj={message:des+"不能为空"};
+                                    return false;
+                                }
                             }
                         }
 
@@ -838,6 +883,17 @@
                     paramBodyType="form";
                     reqdata=params;
                     contType="application/x-www-form-urlencoded; charset=UTF-8";
+                }
+                //判断query
+                if(queryStringParameterFlag){
+                    if(queryStringParameterArr.length>0){
+                        var reqStrArr=queryStringParameterArr.join("&");
+                        if (url.indexOf("?")>-1){
+                            url=url+"&"+reqStrArr;
+                        }else{
+                            url=url+"?"+reqStrArr;
+                        }
+                    }
                 }
             }
             //console.log(reqdata)
