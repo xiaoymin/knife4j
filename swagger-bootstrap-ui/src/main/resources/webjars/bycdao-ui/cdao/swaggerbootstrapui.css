@@ -257,6 +257,7 @@ li [class^="icon-"], li [class*=" icon-"], .nav-list li [class^="icon-"], .nav-l
 .menuLi .mhed{
     cursor: pointer;
     padding-left: 30px;
+    font-size: 12px;
 }
 
 code {
@@ -278,10 +279,10 @@ code {
     white-space: nowrap;
     font-family: Monaco;
     /*font-weight: bold;*/
-    font-size: 14px;
+    /* font-size: 12px; */
 }
 .swu-menu-api-des{
-    font-size: 14px;
+    /* font-size: 12px; */
     font-family: Monaco;
     color: #ab0f3a;
     height: 21px;
@@ -352,7 +353,7 @@ code {
     position: absolute;
 }
 
-/*æœç´¢æ¡†8*/
+/*Ã¦ÂÅ“Ã§Â´Â¢Ã¦Â¡â€ 8*/
 .bar8 {background: #4887bd;}
 .bar8 form {
     height: 42px;

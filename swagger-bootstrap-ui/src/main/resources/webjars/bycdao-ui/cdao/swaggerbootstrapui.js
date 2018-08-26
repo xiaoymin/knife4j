@@ -1245,8 +1245,28 @@
                         that.log("Content-Type:"+contentType);
                         that.log(xhr.hasOwnProperty("responseJSON"))
                         if(xhr.hasOwnProperty("responseText")){
+                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw'>复制</button><br /><br />");
+                            var rawText=$("<span></span>");
+                            rawText.html(xhr["responseText"]);
+
+                            resp4.find(".panel-body").html("");
+                            resp4.find(".panel-body").append(rawCopyBotton).append(rawText);
+
+
+                            var cliprawboard = new ClipboardJS('#btnCopyRaw',{
+                                text:function () {
+                                    return rawText.html();
+                                }
+                            });
+                            cliprawboard.on('success', function(e) {
+                                layer.msg("复制成功")
+                            });
+                            cliprawboard.on('error', function(e) {
+                                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                            });
+
                             //json
-                            resp4.find(".panel-body").html(xhr["responseText"]);
+                            //resp4.find(".panel-body").html(xhr["responseText"]);
                             if(tp=="string"){
                                 //转二进制
                                 var dv=data.toString(2);
@@ -1287,12 +1307,12 @@
                         that.log("tab show...")
                         //组件curl功能
                         var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
+                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl'>复制</button><br /><br />");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
 
                         resp5.find(".panel-body").html("");
-                        resp5.find(".panel-body").append(curlcode).append(cpcurlBotton);
+                        resp5.find(".panel-body").append(cpcurlBotton).append(curlcode);
 
 
                         var clipboard = new ClipboardJS('#btnCopyCurl',{
@@ -1354,13 +1374,33 @@
                         var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
                         var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
                         var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
-                        var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">'+rawTxt+'</div>');
+                        var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
                         var resp5=$('<div id="tabcurl" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
                         respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
-
                         resptab.append(respcontent)
-
                         respcleanDiv.append(resptab);
+                        if(rawTxt!=null){
+                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw'>复制</button><br /><br />");
+                            var rawText=$("<span></span>");
+                            rawText.html(rawTxt);
+
+                            resp4.find(".panel-body").html("");
+                            resp4.find(".panel-body").append(rawCopyBotton).append(rawText);
+
+
+                            var cliprawboard = new ClipboardJS('#btnCopyRaw',{
+                                text:function () {
+                                    return rawText.html();
+                                }
+                            });
+                            cliprawboard.on('success', function(e) {
+                                layer.msg("复制成功")
+                            });
+                            cliprawboard.on('error', function(e) {
+                                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                            });
+                        }
+
                         that.log(xhr);
                         var allheaders=xhr.getAllResponseHeaders();
                         if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
@@ -1405,12 +1445,12 @@
 
                         //组件curl功能
                         var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
+                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl'>复制</button><br /><br />");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
 
                         resp5.find(".panel-body").html("");
-                        resp5.find(".panel-body").append(curlcode).append(cpcurlBotton);
+                        resp5.find(".panel-body").append(cpcurlBotton).append(curlcode);
 
 
                         var clipboard = new ClipboardJS('#btnCopyCurl',{
