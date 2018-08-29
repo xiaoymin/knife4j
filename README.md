@@ -10,6 +10,8 @@ swagger-bootstrap-ui
 
 在线效果体验:[http://swagger-bootstrap-ui.xiaominfo.com/doc.html](http://swagger-bootstrap-ui.xiaominfo.com/doc.html)
 
+[swagger-bootstrap-ui详细说明](http://www.xiaominfo.com/2018/08/29/swagger-bootstrap-ui-description/)
+
 ## 功能
 
 
