@@ -47,7 +47,7 @@ layui.define('jquery', function(exports){
     +(options.attr ? ' lay-attr="'+ options.attr +'"' : '') +'>'+icon+ (options.title||'unnaming') +'</li>';
     
     barElem[0] ? barElem.before(li) : titElem.append(li);
-    contElem.append('<div class="layui-tab-item">'+ (options.content||'') +'</div>');
+    contElem.append('<div class="layui-tab-item" id="layerTab'+(options.id||'')+'">'+ (options.content||'') +'</div>');
     call.hideTabMore(true);
     call.tabAuto();
     return this;
@@ -151,7 +151,7 @@ layui.define('jquery', function(exports){
     //Tab自适应
     ,tabAuto: function(){
       var SCROLL = 'layui-tab-scroll', MORE = 'layui-tab-more', BAR = 'layui-tab-bar'
-      ,CLOSE = 'icon-guanbi1', that = this;
+      ,CLOSE = 'icon-sbu-tab-close', that = this;
       
       $('.layui-tab').each(function(){
         var othis = $(this)
@@ -169,7 +169,7 @@ layui.define('jquery', function(exports){
           title.find('li').each(function(){
             var li = $(this);
             if(!li.find('.'+CLOSE)[0]){
-              var close = $('<i class="layui-icon layui-unselect iconfont '+ CLOSE +'"></i>');
+              var close = $('<i class="icon iconfont '+ CLOSE +'"></i>');
               close.on('click', call.tabDelete);
               li.append(close);
             }

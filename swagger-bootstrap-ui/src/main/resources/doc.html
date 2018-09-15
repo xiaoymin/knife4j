@@ -21,9 +21,20 @@
     <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
     <script src="webjars/bycdao-ui/jquery/marked.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
-    <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css" />
+
+    <link rel="stylesheet" href="webjars/bycdao-ui/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/sbuadmin.css"  media="all">
+
     <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
+
     <script src="webjars/bycdao-ui/jquery/axios.min.js"></script>
+
+    <script src="webjars/bycdao-ui/bootstrap-tabx/js/bootstrap-tabs-x.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/jquery/easyui/themes/bootstrap/tabs.css" />
+
+    <script src="webjars/bycdao-ui/layui/layui.js" charset="utf-8"></script>
     <style type="text/css">
         #container {
             width: 100%;
@@ -51,6 +62,9 @@
             height: 90%;
             /*background-color: #1a1a1a;*/
             cursor: w-resize;
+        }
+        .panel-body{
+            padding: 5px;
         }
     </style>
     <script>
@@ -136,7 +150,37 @@
         </ul>
     </div>
     <div id="handle"></div>
-    <div class="bycdao-main right" id="content"  style="height: 90%;overflow-y: auto;margin-top:2px;right: 0px;">
+    <div class="bycdao-main right" id="content"  style="height: 90%;margin-top:2px;right: 0px;/*overflow-x: hidden;overflow-y: auto;*/">
+
+        <div class="layui-layout layui-layout-admin open-tab">
+            <div class="layui-body">
+                <div class="layui-tab" lay-allowclose="true" lay-filter="admin-pagetabs">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this" lay-id="main">主页</li>
+                    </ul>
+                    <div class="layui-tab-content" style="height: 150px;">
+                        <div class="layui-tab-item layui-show" id="mainTabContent">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-tabs-control iconfont icon-tab-left" ew-event="leftPage"></div>
+                <div class="admin-tabs-control iconfont icon-tab-right" ew-event="rightPage"></div>
+                <div class="admin-tabs-control iconfont icon-xiangxiazhankai">
+                    <ul class="layui-nav admin-tabs-select" lay-filter="admin-pagetabs-nav">
+                        <li class="layui-nav-item" lay-unselect="">
+                            <a href="javascript:;"><span class="layui-nav-more"></span></a>
+                            <dl class="layui-nav-child layui-anim-fadein layui-anim layui-anim-upbit">
+                                <dd ew-event="closeThisTabs" lay-unselect=""><a href="javascript:;">关闭当前标签页</a></dd>
+                                <dd ew-event="closeOtherTabs" lay-unselect=""><a href="javascript:;">关闭其它标签页</a></dd>
+                                <dd ew-event="closeAllTabs" lay-unselect=""><a href="javascript:;">关闭全部标签页</a></dd>
+                            </dl>
+                        </li>
+                        <span class="layui-nav-bar" style="left: 20px; top: 35px; width: 0px; opacity: 0;"></span></ul>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 <!--离线文档说明-->
@@ -598,8 +642,119 @@
     </div>
 </script>
 
+<!--动态tab-->
+<script type="text/html" id="BootstrapDynaTab">
+    <div id="tabsContent{{id}}" class="easyui-tabs">
+        <div title="接口说明" data-options="iconCls:'iconfont icon-ic_description'" class="HomeDocParent">
+            <div class="tab-pane fade in active HomeDoc" id="HomeDoc{{id}}"  style="overflow-y: auto;">
+                <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
+                    <div style="    float: left;width: 90%;font-size: 20px;">{{summary}}</div>
+                    <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHref{{id}}" style="cursor: pointer;text-decoration: none;
+" href="javascript:void(0);">复制文档</a></div>
+                </div>
+                <div class="swbu-main" itemprop="articleBody">
+                    <div id="contentDoc{{id}}"></div>
+                    <!--<textarea rows="10" cols="10" id="docText">-->
+                    <textarea rows="10" cols="10" id="docText{{id}}" style="display: none;">
+
+**接口地址** `{{showUrl}}`
+
+
+**请求方式** `{{methodType}}`
+
+
+**consumes** `{{consumes}}`
+
+
+**produces** `{{produces}}`
+
+
+**接口描述** `{{description}}`
+
+**请求参数**
+{{ if parameters && parameters.length>0 }}
+| 参数名称         | 说明     |     参数类型 |  是否必须      |  类型   |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+{{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if refparameters && refparameters.length>0 }}
+**schema属性说明**
+  {{each refparameters}}
+**{{$value.name}}**
+
+| 参数名称         | 说明    |     参数类型 |  是否必须   |  类型  |  schema |
+| ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
+| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
+{{/each}}
+
+{{/if}}
+
+
+**响应状态**
+{{ if responseCodes}}
+| 状态码         | 说明                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
+{{/each}}
+{{else}}
+暂无
+{{/if}}
+
+
+**响应参数**
+{{ if responseParameters && responseParameters.length>0 }}
+| 参数名称         | 说明                             |    类型 |  schema |
+| ------------ | -------------------|-------|----------- |
+{{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if responseRefParameters && responseRefParameters.length>0 }}
+**schema属性说明**
+  {{each responseRefParameters}}
+**{{$value.name}}**
+
+| 属性名称         |  说明          |   类型  |  schema |
+| ------------ | ------------------|--------|----------- |
+{{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{/each}}
+
+{{/if}}
+
+**响应示例**
+
+{{ if responseBasicType }}
+```text
+{{responseText}}
+```
+{{else}}
+```json
+{{responseValue}}
+```
+{{/if}}
+
+</textarea>
+                </div>
+            </div>
+        </div>
+        <div title="在线调试" data-options="iconCls:'iconfont icon-debug'" >
+            <ul class="easyui-tree" data-options="url:'tree_data1.json',method:'get',animate:true"></ul>
+        </div>
+
+    </div>
+
+</script>
 <!--SwaggerBootstrapUi简介-->
 <script type="text/html" id="SwaggerBootstrapUiIntroScript">
+
+
     <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
         <div style="margin-top: 15px;">
             <div class="swbu-main" itemprop="sbuarticleBody">
@@ -699,6 +854,7 @@
 
 </script>
 
+<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js"></script>
 <script type="text/javascript">
     $(function () {
         /***
@@ -706,9 +862,10 @@
          * @type {boolean}
          */
         var isResizing = false,lastDownX = 0;
-        var container = $('#container'),left = $('.left'),right = $('.right'),handle = $('#handle');
+        var container = $('#container'),left = $('.left'),right = $('.right'),handle = $('#handle'),tabc=$("#sbu-dynamic-tab");
         //设置rightwidth
         right.css("width",container.width()-left.width()-8);
+        tabc.css("width",container.width()-left.width()-8);
         handle.on('mousedown',function(e) {
             isResizing = true;
             lastDownX = e.clientX;
@@ -765,46 +922,21 @@
             }
         })
 
+        layui.config({
+            base: 'webjars/bycdao-ui/cdao/'
+        }).use([ 'sbuadmin', 'element'], function () {
+            var $ = layui.$;
+            var admin=layui.sbuadmin;
+            console.log("ssssssssssssssss")
 
-        //window resize事件
-        /*$(window).resize(function (e) {
-            var fullWidth=container.width();
-            var leftWidth=left.width();
-            var handleWidth=handle.width();
-            var rightWidth=fullWidth-leftWidth-handleWidth;
-            right.css("width",rightWidth);
-            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
-            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
-            console.log("resize------------height")
-            console.log("window--"+$(window).height())
-            console.log("document--"+$(document).height())
-            console.log("left--"+$("#leftMenu").height())
-        })
+            admin.run();
 
-        function initHieghtAndWidth() {
-            /!*var fullWidth=container.width();
-            var leftWidth=left.width();
-            var handleWidth=handle.width();
-            var rightWidth=fullWidth-leftWidth-handleWidth;
-            right.css("width",rightWidth);
-            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
-            console.log("init------------height")
-            console.log("window--"+$(window).height())
-            console.log("document--"+$(document).height())
-            console.log("left--"+$("#leftMenu").height())*!/
 
-            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
-            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
 
-        }
-        initHieghtAndWidth();*/
+
+
+        });
     })
 </script>
-
-
-
-
-<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js"></script>
-<!----jsonhandle-->
 </body>
 </html>

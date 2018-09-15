@@ -64,18 +64,18 @@
     background-color: #292B34;
     border-radius: 0;
 }
-.layui-layout-admin .layui-body .layui-tab .layui-tab-title li .icon-guanbi1 {
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li .icon-sbu-tab-close {
     width: 16px;
     height: 16px;
     line-height: 16px;
     border-radius: 50%;
     font-size: 12px;
 }
-.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:first-child .icon-guanbi1 {
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:first-child .icon-sbu-tab-close {
     display: none;
 }
 
-.layui-tab-title li .icon-guanbi1:hover {
+.layui-tab-title li .icon-sbu-tab-close:hover {
     border-radius: 2px;
     background-color: red;
     color: #fff;

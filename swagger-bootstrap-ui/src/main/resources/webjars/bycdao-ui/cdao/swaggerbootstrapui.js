@@ -23,11 +23,8 @@
         //动态tab
         this.globalTabId="sbu-dynamic-tab";
         this.globalTabs=new Array();
-        this.tabsLiContent=null;
-        this.tabsPostProcessors=null;
         this.layui=options.layui;
-        console.log("initConstruct....")
-        console.log(options)
+        this.layTabFilter="admin-pagetabs";
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -381,25 +378,25 @@
      */
     SwaggerBootstrapUi.prototype.createGlobalParametersElement=function () {
         var that=this;
-        that.log(that.currentInstance)
+        var layui=that.layui;
+        var element=layui.element;
+        var tabId="GlobalParamScript";
+        var tabContetId="layerTab"+tabId;
         //内容覆盖
-        //that.getDoc().html("");
         setTimeout(function () {
-            var html = template('GlobalParamScript', that.currentInstance);
-            //that.getDoc().html(html);
-            if($("#"+that.globalTabId).tabs("exists","GlobalParamScript")){
-                $("#"+that.globalTabId).tabs("select","GlobalParamScript")
-            }else{
-                $('#'+that.globalTabId).tabs('add',{
-                    id:"GlobalParamScript",
+            if(!that.tabExists(tabId)){
+                var html = template('GlobalParamScript', that.currentInstance);
+                var tabObj={
+                    id:tabId,
                     title:'全局参数设置',
-                    content:html,
-                    closable:true
-                });
-                that.log("注册btnAddParam-click事件")
-                that.log(that.getDoc().find("#btnAddParam"))
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:'全局参数设置'});
+                element.tabAdd(that.layTabFilter, tabObj);
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabFinallyRight();
                 //初始化添加按钮click事件
-                that.getDoc().find("#btnAddParam").on("click",function (e) {
+                that.getDoc().find("#"+tabContetId).find("#btnAddParam").on("click",function (e) {
                     e.preventDefault();
                     that.log("btnAddParam-click")
                     var tr=$("<tr></tr>");
@@ -474,9 +471,8 @@
                         layer.msg("删除成功")
                     })
                 })
-
                 //全局保存事件
-                that.getDoc().find(".btn-save").on("click",function (e) {
+                that.getDoc().find("#"+tabContetId).find(".btn-save").on("click",function (e) {
                     var save=$(this);
                     var ptr=save.parent().parent();
                     var name=ptr.find("td:eq(0)").find("input:first").val();
@@ -513,7 +509,7 @@
                     layer.msg("保存成功")
                 })
                 //全局取消事件
-                that.getDoc().find(".btn-cancel").on("click",function (e) {
+                that.getDoc().find("#"+tabContetId).find(".btn-cancel").on("click",function (e) {
                     e.preventDefault();
                     var cancel=$(this);
                     that.log(cancel)
@@ -529,6 +525,8 @@
                     cancel.parent().parent().remove();
                     layer.msg("删除成功")
                 })
+            }else{
+                element.tabChange(that.layTabFilter,tabId);
             }
         },100)
 
@@ -1750,26 +1748,50 @@
         //$('#myTab a:first').tab('show')
 
     }
+
+    /***
+     * 判断tabId是否存在
+     * @param tabId
+     */
+    SwaggerBootstrapUi.prototype.tabExists=function (tabId) {
+        var that=this;
+        var flag=false;
+        $.each(that.globalTabs,function (i, tag) {
+            if (tag.id==tabId){
+                flag=true;
+            }
+        })
+        return flag;
+    }
+    /***
+     * tab最右显示
+     */
+    SwaggerBootstrapUi.prototype.tabFinallyRight=function () {
+        var $tabTitle = $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
+        var left = $tabTitle.scrollLeft();
+        $tabTitle.scrollLeft(left + $tabTitle.width());
+    }
     /**
      * 创建权限页面
      */
     SwaggerBootstrapUi.prototype.createSecurityElement=function () {
         var that=this;
-        //that.getDoc().html("");
+        var layui=that.layui;
+        var element=layui.element;
+        var tabId="SwaggerBootstrapUiSecurityScript";
+        var tabContetId="layerTab"+tabId;
         setTimeout(function () {
-            var html = template('SwaggerBootstrapUiSecurityScript', that.currentInstance);
-            //that.getDoc().html(html)
-            if($("#"+that.globalTabId).tabs("exists","SwaggerBootstrapUiSecurityScript")){
-                $("#"+that.globalTabId).tabs("select","SwaggerBootstrapUiSecurityScript")
-            }else{
-                $('#'+that.globalTabId).tabs('add',{
-                    id:"SwaggerBootstrapUiSecurityScript",
+            if(!that.tabExists(tabId)){
+                var html = template('SwaggerBootstrapUiSecurityScript', that.currentInstance);
+                var tabObj={
+                    id:tabId,
                     title:'Authorize',
-                    content:html,
-                    closable:true
-                });
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:'Authorize'});
+                element.tabAdd(that.layTabFilter, tabObj);
                 //保存事件
-                that.getDoc().find(".btn-save").on("click",function (e) {
+                that.getDoc().find("#"+tabContetId).find(".btn-save").on("click",function (e) {
                     e.preventDefault();
                     that.log("保存auth事件")
                     var save=$(this);
@@ -1816,10 +1838,11 @@
                     that.log($("#sbu-header").data("cacheSecurity"));
                 })
             }
-
+            element.tabChange(that.layTabFilter,tabId);
+            that.tabFinallyRight();
         },100)
         //保存事件
-        that.getDoc().find(".btn-save").on("click",function (e) {
+        that.getDoc().find("#"+tabContetId).find(".btn-save").on("click",function (e) {
             e.preventDefault();
             that.log("保存auth事件")
             var save=$(this);
@@ -1846,15 +1869,11 @@
         var that=this;
         var layui=that.layui;
         var element=layui.element;
-
-
-
         //内容覆盖
         //that.getDoc().html("");
         setTimeout(function () {
             var html = template('SwaggerBootstrapUiIntroScript', that.currentInstance);
-
-            $("#mainTabContent").html(html);
+            $("#mainTabContent").html("").html(html);
             element.tabChange('admin-pagetabs',"main");
         },100)
 
@@ -1904,37 +1923,26 @@
      */
     SwaggerBootstrapUi.prototype.createMarkdownTab=function () {
         var that=this;
-        /*var description="swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.";
-        var divdes=$('<div class="alert alert-info" role="alert">'+description+'</div>');
-        var div=$('<div  style="width:99%;margin:0px auto;"></div>');
-        div.append(divdes);
-        //toolbar按钮组
-        var toolbarDiv=$('<div class="input-inline" style="margin-bottom:10px;">');
-        var copyBtn=$('<button class="btn btn-primary" type="button" id="btnCopy"  data-clipboard-action="copy" data-clipboard-target="#txtDoc">拷贝文档</button></div>');
-        toolbarDiv.append(copyBtn);
-        div.append(toolbarDiv);
-        //添加textarea
-        var txtDiv=$("<div class='input-inline'><textarea class='form-control' style='width: 100%;height: 100%;' id='txtDoc'></textarea></div>")
-        div.append(txtDiv);*/
-        //内容覆盖
-        //that.getDoc().html("");
+        var layui=that.layui;
+        var element=layui.element;
+        var tabId="offLinecontentScript";
+        var tabContetId="layerTab"+tabId;
+
         setTimeout(function () {
-            var html = template('offLinecontentScript', that.currentInstance);
-
-            if($("#"+that.globalTabId).tabs("exists","offLinecontentScript")){
-                $("#"+that.globalTabId).tabs("select","offLinecontentScript")
+            if(!that.tabExists(tabId)){
+                var html = template('offLinecontentScript', that.currentInstance);
+                var tabObj={
+                    id:tabId,
+                    title:'离线文档(MD)',
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:'离线文档(MD)'});
+                element.tabAdd(that.layTabFilter, tabObj);
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabFinallyRight();
             }else{
-                $('#'+that.globalTabId).tabs('add',{
-                    id:"offLinecontentScript",
-                    title:'离线文档',
-                    content:html,
-                    closable:true
-                });
-
+                element.tabChange(that.layTabFilter,tabId);
             }
-
-           // that.getDoc().html(html);
-
         },100)
         var clipboard = new ClipboardJS('#btnCopy',{
             text:function () {
