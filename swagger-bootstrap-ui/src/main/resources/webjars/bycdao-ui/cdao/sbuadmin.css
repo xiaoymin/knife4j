@@ -157,3 +157,11 @@
 .admin-tabs-select.layui-nav .layui-nav-bar, .admin-tabs-select.layui-nav .layui-nav-more {
     display: none;
 }
+
+.admin-tabs-select li dl dd{
+    line-height: 2.8;
+}
+.admin-tabs-select li dl dd a:hover{
+    text-decoration: none;
+}
+
