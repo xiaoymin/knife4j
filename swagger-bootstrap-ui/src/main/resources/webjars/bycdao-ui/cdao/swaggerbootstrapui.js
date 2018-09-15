@@ -4,7 +4,7 @@
  */
 (function ($) {
 
-    var SwaggerBootstrapUi=function () {
+    var SwaggerBootstrapUi=function (options) {
         //swagger请求api地址
         this.url="swagger-resources";
         //文档id
@@ -20,6 +20,14 @@
         this.instances=new Array();
         //当前分组实例
         this.currentInstance=null;
+        //动态tab
+        this.globalTabId="sbu-dynamic-tab";
+        this.globalTabs=new Array();
+        this.tabsLiContent=null;
+        this.tabsPostProcessors=null;
+        this.layui=options.layui;
+        console.log("initConstruct....")
+        console.log(options)
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -375,34 +383,100 @@
         var that=this;
         that.log(that.currentInstance)
         //内容覆盖
-        that.getDoc().html("");
+        //that.getDoc().html("");
         setTimeout(function () {
             var html = template('GlobalParamScript', that.currentInstance);
-            that.getDoc().html(html);
-
-            that.log("注册btnAddParam-click事件")
-            that.log(that.getDoc().find("#btnAddParam"))
-            //初始化添加按钮click事件
-            that.getDoc().find("#btnAddParam").on("click",function (e) {
-                e.preventDefault();
-                that.log("btnAddParam-click")
-                var tr=$("<tr></tr>");
-                //输入参数名称
-                var nameTd=$("<td><input class=\"form-control p-key\" value=\"\" data-old=''></td>");
-                //参数值
-                var valueTd=$("<td><input class=\"form-control p-key\" value=\"\"></td>");
-                //参数类型
-                var typeTd=$("<td><select class='form-control'><option value='header'>header</option><option value='query'>query</option></select></td>");
-                //操作
-                var operateTd=$("<td>&nbsp;&nbsp;</td>")
-                var btnSave=$("<button class=\"btn btn-circle btn-info btn-small btn-save\" type=\"button\">保存</button>");
-                var btnCancel=$("<button class=\"btn btn-circle  btn-danger btn-small btn-cancel\" type=\"button\">删除</button>");
-                operateTd.append(btnSave).append("&nbsp;&nbsp;").append(btnCancel);
-                tr.append(nameTd).append(valueTd).append(typeTd).append(operateTd);
-                that.getDoc().find("#globalTabBody").append(tr);
-                //保存事件
-                btnSave.on("click",function (e) {
+            //that.getDoc().html(html);
+            if($("#"+that.globalTabId).tabs("exists","GlobalParamScript")){
+                $("#"+that.globalTabId).tabs("select","GlobalParamScript")
+            }else{
+                $('#'+that.globalTabId).tabs('add',{
+                    id:"GlobalParamScript",
+                    title:'全局参数设置',
+                    content:html,
+                    closable:true
+                });
+                that.log("注册btnAddParam-click事件")
+                that.log(that.getDoc().find("#btnAddParam"))
+                //初始化添加按钮click事件
+                that.getDoc().find("#btnAddParam").on("click",function (e) {
                     e.preventDefault();
+                    that.log("btnAddParam-click")
+                    var tr=$("<tr></tr>");
+                    //输入参数名称
+                    var nameTd=$("<td><input class=\"form-control p-key\" value=\"\" data-old=''></td>");
+                    //参数值
+                    var valueTd=$("<td><input class=\"form-control p-key\" value=\"\"></td>");
+                    //参数类型
+                    var typeTd=$("<td><select class='form-control'><option value='header'>header</option><option value='query'>query</option></select></td>");
+                    //操作
+                    var operateTd=$("<td>&nbsp;&nbsp;</td>")
+                    var btnSave=$("<button class=\"btn btn-circle btn-info btn-small btn-save\" type=\"button\">保存</button>");
+                    var btnCancel=$("<button class=\"btn btn-circle  btn-danger btn-small btn-cancel\" type=\"button\">删除</button>");
+                    operateTd.append(btnSave).append("&nbsp;&nbsp;").append(btnCancel);
+                    tr.append(nameTd).append(valueTd).append(typeTd).append(operateTd);
+                    that.getDoc().find("#globalTabBody").append(tr);
+                    //保存事件
+                    btnSave.on("click",function (e) {
+                        e.preventDefault();
+                        var save=$(this);
+                        var ptr=save.parent().parent();
+                        var name=ptr.find("td:eq(0)").find("input:first").val();
+                        var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
+                        var value=ptr.find("td:eq(1)").find("input:first").val();
+                        var type=ptr.find("td:eq(2)").find("select:first").val();
+                        that.log("name:"+name+",value:"+value+",type:"+type+",oldname:"+oldname);
+                        if(name==null||name==""){
+                            layer.msg("请输入全局参数名称");
+                            return false;
+                        }
+                        if(value==null||value==""){
+                            layer.msg("请输入全局参数值");
+                            return false;
+                        }
+                        var globalParameterInstance=new SwaggerBootstrapUiParameter();
+                        globalParameterInstance.name=name;
+                        globalParameterInstance.in=type;
+                        globalParameterInstance.value=value;
+                        globalParameterInstance.txtValue=value;
+                        globalParameterInstance.type="string";
+                        globalParameterInstance.require=true;
+                        //判断old
+                        if(oldname!=null&&oldname!=""&&oldname!=name){
+                            //删除旧参数
+                            that.deleteGlobalParamsByName(oldname);
+                        }
+                        if (!that.checkGlobalParamExists(globalParameterInstance)){
+                            that.currentInstance.globalParameters.push(globalParameterInstance);
+                        }else{
+                            //存在,更新该参数的值
+                            that.updateGlobalParams(globalParameterInstance);
+                        }
+                        that.log("目前全局参数..")
+                        that.log(that.currentInstance.globalParameters);
+                        layer.msg("保存成功")
+                    })
+                    //取消时间
+                    btnCancel.on("click",function (e) {
+                        e.preventDefault();
+                        var cancel=$(this);
+                        that.log(cancel)
+                        var ptr=cancel.parent().parent();
+                        var name=ptr.find("td:eq(0)").find("input:first").val();
+                        var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
+                        if(oldname!=name){
+                            that.deleteGlobalParamsByName(oldname)
+                        }
+                        if(name!=undefined&& name!=null&&name!=""){
+                            that.deleteGlobalParamsByName(name);
+                        }
+                        cancel.parent().parent().remove();
+                        layer.msg("删除成功")
+                    })
+                })
+
+                //全局保存事件
+                that.getDoc().find(".btn-save").on("click",function (e) {
                     var save=$(this);
                     var ptr=save.parent().parent();
                     var name=ptr.find("td:eq(0)").find("input:first").val();
@@ -422,11 +496,9 @@
                     globalParameterInstance.name=name;
                     globalParameterInstance.in=type;
                     globalParameterInstance.value=value;
-                    globalParameterInstance.txtValue=value;
-                    globalParameterInstance.type="string";
-                    globalParameterInstance.require=true;
+                    that.log(oldname!=name)
                     //判断old
-                    if(oldname!=null&&oldname!=""&&oldname!=name){
+                    if(oldname!=name){
                         //删除旧参数
                         that.deleteGlobalParamsByName(oldname);
                     }
@@ -440,15 +512,15 @@
                     that.log(that.currentInstance.globalParameters);
                     layer.msg("保存成功")
                 })
-                //取消时间
-                btnCancel.on("click",function (e) {
+                //全局取消事件
+                that.getDoc().find(".btn-cancel").on("click",function (e) {
                     e.preventDefault();
                     var cancel=$(this);
                     that.log(cancel)
                     var ptr=cancel.parent().parent();
                     var name=ptr.find("td:eq(0)").find("input:first").val();
                     var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
-                    if(oldname!=name){
+                    if(oldname!=null&&oldname!=""){
                         that.deleteGlobalParamsByName(oldname)
                     }
                     if(name!=undefined&& name!=null&&name!=""){
@@ -457,63 +529,7 @@
                     cancel.parent().parent().remove();
                     layer.msg("删除成功")
                 })
-            })
-
-            //全局保存事件
-            that.getDoc().find(".btn-save").on("click",function (e) {
-                var save=$(this);
-                var ptr=save.parent().parent();
-                var name=ptr.find("td:eq(0)").find("input:first").val();
-                var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
-                var value=ptr.find("td:eq(1)").find("input:first").val();
-                var type=ptr.find("td:eq(2)").find("select:first").val();
-                that.log("name:"+name+",value:"+value+",type:"+type+",oldname:"+oldname);
-                if(name==null||name==""){
-                    layer.msg("请输入全局参数名称");
-                    return false;
-                }
-                if(value==null||value==""){
-                    layer.msg("请输入全局参数值");
-                    return false;
-                }
-                var globalParameterInstance=new SwaggerBootstrapUiParameter();
-                globalParameterInstance.name=name;
-                globalParameterInstance.in=type;
-                globalParameterInstance.value=value;
-                that.log(oldname!=name)
-                //判断old
-                if(oldname!=name){
-                    //删除旧参数
-                    that.deleteGlobalParamsByName(oldname);
-                }
-                if (!that.checkGlobalParamExists(globalParameterInstance)){
-                    that.currentInstance.globalParameters.push(globalParameterInstance);
-                }else{
-                    //存在,更新该参数的值
-                    that.updateGlobalParams(globalParameterInstance);
-                }
-                that.log("目前全局参数..")
-                that.log(that.currentInstance.globalParameters);
-                layer.msg("保存成功")
-            })
-            //全局取消事件
-            that.getDoc().find(".btn-cancel").on("click",function (e) {
-                e.preventDefault();
-                var cancel=$(this);
-                that.log(cancel)
-                var ptr=cancel.parent().parent();
-                var name=ptr.find("td:eq(0)").find("input:first").val();
-                var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
-                if(oldname!=null&&oldname!=""){
-                    that.deleteGlobalParamsByName(oldname)
-                }
-                if(name!=undefined&& name!=null&&name!=""){
-                    that.deleteGlobalParamsByName(name);
-                }
-                cancel.parent().parent().remove();
-                layer.msg("删除成功")
-            })
-
+            }
         },100)
 
 
@@ -581,77 +597,56 @@
 
     SwaggerBootstrapUi.prototype.createApiInfoTable=function (apiInfo,menu) {
         var that=this;
-        that.createTabElement();
-        //查找接口doc
-        that.getDoc().find("#tab1").find(".panel-body").html("")
-        setTimeout(function () {
-            var html = template('contentScript', apiInfo);
-            that.getDoc().find("#tab1").find(".panel-body").html(html)
-            that.markdownDocInit();
+        //that.createTabElement();
+        var dynaTab=template('BootstrapDynaTab',apiInfo);
+        var flag=false;
+        var tabId="tab"+apiInfo.id;
+        var tabHrefId="tabHref"+apiInfo.id;
+        //盘点是否存在
+        if ($('#'+that.globalTabId).tabs('exists', tabId)){
+            $('#'+that.globalTabId).tabs('select', tabId);
+        }else{
+            //不存在,添加
+            var tabObj={id: tabId,hrefId:tabHrefId, tooltip: apiInfo.summary, title: apiInfo.summary,closable: true, content: dynaTab,iconCls:"iconfont icon-APIwendang"};
+            $('#'+that.globalTabId).tabs('add',tabObj);
+            //初始化tab
+            var newTabId="tabsContent"+apiInfo.id;
+
+            $("#"+newTabId).tabs({
+                border:false,
+                tabPosition:'left'
+            })
+
+            var height=that.getDoc().height();
+            var headerHeight=$("#"+that.globalTabId).find("div:first");
+            that.log(headerHeight)
+            var diff=height-headerHeight.height()-37;
+            that.log(diff)
+            var docTextId="docText"+apiInfo.id;
+            var contentDocId="contentDoc"+apiInfo.id;
+            var HomeDocId="HomeDoc"+apiInfo.id;
+            that.markdownDocInit(docTextId,contentDocId);
             //初始化apiInfo响应数据
             that.log("初始化apiInfo响应数据")
             that.log(apiInfo)
             if(apiInfo.responseJson!=null){
-                $(".language-json:first").JSONView(apiInfo.responseJson);
+                setTimeout(function () {
+                    that.log(HomeDocId)
+                    that.log($("#"+HomeDocId))
+                    that.log($("#"+HomeDocId).find(".language-json:first"))
+                    $("#"+HomeDocId).find(".language-json:first").JSONView(apiInfo.responseJson);
+                },400)
+                //$(".language-json:first").JSONView(apiInfo.responseJson);
             }
-        },100)
-        that.log(that.currentInstance);
-        //实现复制文档功能
-        //初始化copy按钮功能
-        var clipboard = new ClipboardJS('#copyDocHref',{
-            text:function () {
-                return $("#docText").val();
-            }
-        });
-        clipboard.on('success', function(e) {
-            layer.msg("复制成功")
-        });
-        clipboard.on('error', function(e) {
-            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-        });
-        that.log(that.currentInstance);
-
-        //创建调试页面
-        //赋值全局参数
-        apiInfo.globalParameters=that.currentInstance.globalParameters;
-        that.getDoc().find("#tab2").find(".panel-body").html("");
-        var html = template('DebugScript', apiInfo);
-        that.getDoc().find("#tab2").find(".panel-body").html(html);
-        //绑定string-array事件
-        that.getDoc().find("#tab2").find(".panel-body").find(".btn-add-string").on("click",function (e) {
-            e.preventDefault();
-            var btn=$(this);
-            that.log(btn);
-            var parentTd=btn.parent();
-            var parentDiv=btn.parent().find(".btn-add-div");
-            var firstInput=parentTd.find("input:first");
-            var divgroup=$('<div class="input-group" style="    margin-top: 5px;"></div>');
-            var cloneEle=firstInput.clone(true);
-            cloneEle.val("");
-            cloneEle.appendTo(divgroup);
-            var spanBtn=$('<span class="input-group-btn"></span>')
-            var delBtn=$('<button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button">-</button>')
-            spanBtn.append(delBtn);
-            divgroup.append(spanBtn);
-            parentDiv.append(divgroup)
-            delBtn.on("click",function (e) {
-                e.preventDefault();
-                $(this).parent().parent().remove();
-            })
+            $(".HomeDoc").css("height",diff);
+            //获取width
+            var HomeDocParentWidth=$(".HomeDocParent").parent().parent().width();
+            $(".HomeDocParent").css("width",HomeDocParentWidth+15);
 
 
-        })
-        //绑定全选事件
-        that.getDoc().find("#tab2").find(".panel-body").find(".parameterCheckAll").on("click",function (e) {
-            var chk=$(this);
-            that.log("是否选中...")
-            var chked=chk.find("input:first").prop("checked");
-            that.log(chked)
-            $("#paramBody").find("input:checkbox").prop("checked",chked);
-        });
-        //如果有文件上传,绑定多文件增加按钮事件
-
-        that.requestSend(apiInfo,menu);
+        }
+        that.log(that.globalTabs)
+        //查找接口doc
 
     }
 
@@ -1667,7 +1662,7 @@
         })
     }
 
-    SwaggerBootstrapUi.prototype.markdownDocInit=function () {
+    SwaggerBootstrapUi.prototype.markdownDocInit=function (docTextId,contentId) {
         var that=this;
         //md2Html的配置
         hljs.configure({useBR: false});
@@ -1692,10 +1687,10 @@
                 return hljs.highlightAuto(code).value;
             }
         });
-        $("#docText").each(function(){
+        $("#"+docTextId).each(function(){
             var md = $(this).val();
             if(md){
-                $("#contentDoc").html(marked(md));
+                $("#"+contentId).html(marked(md));
                 $('pre code').each(function(i, block) {
                     hljs.highlightBlock(block);
                 });
@@ -1760,57 +1755,68 @@
      */
     SwaggerBootstrapUi.prototype.createSecurityElement=function () {
         var that=this;
-        that.getDoc().html("");
+        //that.getDoc().html("");
         setTimeout(function () {
             var html = template('SwaggerBootstrapUiSecurityScript', that.currentInstance);
-            that.getDoc().html(html)
-            //保存事件
-            that.getDoc().find(".btn-save").on("click",function (e) {
-                e.preventDefault();
-                that.log("保存auth事件")
-                var save=$(this);
-                var ptr=save.parent().parent();
-                var data={key:ptr.data("key"),name:ptr.data("name")};
-                var value=ptr.find("input").val();
-                if(!value){
-                    layer.msg("值无效");
-                    return false;
-                }
-                var cacheSecurity={};
-                $.each(that.currentInstance.securityArrs,function (i, sa) {
-                    if(sa.key==data.key&&sa.name==data.name){
-                        sa.value=value;
-                        cacheSecurity.key=sa.key;
-                        cacheSecurity.name=sa.name;
-                        cacheSecurity.value=value;
-
+            //that.getDoc().html(html)
+            if($("#"+that.globalTabId).tabs("exists","SwaggerBootstrapUiSecurityScript")){
+                $("#"+that.globalTabId).tabs("select","SwaggerBootstrapUiSecurityScript")
+            }else{
+                $('#'+that.globalTabId).tabs('add',{
+                    id:"SwaggerBootstrapUiSecurityScript",
+                    title:'Authorize',
+                    content:html,
+                    closable:true
+                });
+                //保存事件
+                that.getDoc().find(".btn-save").on("click",function (e) {
+                    e.preventDefault();
+                    that.log("保存auth事件")
+                    var save=$(this);
+                    var ptr=save.parent().parent();
+                    var data={key:ptr.data("key"),name:ptr.data("name")};
+                    var value=ptr.find("input").val();
+                    if(!value){
+                        layer.msg("值无效");
+                        return false;
                     }
-                })
-                that.log(that.currentInstance);
-                layer.msg("保存成功");
-                //判断是否有保存instancid
-                var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
-                if(cacheSecurityData==undefined||cacheSecurityData==null){
-                    cacheSecurityData=new Array();
-                    cacheSecurityData.push(cacheSecurity);
-                }else{
-                    //存在
-                    var flag=false;
-                    //判断当前id是否存在
-                    $.each(cacheSecurityData,function (i, sa) {
-                        if(sa.key==cacheSecurity.key&&sa.name==cacheSecurity.name){
-                            sa.value=cacheSecurity.value;
-                            flag=true;
+                    var cacheSecurity={};
+                    $.each(that.currentInstance.securityArrs,function (i, sa) {
+                        if(sa.key==data.key&&sa.name==data.name){
+                            sa.value=value;
+                            cacheSecurity.key=sa.key;
+                            cacheSecurity.name=sa.name;
+                            cacheSecurity.value=value;
+
                         }
                     })
-                    if(!flag){
+                    that.log(that.currentInstance);
+                    layer.msg("保存成功");
+                    //判断是否有保存instancid
+                    var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+                    if(cacheSecurityData==undefined||cacheSecurityData==null){
+                        cacheSecurityData=new Array();
                         cacheSecurityData.push(cacheSecurity);
+                    }else{
+                        //存在
+                        var flag=false;
+                        //判断当前id是否存在
+                        $.each(cacheSecurityData,function (i, sa) {
+                            if(sa.key==cacheSecurity.key&&sa.name==cacheSecurity.name){
+                                sa.value=cacheSecurity.value;
+                                flag=true;
+                            }
+                        })
+                        if(!flag){
+                            cacheSecurityData.push(cacheSecurity);
+                        }
                     }
-                }
-                //更新
-                $("#sbu-header").data("cacheSecurity",cacheSecurityData);
-                that.log($("#sbu-header").data("cacheSecurity"));
-            })
+                    //更新
+                    $("#sbu-header").data("cacheSecurity",cacheSecurityData);
+                    that.log($("#sbu-header").data("cacheSecurity"));
+                })
+            }
+
         },100)
         //保存事件
         that.getDoc().find(".btn-save").on("click",function (e) {
@@ -1838,27 +1844,18 @@
      */
     SwaggerBootstrapUi.prototype.createDescriptionElement=function () {
         var that=this;
-        /*var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
-        //修改title
-        $("title").html("").html(that.currentInstance.title)
-        table.append($('<thead><tr><th colspan="2" style="text-align:center">'+that.currentInstance.title+'</th></tr></thead>'));
-        var tbody=$('<tbody></tbody>');
-        tbody.append($('<tr><th class="active">简介</th><td style="text-align: left">'+that.currentInstance.description+'</td></tr>'));
-        tbody.append($('<tr><th class="active">作者</th><td style="text-align: left">'+that.currentInstance.contact+'</td></tr>'));
-        tbody.append($('<tr><th class="active">版本</th><td style="text-align: left">'+that.currentInstance.version+'</td></tr>'));
-        tbody.append($('<tr><th class="active">host</th><td style="text-align: left">'+that.currentInstance.host+'</td></tr>'))
-        tbody.append($('<tr><th class="active">服务url</th><td style="text-align: left">'+that.currentInstance.termsOfService+'</td></tr>'));
-        table.append(tbody);
-        var div=$('<div  style="width:99%;margin:0px auto;"></div>')
-        div.append(table);*/
-        //内容覆盖
-        that.getDoc().html("");
-        //that.getDoc().append(div);
+        var layui=that.layui;
+        var element=layui.element;
 
+
+
+        //内容覆盖
+        //that.getDoc().html("");
         setTimeout(function () {
             var html = template('SwaggerBootstrapUiIntroScript', that.currentInstance);
-            that.getDoc().html(html)
-            //that.introMarkdownDocInit();
+
+            $("#mainTabContent").html(html);
+            element.tabChange('admin-pagetabs',"main");
         },100)
 
 
@@ -1920,10 +1917,23 @@
         var txtDiv=$("<div class='input-inline'><textarea class='form-control' style='width: 100%;height: 100%;' id='txtDoc'></textarea></div>")
         div.append(txtDiv);*/
         //内容覆盖
-        that.getDoc().html("");
+        //that.getDoc().html("");
         setTimeout(function () {
             var html = template('offLinecontentScript', that.currentInstance);
-            that.getDoc().html(html);
+
+            if($("#"+that.globalTabId).tabs("exists","offLinecontentScript")){
+                $("#"+that.globalTabId).tabs("select","offLinecontentScript")
+            }else{
+                $('#'+that.globalTabId).tabs('add',{
+                    id:"offLinecontentScript",
+                    title:'离线文档',
+                    content:html,
+                    closable:true
+                });
+
+            }
+
+           // that.getDoc().html(html);
 
         },100)
         var clipboard = new ClipboardJS('#btnCopy',{
@@ -2817,12 +2827,16 @@
             var handleWidth=handle.width();
             var rightWidth=fullWidth-leftWidth-handleWidth;
             right.css("width",rightWidth);
+            var cheight=$(window).height()-$("#sbu-header").height()-2;
             $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
-            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
+            $("#content").css("height",cheight);
             that.log("resize------------height")
             that.log("window--"+$(window).height())
             that.log("document--"+$(document).height())
             that.log("left--"+$("#leftMenu").height())
+            var headerHeight=$("#"+that.globalTabId).find("div:first");
+            var diff=cheight-headerHeight.height()-37;
+            $(".HomeDoc").css("height",diff);
         })
     }
 
@@ -2831,10 +2845,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
@@ -3222,8 +3236,5 @@
 
     window.SwaggerBootstrapUi=SwaggerBootstrapUi;
 
-    /**
-     * 运行
-     */
-    new SwaggerBootstrapUi().main();
+
 })(jQuery)

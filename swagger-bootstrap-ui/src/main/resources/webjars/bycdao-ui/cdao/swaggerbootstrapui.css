@@ -489,3 +489,7 @@ code {
 .btn-add-string{
     margin-top: 2px;
 }
+
+#sbu-dynamic-tab ul li{
+    white-space: nowrap;
+}
