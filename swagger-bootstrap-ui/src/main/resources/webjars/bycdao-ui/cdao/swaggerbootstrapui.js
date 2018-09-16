@@ -676,6 +676,51 @@
                 ]]
             })
             $("#"+requestTableId).hide();
+            //响应参数
+            var responseTableId="responseParameter"+apiInfo.id;
+            var respdata=[];
+            if(apiInfo.responseParameters!=null&&apiInfo.responseParameters.length>0){
+                respdata=respdata.concat(apiInfo.responseParameters);
+            }
+            if(apiInfo.responseRefParameters!=null&&apiInfo.responseRefParameters.length>0){
+                $.each(apiInfo.responseRefParameters,function (i, ref) {
+                    respdata=respdata.concat(ref.params);
+                })
+            }
+            treetable.render({
+                elem:"#"+responseTableId,
+                data: respdata,
+                field: 'title',
+                treeColIndex: 0,          // treetable新增参数
+                treeSpid: -1,             // treetable新增参数
+                treeIdName: 'd_id',       // treetable新增参数
+                treePidName: 'd_pid',     // treetable新增参数
+                treeDefaultClose: true,   // treetable新增参数
+                treeLinkage: true,        // treetable新增参数
+                cols: [[
+                    {
+                        field: 'name',
+                        title: '参数名称',
+                        width: '20%',
+                    },
+                    {
+                        field: 'description',
+                        title: '说明',
+                        width: '40%',
+                    },
+                    {
+                        field: 'type',
+                        title: '类型',
+                        width: '20%',
+                    },
+                    {
+                        field: 'schemaValue',
+                        title: 'schema',
+                        width: '20%',
+                    }
+                ]]
+            })
+            $("#"+responseTableId).hide();
             //初始化apiInfo响应数据
             that.log("初始化apiInfo响应数据")
             that.log(apiInfo)
@@ -2682,6 +2727,7 @@
                         var props=def["properties"];
                         $.each(props,function (i, p) {
                             var refp=new SwaggerBootstrapUiParameter();
+                            refp.pid=resParam.id;
                             refp.name=p.name;
                             refp.type=p.type;
                             refp.description=$.replaceMultipLineStr(p.description);
