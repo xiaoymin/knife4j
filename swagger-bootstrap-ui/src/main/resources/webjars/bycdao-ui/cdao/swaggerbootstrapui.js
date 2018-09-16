@@ -452,11 +452,11 @@
                             that.deleteGlobalParamsByName(oldname);
                         }
                         if (!that.checkGlobalParamExists(globalParameterInstance)){
-                            that.storeGlobalParam(globalParameterInstance)
+                            that.storeGlobalParam(globalParameterInstance,"globalParameters")
                             //that.currentInstance.globalParameters.push(globalParameterInstance);
                         }else{
                             //存在,更新该参数的值
-                            that.updateGlobalParams(globalParameterInstance);
+                            that.updateGlobalParams(globalParameterInstance,"globalParameters");
                         }
                         that.log("目前全局参数..")
                         that.log(that.currentInstance.globalParameters);
@@ -508,11 +508,11 @@
                         that.deleteGlobalParamsByName(oldname);
                     }
                     if (!that.checkGlobalParamExists(globalParameterInstance)){
-                        that.storeGlobalParam(globalParameterInstance)
+                        that.storeGlobalParam(globalParameterInstance,"globalParameters")
                         //that.currentInstance.globalParameters.push(globalParameterInstance);
                     }else{
                         //存在,更新该参数的值
-                        that.updateGlobalParams(globalParameterInstance);
+                        that.updateGlobalParams(globalParameterInstance,"globalParameters");
                     }
                     that.log("目前全局参数..")
                     that.log(that.currentInstance.globalParameters);
@@ -541,6 +541,24 @@
         },100)
 
 
+    }
+
+    /***
+     * 获取security
+     */
+    SwaggerBootstrapUi.prototype.getSecurityInfos=function () {
+        var that=this;
+        var params=[];
+        if(window.localStorage){
+            var store = window.localStorage;
+            var globalparams=store["securityArrs"];
+            if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
+                params=JSON.parse(globalparams);
+            }
+        }else{
+            params=$("#sbu-header").data("cacheSecurity");
+        }
+        return params;
     }
 
     /***
@@ -588,11 +606,11 @@
         }
         return flag;
     }
-    SwaggerBootstrapUi.prototype.updateGlobalParams=function (param) {
+    SwaggerBootstrapUi.prototype.updateGlobalParams=function (param,key) {
         var that=this;
         if(window.localStorage) {
             var store = window.localStorage;
-            var globalparams=store["globalParameters"];
+            var globalparams=store[key];
             globalparams=JSON.parse(globalparams);
             $.each(globalparams,function (i, gp) {
                 if(gp.name==param.name){
@@ -602,9 +620,9 @@
                 }
             })
             var gbStr=JSON.stringify(globalparams);
-            store.setItem("globalParameters",gbStr);
+            store.setItem(key,gbStr);
         }else{
-            $.each(that.currentInstance.globalParameters,function (i, gp) {
+            $.each(that.currentInstance[key],function (i, gp) {
                 if(gp.name==param.name){
                     gp.in=param.in;
                     gp.value=param.value;
@@ -645,12 +663,12 @@
      * 存储全局变量
      * @param obj
      */
-    SwaggerBootstrapUi.prototype.storeGlobalParam=function (obj) {
+    SwaggerBootstrapUi.prototype.storeGlobalParam=function (obj,key) {
         var that=this;
         //判断浏览器是否支持localStorage
         if(window.localStorage){
             var store=window.localStorage;
-            var globalparams=store["globalParameters"];
+            var globalparams=store[key];
             if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
                 //exists
                 globalparams=JSON.parse(globalparams);
@@ -663,9 +681,9 @@
                 globalparams.push(obj);
             }
             var gbStr=JSON.stringify(globalparams);
-            store.setItem("globalParameters",gbStr);
+            store.setItem(key,gbStr);
         }else{
-            that.currentInstance.globalParameters.push(obj);
+            that.currentInstance[key].push(obj);
         }
     }
     /***
@@ -1942,6 +1960,7 @@
         var tabContetId="layerTab"+tabId;
         setTimeout(function () {
             if(!that.tabExists(tabId)){
+                that.currentInstance.securityArrs=that.getSecurityInfos();
                 var html = template('SwaggerBootstrapUiSecurityScript', that.currentInstance);
                 var tabObj={
                     id:tabId,
@@ -1962,40 +1981,15 @@
                         layer.msg("值无效");
                         return false;
                     }
-                    var cacheSecurity={};
                     $.each(that.currentInstance.securityArrs,function (i, sa) {
                         if(sa.key==data.key&&sa.name==data.name){
                             sa.value=value;
-                            cacheSecurity.key=sa.key;
-                            cacheSecurity.name=sa.name;
-                            cacheSecurity.value=value;
-
+                            that.updateGlobalParams(sa,"securityArrs");
                         }
                     })
                     that.log(that.currentInstance);
                     layer.msg("保存成功");
-                    //判断是否有保存instancid
-                    var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
-                    if(cacheSecurityData==undefined||cacheSecurityData==null){
-                        cacheSecurityData=new Array();
-                        cacheSecurityData.push(cacheSecurity);
-                    }else{
-                        //存在
-                        var flag=false;
-                        //判断当前id是否存在
-                        $.each(cacheSecurityData,function (i, sa) {
-                            if(sa.key==cacheSecurity.key&&sa.name==cacheSecurity.name){
-                                sa.value=cacheSecurity.value;
-                                flag=true;
-                            }
-                        })
-                        if(!flag){
-                            cacheSecurityData.push(cacheSecurity);
-                        }
-                    }
-                    //更新
-                    $("#sbu-header").data("cacheSecurity",cacheSecurityData);
-                    that.log($("#sbu-header").data("cacheSecurity"));
+                    that.currentInstance.securityArrs=that.getSecurityInfos();
                 })
             }
             element.tabChange(that.layTabFilter,tabId);
@@ -2016,8 +2010,10 @@
             $.each(that.currentInstance.securityArrs,function (i, sa) {
                 if(sa.key==data.key&&sa.name==data.name){
                     sa.value=value;
+                    that.updateGlobalParams(sa,"securityArrs");
                 }
             })
+            that.currentInstance.securityArrs=that.getSecurityInfos();
             that.log(that.currentInstance);
         })
 
@@ -2344,7 +2340,8 @@
             var securityDefinitions=menu["securityDefinitions"];
             if(securityDefinitions!=null){
                 //判断是否有缓存cache值
-                var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+                //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+                var cacheSecurityData=that.getSecurityInfos();
                 for(var j in securityDefinitions){
                     var sdf=new SwaggerBootstrapUiSecurityDefinition();
                     var sdobj=securityDefinitions[j];
@@ -2352,13 +2349,19 @@
                     sdf.type=sdobj.type;
                     sdf.name=sdobj.name;
                     sdf.in=sdobj.in;
+                    var flag=false;
                     if(cacheSecurityData!=null&&cacheSecurityData!=undefined){
                         //存在缓存值,更新当前值,无需再次授权
                         $.each(cacheSecurityData,function (i, sa) {
                             if(sa.key==sdf.key&&sa.name==sdf.name){
+                                flag=true;
                                 sdf.value=sa.value;
                             }
                         })
+                    }
+                    if (!flag){
+                        //如果cache不存在,存储
+                        that.storeGlobalParam(sdf,"securityArrs");
                     }
                     that.currentInstance.securityArrs.push(sdf);
                 }
