@@ -392,6 +392,7 @@
         //内容覆盖
         setTimeout(function () {
             if(!that.tabExists(tabId)){
+                that.currentInstance.globalParameters=that.getGlobalParameters();
                 var html = template('GlobalParamScript', that.currentInstance);
                 var tabObj={
                     id:tabId,
@@ -451,7 +452,8 @@
                             that.deleteGlobalParamsByName(oldname);
                         }
                         if (!that.checkGlobalParamExists(globalParameterInstance)){
-                            that.currentInstance.globalParameters.push(globalParameterInstance);
+                            that.storeGlobalParam(globalParameterInstance)
+                            //that.currentInstance.globalParameters.push(globalParameterInstance);
                         }else{
                             //存在,更新该参数的值
                             that.updateGlobalParams(globalParameterInstance);
@@ -506,7 +508,8 @@
                         that.deleteGlobalParamsByName(oldname);
                     }
                     if (!that.checkGlobalParamExists(globalParameterInstance)){
-                        that.currentInstance.globalParameters.push(globalParameterInstance);
+                        that.storeGlobalParam(globalParameterInstance)
+                        //that.currentInstance.globalParameters.push(globalParameterInstance);
                     }else{
                         //存在,更新该参数的值
                         that.updateGlobalParams(globalParameterInstance);
@@ -539,6 +542,25 @@
 
 
     }
+
+    /***
+     * 获取全局参数
+     * @returns {Array}
+     */
+    SwaggerBootstrapUi.prototype.getGlobalParameters=function () {
+        var that=this;
+        var params=[];
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var globalparams=store["globalParameters"];
+            if(globalparams!=undefined&&globalparams!=null){
+                params=JSON.parse(globalparams);
+            }
+        }else{
+            params=that.currentInstance.globalParameters;
+        }
+        return params;
+    }
     /***
      * 判断全局参数是否存在
      * @param param
@@ -546,22 +568,50 @@
     SwaggerBootstrapUi.prototype.checkGlobalParamExists=function (param) {
         var that=this;
         var flag=false;
-        $.each(that.currentInstance.globalParameters,function (i, gp) {
-            if(gp.name==param.name){
-                flag=true;
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var globalparams=store["globalParameters"];
+            if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
+                globalparams=JSON.parse(globalparams);
+                $.each(globalparams,function (i, gp) {
+                    if(gp.name==param.name){
+                        flag=true;
+                    }
+                })
             }
-        })
+        }else{
+            $.each(that.currentInstance.globalParameters,function (i, gp) {
+                if(gp.name==param.name){
+                    flag=true;
+                }
+            })
+        }
         return flag;
     }
     SwaggerBootstrapUi.prototype.updateGlobalParams=function (param) {
         var that=this;
-        $.each(that.currentInstance.globalParameters,function (i, gp) {
-            if(gp.name==param.name){
-                gp.in=param.in;
-                gp.value=param.value;
-                gp.txtValue=param.value;
-            }
-        })
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var globalparams=store["globalParameters"];
+            globalparams=JSON.parse(globalparams);
+            $.each(globalparams,function (i, gp) {
+                if(gp.name==param.name){
+                    gp.in=param.in;
+                    gp.value=param.value;
+                    gp.txtValue=param.value;
+                }
+            })
+            var gbStr=JSON.stringify(globalparams);
+            store.setItem("globalParameters",gbStr);
+        }else{
+            $.each(that.currentInstance.globalParameters,function (i, gp) {
+                if(gp.name==param.name){
+                    gp.in=param.in;
+                    gp.value=param.value;
+                    gp.txtValue=param.value;
+                }
+            })
+        }
     }
     /***
      * 根据名称删除全局参数数组
@@ -569,11 +619,53 @@
      */
     SwaggerBootstrapUi.prototype.deleteGlobalParamsByName=function (name) {
         var that=this;
-        for(var i=0;i<that.currentInstance.globalParameters.length;i++){
-            var gp=that.currentInstance.globalParameters[i];
-            if (gp.name==name){
-                that.currentInstance.globalParameters.splice(i,1);
+        if(window.localStorage){
+            var store=window.localStorage;
+            var globalparams=store["globalParameters"];
+            globalparams=JSON.parse(globalparams);
+            for(var i=0;i<globalparams.length;i++){
+                var gp=globalparams[i];
+                if (gp.name==name){
+                    globalparams.splice(i,1);
+                }
             }
+            var gbStr=JSON.stringify(globalparams);
+            store.setItem("globalParameters",gbStr);
+        }else{
+            for(var i=0;i<that.currentInstance.globalParameters.length;i++){
+                var gp=that.currentInstance.globalParameters[i];
+                if (gp.name==name){
+                    that.currentInstance.globalParameters.splice(i,1);
+                }
+            }
+        }
+
+    }
+    /***
+     * 存储全局变量
+     * @param obj
+     */
+    SwaggerBootstrapUi.prototype.storeGlobalParam=function (obj) {
+        var that=this;
+        //判断浏览器是否支持localStorage
+        if(window.localStorage){
+            var store=window.localStorage;
+            var globalparams=store["globalParameters"];
+            if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
+                //exists
+                globalparams=JSON.parse(globalparams);
+                that.log("获取缓存............")
+                that.log(globalparams)
+                globalparams.push(obj);
+            }else{
+                //not exists
+                globalparams=new Array();
+                globalparams.push(obj);
+            }
+            var gbStr=JSON.stringify(globalparams);
+            store.setItem("globalParameters",gbStr);
+        }else{
+            that.currentInstance.globalParameters.push(obj);
         }
     }
     /***
@@ -759,7 +851,8 @@
     SwaggerBootstrapUi.prototype.createDebugTab=function(apiInfo,menu){
         var that=this;
         //赋值全局参数
-        apiInfo.globalParameters=that.currentInstance.globalParameters;
+        //apiInfo.globalParameters=that.currentInstance.globalParameters;
+        apiInfo.globalParameters=that.getGlobalParameters();
         var debugContentId="DebugDoc"+apiInfo.id;
         var html = template('DebugScript', apiInfo);
         $("#"+debugContentId).html("").html(html)
