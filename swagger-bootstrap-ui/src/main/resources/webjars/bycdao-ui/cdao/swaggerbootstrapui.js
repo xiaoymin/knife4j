@@ -620,7 +620,7 @@
             var docTextId="docText"+apiInfo.id;
             var contentDocId="contentDoc"+apiInfo.id;
             var HomeDocId="HomeDoc"+apiInfo.id;
-            that.markdownDocInit(docTextId,contentDocId);
+            //that.markdownDocInit(docTextId,contentDocId);
             var requestTableId="requestParameter"+apiInfo.id;
             var data=[];
             if(apiInfo.parameters!=null&&apiInfo.parameters.length>0){
@@ -734,6 +734,20 @@
                 editor.getSession().setMode("ace/mode/json");
                 editor.setTheme("ace/theme/eclipse");
             }
+
+            //初始化copy按钮功能
+            var clipboard = new ClipboardJS('#copyDocHref'+apiInfo.id,{
+                text:function () {
+                    return $("#docText"+apiInfo.id).val();
+                }
+            });
+            clipboard.on('success', function(e) {
+                layer.msg("复制成功")
+            });
+            clipboard.on('error', function(e) {
+                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+            });
+            that.log(that.currentInstance);
         }
     }
 
@@ -2507,7 +2521,9 @@
                             if (schemaObject.hasOwnProperty("$ref")){
                                 var ref=m["schema"]["$ref"];
                                 var className=$.getClassName(ref);
-                                minfo.type=className;
+                                if(minfo.type!="array"){
+                                    minfo.type=className;
+                                }
                                 minfo.schemaValue=className;
                                 var def=that.getDefinitionByName(className);
                                 if(def!=null){
@@ -2737,7 +2753,8 @@
                             //判断类型是否基础类型
                             if(!$.checkIsBasicType(p.refType)){
                                 refp.schemaValue=p.refType;
-                                if(resParam.name!=refp.name){
+                                refp.schema=true;
+                                if(resParam.name!=refp.name||resParam.schemaValue!=p.refType){
                                     var deepDef=that.getDefinitionByName(p.refType);
                                     deepResponseRefParameter(swpinfo,that,deepDef,refp);
                                 }
@@ -2768,9 +2785,12 @@
                         refp.pid=minfo.id;
                         refp.name=p.name;
                         refp.type=p.type;
-                        if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
-                            //修复针对schema类型的参数,显示类型为schema类型
-                            refp.type=p.refType;
+                        //判断非array
+                        if(p.type!="array"){
+                            if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
+                                //修复针对schema类型的参数,显示类型为schema类型
+                                refp.type=p.refType;
+                            }
                         }
                         refp.in=minfo.in;
                         refp.require=p.required;
@@ -2779,7 +2799,9 @@
                         //判断类型是否基础类型
                         if(!$.checkIsBasicType(p.refType)){
                             refp.schemaValue=p.refType;
-                            if(minfo.name!=refp.name){
+                            refp.schema=true;
+                            //属性名称不同,或者ref类型不同
+                            if(minfo.name!=refp.name||minfo.schemaValue!=p.refType){
                                 var deepDef=that.getDefinitionByName(p.refType);
                                 deepRefParameter(refp,that,deepDef,apiInfo);
                             }

@@ -703,6 +703,92 @@
                         <p><strong>响应示例</strong></p>
                         <div id="editorSample{{id}}" style="width: auto;height: 400px;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
                     </div>
+                    <textarea rows="10" cols="10" id="docText{{id}}" style="display: none;">
+
+**接口地址** `{{showUrl}}`
+
+
+**请求方式** `{{methodType}}`
+
+
+**consumes** `{{consumes}}`
+
+
+**produces** `{{produces}}`
+
+
+**接口描述** `{{description}}`
+
+**请求参数**
+{{ if parameters && parameters.length>0 }}
+| 参数名称         | 说明     |     参数类型 |  是否必须      |  类型   |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+{{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if refparameters && refparameters.length>0 }}
+**schema属性说明**
+  {{each refparameters}}
+**{{$value.name}}**
+
+| 参数名称         | 说明    |     参数类型 |  是否必须   |  类型  |  schema |
+| ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
+| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
+{{/each}}
+
+{{/if}}
+
+
+**响应状态**
+{{ if responseCodes}}
+| 状态码         | 说明                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
+{{/each}}
+{{else}}
+暂无
+{{/if}}
+
+
+**响应参数**
+{{ if responseParameters && responseParameters.length>0 }}
+| 参数名称         | 说明                             |    类型 |  schema |
+| ------------ | -------------------|-------|----------- |
+{{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if responseRefParameters && responseRefParameters.length>0 }}
+**schema属性说明**
+  {{each responseRefParameters}}
+**{{$value.name}}**
+
+| 属性名称         |  说明          |   类型  |  schema |
+| ------------ | ------------------|--------|----------- |
+{{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{/each}}
+
+{{/if}}
+
+**响应示例**
+
+{{ if responseBasicType }}
+```text
+{{responseText}}
+```
+{{else}}
+```json
+{{responseValue}}
+```
+{{/if}}
+
+</textarea>
                 </div>
             </div>
             <div class="tab-pane fade" id="DebugDoc{{id}}"><p>在线调试</p></div>
