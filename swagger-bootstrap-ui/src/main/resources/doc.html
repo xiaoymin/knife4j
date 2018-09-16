@@ -24,15 +24,13 @@
     <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css" />
 
     <link rel="stylesheet" href="webjars/bycdao-ui/layui/css/layui.css"  media="all">
-    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/sbuadmin.css"  media="all">
+    <link rel="stylesheet" href="webjars/bycdao-ui/ext/sbuadmin.css" media="all">
 
     <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
 
     <script src="webjars/bycdao-ui/jquery/axios.min.js"></script>
-
+    <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap-tabx/css/bootstrap-tabs-x.min.css" />
     <script src="webjars/bycdao-ui/bootstrap-tabx/js/bootstrap-tabs-x.min.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/jquery/easyui/themes/bootstrap/tabs.css" />
 
     <script src="webjars/bycdao-ui/layui/layui.js" charset="utf-8"></script>
     <style type="text/css">
@@ -65,6 +63,14 @@
         }
         .panel-body{
             padding: 5px;
+        }
+
+        .swbu-main p{
+            line-height: 2em;
+            margin: 1em 0;
+        }
+        .swbu-main .layui-table td{
+            border-color: #e6e6e6;
         }
     </style>
     <script>
@@ -644,117 +650,89 @@
 
 <!--动态tab-->
 <script type="text/html" id="BootstrapDynaTab">
-    <div id="tabsContent{{id}}" class="easyui-tabs">
-        <div title="接口说明" data-options="iconCls:'iconfont icon-ic_description'" class="HomeDocParent">
-            <div class="tab-pane fade in active HomeDoc" id="HomeDoc{{id}}"  style="overflow-y: auto;">
+    <div class='tabs-x tabs-left tabs-krajee' id="tabsContent{{id}}" >
+        <ul id="myTab-tabs-left" class="nav nav-tabs" role="tablist">
+            <li class="active"><a href="#HomeDoc{{id}}" role="tab" data-toggle="tab"><i class="iconfont icon-ic_description"></i> 文档</a></li>
+            <li><a href="#DebugDoc{{id}}" role="tab-kv" data-toggle="tab"><i class="iconfont icon-debug"></i> 调试</a></li>
+        </ul>
+        <div id="myTabContent-tabs-left" class="tab-content">
+            <div class="tab-pane fade in active" id="HomeDoc{{id}}" >
                 <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
                     <div style="    float: left;width: 90%;font-size: 20px;">{{summary}}</div>
                     <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHref{{id}}" style="cursor: pointer;text-decoration: none;
 " href="javascript:void(0);">复制文档</a></div>
                 </div>
                 <div class="swbu-main" itemprop="articleBody">
-                    <div id="contentDoc{{id}}"></div>
-                    <!--<textarea rows="10" cols="10" id="docText">-->
-                    <textarea rows="10" cols="10" id="docText{{id}}" style="display: none;">
-
-**接口地址** `{{showUrl}}`
-
-
-**请求方式** `{{methodType}}`
-
-
-**consumes** `{{consumes}}`
-
-
-**produces** `{{produces}}`
-
-
-**接口描述** `{{description}}`
-
-**请求参数**
-{{ if parameters && parameters.length>0 }}
-| 参数名称         | 说明     |     参数类型 |  是否必须      |  类型   |  schema  |
-| ------------ | -------------------------------- |-----------|--------|----|--- |
-{{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
-            {{/each}}
-{{else}}
-暂无
-{{/if}}
-
-{{ if refparameters && refparameters.length>0 }}
-**schema属性说明**
-  {{each refparameters}}
-**{{$value.name}}**
-
-| 参数名称         | 说明    |     参数类型 |  是否必须   |  类型  |  schema |
-| ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
-| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
-{{/each}}
-
-{{/if}}
-
-
-**响应状态**
-{{ if responseCodes}}
-| 状态码         | 说明                             |    schema                         |
-| ------------ | -------------------------------- |---------------------- |
-{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
-{{/each}}
-{{else}}
-暂无
-{{/if}}
-
-
-**响应参数**
-{{ if responseParameters && responseParameters.length>0 }}
-| 参数名称         | 说明                             |    类型 |  schema |
-| ------------ | -------------------|-------|----------- |
-{{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
-            {{/each}}
-{{else}}
-暂无
-{{/if}}
-
-{{ if responseRefParameters && responseRefParameters.length>0 }}
-**schema属性说明**
-  {{each responseRefParameters}}
-**{{$value.name}}**
-
-| 属性名称         |  说明          |   类型  |  schema |
-| ------------ | ------------------|--------|----------- |
-{{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
-            {{/each}}
-{{/each}}
-
-{{/if}}
-
-**响应示例**
-
-{{ if responseBasicType }}
-```text
-{{responseText}}
-```
-{{else}}
-```json
-{{responseValue}}
-```
-{{/if}}
-
-</textarea>
+                    <div id="contentDoc{{id}}">
+                        <p><strong>接口地址</strong> <code style="background-color: transparent;">{{showUrl}}</code></p>
+                        <p><strong>请求方式</strong> <code style="background-color: transparent;">{{methodType}}</code></p>
+                        <p><strong>consumes</strong> <code style="background-color: transparent;">{{consumes}}</code></p>
+                        <p><strong>produces</strong> <code style="background-color: transparent;">{{produces}}</code></p>
+                        <p><strong>接口描述</strong> <code style="background-color: transparent;">{{description}}</code></p>
+                        <p><strong>请求参数</strong></p>
+                        <table id="requestParameter{{id}}" class="layui-table"  lay-filter="requestParameter{{id}}">
+                        </table>
+                        <p><strong>响应状态</strong></p>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>状态码</th>
+                                <th>说明</th>
+                                <th>schema</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{ if responseCodes}}
+                                {{each responseCodes}}
+                                <tr>
+                                    <td>{{$value.code}}</td>
+                                    <td>{{$value.description}}</td>
+                                    <td>{{$value.schema}}</td>
+                                </tr>
+                                {{/each}}
+                            {{else}}
+                                <tr>
+                                    <td colspan="3" style="text-align: center;">暂无</td>
+                                </tr>
+                            {{/if}}
+                            </tbody>
+                        </table>
+                        <p><strong>响应参数</strong></p>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>参数名称</th>
+                                <th>说明</th>
+                                <th>类型</th>
+                                <th>schema</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{ if responseParameters && responseParameters.length>0 }}
+                                {{each responseParameters}}
+                                    <tr>
+                                        <td>{{$value.name}}</td>
+                                        <td>{{$value.description}}</td>
+                                        <td>{{$value.type}}</td>
+                                        <td>{{$value.schemaValue}}</td>
+                                    </tr>
+                                {{/each}}
+                            {{else}}
+                                <tr>
+                                    <td colspan="4" style="text-align: center;">暂无</td>
+                                </tr>
+                            {{/if}}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="DebugDoc{{id}}"><p>在线调试</p></div>
         </div>
-        <div title="在线调试" data-options="iconCls:'iconfont icon-debug'" >
-            <ul class="easyui-tree" data-options="url:'tree_data1.json',method:'get',animate:true"></ul>
-        </div>
-
     </div>
-
 </script>
 <!--SwaggerBootstrapUi简介-->
 <script type="text/html" id="SwaggerBootstrapUiIntroScript">
-
-
     <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
         <div style="margin-top: 15px;">
             <div class="swbu-main" itemprop="sbuarticleBody">
@@ -923,7 +901,7 @@
         })
 
         layui.config({
-            base: 'webjars/bycdao-ui/cdao/'
+            base: 'webjars/bycdao-ui/ext/'
         }).use([ 'sbuadmin', 'element'], function () {
             var $ = layui.$;
             var admin=layui.sbuadmin;

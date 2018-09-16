@@ -24,6 +24,7 @@
         this.globalTabId="sbu-dynamic-tab";
         this.globalTabs=new Array();
         this.layui=options.layui;
+        this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
     }
     /***
@@ -600,35 +601,81 @@
 
     SwaggerBootstrapUi.prototype.createApiInfoTable=function (apiInfo,menu) {
         var that=this;
-        //that.createTabElement();
-        var dynaTab=template('BootstrapDynaTab',apiInfo);
-        var flag=false;
+        var element=that.layui.element;
+        var treetable=that.treetable;
+
         var tabId="tab"+apiInfo.id;
-        var tabHrefId="tabHref"+apiInfo.id;
-        //盘点是否存在
-        if ($('#'+that.globalTabId).tabs('exists', tabId)){
-            $('#'+that.globalTabId).tabs('select', tabId);
+        //判断tabId是否存在
+        if(that.tabExists(tabId)){
+            element.tabChange(that.layTabFilter,tabId);
         }else{
+            //that.createTabElement();
+            var dynaTab=template('BootstrapDynaTab',apiInfo);
             //不存在,添加
-            var tabObj={id: tabId,hrefId:tabHrefId, tooltip: apiInfo.summary, title: apiInfo.summary,closable: true, content: dynaTab,iconCls:"iconfont icon-APIwendang"};
-            $('#'+that.globalTabId).tabs('add',tabObj);
-            //初始化tab
-            var newTabId="tabsContent"+apiInfo.id;
-
-            $("#"+newTabId).tabs({
-                border:false,
-                tabPosition:'left'
-            })
-
-            var height=that.getDoc().height();
-            var headerHeight=$("#"+that.globalTabId).find("div:first");
-            that.log(headerHeight)
-            var diff=height-headerHeight.height()-37;
-            that.log(diff)
+            var tabObj={id: tabId, title: apiInfo.summary, content: dynaTab};
+            element.tabAdd(that.layTabFilter, tabObj);
+            element.tabChange(that.layTabFilter,tabId);
+            that.tabFinallyRight();
             var docTextId="docText"+apiInfo.id;
             var contentDocId="contentDoc"+apiInfo.id;
             var HomeDocId="HomeDoc"+apiInfo.id;
             that.markdownDocInit(docTextId,contentDocId);
+            var requestTableId="requestParameter"+apiInfo.id;
+            var data=[];
+            if(apiInfo.parameters!=null&&apiInfo.parameters.length>0){
+                data=data.concat(apiInfo.parameters);
+            }
+            if(apiInfo.refparameters!=null&&apiInfo.refparameters.length>0){
+                $.each(apiInfo.refparameters,function (i, ref) {
+                    data=data.concat(ref.params);
+                })
+            }
+            that.log("treeTable----------------data-------------------------")
+            that.log(data);
+            treetable.render({
+              elem:"#"+requestTableId,
+                data: data,
+                field: 'title',
+                treeColIndex: 0,          // treetable新增参数
+                treeSpid: -1,             // treetable新增参数
+                treeIdName: 'd_id',       // treetable新增参数
+                treePidName: 'd_pid',     // treetable新增参数
+                treeDefaultClose: true,   // treetable新增参数
+                treeLinkage: true,        // treetable新增参数
+                cols: [[
+                    {
+                        field: 'name',
+                        title: '参数名称',
+                        width: '20%',
+                    },
+                    {
+                        field: 'description',
+                        title: '说明',
+                        width: '20%',
+                    },
+                    {
+                        field: 'in',
+                        title: '请求类型',
+                        width: '10%',
+                    },
+                    {
+                        field: 'require',
+                        title: '必填',
+                        width: '10%',
+                    },
+                    {
+                        field: 'type',
+                        title: '类型',
+                        width: '20%',
+                    },
+                    {
+                        field: 'schemaValue',
+                        title: 'schema',
+                        width: '20%',
+                    }
+                ]]
+            })
+            $("#"+requestTableId).hide();
             //初始化apiInfo响应数据
             that.log("初始化apiInfo响应数据")
             that.log(apiInfo)
@@ -641,16 +688,7 @@
                 },400)
                 //$(".language-json:first").JSONView(apiInfo.responseJson);
             }
-            $(".HomeDoc").css("height",diff);
-            //获取width
-            var HomeDocParentWidth=$(".HomeDocParent").parent().parent().width();
-            $(".HomeDocParent").css("width",HomeDocParentWidth+15);
-
-
         }
-        that.log(that.globalTabs)
-        //查找接口doc
-
     }
 
     /***
@@ -2680,6 +2718,7 @@
                     var props=def["properties"];
                     $.each(props,function (i, p) {
                         var refp=new SwaggerBootstrapUiParameter();
+                        refp.pid=minfo.id;
                         refp.name=p.name;
                         refp.type=p.type;
                         if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
@@ -3095,6 +3134,9 @@
         this.txtValue=null;
         //枚举类型
         this.enum=null;
+
+        this.id="param"+Math.round(Math.random()*1000000);
+        this.pid="-1";
     }
     /***
      * 响应码

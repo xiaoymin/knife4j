@@ -1,6 +1,7 @@
-layui.define(['layer','element'], function (exports) {
+layui.define(['layer','element','treetable','form'], function (exports) {
     var $ = layui.$;
     var element=layui.element;
+    var treetable=layui.treetable;
     var admin = {
         // 窗口大小改变监听
         onResize: function () {
@@ -42,7 +43,7 @@ layui.define(['layer','element'], function (exports) {
             /**
              * 运行
              */
-            new SwaggerBootstrapUi({layui:layui}).main();
+            new SwaggerBootstrapUi({layui:layui,treetable:treetable}).main();
         }
     };
 
