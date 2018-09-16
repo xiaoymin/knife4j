@@ -2441,8 +2441,8 @@
         //添加basePath
         var basePath=that.currentInstance.basePath;
         var newfullPath=that.currentInstance.host;
-
         var basePathFlag=false;
+        //basePath="/addd/";
         if (basePath!=""&&basePath!="/"){
             newfullPath+=basePath;
             //如果非空,非根目录
@@ -2452,6 +2452,7 @@
         //截取字符串
         var newurl=newfullPath.substring(newfullPath.indexOf("/"));
         that.log("新的url:"+newurl)
+        newurl=newurl.replace("//","/");
         swpinfo.showUrl=newurl;
         swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=newurl;
