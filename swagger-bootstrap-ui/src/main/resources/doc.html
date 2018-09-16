@@ -12,8 +12,6 @@
     <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap/css/bootstrap.min.css" />
     <script type="text/javascript" src="webjars/bycdao-ui/jquery/clipboard/clipboard.min.js"></script>
     <script type="text/javascript" src="webjars/bycdao-ui/layer3.0.3/layer.js"></script>
-    <link rel="stylesheet" href="webjars/bycdao-ui/jsonview/jquery.jsonview.min.css" />
-    <script type="text/javascript" src="webjars/bycdao-ui/jsonview/jquery.jsonview.min.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/layer3.0.3/skin/default/layer.css" />
     <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/docco.css" />
     <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/style.css" />
@@ -703,7 +701,7 @@
                         <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
                         </table>
                         <p><strong>响应示例</strong></p>
-                        <div id="editorSample{{id}}" style="width: auto;height: 400px;bottom: 20px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
+                        <div id="editorSample{{id}}" style="width: auto;height: 400px;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
                     </div>
                 </div>
             </div>

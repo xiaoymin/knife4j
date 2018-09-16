@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Title</title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="admin.css"  media="all">
+    <link rel="stylesheet" type="text/css" href="iconfont/iconfont.css" />
+<body>
+<div><button id="addTab" >增加Tab</button></div>
+
+<div class="layui-layout layui-layout-admin open-tab">
+    <div class="layui-body">
+        <div class="layui-tab" lay-allowclose="true" lay-filter="admin-pagetabs">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="main"> 网站设置</li>
+            </ul>
+            <div class="layui-tab-content" style="height: 150px;">
+                <div class="layui-tab-item layui-show">
+                    1. 我个人比较喜欢卡片风格的，所以你发现又是以卡片的风格举例
+                    2. 删除功能适用于所有风格
+                </div>
+            </div>
+        </div>
+        <div class="admin-tabs-control iconfont icon-tab-left" ew-event="leftPage"></div>
+        <div class="admin-tabs-control iconfont icon-tab-right" ew-event="rightPage"></div>
+        <div class="admin-tabs-control iconfont icon-xiangxiazhankai">
+            <ul class="layui-nav admin-tabs-select" lay-filter="admin-pagetabs-nav">
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="javascript:;"><span class="layui-nav-more"></span></a>
+                    <dl class="layui-nav-child layui-anim-fadein layui-anim layui-anim-upbit">
+                        <dd ew-event="closeThisTabs" lay-unselect=""><a href="javascript:;">关闭当前标签页</a></dd>
+                        <dd ew-event="closeOtherTabs" lay-unselect=""><a href="javascript:;">关闭其它标签页</a></dd>
+                        <dd ew-event="closeAllTabs" lay-unselect=""><a href="javascript:;">关闭全部标签页</a></dd>
+                    </dl>
+                </li>
+                <span class="layui-nav-bar" style="left: 20px; top: 35px; width: 0px; opacity: 0;"></span></ul>
+        </div>
+
+    </div>
+</div>
+<script src="layui/layui.js" charset="utf-8"></script>
+<script>
+    layui.config({
+        base: ''
+    }).use([ 'admin', 'element'], function () {
+        var $ = layui.$;
+        var admin=layui.admin;
+
+        admin.rollPage('auto');
+
+
+        //index.bindEvent();
+    });
+</script>
+
+</body>
+</html>
