@@ -389,9 +389,9 @@
             <span class="input-group-btn">
                 <button class="btn btn-default btn-info" type="button">{{methodType}}</button>
             </span>
-            <input type="text" id="txtreqUrl" data-originalurl="<%=originalUrl%>" class="form-control" value="<%=url%>">
+            <input type="text" id="txtreqUrl{{id}}" data-originalurl="<%=originalUrl%>" class="form-control" value="<%=url%>">
             <span class="input-group-btn">
-                <button  class="btn btn-default btn-primary btnRequest" type="button"> 发 送 </button>
+                <button  class="btn btn-default btn-primary btnRequest" id="btnRequest{{id}}" type="button"> 发 送 </button>
             </span>
         </div>
         <div style="margin-top: 15px;">
@@ -402,11 +402,11 @@
                 <%}%>
 
                 <%if(fileform){%>
-                <form id="uploadForm"  target="uploadIframe" action="<%=url%>" type="" enctype="multipart/form-data" method="{{methodType}}">
+                <form id="uploadForm{{id}}"  target="uploadIframe{{id}}" action="<%=url%>" type="" enctype="multipart/form-data" method="{{methodType}}">
                     <table class="">
                         <thead>
                         <tr>
-                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll">
+                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll" id="parameterCheckAll{{id}}">
                                 <label style="font-weight: bold;">
                                     <input type="checkbox" checked> 全选
                                 </label>
@@ -414,10 +414,9 @@
                             <th>参数类型</th>
                             <th>参数名称</th>
                             <th>参数值</th>
-                            <th>操作</th>
                         </tr>
                         </thead>
-                        <tbody id="paramBody">
+                        <tbody id="paramBody{{id}}">
                         <!--遍历 是否有全局参数--->
                         <%if(globalParameters!=null && globalParameters.length>0){ %>
                             <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
@@ -444,9 +443,6 @@
                                                 data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                             <%}%>
                                         <%}%>
-                                    </td>
-                                    <td width="5%">
-                                        <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
                                     </td>
                                 </tr>
                             <%}%>
@@ -492,22 +488,19 @@
                                     <%}%>
                                     <%}%>
                                 </td>
-                                <td width="5%">
-                                    <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
-                                </td>
                             </tr>
                         <%}%>
                         </tbody>
                     </table>
                 </form>
-                <div id="resptab" class="tabs-container" >
-                    <iframe name="uploadIframe" id="uploadIframe" style="border: none;height: 1%;display: none;"></iframe>
+                <div id="resptab{{id}}" class="tabs-container" >
+                    <iframe name="uploadIframe{{id}}" id="uploadIframe{{id}}" style="border: none;height: 1%;display: none;"></iframe>
                 </div>
                 <%}else{%>
                     <table class="">
                         <thead>
                         <tr>
-                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll">
+                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll"  id="parameterCheckAll{{id}}">
                                 <label style="font-weight: bold;">
                                     <input type="checkbox" checked> 全选
                                 </label>
@@ -515,10 +508,9 @@
                             <th>参数类型</th>
                             <th>参数名称</th>
                             <th>参数值</th>
-                            <th>操作</th>
                         </tr>
                         </thead>
-                        <tbody id="paramBody">
+                        <tbody id="paramBody{{id}}">
                         <!--遍历 是否有全局参数--->
                         <%if(globalParameters!=null && globalParameters.length>0){ %>
                         <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
@@ -545,9 +537,6 @@
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                 <%}%>
                                 <%}%>
-                            </td>
-                            <td width="5%">
-                                <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
                             </td>
                         </tr>
                         <%}%>
@@ -590,13 +579,10 @@
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                         <% if(param.type=="array"){%>
                                 <div class="btn-add-div"></div>
-                                <button class="btn btn-default btn-add-string" >增加</button>
+                                <button class="btn btn-default btn-add-string"  id="btn-add-string{{id}}">增加</button>
                                         <%}%>
                                     <%}%>
                                 <%}%>
-                            </td>
-                            <td width="5%">
-                                <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
                             </td>
                         </tr>
                         <%}%>
@@ -607,7 +593,23 @@
                 <%}%>
             </div>
         </div>
-        <div class="responsebody">
+        <div class="responsebody{{id}}" id="responsebody{{id}}" style="display: none;">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <ul class="layui-tab-title" style="padding: 0px;width: 98%;margin-left: 10px;">
+                    <li class="layui-this">响应内容</li>
+                    <li>Raw</li>
+                    <li>Headers</li>
+                    <li>Curl</li>
+                </ul>
+                <div class="layui-tab-content" id="layuiresponsecontentmain{{id}}" style="height: 100px;
+    margin-top: 0px;left: 0px;position: absolute;width: 98%;margin-left: 10px;">
+                    <div class="layui-tab-item layui-show" id="respcontent{{id}}">暂无</div>
+                    <div class="layui-tab-item" id="respraw{{id}}">暂无</div>
+                    <div class="layui-tab-item" id="respheaders{{id}}">暂无</div>
+                    <div class="layui-tab-item" id="respcurl{{id}}">暂无</div>
+                </div>
+                <div style="right: 30px;position: absolute;margin-top: 8px;z-index: 9999;" id="responsestatus{{id}}"><span class="debug-span-label">响应码:</span><span class="debug-span-value">200 OK</span>  &nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">耗时:</span><span class="debug-span-value">161 ms</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">大小:</span><span class="debug-span-value">120 b</span></div>
+            </div>
         </div>
     </div>
 </script>
@@ -791,7 +793,10 @@
 </textarea>
                 </div>
             </div>
-            <div class="tab-pane fade" id="DebugDoc{{id}}"><p>在线调试</p></div>
+            <div class="tab-pane fade" id="DebugDoc{{id}}"><p>在线调试</p>
+
+
+            </div>
         </div>
     </div>
 </script>

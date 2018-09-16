@@ -165,3 +165,14 @@
     text-decoration: none;
 }
 
+.layui-tab-ext{
+    padding: 0 0px 0 0px;
+}
+.layui-tab-item1{
+    bottom: 0;
+    overflow-y: scroll;
+    /* padding: 15px; */
+    right: 0;
+    /* top: 40px; */
+    left: 0;
+}
