@@ -2,21 +2,6 @@ layui.define(['layer','element'], function (exports) {
     var $ = layui.$;
     var element=layui.element;
     var admin = {
-        isRefresh: false,
-        // 设置侧栏折叠
-        flexible: function (expand) {
-            var isExapnd = $('.layui-layout-admin').hasClass('admin-nav-mini');
-            if (isExapnd == !expand) {
-                return;
-            }
-            if (expand) {
-                $('.layui-layout-admin').removeClass('admin-nav-mini');
-            } else {
-                $('.layui-layout-admin').addClass('admin-nav-mini');
-            }
-            admin.onResize();
-        },
-
         // 窗口大小改变监听
         onResize: function () {
             if (config.autoRender) {
@@ -70,23 +55,6 @@ layui.define(['layer','element'], function (exports) {
         // 右滑动tab
         rightPage: function () {
             admin.rollPage();
-        },
-        // 关闭当前选项卡
-        closeThisTabs: function () {
-            var $title = $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
-            if ($title.find('li').first().hasClass('layui-this')) {
-                return;
-            }
-            $title.find('li.layui-this').find(".icon-sbu-tab-close").trigger("click");
-        },
-        // 关闭其他选项卡
-        closeOtherTabs: function () {
-            $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0):not(.layui-this)').find(".icon-sbu-tab-close").trigger("click");
-        },
-        // 关闭所有选项卡
-        closeAllTabs: function () {
-            $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0)').find(".icon-sbu-tab-close").trigger("click");
-            element.tabChange('admin-pagetabs', "main");
         },
         addTabTest:function () {
             console.log("addTab..")

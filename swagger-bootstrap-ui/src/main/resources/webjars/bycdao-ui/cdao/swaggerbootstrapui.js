@@ -40,8 +40,13 @@
         that.createGroupElement();
         //搜索
         that.searchEvents();
+        //tab事件
+        that.tabCloseEventsInit();
 
     }
+
+
+
     /***
      * 搜索按钮事件
      */
@@ -1756,12 +1761,47 @@
     SwaggerBootstrapUi.prototype.tabExists=function (tabId) {
         var that=this;
         var flag=false;
-        $.each(that.globalTabs,function (i, tag) {
-            if (tag.id==tabId){
+        var tabUl=$('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
+        tabUl.find("li").each(function (i, x) {
+            var layId=$(x).attr("lay-id");
+            if (layId==tabId){
                 flag=true;
             }
         })
         return flag;
+    }
+
+    /***
+     * tab点击关闭事件
+     */
+    SwaggerBootstrapUi.prototype.tabCloseEventsInit=function () {
+        var that=this;
+        var element=that.layui.element;
+        //关闭当前tab
+        $("#closeThisTabs").on("click",function (e) {
+            var tabArr=new Array();
+            e.preventDefault();
+            var $title = $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
+            if ($title.find('li').first().hasClass('layui-this')) {
+                return;
+            }
+            var close=$title.find('li.layui-this').find(".icon-sbu-tab-close");
+            close.trigger("click");
+        })
+
+        //关闭其它tab
+        $("#closeOtherTabs").on("click",function (e) {
+            e.preventDefault();
+            $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0):not(.layui-this)').find(".icon-sbu-tab-close").trigger("click");
+        })
+        //关闭全部tab
+        $("#closeAllTabs").on("click",function (e) {
+            e.preventDefault();
+            $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0)').find(".icon-sbu-tab-close").trigger("click");
+            element.tabChange('admin-pagetabs', "main");
+        })
+
+
     }
     /***
      * tab最右显示
