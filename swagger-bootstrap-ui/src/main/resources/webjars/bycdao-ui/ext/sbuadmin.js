@@ -37,13 +37,13 @@ layui.define(['layer','element','treetable','form'], function (exports) {
                 $tabTitle.scrollLeft(left + 150);
             }
         },
-        run:function () {
+        run:function (ace) {
             console.log("run..........")
             admin.rollPage('auto');
             /**
              * 运行
              */
-            new SwaggerBootstrapUi({layui:layui,treetable:treetable}).main();
+            new SwaggerBootstrapUi({layui:layui,treetable:treetable,ace:ace}).main();
         }
     };
 

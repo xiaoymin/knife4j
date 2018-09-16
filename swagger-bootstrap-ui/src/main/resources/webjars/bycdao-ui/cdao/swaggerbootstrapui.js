@@ -24,6 +24,7 @@
         this.globalTabId="sbu-dynamic-tab";
         this.globalTabs=new Array();
         this.layui=options.layui;
+        this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
     }
@@ -721,17 +722,17 @@
                 ]]
             })
             $("#"+responseTableId).hide();
+
             //初始化apiInfo响应数据
             that.log("初始化apiInfo响应数据")
             that.log(apiInfo)
             if(apiInfo.responseJson!=null){
-                setTimeout(function () {
-                    that.log(HomeDocId)
-                    that.log($("#"+HomeDocId))
-                    that.log($("#"+HomeDocId).find(".language-json:first"))
-                    $("#"+HomeDocId).find(".language-json:first").JSONView(apiInfo.responseJson);
-                },400)
-                //$(".language-json:first").JSONView(apiInfo.responseJson);
+                var sampleId="editorSample"+apiInfo.id;
+                var editor = ace.edit(sampleId);
+                /*var JsonMode = ace.require("ace/mode/json").Mode;
+                editor.session.setMode(new JsonMode());*/
+                editor.getSession().setMode("ace/mode/json");
+                editor.setTheme("ace/theme/eclipse");
             }
         }
     }
