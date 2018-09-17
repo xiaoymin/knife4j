@@ -537,6 +537,7 @@
                 })
             }else{
                 element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
             }
         },100)
 
@@ -719,6 +720,7 @@
         //判断tabId是否存在
         if(that.tabExists(tabId)){
             element.tabChange(that.layTabFilter,tabId);
+            that.tabRollPage("auto");
         }else{
             //that.createTabElement();
             var dynaTab=template('BootstrapDynaTab',apiInfo);
@@ -1955,6 +1957,31 @@
 
 
     }
+
+    /***
+     * 自动选中
+     * @param d
+     */
+    SwaggerBootstrapUi.prototype.tabRollPage=function (d) {
+        var $tabTitle = $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
+        var left = $tabTitle.scrollLeft();
+        if ('left' === d) {
+            $tabTitle.scrollLeft(left - 150);
+        } else if ('auto' === d) {
+            var autoLeft = 0;
+            $tabTitle.children("li").each(function () {
+                if ($(this).hasClass('layui-this')) {
+                    return false;
+                } else {
+                    autoLeft += $(this).outerWidth();
+                }
+            });
+            // console.log(autoLeft);
+            $tabTitle.scrollLeft(autoLeft - 47);
+        } else {
+            $tabTitle.scrollLeft(left + 150);
+        }
+    }
     /***
      * tab最右显示
      */
@@ -2005,9 +2032,12 @@
                     layer.msg("保存成功");
                     that.currentInstance.securityArrs=that.getSecurityInfos();
                 })
+                that.tabFinallyRight();
+            }else{
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
             }
-            element.tabChange(that.layTabFilter,tabId);
-            that.tabFinallyRight();
+
         },100)
         //保存事件
         that.getDoc().find("#"+tabContetId).find(".btn-save").on("click",function (e) {
@@ -2045,6 +2075,7 @@
             var html = template('SwaggerBootstrapUiIntroScript', that.currentInstance);
             $("#mainTabContent").html("").html(html);
             element.tabChange('admin-pagetabs',"main");
+            that.tabRollPage("auto");
         },100)
 
 
@@ -2112,6 +2143,7 @@
                 that.tabFinallyRight();
             }else{
                 element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
             }
         },100)
         var clipboard = new ClipboardJS('#btnCopy',{
@@ -3041,10 +3073,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        if(window.console){
+        /*if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }
+        }*/
     }
     /***
      * 获取菜单元素
