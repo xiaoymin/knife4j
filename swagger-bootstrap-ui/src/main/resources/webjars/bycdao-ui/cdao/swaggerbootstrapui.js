@@ -755,32 +755,39 @@
                     {
                         field: 'name',
                         title: '参数名称',
-                        width: '20%',
+                        width: '20%'
                     },
                     {
                         field: 'description',
                         title: '说明',
-                        width: '20%',
+                        width: '20%'
                     },
                     {
                         field: 'in',
                         title: '请求类型',
-                        width: '10%',
+                        width: '10%'
                     },
                     {
                         field: 'require',
                         title: '必填',
                         width: '10%',
+                        templet:function (d) {
+                            if(d.require){
+                                return "<span style='color:red;'>"+d.require+"</span>";
+                            }else{
+                                return "<span style='color:black;'>"+d.require+"</span>";
+                            }
+                        }
                     },
                     {
                         field: 'type',
                         title: '类型',
-                        width: '20%',
+                        width: '20%'
                     },
                     {
                         field: 'schemaValue',
                         title: 'schema',
-                        width: '20%',
+                        width: '20%'
                     }
                 ]]
             })
@@ -810,22 +817,22 @@
                     {
                         field: 'name',
                         title: '参数名称',
-                        width: '20%',
+                        width: '20%'
                     },
                     {
                         field: 'description',
                         title: '说明',
-                        width: '40%',
+                        width: '40%'
                     },
                     {
                         field: 'type',
                         title: '类型',
-                        width: '20%',
+                        width: '20%'
                     },
                     {
                         field: 'schemaValue',
                         title: 'schema',
-                        width: '20%',
+                        width: '20%'
                     }
                 ]]
             })
