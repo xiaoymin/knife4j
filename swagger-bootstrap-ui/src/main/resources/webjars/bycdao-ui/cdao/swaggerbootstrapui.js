@@ -1062,7 +1062,7 @@
                         }
                     }
 
-                    if(apiInfo.methodType=="delete"){
+                    if(apiInfo.methodType.toLowerCase()=="delete"){
                         //判断是否是path参数
                         if(trdata["in"]=="path"){
                             url=url.replace("{"+key+"}",value);
