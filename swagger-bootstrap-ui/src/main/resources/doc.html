@@ -210,6 +210,7 @@
 
 **接口路径**：{{location}}
 <% for( i = 0; i < tags.length; i++) { var tag=tags[i] ; %># <%= tag.name %><% for( j = 0; j < paths.length; j++) {var path=paths[j]; if(path.tags.indexOf(tag.name)>-1){ %>
+
 ## <%= path.summary %>
 
 **接口说明**:<%= path.description %>
@@ -233,6 +234,7 @@
 <% for( a = 0; a < path.parameters.length; a++) {var param=path.parameters[a]; %>|<%=param.name%>| <%=param.description%>  | <%=param.in%> | <%=param.require%> |<%=param.type%>  | <%=param.schemaValue%>   |
                 <%}%>
 <%}else{%>暂无<%}%><% if(path.refparameters!=null && path.refparameters.length>0){ %>
+
 **schema属性说明**
 <% for( a = 0; a < path.refparameters.length; a++) { var ref=path.refparameters[a];%>
 **<%=ref.name%>**
@@ -240,6 +242,7 @@
 | ------------ | -------------------------------- |-----------|--------|----|--- |
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%>| <%=rp.description%>  | <%=rp.in%> | <%=rp.require%> |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}}}%>
+
 **响应数据**:
 
 ```json
@@ -255,6 +258,7 @@
 <%}%>
 <% if(path.responseRefParameters!=null && path.responseRefParameters.length>0){ %>
 **schema属性说明**
+
 <% for( a = 0; a < path.responseRefParameters.length; a++) { var ref=path.responseRefParameters[a];%>
 **<%=ref.name%>**
 | 参数名称         |  说明          |   类型  |  schema |
@@ -262,6 +266,7 @@
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}%>
 <%}}%>
+
 **响应状态码说明**:
 <% if(path.responseCodes!=null && path.responseCodes.length>0){ %>
 | 状态码         | 说明                             |    schema                         |
@@ -974,14 +979,7 @@
         }).use([ 'sbuadmin', 'element'], function () {
             var $ = layui.$;
             var admin=layui.sbuadmin;
-            console.log("ssssssssssssssss")
-
             admin.run(ace);
-
-
-
-
-
         });
     })
 </script>
