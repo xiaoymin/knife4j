@@ -1035,8 +1035,14 @@
                             }
                             formCurlParams[key]=value;
                         } else {
-                            value = paramtr.find("td:eq(3)").find("textarea").val();
+                            var formEle=paramtr.find("td:eq(3)").find("textarea");
+                            if (formEle.length>0){
+                                value = formEle.val();
+                            }else{
+                                value=paramtr.find("td:eq(3)").find("input").val();
+                            }
                             formData.append(key, value);
+                            formCurlParams[key]=value;
                         }
                         that.updateRequestParameter(trdata.name, value, apiInfo);
                     }else{
@@ -1127,6 +1133,7 @@
             var reqdata=null;
             var contType="application/json; charset=UTF-8";
             var paramBodyType="json";
+            var formRequest=false;
             if(bodyRequest){
                 reqdata=bodyparams;
                 //body请求,url追加其他param参数
@@ -1154,7 +1161,20 @@
                 }else{
                     paramBodyType="form";
                     reqdata=params;
-                    contType="application/x-www-form-urlencoded; charset=UTF-8";
+                    //判断consumes请求类型
+                    if(apiInfo.consumes!=null&&apiInfo.consumes.length>0){
+                        var ctp=apiInfo.consumes[0];
+                        if(ctp=="multipart/form-data"){
+                            contType=ctp;
+                            paramBodyType="form-data";
+                            reqdata=formData;
+                            formRequest=true;
+                        }else{
+                            contType=apiInfo.consumes[0]+";charset=UTF-8";
+                        }
+                    }else{
+                        contType="application/x-www-form-urlencoded; charset=UTF-8";
+                    }
                 }
                 //判断query
                 if(queryStringParameterFlag){
@@ -1180,7 +1200,7 @@
             var form=$("#uploadForm"+apiInfo.id);
             var startTime=new Date().getTime();
             var index = layer.load(1);
-            if(form.length>0){
+            if(form.length>0||formRequest){
                 that.log("form submit------------------------------------------------")
                 //判断produce
                 if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
@@ -1760,25 +1780,9 @@
             //判断是否是文件上传
             if(formCurlParams!=null&&formCurlParams!=undefined){
                 var formArr=new Array();
-                for(var d in reqdata){
-                    formArr.push(d+"="+reqdata[d]);
-                }
-                var formStr=formArr.join("&");
-                that.log("表单参数...");
-                that.log(formStr);
-                that.log(formStr.toString());
-                if(formArr.length>0){
+                for(var d in formCurlParams){
                     curlified.push( "-F" );
-                    curlified.push( "\""+formStr +"\"");
-                }
-                var fileArr=new Array();
-                for(var f in formCurlParams){
-                    fileArr.push(f+"="+formCurlParams[f]);
-                }
-                var fileStr=fileArr.join("&");
-                if(fileArr.length>0){
-                    curlified.push( "-F" );
-                    curlified.push( "\""+fileStr +"\"");
+                    curlified.push( "\""+d+"="+formCurlParams[d] +"\"");
                 }
             }else{
                 //form
