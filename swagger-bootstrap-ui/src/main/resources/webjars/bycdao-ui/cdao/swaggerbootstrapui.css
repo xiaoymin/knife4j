@@ -262,8 +262,8 @@ li [class^="icon-"], li [class*=" icon-"], .nav-list li [class^="icon-"], .nav-l
 
 code {
     padding: 2px 4px;
-    font-size: 90%;
-    color: #c7254e;
+    /*font-size: 90%;*/
+    color: #ab0f3a;
     background-color: #fff;
     border-radius: 4px;
 }
@@ -488,4 +488,15 @@ code {
 }
 .btn-add-string{
     margin-top: 2px;
+}
+
+#sbu-dynamic-tab ul li{
+    white-space: nowrap;
+}
+.swbu-main .sbu-api-title{
+    font-weight: bold;
+    width: 65px;
+    /* border: 1px solid red; */
+    display: inline-block;
+
 }

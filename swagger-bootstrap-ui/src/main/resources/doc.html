@@ -12,8 +12,6 @@
     <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap/css/bootstrap.min.css" />
     <script type="text/javascript" src="webjars/bycdao-ui/jquery/clipboard/clipboard.min.js"></script>
     <script type="text/javascript" src="webjars/bycdao-ui/layer3.0.3/layer.js"></script>
-    <link rel="stylesheet" href="webjars/bycdao-ui/jsonview/jquery.jsonview.min.css" />
-    <script type="text/javascript" src="webjars/bycdao-ui/jsonview/jquery.jsonview.min.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/layer3.0.3/skin/default/layer.css" />
     <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/docco.css" />
     <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/style.css" />
@@ -21,9 +19,20 @@
     <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
     <script src="webjars/bycdao-ui/jquery/marked.js"></script>
     <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
-    <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css" />
+
+    <link rel="stylesheet" href="webjars/bycdao-ui/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="webjars/bycdao-ui/ext/sbuadmin.css" media="all">
+
     <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
+
     <script src="webjars/bycdao-ui/jquery/axios.min.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap-tabx/css/bootstrap-tabs-x.min.css" />
+    <script src="webjars/bycdao-ui/bootstrap-tabx/js/bootstrap-tabs-x.min.js"></script>
+
+    <script src="webjars/bycdao-ui/layui/layui.js" charset="utf-8"></script>
+
+    <script src="webjars/bycdao-ui/ace-editor/ace.js" type="text/javascript"></script>
     <style type="text/css">
         #container {
             width: 100%;
@@ -51,6 +60,17 @@
             height: 90%;
             /*background-color: #1a1a1a;*/
             cursor: w-resize;
+        }
+        .panel-body{
+            padding: 5px;
+        }
+
+        .swbu-main p{
+            line-height: 2em;
+            margin: 1em 0;
+        }
+        .swbu-main .layui-table td{
+            border-color: #e6e6e6;
         }
     </style>
     <script>
@@ -136,12 +156,42 @@
         </ul>
     </div>
     <div id="handle"></div>
-    <div class="bycdao-main right" id="content"  style="height: 90%;overflow-y: auto;margin-top:2px;right: 0px;">
+    <div class="bycdao-main right" id="content"  style="height: 90%;margin-top:2px;right: 0px;/*overflow-x: hidden;overflow-y: auto;*/">
+
+        <div class="layui-layout layui-layout-admin open-tab">
+            <div class="layui-body">
+                <div class="layui-tab" lay-allowclose="true" lay-filter="admin-pagetabs">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this" lay-id="main">主页</li>
+                    </ul>
+                    <div class="layui-tab-content" style="height: 150px;">
+                        <div class="layui-tab-item layui-show" id="mainTabContent">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-tabs-control iconfont icon-tab-left" ew-event="leftPage"></div>
+                <div class="admin-tabs-control iconfont icon-tab-right" ew-event="rightPage"></div>
+                <div class="admin-tabs-control iconfont icon-xiangxiazhankai">
+                    <ul class="layui-nav admin-tabs-select" lay-filter="admin-pagetabs-nav">
+                        <li class="layui-nav-item" lay-unselect="">
+                            <a href="javascript:;"><span class="layui-nav-more"></span></a>
+                            <dl class="layui-nav-child layui-anim-fadein layui-anim layui-anim-upbit">
+                                <dd id="closeThisTabs" lay-unselect=""><a href="javascript:;">关闭当前标签页</a></dd>
+                                <dd id="closeOtherTabs" lay-unselect=""><a href="javascript:;">关闭其它标签页</a></dd>
+                                <dd id="closeAllTabs" lay-unselect=""><a href="javascript:;">关闭全部标签页</a></dd>
+                            </dl>
+                        </li>
+                        <span class="layui-nav-bar" style="left: 20px; top: 35px; width: 0px; opacity: 0;"></span></ul>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 <!--离线文档说明-->
 <script type="text/html" id="offLinecontentScript">
-    <div  style="width:99%;margin:0px auto;">
+    <div  style="width:99%;margin:0px auto;margin-top: 10px;">
         <div class="alert alert-info" role="alert">swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.</div>
         <div class="input-inline" style="margin-bottom:10px;">
             <button class="btn btn-primary" type="button" id="btnCopy"  >拷贝文档</button>
@@ -160,6 +210,7 @@
 
 **接口路径**：{{location}}
 <% for( i = 0; i < tags.length; i++) { var tag=tags[i] ; %># <%= tag.name %><% for( j = 0; j < paths.length; j++) {var path=paths[j]; if(path.tags.indexOf(tag.name)>-1){ %>
+
 ## <%= path.summary %>
 
 **接口说明**:<%= path.description %>
@@ -183,6 +234,7 @@
 <% for( a = 0; a < path.parameters.length; a++) {var param=path.parameters[a]; %>|<%=param.name%>| <%=param.description%>  | <%=param.in%> | <%=param.require%> |<%=param.type%>  | <%=param.schemaValue%>   |
                 <%}%>
 <%}else{%>暂无<%}%><% if(path.refparameters!=null && path.refparameters.length>0){ %>
+
 **schema属性说明**
 <% for( a = 0; a < path.refparameters.length; a++) { var ref=path.refparameters[a];%>
 **<%=ref.name%>**
@@ -190,6 +242,7 @@
 | ------------ | -------------------------------- |-----------|--------|----|--- |
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%>| <%=rp.description%>  | <%=rp.in%> | <%=rp.require%> |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}}}%>
+
 **响应数据**:
 
 ```json
@@ -205,6 +258,7 @@
 <%}%>
 <% if(path.responseRefParameters!=null && path.responseRefParameters.length>0){ %>
 **schema属性说明**
+
 <% for( a = 0; a < path.responseRefParameters.length; a++) { var ref=path.responseRefParameters[a];%>
 **<%=ref.name%>**
 | 参数名称         |  说明          |   类型  |  schema |
@@ -212,6 +266,7 @@
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}%>
 <%}}%>
+
 **响应状态码说明**:
 <% if(path.responseCodes!=null && path.responseCodes.length>0){ %>
 | 状态码         | 说明                             |    schema                         |
@@ -339,9 +394,9 @@
             <span class="input-group-btn">
                 <button class="btn btn-default btn-info" type="button">{{methodType}}</button>
             </span>
-            <input type="text" id="txtreqUrl" data-originalurl="<%=originalUrl%>" class="form-control" value="<%=url%>">
+            <input type="text" id="txtreqUrl{{id}}" data-originalurl="<%=originalUrl%>" class="form-control" value="<%=url%>">
             <span class="input-group-btn">
-                <button  class="btn btn-default btn-primary btnRequest" type="button"> 发 送 </button>
+                <button  class="btn btn-default btn-primary btnRequest" id="btnRequest{{id}}" type="button"> 发 送 </button>
             </span>
         </div>
         <div style="margin-top: 15px;">
@@ -352,11 +407,11 @@
                 <%}%>
 
                 <%if(fileform){%>
-                <form id="uploadForm"  target="uploadIframe" action="<%=url%>" type="" enctype="multipart/form-data" method="{{methodType}}">
+                <form id="uploadForm{{id}}"  target="uploadIframe{{id}}" action="<%=url%>" type="" enctype="multipart/form-data" method="{{methodType}}">
                     <table class="">
                         <thead>
                         <tr>
-                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll">
+                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll" id="parameterCheckAll{{id}}">
                                 <label style="font-weight: bold;">
                                     <input type="checkbox" checked> 全选
                                 </label>
@@ -364,10 +419,9 @@
                             <th>参数类型</th>
                             <th>参数名称</th>
                             <th>参数值</th>
-                            <th>操作</th>
                         </tr>
                         </thead>
-                        <tbody id="paramBody">
+                        <tbody id="paramBody{{id}}">
                         <!--遍历 是否有全局参数--->
                         <%if(globalParameters!=null && globalParameters.length>0){ %>
                             <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
@@ -394,9 +448,6 @@
                                                 data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                             <%}%>
                                         <%}%>
-                                    </td>
-                                    <td width="5%">
-                                        <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
                                     </td>
                                 </tr>
                             <%}%>
@@ -442,22 +493,19 @@
                                     <%}%>
                                     <%}%>
                                 </td>
-                                <td width="5%">
-                                    <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
-                                </td>
                             </tr>
                         <%}%>
                         </tbody>
                     </table>
                 </form>
-                <div id="resptab" class="tabs-container" >
-                    <iframe name="uploadIframe" id="uploadIframe" style="border: none;height: 1%;display: none;"></iframe>
+                <div id="resptab{{id}}" class="tabs-container" >
+                    <iframe name="uploadIframe{{id}}" id="uploadIframe{{id}}" style="border: none;height: 1%;display: none;"></iframe>
                 </div>
                 <%}else{%>
                     <table class="">
                         <thead>
                         <tr>
-                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll">
+                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll"  id="parameterCheckAll{{id}}">
                                 <label style="font-weight: bold;">
                                     <input type="checkbox" checked> 全选
                                 </label>
@@ -465,10 +513,9 @@
                             <th>参数类型</th>
                             <th>参数名称</th>
                             <th>参数值</th>
-                            <th>操作</th>
                         </tr>
                         </thead>
-                        <tbody id="paramBody">
+                        <tbody id="paramBody{{id}}">
                         <!--遍历 是否有全局参数--->
                         <%if(globalParameters!=null && globalParameters.length>0){ %>
                         <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
@@ -495,9 +542,6 @@
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                 <%}%>
                                 <%}%>
-                            </td>
-                            <td width="5%">
-                                <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
                             </td>
                         </tr>
                         <%}%>
@@ -540,13 +584,10 @@
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                         <% if(param.type=="array"){%>
                                 <div class="btn-add-div"></div>
-                                <button class="btn btn-default btn-add-string" >增加</button>
+                                <button class="btn btn-default btn-add-string"  id="btn-add-string{{id}}">增加</button>
                                         <%}%>
                                     <%}%>
                                 <%}%>
-                            </td>
-                            <td width="5%">
-                                <button class="btn btn-danger btn-circle btn-small btn-param-delete" type="button"><strong>×</strong></button>
                             </td>
                         </tr>
                         <%}%>
@@ -557,13 +598,29 @@
                 <%}%>
             </div>
         </div>
-        <div class="responsebody">
+        <div class="responsebody{{id}}" id="responsebody{{id}}" style="display: none;">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <ul class="layui-tab-title" style="padding: 0px;width: 98%;margin-left: 10px;">
+                    <li class="layui-this">响应内容</li>
+                    <li>Raw</li>
+                    <li>Headers</li>
+                    <li>Curl</li>
+                </ul>
+                <div class="layui-tab-content" id="layuiresponsecontentmain{{id}}" style="height: 100px;
+    margin-top: 0px;left: 0px;position: absolute;width: 98%;margin-left: 10px;">
+                    <div class="layui-tab-item layui-show" id="respcontent{{id}}"></div>
+                    <div class="layui-tab-item" id="respraw{{id}}"></div>
+                    <div class="layui-tab-item" id="respheaders{{id}}"></div>
+                    <div class="layui-tab-item" id="respcurl{{id}}"></div>
+                </div>
+                <div style="right: 30px;position: absolute;margin-top: 8px;z-index: 9999;" id="responsestatus{{id}}"><span class="debug-span-label">响应码:</span><span class="debug-span-value">200 OK</span>  &nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">耗时:</span><span class="debug-span-value">161 ms</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">大小:</span><span class="debug-span-value">120 b</span></div>
+            </div>
         </div>
     </div>
 </script>
 <!--全局参数-->
 <script type="text/html" id="GlobalParamScript">
-    <div  style="width:99%;margin:0px auto;">
+    <div  style="width:99%;margin:0px auto;margin-top: 10px;">
         <div class="alert alert-info" role="alert">swagger-bootstrap-ui 提供全局参数Debug功能,目前默认提供header(请求头)、query(form)两种方式的入参.<br /><br />
             在此添加全局参数后,默认Debug调试tab页会带上该参数,该全局参数只在该分组下有效,不同的分组需要分别设置</div>
         <div class="input-inline" style="margin-bottom:10px;">
@@ -598,6 +655,156 @@
     </div>
 </script>
 
+<!--动态tab-->
+<script type="text/html" id="BootstrapDynaTab">
+    <div class='tabs-x tabs-left tab-bordered tab-sideways  tabs-krajee' id="tabsContent{{id}}" >
+        <ul id="myTab-tabs-left" class="nav nav-tabs" role="tablist">
+            <li class="active"><a href="#HomeDoc{{id}}" role="tab" data-toggle="tab"><i class="iconfont icon-ic_description"></i> 接 口 文 档</a></li>
+            <li><a href="#DebugDoc{{id}}" role="tab-kv" data-toggle="tab"><i class="iconfont icon-debug"></i> 在 线 调 试</a></li>
+        </ul>
+        <div id="myTabContent-tabs-left" class="tab-content">
+            <div class="tab-pane fade in active" id="HomeDoc{{id}}" >
+                <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
+                    <div style="    float: left;width: 90%;font-size: 20px;">{{summary}}</div>
+                    <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHref{{id}}" style="cursor: pointer;text-decoration: none;
+" href="javascript:void(0);">复制文档</a></div>
+                </div>
+                <div class="swbu-main" itemprop="articleBody">
+                    <div id="contentDoc{{id}}">
+                        <p><span class="sbu-api-title">接口地址</span> <code style="background-color: transparent;">{{showUrl}}</code></p>
+                        <p><span class="sbu-api-title">请求方式</span> <code style="background-color: transparent;">{{methodType}}</code></p>
+                        <p><span class="sbu-api-title">consumes</span> <code style="background-color: transparent;">{{consumes}}</code></p>
+                        <p><span class="sbu-api-title">produces</span> <code style="background-color: transparent;">{{produces}}</code></p>
+                        <p><span class="sbu-api-title">接口描述</span> <code style="background-color: transparent;">{{description}}</code></p>
+                        <p><strong>请求参数</strong></p>
+                        <table id="requestParameter{{id}}" class="layui-table"  lay-filter="requestParameter{{id}}">
+                        </table>
+                        <p><strong>响应状态</strong></p>
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th>状态码</th>
+                                <th>说明</th>
+                                <th>schema</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{ if responseCodes}}
+                                {{each responseCodes}}
+                                <tr>
+                                    <td>{{$value.code}}</td>
+                                    <td>{{$value.description}}</td>
+                                    <td>{{$value.schema}}</td>
+                                </tr>
+                                {{/each}}
+                            {{else}}
+                                <tr>
+                                    <td colspan="3" style="text-align: center;">暂无</td>
+                                </tr>
+                            {{/if}}
+                            </tbody>
+                        </table>
+                        <p><strong>响应参数</strong></p>
+                        <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
+                        </table>
+                        <p><strong>响应示例</strong></p>
+                        <div id="editorSample{{id}}" style="width: auto;height: 400px;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
+                    </div>
+                    <textarea rows="10" cols="10" id="docText{{id}}" style="display: none;">
+
+**接口地址** `{{showUrl}}`
+
+
+**请求方式** `{{methodType}}`
+
+
+**consumes** `{{consumes}}`
+
+
+**produces** `{{produces}}`
+
+
+**接口描述** `{{description}}`
+
+**请求参数**
+{{ if parameters && parameters.length>0 }}
+| 参数名称         | 说明     |     参数类型 |  是否必须      |  类型   |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+{{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if refparameters && refparameters.length>0 }}
+**schema属性说明**
+  {{each refparameters}}
+**{{$value.name}}**
+
+| 参数名称         | 说明    |     参数类型 |  是否必须   |  类型  |  schema |
+| ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
+| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
+{{/each}}
+
+{{/if}}
+
+
+**响应状态**
+{{ if responseCodes}}
+| 状态码         | 说明                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
+{{/each}}
+{{else}}
+暂无
+{{/if}}
+
+
+**响应参数**
+{{ if responseParameters && responseParameters.length>0 }}
+| 参数名称         | 说明                             |    类型 |  schema |
+| ------------ | -------------------|-------|----------- |
+{{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if responseRefParameters && responseRefParameters.length>0 }}
+**schema属性说明**
+  {{each responseRefParameters}}
+**{{$value.name}}**
+
+| 属性名称         |  说明          |   类型  |  schema |
+| ------------ | ------------------|--------|----------- |
+{{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{/each}}
+
+{{/if}}
+
+**响应示例**
+
+{{ if responseBasicType }}
+```text
+{{responseText}}
+```
+{{else}}
+```json
+{{responseValue}}
+```
+{{/if}}
+
+</textarea>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="DebugDoc{{id}}"><p>在线调试</p>
+
+
+            </div>
+        </div>
+    </div>
+</script>
 <!--SwaggerBootstrapUi简介-->
 <script type="text/html" id="SwaggerBootstrapUiIntroScript">
     <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
@@ -699,6 +906,7 @@
 
 </script>
 
+<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js"></script>
 <script type="text/javascript">
     $(function () {
         /***
@@ -706,9 +914,10 @@
          * @type {boolean}
          */
         var isResizing = false,lastDownX = 0;
-        var container = $('#container'),left = $('.left'),right = $('.right'),handle = $('#handle');
+        var container = $('#container'),left = $('.left'),right = $('.right'),handle = $('#handle'),tabc=$("#sbu-dynamic-tab");
         //设置rightwidth
         right.css("width",container.width()-left.width()-8);
+        tabc.css("width",container.width()-left.width()-8);
         handle.on('mousedown',function(e) {
             isResizing = true;
             lastDownX = e.clientX;
@@ -765,46 +974,14 @@
             }
         })
 
-
-        //window resize事件
-        /*$(window).resize(function (e) {
-            var fullWidth=container.width();
-            var leftWidth=left.width();
-            var handleWidth=handle.width();
-            var rightWidth=fullWidth-leftWidth-handleWidth;
-            right.css("width",rightWidth);
-            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
-            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
-            console.log("resize------------height")
-            console.log("window--"+$(window).height())
-            console.log("document--"+$(document).height())
-            console.log("left--"+$("#leftMenu").height())
-        })
-
-        function initHieghtAndWidth() {
-            /!*var fullWidth=container.width();
-            var leftWidth=left.width();
-            var handleWidth=handle.width();
-            var rightWidth=fullWidth-leftWidth-handleWidth;
-            right.css("width",rightWidth);
-            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
-            console.log("init------------height")
-            console.log("window--"+$(window).height())
-            console.log("document--"+$(document).height())
-            console.log("left--"+$("#leftMenu").height())*!/
-
-            $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
-            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
-
-        }
-        initHieghtAndWidth();*/
+        layui.config({
+            base: 'webjars/bycdao-ui/ext/'
+        }).use([ 'sbuadmin', 'element'], function () {
+            var $ = layui.$;
+            var admin=layui.sbuadmin;
+            admin.run(ace);
+        });
     })
 </script>
-
-
-
-
-<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js"></script>
-<!----jsonhandle-->
 </body>
 </html>

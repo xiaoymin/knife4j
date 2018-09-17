@@ -4,7 +4,7 @@
  */
 (function ($) {
 
-    var SwaggerBootstrapUi=function () {
+    var SwaggerBootstrapUi=function (options) {
         //swagger请求api地址
         this.url="swagger-resources";
         //文档id
@@ -20,6 +20,13 @@
         this.instances=new Array();
         //当前分组实例
         this.currentInstance=null;
+        //动态tab
+        this.globalTabId="sbu-dynamic-tab";
+        this.globalTabs=new Array();
+        this.layui=options.layui;
+        this.ace=options.ace;
+        this.treetable=options.treetable;
+        this.layTabFilter="admin-pagetabs";
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -35,8 +42,13 @@
         that.createGroupElement();
         //搜索
         that.searchEvents();
+        //tab事件
+        that.tabCloseEventsInit();
 
     }
+
+
+
     /***
      * 搜索按钮事件
      */
@@ -373,36 +385,103 @@
      */
     SwaggerBootstrapUi.prototype.createGlobalParametersElement=function () {
         var that=this;
-        that.log(that.currentInstance)
+        var layui=that.layui;
+        var element=layui.element;
+        var tabId="GlobalParamScript";
+        var tabContetId="layerTab"+tabId;
         //内容覆盖
-        that.getDoc().html("");
         setTimeout(function () {
-            var html = template('GlobalParamScript', that.currentInstance);
-            that.getDoc().html(html);
-
-            that.log("注册btnAddParam-click事件")
-            that.log(that.getDoc().find("#btnAddParam"))
-            //初始化添加按钮click事件
-            that.getDoc().find("#btnAddParam").on("click",function (e) {
-                e.preventDefault();
-                that.log("btnAddParam-click")
-                var tr=$("<tr></tr>");
-                //输入参数名称
-                var nameTd=$("<td><input class=\"form-control p-key\" value=\"\" data-old=''></td>");
-                //参数值
-                var valueTd=$("<td><input class=\"form-control p-key\" value=\"\"></td>");
-                //参数类型
-                var typeTd=$("<td><select class='form-control'><option value='header'>header</option><option value='query'>query</option></select></td>");
-                //操作
-                var operateTd=$("<td>&nbsp;&nbsp;</td>")
-                var btnSave=$("<button class=\"btn btn-circle btn-info btn-small btn-save\" type=\"button\">保存</button>");
-                var btnCancel=$("<button class=\"btn btn-circle  btn-danger btn-small btn-cancel\" type=\"button\">删除</button>");
-                operateTd.append(btnSave).append("&nbsp;&nbsp;").append(btnCancel);
-                tr.append(nameTd).append(valueTd).append(typeTd).append(operateTd);
-                that.getDoc().find("#globalTabBody").append(tr);
-                //保存事件
-                btnSave.on("click",function (e) {
+            if(!that.tabExists(tabId)){
+                that.currentInstance.globalParameters=that.getGlobalParameters();
+                var html = template('GlobalParamScript', that.currentInstance);
+                var tabObj={
+                    id:tabId,
+                    title:'全局参数设置',
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:'全局参数设置'});
+                element.tabAdd(that.layTabFilter, tabObj);
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabFinallyRight();
+                //初始化添加按钮click事件
+                that.getDoc().find("#"+tabContetId).find("#btnAddParam").on("click",function (e) {
                     e.preventDefault();
+                    that.log("btnAddParam-click")
+                    var tr=$("<tr></tr>");
+                    //输入参数名称
+                    var nameTd=$("<td><input class=\"form-control p-key\" value=\"\" data-old=''></td>");
+                    //参数值
+                    var valueTd=$("<td><input class=\"form-control p-key\" value=\"\"></td>");
+                    //参数类型
+                    var typeTd=$("<td><select class='form-control'><option value='header'>header</option><option value='query'>query</option></select></td>");
+                    //操作
+                    var operateTd=$("<td>&nbsp;&nbsp;</td>")
+                    var btnSave=$("<button class=\"btn btn-circle btn-info btn-small btn-save\" type=\"button\">保存</button>");
+                    var btnCancel=$("<button class=\"btn btn-circle  btn-danger btn-small btn-cancel\" type=\"button\">删除</button>");
+                    operateTd.append(btnSave).append("&nbsp;&nbsp;").append(btnCancel);
+                    tr.append(nameTd).append(valueTd).append(typeTd).append(operateTd);
+                    that.getDoc().find("#globalTabBody").append(tr);
+                    //保存事件
+                    btnSave.on("click",function (e) {
+                        e.preventDefault();
+                        var save=$(this);
+                        var ptr=save.parent().parent();
+                        var name=ptr.find("td:eq(0)").find("input:first").val();
+                        var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
+                        var value=ptr.find("td:eq(1)").find("input:first").val();
+                        var type=ptr.find("td:eq(2)").find("select:first").val();
+                        that.log("name:"+name+",value:"+value+",type:"+type+",oldname:"+oldname);
+                        if(name==null||name==""){
+                            layer.msg("请输入全局参数名称");
+                            return false;
+                        }
+                        if(value==null||value==""){
+                            layer.msg("请输入全局参数值");
+                            return false;
+                        }
+                        var globalParameterInstance=new SwaggerBootstrapUiParameter();
+                        globalParameterInstance.name=name;
+                        globalParameterInstance.in=type;
+                        globalParameterInstance.value=value;
+                        globalParameterInstance.txtValue=value;
+                        globalParameterInstance.type="string";
+                        globalParameterInstance.require=true;
+                        //判断old
+                        if(oldname!=null&&oldname!=""&&oldname!=name){
+                            //删除旧参数
+                            that.deleteGlobalParamsByName(oldname);
+                        }
+                        if (!that.checkGlobalParamExists(globalParameterInstance)){
+                            that.storeGlobalParam(globalParameterInstance,"globalParameters")
+                            //that.currentInstance.globalParameters.push(globalParameterInstance);
+                        }else{
+                            //存在,更新该参数的值
+                            that.updateGlobalParams(globalParameterInstance,"globalParameters");
+                        }
+                        that.log("目前全局参数..")
+                        that.log(that.currentInstance.globalParameters);
+                        layer.msg("保存成功")
+                    })
+                    //取消时间
+                    btnCancel.on("click",function (e) {
+                        e.preventDefault();
+                        var cancel=$(this);
+                        that.log(cancel)
+                        var ptr=cancel.parent().parent();
+                        var name=ptr.find("td:eq(0)").find("input:first").val();
+                        var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
+                        if(oldname!=name){
+                            that.deleteGlobalParamsByName(oldname)
+                        }
+                        if(name!=undefined&& name!=null&&name!=""){
+                            that.deleteGlobalParamsByName(name);
+                        }
+                        cancel.parent().parent().remove();
+                        layer.msg("删除成功")
+                    })
+                })
+                //全局保存事件
+                that.getDoc().find("#"+tabContetId).find(".btn-save").on("click",function (e) {
                     var save=$(this);
                     var ptr=save.parent().parent();
                     var name=ptr.find("td:eq(0)").find("input:first").val();
@@ -422,33 +501,32 @@
                     globalParameterInstance.name=name;
                     globalParameterInstance.in=type;
                     globalParameterInstance.value=value;
-                    globalParameterInstance.txtValue=value;
-                    globalParameterInstance.type="string";
-                    globalParameterInstance.require=true;
+                    that.log(oldname!=name)
                     //判断old
-                    if(oldname!=null&&oldname!=""&&oldname!=name){
+                    if(oldname!=name){
                         //删除旧参数
                         that.deleteGlobalParamsByName(oldname);
                     }
                     if (!that.checkGlobalParamExists(globalParameterInstance)){
-                        that.currentInstance.globalParameters.push(globalParameterInstance);
+                        that.storeGlobalParam(globalParameterInstance,"globalParameters")
+                        //that.currentInstance.globalParameters.push(globalParameterInstance);
                     }else{
                         //存在,更新该参数的值
-                        that.updateGlobalParams(globalParameterInstance);
+                        that.updateGlobalParams(globalParameterInstance,"globalParameters");
                     }
                     that.log("目前全局参数..")
                     that.log(that.currentInstance.globalParameters);
                     layer.msg("保存成功")
                 })
-                //取消时间
-                btnCancel.on("click",function (e) {
+                //全局取消事件
+                that.getDoc().find("#"+tabContetId).find(".btn-cancel").on("click",function (e) {
                     e.preventDefault();
                     var cancel=$(this);
                     that.log(cancel)
                     var ptr=cancel.parent().parent();
                     var name=ptr.find("td:eq(0)").find("input:first").val();
                     var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
-                    if(oldname!=name){
+                    if(oldname!=null&&oldname!=""){
                         that.deleteGlobalParamsByName(oldname)
                     }
                     if(name!=undefined&& name!=null&&name!=""){
@@ -457,66 +535,50 @@
                     cancel.parent().parent().remove();
                     layer.msg("删除成功")
                 })
-            })
-
-            //全局保存事件
-            that.getDoc().find(".btn-save").on("click",function (e) {
-                var save=$(this);
-                var ptr=save.parent().parent();
-                var name=ptr.find("td:eq(0)").find("input:first").val();
-                var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
-                var value=ptr.find("td:eq(1)").find("input:first").val();
-                var type=ptr.find("td:eq(2)").find("select:first").val();
-                that.log("name:"+name+",value:"+value+",type:"+type+",oldname:"+oldname);
-                if(name==null||name==""){
-                    layer.msg("请输入全局参数名称");
-                    return false;
-                }
-                if(value==null||value==""){
-                    layer.msg("请输入全局参数值");
-                    return false;
-                }
-                var globalParameterInstance=new SwaggerBootstrapUiParameter();
-                globalParameterInstance.name=name;
-                globalParameterInstance.in=type;
-                globalParameterInstance.value=value;
-                that.log(oldname!=name)
-                //判断old
-                if(oldname!=name){
-                    //删除旧参数
-                    that.deleteGlobalParamsByName(oldname);
-                }
-                if (!that.checkGlobalParamExists(globalParameterInstance)){
-                    that.currentInstance.globalParameters.push(globalParameterInstance);
-                }else{
-                    //存在,更新该参数的值
-                    that.updateGlobalParams(globalParameterInstance);
-                }
-                that.log("目前全局参数..")
-                that.log(that.currentInstance.globalParameters);
-                layer.msg("保存成功")
-            })
-            //全局取消事件
-            that.getDoc().find(".btn-cancel").on("click",function (e) {
-                e.preventDefault();
-                var cancel=$(this);
-                that.log(cancel)
-                var ptr=cancel.parent().parent();
-                var name=ptr.find("td:eq(0)").find("input:first").val();
-                var oldname=ptr.find("td:eq(0)").find("input:first").data("old");
-                if(oldname!=null&&oldname!=""){
-                    that.deleteGlobalParamsByName(oldname)
-                }
-                if(name!=undefined&& name!=null&&name!=""){
-                    that.deleteGlobalParamsByName(name);
-                }
-                cancel.parent().parent().remove();
-                layer.msg("删除成功")
-            })
-
+            }else{
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
+            }
         },100)
 
 
+    }
+
+    /***
+     * 获取security
+     */
+    SwaggerBootstrapUi.prototype.getSecurityInfos=function () {
+        var that=this;
+        var params=[];
+        if(window.localStorage){
+            var store = window.localStorage;
+            var globalparams=store["securityArrs"];
+            if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
+                params=JSON.parse(globalparams);
+            }
+        }else{
+            params=$("#sbu-header").data("cacheSecurity");
+        }
+        return params;
+    }
+
+    /***
+     * 获取全局参数
+     * @returns {Array}
+     */
+    SwaggerBootstrapUi.prototype.getGlobalParameters=function () {
+        var that=this;
+        var params=[];
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var globalparams=store["globalParameters"];
+            if(globalparams!=undefined&&globalparams!=null){
+                params=JSON.parse(globalparams);
+            }
+        }else{
+            params=that.currentInstance.globalParameters;
+        }
+        return params;
     }
     /***
      * 判断全局参数是否存在
@@ -525,22 +587,50 @@
     SwaggerBootstrapUi.prototype.checkGlobalParamExists=function (param) {
         var that=this;
         var flag=false;
-        $.each(that.currentInstance.globalParameters,function (i, gp) {
-            if(gp.name==param.name){
-                flag=true;
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var globalparams=store["globalParameters"];
+            if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
+                globalparams=JSON.parse(globalparams);
+                $.each(globalparams,function (i, gp) {
+                    if(gp.name==param.name){
+                        flag=true;
+                    }
+                })
             }
-        })
+        }else{
+            $.each(that.currentInstance.globalParameters,function (i, gp) {
+                if(gp.name==param.name){
+                    flag=true;
+                }
+            })
+        }
         return flag;
     }
-    SwaggerBootstrapUi.prototype.updateGlobalParams=function (param) {
+    SwaggerBootstrapUi.prototype.updateGlobalParams=function (param,key) {
         var that=this;
-        $.each(that.currentInstance.globalParameters,function (i, gp) {
-            if(gp.name==param.name){
-                gp.in=param.in;
-                gp.value=param.value;
-                gp.txtValue=param.value;
-            }
-        })
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var globalparams=store[key];
+            globalparams=JSON.parse(globalparams);
+            $.each(globalparams,function (i, gp) {
+                if(gp.name==param.name){
+                    gp.in=param.in;
+                    gp.value=param.value;
+                    gp.txtValue=param.value;
+                }
+            })
+            var gbStr=JSON.stringify(globalparams);
+            store.setItem(key,gbStr);
+        }else{
+            $.each(that.currentInstance[key],function (i, gp) {
+                if(gp.name==param.name){
+                    gp.in=param.in;
+                    gp.value=param.value;
+                    gp.txtValue=param.value;
+                }
+            })
+        }
     }
     /***
      * 根据名称删除全局参数数组
@@ -548,11 +638,53 @@
      */
     SwaggerBootstrapUi.prototype.deleteGlobalParamsByName=function (name) {
         var that=this;
-        for(var i=0;i<that.currentInstance.globalParameters.length;i++){
-            var gp=that.currentInstance.globalParameters[i];
-            if (gp.name==name){
-                that.currentInstance.globalParameters.splice(i,1);
+        if(window.localStorage){
+            var store=window.localStorage;
+            var globalparams=store["globalParameters"];
+            globalparams=JSON.parse(globalparams);
+            for(var i=0;i<globalparams.length;i++){
+                var gp=globalparams[i];
+                if (gp.name==name){
+                    globalparams.splice(i,1);
+                }
             }
+            var gbStr=JSON.stringify(globalparams);
+            store.setItem("globalParameters",gbStr);
+        }else{
+            for(var i=0;i<that.currentInstance.globalParameters.length;i++){
+                var gp=that.currentInstance.globalParameters[i];
+                if (gp.name==name){
+                    that.currentInstance.globalParameters.splice(i,1);
+                }
+            }
+        }
+
+    }
+    /***
+     * 存储全局变量
+     * @param obj
+     */
+    SwaggerBootstrapUi.prototype.storeGlobalParam=function (obj,key) {
+        var that=this;
+        //判断浏览器是否支持localStorage
+        if(window.localStorage){
+            var store=window.localStorage;
+            var globalparams=store[key];
+            if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
+                //exists
+                globalparams=JSON.parse(globalparams);
+                that.log("获取缓存............")
+                that.log(globalparams)
+                globalparams.push(obj);
+            }else{
+                //not exists
+                globalparams=new Array();
+                globalparams.push(obj);
+            }
+            var gbStr=JSON.stringify(globalparams);
+            store.setItem(key,gbStr);
+        }else{
+            that.currentInstance[key].push(obj);
         }
     }
     /***
@@ -581,44 +713,178 @@
 
     SwaggerBootstrapUi.prototype.createApiInfoTable=function (apiInfo,menu) {
         var that=this;
-        that.createTabElement();
-        //查找接口doc
-        that.getDoc().find("#tab1").find(".panel-body").html("")
-        setTimeout(function () {
-            var html = template('contentScript', apiInfo);
-            that.getDoc().find("#tab1").find(".panel-body").html(html)
-            that.markdownDocInit();
+        var element=that.layui.element;
+        var treetable=that.treetable;
+
+        var tabId="tab"+apiInfo.id;
+        //判断tabId是否存在
+        if(that.tabExists(tabId)){
+            element.tabChange(that.layTabFilter,tabId);
+            that.tabRollPage("auto");
+        }else{
+            //that.createTabElement();
+            var dynaTab=template('BootstrapDynaTab',apiInfo);
+            //不存在,添加
+            var tabObj={id: tabId, title: apiInfo.summary, content: dynaTab};
+            element.tabAdd(that.layTabFilter, tabObj);
+            element.tabChange(that.layTabFilter,tabId);
+            that.tabFinallyRight();
+
+            //that.markdownDocInit(docTextId,contentDocId);
+            var requestTableId="requestParameter"+apiInfo.id;
+            var data=[];
+            if(apiInfo.parameters!=null&&apiInfo.parameters.length>0){
+                data=data.concat(apiInfo.parameters);
+            }
+            if(apiInfo.refparameters!=null&&apiInfo.refparameters.length>0){
+                $.each(apiInfo.refparameters,function (i, ref) {
+                    data=data.concat(ref.params);
+                })
+            }
+            that.log("treeTable----------------data-------------------------")
+            that.log(data);
+            treetable.render({
+              elem:"#"+requestTableId,
+                data: data,
+                field: 'title',
+                treeColIndex: 0,          // treetable新增参数
+                treeSpid: -1,             // treetable新增参数
+                treeIdName: 'd_id',       // treetable新增参数
+                treePidName: 'd_pid',     // treetable新增参数
+                treeDefaultClose: true,   // treetable新增参数
+                treeLinkage: true,        // treetable新增参数
+                cols: [[
+                    {
+                        field: 'name',
+                        title: '参数名称',
+                        width: '20%'
+                    },
+                    {
+                        field: 'description',
+                        title: '说明',
+                        width: '20%'
+                    },
+                    {
+                        field: 'in',
+                        title: '请求类型',
+                        width: '10%'
+                    },
+                    {
+                        field: 'require',
+                        title: '必填',
+                        width: '10%',
+                        templet:function (d) {
+                            if(d.require){
+                                return "<span style='color:red;'>"+d.require+"</span>";
+                            }else{
+                                return "<span style='color:black;'>"+d.require+"</span>";
+                            }
+                        }
+                    },
+                    {
+                        field: 'type',
+                        title: '类型',
+                        width: '20%'
+                    },
+                    {
+                        field: 'schemaValue',
+                        title: 'schema',
+                        width: '20%'
+                    }
+                ]]
+            })
+            $("#"+requestTableId).hide();
+            //响应参数
+            var responseTableId="responseParameter"+apiInfo.id;
+            var respdata=[];
+            if(apiInfo.responseParameters!=null&&apiInfo.responseParameters.length>0){
+                respdata=respdata.concat(apiInfo.responseParameters);
+            }
+            if(apiInfo.responseRefParameters!=null&&apiInfo.responseRefParameters.length>0){
+                $.each(apiInfo.responseRefParameters,function (i, ref) {
+                    respdata=respdata.concat(ref.params);
+                })
+            }
+            treetable.render({
+                elem:"#"+responseTableId,
+                data: respdata,
+                field: 'title',
+                treeColIndex: 0,          // treetable新增参数
+                treeSpid: -1,             // treetable新增参数
+                treeIdName: 'd_id',       // treetable新增参数
+                treePidName: 'd_pid',     // treetable新增参数
+                treeDefaultClose: true,   // treetable新增参数
+                treeLinkage: true,        // treetable新增参数
+                cols: [[
+                    {
+                        field: 'name',
+                        title: '参数名称',
+                        width: '20%'
+                    },
+                    {
+                        field: 'description',
+                        title: '说明',
+                        width: '40%'
+                    },
+                    {
+                        field: 'type',
+                        title: '类型',
+                        width: '20%'
+                    },
+                    {
+                        field: 'schemaValue',
+                        title: 'schema',
+                        width: '20%'
+                    }
+                ]]
+            })
+            $("#"+responseTableId).hide();
+
             //初始化apiInfo响应数据
             that.log("初始化apiInfo响应数据")
             that.log(apiInfo)
             if(apiInfo.responseJson!=null){
-                $(".language-json:first").JSONView(apiInfo.responseJson);
+                var sampleId="editorSample"+apiInfo.id;
+                var editor = ace.edit(sampleId);
+                /*var JsonMode = ace.require("ace/mode/json").Mode;
+                editor.session.setMode(new JsonMode());*/
+                editor.getSession().setMode("ace/mode/json");
+                editor.setTheme("ace/theme/eclipse");
             }
-        },100)
-        that.log(that.currentInstance);
-        //实现复制文档功能
-        //初始化copy按钮功能
-        var clipboard = new ClipboardJS('#copyDocHref',{
-            text:function () {
-                return $("#docText").val();
-            }
-        });
-        clipboard.on('success', function(e) {
-            layer.msg("复制成功")
-        });
-        clipboard.on('error', function(e) {
-            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-        });
-        that.log(that.currentInstance);
 
-        //创建调试页面
+            //初始化copy按钮功能
+            var clipboard = new ClipboardJS('#copyDocHref'+apiInfo.id,{
+                text:function () {
+                    return $("#docText"+apiInfo.id).val();
+                }
+            });
+            clipboard.on('success', function(e) {
+                layer.msg("复制成功")
+            });
+            clipboard.on('error', function(e) {
+                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+            });
+            that.log(that.currentInstance);
+            //创建调试页面
+            that.createDebugTab(apiInfo,menu);
+
+        }
+    }
+
+    /***
+     * 创建调试页面
+     * @param apiInfo
+     */
+    SwaggerBootstrapUi.prototype.createDebugTab=function(apiInfo,menu){
+        var that=this;
         //赋值全局参数
-        apiInfo.globalParameters=that.currentInstance.globalParameters;
-        that.getDoc().find("#tab2").find(".panel-body").html("");
+        //apiInfo.globalParameters=that.currentInstance.globalParameters;
+        apiInfo.globalParameters=that.getGlobalParameters();
+        var debugContentId="DebugDoc"+apiInfo.id;
         var html = template('DebugScript', apiInfo);
-        that.getDoc().find("#tab2").find(".panel-body").html(html);
-        //绑定string-array事件
-        that.getDoc().find("#tab2").find(".panel-body").find(".btn-add-string").on("click",function (e) {
+        $("#"+debugContentId).html("").html(html)
+        //string类型的arr参数动态添加事件
+        $("#btn-add-string"+apiInfo.id).on("click",function (e) {
             e.preventDefault();
             var btn=$(this);
             that.log(btn);
@@ -638,22 +904,21 @@
                 e.preventDefault();
                 $(this).parent().parent().remove();
             })
-
-
         })
         //绑定全选事件
-        that.getDoc().find("#tab2").find(".panel-body").find(".parameterCheckAll").on("click",function (e) {
+        $("#parameterCheckAll"+apiInfo.id).on("click",function (e) {
             var chk=$(this);
             that.log("是否选中...")
             var chked=chk.find("input:first").prop("checked");
             that.log(chked)
-            $("#paramBody").find("input:checkbox").prop("checked",chked);
+            var paramBodyId="paramBody"+apiInfo.id;
+            $("#"+paramBodyId).find("input:checkbox").prop("checked",chked);
         });
-        //如果有文件上传,绑定多文件增加按钮事件
-
         that.requestSend(apiInfo,menu);
 
     }
+
+
 
     /***
      * 发送请求
@@ -663,12 +928,21 @@
         var that=this;
         that.log("发送之前...")
         that.log(apiInfo)
-        var btnRequest=that.getDoc().find("#tab2").find(".panel-body").find(".btnRequest:first");
-        var respcleanDiv=that.getDoc().find("#tab2").find(".panel-body").find(".responsebody:first");
+        var apiKeyId=apiInfo.id;
+        var btnRequest=$("#btnRequest"+apiInfo.id);
+        var respcleanDiv=$("#responsebody"+apiInfo.id);
+        var laycontentdiv=$("#layuiresponsecontentmain"+apiKeyId);
+        var responsestatus=$("#responsestatus"+apiKeyId);
+
+        var resp1=$("#respcontent"+apiKeyId)
+        var resp2=$("#respraw"+apiKeyId);
+        var resp3=$("#respheaders"+apiKeyId);
+        var resp5=$("#respcurl"+apiKeyId);
+
         btnRequest.on("click",function (e) {
             e.preventDefault();
-
-            respcleanDiv.html("")
+            laycontentdiv.css("height","500px");
+            //respcleanDiv.html("")
             var params={};
             var headerparams={};
             var bodyparams="";
@@ -676,13 +950,12 @@
             //增加表单验证
             var validateflag=false;
             var validateobj={};
-
             //获取参数
-            var paramBody=that.getDoc().find("#tab2").find("#paramBody")
+            var paramBody=$("#paramBody"+apiInfo.id);
             that.log("paramsbody..")
             that.log(paramBody)
             //获取url
-            var url=$("#txtreqUrl").val();
+            var url=$("#txtreqUrl"+apiInfo.id).val();
             if(url==null||url==""){
                 layer.msg("请求url地址不能为空");
                 return false;
@@ -764,8 +1037,14 @@
                             }
                             formCurlParams[key]=value;
                         } else {
-                            value = paramtr.find("td:eq(3)").find("textarea").val();
+                            var formEle=paramtr.find("td:eq(3)").find("textarea");
+                            if (formEle.length>0){
+                                value = formEle.val();
+                            }else{
+                                value=paramtr.find("td:eq(3)").find("input").val();
+                            }
                             formData.append(key, value);
+                            formCurlParams[key]=value;
                         }
                         that.updateRequestParameter(trdata.name, value, apiInfo);
                     }else{
@@ -791,7 +1070,7 @@
                         }
                     }
 
-                    if(apiInfo.methodType=="delete"){
+                    if(apiInfo.methodType.toLowerCase()=="delete"){
                         //判断是否是path参数
                         if(trdata["in"]=="path"){
                             url=url.replace("{"+key+"}",value);
@@ -856,6 +1135,7 @@
             var reqdata=null;
             var contType="application/json; charset=UTF-8";
             var paramBodyType="json";
+            var formRequest=false;
             if(bodyRequest){
                 reqdata=bodyparams;
                 //body请求,url追加其他param参数
@@ -874,7 +1154,8 @@
                         url=url+"?"+reqStrArr;
                     }
                 }
-            }else{
+            }
+            else{
                 if(fileUploadFlat){
                     contType="multipart/form-data";
                     paramBodyType="form-data";
@@ -882,7 +1163,20 @@
                 }else{
                     paramBodyType="form";
                     reqdata=params;
-                    contType="application/x-www-form-urlencoded; charset=UTF-8";
+                    //判断consumes请求类型
+                    if(apiInfo.consumes!=null&&apiInfo.consumes.length>0){
+                        var ctp=apiInfo.consumes[0];
+                        if(ctp=="multipart/form-data"){
+                            contType=ctp;
+                            paramBodyType="form-data";
+                            reqdata=formData;
+                            formRequest=true;
+                        }else{
+                            contType=apiInfo.consumes[0]+";charset=UTF-8";
+                        }
+                    }else{
+                        contType="application/x-www-form-urlencoded; charset=UTF-8";
+                    }
                 }
                 //判断query
                 if(queryStringParameterFlag){
@@ -905,10 +1199,10 @@
             that.log(apiInfo)
             eleObject.data("data",apiInfo);
             //判断是否有表单
-            var form=$("#uploadForm");
+            var form=$("#uploadForm"+apiInfo.id);
             var startTime=new Date().getTime();
             var index = layer.load(1);
-            if(form.length>0){
+            if(form.length>0||formRequest){
                 that.log("form submit------------------------------------------------")
                 //判断produce
                 if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
@@ -935,6 +1229,7 @@
                     data:formData,
                     timeout: 10*60*1000,
                 }).then(function (response) {
+                    respcleanDiv.show();
                     that.log("form-------------response------------------")
                     that.log(response);
                     var data=response.data;
@@ -953,37 +1248,11 @@
                     if(xhr.hasOwnProperty("responseText")){
                         len=xhr["responseText"].gblen();
                     }
-                    that.log(typeof (data))
-                    that.log(status)
-                    var resptab=$('<div id="resptab" class="tabs-container" ></div>');
-                    var ulresp=$('<ul class="nav nav-tabs">' +
-                        '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
-                        '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
-                        '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
-                        '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li>'+
-                        '<li class=""><a data-toggle="tab" href="#tabcurl" aria-expanded="true"> Curl </a></li></ul>')
+                    responsestatus.html("")
+                    responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
+                        .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
+                        .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
 
-
-                    var uldiv=$("<div></div>");
-                    uldiv.append(ulresp);
-
-                    //添加响应码div
-                    var respcodeDiv=$("<div style='right: 30px;position: absolute;margin-top: -40px;'><span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>  " +
-                        "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>" +
-                        "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span></div>");
-                    uldiv.append(respcodeDiv);
-
-                    resptab.append(uldiv);
-                    var respcontent=$('<div class="tab-content"></div>');
-
-                    var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
-                    var resp2=$('<div id="tabcookie" class="tab-pane"><div class="panel-body">暂无</div>');
-                    var resp4=$('<div id="tabraw" class="tab-pane"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
-                    var resp3=$('<div id="tabheader" class="tab-pane"><div class="panel-body">暂无</div></div>');
-                    var resp5=$('<div id="tabcurl" class="tab-pane"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
-                    respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
-                    resptab.append(respcontent)
-                    respcleanDiv.append(resptab);
                     that.log(xhr);
                     var allheaders=response.headers;
                     if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
@@ -993,8 +1262,8 @@
                             headertable.append(headertr);
                         }
                         //设置Headers内容
-                        resp3.find(".panel-body").html("")
-                        resp3.find(".panel-body").append(headertable);
+                        resp3.html("")
+                        resp3.append(headertable);
                     }
                     that.log("responseTextFlag-----------------")
                     var rtext=xhr["responseText"];
@@ -1004,7 +1273,7 @@
                         that.log("xhr---------------responseText-----------------------------")
                         that.log(xhr["responseText"])
                         //json
-                        resp4.find(".panel-body").html(rtext);
+                        resp2.html(rtext);
                         if(tp=="string"){
                             //转二进制
                             var dv=data.toString(2);
@@ -1025,35 +1294,31 @@
                                 div.append(rowDiv).append(downloadDiv);
                                 that.log(div)
                                 that.log(div[0])
-                                resp1.find(".panel-body").html("")
-                                resp1.find(".panel-body").html(div);
+                                resp1.html("")
+                                resp1.html(div);
                             }
                         }
-
-
                     }
                     if (response.data!=null&&response.data!=undefined){
                         //如果存在该对象,服务端返回为json格式
-                        resp1.find(".panel-body").html("")
+                        resp1.html("")
                         that.log(xhr["responseJSON"])
-                        var pre=$('<pre></pre>')
-                        var jsondiv=$('<div></div>')
-                        jsondiv.JSONView(response.data);
-                        pre.html(JSON.stringify(response.data,null,2));
-                        resp1.find(".panel-body").append(jsondiv);
+                        var jsondiv=$('<div style="width: auto;height: 400px;" id="responseJsonEditor'+apiKeyId+'"></div>')
+                        jsondiv.html(JSON.stringify(response.data,null,2));
+                        resp1.append(jsondiv);
+                        var editor = ace.edit("responseJsonEditor"+apiKeyId);
+                        editor.getSession().setMode("ace/mode/json");
+                        editor.setTheme("ace/theme/eclipse");
+
                     }
-                    that.log("tab show...")
                     //组件curl功能
                     var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams);
-                    var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
+                    var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl"+apiKeyId+"'>复制</button>");
                     var curlcode=$("<code></code>");
                     curlcode.html(curl);
-
-                    resp5.find(".panel-body").html("");
-                    resp5.find(".panel-body").append(curlcode).append(cpcurlBotton);
-
-
-                    var clipboard = new ClipboardJS('#btnCopyCurl',{
+                    resp5.html("");
+                    resp5.append(curlcode).append(cpcurlBotton);
+                    var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
                         text:function () {
                             return curlcode.html();
                         }
@@ -1064,9 +1329,8 @@
                     clipboard.on('error', function(e) {
                         layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
                     });
-
-                    resptab.find("a:first").tab("show");
                 }).catch(function (error) {
+                    respcleanDiv.show();
                     layer.close(index);
                     that.log("form-------------error-------------------");
                     that.log(error);
@@ -1089,37 +1353,10 @@
                         if(xhr.hasOwnProperty("responseText")){
                             len=xhr["responseText"].gblen();
                         }
-                        that.log(typeof (data))
-                        that.log(status)
-                        var resptab=$('<div id="resptab" class="tabs-container" ></div>');
-                        var ulresp=$('<ul class="nav nav-tabs">' +
-                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li>'+
-                            '<li class=""><a data-toggle="tab" href="#tabcurl" aria-expanded="true"> Curl </a></li></ul>')
-
-
-                        var uldiv=$("<div></div>");
-                        uldiv.append(ulresp);
-
-                        //添加响应码div
-                        var respcodeDiv=$("<div style='right: 30px;position: absolute;margin-top: -40px;'><span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>  " +
-                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>" +
-                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span></div>");
-                        uldiv.append(respcodeDiv);
-
-                        resptab.append(uldiv);
-                        var respcontent=$('<div class="tab-content"></div>');
-
-                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
-                        var resp2=$('<div id="tabcookie" class="tab-pane"><div class="panel-body">暂无</div>');
-                        var resp4=$('<div id="tabraw" class="tab-pane"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
-                        var resp3=$('<div id="tabheader" class="tab-pane"><div class="panel-body">暂无</div></div>');
-                        var resp5=$('<div id="tabcurl" class="tab-pane"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
-                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
-                        resptab.append(respcontent)
-                        respcleanDiv.append(resptab);
+                        responsestatus.html("")
+                        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
+                            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
+                            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
                         that.log(xhr);
                         var allheaders=response.headers;
                         if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
@@ -1129,8 +1366,8 @@
                                 headertable.append(headertr);
                             }
                             //设置Headers内容
-                            resp3.find(".panel-body").html("")
-                            resp3.find(".panel-body").append(headertable);
+                            resp3.html("")
+                            resp3.append(headertable);
                         }
                         that.log("responseTextFlag-----------------")
                         var rtext=xhr["responseText"];
@@ -1140,7 +1377,7 @@
                             that.log("xhr---------------responseText-----------------------------")
                             that.log(xhr["responseText"])
                             //json
-                            resp4.find(".panel-body").html(rtext);
+                            resp2.html(rtext);
                             if(tp=="string"){
                                 //转二进制
                                 var dv=data.toString(2);
@@ -1161,33 +1398,33 @@
                                     div.append(rowDiv).append(downloadDiv);
                                     that.log(div)
                                     that.log(div[0])
-                                    resp1.find(".panel-body").html("")
-                                    resp1.find(".panel-body").html(div);
+                                    resp1.html("")
+                                    resp1.html(div);
                                 }
                             }
                         }
                         if (response.data!=null&&response.data!=undefined){
                             //如果存在该对象,服务端返回为json格式
-                            resp1.find(".panel-body").html("")
+                            resp1.html("")
                             that.log(xhr["responseJSON"])
-                            var pre=$('<pre></pre>')
-                            var jsondiv=$('<div></div>')
-                            jsondiv.JSONView(response.data);
-                            pre.html(JSON.stringify(response.data,null,2));
-                            resp1.find(".panel-body").append(jsondiv);
+                            var jsondiv=$('<div style="width: auto;height: 400px;" id="responseJsonEditor'+apiKeyId+'"></div>')
+                            jsondiv.html(JSON.stringify(response.data,null,2));
+                            resp1.append(jsondiv);
+                            var editor = ace.edit("responseJsonEditor"+apiKeyId);
+                            editor.getSession().setMode("ace/mode/json");
+                            editor.setTheme("ace/theme/eclipse");
                         }
-                        that.log("tab show...")
                         //组件curl功能
                         var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl'>复制</button>");
+                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl"+apiKeyId+"'>复制</button>");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
 
-                        resp5.find(".panel-body").html("");
-                        resp5.find(".panel-body").append(curlcode).append(cpcurlBotton);
+                        resp5.html("");
+                        resp5.append(curlcode).append(cpcurlBotton);
 
 
-                        var clipboard = new ClipboardJS('#btnCopyCurl',{
+                        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
                             text:function () {
                                 return curlcode.html();
                             }
@@ -1198,7 +1435,6 @@
                         clipboard.on('error', function(e) {
                             layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
                         });
-                        resptab.find("a:first").tab("show");
                     }
 
                 })
@@ -1232,6 +1468,7 @@
                     contentType:contType,
                     success:function (data,status,xhr) {
                         layer.close(index);
+                        respcleanDiv.show();
                         that.log("success...")
                         var statsCode=xhr.status;
                         if(statsCode==200){
@@ -1247,35 +1484,12 @@
                         }
                         that.log(typeof (data))
                         that.log(status)
-                        var resptab=$('<div id="resptab" class="tabs-container" ></div>');
-                        var ulresp=$('<ul class="nav nav-tabs">' +
-                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li>'+
-                            '<li class=""><a data-toggle="tab" href="#tabcurl" aria-expanded="true"> Curl </a></li></ul>')
+                        responsestatus.html("")
+                        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
+                            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
+                            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
 
 
-                        var uldiv=$("<div></div>");
-                        uldiv.append(ulresp);
-
-                        //添加响应码div
-                        var respcodeDiv=$("<div style='right: 30px;position: absolute;margin-top: -40px;'><span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>  " +
-                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>" +
-                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span></div>");
-                        uldiv.append(respcodeDiv);
-
-                        resptab.append(uldiv);
-                        var respcontent=$('<div class="tab-content"></div>');
-
-                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
-                        var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
-                        var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
-                        var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
-                        var resp5=$('<div id="tabcurl" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
-                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
-                        resptab.append(respcontent)
-                        respcleanDiv.append(resptab);
                         that.log(xhr);
                         that.log(xhr.getAllResponseHeaders());
                         var mimtype=xhr.overrideMimeType();
@@ -1294,22 +1508,20 @@
                                 }
                             }
                             //设置Headers内容
-                            resp3.find(".panel-body").html("")
-                            resp3.find(".panel-body").append(headertable);
+                            resp3.html("")
+                            resp3.append(headertable);
                         }
                         var contentType=xhr.getResponseHeader("Content-Type");
                         that.log("Content-Type:"+contentType);
                         that.log(xhr.hasOwnProperty("responseJSON"))
                         if(xhr.hasOwnProperty("responseText")){
-                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw'>复制</button><br /><br />");
+                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
                             var rawText=$("<span></span>");
                             rawText.html(xhr["responseText"]);
 
-                            resp4.find(".panel-body").html("");
-                            resp4.find(".panel-body").append(rawCopyBotton).append(rawText);
-
-
-                            var cliprawboard = new ClipboardJS('#btnCopyRaw',{
+                            resp2.html("");
+                            resp2.append(rawCopyBotton).append(rawText);
+                            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
                                 text:function () {
                                     return rawText.html();
                                 }
@@ -1321,8 +1533,6 @@
                                 layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
                             });
 
-                            //json
-                            //resp4.find(".panel-body").html(xhr["responseText"]);
                             if(tp=="string"){
                                 //转二进制
                                 var dv=data.toString(2);
@@ -1343,35 +1553,32 @@
                                     div.append(rowDiv).append(downloadDiv);
                                     that.log(div)
                                     that.log(div[0])
-                                    resp1.find(".panel-body").html("")
-                                    resp1.find(".panel-body").html(div);
+                                    resp1.html("")
+                                    resp1.html(div);
                                 }
                             }
-
-
                         }
                         if (xhr.hasOwnProperty("responseJSON")){
                             //如果存在该对象,服务端返回为json格式
-                            resp1.find(".panel-body").html("")
+                            resp1.html("")
                             that.log(xhr["responseJSON"])
-                            var pre=$('<pre></pre>')
-                            var jsondiv=$('<div></div>')
-                            jsondiv.JSONView(xhr["responseJSON"]);
-                            pre.html(JSON.stringify(xhr["responseJSON"],null,2));
-                            resp1.find(".panel-body").append(jsondiv);
+                            var jsondiv=$('<div style="width: auto;height: 100%;" id="responseJsonEditor'+apiKeyId+'"></div>')
+                            jsondiv.html(JSON.stringify(data,null,2));
+                            resp1.append(jsondiv);
+                            var editor = ace.edit("responseJsonEditor"+apiKeyId);
+                            editor.getSession().setMode("ace/mode/json");
+                            editor.setTheme("ace/theme/eclipse");
                         }
                         that.log("tab show...")
                         //组件curl功能
                         var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl'>复制</button><br /><br />");
+                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
 
-                        resp5.find(".panel-body").html("");
-                        resp5.find(".panel-body").append(cpcurlBotton).append(curlcode);
-
-
-                        var clipboard = new ClipboardJS('#btnCopyCurl',{
+                        resp5.html("");
+                        resp5.append(cpcurlBotton).append(curlcode);
+                        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
                             text:function () {
                                 return curlcode.html();
                             }
@@ -1382,12 +1589,11 @@
                         clipboard.on('error', function(e) {
                             layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
                         });
-
-                        resptab.find("a:first").tab("show");
                     },
                     error:function (xhr, textStatus, errorThrown) {
                         that.log("error.....")
                         layer.close(index);
+                        respcleanDiv.show();
                         that.log(xhr);
                         var statsCode=xhr.status;
                         if(statsCode==404){
@@ -1395,56 +1601,26 @@
                         }
                         var endTime=new Date().getTime();
                         that.log(endTime)
-
                         var diff=endTime-startTime;
-
-                        var resptab=$('<div id="resptab" class="tabs-container" ></div>')
-                        var ulresp=$('<ul class="nav nav-tabs">' +
-                            '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabraw" aria-expanded="false"> Raw </a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li>'+
-                            '<li class=""><a data-toggle="tab" href="#tabcurl" aria-expanded="true"> Curl </a></li></ul>')
-
-                        //resptab.append(ulresp);
-                        var uldiv=$("<div></div>");
-                        uldiv.append(ulresp);
                         var len=0;
                         var rawTxt="暂无";
                         if (xhr.hasOwnProperty("responseText")){
                             len=xhr["responseText"].toString().gblen();
                             rawTxt=xhr["responseText"];
-
                         }
-                        //添加响应码div
-                        var respcodeDiv=$("<div style='right: 30px;position: absolute;margin-top: -40px;'><span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>  " +
-                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>" +
-                            "&nbsp;&nbsp;&nbsp;&nbsp;<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span></div>");
-                        uldiv.append(respcodeDiv);
+                        responsestatus.html("")
+                        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
+                            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
+                            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
 
-                        resptab.append(uldiv);
-
-
-                        var respcontent=$('<div class="tab-content"></div>');
-
-                        var resp1=$('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
-                        var resp2=$('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
-                        var resp3=$('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
-                        var resp4=$('<div id="tabraw" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
-                        var resp5=$('<div id="tabcurl" class="tab-pane active"><div class="panel-body" style="word-wrap: break-word;">暂无</div>');
-                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4).append(resp5);
-                        resptab.append(respcontent)
-                        respcleanDiv.append(resptab);
                         if(rawTxt!=null){
-                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw'>复制</button><br /><br />");
+                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
                             var rawText=$("<span></span>");
                             rawText.html(rawTxt);
+                            resp2.html("");
+                            resp2.append(rawCopyBotton).append(rawText);
 
-                            resp4.find(".panel-body").html("");
-                            resp4.find(".panel-body").append(rawCopyBotton).append(rawText);
-
-
-                            var cliprawboard = new ClipboardJS('#btnCopyRaw',{
+                            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
                                 text:function () {
                                     return rawText.html();
                                 }
@@ -1476,8 +1652,8 @@
                             }
                             that.log(headertable)
                             //设置Headers内容
-                            resp3.find(".panel-body").html("")
-                            resp3.find(".panel-body").append(headertable);
+                            resp3.html("")
+                            resp3.append(headertable);
                         }
                         var contentType=xhr.getResponseHeader("Content-Type");
                         that.log("Content-Type:"+contentType);
@@ -1485,31 +1661,32 @@
                         that.log(xhr.hasOwnProperty("responseJSON"))
                         if (xhr.hasOwnProperty("responseJSON")){
                             //如果存在该对象,服务端返回为json格式
-                            resp1.find(".panel-body").html("")
+                            resp1.html("")
                             that.log(xhr["responseJSON"])
-                            var jsondiv=$('<div></div>')
-                            jsondiv.JSONView(xhr["responseJSON"]);
-                            resp1.find(".panel-body").append(jsondiv);
+                            var jsondiv=$('<div style="width: auto;height: 400px;" id="responseJsonEditor'+apiKeyId+'"></div>')
+                            jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
+                            resp1.append(jsondiv);
+                            var editor = ace.edit("responseJsonEditor"+apiKeyId);
+                            editor.getSession().setMode("ace/mode/json");
+                            editor.setTheme("ace/theme/eclipse");
                         }else{
                             //判断是否是text
                             var regex=new RegExp('.*?text.*','g');
                             if(regex.test(contentType)){
-                                resp1.find(".panel-body").html("")
-                                resp1.find(".panel-body").html(xhr.responseText);
+                                resp1.html("")
+                                resp1.html(xhr.responseText);
                             }
                         }
 
                         //组件curl功能
                         var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl'>复制</button><br /><br />");
+                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
 
-                        resp5.find(".panel-body").html("");
-                        resp5.find(".panel-body").append(cpcurlBotton).append(curlcode);
-
-
-                        var clipboard = new ClipboardJS('#btnCopyCurl',{
+                        resp5.html("");
+                        resp5.append(cpcurlBotton).append(curlcode);
+                        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
                             text:function () {
                                 return curlcode.html();
                             }
@@ -1520,22 +1697,13 @@
                         clipboard.on('error', function(e) {
                             layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
                         });
-
-                        that.log("tab show...")
-                        resptab.find("a:first").tab("show");
-
                     }
                 })
             }
 
 
         })
-        //删除按钮功能实现
-        that.getDoc().find("#tab2").find(".btn-param-delete").on("click",function (e) {
-            e.preventDefault();
-            var btndelete=$(this);
-            btndelete.parent().parent().remove();
-        })
+
         //path替换url-功能
         that.getDoc().find("#tab2").find(".p-path").on("keyup",function (e) {
             var t=$(this);
@@ -1614,25 +1782,9 @@
             //判断是否是文件上传
             if(formCurlParams!=null&&formCurlParams!=undefined){
                 var formArr=new Array();
-                for(var d in reqdata){
-                    formArr.push(d+"="+reqdata[d]);
-                }
-                var formStr=formArr.join("&");
-                that.log("表单参数...");
-                that.log(formStr);
-                that.log(formStr.toString());
-                if(formArr.length>0){
+                for(var d in formCurlParams){
                     curlified.push( "-F" );
-                    curlified.push( "\""+formStr +"\"");
-                }
-                var fileArr=new Array();
-                for(var f in formCurlParams){
-                    fileArr.push(f+"="+formCurlParams[f]);
-                }
-                var fileStr=fileArr.join("&");
-                if(fileArr.length>0){
-                    curlified.push( "-F" );
-                    curlified.push( "\""+fileStr +"\"");
+                    curlified.push( "\""+d+"="+formCurlParams[d] +"\"");
                 }
             }else{
                 //form
@@ -1667,7 +1819,7 @@
         })
     }
 
-    SwaggerBootstrapUi.prototype.markdownDocInit=function () {
+    SwaggerBootstrapUi.prototype.markdownDocInit=function (docTextId,contentId) {
         var that=this;
         //md2Html的配置
         hljs.configure({useBR: false});
@@ -1692,10 +1844,10 @@
                 return hljs.highlightAuto(code).value;
             }
         });
-        $("#docText").each(function(){
+        $("#"+docTextId).each(function(){
             var md = $(this).val();
             if(md){
-                $("#contentDoc").html(marked(md));
+                $("#"+contentId).html(marked(md));
                 $('pre code').each(function(i, block) {
                     hljs.highlightBlock(block);
                 });
@@ -1755,65 +1907,140 @@
         //$('#myTab a:first').tab('show')
 
     }
+
+    /***
+     * 判断tabId是否存在
+     * @param tabId
+     */
+    SwaggerBootstrapUi.prototype.tabExists=function (tabId) {
+        var that=this;
+        var flag=false;
+        var tabUl=$('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
+        tabUl.find("li").each(function (i, x) {
+            var layId=$(x).attr("lay-id");
+            if (layId==tabId){
+                flag=true;
+            }
+        })
+        return flag;
+    }
+
+    /***
+     * tab点击关闭事件
+     */
+    SwaggerBootstrapUi.prototype.tabCloseEventsInit=function () {
+        var that=this;
+        var element=that.layui.element;
+        //关闭当前tab
+        $("#closeThisTabs").on("click",function (e) {
+            var tabArr=new Array();
+            e.preventDefault();
+            var $title = $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
+            if ($title.find('li').first().hasClass('layui-this')) {
+                return;
+            }
+            var close=$title.find('li.layui-this').find(".icon-sbu-tab-close");
+            close.trigger("click");
+        })
+
+        //关闭其它tab
+        $("#closeOtherTabs").on("click",function (e) {
+            e.preventDefault();
+            $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0):not(.layui-this)').find(".icon-sbu-tab-close").trigger("click");
+        })
+        //关闭全部tab
+        $("#closeAllTabs").on("click",function (e) {
+            e.preventDefault();
+            $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0)').find(".icon-sbu-tab-close").trigger("click");
+            element.tabChange('admin-pagetabs', "main");
+        })
+
+
+    }
+
+    /***
+     * 自动选中
+     * @param d
+     */
+    SwaggerBootstrapUi.prototype.tabRollPage=function (d) {
+        var $tabTitle = $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
+        var left = $tabTitle.scrollLeft();
+        if ('left' === d) {
+            $tabTitle.scrollLeft(left - 150);
+        } else if ('auto' === d) {
+            var autoLeft = 0;
+            $tabTitle.children("li").each(function () {
+                if ($(this).hasClass('layui-this')) {
+                    return false;
+                } else {
+                    autoLeft += $(this).outerWidth();
+                }
+            });
+            // console.log(autoLeft);
+            $tabTitle.scrollLeft(autoLeft - 47);
+        } else {
+            $tabTitle.scrollLeft(left + 150);
+        }
+    }
+    /***
+     * tab最右显示
+     */
+    SwaggerBootstrapUi.prototype.tabFinallyRight=function () {
+        var $tabTitle = $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
+        var left = $tabTitle.scrollLeft();
+        $tabTitle.scrollLeft(left + $tabTitle.width());
+    }
     /**
      * 创建权限页面
      */
     SwaggerBootstrapUi.prototype.createSecurityElement=function () {
         var that=this;
-        that.getDoc().html("");
+        var layui=that.layui;
+        var element=layui.element;
+        var tabId="SwaggerBootstrapUiSecurityScript";
+        var tabContetId="layerTab"+tabId;
         setTimeout(function () {
-            var html = template('SwaggerBootstrapUiSecurityScript', that.currentInstance);
-            that.getDoc().html(html)
-            //保存事件
-            that.getDoc().find(".btn-save").on("click",function (e) {
-                e.preventDefault();
-                that.log("保存auth事件")
-                var save=$(this);
-                var ptr=save.parent().parent();
-                var data={key:ptr.data("key"),name:ptr.data("name")};
-                var value=ptr.find("input").val();
-                if(!value){
-                    layer.msg("值无效");
-                    return false;
-                }
-                var cacheSecurity={};
-                $.each(that.currentInstance.securityArrs,function (i, sa) {
-                    if(sa.key==data.key&&sa.name==data.name){
-                        sa.value=value;
-                        cacheSecurity.key=sa.key;
-                        cacheSecurity.name=sa.name;
-                        cacheSecurity.value=value;
-
+            if(!that.tabExists(tabId)){
+                that.currentInstance.securityArrs=that.getSecurityInfos();
+                var html = template('SwaggerBootstrapUiSecurityScript', that.currentInstance);
+                var tabObj={
+                    id:tabId,
+                    title:'Authorize',
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:'Authorize'});
+                element.tabAdd(that.layTabFilter, tabObj);
+                //保存事件
+                that.getDoc().find("#"+tabContetId).find(".btn-save").on("click",function (e) {
+                    e.preventDefault();
+                    that.log("保存auth事件")
+                    var save=$(this);
+                    var ptr=save.parent().parent();
+                    var data={key:ptr.data("key"),name:ptr.data("name")};
+                    var value=ptr.find("input").val();
+                    if(!value){
+                        layer.msg("值无效");
+                        return false;
                     }
-                })
-                that.log(that.currentInstance);
-                layer.msg("保存成功");
-                //判断是否有保存instancid
-                var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
-                if(cacheSecurityData==undefined||cacheSecurityData==null){
-                    cacheSecurityData=new Array();
-                    cacheSecurityData.push(cacheSecurity);
-                }else{
-                    //存在
-                    var flag=false;
-                    //判断当前id是否存在
-                    $.each(cacheSecurityData,function (i, sa) {
-                        if(sa.key==cacheSecurity.key&&sa.name==cacheSecurity.name){
-                            sa.value=cacheSecurity.value;
-                            flag=true;
+                    $.each(that.currentInstance.securityArrs,function (i, sa) {
+                        if(sa.key==data.key&&sa.name==data.name){
+                            sa.value=value;
+                            that.updateGlobalParams(sa,"securityArrs");
                         }
                     })
-                    if(!flag){
-                        cacheSecurityData.push(cacheSecurity);
-                    }
-                }
-                //更新
-                $("#sbu-header").data("cacheSecurity",cacheSecurityData);
-                that.log($("#sbu-header").data("cacheSecurity"));
-            })
+                    that.log(that.currentInstance);
+                    layer.msg("保存成功");
+                    that.currentInstance.securityArrs=that.getSecurityInfos();
+                })
+                that.tabFinallyRight();
+            }else{
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
+            }
+
         },100)
         //保存事件
-        that.getDoc().find(".btn-save").on("click",function (e) {
+        that.getDoc().find("#"+tabContetId).find(".btn-save").on("click",function (e) {
             e.preventDefault();
             that.log("保存auth事件")
             var save=$(this);
@@ -1827,8 +2054,10 @@
             $.each(that.currentInstance.securityArrs,function (i, sa) {
                 if(sa.key==data.key&&sa.name==data.name){
                     sa.value=value;
+                    that.updateGlobalParams(sa,"securityArrs");
                 }
             })
+            that.currentInstance.securityArrs=that.getSecurityInfos();
             that.log(that.currentInstance);
         })
 
@@ -1838,27 +2067,15 @@
      */
     SwaggerBootstrapUi.prototype.createDescriptionElement=function () {
         var that=this;
-        /*var table=$('<table class="table table-hover table-bordered table-text-center"></table>');
-        //修改title
-        $("title").html("").html(that.currentInstance.title)
-        table.append($('<thead><tr><th colspan="2" style="text-align:center">'+that.currentInstance.title+'</th></tr></thead>'));
-        var tbody=$('<tbody></tbody>');
-        tbody.append($('<tr><th class="active">简介</th><td style="text-align: left">'+that.currentInstance.description+'</td></tr>'));
-        tbody.append($('<tr><th class="active">作者</th><td style="text-align: left">'+that.currentInstance.contact+'</td></tr>'));
-        tbody.append($('<tr><th class="active">版本</th><td style="text-align: left">'+that.currentInstance.version+'</td></tr>'));
-        tbody.append($('<tr><th class="active">host</th><td style="text-align: left">'+that.currentInstance.host+'</td></tr>'))
-        tbody.append($('<tr><th class="active">服务url</th><td style="text-align: left">'+that.currentInstance.termsOfService+'</td></tr>'));
-        table.append(tbody);
-        var div=$('<div  style="width:99%;margin:0px auto;"></div>')
-        div.append(table);*/
+        var layui=that.layui;
+        var element=layui.element;
         //内容覆盖
-        that.getDoc().html("");
-        //that.getDoc().append(div);
-
+        //that.getDoc().html("");
         setTimeout(function () {
             var html = template('SwaggerBootstrapUiIntroScript', that.currentInstance);
-            that.getDoc().html(html)
-            //that.introMarkdownDocInit();
+            $("#mainTabContent").html("").html(html);
+            element.tabChange('admin-pagetabs',"main");
+            that.tabRollPage("auto");
         },100)
 
 
@@ -1907,24 +2124,33 @@
      */
     SwaggerBootstrapUi.prototype.createMarkdownTab=function () {
         var that=this;
-        /*var description="swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.";
-        var divdes=$('<div class="alert alert-info" role="alert">'+description+'</div>');
-        var div=$('<div  style="width:99%;margin:0px auto;"></div>');
-        div.append(divdes);
-        //toolbar按钮组
-        var toolbarDiv=$('<div class="input-inline" style="margin-bottom:10px;">');
-        var copyBtn=$('<button class="btn btn-primary" type="button" id="btnCopy"  data-clipboard-action="copy" data-clipboard-target="#txtDoc">拷贝文档</button></div>');
-        toolbarDiv.append(copyBtn);
-        div.append(toolbarDiv);
-        //添加textarea
-        var txtDiv=$("<div class='input-inline'><textarea class='form-control' style='width: 100%;height: 100%;' id='txtDoc'></textarea></div>")
-        div.append(txtDiv);*/
-        //内容覆盖
-        that.getDoc().html("");
-        setTimeout(function () {
-            var html = template('offLinecontentScript', that.currentInstance);
-            that.getDoc().html(html);
+        var layui=that.layui;
+        var element=layui.element;
+        var tabId="offLinecontentScript";
+        var tabContetId="layerTab"+tabId;
 
+        setTimeout(function () {
+            if(!that.tabExists(tabId)){
+                var html = template('offLinecontentScript', that.currentInstance);
+                var tabObj={
+                    id:tabId,
+                    title:'离线文档(MD)',
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:'离线文档(MD)'});
+                element.tabAdd(that.layTabFilter, tabObj);
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabFinallyRight();
+                //正则替换离线文档的格式
+                //首先替换多行
+                var val=$("#txtOffLineDoc").val().replace(/(\s{4}[\n\r]){4,}/gi,"");
+                //替换参数、响应码等属性前面多行空格
+                val=val.replace(/(\s{10,})/gi,"\n");
+                $("#txtOffLineDoc").val(val);
+            }else{
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
+            }
         },100)
         var clipboard = new ClipboardJS('#btnCopy',{
             text:function () {
@@ -2166,7 +2392,8 @@
             var securityDefinitions=menu["securityDefinitions"];
             if(securityDefinitions!=null){
                 //判断是否有缓存cache值
-                var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+                //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+                var cacheSecurityData=that.getSecurityInfos();
                 for(var j in securityDefinitions){
                     var sdf=new SwaggerBootstrapUiSecurityDefinition();
                     var sdobj=securityDefinitions[j];
@@ -2174,13 +2401,19 @@
                     sdf.type=sdobj.type;
                     sdf.name=sdobj.name;
                     sdf.in=sdobj.in;
+                    var flag=false;
                     if(cacheSecurityData!=null&&cacheSecurityData!=undefined){
                         //存在缓存值,更新当前值,无需再次授权
                         $.each(cacheSecurityData,function (i, sa) {
                             if(sa.key==sdf.key&&sa.name==sdf.name){
+                                flag=true;
                                 sdf.value=sa.value;
                             }
                         })
+                    }
+                    if (!flag){
+                        //如果cache不存在,存储
+                        that.storeGlobalParam(sdf,"securityArrs");
                     }
                     that.currentInstance.securityArrs.push(sdf);
                 }
@@ -2285,8 +2518,8 @@
         //添加basePath
         var basePath=that.currentInstance.basePath;
         var newfullPath=that.currentInstance.host;
-
         var basePathFlag=false;
+        //basePath="/addd/";
         if (basePath!=""&&basePath!="/"){
             newfullPath+=basePath;
             //如果非空,非根目录
@@ -2296,6 +2529,7 @@
         //截取字符串
         var newurl=newfullPath.substring(newfullPath.indexOf("/"));
         that.log("新的url:"+newurl)
+        newurl=newurl.replace("//","/");
         swpinfo.showUrl=newurl;
         swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=newurl;
@@ -2365,7 +2599,9 @@
                             if (schemaObject.hasOwnProperty("$ref")){
                                 var ref=m["schema"]["$ref"];
                                 var className=$.getClassName(ref);
-                                minfo.type=className;
+                                if(minfo.type!="array"){
+                                    minfo.type=className;
+                                }
                                 minfo.schemaValue=className;
                                 var def=that.getDefinitionByName(className);
                                 if(def!=null){
@@ -2586,6 +2822,7 @@
                         var props=def["properties"];
                         $.each(props,function (i, p) {
                             var refp=new SwaggerBootstrapUiParameter();
+                            refp.pid=resParam.id;
                             refp.name=p.name;
                             refp.type=p.type;
                             refp.description=$.replaceMultipLineStr(p.description);
@@ -2594,7 +2831,8 @@
                             //判断类型是否基础类型
                             if(!$.checkIsBasicType(p.refType)){
                                 refp.schemaValue=p.refType;
-                                if(resParam.name!=refp.name){
+                                refp.schema=true;
+                                if(resParam.name!=refp.name||resParam.schemaValue!=p.refType){
                                     var deepDef=that.getDefinitionByName(p.refType);
                                     deepResponseRefParameter(swpinfo,that,deepDef,refp);
                                 }
@@ -2622,11 +2860,15 @@
                     var props=def["properties"];
                     $.each(props,function (i, p) {
                         var refp=new SwaggerBootstrapUiParameter();
+                        refp.pid=minfo.id;
                         refp.name=p.name;
                         refp.type=p.type;
-                        if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
-                            //修复针对schema类型的参数,显示类型为schema类型
-                            refp.type=p.refType;
+                        //判断非array
+                        if(p.type!="array"){
+                            if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
+                                //修复针对schema类型的参数,显示类型为schema类型
+                                refp.type=p.refType;
+                            }
                         }
                         refp.in=minfo.in;
                         refp.require=p.required;
@@ -2635,7 +2877,9 @@
                         //判断类型是否基础类型
                         if(!$.checkIsBasicType(p.refType)){
                             refp.schemaValue=p.refType;
-                            if(minfo.name!=refp.name){
+                            refp.schema=true;
+                            //属性名称不同,或者ref类型不同
+                            if(minfo.name!=refp.name||minfo.schemaValue!=p.refType){
                                 var deepDef=that.getDefinitionByName(p.refType);
                                 deepRefParameter(refp,that,deepDef,apiInfo);
                             }
@@ -2817,12 +3061,16 @@
             var handleWidth=handle.width();
             var rightWidth=fullWidth-leftWidth-handleWidth;
             right.css("width",rightWidth);
+            var cheight=$(window).height()-$("#sbu-header").height()-2;
             $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
-            $("#content").css("height",$(window).height()-$("#sbu-header").height()-2);
+            $("#content").css("height",cheight);
             that.log("resize------------height")
             that.log("window--"+$(window).height())
             that.log("document--"+$(document).height())
             that.log("left--"+$("#leftMenu").height())
+            var headerHeight=$("#"+that.globalTabId).find("div:first");
+            var diff=cheight-headerHeight.height()-37;
+            $(".HomeDoc").css("height",diff);
         })
     }
 
@@ -3033,6 +3281,9 @@
         this.txtValue=null;
         //枚举类型
         this.enum=null;
+
+        this.id="param"+Math.round(Math.random()*1000000);
+        this.pid="-1";
     }
     /***
      * 响应码
@@ -3222,8 +3473,5 @@
 
     window.SwaggerBootstrapUi=SwaggerBootstrapUi;
 
-    /**
-     * 运行
-     */
-    new SwaggerBootstrapUi().main();
+
 })(jQuery)

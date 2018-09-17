@@ -1,0 +1,178 @@
+.layui-layout-admin .layui-body {
+    left: 0px;
+    top: 0px;
+    transition: left .3s;
+    overflow-y: scroll;
+    padding: 15px;
+    bottom: 0px;
+}
+.layui-layout-admin.admin-nav-mini .layui-body {
+    left: 60px;
+}
+
+
+.layui-layout-admin.open-tab .layui-body {
+    padding: 0;
+    overflow: hidden;
+}
+
+.layui-layout-admin .layui-body .layui-tab {
+    margin: 0;
+    overflow: hidden;
+}
+.layui-layout-admin .layui-body .layui-tab .layui-tab-content .layui-tab-item {
+    position: absolute;
+    bottom: 0;
+    overflow-y: scroll;
+    /*padding: 15px;*/
+    right: 0;
+    top: 40px;
+    left: 0;
+}
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 80px 0 40px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .1);
+    position: absolute;
+    right: 0;
+    z-index: 999;
+    border: none;
+    overflow: hidden;
+}
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li {
+    min-width: 0;
+    line-height: 40px;
+    /*max-width: 160px;*/
+    text-overflow: ellipsis;
+    overflow: hidden;
+    border-right: 1px solid #f6f6f6;
+    vertical-align: top;
+}
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title .layui-tab-bar {
+    display: none;
+}
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li.layui-this,
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:hover {
+    background-color: #f6f6f6;
+}
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li.layui-this:after {
+    width: 100%;
+    border: none;
+    height: 2px;
+    background-color: #292B34;
+    border-radius: 0;
+}
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li .icon-sbu-tab-close {
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    border-radius: 50%;
+    font-size: 12px;
+}
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:first-child .icon-sbu-tab-close {
+    display: none;
+}
+
+.layui-tab-title li .icon-sbu-tab-close:hover {
+    border-radius: 2px;
+    background-color: red;
+    color: #fff;
+}
+.layui-layout-admin .layui-body .admin-tabs-control {
+    position: absolute;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .3s;
+    box-sizing: border-box;
+    border-left: 1px solid #f6f6f6;
+    z-index: 1000;
+    visibility: hidden;
+    background-color: white;
+}
+.layui-layout-admin.open-tab .layui-body .admin-tabs-control {
+    visibility: visible;
+}
+.layui-layout-admin .layui-body .admin-tabs-control:hover {
+    background-color: #f6f6f6
+}
+.layui-layout-admin .layui-body .layui-icon-prev {
+    left: 0;
+    border-left: none;
+    border-right: 1px solid #f6f6f6;
+}
+.layui-layout-admin .layui-body .icon-tab-left {
+    left: 0;
+    border-left: none;
+    border-right: 1px solid #f6f6f6;
+}
+.layui-layout-admin .layui-body .layui-icon-next {
+    right: 40px;
+}
+
+.layui-layout-admin .layui-body .icon-tab-right {
+    right: 40px;
+}
+
+.layui-layout-admin .layui-body .layui-icon-down {
+    right: 0;
+}
+
+.layui-layout-admin .layui-body .icon-xiangxiazhankai {
+    right: 0;
+}
+.admin-tabs-select.layui-nav {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background: 0 0;
+}
+.admin-tabs-select.layui-nav .layui-nav-item {
+    line-height: 40px
+}
+.admin-tabs-select.layui-nav .layui-nav-item > a {
+    height: 40px
+}
+.admin-tabs-select.layui-nav .layui-nav-item a {
+    color: #666
+}
+.admin-tabs-select.layui-nav .layui-nav-child {
+    top: 40px;
+    left: auto;
+    right: 0
+}
+.admin-tabs-select.layui-nav .layui-nav-child dd.layui-this,
+.admin-tabs-select.layui-nav .layui-nav-child dd.layui-this a {
+    background-color: #f2f2f2 !important;
+    color: #333
+}
+.admin-tabs-select.layui-nav .layui-nav-bar, .admin-tabs-select.layui-nav .layui-nav-more {
+    display: none;
+}
+
+.admin-tabs-select li dl dd{
+    line-height: 2.8;
+}
+.admin-tabs-select li dl dd a:hover{
+    text-decoration: none;
+}
+
+.layui-tab-ext{
+    padding: 0 0px 0 0px;
+}
+.layui-tab-item1{
+    bottom: 0;
+    overflow-y: scroll;
+    /* padding: 15px; */
+    right: 0;
+    /* top: 40px; */
+    left: 0;
+}
