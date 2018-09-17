@@ -933,7 +933,6 @@
         btnRequest.on("click",function (e) {
             e.preventDefault();
             laycontentdiv.css("height","500px");
-            respcleanDiv.show();
             //respcleanDiv.html("")
             var params={};
             var headerparams={};
@@ -1201,6 +1200,7 @@
                     data:formData,
                     timeout: 10*60*1000,
                 }).then(function (response) {
+                    respcleanDiv.show();
                     that.log("form-------------response------------------")
                     that.log(response);
                     var data=response.data;
@@ -1301,6 +1301,7 @@
                         layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
                     });
                 }).catch(function (error) {
+                    respcleanDiv.show();
                     layer.close(index);
                     that.log("form-------------error-------------------");
                     that.log(error);
@@ -1438,6 +1439,7 @@
                     contentType:contType,
                     success:function (data,status,xhr) {
                         layer.close(index);
+                        respcleanDiv.show();
                         that.log("success...")
                         var statsCode=xhr.status;
                         if(statsCode==200){
@@ -1562,6 +1564,7 @@
                     error:function (xhr, textStatus, errorThrown) {
                         that.log("error.....")
                         layer.close(index);
+                        respcleanDiv.show();
                         that.log(xhr);
                         var statsCode=xhr.status;
                         if(statsCode==404){
