@@ -2141,6 +2141,12 @@
                 element.tabAdd(that.layTabFilter, tabObj);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
+                //正则替换离线文档的格式
+                //首先替换多行
+                var val=$("#txtOffLineDoc").val().replace(/(\s{4}[\n\r]){4,}/gi,"");
+                //替换参数、响应码等属性前面多行空格
+                val=val.replace(/(\s{10,})/gi,"\n");
+                $("#txtOffLineDoc").val(val);
             }else{
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
