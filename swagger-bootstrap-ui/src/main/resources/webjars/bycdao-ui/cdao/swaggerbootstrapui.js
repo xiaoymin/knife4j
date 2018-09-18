@@ -793,6 +793,8 @@
                     }
                 ]]
             })
+            //默认全部展开
+            treetable.expandAll('#'+requestTableId);
             $("#"+requestTableId).hide();
             //响应参数
             var responseTableId="responseParameter"+apiInfo.id;
@@ -839,7 +841,8 @@
                 ]]
             })
             $("#"+responseTableId).hide();
-
+            //默认全部展开
+            treetable.expandAll('#'+responseTableId);
             //初始化apiInfo响应数据
             that.log("初始化apiInfo响应数据")
             that.log(apiInfo)
