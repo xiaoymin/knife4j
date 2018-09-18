@@ -62,7 +62,7 @@ swagger-bootstrap-ui
 <dependency>
   <groupId>com.github.xiaoymin</groupId>
   <artifactId>swagger-bootstrap-ui</artifactId>
-  <version>1.6</version>
+  <version>${lastVersion}</version>
 </dependency>
 ```
 
