@@ -1162,6 +1162,7 @@
                     reqdata=params;
                 }else{
                     paramBodyType="form";
+                    contType="application/x-www-form-urlencoded; charset=UTF-8";
                     reqdata=params;
                     //判断consumes请求类型
                     if(apiInfo.consumes!=null&&apiInfo.consumes.length>0){
@@ -1171,11 +1172,7 @@
                             paramBodyType="form-data";
                             reqdata=formData;
                             formRequest=true;
-                        }else{
-                            contType=apiInfo.consumes[0]+";charset=UTF-8";
                         }
-                    }else{
-                        contType="application/x-www-form-urlencoded; charset=UTF-8";
                     }
                 }
                 //判断query
@@ -3079,10 +3076,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
