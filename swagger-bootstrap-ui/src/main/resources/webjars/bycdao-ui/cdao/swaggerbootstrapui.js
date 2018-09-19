@@ -34,6 +34,7 @@
      */
     SwaggerBootstrapUi.prototype.main=function () {
         var that=this;
+        that.welcome();
         that.initWindowWidthAndHeight();
 
         that.windowResize();
@@ -45,7 +46,6 @@
         that.searchEvents();
         //tab事件
         that.tabCloseEventsInit();
-
     }
 
 
@@ -3311,6 +3311,14 @@
     SwaggerBootstrapUi.prototype.getSearchMenu=function () {
         var that=this;
         return $("#"+that.searchMenuId);
+    }
+
+    SwaggerBootstrapUi.prototype.welcome=function () {
+        var that=this;
+        var msg="欢迎使用swagger-bootstrap-ui "+that.version+",尽情享受吧~~~\r\n\r\n欢迎任何形式的反馈issue,star,fork~~~~！祝君生活愉快:)~~~!\r\n\r\nGitHub:https://github.com/xiaoymin/Swagger-Bootstrap-UI\r\n\r\n码云Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui";
+        if(window.console){
+            console.log(msg);
+        }
     }
     /***
      * 获取当前swagger页面主页面元素
