@@ -1849,6 +1849,12 @@
                     curlified.push( "-F" );
                     curlified.push( "\""+d+"="+formCurlParams[d] +"\"");
                 }
+                if(reqdata!=undefined&&reqdata!=null){
+                    for (var d in reqdata) {
+                        curlified.push("-F");
+                        curlified.push("\"" + d + "=" + reqdata[d] + "\"");
+                    }
+                }
             }else{
                 //form
                 var formArr=new Array();
@@ -3034,9 +3040,6 @@
      */
     function checkDeepTypeAppear(types, type) {
         var flag=false;
-        console.log("检查递归type是否出现")
-        console.log(types)
-        console.log(type)
         $.each(types,function (i, t) {
             if(t==type){
                 //存在
