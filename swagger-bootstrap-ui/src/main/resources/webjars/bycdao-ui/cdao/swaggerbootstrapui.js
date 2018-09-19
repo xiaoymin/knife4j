@@ -1185,6 +1185,12 @@
                             url=url+"?"+reqStrArr;
                         }
                     }
+                    if(apiInfo.consumes!=null&&apiInfo.consumes.length>0) {
+                        var ctp = apiInfo.consumes[0];
+                        if (ctp == "text/plain") {
+                            contType="text/plain";
+                        }
+                    }
                 }else{
                     //body类型的file文件请求
                     reqdata=params;
