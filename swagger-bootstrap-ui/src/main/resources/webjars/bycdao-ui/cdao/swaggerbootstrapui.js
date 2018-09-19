@@ -27,6 +27,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
+        this.version="1.8.4";
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -1140,22 +1141,28 @@
             var paramBodyType="json";
             var formRequest=false;
             if(bodyRequest){
-                reqdata=bodyparams;
-                //body请求,url追加其他param参数
-                var requestArr=new Array();
-                for(var p in params){
-                    requestArr.push(p+"="+params[p]);
-                }
-                if(requestArr.length>0){
-                    var reqStrArr=requestArr.join("&");
-                    that.log("body请求，尚有其他form表单参数................")
-                    that.log(requestArr)
-                    that.log(reqStrArr)
-                    if (url.indexOf("?")>-1){
-                        url=url+"&"+reqStrArr;
-                    }else{
-                        url=url+"?"+reqStrArr;
+                //非文件请求
+                if (!fileUploadFlat){
+                    reqdata=bodyparams;
+                    //body请求,url追加其他param参数
+                    var requestArr=new Array();
+                    for(var p in params){
+                        requestArr.push(p+"="+params[p]);
                     }
+                    if(requestArr.length>0){
+                        var reqStrArr=requestArr.join("&");
+                        that.log("body请求，尚有其他form表单参数................")
+                        that.log(requestArr)
+                        that.log(reqStrArr)
+                        if (url.indexOf("?")>-1){
+                            url=url+"&"+reqStrArr;
+                        }else{
+                            url=url+"?"+reqStrArr;
+                        }
+                    }
+                }else{
+                    //body类型的file文件请求
+                    reqdata=params;
                 }
             }
             else{
@@ -1312,7 +1319,7 @@
 
                     }
                     //组件curl功能
-                    var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams);
+                    var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams,fileUploadFlat);
                     var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl"+apiKeyId+"'>复制</button>");
                     var curlcode=$("<code></code>");
                     curlcode.html(curl);
@@ -1415,7 +1422,7 @@
                             editor.setTheme("ace/theme/eclipse");
                         }
                         //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams);
+                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams,fileUploadFlat);
                         var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl"+apiKeyId+"'>复制</button>");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
@@ -1571,7 +1578,7 @@
                         }
                         that.log("tab show...")
                         //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
+                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat);
                         var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
@@ -1679,7 +1686,7 @@
                         }
 
                         //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url);
+                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat);
                         var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
                         var curlcode=$("<code></code>");
                         curlcode.html(curl);
@@ -1734,7 +1741,7 @@
     /***
      * 构建curl
      */
-    SwaggerBootstrapUi.prototype.buildCurl=function (apiInfo,headers,reqdata,paramBodyType,url,formCurlParams) {
+    SwaggerBootstrapUi.prototype.buildCurl=function (apiInfo,headers,reqdata,paramBodyType,url,formCurlParams,fireRequest) {
         var that=this;
         var curlified=new Array();
         var fullurl="http://"+that.currentInstance.host;
@@ -1765,23 +1772,48 @@
         that.log(reqdata)
         var tp=typeof (reqdata);
         if(paramBodyType=="json"){
-            if(tp=="string"){
-                var jobj=JSON.parse(reqdata);
-                var objstr=JSON.stringify( jobj ).replace(/\\n/g, "").replace(/"/g,"\\\"");
-                that.log(objstr);
-                curlified.push( "-d" );
-                curlified.push( "\""+objstr +"\"")
-            }else if(tp=="object"){
-                //object
-                var objstr=JSON.stringify( reqdata ).replace(/\\n/g, "").replace(/"/g,"\\\"");
-                that.log(objstr);
-                curlified.push( "-d" );
-                curlified.push( "\""+objstr +"\"")
+            if(reqdata!=null){
+                //如果是filre请求
+                if (fireRequest!=undefined&&fireRequest){
+                    if(formCurlParams!=null&&formCurlParams!=undefined) {
+                        for (var d in formCurlParams) {
+                            curlified.push("-F");
+                            curlified.push("\"" + d + "=" + formCurlParams[d] + "\"");
+                        }
+                    }
+                    for (var d in reqdata) {
+                        curlified.push("-F");
+                        curlified.push("\"" + d + "=" + reqdata[d] + "\"");
+                    }
+                }else{
+                    if(tp=="string"){
+                        var jobj=JSON.parse(reqdata);
+                        var objstr=JSON.stringify( jobj ).replace(/\\n/g, "").replace(/"/g,"\\\"");
+                        that.log(objstr);
+                        curlified.push( "-d" );
+                        curlified.push( "\""+objstr +"\"")
+                    }else if(tp=="object"){
+                        //req有可能为空
+                        //object
+                        var objstr=JSON.stringify( reqdata ).replace(/\\n/g, "").replace(/"/g,"\\\"");
+                        that.log(objstr);
+                        curlified.push( "-d" );
+                        curlified.push( "\""+objstr +"\"")
+                    }
+                }
+            }else{
+                if(formCurlParams!=null&&formCurlParams!=undefined) {
+                    var formArr = new Array();
+                    for (var d in formCurlParams) {
+                        curlified.push("-F");
+                        curlified.push("\"" + d + "=" + formCurlParams[d] + "\"");
+                    }
+                }
             }
+
         }else{
             //判断是否是文件上传
             if(formCurlParams!=null&&formCurlParams!=undefined){
-                var formArr=new Array();
                 for(var d in formCurlParams){
                     curlified.push( "-F" );
                     curlified.push( "\""+d+"="+formCurlParams[d] +"\"");
