@@ -3318,7 +3318,7 @@
 
     SwaggerBootstrapUi.prototype.welcome=function () {
         var that=this;
-        var msg="欢迎使用swagger-bootstrap-ui "+that.version+",尽情享受吧~~~\r\n\r\n欢迎任何形式的反馈issue,star,fork~~~~！祝君生活愉快:)~~~!\r\n\r\nGitHub:https://github.com/xiaoymin/Swagger-Bootstrap-UI\r\n\r\n码云Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui";
+        var msg="欢迎使用swagger-bootstrap-ui "+that.version+",尽情享受吧~~~\r\n\r\n欢迎任何形式的反馈issue,star,pr~~~~！祝君生活愉快:)~~~!\r\n\r\nGitHub:https://github.com/xiaoymin/Swagger-Bootstrap-UI\r\n\r\n码云Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui";
         if(window.console){
             console.log(msg);
         }
