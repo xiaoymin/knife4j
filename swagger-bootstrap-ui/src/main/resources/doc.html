@@ -424,7 +424,7 @@
                         <tbody id="paramBody{{id}}">
                         <!--遍历 是否有全局参数--->
                         <%if(globalParameters!=null && globalParameters.length>0){ %>
-                            <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                            <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; if(param.show){ %>
                                 <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
                                     <td width="5%">
                                         <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
@@ -450,10 +450,10 @@
                                         <%}%>
                                     </td>
                                 </tr>
-                            <%}%>
+                            <%}}%>
                         <%}%>
 
-                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;}%>
+                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} if(param.show){%>
                             <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>"  data-emflag="<%=emflag%>" data-schemavalue="<%=param.schemaValue%>">
                                 <td width="5%">
                                     <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
@@ -494,7 +494,7 @@
                                     <%}%>
                                 </td>
                             </tr>
-                        <%}%>
+                        <%}}%>
                         </tbody>
                     </table>
                 </form>
@@ -518,7 +518,7 @@
                         <tbody id="paramBody{{id}}">
                         <!--遍历 是否有全局参数--->
                         <%if(globalParameters!=null && globalParameters.length>0){ %>
-                        <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                        <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a];if(param.show){ %>
                         <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
                             <td width="5%">
                                 <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
@@ -546,8 +546,9 @@
                         </tr>
                         <%}%>
                         <%}%>
+                        <%}%>
 
-                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} %>
+                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} if(param.show){ %>
                         <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-type="<%=param.type%>" data-required="<%=param.require%>" data-emflag="<%=emflag%>">
                             <td width="5%">
                                 <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
@@ -590,7 +591,7 @@
                                 <%}%>
                             </td>
                         </tr>
-                        <%}%>
+                        <%}}%>
                         </tbody>
                     </table>
                 <%}%>

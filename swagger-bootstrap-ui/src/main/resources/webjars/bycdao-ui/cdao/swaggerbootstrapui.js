@@ -883,8 +883,33 @@
         var that=this;
         //赋值全局参数
         //apiInfo.globalParameters=that.currentInstance.globalParameters;
+        //恢复原始show状态
+        if(apiInfo.parameters!=null&&apiInfo.parameters.length>0){
+            $.each(apiInfo.parameters,function (i, param) {
+              param.show=true;
+            })
+        }
+
         apiInfo.globalParameters=that.getGlobalParameters();
         var debugContentId="DebugDoc"+apiInfo.id;
+        //判断全局参数中和parameter对比，是否存在相同参数，如果存在，判断是否parameters参数有值，如果后端有值,则globalParams中的参数值不显示
+        if(apiInfo.globalParameters!=null&&apiInfo.globalParameters.length>0){
+            $.each(apiInfo.globalParameters,function (i, global) {
+                if(apiInfo.parameters!=null&&apiInfo.parameters.length>0){
+                    $.each(apiInfo.parameters,function (i, param) {
+                        if(global.name==param.name){
+                            //判断txtValue是否有值
+                            if(param.txtValue!=undefined&&param.txtValue!=null&&param.txtValue!=""){
+                                global.show=false;
+                            }else{
+                                //反之，param不显示
+                                param.show=false;
+                            }
+                        }
+                    })
+                }
+            })
+        }
         var html = template('DebugScript', apiInfo);
         $("#"+debugContentId).html("").html(html)
         //string类型的arr参数动态添加事件
@@ -3487,6 +3512,8 @@
         this.pid="-1";
 
         this.level=1;
+        //参数是否显示在debug中
+        this.show=true;
 
         this.childrenTypes=new Array();
         this.parentTypes=new Array();
