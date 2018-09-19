@@ -736,8 +736,8 @@
             if(apiInfo.parameters!=null&&apiInfo.parameters.length>0){
                 data=data.concat(apiInfo.parameters);
             }
-            if(apiInfo.refparameters!=null&&apiInfo.refparameters.length>0){
-                $.each(apiInfo.refparameters,function (i, ref) {
+            if(apiInfo.refTreetableparameters!=null&&apiInfo.refTreetableparameters.length>0){
+                $.each(apiInfo.refTreetableparameters,function (i, ref) {
                     data=data.concat(ref.params);
                 })
             }
@@ -802,8 +802,8 @@
             if(apiInfo.responseParameters!=null&&apiInfo.responseParameters.length>0){
                 respdata=respdata.concat(apiInfo.responseParameters);
             }
-            if(apiInfo.responseRefParameters!=null&&apiInfo.responseRefParameters.length>0){
-                $.each(apiInfo.responseRefParameters,function (i, ref) {
+            if(apiInfo.responseTreetableRefParameters!=null&&apiInfo.responseTreetableRefParameters.length>0){
+                $.each(apiInfo.responseTreetableRefParameters,function (i, ref) {
                     respdata=respdata.concat(ref.params);
                 })
             }
@@ -2176,7 +2176,7 @@
             for(var name in definitions){
                 var swud=new SwaggerBootstrapUiDefinition();
                 swud.name=name;
-                that.log("开始解析Definition:"+name);
+                //that.log("开始解析Definition:"+name);
                 //获取value
                 var value=definitions[name];
                 if ($.checkUndefined(value)){
@@ -2304,6 +2304,9 @@
         //解析paths属性
         if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("paths")){
             var paths=menu["paths"];
+            that.log("开始解析Paths.................")
+            that.log(new Date().toTimeString());
+            var pathStartTime=new Date().getTime();
             for(var path in paths){
                 var pathObject=paths[path];
                 var apiInfo=null;
@@ -2385,7 +2388,8 @@
                 }
 
             }
-
+            that.log("解析Paths结束,耗时："+(new Date().getTime()-pathStartTime));
+            that.log(new Date().toTimeString());
         }
         //解析securityDefinitions属性
         if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("securityDefinitions")){
@@ -2514,6 +2518,7 @@
      */
     SwaggerBootstrapUi.prototype.createApiInfoInstance=function(path,mtype,apiInfo){
         var that=this;
+
         var swpinfo=new SwaggerBootstrapUiApiInfo();
         //添加basePath
         var basePath=that.currentInstance.basePath;
@@ -2528,8 +2533,11 @@
         newfullPath+=path;
         //截取字符串
         var newurl=newfullPath.substring(newfullPath.indexOf("/"));
-        that.log("新的url:"+newurl)
+        //that.log("新的url:"+newurl)
         newurl=newurl.replace("//","/");
+        that.log("")
+        that.log("开始创建api-----------------"+newurl)
+        var startApiTime=new Date().getTime();
         swpinfo.showUrl=newurl;
         swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=newurl;
@@ -2555,10 +2563,10 @@
                     minfo.description=$.replaceMultipLineStr($.propValue("description",m,""));
                     //判断是否有枚举类型
                     if(m.hasOwnProperty("enum")){
-                        that.log("包括枚举类型...")
-                        that.log(m.enum);
+                        //that.log("包括枚举类型...")
+                        //that.log(m.enum);
                         minfo.enum=m.enum;
-                        that.log(minfo);
+                        //that.log(minfo);
                         //枚举类型,描述显示可用值
                         var avaiableArrStr=m.enum.join(",");
                         if(m.description!=null&&m.description!=undefined&&m.description!=""){
@@ -2662,6 +2670,9 @@
                         //判断当前属性是否是schema
                         if(minfo.schema){
                             deepRefParameter(minfo,that,minfo.def,swpinfo);
+                            minfo.parentTypes.push(minfo.schemaValue);
+                            //第一层的对象要一直传递
+                            deepTreeTableRefParameter(minfo,that,minfo.def,swpinfo);
                         }
                     }
                 })
@@ -2750,6 +2761,8 @@
                                             resParam.type=p.refType;
                                             var deepDef=that.getDefinitionByName(p.refType);
                                             deepResponseRefParameter(swpinfo,that,deepDef,resParam);
+                                            resParam.parentTypes.push(p.refType);
+                                            deepTreeTableResponseRefParameter(swpinfo,that,deepDef,resParam);
                                         }
                                     }
                                 }else{
@@ -2764,6 +2777,8 @@
                                                 }
                                                 var deepDef=that.getDefinitionByName(p.refType);
                                                 deepResponseRefParameter(swpinfo,that,deepDef,resParam);
+                                                resParam.parentTypes.push(p.refType);
+                                                deepTreeTableResponseRefParameter(swpinfo,that,deepDef,resParam);
                                             }
                                         }else{
                                             resParam.schemaValue=p.type;
@@ -2771,6 +2786,8 @@
                                             resParam.type=p.type;
                                             var deepDef=that.getDefinitionByName(p.type);
                                             deepResponseRefParameter(swpinfo,that,deepDef,resParam);
+                                            resParam.parentTypes.push(p.type);
+                                            deepTreeTableResponseRefParameter(swpinfo,that,deepDef,resParam);
                                         }
                                     }
                                 }
@@ -2787,6 +2804,7 @@
                 that.mergeApiInfoSelfTags(tagName);
             }
         }
+        that.log("创建api完成,耗时："+(new Date().getTime()-startApiTime))
         return swpinfo;
     }
 
@@ -2844,6 +2862,61 @@
         }
     }
 
+
+    function checkParamTreeTableArrsExists(arr, param) {
+        var flag=false;
+        if(arr!=null&&arr.length>0){
+            $.each(arr,function (i, a) {
+                if(a.name==param.name&&a.id==param.id){
+                    flag=true;
+                }
+            })
+        }
+        return flag;
+    }
+
+    function deepTreeTableResponseRefParameter(swpinfo, that, def,resParam) {
+        if (def!=null){
+            if(def.hasOwnProperty("properties")){
+                var refParam=new SwaggerBootstrapUiTreeTableRefParameter();
+                refParam.name=def.name;
+                refParam.id=resParam.id;
+                if(!checkParamTreeTableArrsExists(swpinfo.responseTreetableRefParameters,refParam)){
+                    //firstParameter.childrenTypes.push(def.name);
+                    swpinfo.responseTreetableRefParameters.push(refParam);
+                    if(def.hasOwnProperty("properties")){
+                        var props=def["properties"];
+                        $.each(props,function (i, p) {
+                            var refp=new SwaggerBootstrapUiParameter();
+                            $.each(resParam.parentTypes,function (i, pt) {
+                                refp.parentTypes.push(pt);
+                            })
+                            refp.parentTypes.push(def.name);
+                            refp.pid=resParam.id;
+                            refp.name=p.name;
+                            refp.type=p.type;
+                            refp.description=$.replaceMultipLineStr(p.description);
+                            //add之前需要判断是否已添加,递归情况有可能重复
+                            refParam.params.push(refp);
+                            //判断类型是否基础类型
+                            if(!$.checkIsBasicType(p.refType)){
+                                refp.schemaValue=p.refType;
+                                refp.schema=true;
+                                if(resParam.name!=refp.name||resParam.schemaValue!=p.refType){
+                                    var deepDef=that.getDefinitionByName(p.refType);
+                                    if(!checkDeepTypeAppear(refp.parentTypes,p.refType)){
+                                        deepTreeTableResponseRefParameter(swpinfo,that,deepDef,refp);
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+
+            }
+        }
+    }
+
     /***
      * 递归查询
      * @param minfo
@@ -2889,6 +2962,87 @@
             }
         }
     }
+
+    /***
+     * 递归父类是否出现
+     * @param types
+     * @param type
+     * @returns {boolean}
+     */
+    function checkDeepTypeAppear(types, type) {
+        var flag=false;
+        console.log("检查递归type是否出现")
+        console.log(types)
+        console.log(type)
+        $.each(types,function (i, t) {
+            if(t==type){
+                //存在
+                flag=true;
+            }
+        })
+        return flag;
+    }
+
+    /***
+     * treeTable组件
+     * @param minfo
+     * @param that
+     * @param def
+     * @param apiInfo
+     */
+    function deepTreeTableRefParameter(minfo,that,def,apiInfo) {
+        if (def!=null){
+            var refParam=new SwaggerBootstrapUiTreeTableRefParameter();
+            refParam.name=def.name;
+            refParam.id=minfo.id;
+            //如果当前属性中的schema类出现过1次则不在继续,防止递归死循环
+            if(!checkParamTreeTableArrsExists(apiInfo.refTreetableparameters,refParam)){
+                //firstParameter.childrenTypes.push(def.name);
+                apiInfo.refTreetableparameters.push(refParam);
+                if(def.hasOwnProperty("properties")){
+                    var props=def["properties"];
+                    $.each(props,function (i, p) {
+                        var refp=new SwaggerBootstrapUiParameter();
+                        refp.pid=minfo.id;
+                        $.each(minfo.parentTypes,function (i, pt) {
+                            refp.parentTypes.push(pt);
+                        })
+                        //refp.parentTypes=minfo.parentTypes;
+                        refp.parentTypes.push(def.name)
+                        //level+1
+                        refp.level=minfo.level+1;
+                        refp.name=p.name;
+                        refp.type=p.type;
+                        //判断非array
+                        if(p.type!="array"){
+                            if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
+                                //修复针对schema类型的参数,显示类型为schema类型
+                                refp.type=p.refType;
+                            }
+                        }
+                        refp.in=minfo.in;
+                        refp.require=p.required;
+                        refp.description=$.replaceMultipLineStr(p.description);
+                        refParam.params.push(refp);
+                        //判断类型是否基础类型
+                        if(!$.checkIsBasicType(p.refType)){
+                            refp.schemaValue=p.refType;
+                            refp.schema=true;
+
+                            //属性名称不同,或者ref类型不同
+                            if(minfo.name!=refp.name||minfo.schemaValue!=p.refType){
+                                var deepDef=that.getDefinitionByName(p.refType);
+                                if(!checkDeepTypeAppear(refp.parentTypes,p.refType)){
+                                    deepTreeTableRefParameter(refp,that,deepDef,apiInfo);
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    }
+
     /***
      * 根据类名查找definition
      */
@@ -2915,8 +3069,8 @@
         for(var definition in definitions){
             if(definitionName==definition ){
                 //不解析本身
-                that.log("解析definitionName:"+definitionName);
-                that.log("是否递归："+flag);
+                //that.log("解析definitionName:"+definitionName);
+                //that.log("是否递归："+flag);
                 var value=definitions[definition];
                 //是否有properties
                 if(value.hasOwnProperty("properties")){
@@ -3241,6 +3395,8 @@
         //针对parameter属性有引用类型的参数,继续以table 的形式展现
         //存放SwaggerBootstrapUiRefParameter 集合
         this.refparameters=new Array();
+        //treetable组件使用对象
+        this.refTreetableparameters=new Array();
         this.responseCodes=new Array();
         this.responseValue=null;
         this.responseJson=null;
@@ -3249,6 +3405,8 @@
         //响应字段说明
         this.responseParameters=new Array();
         this.responseRefParameters=new Array();
+        //treetable组件使用对象
+        this.responseTreetableRefParameters=new Array();
         //新增菜单id
         this.id="";
 
@@ -3259,6 +3417,17 @@
         this.name=null;
         //存放SwaggerBootstrapUiParameter集合
         this.params=new Array();
+    }
+
+    var SwaggerBootstrapUiTreeTableRefParameter=function () {
+        this.id="";
+        this.name=null;
+        //存放SwaggerBootstrapUiParameter集合
+        this.params=new Array();
+        this.level=1;
+        this.childrenTypes=new Array();
+
+
     }
 
     /***
@@ -3284,6 +3453,16 @@
 
         this.id="param"+Math.round(Math.random()*1000000);
         this.pid="-1";
+
+        this.level=1;
+
+        this.childrenTypes=new Array();
+        this.parentTypes=new Array();
+    }
+
+    var SwaggerBootstrapUiParameterLevel=function () {
+        this.level=1;
+
     }
     /***
      * 响应码
