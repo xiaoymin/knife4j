@@ -14,7 +14,8 @@ QQ群：<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=16b81902c23fbca
 
 `swagger-bootstrap-ui` 只是`Swagger`的UI实现,并不是替换`Swagger`功能,所以后端模块依然是依赖`Swagger`的,需要配合`Swagger`的注解达到效果,[注解说明](swagger-annotation.md)
 
-在线效果体验:[http://swagger-bootstrap-ui.xiaominfo.com/doc.html](http://swagger-bootstrap-ui.xiaominfo.com/doc.html)
+在线效果体验:
+[http://swagger-bootstrap-ui.xiaominfo.com/doc.html](http://swagger-bootstrap-ui.xiaominfo.com/doc.html)
 
 [swagger-bootstrap-ui详细说明](http://www.xiaominfo.com/2018/08/29/swagger-bootstrap-ui-description/)
 
