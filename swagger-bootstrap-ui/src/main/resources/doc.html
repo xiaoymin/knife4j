@@ -389,7 +389,7 @@
 
 <!--Debug调试tab-->
 <script type="text/html" id="DebugScript">
-    <div style="width: 100%;margin: 0px auto;margin-top: 10px;">
+    <div style="width: 100%;margin: 0px auto;margin-top: 10px;" id="DebugScriptBasic{{id}}">
         <div class="input-group m-bot15">
             <span class="input-group-btn">
                 <button class="btn btn-default btn-info" type="button">{{methodType}}</button>
@@ -599,23 +599,23 @@
                 <%}%>
             </div>
         </div>
-        <div class="responsebody{{id}}" id="responsebody{{id}}" style="display: none;">
-            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-                <ul class="layui-tab-title" style="padding: 0px;width: 98%;margin-left: 10px;">
-                    <li class="layui-this">响应内容</li>
-                    <li>Raw</li>
-                    <li>Headers</li>
-                    <li>Curl</li>
-                </ul>
-                <div class="layui-tab-content" id="layuiresponsecontentmain{{id}}" style="height: 100px;
+    </div>
+    <div class="responsebody{{id}}" id="responsebody{{id}}" style="display: none;">
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title" style="padding: 0px;width: 98%;margin-left: 10px;">
+                <li class="layui-this">响应内容</li>
+                <li>Raw</li>
+                <li>Headers</li>
+                <li>Curl</li>
+            </ul>
+            <div class="layui-tab-content" id="layuiresponsecontentmain{{id}}" style="height: 100px;
     margin-top: 0px;left: 0px;position: absolute;width: 98%;margin-left: 10px;">
-                    <div class="layui-tab-item layui-show" id="respcontent{{id}}"></div>
-                    <div class="layui-tab-item" id="respraw{{id}}"></div>
-                    <div class="layui-tab-item" id="respheaders{{id}}"></div>
-                    <div class="layui-tab-item" id="respcurl{{id}}"></div>
-                </div>
-                <div style="right: 30px;position: absolute;margin-top: 8px;z-index: 9999;" id="responsestatus{{id}}"><span class="debug-span-label">响应码:</span><span class="debug-span-value">200 OK</span>  &nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">耗时:</span><span class="debug-span-value">161 ms</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">大小:</span><span class="debug-span-value">120 b</span></div>
+                <div class="layui-tab-item layui-show" id="respcontent{{id}}"></div>
+                <div class="layui-tab-item" id="respraw{{id}}"></div>
+                <div class="layui-tab-item" id="respheaders{{id}}"></div>
+                <div class="layui-tab-item" id="respcurl{{id}}"></div>
             </div>
+            <div style="right: 30px;position: absolute;margin-top: 8px;z-index: 9999;" id="responsestatus{{id}}"><span class="debug-span-label">响应码:</span><span class="debug-span-value">200 OK</span>  &nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">耗时:</span><span class="debug-span-value">161 ms</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">大小:</span><span class="debug-span-value">120 b</span></div>
         </div>
     </div>
 </script>

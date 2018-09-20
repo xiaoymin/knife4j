@@ -968,9 +968,25 @@
         var resp3=$("#respheaders"+apiKeyId);
         var resp5=$("#respcurl"+apiKeyId);
 
+        var responseHeight=400;
+
+
+
+
+
+
         btnRequest.on("click",function (e) {
             e.preventDefault();
-            laycontentdiv.css("height","500px");
+            var tabsContentHeight=$("#tabsContent"+apiKeyId).height();
+            that.log($("#tabsContent"+apiKeyId))
+            var basicContentHeight=$("#DebugScriptBasic"+apiKeyId).height();
+            that.log($("#DebugScriptBasic"+apiKeyId))
+            var laydivHeight=tabsContentHeight-basicContentHeight-5;
+            responseHeight=laydivHeight-40;
+
+            that.log("整个tab高度："+tabsContentHeight+",请求Form表单高度："+basicContentHeight+",高度差："+responseHeight);
+
+            laycontentdiv.css("height",laydivHeight+"px");
             //respcleanDiv.html("")
             var params={};
             var headerparams={};
@@ -1341,7 +1357,7 @@
                         //如果存在该对象,服务端返回为json格式
                         resp1.html("")
                         that.log(xhr["responseJSON"])
-                        var jsondiv=$('<div style="width: auto;height: 400px;" id="responseJsonEditor'+apiKeyId+'"></div>')
+                        var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
                         jsondiv.html(JSON.stringify(response.data,null,2));
                         resp1.append(jsondiv);
                         var editor = ace.edit("responseJsonEditor"+apiKeyId);
@@ -1445,7 +1461,7 @@
                             //如果存在该对象,服务端返回为json格式
                             resp1.html("")
                             that.log(xhr["responseJSON"])
-                            var jsondiv=$('<div style="width: auto;height: 400px;" id="responseJsonEditor'+apiKeyId+'"></div>')
+                            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
                             jsondiv.html(JSON.stringify(response.data,null,2));
                             resp1.append(jsondiv);
                             var editor = ace.edit("responseJsonEditor"+apiKeyId);
@@ -1600,7 +1616,7 @@
                             //如果存在该对象,服务端返回为json格式
                             resp1.html("")
                             that.log(xhr["responseJSON"])
-                            var jsondiv=$('<div style="width: auto;height: 100%;" id="responseJsonEditor'+apiKeyId+'"></div>')
+                            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
                             jsondiv.html(JSON.stringify(data,null,2));
                             resp1.append(jsondiv);
                             var editor = ace.edit("responseJsonEditor"+apiKeyId);
@@ -1701,7 +1717,7 @@
                             //如果存在该对象,服务端返回为json格式
                             resp1.html("")
                             that.log(xhr["responseJSON"])
-                            var jsondiv=$('<div style="width: auto;height: 400px;" id="responseJsonEditor'+apiKeyId+'"></div>')
+                            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
                             jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
                             resp1.append(jsondiv);
                             var editor = ace.edit("responseJsonEditor"+apiKeyId);
@@ -1783,7 +1799,8 @@
         fullurl+=url;
         curlified.push( "curl" );
         curlified.push( "-X", apiInfo.methodType.toUpperCase() );
-        curlified.push( "\""+fullurl+"\"");
+        //此处url需要encoding
+        curlified.push( "\""+encodeURI(fullurl)+"\"");
         that.log("curl-------------------header");
         that.log(headers);
         if(paramBodyType=="json"){
@@ -1844,7 +1861,7 @@
 
         }else{
             //判断是否是文件上传
-            if(formCurlParams!=null&&formCurlParams!=undefined){
+            if(formCurlParams!=null&&formCurlParams!=undefined&&formCurlParams){
                 for(var d in formCurlParams){
                     curlified.push( "-F" );
                     curlified.push( "\""+d+"="+formCurlParams[d] +"\"");
@@ -1857,18 +1874,19 @@
                 }
             }else{
                 //form
-                var formArr=new Array();
                 for(var d in reqdata){
-                    formArr.push(d+"="+reqdata[d]);
+                    curlified.push( "-d" );
+                    curlified.push("\"" + d + "=" + reqdata[d] + "\"");
+                    //formArr.push(d+"="+reqdata[d]);
                 }
-                var formStr=formArr.join("&");
+                /*var formStr=formArr.join("&");
                 that.log("表单...");
                 that.log(formStr);
                 that.log(formStr.toString());
                 if(formArr.length>0){
                     curlified.push( "-d" );
                     curlified.push( "\""+formStr +"\"");
-                }
+                }*/
             }
         }
         return curlified.join(" ");
