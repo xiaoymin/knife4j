@@ -2,6 +2,12 @@ swagger-bootstrap-ui
 =========================
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.xiaoymin/swagger-bootstrap-ui/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.xiaoymin/swagger-bootstrap-ui)
 
+
+## 交流
+
+QQ群：<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=16b81902c23fbca82780fa107da1b6612e2ee44a05c4103c9176ad9d61c2f6bf"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="XM开源技术交流群" title="XM开源技术交流群"></a> 608374991
+
+
 ## 简介
 
 `swagger-bootstrap-ui`是`Swagger`的前端UI实现,目的是替换`Swagger`默认的UI实现`Swagger-UI`,使文档更友好一点儿....
@@ -130,11 +136,6 @@ public class SwaggerConfiguration {
 </servlet-mapping>
 
 ```
-
-## 交流
-
-QQ群：<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=16b81902c23fbca82780fa107da1b6612e2ee44a05c4103c9176ad9d61c2f6bf"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="XM开源技术交流群" title="XM开源技术交流群"></a> 608374991
-
 
 ## 捐赠
 
