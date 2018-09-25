@@ -32,7 +32,7 @@ public class SwaggerSortCtl {
 
     @PostMapping("/api-sorts")
     @ResponseBody
-    public Map apiSorts(String tags, HttpServletRequest request) {
+    public Map apiSorts(HttpServletRequest request) {
         List<SortModel> result = new ArrayList<SortModel>();
         List<OperationSortModel> result2 = new ArrayList<OperationSortModel>();
         WebApplicationContext wc = (WebApplicationContext) request.getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
@@ -68,7 +68,6 @@ public class SwaggerSortCtl {
         HashMap<Object, Object> map = new HashMap();
         map.put("tags",result);
         map.put("paths",result2);
-
         return map;
     }
 }
