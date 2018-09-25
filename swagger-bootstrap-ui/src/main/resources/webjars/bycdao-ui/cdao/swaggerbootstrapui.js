@@ -2124,8 +2124,11 @@
                     layer.msg("保存成功");
                     that.currentInstance.securityArrs=that.getSecurityInfos();
                 })
+                element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
             }else{
+                that.log("Auth Tab选中................")
+                that.log(tabId);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
             }
@@ -3322,10 +3325,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
