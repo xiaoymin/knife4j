@@ -575,6 +575,10 @@
                                         <%}else {%>
                                         <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                                data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                            <% if(param.type=="array"){%>
+                                            <div class="btn-add-div"></div>
+                                            <button class="btn btn-default btn-add-string"  id="btn-add-string{{id}}">增加</button>
+                                            <%}%>
                                         <%}%>
                                     <%}%>
                                 <%}else{%>
