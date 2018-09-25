@@ -28,6 +28,7 @@
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
         this.version="1.8.4";
+        this.requestOrigion="SwaggerBootstrapUi";
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -1271,6 +1272,8 @@
                         }
                     })
                 }
+                //增加header默认发送参数
+                headerparams["Request-Origion"]=that.requestOrigion;
                 //headerparams["Content-Type"]=contType;
                 that.log(headerparams)
                 that.log(reqdata);
@@ -1508,6 +1511,8 @@
                         }
                     })
                 }
+                //增加header默认发送参数
+                headerparams["Request-Origion"]=that.requestOrigion;
                 headerparams["Content-Type"]=contType;
                 that.log("header....")
                 that.log(headerparams);
