@@ -29,7 +29,6 @@ public class Uputil {
             index22=0;
         }
         aa.append(str.substring(index, len));
-        System.out.println(aa.toString());
         return aa.toString();
     }
 }
