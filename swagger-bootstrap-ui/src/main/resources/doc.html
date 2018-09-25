@@ -389,7 +389,7 @@
 
 <!--Debug调试tab-->
 <script type="text/html" id="DebugScript">
-    <div style="width: 100%;margin: 0px auto;margin-top: 10px;">
+    <div style="width: 100%;margin: 0px auto;margin-top: 10px;" id="DebugScriptBasic{{id}}">
         <div class="input-group m-bot15">
             <span class="input-group-btn">
                 <button class="btn btn-default btn-info" type="button">{{methodType}}</button>
@@ -424,7 +424,7 @@
                         <tbody id="paramBody{{id}}">
                         <!--遍历 是否有全局参数--->
                         <%if(globalParameters!=null && globalParameters.length>0){ %>
-                            <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                            <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; if(param.show){ %>
                                 <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
                                     <td width="5%">
                                         <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
@@ -450,10 +450,10 @@
                                         <%}%>
                                     </td>
                                 </tr>
-                            <%}%>
+                            <%}}%>
                         <%}%>
 
-                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;}%>
+                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} if(param.show){%>
                             <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>"  data-emflag="<%=emflag%>" data-schemavalue="<%=param.schemaValue%>">
                                 <td width="5%">
                                     <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
@@ -490,11 +490,15 @@
                                         <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                                data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                         <%}%>
+                                        <% if(param.type=="array"){%>
+                                        <div class="btn-add-div"></div>
+                                        <button class="btn btn-default btn-add-string"  id="btn-add-string{{id}}">增加</button>
+                                        <%}%>
                                     <%}%>
                                     <%}%>
                                 </td>
                             </tr>
-                        <%}%>
+                        <%}}%>
                         </tbody>
                     </table>
                 </form>
@@ -518,7 +522,7 @@
                         <tbody id="paramBody{{id}}">
                         <!--遍历 是否有全局参数--->
                         <%if(globalParameters!=null && globalParameters.length>0){ %>
-                        <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                        <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a];if(param.show){ %>
                         <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
                             <td width="5%">
                                 <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
@@ -546,8 +550,9 @@
                         </tr>
                         <%}%>
                         <%}%>
+                        <%}%>
 
-                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} %>
+                        <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} if(param.show){ %>
                         <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-type="<%=param.type%>" data-required="<%=param.require%>" data-emflag="<%=emflag%>">
                             <td width="5%">
                                 <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
@@ -590,7 +595,7 @@
                                 <%}%>
                             </td>
                         </tr>
-                        <%}%>
+                        <%}}%>
                         </tbody>
                     </table>
                 <%}%>
@@ -598,23 +603,23 @@
                 <%}%>
             </div>
         </div>
-        <div class="responsebody{{id}}" id="responsebody{{id}}" style="display: none;">
-            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-                <ul class="layui-tab-title" style="padding: 0px;width: 98%;margin-left: 10px;">
-                    <li class="layui-this">响应内容</li>
-                    <li>Raw</li>
-                    <li>Headers</li>
-                    <li>Curl</li>
-                </ul>
-                <div class="layui-tab-content" id="layuiresponsecontentmain{{id}}" style="height: 100px;
+    </div>
+    <div class="responsebody{{id}}" id="responsebody{{id}}" style="display: none;">
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title" style="padding: 0px;width: 98%;margin-left: 10px;">
+                <li class="layui-this">响应内容</li>
+                <li>Raw</li>
+                <li>Headers</li>
+                <li>Curl</li>
+            </ul>
+            <div class="layui-tab-content" id="layuiresponsecontentmain{{id}}" style="height: 100px;
     margin-top: 0px;left: 0px;position: absolute;width: 98%;margin-left: 10px;">
-                    <div class="layui-tab-item layui-show" id="respcontent{{id}}"></div>
-                    <div class="layui-tab-item" id="respraw{{id}}"></div>
-                    <div class="layui-tab-item" id="respheaders{{id}}"></div>
-                    <div class="layui-tab-item" id="respcurl{{id}}"></div>
-                </div>
-                <div style="right: 30px;position: absolute;margin-top: 8px;z-index: 9999;" id="responsestatus{{id}}"><span class="debug-span-label">响应码:</span><span class="debug-span-value">200 OK</span>  &nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">耗时:</span><span class="debug-span-value">161 ms</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">大小:</span><span class="debug-span-value">120 b</span></div>
+                <div class="layui-tab-item layui-show" id="respcontent{{id}}"></div>
+                <div class="layui-tab-item" id="respraw{{id}}"></div>
+                <div class="layui-tab-item" id="respheaders{{id}}"></div>
+                <div class="layui-tab-item" id="respcurl{{id}}"></div>
             </div>
+            <div style="right: 30px;position: absolute;margin-top: 8px;z-index: 9999;" id="responsestatus{{id}}"><span class="debug-span-label">响应码:</span><span class="debug-span-value">200 OK</span>  &nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">耗时:</span><span class="debug-span-value">161 ms</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">大小:</span><span class="debug-span-value">120 b</span></div>
         </div>
     </div>
 </script>
