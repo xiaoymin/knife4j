@@ -36,7 +36,7 @@ public class SwaggerSortCtl {
         List<SortModel> result = new ArrayList<SortModel>();
         List<OperationSortModel> result2 = new ArrayList<OperationSortModel>();
         WebApplicationContext wc = (WebApplicationContext) request.getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-        //todo Method 层排序
+        // Method 层排序
         RequestMappingHandlerMapping bean = wc.getBean(RequestMappingHandlerMapping.class);
         Map<RequestMappingInfo, HandlerMethod> handlerMethods = bean.getHandlerMethods();
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
@@ -48,7 +48,7 @@ public class SwaggerSortCtl {
             oModel.setSort(order_annotation==null?99:Integer.valueOf(order_annotation.value()));
             result2.add(oModel);
         }
-        //todo Ctl层排序
+        // Ctl层排序
         Map<String, Object> beansWithAnnotation = wc.getBeansWithAnnotation(Controller.class);
         for (Map.Entry<String, Object> entry : beansWithAnnotation.entrySet()) {
             Class<?> aClass = entry.getValue().getClass();
