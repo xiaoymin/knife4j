@@ -971,22 +971,22 @@
 
         var responseHeight=400;
 
-
-
-
-
-
         btnRequest.on("click",function (e) {
             e.preventDefault();
             var tabsContentHeight=$("#tabsContent"+apiKeyId).height();
             that.log($("#tabsContent"+apiKeyId))
             var basicContentHeight=$("#DebugScriptBasic"+apiKeyId).height();
             that.log($("#DebugScriptBasic"+apiKeyId))
+            //计算basic和tabs的占比
+            var perc=parseInt((basicContentHeight/tabsContentHeight)*100);
+            that.log("tabs高度:"+tabsContentHeight+",basic高度："+basicContentHeight+",占比："+perc)
             var laydivHeight=tabsContentHeight-basicContentHeight-5;
             responseHeight=laydivHeight-40;
-
+            if(perc>65){
+                responseHeight=500;
+                laydivHeight=550;
+            }
             that.log("整个tab高度："+tabsContentHeight+",请求Form表单高度："+basicContentHeight+",高度差："+responseHeight);
-
             laycontentdiv.css("height",laydivHeight+"px");
             //respcleanDiv.html("")
             var params={};
