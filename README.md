@@ -1,6 +1,11 @@
 swagger-bootstrap-ui
 =========================
+
+<!-- Badges section here. -->
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.xiaoymin/swagger-bootstrap-ui/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.xiaoymin/swagger-bootstrap-ui)
+[![Crates.io](https://img.shields.io/crates/l/rustc-serialize.svg)](https://github.com/spawpaw/swagger-bootstrap-ui/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/spawpaw/swagger-bootstrap-ui.svg?branch=master)](https://travis-ci.org/spawpaw/mybatis-generator-gui-extension)
+[![Github Releases](https://img.shields.io/github/downloads/atom/atom/latest/total.svg)](https://github.com/spawpaw/swagger-bootstrap-ui/releases)
 
 ## English introduction | [中文说明](README_zh.md)
 
