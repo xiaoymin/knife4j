@@ -101,39 +101,6 @@ public class SwaggerBootstrapUiController {
         swaggerBootstrapUi.setTagSortLists(getSortTag(request,documentation));
         swaggerExt.setSwaggerBootstrapUi(swaggerBootstrapUi);
         // Method 层排序
-        /*RequestMappingHandlerMapping bean = wc.getBean(RequestMappingHandlerMapping.class);
-        Map<RequestMappingInfo, HandlerMethod> handlerMethods = bean.getHandlerMethods();
-        for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
-            RequestMappingInfo key = entry.getKey();
-            HandlerMethod value=entry.getValue();
-            ApiOperationSort apiSort=value.getMethod().getAnnotation(ApiOperationSort.class);
-            OperationSortModel oModel = new OperationSortModel();
-            Iterator<String> urlIterator=key.getPatternsCondition().getPatterns().iterator();
-            if (urlIterator.hasNext()){
-                oModel.setUrl(urlIterator.next());
-            }
-            Iterator<RequestMethod> set=key.getMethodsCondition().getMethods().iterator();
-            if (set.hasNext()){
-                oModel.setMethod(set.next().name().toUpperCase());
-            }
-            oModel.setSort(apiSort==null?Integer.MAX_VALUE:apiSort.value());
-            methodResults.add(oModel);
-        }
-
-        Collections.sort(result,new Comparator<SortModel>(){
-            public int compare(SortModel m1, SortModel m2) {
-                return m1.getSort().compareTo(m2.getSort());
-            }
-        });
-        Collections.sort(methodResults, new Comparator<OperationSortModel>() {
-            @Override
-            public int compare(OperationSortModel o1, OperationSortModel o2) {
-                return o1.getSort().compareTo(o2.getSort());
-            }
-        });
-        HashMap<Object, Object> map = new HashMap();
-        map.put("tags",result);
-        map.put("paths",methodResults);*/
         return new ResponseEntity<Json>(jsonSerializer.toJson(swaggerExt), HttpStatus.OK);
     }
 
