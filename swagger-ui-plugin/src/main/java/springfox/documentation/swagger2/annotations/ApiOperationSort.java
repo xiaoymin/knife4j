@@ -13,6 +13,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ApiOperationSort {
-    String value() default "";
+
+    int value() default Integer.MAX_VALUE;
+
     String modfy_time() default "";
 }

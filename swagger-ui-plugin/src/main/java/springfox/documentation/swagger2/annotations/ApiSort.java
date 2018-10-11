@@ -14,5 +14,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ApiSort {
-    String value() default "";
+
+    int value() default Integer.MAX_VALUE;
 }
