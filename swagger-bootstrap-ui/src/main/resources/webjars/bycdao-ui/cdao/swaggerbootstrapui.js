@@ -46,6 +46,10 @@
             showApiUrl:false,//接口api地址不显示
             enableSwaggerBootstrapUi:false//是否开启swaggerBootstrapUi增强
         };
+        //SwaggerBootstrapUi增强注解地址
+        this.extUrl="/v2/api-docs-ext";
+        //验证增强有效地址
+        this.validateExtUrl="";
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -222,6 +226,11 @@
                 $.each(groupData,function (i, group) {
                     var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
                     g.url=group.url;
+                    //赋值增强地址
+                    g.extUrl=that.extUrl+"?group="+group.name;
+                    if(that.validateExtUrl==""){
+                        that.validateExtUrl=g.extUrl;
+                    }
                     that.instances.push(g);
                 })
             },
@@ -277,6 +286,10 @@
             var api=instance.url;
             if (api==undefined||api==null||api==""){
                 api=instance.location;
+            }
+            //判断是否开启增强功能
+            if (that.settings.enableSwaggerBootstrapUi){
+                api=instance.extUrl;
             }
             //这里判断url请求是否已加载过
             //防止出现根路径的情况
@@ -386,7 +399,7 @@
         })*/
 
         //全局参数菜单功能
-        var globalArgsLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">全局参数设置</span> </div></div></li>');
+        var globalArgsLi=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">全局参数设置</span> </div></div></li>');
         //var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
         globalArgsLi.on("click",function () {
             that.getMenu().find("li").removeClass("active");
@@ -396,7 +409,7 @@
         extul.append(globalArgsLi);
 
         //离线文档功能
-        var mddocli=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">离线文档(MD)</span> </div></div></li>');
+        var mddocli=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">离线文档(MD)</span> </div></div></li>');
         //var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-iconset0118\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
         mddocli.on("click",function () {
             that.log("离线文档功能click")
@@ -406,7 +419,7 @@
         })
         extul.append(mddocli);
         //个性化设置
-        var settingsli=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">个性化设置</span> </div></div></li>');
+        var settingsli=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">个性化设置</span> </div></div></li>');
         settingsli.on("click",function () {
             that.log("个性化设置功能click")
             that.createSettingsPage();
@@ -467,12 +480,74 @@
                 element.tabAdd(that.layTabFilter, tabObj);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
+                //保存按钮功能
+                $("#btnSaveSettings").on("click",function (e) {
+                    e.preventDefault();
+                    var showApi=$("#SwaggerBootstrapUiSettings").find("input[name=showApi]");
+                    var enableSbu=$("#SwaggerBootstrapUiSettings").find("input[name=enableSwaggerBootstrapUi]");
+
+                    var showApiFlag=showApi.prop("checked");
+                    var enableSbuFlag=enableSbu.prop("checked");
+                    var flag=true;
+                    //如果开启SwawggerBootstrapUi增强,则判断当前后端是否启用注解
+                    if(enableSbuFlag){
+                        var api=that.validateExtUrl;
+                        var idx=api.indexOf("/");
+                        if(idx==0){
+                            api=api.substr(1);
+                        }
+                        that.log("验证api地址："+api);
+                        $.ajax({
+                            url:api,
+                            dataType:"json",
+                            type:"get",
+                            async:false,
+                            success:function (data) {
+                                that.log("验证成功...")
+                            },
+                            error:function (xhr, textStatus, errorThrown) {
+                                that.log("验证error...")
+                                that.log(xhr);
+                                //获取响应码
+                                var status=xhr.status;
+                                if(status==404){
+                                    layer.msg("无法开启SwaggerBootstrapUi增强功能,请确保后端启用注解@EnableSwaggerBootstrapUi");
+                                    enableSbu.prop("checked",false);
+                                    flag=false;
+                                }
+                            }
+                        })
+                    }
+                    if (flag){
+                        that.log(showApi.prop("checked")+",enable:"+enableSbu.prop("checked"));
+                        var setts={
+                            showApiUrl:showApiFlag,//接口api地址不显示
+                            enableSwaggerBootstrapUi:enableSbuFlag//是否开启swaggerBootstrapUi增强
+                        }
+                        that.saveSettings(setts);
+                    }
+                })
             }else{
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
             }
         },100)
 
+    }
+
+    /***
+     * 保存SwaggerBootstrapUi 个性化配置信息
+     * @param settings
+     */
+    SwaggerBootstrapUi.prototype.saveSettings=function (settings) {
+        if(window.localStorage){
+            var store = window.localStorage;
+            var gbStr=JSON.stringify(settings);
+            store.setItem("SwaggerBootstrapUiSettings",gbStr);
+            layer.msg("保存成功");
+        }else{
+            layer.msg("当前浏览器不支持localStorage对象,无法使用该功能");
+        }
     }
     /***
      * 创建全局参数
@@ -2479,9 +2554,15 @@
                 that.currentInstance.difArrs.push(swud);
             }
         }
+
         //解析tags标签
         if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("tags")){
             var tags=menu["tags"];
+            //判断是否开启增强配置
+            if(that.settings.enableSwaggerBootstrapUi){
+                var sbu=menu["swaggerBootstrapUi"]
+                tags=sbu["tagSortLists"];
+            }
             $.each(tags,function (i, tag) {
                 var swuTag=new SwaggerBootstrapUiTag(tag.name,tag.description);
                 that.currentInstance.tags.push(swuTag);
@@ -3417,10 +3498,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
@@ -3471,6 +3552,8 @@
         this.location=location;
         //不分组是url地址
         this.url=null;
+        //增强地址
+        this.extUrl=null;
         this.groupVersion=version;
         //分组url请求实例
         this.basePath="";

@@ -920,7 +920,7 @@
     <div style="margin: 0px auto;width: 80%;margin-top: 30px;">
         <div class="panel panel-primary">
             <div class="panel-heading"><h5>个性化设置</h5></div>
-            <div class="panel-body" style="height: 400px;">
+            <div class="panel-body" style="height: 400px;" id="SwaggerBootstrapUiSettings">
                 <div class="alert alert-success" role="alert">
                     SwaggerBootstrapUi允许用户开启一些个性化的配置功能,
                     个性化设置注意点：
@@ -935,7 +935,7 @@
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" value="">
+                                <input type="checkbox" name="showApi" />
                                 菜单Api地址显示
                             </label>
                         </div>
@@ -946,7 +946,7 @@
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" value="">
+                                <input type="checkbox" name="enableSwaggerBootstrapUi"/>
                                 启用SwaggerBootstrapUi提供的增强功能,包括接口排序等功能
                             </label>
                         </div>
@@ -954,7 +954,7 @@
                 </div>
                 <div class="form-group" style="margin-top: 5px;">
                     <div class="col-sm-4 col-sm-offset-2">
-                        <button class="btn btn-primary" type="submit">保存内容</button>
+                        <button class="btn btn-primary" type="button" id="btnSaveSettings">保存内容</button>
                     </div>
                 </div>
             </div>
