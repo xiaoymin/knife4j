@@ -516,7 +516,7 @@
                                 that.log(xhr);
                                 //获取响应码
                                 var status=xhr.status;
-                                if(status==404){
+                                if(status!=200){
                                     layer.msg("无法开启SwaggerBootstrapUi增强功能,请确保后端启用注解@EnableSwaggerBootstrapUi");
                                     enableSbu.prop("checked",false);
                                     flag=false;
@@ -3504,10 +3504,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        if(window.console){
+        /*if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }
+        }*/
     }
     /***
      * 获取菜单元素
