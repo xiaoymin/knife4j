@@ -231,7 +231,7 @@ html {
     position: relative;
 }
 .nav-list>li>.submenu>li:before {
-    content: "";
+    /*content: "";*/
     display: inline-block;
     position: absolute;
     width: 7px;
@@ -249,7 +249,8 @@ li [class^="icon-"], li [class*=" icon-"], .nav-list li [class^="icon-"], .nav-l
     /* border-color: #c5d0dc; */
 }
 .menuLi{
-    border: 1px solid #f3f3f4;
+    /*border: 1px solid #f3f3f4;*/
+    border-top: 1px solid #e3e3ec;
     padding: 1px 2px;
     margin-bottom: 2px;
     margin-top: 3px;
@@ -298,6 +299,10 @@ code {
 .swu-hei{
     line-height: 21px;
     height: 21px;
+}
+.swu-hei-none-url{
+    line-height: 30px;
+    height: 30px;
 }
 .swu-wd-20{
     width: 20px;

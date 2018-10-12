@@ -1,4 +1,16 @@
 /***
+ * swagger-bootstrap-ui v1.8.5
+ * https://gitee.com/xiaoym/swagger-bootstrap-ui
+ *
+ * Swagger enhanced UI component package
+ *
+ * Author: xiaoyumin
+ * email:xiaoymin@foxmail.com
+ * Copyright: 2017 - 2018, xiaoyumin, http://www.xiaominfo.com/
+ *
+ * Licensed under Apache License 2.0
+ * https://github.com/xiaoymin/Swagger-Bootstrap-UI/blob/master/LICENSE
+ *
  * create by xiaoymin on 2018-7-4 15:32:07
  * 重构swagger-bootstrap-ui组件,为以后动态扩展更高效,扩展接口打下基础
  */
@@ -27,8 +39,13 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.8.4";
+        this.version="1.8.5";
         this.requestOrigion="SwaggerBootstrapUi";
+        //个性化配置
+        this.settings={
+            showApiUrl:false,//接口api地址不显示
+            enableSwaggerBootstrapUi:false//是否开启swaggerBootstrapUi增强
+        };
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -36,6 +53,7 @@
     SwaggerBootstrapUi.prototype.main=function () {
         var that=this;
         that.welcome();
+        that.initSettings();
         that.initWindowWidthAndHeight();
 
         that.windowResize();
@@ -50,6 +68,20 @@
     }
 
 
+    /***
+     * 读取个性化配置信息
+     */
+    SwaggerBootstrapUi.prototype.initSettings=function () {
+        var that=this;
+        if(window.localStorage){
+            var store = window.localStorage;
+            var globalSettings=store["SwaggerBootstrapUiSettings"];
+            if(globalSettings!=undefined&&globalSettings!=null&&globalSettings!=""){
+                var settings=JSON.parse(globalSettings);
+                that.settings=$.extend({},that.settings,settings);
+            }
+        }
+    }
 
     /***
      * 搜索按钮事件
@@ -338,24 +370,53 @@
             })
             that.getMenu().append(securityLi);
         }
+
+        //SwaggerBootstrapUi增强功能全部放置在此
+        //存在子标签
+        var extLi=$('<li  class="detailMenu"></li>');
+        var exttitleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-zhongduancanshuguanli"></i><span class="menu-text"> 文档管理</span><span class="badge badge-primary ">3</span><b class="arrow icon-angle-down"></b></a>');
+        extLi.append(exttitleA);
+        //循环树
+        var extul=$('<ul class="submenu"></ul>')
+        /*$.each(tag.childrens,function (i, children) {
+            var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
+            //var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div></div></li>');
+            childrenLi.data("data",children);
+            ul.append(childrenLi);
+        })*/
+
         //全局参数菜单功能
-        var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
+        var globalArgsLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">全局参数设置</span> </div></div></li>');
+        //var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
         globalArgsLi.on("click",function () {
             that.getMenu().find("li").removeClass("active");
             globalArgsLi.addClass("active");
             that.createGlobalParametersElement();
         })
-        that.getMenu().append(globalArgsLi);
+        extul.append(globalArgsLi);
 
         //离线文档功能
-        var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-iconset0118\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
+        var mddocli=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">离线文档(MD)</span> </div></div></li>');
+        //var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-iconset0118\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
         mddocli.on("click",function () {
             that.log("离线文档功能click")
             that.createMarkdownTab();
             that.getMenu().find("li").removeClass("active");
             mddocli.addClass("active");
         })
-        that.getMenu().append(mddocli);
+        extul.append(mddocli);
+        //个性化设置
+        var settingsli=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">个性化设置</span> </div></div></li>');
+        settingsli.on("click",function () {
+            that.log("个性化设置功能click")
+            that.createSettingsPage();
+            that.getMenu().find("li").removeClass("active");
+            settingsli.addClass("active");
+        })
+        extul.append(settingsli);
+
+        extLi.append(extul);
+        that.getMenu().append(extLi);
 
         $.each(that.currentInstance.tags,function (i, tag) {
             var len=tag.childrens.length;
@@ -371,6 +432,7 @@
                 var ul=$('<ul class="submenu"></ul>')
                 $.each(tag.childrens,function (i, children) {
                     var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
+                    //var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div></div></li>');
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })
@@ -381,6 +443,36 @@
         that.log("菜单初始化完成...")
         //DApiUI.initLiClick();
         that.initializationMenuClickEvents();
+    }
+
+    /***
+     * 创建个性化配置页面
+     */
+    SwaggerBootstrapUi.prototype.createSettingsPage=function () {
+        var that=this;
+        var layui=that.layui;
+        var element=layui.element;
+        var tabId="SwaggerBootstrapUiSettingsScript";
+        var tabContetId="layerTab"+tabId;
+        //内容覆盖
+        setTimeout(function () {
+            if (!that.tabExists(tabId)) {
+                var html = template(tabId, that.settings);
+                var tabObj={
+                    id:tabId,
+                    title:'个性化设置',
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:'个性化设置'});
+                element.tabAdd(that.layTabFilter, tabObj);
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabFinallyRight();
+            }else{
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
+            }
+        },100)
+
     }
     /***
      * 创建全局参数
