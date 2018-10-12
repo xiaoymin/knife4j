@@ -7,15 +7,16 @@
 
 package com.github.xiaoymin.swaggerbootstrapui.web;
 
+import com.github.xiaoymin.swaggerbootstrapui.model.SwaggerBootstrapUiPathInstance;
+import com.github.xiaoymin.swaggerbootstrapui.util.CommonUtils;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiOperationSort;
 import io.swagger.annotations.ApiSort;
-import io.swagger.models.Swagger;
-import io.swagger.models.SwaggerBootstrapUi;
-import io.swagger.models.SwaggerExt;
-import io.swagger.models.SwaggerBootstrapUiTag;
+import io.swagger.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.util.UriComponents;
@@ -40,6 +38,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -97,20 +97,22 @@ public class SwaggerBootstrapUiController {
             swagger.host(hostName(uriComponents));
         }
         SwaggerExt swaggerExt =new SwaggerExt(swagger);
-        SwaggerBootstrapUi swaggerBootstrapUi=new SwaggerBootstrapUi();
-        swaggerBootstrapUi.setTagSortLists(getSortTag(request,documentation));
-        swaggerExt.setSwaggerBootstrapUi(swaggerBootstrapUi);
+        //swaggerBootstrapUi.setTagSortLists(getSortTag(request,documentation));
+        swaggerExt.setSwaggerBootstrapUi(initSwaggerBootstrapUi(request,documentation));
         // Method 层排序
         return new ResponseEntity<Json>(jsonSerializer.toJson(swaggerExt), HttpStatus.OK);
     }
 
 
-    private List<SwaggerBootstrapUiTag> getSortTag(HttpServletRequest request,Documentation documentation ){
+    private SwaggerBootstrapUi initSwaggerBootstrapUi(HttpServletRequest request,Documentation documentation){
+        SwaggerBootstrapUi swaggerBootstrapUi=new SwaggerBootstrapUi();
         WebApplicationContext wc=WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
         Iterator<Tag> tags=documentation.getTags().iterator();
         List<SwaggerBootstrapUiTag> targetTagLists=Lists.newArrayList();
         // Ctl层排序
         Map<String, Object> beansWithAnnotation = wc.getBeansWithAnnotation(Controller.class);
+        //path排序
+        List<SwaggerBootstrapUiPath> targetPathLists=Lists.newArrayList();
         while (tags.hasNext()){
             Tag sourceTag=tags.next();
             String tagName=sourceTag.getName();
@@ -145,6 +147,13 @@ public class SwaggerBootstrapUiController {
                 }
                 //targetTagLists.add(new Tag(sourceTag.getName(),sourceTag.getDescription(),order,sourceTag.getVendorExtensions()));
                 tag.setOrder(order);
+                Method[] methods=aClass.getDeclaredMethods();
+                for (Method method:methods){
+                    List<SwaggerBootstrapUiPath> paths= new SwaggerBootstrapUiPathInstance(method).match();
+                    if (paths!=null&&paths.size()>0){
+                        targetPathLists.addAll(paths);
+                    }
+                }
             }
             targetTagLists.add(tag);
 
@@ -155,8 +164,18 @@ public class SwaggerBootstrapUiController {
                 return o1.getOrder().compareTo(o2.getOrder());
             }
         });
-        return targetTagLists;
+        Collections.sort(targetPathLists, new Comparator<SwaggerBootstrapUiPath>() {
+            @Override
+            public int compare(SwaggerBootstrapUiPath o1, SwaggerBootstrapUiPath o2) {
+                return o1.getOrder().compareTo(o2.getOrder());
+            }
+        });
+
+        swaggerBootstrapUi.setTagSortLists(targetTagLists);
+        swaggerBootstrapUi.setPathSortLists(targetPathLists);
+        return swaggerBootstrapUi;
     }
+
 
 
     private String hostName(UriComponents uriComponents) {

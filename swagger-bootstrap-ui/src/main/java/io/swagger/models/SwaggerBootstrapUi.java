@@ -22,6 +22,19 @@ public class SwaggerBootstrapUi {
      */
     protected List<SwaggerBootstrapUiTag> tagSortLists;
 
+    /***
+     * path排序
+     */
+    private List<SwaggerBootstrapUiPath> pathSortLists;
+
+    public List<SwaggerBootstrapUiPath> getPathSortLists() {
+        return pathSortLists;
+    }
+
+    public void setPathSortLists(List<SwaggerBootstrapUiPath> pathSortLists) {
+        this.pathSortLists = pathSortLists;
+    }
+
     public List<SwaggerBootstrapUiTag> getTagSortLists() {
         return tagSortLists;
     }

@@ -38,4 +38,5 @@ public class CommonUtils {
         aa.append(str.substring(index, len));
         return aa.toString();
     }
+
 }
