@@ -935,7 +935,7 @@
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="showApi" />
+                                <input type="checkbox" name="showApi" <%if(showApiUrl){ %> checked="checked"  <%}%> />
                                 菜单Api地址显示
                             </label>
                         </div>
@@ -946,7 +946,7 @@
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="enableSwaggerBootstrapUi"/>
+                                <input type="checkbox" name="enableSwaggerBootstrapUi"  <%if(enableSwaggerBootstrapUi){ %> checked="checked"  <%}%> />
                                 启用SwaggerBootstrapUi提供的增强功能,包括接口排序等功能
                             </label>
                         </div>

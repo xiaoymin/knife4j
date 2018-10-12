@@ -550,7 +550,7 @@
             var store = window.localStorage;
             var gbStr=JSON.stringify(settings);
             store.setItem("SwaggerBootstrapUiSettings",gbStr);
-            layer.msg("保存成功");
+            layer.msg("保存成功,请刷新该文档页");
         }else{
             layer.msg("当前浏览器不支持localStorage对象,无法使用该功能");
         }
