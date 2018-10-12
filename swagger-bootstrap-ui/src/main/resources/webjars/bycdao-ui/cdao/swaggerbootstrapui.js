@@ -2588,7 +2588,19 @@
                     //get方式
                     apiInfo=pathObject["get"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"get",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"get",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
                         that.methodCountAndDown("GET");
 
                     }
@@ -2597,7 +2609,19 @@
                     //post 方式
                     apiInfo=pathObject["post"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"post",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"post",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
                         that.methodCountAndDown("POST");
                     }
                 }
@@ -2605,7 +2629,20 @@
                     //put
                     apiInfo=pathObject["put"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"put",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"put",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"put",apiInfo));
                         that.methodCountAndDown("PUT");
                     }
                 }
@@ -2613,7 +2650,20 @@
                     //delete
                     apiInfo=pathObject["delete"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"delete",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"delete",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"delete",apiInfo));
                         that.methodCountAndDown("DELETE");
                     }
                 }
@@ -2623,7 +2673,21 @@
                     //patch
                     apiInfo=pathObject["patch"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"patch",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"patch",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"patch",apiInfo));
                         that.methodCountAndDown("PATCH");
                     }
                 }
@@ -2631,7 +2695,21 @@
                     //OPTIONS
                     apiInfo=pathObject["options"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"options",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"options",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"options",apiInfo));
                         that.methodCountAndDown("OPTIONS");
                     }
                 }
@@ -2639,7 +2717,21 @@
                     //TRACE
                     apiInfo=pathObject["trace"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"trace",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"trace",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"trace",apiInfo));
                         that.methodCountAndDown("TRACE");
                     }
                 }
@@ -2647,7 +2739,20 @@
                     //HEAD
                     apiInfo=pathObject["head"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"head",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"head",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"head",apiInfo));
                         that.methodCountAndDown("HEAD");
                     }
                 }
@@ -2655,7 +2760,20 @@
                     //CONNECT
                     apiInfo=pathObject["connect"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"connect",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"connect",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"connect",apiInfo));
                         that.methodCountAndDown("CONNECT");
                     }
 
@@ -2707,6 +2825,10 @@
                         tag.childrens.push(methodApi);
                     }
                 })
+            })
+            //排序childrens
+            tag.childrens.sort(function (a, b) {
+                return a.order-b.order;
             })
         });
     }
@@ -3690,6 +3812,8 @@
         this.responseTreetableRefParameters=new Array();
         //新增菜单id
         this.id="";
+        //排序
+        this.order=2147483647;
 
 
     }

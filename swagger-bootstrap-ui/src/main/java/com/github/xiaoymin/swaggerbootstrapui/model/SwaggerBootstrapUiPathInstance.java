@@ -24,9 +24,11 @@ import java.util.List;
  */
 public class SwaggerBootstrapUiPathInstance {
 
+    private String parent;
     private Method target;
 
-    public SwaggerBootstrapUiPathInstance(Method target) {
+    public SwaggerBootstrapUiPathInstance(String parent,Method target) {
+        this.parent=parent;
         this.target = target;
     }
 
@@ -34,7 +36,7 @@ public class SwaggerBootstrapUiPathInstance {
     public SwaggerBootstrapUiPath createMethod(RequestMethod method,String path){
         SwaggerBootstrapUiPath defaultPath=createDefaultPath();
         defaultPath.setMethod(method.name().toUpperCase());
-        defaultPath.setPath(path);
+        defaultPath.setPath(buildPath(path));
         return defaultPath;
     }
 
@@ -57,38 +59,59 @@ public class SwaggerBootstrapUiPathInstance {
             GetMapping getMapping=target.getAnnotation(GetMapping.class);
             SwaggerBootstrapUiPath defaultPath=createDefaultPath();
             defaultPath.setMethod(RequestMethod.GET.name().toUpperCase());
-            defaultPath.setPath(getMapping.value()[0]);
+            defaultPath.setPath(buildPath(getMapping.value()[0]));
             pathList.add(defaultPath);
         }else if(target.getAnnotation(PostMapping.class)!=null){
             PostMapping getMapping=target.getAnnotation(PostMapping.class);
             SwaggerBootstrapUiPath defaultPath=createDefaultPath();
             defaultPath.setMethod(RequestMethod.POST.name().toUpperCase());
-            defaultPath.setPath(getMapping.value()[0]);
+            defaultPath.setPath(buildPath(getMapping.value()[0]));
             pathList.add(defaultPath);
         }else if(target.getAnnotation(DeleteMapping.class)!=null){
             DeleteMapping getMapping=target.getAnnotation(DeleteMapping.class);
             SwaggerBootstrapUiPath defaultPath=createDefaultPath();
             defaultPath.setMethod(RequestMethod.DELETE.name().toUpperCase());
-            defaultPath.setPath(getMapping.value()[0]);
+            defaultPath.setPath(buildPath(getMapping.value()[0]));
             pathList.add(defaultPath);
         }else if(target.getAnnotation(PutMapping.class)!=null){
             PutMapping getMapping=target.getAnnotation(PutMapping.class);
             SwaggerBootstrapUiPath defaultPath=createDefaultPath();
             defaultPath.setMethod(RequestMethod.POST.name().toUpperCase());
-            defaultPath.setPath(getMapping.value()[0]);
+            defaultPath.setPath(buildPath(getMapping.value()[0]));
             pathList.add(defaultPath);
         }else if(target.getAnnotation(PatchMapping.class)!=null){
             PatchMapping getMapping=target.getAnnotation(PatchMapping.class);
             SwaggerBootstrapUiPath defaultPath=createDefaultPath();
             defaultPath.setMethod(RequestMethod.PATCH.name().toUpperCase());
-            defaultPath.setPath(getMapping.value()[0]);
+            defaultPath.setPath(buildPath(getMapping.value()[0]));
             pathList.add(defaultPath);
         }
         return pathList;
     }
 
 
-    public SwaggerBootstrapUiPath createDefaultPath(){
+    private String buildPath(String path){
+        StringBuffer pathStr=new StringBuffer();
+        if (!"".equals(parent)){
+            if (!parent.startsWith("/")){
+                pathStr.append("/");
+            }
+
+            if (parent.endsWith("/")){
+                pathStr.append(parent.substring(0,parent.lastIndexOf("/")));
+            }else{
+                pathStr.append(parent);
+            }
+        }
+        if (!path.startsWith("/")){
+            pathStr.append("/");
+        }
+        pathStr.append(path);
+        return pathStr.toString();
+
+    }
+
+    private SwaggerBootstrapUiPath createDefaultPath(){
         SwaggerBootstrapUiPath defaultPath=new SwaggerBootstrapUiPath();
         //获取接口的Sort值
         int pathOrder=Integer.MAX_VALUE;

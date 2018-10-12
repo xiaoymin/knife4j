@@ -147,9 +147,15 @@ public class SwaggerBootstrapUiController {
                 }
                 //targetTagLists.add(new Tag(sourceTag.getName(),sourceTag.getDescription(),order,sourceTag.getVendorExtensions()));
                 tag.setOrder(order);
+                //获取父级path
+                String parentPath="";
+                RequestMapping parent=aClass.getAnnotation(RequestMapping.class);
+                if (parent!=null){
+                    parentPath=parent.value()[0];
+                }
                 Method[] methods=aClass.getDeclaredMethods();
                 for (Method method:methods){
-                    List<SwaggerBootstrapUiPath> paths= new SwaggerBootstrapUiPathInstance(method).match();
+                    List<SwaggerBootstrapUiPath> paths= new SwaggerBootstrapUiPathInstance(parentPath,method).match();
                     if (paths!=null&&paths.size()>0){
                         targetPathLists.addAll(paths);
                     }
