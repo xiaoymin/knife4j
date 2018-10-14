@@ -1969,7 +1969,19 @@
     SwaggerBootstrapUi.prototype.buildCurl=function (apiInfo,headers,reqdata,paramBodyType,url,formCurlParams,fireRequest) {
         var that=this;
         var curlified=new Array();
-        var fullurl="http://"+that.currentInstance.host;
+        var protocol="http";
+        //获取location
+        var href=window.location.href;
+        that.log("href:"+href);
+        href="https://192.168.219.1:8999/doc.html";
+        that.log("href:"+href);
+        //判断是否是https
+        var proRegex=new RegExp("^https.*","ig");
+        if (proRegex.test(href)){
+            protocol="https";
+        }
+        that.log("protocol:"+protocol)
+        var fullurl=protocol+"://"+that.currentInstance.host;
         //判断url是否是以/开头
         if(!apiInfo.url.startWith("/")){
             fullurl+="/";
@@ -2826,10 +2838,12 @@
                     }
                 })
             })
-            //排序childrens
-            tag.childrens.sort(function (a, b) {
-                return a.order-b.order;
-            })
+            if(that.settings.enableSwaggerBootstrapUi){
+                //排序childrens
+                tag.childrens.sort(function (a, b) {
+                    return a.order-b.order;
+                })
+            }
         });
     }
     /***
@@ -3626,10 +3640,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
