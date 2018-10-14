@@ -116,6 +116,10 @@ html {
     background-color: #fff;
 }
 
+.nav-list>li>ul>li.active{
+    background-color: #eeeeee;
+}
+
 .nav-list>li.active>a, .nav-list>li.active>a:hover, .nav-list>li.active>a:focus, .nav-list>li.active>a:active {
     background-color: #fff;
     color: #2b7dbc;
@@ -312,7 +316,7 @@ code {
     height: 21px;
 }
 .swu-hei-none-url{
-    line-height: 30px;
+    line-height: 35px;
     height: 30px;
 }
 .swu-wd-20{

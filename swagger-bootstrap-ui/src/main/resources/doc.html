@@ -685,6 +685,10 @@
                         <p><span class="sbu-api-title">consumes</span> <code style="background-color: transparent;">{{consumes}}</code></p>
                         <p><span class="sbu-api-title">produces</span> <code style="background-color: transparent;">{{produces}}</code></p>
                         <p><span class="sbu-api-title">接口描述</span> <code style="background-color: transparent;">{{description}}</code></p>
+                        {{ if requestValue }}
+                        <p><strong>请求示例</strong></p>
+                        <div id="editorRequestSample{{id}}" style="width: auto;bottom: 10px;">{{ requestValue }}</div>
+                        {{ /if }}
                         <p><strong>请求参数</strong></p>
                         <table id="requestParameter{{id}}" class="layui-table"  lay-filter="requestParameter{{id}}">
                         </table>
@@ -717,7 +721,7 @@
                         <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
                         </table>
                         <p><strong>响应示例</strong></p>
-                        <div id="editorSample{{id}}" style="width: auto;height: 400px;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
+                        <div id="editorSample{{id}}" style="width: auto;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
                     </div>
                     <textarea rows="10" cols="10" id="docText{{id}}" style="display: none;">
 

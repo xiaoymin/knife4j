@@ -1021,6 +1021,19 @@
             //初始化apiInfo响应数据
             that.log("初始化apiInfo响应数据")
             that.log(apiInfo)
+            if(apiInfo.requestValue!=null){
+                var sampleRequestId="editorRequestSample"+apiInfo.id;
+                var editor = ace.edit(sampleRequestId);
+                /*var JsonMode = ace.require("ace/mode/json").Mode;
+                editor.session.setMode(new JsonMode());*/
+                editor.getSession().setMode("ace/mode/json");
+                editor.setTheme("ace/theme/eclipse");
+                var length_editor = editor.session.getLength();
+                var rows_editor = length_editor * 16;
+                that.log("rows_editor:"+rows_editor);
+                $("#"+sampleRequestId).css('height',rows_editor);
+                editor.resize();
+            }
             if(apiInfo.responseJson!=null){
                 var sampleId="editorSample"+apiInfo.id;
                 var editor = ace.edit(sampleId);
@@ -1028,6 +1041,11 @@
                 editor.session.setMode(new JsonMode());*/
                 editor.getSession().setMode("ace/mode/json");
                 editor.setTheme("ace/theme/eclipse");
+                var length_editor = editor.session.getLength();
+                var rows_editor = length_editor * 16;
+                that.log("rows_editor:"+rows_editor);
+                $("#"+sampleId).css('height',rows_editor);
+                editor.resize();
             }
 
             //初始化copy按钮功能
@@ -1972,8 +1990,6 @@
         var protocol="http";
         //获取location
         var href=window.location.href;
-        that.log("href:"+href);
-        href="https://192.168.219.1:8999/doc.html";
         that.log("href:"+href);
         //判断是否是https
         var proRegex=new RegExp("^https.*","ig");
@@ -3214,6 +3230,17 @@
                 that.mergeApiInfoSelfTags(tagName);
             }
         }
+        //获取请求json
+        if(swpinfo.parameters.length==1){
+            //只有在参数只有一个且是body类型的参数才有请求示例
+            var reqp=swpinfo.parameters[0];
+            //判断参数是否body类型
+            if(reqp.in=="body"){
+                if(reqp.txtValue!=null&&reqp.txtValue!=""){
+                    swpinfo.requestValue=reqp.txtValue;
+                }
+            }
+        }
         that.log("创建api完成,耗时："+(new Date().getTime()-startApiTime))
         return swpinfo;
     }
@@ -3809,6 +3836,8 @@
         this.produces=null;
         this.tags=null;
         this.parameters=new Array();
+        //请求json示例
+        this.requestValue=null;
         //针对parameter属性有引用类型的参数,继续以table 的形式展现
         //存放SwaggerBootstrapUiRefParameter 集合
         this.refparameters=new Array();
