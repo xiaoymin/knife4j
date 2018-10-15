@@ -2378,7 +2378,7 @@
 
     }
 
-    SwaggerBootstrapUi.prototype.introMarkdownDocInit=function () {
+    SwaggerBootstrapUi.prototype.introMarkdownDocInit=function (txt) {
         var that=this;
         //md2Html的配置
         hljs.configure({useBR: false});
@@ -2403,10 +2403,10 @@
                 return hljs.highlightAuto(code).value;
             }
         });
-        $("#docSbuText").each(function(){
+        $("#txtOffLineDoc").each(function(){
             var md = $(this).val();
             if(md){
-                $("#sbuDescriptionDoc").html(marked(md));
+                $("#offlineMarkdownShow").html(marked(txt));
                 $('pre code').each(function(i, block) {
                     hljs.highlightBlock(block);
                 });
@@ -2444,8 +2444,16 @@
                 val=val.replace(/(\s{4}[\n\r]){4,}/gi,"");
                 //替换参数、响应码等属性前面多行空格
                 val=val.replace(/(\n\s{10,})/gim,"\n");
+                //加粗语法换行
 
+                val=val.replace(/(^\*\*.*\*\*\:$)/igm,"\n$1\n");
+                val=val.replace(/(^\*\*.*\*\*$)/igm,"\n$1\n");
                 $("#txtOffLineDoc").val(val);
+
+                var convert=new showdown.Converter({tables:true,tablesHeaderId:true});
+                var html=convert.makeHtml(val);
+                $("#offlineMarkdownShow").html(html);
+                that.markdownToTabContent();
             }else{
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
@@ -2464,6 +2472,111 @@
         });
 
     }
+
+
+    SwaggerBootstrapUi.prototype.markdownToTabContent=function () {
+        //是否显示导航栏
+        var showNavBar = true;
+        //是否展开导航栏
+        var expandNavBar = true;
+        var h1s = $("#offlineMarkdownShow").find("h1");
+        var h2s = $("#offlineMarkdownShow").find("h2");
+        var h3s = $("#offlineMarkdownShow").find("h3");
+        var h4s = $("#offlineMarkdownShow").find("h4");
+        var h5s = $("#offlineMarkdownShow").find("h5");
+        var h6s = $("#offlineMarkdownShow").find("h6");
+
+        var headCounts = [h1s.length, h2s.length, h3s.length, h4s.length, h5s.length, h6s.length];
+        var vH1Tag = null;
+        var vH2Tag = null;
+        for(var i = 0; i < headCounts.length; i++){
+            if(headCounts[i] > 0){
+                if(vH1Tag == null){
+                    vH1Tag = 'h' + (i + 1);
+                }else{
+                    vH2Tag = 'h' + (i + 1);
+                }
+            }
+        }
+        if(vH1Tag == null){
+            return;
+        }
+
+        $("#offlineMarkdownShow").append('<div class="BlogAnchor">' +
+            '<span style="color:red;position:absolute;top:-6px;left:0px;cursor:pointer;" onclick="$(\'.BlogAnchor\').hide();">×</span>' +
+            '<p>' +
+            '<b id="AnchorContentToggle" title="收起" style="cursor:pointer;">目录▲</b>' +
+            '</p>' +
+            '<div class="AnchorContent" id="AnchorContent"> </div>' +
+            '</div>' );
+
+        var vH1Index = 0;
+        var vH2Index = 0;
+        $("#offlineMarkdownShow").find("h1,h2,h3,h4,h5,h6").each(function(i,item){
+            var id = '';
+            var name = '';
+            var tag = $(item).get(0).tagName.toLowerCase();
+            var className = '';
+            if(tag == vH1Tag){
+                id = name = ++vH1Index;
+                name = id;
+                vH2Index = 0;
+                className = 'item_h1';
+            }else if(tag == vH2Tag){
+                id = vH1Index + '_' + ++vH2Index;
+                name = vH1Index + '.' + vH2Index;
+                className = 'item_h2';
+            }
+            $(item).attr("id","wow"+id);
+            $(item).addClass("wow_head");
+            $("#AnchorContent").css('max-height', ($(window).height() - 400) + 'px');
+            $("#AnchorContent").append('<li><a class="nav_item '+className+' anchor-link"  href="#wow'+id+'" link="#wow'+id+'">'+name+" · "+$(this).text()+'</a></li>');
+        });
+
+        $("#AnchorContentToggle").click(function(){
+            var text = $(this).html();
+            if(text=="目录▲"){
+                $(this).html("目录▼");
+                $(this).attr({"title":"展开"});
+            }else{
+                $(this).html("目录▲");
+                $(this).attr({"title":"收起"});
+            }
+            $("#AnchorContent").toggle();
+        });
+        /*$(".anchor-link").click(function(){
+            console.log("menu--click")
+            console.log(this)
+            console.log({scrollTop: $($(this).attr("link")).offset().top})
+            $("#layerTaboffLinecontentScript").animate({scrollTop: $($(this).attr("link")).offset().top}, 500);
+        });*/
+        var headerNavs = $(".BlogAnchor li .nav_item");
+        var headerTops = [];
+        $(".wow_head").each(function(i, n){
+            headerTops.push($(n).offset().top);
+        });
+        $("#offlineMarkdownShow").scroll(function(){
+            var scrollTop = $("#offlineMarkdownShow").scrollTop();
+            $.each(headerTops, function(i, n){
+                var distance = n - scrollTop;
+                if(distance >= 0){
+                    $(".BlogAnchor li .nav_item.current").removeClass('current');
+                    $(headerNavs[i]).addClass('current');
+                    return false;
+                }
+            });
+        });
+
+        if(!showNavBar){
+            $('.BlogAnchor').hide();
+        }
+        if(!expandNavBar){
+            $(this).html("目录▼");
+            $(this).attr({"title":"展开"});
+            $("#AnchorContent").hide();
+        }
+    }
+
     /***
      * 解析实例属性
      */

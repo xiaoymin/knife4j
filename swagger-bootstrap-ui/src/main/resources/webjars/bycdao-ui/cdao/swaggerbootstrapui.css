@@ -520,3 +520,133 @@ code {
     display: inline-block;
 
 }
+
+/**离线文档*/
+.offlineMarkdownShow{
+
+}
+
+.offlineMarkdownShow h1, h2, h3, h4, h5, h6 {
+    font-family: 'Old Standard TT', serif;
+    font-weight: bold;
+}
+
+.offlineMarkdownShow h1{
+    font-size: 40px;
+}
+
+.offlineMarkdownShow h2{
+    font-size: 36px;
+}
+
+.offlineMarkdownShow h3{
+    font-size: 34px;
+}
+
+.offlineMarkdownShow h4{
+    font-size: 32px;
+}
+
+.offlineMarkdownShow p {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: normal;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+    text-rendering: optimizeLegibility;
+}
+
+.offlineMarkdownShow strong, b {
+    font-weight: bold;
+    line-height: inherit;
+}
+
+.offlineMarkdownShow table {
+    background: #fff;
+    border: solid 1px #ddd;
+    margin-bottom: 1.25rem;
+    table-layout: auto;
+    width: 90%;
+}
+.offlineMarkdownShow table thead {
+    background: #F5F5F5;
+}
+
+.offlineMarkdownShow table tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+
+.offlineMarkdownShow table tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+
+.offlineMarkdownShow table thead tr th, table tfoot tr th, table tfoot tr td, table tbody tr th, table tbody tr td, table tr td {
+    display: table-cell;
+    line-height: 1.125rem;
+}
+.offlineMarkdownShow table tr th, table tr td {
+    color: #222;
+    font-size: 0.875rem;
+    padding: 0.5625rem 0.625rem;
+    text-align: left;
+}
+
+/*导航*/
+.BlogAnchor {
+    background: #f1f1f1;
+    padding: 10px;
+    line-height: 180%;
+    position: fixed;
+    right: 20px;
+    top: 110px;
+    border: 1px solid #aaaaaa;
+}
+.BlogAnchor p {
+    font-size: 18px;
+    color: #15a230;
+    margin: 0 0 0.3rem 0;
+    text-align: right;
+}
+.BlogAnchor .AnchorContent {
+    padding: 5px 0px;
+    overflow: auto;
+}
+.BlogAnchor li{
+    text-indent: 0.5rem;
+    font-size: 14px;
+    list-style: none;
+}
+.BlogAnchor li .nav_item{
+    padding: 3px;
+}
+.BlogAnchor li .item_h1{
+    margin-left: 0rem;
+}
+.BlogAnchor li .item_h2{
+    margin-left: 2rem;
+    font-size: 0.8rem;
+}
+.BlogAnchor li .nav_item.current{
+    color: white;
+    background-color: #5cc26f;
+}
+#AnchorContentToggle {
+    font-size: 13px;
+    font-weight: normal;
+    color: #FFF;
+    display: inline-block;
+    line-height: 20px;
+    background: #5cc26f;
+    font-style: normal;
+    padding: 1px 8px;
+}
+.BlogAnchor a:hover {
+    color: #5cc26f;
+}
+.BlogAnchor a {
+    text-decoration: none;
+}
