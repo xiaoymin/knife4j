@@ -6,12 +6,12 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /***
- * 启用SwaggerBootstrapUi的增强注解,配合<code>@EnableSwagger2</code>注解一起使用 <br />
+ * Enable SwaggerBootstrapUi enhanced annotation and use @EnableSwagger2 annotation together.
  *
- * 主要增强功能：
+ * inlude:
  * <ul>
- *     <li>接口排序功能</li>
- *     <li>接口文档下载功能(word)</li>
+ *     <li>Interface sorting </li>
+ *     <li>Interface document download  (word)</li>
  * </ul>
  *
  * @since 1.8.5
