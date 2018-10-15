@@ -44,7 +44,8 @@
         //个性化配置
         this.settings={
             showApiUrl:false,//接口api地址不显示
-            enableSwaggerBootstrapUi:false//是否开启swaggerBootstrapUi增强
+            enableSwaggerBootstrapUi:false,//是否开启swaggerBootstrapUi增强
+            treeExplain:true
         };
         //SwaggerBootstrapUi增强注解地址
         this.extUrl="/v2/api-docs-ext";
@@ -2439,9 +2440,11 @@
                 that.tabFinallyRight();
                 //正则替换离线文档的格式
                 //首先替换多行
-                var val=$("#txtOffLineDoc").val().replace(/(\s{4}[\n\r]){4,}/gi,"");
+                var val=$("#txtOffLineDoc").val();
+                val=val.replace(/(\s{4}[\n\r]){4,}/gi,"");
                 //替换参数、响应码等属性前面多行空格
-                val=val.replace(/(\s{10,})/gi,"\n");
+                val=val.replace(/(\n\s{10,})/gim,"\n");
+
                 $("#txtOffLineDoc").val(val);
             }else{
                 element.tabChange(that.layTabFilter,tabId);
