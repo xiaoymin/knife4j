@@ -1,4 +1,16 @@
 /***
+ * swagger-bootstrap-ui v1.8.5
+ * https://gitee.com/xiaoym/swagger-bootstrap-ui
+ *
+ * Swagger enhanced UI component package
+ *
+ * Author: xiaoyumin
+ * email:xiaoymin@foxmail.com
+ * Copyright: 2017 - 2018, xiaoyumin, http://www.xiaominfo.com/
+ *
+ * Licensed under Apache License 2.0
+ * https://github.com/xiaoymin/Swagger-Bootstrap-UI/blob/master/LICENSE
+ *
  * create by xiaoymin on 2018-7-4 15:32:07
  * 重构swagger-bootstrap-ui组件,为以后动态扩展更高效,扩展接口打下基础
  */
@@ -27,8 +39,18 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.8.4";
+        this.version="1.8.5";
         this.requestOrigion="SwaggerBootstrapUi";
+        //个性化配置
+        this.settings={
+            showApiUrl:false,//接口api地址不显示
+            enableSwaggerBootstrapUi:false,//是否开启swaggerBootstrapUi增强
+            treeExplain:true
+        };
+        //SwaggerBootstrapUi增强注解地址
+        this.extUrl="/v2/api-docs-ext";
+        //验证增强有效地址
+        this.validateExtUrl="";
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -36,6 +58,7 @@
     SwaggerBootstrapUi.prototype.main=function () {
         var that=this;
         that.welcome();
+        that.initSettings();
         that.initWindowWidthAndHeight();
 
         that.windowResize();
@@ -50,6 +73,20 @@
     }
 
 
+    /***
+     * 读取个性化配置信息
+     */
+    SwaggerBootstrapUi.prototype.initSettings=function () {
+        var that=this;
+        if(window.localStorage){
+            var store = window.localStorage;
+            var globalSettings=store["SwaggerBootstrapUiSettings"];
+            if(globalSettings!=undefined&&globalSettings!=null&&globalSettings!=""){
+                var settings=JSON.parse(globalSettings);
+                that.settings=$.extend({},that.settings,settings);
+            }
+        }
+    }
 
     /***
      * 搜索按钮事件
@@ -190,6 +227,11 @@
                 $.each(groupData,function (i, group) {
                     var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
                     g.url=group.url;
+                    //赋值增强地址
+                    g.extUrl=that.extUrl+"?group="+group.name;
+                    if(that.validateExtUrl==""){
+                        that.validateExtUrl=g.extUrl;
+                    }
                     that.instances.push(g);
                 })
             },
@@ -245,6 +287,10 @@
             var api=instance.url;
             if (api==undefined||api==null||api==""){
                 api=instance.location;
+            }
+            //判断是否开启增强功能
+            if (that.settings.enableSwaggerBootstrapUi){
+                api=instance.extUrl;
             }
             //这里判断url请求是否已加载过
             //防止出现根路径的情况
@@ -338,24 +384,53 @@
             })
             that.getMenu().append(securityLi);
         }
+
+        //SwaggerBootstrapUi增强功能全部放置在此
+        //存在子标签
+        var extLi=$('<li  class="detailMenu"></li>');
+        var exttitleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-zhongduancanshuguanli"></i><span class="menu-text"> 文档管理</span><span class="badge badge-primary ">3</span><b class="arrow icon-angle-down"></b></a>');
+        extLi.append(exttitleA);
+        //循环树
+        var extul=$('<ul class="submenu"></ul>')
+        /*$.each(tag.childrens,function (i, children) {
+            var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
+            //var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div></div></li>');
+            childrenLi.data("data",children);
+            ul.append(childrenLi);
+        })*/
+
         //全局参数菜单功能
-        var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
+        var globalArgsLi=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">全局参数设置</span> </div></div></li>');
+        //var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
         globalArgsLi.on("click",function () {
             that.getMenu().find("li").removeClass("active");
             globalArgsLi.addClass("active");
             that.createGlobalParametersElement();
         })
-        that.getMenu().append(globalArgsLi);
+        extul.append(globalArgsLi);
 
         //离线文档功能
-        var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-iconset0118\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
+        var mddocli=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">离线文档(MD)</span> </div></div></li>');
+        //var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-iconset0118\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
         mddocli.on("click",function () {
             that.log("离线文档功能click")
             that.createMarkdownTab();
             that.getMenu().find("li").removeClass("active");
             mddocli.addClass("active");
         })
-        that.getMenu().append(mddocli);
+        extul.append(mddocli);
+        //个性化设置
+        var settingsli=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">个性化设置</span> </div></div></li>');
+        settingsli.on("click",function () {
+            that.log("个性化设置功能click")
+            that.createSettingsPage();
+            that.getMenu().find("li").removeClass("active");
+            settingsli.addClass("active");
+        })
+        extul.append(settingsli);
+
+        extLi.append(extul);
+        that.getMenu().append(extLi);
 
         $.each(that.currentInstance.tags,function (i, tag) {
             var len=tag.childrens.length;
@@ -370,7 +445,14 @@
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
                 $.each(tag.childrens,function (i, children) {
-                    var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
+                    var childrenLi=null;
+                    if(that.settings.showApiUrl){
+                        //显示api地址
+                        childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
+                    }else{
+                        //不显示api地址
+                        childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div></div></li>');
+                    }
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
                 })
@@ -381,6 +463,98 @@
         that.log("菜单初始化完成...")
         //DApiUI.initLiClick();
         that.initializationMenuClickEvents();
+    }
+
+    /***
+     * 创建个性化配置页面
+     */
+    SwaggerBootstrapUi.prototype.createSettingsPage=function () {
+        var that=this;
+        var layui=that.layui;
+        var element=layui.element;
+        var tabId="SwaggerBootstrapUiSettingsScript";
+        var tabContetId="layerTab"+tabId;
+        //内容覆盖
+        setTimeout(function () {
+            if (!that.tabExists(tabId)) {
+                var html = template(tabId, that.settings);
+                var tabObj={
+                    id:tabId,
+                    title:'个性化设置',
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:'个性化设置'});
+                element.tabAdd(that.layTabFilter, tabObj);
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabFinallyRight();
+                //保存按钮功能
+                $("#btnSaveSettings").on("click",function (e) {
+                    e.preventDefault();
+                    var showApi=$("#SwaggerBootstrapUiSettings").find("input[name=showApi]");
+                    var enableSbu=$("#SwaggerBootstrapUiSettings").find("input[name=enableSwaggerBootstrapUi]");
+
+                    var showApiFlag=showApi.prop("checked");
+                    var enableSbuFlag=enableSbu.prop("checked");
+                    var flag=true;
+                    //如果开启SwawggerBootstrapUi增强,则判断当前后端是否启用注解
+                    if(enableSbuFlag){
+                        var api=that.validateExtUrl;
+                        var idx=api.indexOf("/");
+                        if(idx==0){
+                            api=api.substr(1);
+                        }
+                        that.log("验证api地址："+api);
+                        $.ajax({
+                            url:api,
+                            dataType:"json",
+                            type:"get",
+                            async:false,
+                            success:function (data) {
+                                that.log("验证成功...")
+                            },
+                            error:function (xhr, textStatus, errorThrown) {
+                                that.log("验证error...")
+                                that.log(xhr);
+                                //获取响应码
+                                var status=xhr.status;
+                                if(status!=200){
+                                    layer.msg("无法开启SwaggerBootstrapUi增强功能,请确保后端启用注解@EnableSwaggerBootstrapUi");
+                                    enableSbu.prop("checked",false);
+                                    flag=false;
+                                }
+                            }
+                        })
+                    }
+                    if (flag){
+                        that.log(showApi.prop("checked")+",enable:"+enableSbu.prop("checked"));
+                        var setts={
+                            showApiUrl:showApiFlag,//接口api地址不显示
+                            enableSwaggerBootstrapUi:enableSbuFlag//是否开启swaggerBootstrapUi增强
+                        }
+                        that.saveSettings(setts);
+                    }
+                })
+            }else{
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
+            }
+        },100)
+
+    }
+
+    /***
+     * 保存SwaggerBootstrapUi 个性化配置信息
+     * @param settings
+     */
+    SwaggerBootstrapUi.prototype.saveSettings=function (settings) {
+        if(window.localStorage){
+            var store = window.localStorage;
+            var gbStr=JSON.stringify(settings);
+            store.setItem("SwaggerBootstrapUiSettings",gbStr);
+            layer.msg("保存成功,请刷新该文档页");
+        }else{
+            layer.msg("当前浏览器不支持localStorage对象,无法使用该功能");
+        }
     }
     /***
      * 创建全局参数
@@ -848,6 +1022,19 @@
             //初始化apiInfo响应数据
             that.log("初始化apiInfo响应数据")
             that.log(apiInfo)
+            if(apiInfo.requestValue!=null){
+                var sampleRequestId="editorRequestSample"+apiInfo.id;
+                var editor = ace.edit(sampleRequestId);
+                /*var JsonMode = ace.require("ace/mode/json").Mode;
+                editor.session.setMode(new JsonMode());*/
+                editor.getSession().setMode("ace/mode/json");
+                editor.setTheme("ace/theme/eclipse");
+                var length_editor = editor.session.getLength();
+                var rows_editor = length_editor * 16;
+                that.log("rows_editor:"+rows_editor);
+                $("#"+sampleRequestId).css('height',rows_editor);
+                editor.resize();
+            }
             if(apiInfo.responseJson!=null){
                 var sampleId="editorSample"+apiInfo.id;
                 var editor = ace.edit(sampleId);
@@ -855,6 +1042,11 @@
                 editor.session.setMode(new JsonMode());*/
                 editor.getSession().setMode("ace/mode/json");
                 editor.setTheme("ace/theme/eclipse");
+                var length_editor = editor.session.getLength();
+                var rows_editor = length_editor * 16;
+                that.log("rows_editor:"+rows_editor);
+                $("#"+sampleId).css('height',rows_editor);
+                editor.resize();
             }
 
             //初始化copy按钮功能
@@ -971,22 +1163,22 @@
 
         var responseHeight=400;
 
-
-
-
-
-
         btnRequest.on("click",function (e) {
             e.preventDefault();
             var tabsContentHeight=$("#tabsContent"+apiKeyId).height();
             that.log($("#tabsContent"+apiKeyId))
             var basicContentHeight=$("#DebugScriptBasic"+apiKeyId).height();
             that.log($("#DebugScriptBasic"+apiKeyId))
+            //计算basic和tabs的占比
+            var perc=parseInt((basicContentHeight/tabsContentHeight)*100);
+            that.log("tabs高度:"+tabsContentHeight+",basic高度："+basicContentHeight+",占比："+perc)
             var laydivHeight=tabsContentHeight-basicContentHeight-5;
             responseHeight=laydivHeight-40;
-
+            if(perc>65){
+                responseHeight=500;
+                laydivHeight=550;
+            }
             that.log("整个tab高度："+tabsContentHeight+",请求Form表单高度："+basicContentHeight+",高度差："+responseHeight);
-
             laycontentdiv.css("height",laydivHeight+"px");
             //respcleanDiv.html("")
             var params={};
@@ -1796,7 +1988,17 @@
     SwaggerBootstrapUi.prototype.buildCurl=function (apiInfo,headers,reqdata,paramBodyType,url,formCurlParams,fireRequest) {
         var that=this;
         var curlified=new Array();
-        var fullurl="http://"+that.currentInstance.host;
+        var protocol="http";
+        //获取location
+        var href=window.location.href;
+        that.log("href:"+href);
+        //判断是否是https
+        var proRegex=new RegExp("^https.*","ig");
+        if (proRegex.test(href)){
+            protocol="https";
+        }
+        that.log("protocol:"+protocol)
+        var fullurl=protocol+"://"+that.currentInstance.host;
         //判断url是否是以/开头
         if(!apiInfo.url.startWith("/")){
             fullurl+="/";
@@ -2176,7 +2378,7 @@
 
     }
 
-    SwaggerBootstrapUi.prototype.introMarkdownDocInit=function () {
+    SwaggerBootstrapUi.prototype.introMarkdownDocInit=function (txt) {
         var that=this;
         //md2Html的配置
         hljs.configure({useBR: false});
@@ -2201,10 +2403,10 @@
                 return hljs.highlightAuto(code).value;
             }
         });
-        $("#docSbuText").each(function(){
+        $("#txtOffLineDoc").each(function(){
             var md = $(this).val();
             if(md){
-                $("#sbuDescriptionDoc").html(marked(md));
+                $("#offlineMarkdownShow").html(marked(txt));
                 $('pre code').each(function(i, block) {
                     hljs.highlightBlock(block);
                 });
@@ -2238,10 +2440,20 @@
                 that.tabFinallyRight();
                 //正则替换离线文档的格式
                 //首先替换多行
-                var val=$("#txtOffLineDoc").val().replace(/(\s{4}[\n\r]){4,}/gi,"");
+                var val=$("#txtOffLineDoc").val();
+                val=val.replace(/(\s{4}[\n\r]){4,}/gi,"");
                 //替换参数、响应码等属性前面多行空格
-                val=val.replace(/(\s{10,})/gi,"\n");
+                val=val.replace(/(\n\s{10,})/gim,"\n");
+                //加粗语法换行
+
+                val=val.replace(/(^\*\*.*\*\*\:$)/igm,"\n$1\n");
+                val=val.replace(/(^\*\*.*\*\*$)/igm,"\n$1\n");
                 $("#txtOffLineDoc").val(val);
+
+                var convert=new showdown.Converter({tables:true,tablesHeaderId:true});
+                var html=convert.makeHtml(val);
+                $("#offlineMarkdownShow").html(html);
+                that.markdownToTabContent();
             }else{
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
@@ -2260,6 +2472,111 @@
         });
 
     }
+
+
+    SwaggerBootstrapUi.prototype.markdownToTabContent=function () {
+        //是否显示导航栏
+        var showNavBar = true;
+        //是否展开导航栏
+        var expandNavBar = true;
+        var h1s = $("#offlineMarkdownShow").find("h1");
+        var h2s = $("#offlineMarkdownShow").find("h2");
+        var h3s = $("#offlineMarkdownShow").find("h3");
+        var h4s = $("#offlineMarkdownShow").find("h4");
+        var h5s = $("#offlineMarkdownShow").find("h5");
+        var h6s = $("#offlineMarkdownShow").find("h6");
+
+        var headCounts = [h1s.length, h2s.length, h3s.length, h4s.length, h5s.length, h6s.length];
+        var vH1Tag = null;
+        var vH2Tag = null;
+        for(var i = 0; i < headCounts.length; i++){
+            if(headCounts[i] > 0){
+                if(vH1Tag == null){
+                    vH1Tag = 'h' + (i + 1);
+                }else{
+                    vH2Tag = 'h' + (i + 1);
+                }
+            }
+        }
+        if(vH1Tag == null){
+            return;
+        }
+
+        $("#offlineMarkdownShow").append('<div class="BlogAnchor">' +
+            '<span style="color:red;position:absolute;top:-6px;left:0px;cursor:pointer;" onclick="$(\'.BlogAnchor\').hide();">×</span>' +
+            '<p>' +
+            '<b id="AnchorContentToggle" title="收起" style="cursor:pointer;">目录▲</b>' +
+            '</p>' +
+            '<div class="AnchorContent" id="AnchorContent"> </div>' +
+            '</div>' );
+
+        var vH1Index = 0;
+        var vH2Index = 0;
+        $("#offlineMarkdownShow").find("h1,h2,h3,h4,h5,h6").each(function(i,item){
+            var id = '';
+            var name = '';
+            var tag = $(item).get(0).tagName.toLowerCase();
+            var className = '';
+            if(tag == vH1Tag){
+                id = name = ++vH1Index;
+                name = id;
+                vH2Index = 0;
+                className = 'item_h1';
+            }else if(tag == vH2Tag){
+                id = vH1Index + '_' + ++vH2Index;
+                name = vH1Index + '.' + vH2Index;
+                className = 'item_h2';
+            }
+            $(item).attr("id","wow"+id);
+            $(item).addClass("wow_head");
+            $("#AnchorContent").css('max-height', ($(window).height() - 400) + 'px');
+            $("#AnchorContent").append('<li><a class="nav_item '+className+' anchor-link"  href="#wow'+id+'" link="#wow'+id+'">'+name+" · "+$(this).text()+'</a></li>');
+        });
+
+        $("#AnchorContentToggle").click(function(){
+            var text = $(this).html();
+            if(text=="目录▲"){
+                $(this).html("目录▼");
+                $(this).attr({"title":"展开"});
+            }else{
+                $(this).html("目录▲");
+                $(this).attr({"title":"收起"});
+            }
+            $("#AnchorContent").toggle();
+        });
+        /*$(".anchor-link").click(function(){
+            console.log("menu--click")
+            console.log(this)
+            console.log({scrollTop: $($(this).attr("link")).offset().top})
+            $("#layerTaboffLinecontentScript").animate({scrollTop: $($(this).attr("link")).offset().top}, 500);
+        });*/
+        var headerNavs = $(".BlogAnchor li .nav_item");
+        var headerTops = [];
+        $(".wow_head").each(function(i, n){
+            headerTops.push($(n).offset().top);
+        });
+        $("#offlineMarkdownShow").scroll(function(){
+            var scrollTop = $("#offlineMarkdownShow").scrollTop();
+            $.each(headerTops, function(i, n){
+                var distance = n - scrollTop;
+                if(distance >= 0){
+                    $(".BlogAnchor li .nav_item.current").removeClass('current');
+                    $(headerNavs[i]).addClass('current');
+                    return false;
+                }
+            });
+        });
+
+        if(!showNavBar){
+            $('.BlogAnchor').hide();
+        }
+        if(!expandNavBar){
+            $(this).html("目录▼");
+            $(this).attr({"title":"展开"});
+            $("#AnchorContent").hide();
+        }
+    }
+
     /***
      * 解析实例属性
      */
@@ -2387,9 +2704,15 @@
                 that.currentInstance.difArrs.push(swud);
             }
         }
+
         //解析tags标签
         if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("tags")){
             var tags=menu["tags"];
+            //判断是否开启增强配置
+            if(that.settings.enableSwaggerBootstrapUi){
+                var sbu=menu["swaggerBootstrapUi"]
+                tags=sbu["tagSortLists"];
+            }
             $.each(tags,function (i, tag) {
                 var swuTag=new SwaggerBootstrapUiTag(tag.name,tag.description);
                 that.currentInstance.tags.push(swuTag);
@@ -2409,7 +2732,19 @@
                     //get方式
                     apiInfo=pathObject["get"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"get",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"get",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
                         that.methodCountAndDown("GET");
 
                     }
@@ -2418,7 +2753,19 @@
                     //post 方式
                     apiInfo=pathObject["post"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"post",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"post",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
                         that.methodCountAndDown("POST");
                     }
                 }
@@ -2426,7 +2773,20 @@
                     //put
                     apiInfo=pathObject["put"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"put",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"put",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"put",apiInfo));
                         that.methodCountAndDown("PUT");
                     }
                 }
@@ -2434,7 +2794,20 @@
                     //delete
                     apiInfo=pathObject["delete"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"delete",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"delete",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"delete",apiInfo));
                         that.methodCountAndDown("DELETE");
                     }
                 }
@@ -2444,7 +2817,21 @@
                     //patch
                     apiInfo=pathObject["patch"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"patch",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"patch",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"patch",apiInfo));
                         that.methodCountAndDown("PATCH");
                     }
                 }
@@ -2452,7 +2839,21 @@
                     //OPTIONS
                     apiInfo=pathObject["options"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"options",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"options",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"options",apiInfo));
                         that.methodCountAndDown("OPTIONS");
                     }
                 }
@@ -2460,7 +2861,21 @@
                     //TRACE
                     apiInfo=pathObject["trace"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"trace",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"trace",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"trace",apiInfo));
                         that.methodCountAndDown("TRACE");
                     }
                 }
@@ -2468,7 +2883,20 @@
                     //HEAD
                     apiInfo=pathObject["head"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"head",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"head",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"head",apiInfo));
                         that.methodCountAndDown("HEAD");
                     }
                 }
@@ -2476,7 +2904,20 @@
                     //CONNECT
                     apiInfo=pathObject["connect"]
                     if(apiInfo!=null){
-                        that.currentInstance.paths.push(that.createApiInfoInstance(path,"connect",apiInfo));
+                        var ins=that.createApiInfoInstance(path,"connect",apiInfo);
+                        //排序属性赋值
+                        //判断是否开启增强配置
+                        if(that.settings.enableSwaggerBootstrapUi){
+                            var sbu=menu["swaggerBootstrapUi"]
+                            var pathSortLists=sbu["pathSortLists"];
+                            $.each(pathSortLists,function (i, ps) {
+                                if(ps.path==ins.url&&ps.method==ins.methodType){
+                                    ins.order=ps.order;
+                                }
+                            })
+                        }
+                        that.currentInstance.paths.push(ins);
+                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"connect",apiInfo));
                         that.methodCountAndDown("CONNECT");
                     }
 
@@ -2529,6 +2970,12 @@
                     }
                 })
             })
+            if(that.settings.enableSwaggerBootstrapUi){
+                //排序childrens
+                tag.childrens.sort(function (a, b) {
+                    return a.order-b.order;
+                })
+            }
         });
     }
     /***
@@ -2897,6 +3344,17 @@
             for(var i=0;i<apiInfo.tags.length;i++){
                 var tagName=apiInfo.tags[i];
                 that.mergeApiInfoSelfTags(tagName);
+            }
+        }
+        //获取请求json
+        if(swpinfo.parameters.length==1){
+            //只有在参数只有一个且是body类型的参数才有请求示例
+            var reqp=swpinfo.parameters[0];
+            //判断参数是否body类型
+            if(reqp.in=="body"){
+                if(reqp.txtValue!=null&&reqp.txtValue!=""){
+                    swpinfo.requestValue=reqp.txtValue;
+                }
             }
         }
         that.log("创建api完成,耗时："+(new Date().getTime()-startApiTime))
@@ -3379,6 +3837,8 @@
         this.location=location;
         //不分组是url地址
         this.url=null;
+        //增强地址
+        this.extUrl=null;
         this.groupVersion=version;
         //分组url请求实例
         this.basePath="";
@@ -3492,6 +3952,8 @@
         this.produces=null;
         this.tags=null;
         this.parameters=new Array();
+        //请求json示例
+        this.requestValue=null;
         //针对parameter属性有引用类型的参数,继续以table 的形式展现
         //存放SwaggerBootstrapUiRefParameter 集合
         this.refparameters=new Array();
@@ -3509,6 +3971,8 @@
         this.responseTreetableRefParameters=new Array();
         //新增菜单id
         this.id="";
+        //排序
+        this.order=2147483647;
 
 
     }
