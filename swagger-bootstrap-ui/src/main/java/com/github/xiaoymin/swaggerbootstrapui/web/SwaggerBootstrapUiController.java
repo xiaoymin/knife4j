@@ -23,8 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.util.UriComponents;
 import springfox.documentation.annotations.ApiIgnore;
@@ -66,7 +64,7 @@ public class SwaggerBootstrapUiController {
     private final JsonSerializer jsonSerializer;
     private final String hostNameOverride;
 
-    private final HttpServletRequest request;
+    private final HttpServletRequest originRequest;
 
     @Autowired
     public SwaggerBootstrapUiController(Environment environment,
@@ -77,7 +75,7 @@ public class SwaggerBootstrapUiController {
         this.hostNameOverride = environment.getProperty(
                 "springfox.documentation.swagger.v2.host",
                 "DEFAULT");
-        this.request = request;
+        this.originRequest = request;
     }
 
     @RequestMapping(value = DEFAULT_SORT_URL,
@@ -107,10 +105,9 @@ public class SwaggerBootstrapUiController {
 
     private SwaggerBootstrapUi initSwaggerBootstrapUi(HttpServletRequest request,Documentation documentation){
         SwaggerBootstrapUi swaggerBootstrapUi=new SwaggerBootstrapUi();
-        HttpServletRequest holderRequeset=(HttpServletRequest) RequestContextHolder.getRequestAttributes().resolveReference(RequestAttributes.REFERENCE_REQUEST);
         WebApplicationContext wc=null;
-        if (holderRequeset!=null){
-            wc=WebApplicationContextUtils.getWebApplicationContext(holderRequeset.getServletContext());
+        if (originRequest!=null){
+            wc=WebApplicationContextUtils.getWebApplicationContext(originRequest.getServletContext());
         }else{
             wc=WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
         }
