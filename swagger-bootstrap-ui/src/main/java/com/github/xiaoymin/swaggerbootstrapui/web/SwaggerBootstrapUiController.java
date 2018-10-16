@@ -21,6 +21,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -153,13 +154,14 @@ public class SwaggerBootstrapUiController {
                 tag.setOrder(order);
                 //获取父级path
                 String parentPath="";
-                RequestMapping parent=aClass.getAnnotation(RequestMapping.class);
+                Class<?> userClass=ClassUtils.getUserClass(aClass);
+                RequestMapping parent=userClass.getAnnotation(RequestMapping.class);
                 if (parent!=null){
                     parentPath=parent.value()[0];
                 }
-                Method[] methods=aClass.getDeclaredMethods();
+                Method[] methods=userClass.getDeclaredMethods();
                 for (Method method:methods){
-                    List<SwaggerBootstrapUiPath> paths= new SwaggerBootstrapUiPathInstance(parentPath,method).match();
+                    List<SwaggerBootstrapUiPath> paths= new SwaggerBootstrapUiPathInstance(parentPath,ClassUtils.getMostSpecificMethod(method,userClass)).match();
                     if (paths!=null&&paths.size()>0){
                         targetPathLists.addAll(paths);
                     }
