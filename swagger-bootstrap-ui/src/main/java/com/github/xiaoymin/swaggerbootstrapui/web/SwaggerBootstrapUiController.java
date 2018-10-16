@@ -8,13 +8,10 @@
 package com.github.xiaoymin.swaggerbootstrapui.web;
 
 import com.github.xiaoymin.swaggerbootstrapui.model.SwaggerBootstrapUiPathInstance;
-import com.github.xiaoymin.swaggerbootstrapui.util.CommonUtils;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiOperationSort;
 import io.swagger.annotations.ApiSort;
 import io.swagger.models.*;
 import org.slf4j.Logger;
@@ -26,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.util.UriComponents;
 import springfox.documentation.annotations.ApiIgnore;
@@ -38,7 +37,6 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -68,15 +66,18 @@ public class SwaggerBootstrapUiController {
     private final JsonSerializer jsonSerializer;
     private final String hostNameOverride;
 
+    private final HttpServletRequest request;
+
     @Autowired
     public SwaggerBootstrapUiController(Environment environment,
-            ServiceModelToSwagger2Mapper mapper, DocumentationCache documentationCache, JsonSerializer jsonSerializer) {
+                                        ServiceModelToSwagger2Mapper mapper, DocumentationCache documentationCache, JsonSerializer jsonSerializer, HttpServletRequest request) {
         this.mapper = mapper;
         this.documentationCache = documentationCache;
         this.jsonSerializer = jsonSerializer;
         this.hostNameOverride = environment.getProperty(
                 "springfox.documentation.swagger.v2.host",
-                "DEFAULT");;
+                "DEFAULT");
+        this.request = request;
     }
 
     @RequestMapping(value = DEFAULT_SORT_URL,
@@ -106,7 +107,13 @@ public class SwaggerBootstrapUiController {
 
     private SwaggerBootstrapUi initSwaggerBootstrapUi(HttpServletRequest request,Documentation documentation){
         SwaggerBootstrapUi swaggerBootstrapUi=new SwaggerBootstrapUi();
-        WebApplicationContext wc=WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
+        HttpServletRequest holderRequeset=(HttpServletRequest) RequestContextHolder.getRequestAttributes().resolveReference(RequestAttributes.REFERENCE_REQUEST);
+        WebApplicationContext wc=null;
+        if (holderRequeset!=null){
+            wc=WebApplicationContextUtils.getWebApplicationContext(holderRequeset.getServletContext());
+        }else{
+            wc=WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
+        }
         Iterator<Tag> tags=documentation.getTags().iterator();
         List<SwaggerBootstrapUiTag> targetTagLists=Lists.newArrayList();
         // Ctl层排序
