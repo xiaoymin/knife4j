@@ -1371,7 +1371,7 @@
             that.log(apiInfo)
             that.log("请求url："+url);
             var reqdata=null;
-            var contType="application/json; charset=UTF-8";
+            var contType="application/json;charset=UTF-8";
             var paramBodyType="json";
             var formRequest=false;
             if(bodyRequest){
@@ -1412,7 +1412,7 @@
                     reqdata=params;
                 }else{
                     paramBodyType="form";
-                    contType="application/x-www-form-urlencoded; charset=UTF-8";
+                    contType="application/x-www-form-urlencoded;charset=UTF-8";
                     reqdata=params;
                     //判断consumes请求类型
                     if(apiInfo.consumes!=null&&apiInfo.consumes.length>0){
@@ -3783,10 +3783,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
