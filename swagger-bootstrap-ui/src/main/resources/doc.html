@@ -453,14 +453,14 @@
                                     </td>
                                     <td>
                                         <%if(param.schemaValue=="MultipartFile"){%>
-                                            <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                            <input name="<%=param.name%>" type="file" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                         <%}else{%>
                                             <%if(param.in=="body"){  %>
-                                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
+                                                <textarea class="form-control p-value sbu-debug-input-<%=param.require%>" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
                                                   name="<%=param.name%>" data-name="<%=param.name%>"
                                                   placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                             <%}else{%>
-                                                <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                                <input class="form-control p-value sbu-debug-input-<%=param.require%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                                 data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                             <%}%>
                                         <%}%>
@@ -484,7 +484,7 @@
                                     <%if(param.schemaValue=="MultipartFile"){%>
                                     <div class="row">
                                         <div class="col-lg-10">
-                                            <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>" <%if(param.type=="array"){%> multiple <%}%>/>
+                                            <input name="<%=param.name%>" type="file" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>" <%if(param.type=="array"){%> multiple <%}%>/>
                                         </div>
                                         <div class="col-lg-2">
 
@@ -492,18 +492,18 @@
                                     </div>
                                     <%}else{%>
                                     <%if(param.in=="body"){  %>
-                                    <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
+                                    <textarea class="form-control p-value sbu-debug-input-<%=param.require%>" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
                                               name="<%=param.name%>" data-name="<%=param.name%>"
                                               placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                     <%}else{%>
                                         <% if(param.enum!=null){%>
-                                        <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>">
+                                        <select  class="form-control p-value p-<%=param.in%> sbu-debug-input-<%=param.require%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>">
                                             <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
                                             <option value="<%=em%>" <%if(param.txtValue==em){%> selected <%}%> ><%=em%></option>
                                             <%}%>
                                         </select>
                                         <%}else{%>
-                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                        <input class="form-control p-value p-<%=param.in%> sbu-debug-input-<%=param.require%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                                data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                         <%}%>
                                         <% if(param.type=="array"){%>
@@ -551,14 +551,14 @@
                             </td>
                             <td>
                                 <%if(param.schemaValue=="MultipartFile"){%>
-                                <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                <input name="<%=param.name%>" type="file" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                 <%}else{%>
                                 <%if(param.in=="body"){  %>
-                                <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
+                                <textarea class="form-control p-value sbu-debug-input-<%=param.require%>" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
                                           name="<%=param.name%>" data-name="<%=param.name%>"
                                           placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                 <%}else{%>
-                                <input class="form-control p-value" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                <input class="form-control p-value sbu-debug-input-<%=param.require%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                 <%}%>
                                 <%}%>
@@ -582,14 +582,14 @@
                             <td>
                                 <%if(param.in=="body"||param.in=="formdata"||param.in=="formData"){  %>
                                     <%if(param.schemaValue=="MultipartFile"){%>
-                                    <input name="<%=param.name%>" type="file" class="form-control p-value" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                    <input name="<%=param.name%>" type="file" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                     <%}else {%>
                                         <%if(param.in=="body"){  %>
-                                        <textarea class="form-control p-value" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
+                                        <textarea class="form-control p-value sbu-debug-input-<%=param.require%>" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
                                                   name="<%=param.name%>" data-name="<%=param.name%>"
                                                   placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
                                         <%}else {%>
-                                        <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                        <input class="form-control p-value p-<%=param.in%> sbu-debug-input-<%=param.require%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                                data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                             <% if(param.type=="array"){%>
                                             <div class="btn-add-div"></div>
@@ -599,13 +599,13 @@
                                     <%}%>
                                 <%}else{%>
                                     <% if(param.enum!=null){%>
-                                        <select  class="form-control p-value p-<%=param.in%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>">
+                                        <select  class="form-control p-value p-<%=param.in%> sbu-debug-input-<%=param.require%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>">
                                             <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
                                             <option value="<%=em%>" <%if(param.txtValue==em){%> selected <%}%> ><%=em%></option>
                                             <%}%>
                                         </select>
                                     <%}else{%>
-                                <input class="form-control p-value p-<%=param.in%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                <input class="form-control p-value p-<%=param.in%> sbu-debug-input-<%=param.require%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
                                        data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
                                         <% if(param.type=="array"){%>
                                 <div class="btn-add-div"></div>

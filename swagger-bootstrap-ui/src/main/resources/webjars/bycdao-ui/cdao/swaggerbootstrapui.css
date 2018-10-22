@@ -520,8 +520,8 @@ code {
     display: inline-block;
 
 }
-.sbu-debug-input-error{
-    border-color: #a94442;
+.sbu-debug-input-true{
+    border-color: #ec8280;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 }
