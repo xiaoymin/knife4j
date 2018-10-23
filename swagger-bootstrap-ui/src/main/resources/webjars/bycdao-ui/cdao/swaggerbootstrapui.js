@@ -88,6 +88,22 @@
         }
     }
 
+    SwaggerBootstrapUi.prototype.initScrollEvent=function (id) {
+        var that=this;
+        that.log("initScrollEvent......................")
+        $("#"+id).scroll(function () {
+            that.log("滚动----------------")
+            that.removeLayerTips();
+        })
+    }
+
+    /***
+     * 移除layui-tips弹出框
+     */
+    SwaggerBootstrapUi.prototype.removeLayerTips=function () {
+        $(".layui-table-tips").remove();
+    }
+
     /***
      * 搜索按钮事件
      */
@@ -95,6 +111,7 @@
        var that=this;
        that.log("searchEvents");
        that.log($("#"+that.searchEleId));
+       that.removeLayerTips();
        $("#"+that.searchEleId).on("click",function (e) {
            var val=$("#"+that.searchTxtEleId).val();
            if(val){
@@ -169,6 +186,7 @@
                        var menu=$(this);
                        var data=menu.data("data");
                        that.log("Li标签click事件");
+                       that.removeLayerTips();
                        that.log(data);
                        //获取parent-Li的class属性值
                        var parentLi=menu.parent().parent();
@@ -873,6 +891,7 @@
             var menu=$(this);
             var data=menu.data("data");
             that.log("Li标签click事件");
+            that.removeLayerTips();
             that.log(data);
             //获取parent-Li的class属性值
             var parentLi=menu.parent().parent();
@@ -893,6 +912,7 @@
         var treetable=that.treetable;
 
         var tabId="tab"+apiInfo.id;
+        var layerTabId="layerTab"+tabId;
         //判断tabId是否存在
         if(that.tabExists(tabId)){
             element.tabChange(that.layTabFilter,tabId);
@@ -1064,6 +1084,8 @@
             that.log(that.currentInstance);
             //创建调试页面
             that.createDebugTab(apiInfo,menu);
+
+            that.initScrollEvent(layerTabId);
 
         }
     }
@@ -2247,6 +2269,13 @@
             e.preventDefault();
             $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0)').find(".icon-sbu-tab-close").trigger("click");
             element.tabChange('admin-pagetabs', "main");
+        })
+
+        //tab切换状态
+        element.on('tab('+that.layTabFilter+')',function (data) {
+            that.log(data)
+            that.log("切换")
+            that.removeLayerTips();
         })
 
 
