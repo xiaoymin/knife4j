@@ -963,7 +963,10 @@
                     {
                         field: 'in',
                         title: '请求类型',
-                        width: '10%'
+                        width: '10%',
+                        templet:function (d) {
+                            return "<span class='sbu-request-"+d.in+"'>"+d.in+"</span>";
+                        }
                     },
                     {
                         field: 'require',
