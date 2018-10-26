@@ -3379,7 +3379,23 @@
             }
         }
         //获取请求json
-        if(swpinfo.parameters.length==1){
+        //统计body次数
+        if(swpinfo.parameters!=null){
+            var count=0;
+            var tmpJsonValue=null;
+            $.each(swpinfo.parameters,function (i, p) {
+                if(p.in=="body"){
+                    count=count+1;
+                    if(p.txtValue!=null&&p.txtValue!=""){
+                        tmpJsonValue=p.txtValue;
+                    }
+                }
+            })
+            if (count==1){
+                swpinfo.requestValue=tmpJsonValue;
+            }
+        }
+        /*if(swpinfo.parameters.length==1){
             //只有在参数只有一个且是body类型的参数才有请求示例
             var reqp=swpinfo.parameters[0];
             //判断参数是否body类型
@@ -3388,7 +3404,7 @@
                     swpinfo.requestValue=reqp.txtValue;
                 }
             }
-        }
+        }*/
         that.log("创建api完成,耗时："+(new Date().getTime()-startApiTime))
         return swpinfo;
     }
