@@ -39,7 +39,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.8.5";
+        this.version="1.8.6";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
@@ -258,6 +258,7 @@
                         //增强地址存在basePath
                         extBasePath=newUrl.substr(0,idx);
                     }
+                    that.log("增强basePath地址："+extBasePath);
                     //赋值增强地址
                     g.extUrl=extBasePath+that.extUrl+"?group="+group.name;
                     if(that.validateExtUrl==""){
@@ -3243,11 +3244,11 @@
                             var txtArr=new Array();
                             txtArr.push(minfo.value);
                             //JSON显示
-                            minfo.txtValue=JSON.stringify(txtArr,null,4)
+                            minfo.txtValue=JSON.stringify(txtArr,null,"\t")
                         }else{
                             //引用类型
                             if(!$.checkIsBasicType(minfo.type)){
-                                minfo.txtValue=JSON.stringify(minfo.value,null,4);
+                                minfo.txtValue=JSON.stringify(minfo.value,null,"\t");
                             }
                         }
                     }
@@ -3321,10 +3322,10 @@
                         if (arr){
                             var na=new Array();
                             na.push(ref.value);
-                            swpinfo.responseValue=JSON.stringify(na,null,4);
+                            swpinfo.responseValue=JSON.stringify(na,null,"\t");
                             swpinfo.responseJson=na;
                         }else{
-                            swpinfo.responseValue=JSON.stringify(ref.value,null,4);
+                            swpinfo.responseValue=JSON.stringify(ref.value,null,"\t");
                             swpinfo.responseJson=ref.value;
                         }
                     }
