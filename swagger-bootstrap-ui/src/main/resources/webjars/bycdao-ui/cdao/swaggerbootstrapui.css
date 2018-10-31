@@ -520,7 +520,30 @@ code {
     display: inline-block;
 
 }
+.sbu-debug-input-true{
+    border-color: #e5b2b1;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+.sbu-request-query{
+    color: #61affe;
+}
+.sbu-request-body{
+    color: #0d5aa7;
+}
+.sbu-request-formData{
+    color: #9012fe;
+}
+.sbu-request-form{
+    color: #9012fe;
+}
 
+.sbu-request-header{
+    color: #fca130;
+}
+.sbu-request-path{
+    color: #49cc90;
+}
 /**离线文档*/
 .offlineMarkdownShow{
 

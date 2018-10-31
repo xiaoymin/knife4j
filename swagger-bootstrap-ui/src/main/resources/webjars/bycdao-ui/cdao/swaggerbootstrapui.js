@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.8.5
+ * swagger-bootstrap-ui v1.8.6
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
@@ -39,7 +39,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.8.5";
+        this.version="1.8.6";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
@@ -88,6 +88,22 @@
         }
     }
 
+    SwaggerBootstrapUi.prototype.initScrollEvent=function (id) {
+        var that=this;
+        that.log("initScrollEvent......................")
+        $("#"+id).scroll(function () {
+            that.log("滚动----------------")
+            that.removeLayerTips();
+        })
+    }
+
+    /***
+     * 移除layui-tips弹出框
+     */
+    SwaggerBootstrapUi.prototype.removeLayerTips=function () {
+        $(".layui-table-tips").remove();
+    }
+
     /***
      * 搜索按钮事件
      */
@@ -95,6 +111,7 @@
        var that=this;
        that.log("searchEvents");
        that.log($("#"+that.searchEleId));
+       that.removeLayerTips();
        $("#"+that.searchEleId).on("click",function (e) {
            var val=$("#"+that.searchTxtEleId).val();
            if(val){
@@ -169,6 +186,7 @@
                        var menu=$(this);
                        var data=menu.data("data");
                        that.log("Li标签click事件");
+                       that.removeLayerTips();
                        that.log(data);
                        //获取parent-Li的class属性值
                        var parentLi=menu.parent().parent();
@@ -227,8 +245,22 @@
                 $.each(groupData,function (i, group) {
                     var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
                     g.url=group.url;
+                    var newUrl="";
+                    //此处需要判断basePath路径的情况
+                    if (group.url!=null&&group.url!=undefined&&group.url!=""){
+                        newUrl=group.url;
+                    }else{
+                        newUrl=group.location;
+                    }
+                    var extBasePath="";
+                    var idx=newUrl.indexOf("/v2/api-docs");
+                    if(idx>0){
+                        //增强地址存在basePath
+                        extBasePath=newUrl.substr(0,idx);
+                    }
+                    that.log("增强basePath地址："+extBasePath);
                     //赋值增强地址
-                    g.extUrl=that.extUrl+"?group="+group.name;
+                    g.extUrl=extBasePath+that.extUrl+"?group="+group.name;
                     if(that.validateExtUrl==""){
                         that.validateExtUrl=g.extUrl;
                     }
@@ -873,6 +905,7 @@
             var menu=$(this);
             var data=menu.data("data");
             that.log("Li标签click事件");
+            that.removeLayerTips();
             that.log(data);
             //获取parent-Li的class属性值
             var parentLi=menu.parent().parent();
@@ -893,6 +926,7 @@
         var treetable=that.treetable;
 
         var tabId="tab"+apiInfo.id;
+        var layerTabId="layerTab"+tabId;
         //判断tabId是否存在
         if(that.tabExists(tabId)){
             element.tabChange(that.layTabFilter,tabId);
@@ -943,7 +977,10 @@
                     {
                         field: 'in',
                         title: '请求类型',
-                        width: '10%'
+                        width: '10%',
+                        templet:function (d) {
+                            return "<span class='sbu-request-"+d.in+"'>"+d.in+"</span>";
+                        }
                     },
                     {
                         field: 'require',
@@ -1065,6 +1102,8 @@
             //创建调试页面
             that.createDebugTab(apiInfo,menu);
 
+            that.initScrollEvent(layerTabId);
+
         }
     }
 
@@ -1106,7 +1145,7 @@
         var html = template('DebugScript', apiInfo);
         $("#"+debugContentId).html("").html(html)
         //string类型的arr参数动态添加事件
-        $("#btn-add-string"+apiInfo.id).on("click",function (e) {
+        $(".btn-add-string"+apiInfo.id).on("click",function (e) {
             e.preventDefault();
             var btn=$(this);
             that.log(btn);
@@ -1371,7 +1410,7 @@
             that.log(apiInfo)
             that.log("请求url："+url);
             var reqdata=null;
-            var contType="application/json; charset=UTF-8";
+            var contType="application/json;charset=UTF-8";
             var paramBodyType="json";
             var formRequest=false;
             if(bodyRequest){
@@ -1412,7 +1451,7 @@
                     reqdata=params;
                 }else{
                     paramBodyType="form";
-                    contType="application/x-www-form-urlencoded; charset=UTF-8";
+                    contType="application/x-www-form-urlencoded;charset=UTF-8";
                     reqdata=params;
                     //判断consumes请求类型
                     if(apiInfo.consumes!=null&&apiInfo.consumes.length>0){
@@ -2247,6 +2286,13 @@
             e.preventDefault();
             $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0)').find(".icon-sbu-tab-close").trigger("click");
             element.tabChange('admin-pagetabs', "main");
+        })
+
+        //tab切换状态
+        element.on('tab('+that.layTabFilter+')',function (data) {
+            that.log(data)
+            that.log("切换")
+            that.removeLayerTips();
         })
 
 
@@ -3198,11 +3244,11 @@
                             var txtArr=new Array();
                             txtArr.push(minfo.value);
                             //JSON显示
-                            minfo.txtValue=JSON.stringify(txtArr,null,4)
+                            minfo.txtValue=JSON.stringify(txtArr,null,"\t")
                         }else{
                             //引用类型
                             if(!$.checkIsBasicType(minfo.type)){
-                                minfo.txtValue=JSON.stringify(minfo.value,null,4);
+                                minfo.txtValue=JSON.stringify(minfo.value,null,"\t");
                             }
                         }
                     }
@@ -3276,10 +3322,10 @@
                         if (arr){
                             var na=new Array();
                             na.push(ref.value);
-                            swpinfo.responseValue=JSON.stringify(na,null,4);
+                            swpinfo.responseValue=JSON.stringify(na,null,"\t");
                             swpinfo.responseJson=na;
                         }else{
-                            swpinfo.responseValue=JSON.stringify(ref.value,null,4);
+                            swpinfo.responseValue=JSON.stringify(ref.value,null,"\t");
                             swpinfo.responseJson=ref.value;
                         }
                     }
@@ -3347,7 +3393,23 @@
             }
         }
         //获取请求json
-        if(swpinfo.parameters.length==1){
+        //统计body次数
+        if(swpinfo.parameters!=null){
+            var count=0;
+            var tmpJsonValue=null;
+            $.each(swpinfo.parameters,function (i, p) {
+                if(p.in=="body"){
+                    count=count+1;
+                    if(p.txtValue!=null&&p.txtValue!=""){
+                        tmpJsonValue=p.txtValue;
+                    }
+                }
+            })
+            if (count==1){
+                swpinfo.requestValue=tmpJsonValue;
+            }
+        }
+        /*if(swpinfo.parameters.length==1){
             //只有在参数只有一个且是body类型的参数才有请求示例
             var reqp=swpinfo.parameters[0];
             //判断参数是否body类型
@@ -3356,7 +3418,7 @@
                     swpinfo.requestValue=reqp.txtValue;
                 }
             }
-        }
+        }*/
         that.log("创建api完成,耗时："+(new Date().getTime()-startApiTime))
         return swpinfo;
     }

@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -65,18 +66,16 @@ public class SwaggerBootstrapUiController {
     private final JsonSerializer jsonSerializer;
     private final String hostNameOverride;
 
-    private final HttpServletRequest originRequest;
 
     @Autowired
     public SwaggerBootstrapUiController(Environment environment,
-                                        ServiceModelToSwagger2Mapper mapper, DocumentationCache documentationCache, JsonSerializer jsonSerializer, HttpServletRequest request) {
+                                        ServiceModelToSwagger2Mapper mapper, DocumentationCache documentationCache, JsonSerializer jsonSerializer) {
         this.mapper = mapper;
         this.documentationCache = documentationCache;
         this.jsonSerializer = jsonSerializer;
         this.hostNameOverride = environment.getProperty(
                 "springfox.documentation.swagger.v2.host",
                 "DEFAULT");
-        this.originRequest = request;
     }
 
     @RequestMapping(value = DEFAULT_SORT_URL,
@@ -98,20 +97,15 @@ public class SwaggerBootstrapUiController {
         }
         SwaggerExt swaggerExt =new SwaggerExt(swagger);
         //swaggerBootstrapUi.setTagSortLists(getSortTag(request,documentation));
-        swaggerExt.setSwaggerBootstrapUi(initSwaggerBootstrapUi(request,documentation));
+        swaggerExt.setSwaggerBootstrapUi(initSwaggerBootstrapUi(request,documentation,swaggerExt));
         // Method 层排序
         return new ResponseEntity<Json>(jsonSerializer.toJson(swaggerExt), HttpStatus.OK);
     }
 
 
-    private SwaggerBootstrapUi initSwaggerBootstrapUi(HttpServletRequest request,Documentation documentation){
+    private SwaggerBootstrapUi initSwaggerBootstrapUi(HttpServletRequest request,Documentation documentation,SwaggerExt swaggerExt){
         SwaggerBootstrapUi swaggerBootstrapUi=new SwaggerBootstrapUi();
-        WebApplicationContext wc=null;
-        if (originRequest!=null){
-            wc=WebApplicationContextUtils.getWebApplicationContext(originRequest.getServletContext());
-        }else{
-            wc=WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
-        }
+        WebApplicationContext wc=WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
         Iterator<Tag> tags=documentation.getTags().iterator();
         List<SwaggerBootstrapUiTag> targetTagLists=Lists.newArrayList();
         // Ctl层排序
@@ -143,7 +137,7 @@ public class SwaggerBootstrapUiController {
                 //优先获取api注解的position属性,如果不等于0,则取此值,否则获取apiSort注解,判断是否为空,如果不为空,则获取apisort的值,优先级:@Api-position>@ApiSort-value
                 int post=api.position();
                 if (post==0){
-                    ApiSort annotation = aClass.getAnnotation(ApiSort.class);
+                    ApiSort annotation = ClassUtils.getUserClass(aClass).getAnnotation(ApiSort.class);
                     if (annotation!=null){
                         order=annotation.value();
                     }
@@ -155,9 +149,19 @@ public class SwaggerBootstrapUiController {
                 //获取父级path
                 String parentPath="";
                 Class<?> userClass=ClassUtils.getUserClass(aClass);
+                //判断basePath
+                if (!StringUtils.isEmpty(swaggerExt.getBasePath())&&!"/".equals(swaggerExt.getBasePath())){
+                    parentPath+=swaggerExt.getBasePath();
+                }
                 RequestMapping parent=userClass.getAnnotation(RequestMapping.class);
                 if (parent!=null){
-                    parentPath=parent.value()[0];
+                    String tmp=parent.value()[0];
+                    if (!StringUtils.isEmpty(tmp)){
+                        if (!tmp.startsWith("/")){
+                            parentPath+="/";
+                        }
+                        parentPath+=tmp;
+                    }
                 }
                 Method[] methods=userClass.getDeclaredMethods();
                 for (Method method:methods){

@@ -51,7 +51,14 @@ public class SwaggerBootstrapUiPathInstance {
         RequestMapping requestMapping=target.getAnnotation(RequestMapping.class);
         if (requestMapping!=null){
             RequestMethod[] requestMethods=requestMapping.method();
-            String path=requestMapping.value()[0];
+            String path="";
+            if (requestMapping.value()!=null&&requestMapping.value().length>0){
+                path=requestMapping.value()[0];
+            }else{
+                if (requestMapping.path()!=null&&requestMapping.path().length>0){
+                    path=requestMapping.path()[0];
+                }
+            }
             for (RequestMethod requestMethod:requestMethods){
                 pathList.add(createMethod(requestMethod,path));
             }
@@ -59,31 +66,61 @@ public class SwaggerBootstrapUiPathInstance {
             GetMapping getMapping=target.getAnnotation(GetMapping.class);
             SwaggerBootstrapUiPath defaultPath=createDefaultPath();
             defaultPath.setMethod(RequestMethod.GET.name().toUpperCase());
-            defaultPath.setPath(buildPath(getMapping.value()[0]));
+            if (getMapping.value()!=null&&getMapping.value().length>0){
+                defaultPath.setPath(buildPath(getMapping.value()[0]));
+            }else {
+                if (getMapping.path()!=null&&getMapping.path().length>0){
+                    defaultPath.setPath(buildPath(getMapping.path()[0]));
+                }
+            }
             pathList.add(defaultPath);
         }else if(target.getAnnotation(PostMapping.class)!=null){
             PostMapping getMapping=target.getAnnotation(PostMapping.class);
             SwaggerBootstrapUiPath defaultPath=createDefaultPath();
             defaultPath.setMethod(RequestMethod.POST.name().toUpperCase());
-            defaultPath.setPath(buildPath(getMapping.value()[0]));
+            if (getMapping.value()!=null&&getMapping.value().length>0){
+                defaultPath.setPath(buildPath(getMapping.value()[0]));
+            }else {
+                if (getMapping.path()!=null&&getMapping.path().length>0){
+                    defaultPath.setPath(buildPath(getMapping.path()[0]));
+                }
+            }
             pathList.add(defaultPath);
         }else if(target.getAnnotation(DeleteMapping.class)!=null){
             DeleteMapping getMapping=target.getAnnotation(DeleteMapping.class);
             SwaggerBootstrapUiPath defaultPath=createDefaultPath();
             defaultPath.setMethod(RequestMethod.DELETE.name().toUpperCase());
-            defaultPath.setPath(buildPath(getMapping.value()[0]));
+            if (getMapping.value()!=null&&getMapping.value().length>0){
+                defaultPath.setPath(buildPath(getMapping.value()[0]));
+            }else {
+                if (getMapping.path()!=null&&getMapping.path().length>0){
+                    defaultPath.setPath(buildPath(getMapping.path()[0]));
+                }
+            }
             pathList.add(defaultPath);
         }else if(target.getAnnotation(PutMapping.class)!=null){
             PutMapping getMapping=target.getAnnotation(PutMapping.class);
             SwaggerBootstrapUiPath defaultPath=createDefaultPath();
             defaultPath.setMethod(RequestMethod.POST.name().toUpperCase());
-            defaultPath.setPath(buildPath(getMapping.value()[0]));
+            if (getMapping.value()!=null&&getMapping.value().length>0){
+                defaultPath.setPath(buildPath(getMapping.value()[0]));
+            }else {
+                if (getMapping.path()!=null&&getMapping.path().length>0){
+                    defaultPath.setPath(buildPath(getMapping.path()[0]));
+                }
+            }
             pathList.add(defaultPath);
         }else if(target.getAnnotation(PatchMapping.class)!=null){
             PatchMapping getMapping=target.getAnnotation(PatchMapping.class);
             SwaggerBootstrapUiPath defaultPath=createDefaultPath();
             defaultPath.setMethod(RequestMethod.PATCH.name().toUpperCase());
-            defaultPath.setPath(buildPath(getMapping.value()[0]));
+            if (getMapping.value()!=null&&getMapping.value().length>0){
+                defaultPath.setPath(buildPath(getMapping.value()[0]));
+            }else {
+                if (getMapping.path()!=null&&getMapping.path().length>0){
+                    defaultPath.setPath(buildPath(getMapping.path()[0]));
+                }
+            }
             pathList.add(defaultPath);
         }
         return pathList;
