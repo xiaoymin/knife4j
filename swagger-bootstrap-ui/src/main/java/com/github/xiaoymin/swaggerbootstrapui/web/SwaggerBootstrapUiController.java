@@ -86,12 +86,12 @@ public class SwaggerBootstrapUiController {
         String groupName = Optional.fromNullable(swaggerGroup).or(Docket.DEFAULT_GROUP_NAME);
         Documentation documentation = documentationCache.documentationByGroup(groupName);
         if (documentation == null) {
-            LOGGER.warn("Unable to find specification for grouRp {},use default", groupName);
+            LOGGER.warn("Unable to find specification for group {},use default", groupName);
             //return new ResponseEntity<Json>(HttpStatus.NOT_FOUND);
             //针对SpringCloud通过网关构建swagger分组获取不到Documentation对象的情况,根据default再获取一次
             documentation=documentationCache.documentationByGroup(Docket.DEFAULT_GROUP_NAME);
             if (documentation==null){
-                LOGGER.warn("Unable to find specification for grouRp default");
+                LOGGER.warn("Unable to find specification for group default");
                 return new ResponseEntity<Json>(HttpStatus.NOT_FOUND);
             }
         }
