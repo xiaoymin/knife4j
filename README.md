@@ -89,7 +89,7 @@ download address: [http://git.oschina.net/xiaoym/swagger-bootstrap-ui/releases](
 <dependency>
   <groupId>com.github.xiaoymin</groupId>
   <artifactId>swagger-bootstrap-ui</artifactId>
-  <version>1.6</version>
+  <version>1.8.5</version>
 </dependency>
 ```
 
