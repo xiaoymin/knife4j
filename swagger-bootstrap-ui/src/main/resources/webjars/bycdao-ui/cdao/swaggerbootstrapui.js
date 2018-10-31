@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.8.5
+ * swagger-bootstrap-ui v1.8.6
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
