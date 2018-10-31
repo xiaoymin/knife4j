@@ -245,8 +245,21 @@
                 $.each(groupData,function (i, group) {
                     var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
                     g.url=group.url;
+                    var newUrl="";
+                    //此处需要判断basePath路径的情况
+                    if (group.url!=null&&group.url!=undefined&&group.url!=""){
+                        newUrl=group.url;
+                    }else{
+                        newUrl=group.location;
+                    }
+                    var extBasePath="";
+                    var idx=newUrl.indexOf("/v2/api-docs");
+                    if(idx>0){
+                        //增强地址存在basePath
+                        extBasePath=newUrl.substr(0,idx);
+                    }
                     //赋值增强地址
-                    g.extUrl=that.extUrl+"?group="+group.name;
+                    g.extUrl=extBasePath+that.extUrl+"?group="+group.name;
                     if(that.validateExtUrl==""){
                         that.validateExtUrl=g.extUrl;
                     }
