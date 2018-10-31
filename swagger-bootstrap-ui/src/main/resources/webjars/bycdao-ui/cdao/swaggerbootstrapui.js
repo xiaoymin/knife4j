@@ -1131,7 +1131,7 @@
         var html = template('DebugScript', apiInfo);
         $("#"+debugContentId).html("").html(html)
         //string类型的arr参数动态添加事件
-        $("#btn-add-string"+apiInfo.id).on("click",function (e) {
+        $(".btn-add-string"+apiInfo.id).on("click",function (e) {
             e.preventDefault();
             var btn=$(this);
             that.log(btn);
