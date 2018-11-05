@@ -1560,6 +1560,7 @@
                     },
                     error:function (xhr, textStatus, errorThrown) {
                         var allheaders=xhr.getAllResponseHeaders();
+                        var data=null;
                         that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
                             formCurlParams,xhr,data,startTime,allheaders,false);
                     }
@@ -1639,7 +1640,11 @@
         var len=0;
         var diff=endTime-startTime;
         //计算返回数据大小
-        var tp=typeof (data);
+        var tp=null;
+        if (data!=null){
+            tp=typeof (data);
+        }
+        //var tp=typeof (data);
         if(xhr.hasOwnProperty("responseText")){
             len=xhr["responseText"].gblen();
         }
@@ -1649,27 +1654,39 @@
             .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
             .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
         //赋值响应headers
-        var mimtype=xhr.overrideMimeType();
+        //var mimtype=xhr.overrideMimeType();
         //var allheaders=xhr.getAllResponseHeaders();
         if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-            var headers=allheaders.split("\r\n");
             var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-            for(var i=0;i<headers.length;i++){
-                var header=headers[i];
-                if(header!=null&&header!=""){
-                    var headerValu=header.split(":");
-                    var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
+            //如果headers是string，ajax提交
+            if(typeof (allheaders)=="string"){
+                var headers=allheaders.split("\r\n");
+                for(var i=0;i<headers.length;i++){
+                    var header=headers[i];
+                    if(header!=null&&header!=""){
+                        var headerValu=header.split(":");
+                        var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
+                        headertable.append(headertr);
+                    }
+                }
+            }else{
+                for(var hk in allheaders){
+                    var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
                     headertable.append(headertr);
                 }
             }
+            //设置Headers内容
+            resp3.html("")
+            resp3.append(headertable);
         }
-        //设置Headers内容
-        resp3.html("")
-        resp3.append(headertable);
+
         //判断响应内容
         var contentType=xhr.getResponseHeader("Content-Type");
+        var rtext=xhr["responseText"];
+        that.log(xhr.hasOwnProperty("responseText"));
+        that.log(rtext);
         //响应文本内容
-        if(xhr.hasOwnProperty("responseText")){
+        if(rtext!=null&&rtext!=undefined){
             var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
             var rawText=$("<span></span>");
             rawText.html(xhr["responseText"]);
@@ -1686,7 +1703,7 @@
             cliprawboard.on('error', function(e) {
                 layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
             });
-            if(tp=="string"){
+            if(tp!=null&& tp=="string"){
                 //转二进制
                 var dv=data.toString(2);
                 if(dv!=undefined&&dv!=null){
@@ -1712,12 +1729,17 @@
             }
         }
         //响应JSON
-        if (xhr.hasOwnProperty("responseJSON")){
+        if (xhr.hasOwnProperty("responseJSON")||data!=null||data!=undefined){
             //如果存在该对象,服务端返回为json格式
             resp1.html("")
             that.log(xhr["responseJSON"])
             var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
-            jsondiv.html(JSON.stringify(data,null,2));
+            if(xhr.hasOwnProperty("responseJSON")){
+                jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
+            }else{
+                //针对表单提交,error的情况,会产生data
+                jsondiv.html(JSON.stringify(data,null,2));
+            }
             resp1.append(jsondiv);
             var editor = ace.edit("responseJsonEditor"+apiKeyId);
             editor.getSession().setMode("ace/mode/json");
@@ -1726,11 +1748,18 @@
             var length_editor = editor.session.getLength();
             var rows_editor = length_editor * 16;
             that.log("重构高度："+rows_editor)
-            $("#responseJsonEditor"+apiKeyId).css('height',rows_editor);
+            $("#responseJsonEditor"+apiKeyId).css('height',rows_editor+100);
             editor.resize();
             that.log($("#responseJsonEditor"+apiKeyId).height())
             //重置响应面板高度
-            laycontentdiv.css("height",rows_editor+50);
+            laycontentdiv.css("height",rows_editor+150);
+        }else{
+            //判断是否是text
+            var regex=new RegExp('.*?text.*','g');
+            if(regex.test(contentType)){
+                resp1.html("")
+                resp1.html(xhr.responseText);
+            }
         }
         //构建CURL功能
         //组件curl功能
@@ -1820,11 +1849,18 @@
                     }
                 }else{
                     if(tp=="string"){
-                        var jobj=JSON.parse(reqdata);
-                        var objstr=JSON.stringify( jobj ).replace(/\\n/g, "").replace(/"/g,"\\\"");
-                        that.log(objstr);
-                        curlified.push( "-d" );
-                        curlified.push( "\""+objstr +"\"")
+                        //如果装换JSON失败,以字符串拼接
+                        try{
+                            var jobj=JSON.parse(reqdata);
+                            var objstr=JSON.stringify( jobj ).replace(/\\n/g, "").replace(/"/g,"\\\"");
+                            that.log(objstr);
+                            curlified.push( "-d" );
+                            curlified.push( "\""+objstr +"\"")
+                        }catch (error){
+                            curlified.push( "-d" );
+                            curlified.push( "\""+reqdata +"\"")
+                        }
+
                     }else if(tp=="object"){
                         //req有可能为空
                         //object
