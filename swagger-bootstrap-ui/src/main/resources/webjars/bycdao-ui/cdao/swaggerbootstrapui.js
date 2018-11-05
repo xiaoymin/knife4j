@@ -1218,7 +1218,7 @@
                 laydivHeight=550;
             }
             that.log("整个tab高度："+tabsContentHeight+",请求Form表单高度："+basicContentHeight+",高度差："+responseHeight);
-            laycontentdiv.css("height",laydivHeight+"px");
+            //laycontentdiv.css("height",laydivHeight+"px");
             //respcleanDiv.html("")
             var params={};
             var headerparams={};
@@ -1505,11 +1505,6 @@
                 }
                 //增加header默认发送参数
                 headerparams["Request-Origion"]=that.requestOrigion;
-                //headerparams["Content-Type"]=contType;
-                that.log(headerparams)
-                that.log(reqdata);
-                that.log("formData-------------------------------------------------------");
-                that.log(formData);
                 axios.request({
                     url:url,
                     headers:headerparams,
@@ -1517,216 +1512,23 @@
                     data:formData,
                     timeout: 10*60*1000,
                 }).then(function (response) {
-                    respcleanDiv.show();
-                    that.log("form-------------response------------------")
-                    that.log(response);
                     var data=response.data;
                     var xhr=response.request;
-                    that.log(data);
-                    layer.close(index);
-                    var statsCode=xhr.status;
-                    if(statsCode==200){
-                        statsCode=statsCode+" OK";
-                    }
-                    var endTime=new Date().getTime();
-                    that.log(endTime)
-                    var len=0;
-                    var diff=endTime-startTime;
-                    var tp=typeof (data);
-                    if(xhr.hasOwnProperty("responseText")){
-                        len=xhr["responseText"].gblen();
-                    }
-                    responsestatus.html("")
-                    responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
-                        .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
-                        .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
-
-                    that.log(xhr);
                     var allheaders=response.headers;
-                    if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-                        var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                        for(var hk in allheaders){
-                            var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
-                            headertable.append(headertr);
-                        }
-                        //设置Headers内容
-                        resp3.html("")
-                        resp3.append(headertable);
-                    }
-                    that.log("responseTextFlag-----------------")
-                    var rtext=xhr["responseText"];
-                    that.log(xhr.hasOwnProperty("responseText"));
-                    that.log(rtext);
-                    if(rtext!=null&&rtext!=undefined){
-                        that.log("xhr---------------responseText-----------------------------")
-                        that.log(xhr["responseText"])
-                        //json
-                        resp2.html(rtext);
-                        if(tp=="string"){
-                            //转二进制
-                            var dv=data.toString(2);
-                            if(dv!=undefined&&dv!=null){
-                                that.log("二进制11..");
-                                var div=$("<div></div>");
-                                var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
-                                var downloadDiv=$("<div style='    position: absolute;\n" +
-                                    "    right: 0px;\n" +
-                                    "    width: 100px;\n" +
-                                    "    bottom: 30px;\n" +
-                                    "    text-align: center;'></div>")
-                                var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
-                                button.bind("click",function () {
-                                    window.open(url);
-                                })
-                                downloadDiv.append(button);
-                                div.append(rowDiv).append(downloadDiv);
-                                that.log(div)
-                                that.log(div[0])
-                                resp1.html("")
-                                resp1.html(div);
-                            }
-                        }
-                    }
-                    if (response.data!=null&&response.data!=undefined){
-                        //如果存在该对象,服务端返回为json格式
-                        resp1.html("")
-                        that.log(xhr["responseJSON"])
-                        var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
-                        jsondiv.html(JSON.stringify(response.data,null,2));
-                        resp1.append(jsondiv);
-                        var editor = ace.edit("responseJsonEditor"+apiKeyId);
-                        editor.getSession().setMode("ace/mode/json");
-                        editor.setTheme("ace/theme/eclipse");
-
-                    }
-                    //组件curl功能
-                    var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams,fileUploadFlat);
-                    var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl"+apiKeyId+"'>复制</button>");
-                    var curlcode=$("<code></code>");
-                    curlcode.html(curl);
-                    resp5.html("");
-                    resp5.append(curlcode).append(cpcurlBotton);
-                    var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
-                        text:function () {
-                            return curlcode.html();
-                        }
-                    });
-                    clipboard.on('success', function(e) {
-                        layer.msg("复制成功")
-                    });
-                    clipboard.on('error', function(e) {
-                        layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                    });
+                    that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                        formCurlParams,xhr,data,startTime,allheaders,true);
                 }).catch(function (error) {
                     respcleanDiv.show();
                     layer.close(index);
-                    that.log("form-------------error-------------------");
-                    that.log(error);
-                    that.log(error.response);
                     if(error.response){
                         var response=error.response;
                         var data=response.data;
                         var xhr=response.request;
-                        that.log(data);
-                        layer.close(index);
-                        var statsCode=xhr.status;
-                        if(statsCode==200){
-                            statsCode=statsCode+" OK";
-                        }
-                        var endTime=new Date().getTime();
-                        that.log(endTime)
-                        var len=0;
-                        var diff=endTime-startTime;
-                        var tp=typeof (data);
-                        if(xhr.hasOwnProperty("responseText")){
-                            len=xhr["responseText"].gblen();
-                        }
-                        responsestatus.html("")
-                        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
-                            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
-                            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
-                        that.log(xhr);
                         var allheaders=response.headers;
-                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                            for(var hk in allheaders){
-                                var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
-                                headertable.append(headertr);
-                            }
-                            //设置Headers内容
-                            resp3.html("")
-                            resp3.append(headertable);
-                        }
-                        that.log("responseTextFlag-----------------")
-                        var rtext=xhr["responseText"];
-                        that.log(xhr.hasOwnProperty("responseText"));
-                        that.log(rtext);
-                        if(rtext!=null&&rtext!=undefined){
-                            that.log("xhr---------------responseText-----------------------------")
-                            that.log(xhr["responseText"])
-                            //json
-                            resp2.html(rtext);
-                            if(tp=="string"){
-                                //转二进制
-                                var dv=data.toString(2);
-                                if(dv!=undefined&&dv!=null){
-                                    that.log("二进制11..");
-                                    var div=$("<div></div>");
-                                    var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
-                                    var downloadDiv=$("<div style='    position: absolute;\n" +
-                                        "    right: 0px;\n" +
-                                        "    width: 100px;\n" +
-                                        "    bottom: 30px;\n" +
-                                        "    text-align: center;'></div>")
-                                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
-                                    button.bind("click",function () {
-                                        window.open(url);
-                                    })
-                                    downloadDiv.append(button);
-                                    div.append(rowDiv).append(downloadDiv);
-                                    that.log(div)
-                                    that.log(div[0])
-                                    resp1.html("")
-                                    resp1.html(div);
-                                }
-                            }
-                        }
-                        if (response.data!=null&&response.data!=undefined){
-                            //如果存在该对象,服务端返回为json格式
-                            resp1.html("")
-                            that.log(xhr["responseJSON"])
-                            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
-                            jsondiv.html(JSON.stringify(response.data,null,2));
-                            resp1.append(jsondiv);
-                            var editor = ace.edit("responseJsonEditor"+apiKeyId);
-                            editor.getSession().setMode("ace/mode/json");
-                            editor.setTheme("ace/theme/eclipse");
-                        }
-                        //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams,fileUploadFlat);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl"+apiKeyId+"'>复制</button>");
-                        var curlcode=$("<code></code>");
-                        curlcode.html(curl);
-
-                        resp5.html("");
-                        resp5.append(curlcode).append(cpcurlBotton);
-
-
-                        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
-                            text:function () {
-                                return curlcode.html();
-                            }
-                        });
-                        clipboard.on('success', function(e) {
-                            layer.msg("复制成功")
-                        });
-                        clipboard.on('error', function(e) {
-                            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                        });
+                        that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                            formCurlParams,xhr,data,startTime,allheaders,true);
                     }
-
                 })
-
             }
             else{
                 //判断produce
@@ -1745,11 +1547,6 @@
                 //增加header默认发送参数
                 headerparams["Request-Origion"]=that.requestOrigion;
                 headerparams["Content-Type"]=contType;
-                that.log("header....")
-                that.log(headerparams);
-                that.log("请求参数...........")
-                that.log(params)
-
                 $.ajax({
                     url:url,
                     headers:headerparams,
@@ -1757,236 +1554,14 @@
                     data:reqdata,
                     contentType:contType,
                     success:function (data,status,xhr) {
-                        layer.close(index);
-                        respcleanDiv.show();
-                        that.log("success...")
-                        var statsCode=xhr.status;
-                        if(statsCode==200){
-                            statsCode=statsCode+" OK";
-                        }
-                        var endTime=new Date().getTime();
-                        that.log(endTime)
-                        var len=0;
-                        var diff=endTime-startTime;
-                        var tp=typeof (data);
-                        if(xhr.hasOwnProperty("responseText")){
-                            len=xhr["responseText"].gblen();
-                        }
-                        that.log(typeof (data))
-                        that.log(status)
-                        responsestatus.html("")
-                        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
-                            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
-                            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
-
-
-                        that.log(xhr);
-                        that.log(xhr.getAllResponseHeaders());
-                        var mimtype=xhr.overrideMimeType();
-                        that.log("MIME-TYPE..")
-                        that.log(mimtype)
                         var allheaders=xhr.getAllResponseHeaders();
-                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-                            var headers=allheaders.split("\r\n");
-                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                            for(var i=0;i<headers.length;i++){
-                                var header=headers[i];
-                                if(header!=null&&header!=""){
-                                    var headerValu=header.split(":");
-                                    var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
-                                    headertable.append(headertr);
-                                }
-                            }
-                            //设置Headers内容
-                            resp3.html("")
-                            resp3.append(headertable);
-                        }
-                        var contentType=xhr.getResponseHeader("Content-Type");
-                        that.log("Content-Type:"+contentType);
-                        that.log(xhr.hasOwnProperty("responseJSON"))
-                        if(xhr.hasOwnProperty("responseText")){
-                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
-                            var rawText=$("<span></span>");
-                            rawText.html(xhr["responseText"]);
-
-                            resp2.html("");
-                            resp2.append(rawCopyBotton).append(rawText);
-                            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
-                                text:function () {
-                                    return rawText.html();
-                                }
-                            });
-                            cliprawboard.on('success', function(e) {
-                                layer.msg("复制成功")
-                            });
-                            cliprawboard.on('error', function(e) {
-                                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                            });
-
-                            if(tp=="string"){
-                                //转二进制
-                                var dv=data.toString(2);
-                                if(dv!=undefined&&dv!=null){
-                                    that.log("二进制11..");
-                                    var div=$("<div></div>");
-                                    var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
-                                    var downloadDiv=$("<div style='    position: absolute;\n" +
-                                        "    right: 0px;\n" +
-                                        "    width: 100px;\n" +
-                                        "    bottom: 30px;\n" +
-                                        "    text-align: center;'></div>")
-                                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
-                                    button.bind("click",function () {
-                                        window.open(url);
-                                    })
-                                    downloadDiv.append(button);
-                                    div.append(rowDiv).append(downloadDiv);
-                                    that.log(div)
-                                    that.log(div[0])
-                                    resp1.html("")
-                                    resp1.html(div);
-                                }
-                            }
-                        }
-                        if (xhr.hasOwnProperty("responseJSON")){
-                            //如果存在该对象,服务端返回为json格式
-                            resp1.html("")
-                            that.log(xhr["responseJSON"])
-                            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
-                            jsondiv.html(JSON.stringify(data,null,2));
-                            resp1.append(jsondiv);
-                            var editor = ace.edit("responseJsonEditor"+apiKeyId);
-                            editor.getSession().setMode("ace/mode/json");
-                            editor.setTheme("ace/theme/eclipse");
-                        }
-                        that.log("tab show...")
-                        //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
-                        var curlcode=$("<code></code>");
-                        curlcode.html(curl);
-
-                        resp5.html("");
-                        resp5.append(cpcurlBotton).append(curlcode);
-                        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
-                            text:function () {
-                                return curlcode.html();
-                            }
-                        });
-                        clipboard.on('success', function(e) {
-                            layer.msg("复制成功")
-                        });
-                        clipboard.on('error', function(e) {
-                            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                        });
+                        that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                            formCurlParams,xhr,data,startTime,allheaders,false);
                     },
                     error:function (xhr, textStatus, errorThrown) {
-                        that.log("error.....")
-                        layer.close(index);
-                        respcleanDiv.show();
-                        that.log(xhr);
-                        var statsCode=xhr.status;
-                        if(statsCode==404){
-                            statsCode=statsCode+" Not Found";
-                        }
-                        var endTime=new Date().getTime();
-                        that.log(endTime)
-                        var diff=endTime-startTime;
-                        var len=0;
-                        var rawTxt="暂无";
-                        if (xhr.hasOwnProperty("responseText")){
-                            len=xhr["responseText"].toString().gblen();
-                            rawTxt=xhr["responseText"];
-                        }
-                        responsestatus.html("")
-                        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
-                            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
-                            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
-
-                        if(rawTxt!=null){
-                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
-                            var rawText=$("<span></span>");
-                            rawText.html(rawTxt);
-                            resp2.html("");
-                            resp2.append(rawCopyBotton).append(rawText);
-
-                            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
-                                text:function () {
-                                    return rawText.html();
-                                }
-                            });
-                            cliprawboard.on('success', function(e) {
-                                layer.msg("复制成功")
-                            });
-                            cliprawboard.on('error', function(e) {
-                                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                            });
-                        }
-
-                        that.log(xhr);
                         var allheaders=xhr.getAllResponseHeaders();
-                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-                            that.log("header--------------tab--------------------")
-                            that.log(allheaders)
-                            var headers=allheaders.split("\r\n");
-                            that.log("headers------------------------")
-                            that.log(headers)
-                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                            for(var i=0;i<headers.length;i++){
-                                var header=headers[i];
-                                if(header!=null&&header!=""){
-                                    var headerValu=header.split(":");
-                                    var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
-                                    headertable.append(headertr);
-                                }
-                            }
-                            that.log(headertable)
-                            //设置Headers内容
-                            resp3.html("")
-                            resp3.append(headertable);
-                        }
-                        var contentType=xhr.getResponseHeader("Content-Type");
-                        that.log("Content-Type:"+contentType);
-                        var jsonRegex="";
-                        that.log(xhr.hasOwnProperty("responseJSON"))
-                        if (xhr.hasOwnProperty("responseJSON")){
-                            //如果存在该对象,服务端返回为json格式
-                            resp1.html("")
-                            that.log(xhr["responseJSON"])
-                            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
-                            jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
-                            resp1.append(jsondiv);
-                            var editor = ace.edit("responseJsonEditor"+apiKeyId);
-                            editor.getSession().setMode("ace/mode/json");
-                            editor.setTheme("ace/theme/eclipse");
-                        }else{
-                            //判断是否是text
-                            var regex=new RegExp('.*?text.*','g');
-                            if(regex.test(contentType)){
-                                resp1.html("")
-                                resp1.html(xhr.responseText);
-                            }
-                        }
-
-                        //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
-                        var curlcode=$("<code></code>");
-                        curlcode.html(curl);
-
-                        resp5.html("");
-                        resp5.append(cpcurlBotton).append(curlcode);
-                        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
-                            text:function () {
-                                return curlcode.html();
-                            }
-                        });
-                        clipboard.on('success', function(e) {
-                            layer.msg("复制成功")
-                        });
-                        clipboard.on('error', function(e) {
-                            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                        });
+                        that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                            formCurlParams,xhr,data,startTime,allheaders,false);
                     }
                 })
             }
@@ -2021,6 +1596,170 @@
         })
 
     }
+
+
+    /****
+     * 发送请求后,创建响应元素
+     * @param apiInfo
+     * @param headerparams
+     * @param reqdata
+     * @param paramBodyType
+     * @param url
+     * @param fileUploadFlat
+     * @param formCurlParams
+     * @param xhr
+     * @param data
+     * @param startTime
+     * @param allheaders
+     * @param formRequest
+     */
+    SwaggerBootstrapUi.prototype.createResponseElement=function (index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat
+        ,formCurlParams,xhr,data,startTime,allheaders,formRequest) {
+        var that=this;
+        var apiKeyId=apiInfo.id;
+        var respcleanDiv=$("#responsebody"+apiKeyId);
+        var laycontentdiv=$("#layuiresponsecontentmain"+apiKeyId);
+        var responsestatus=$("#responsestatus"+apiKeyId);
+        var resp1=$("#respcontent"+apiKeyId)
+        var resp2=$("#respraw"+apiKeyId);
+        var resp3=$("#respheaders"+apiKeyId);
+        var resp5=$("#respcurl"+apiKeyId);
+        var responseHeight=500;
+        //关闭遮罩层
+        layer.close(index);
+        //清空响应内容div
+        respcleanDiv.show();
+        //响应码
+        var statsCode=xhr.status;
+        if(statsCode==200){
+            statsCode=statsCode+" OK";
+        }
+        //计算耗时
+        var endTime=new Date().getTime();
+        var len=0;
+        var diff=endTime-startTime;
+        //计算返回数据大小
+        var tp=typeof (data);
+        if(xhr.hasOwnProperty("responseText")){
+            len=xhr["responseText"].gblen();
+        }
+        //清空响应状态栏,赋值响应栏
+        responsestatus.html("")
+        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
+            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
+            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
+        //赋值响应headers
+        var mimtype=xhr.overrideMimeType();
+        //var allheaders=xhr.getAllResponseHeaders();
+        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+            var headers=allheaders.split("\r\n");
+            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
+            for(var i=0;i<headers.length;i++){
+                var header=headers[i];
+                if(header!=null&&header!=""){
+                    var headerValu=header.split(":");
+                    var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
+                    headertable.append(headertr);
+                }
+            }
+        }
+        //设置Headers内容
+        resp3.html("")
+        resp3.append(headertable);
+        //判断响应内容
+        var contentType=xhr.getResponseHeader("Content-Type");
+        //响应文本内容
+        if(xhr.hasOwnProperty("responseText")){
+            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
+            var rawText=$("<span></span>");
+            rawText.html(xhr["responseText"]);
+            resp2.html("");
+            resp2.append(rawCopyBotton).append(rawText);
+            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
+                text:function () {
+                    return rawText.html();
+                }
+            });
+            cliprawboard.on('success', function(e) {
+                layer.msg("复制成功")
+            });
+            cliprawboard.on('error', function(e) {
+                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+            });
+            if(tp=="string"){
+                //转二进制
+                var dv=data.toString(2);
+                if(dv!=undefined&&dv!=null){
+                    that.log("二进制11..");
+                    var div=$("<div></div>");
+                    var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
+                    var downloadDiv=$("<div style='    position: absolute;\n" +
+                        "    right: 0px;\n" +
+                        "    width: 100px;\n" +
+                        "    bottom: 30px;\n" +
+                        "    text-align: center;'></div>")
+                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
+                    button.bind("click",function () {
+                        window.open(url);
+                    })
+                    downloadDiv.append(button);
+                    div.append(rowDiv).append(downloadDiv);
+                    that.log(div)
+                    that.log(div[0])
+                    resp1.html("")
+                    resp1.html(div);
+                }
+            }
+        }
+        //响应JSON
+        if (xhr.hasOwnProperty("responseJSON")){
+            //如果存在该对象,服务端返回为json格式
+            resp1.html("")
+            that.log(xhr["responseJSON"])
+            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
+            jsondiv.html(JSON.stringify(data,null,2));
+            resp1.append(jsondiv);
+            var editor = ace.edit("responseJsonEditor"+apiKeyId);
+            editor.getSession().setMode("ace/mode/json");
+            editor.setTheme("ace/theme/eclipse");
+            //重构高度
+            var length_editor = editor.session.getLength();
+            var rows_editor = length_editor * 16;
+            that.log("重构高度："+rows_editor)
+            $("#responseJsonEditor"+apiKeyId).css('height',rows_editor);
+            editor.resize();
+            that.log($("#responseJsonEditor"+apiKeyId).height())
+            //重置响应面板高度
+            laycontentdiv.css("height",rows_editor+50);
+        }
+        //构建CURL功能
+        //组件curl功能
+        var curl=null;
+        if (formRequest){
+           curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams,fileUploadFlat);
+        }else{
+            curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat);
+        }
+        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
+        var curlcode=$("<code></code>");
+        curlcode.html(curl);
+
+        resp5.html("");
+        resp5.append(cpcurlBotton).append(curlcode);
+        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
+            text:function () {
+                return curlcode.html();
+            }
+        });
+        clipboard.on('success', function(e) {
+            layer.msg("复制成功")
+        });
+        clipboard.on('error', function(e) {
+            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+        });
+
+    }
+
     /***
      * 构建curl
      */
@@ -3845,10 +3584,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
