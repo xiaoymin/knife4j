@@ -1748,7 +1748,7 @@
             var length_editor = editor.session.getLength();
             var rows_editor = length_editor * 16;
             that.log("重构高度："+rows_editor)
-            $("#responseJsonEditor"+apiKeyId).css('height',rows_editor+100);
+            $("#responseJsonEditor"+apiKeyId).css('height',rows_editor+110);
             editor.resize();
             that.log($("#responseJsonEditor"+apiKeyId).height())
             //重置响应面板高度
