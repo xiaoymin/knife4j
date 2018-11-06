@@ -2147,6 +2147,7 @@
                     layer.msg("保存成功");
                     that.currentInstance.securityArrs=that.getSecurityInfos();
                 })
+                that.resetAuthEvent(tabContetId);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
             }else{
@@ -2178,7 +2179,32 @@
             that.currentInstance.securityArrs=that.getSecurityInfos();
             that.log(that.currentInstance);
         })
+        that.resetAuthEvent(tabContetId);
 
+    }
+
+    /***
+     * 注销Auth信息
+     */
+    SwaggerBootstrapUi.prototype.resetAuthEvent=function (tabContentId) {
+        var that=this;
+        that.getDoc().find("#"+tabContentId).find(".btn-reset-auth").on("click",function (e) {
+            e.preventDefault();
+            layer.confirm("确定注销吗?",function (index) {
+                $.each(that.currentInstance.securityArrs,function (i, sa) {
+                    sa.value="";
+                    that.updateGlobalParams(sa,"securityArrs");
+                })
+                that.getDoc().find("#"+tabContentId).find(".btn-save").each(function () {
+                    var saveBtn=$(this);
+                    //赋值为空
+                    saveBtn.parent().parent().find("input").val("");
+                })
+                layer.close(index);
+                layer.msg("注销成功");
+            })
+
+        })
     }
     /***
      * 创建简介页面
