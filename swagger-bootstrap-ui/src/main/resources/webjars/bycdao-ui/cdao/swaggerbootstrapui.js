@@ -2240,6 +2240,7 @@
         var that=this;
         var layui=that.layui;
         var element=layui.element;
+        var treetable=layui.treetable;
         var tabId="SwaggerBootstrapUiModelsScript"+that.currentInstance.id;
         setTimeout(function () {
             if(!that.tabExists(tabId)){
@@ -2256,7 +2257,41 @@
                 that.tabFinallyRight();
                 that.getDoc().find("#accordion"+that.currentInstance.id).collapse({
                     toggle: false
-                })
+                });
+                //遍历创建treetable
+                if(that.currentInstance.models!=null&&that.currentInstance.models.length>0){
+                    $.each(that.currentInstance.models,function (i, model) {
+                        var elem="#SwaggerModelTable"+model.id;
+                        treetable.render({
+                            elem:elem,
+                            data: model.data,
+                            field: 'title',
+                            treeColIndex: 0,          // treetable新增参数
+                            treeSpid: -1,             // treetable新增参数
+                            treeIdName: 'd_id',       // treetable新增参数
+                            treePidName: 'd_pid',     // treetable新增参数
+                            treeDefaultClose: true,   // treetable新增参数
+                            treeLinkage: true,        // treetable新增参数
+                            cols: [[
+                                {
+                                    field: 'name',
+                                    title: '参数名称',
+                                    width: '40%'
+                                },
+                                {
+                                    field: 'description',
+                                    title: '说明',
+                                    width: '40%'
+                                },
+                                {
+                                    field: 'schemaValue',
+                                    title: 'schema',
+                                    width: '20%'
+                                }
+                            ]]
+                        })
+                    })
+                }
             }else{
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
@@ -2883,11 +2918,16 @@
                             that.currentInstance.modelNames.push(name);
                             //不存在
                             var model=new SwaggerBootstrapUiModel(param.id,name);
-                            //data数据加入本身
-                            model.data.push(param);
                             //遍历params
                             if(param.params!=null&&param.params.length>0){
+                                //model本身需要添加一个父类
+                                //model.data.push({id:model.id,name:name,pid:"-1"});
+                                //data数据加入本身
+                                //model.data=model.data.concat(param.params);
+                                //第一层属性设置为pid
                                 $.each(param.params,function (a, ps) {
+                                    var newparam=$.extend({},ps,{pid:"-1"});
+                                    model.data.push(newparam);
                                     if(ps.schema){
                                         //是schema
                                         //查找紫属性中存在的pid
@@ -2900,6 +2940,7 @@
                     })
                 }
                 //解析响应Model
+                var responseParams=path.responseTreetableRefParameters;
                 //首先解析响应Model类
                 if(path.responseParameterRefName!=null&&path.responseParameterRefName!=""){
                     //判断是否存在
@@ -2908,10 +2949,19 @@
                         var id="param"+Math.round(Math.random()*1000000);
                         var model=new SwaggerBootstrapUiModel(id,path.responseParameterRefName);
                         model.data=[].concat(path.responseParameters);
+                        if(responseParams!=null&&responseParams!=undefined&&responseParams.length>0){
+                            $.each(responseParams,function (j, param) {
+                                //遍历params
+                                if(param.params!=null&&param.params.length>0) {
+                                    //data数据加入本身
+                                    model.data = model.data.concat(param.params);
+                                }
+                            })
+                        }
                         that.currentInstance.models.push(model);
                     }
                 }
-                var responseParams=path.responseTreetableRefParameters;
+
                 if(responseParams!=null&&responseParams!=undefined&&responseParams.length>0){
                     $.each(responseParams,function (j, param) {
                         var name=param.name;
@@ -2920,11 +2970,15 @@
                             that.currentInstance.modelNames.push(name);
                             //不存在
                             var model=new SwaggerBootstrapUiModel(param.id,name);
-                            //data数据加入本身
-                            model.data.push(param);
                             //遍历params
                             if(param.params!=null&&param.params.length>0){
+                                //model本身需要添加一个父类
+                                //model.data.push({id:model.id,name:name,pid:"-1"});
+                                //data数据加入本身
+                                //model.data=model.data.concat(param.params);
                                 $.each(param.params,function (a, ps) {
+                                    var newparam=$.extend({},ps,{pid:"-1"});
+                                    model.data.push(newparam);
                                     if(ps.schema){
                                         //是schema
                                         //查找紫属性中存在的pid
@@ -2962,7 +3016,7 @@
         $.each(arrs,function (i, arr) {
             if(arr.id==id){
                 //找到
-                model.data.push(arr);
+                model.data=model.data.concat(arr.params);
                 //遍历params
                 if(arr.params!=null&&arr.params.length>0){
                     $.each(arr.params,function (j, ps) {
