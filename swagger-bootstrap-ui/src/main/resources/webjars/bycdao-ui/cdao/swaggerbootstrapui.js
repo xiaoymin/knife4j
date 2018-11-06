@@ -416,6 +416,15 @@
             })
             that.getMenu().append(securityLi);
         }
+        //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
+        var modelsLi=$('<li  class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-zhongduancanshuguanli"></i><span class="menu-text">Swagger Models </span></a></li>');
+        modelsLi.on("click",function () {
+            that.log("Models");
+            that.createModelsElement();
+            that.getMenu().find("li").removeClass("active");
+            modelsLi.addClass("active");
+        })
+        that.getMenu().append(modelsLi);
 
         //SwaggerBootstrapUi增强功能全部放置在此
         //存在子标签
@@ -2224,6 +2233,37 @@
 
 
     }
+    /***
+     * 创建Models
+     */
+    SwaggerBootstrapUi.prototype.createModelsElement=function () {
+        var that=this;
+        var layui=that.layui;
+        var element=layui.element;
+        var tabId="SwaggerBootstrapUiModelsScript"+that.currentInstance.id;
+        setTimeout(function () {
+            if(!that.tabExists(tabId)){
+                var html = template("SwaggerBootstrapUiModelsScript", that.currentInstance);
+                var title="Swagger Models ("+that.currentInstance.name+")";
+                var tabObj={
+                    id:tabId,
+                    title:title,
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:title});
+                element.tabAdd(that.layTabFilter, tabObj);
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabFinallyRight();
+                that.getDoc().find("#accordion"+that.currentInstance.id).collapse({
+                    toggle: false
+                })
+            }else{
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
+            }
+
+        },100)
+    }
 
     SwaggerBootstrapUi.prototype.introMarkdownDocInit=function (txt) {
         var that=this;
@@ -2824,6 +2864,115 @@
                 })
             }
         });
+        //解析models
+        //遍历paths属性中的请求以及响应Model参数,存在即加入,否则不加入
+
+        that.log("开始解析refTreetableparameters属性.................")
+        that.log(new Date().toTimeString());
+        var pathStartTime=new Date().getTime();
+        //遍历 refTreetableparameters属性
+        if(that.currentInstance.paths!=null&&that.currentInstance.paths.length>0){
+            $.each(that.currentInstance.paths,function (i, path) {
+                //解析请求Model
+                var requestParams=path.refTreetableparameters;
+                if(requestParams!=null&&requestParams!=undefined&&requestParams.length>0){
+                    $.each(requestParams,function (j, param) {
+                        var name=param.name;
+                        //判断集合中是否存在name
+                        if($.inArray(name,that.currentInstance.modelNames)==-1){
+                            that.currentInstance.modelNames.push(name);
+                            //不存在
+                            var model=new SwaggerBootstrapUiModel(param.id,name);
+                            //data数据加入本身
+                            model.data.push(param);
+                            //遍历params
+                            if(param.params!=null&&param.params.length>0){
+                                $.each(param.params,function (a, ps) {
+                                    if(ps.schema){
+                                        //是schema
+                                        //查找紫属性中存在的pid
+                                        deepSchemaModel(model,requestParams,ps.id);
+                                    }
+                                })
+                            }
+                            that.currentInstance.models.push(model);
+                        }
+                    })
+                }
+                //解析响应Model
+                //首先解析响应Model类
+                if(path.responseParameterRefName!=null&&path.responseParameterRefName!=""){
+                    //判断是否存在
+                    if($.inArray(path.responseParameterRefName,that.currentInstance.modelNames)==-1){
+                        that.currentInstance.modelNames.push(path.responseParameterRefName);
+                        var id="param"+Math.round(Math.random()*1000000);
+                        var model=new SwaggerBootstrapUiModel(id,path.responseParameterRefName);
+                        model.data=[].concat(path.responseParameters);
+                        that.currentInstance.models.push(model);
+                    }
+                }
+                var responseParams=path.responseTreetableRefParameters;
+                if(responseParams!=null&&responseParams!=undefined&&responseParams.length>0){
+                    $.each(responseParams,function (j, param) {
+                        var name=param.name;
+                        //判断集合中是否存在name
+                        if($.inArray(name,that.currentInstance.modelNames)==-1){
+                            that.currentInstance.modelNames.push(name);
+                            //不存在
+                            var model=new SwaggerBootstrapUiModel(param.id,name);
+                            //data数据加入本身
+                            model.data.push(param);
+                            //遍历params
+                            if(param.params!=null&&param.params.length>0){
+                                $.each(param.params,function (a, ps) {
+                                    if(ps.schema){
+                                        //是schema
+                                        //查找紫属性中存在的pid
+                                        deepSchemaModel(model,responseParams,ps.id);
+                                    }
+                                })
+                            }
+                            that.currentInstance.models.push(model);
+                        }
+                    })
+                }
+            })
+        }
+        //排序
+        if(that.currentInstance.models!=null&&that.currentInstance.models.length>0){
+            that.currentInstance.models.sort(function (a, b) {
+                var aname=a.name;
+                var bname=b.name;
+                if (aname < bname) {
+                    return -1;
+                } else if (aname > bname) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
+        }
+        that.log("解析refTreetableparameters结束,耗时："+(new Date().getTime()-pathStartTime));
+        that.log(new Date().toTimeString());
+
+    }
+    
+    
+    function deepSchemaModel(model, arrs,id) {
+        $.each(arrs,function (i, arr) {
+            if(arr.id==id){
+                //找到
+                model.data.push(arr);
+                //遍历params
+                if(arr.params!=null&&arr.params.length>0){
+                    $.each(arr.params,function (j, ps) {
+                        if(ps.schema){
+                            deepSchemaModel(model,arrs,ps.id);
+                        }
+                    })
+                }
+            }
+        })
     }
     /***
      * 判断属性是否已经存在
@@ -3085,6 +3234,7 @@
                         if(schema.hasOwnProperty("$ref")){
                             if(regex.test(schema["$ref"])) {
                                 var ptype=RegExp.$1;
+                                swpinfo.responseParameterRefName=ptype;
                                 definitionType=ptype;
                                 swaggerResp.schema=ptype;
                             }
@@ -3096,6 +3246,7 @@
                                     var items=schema["items"];
                                     if(regex.test(items["$ref"])) {
                                         var ptype=RegExp.$1;
+                                        swpinfo.responseParameterRefName=ptype;
                                         definitionType=ptype;
                                         swaggerResp.schema=ptype;
                                     }
@@ -3683,6 +3834,20 @@
     SwaggerBootstrapUi.prototype.getTabContent=function () {
         return $("#"+this.tabContentId);
     }
+
+    /***
+     * SwaggerBootstrapUi Model树对象
+     * @param id
+     * @param name
+     * @constructor
+     */
+    var SwaggerBootstrapUiModel=function (id, name) {
+        this.id=id;
+        this.name=name;
+        //存放Model对象的属性结构
+        //SwaggerBootstrapUiTreeTableRefParameter集合
+        this.data=new Array();
+    }
     /***
      * swagger 分组对象
      * @param name 分组对象名称
@@ -3727,6 +3892,9 @@
         this.pathArrs=new Array();
         //权限信息
         this.securityArrs=new Array();
+        //Models
+        this.models=new Array();
+        this.modelNames=new Array();
     }
     /***
      * 计数器
@@ -3829,6 +3997,7 @@
         this.responseBasicType=false;
         //响应字段说明
         this.responseParameters=new Array();
+        this.responseParameterRefName="";
         this.responseRefParameters=new Array();
         //treetable组件使用对象
         this.responseTreetableRefParameters=new Array();

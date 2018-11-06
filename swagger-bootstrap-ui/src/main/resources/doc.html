@@ -911,7 +911,35 @@
         </div>
     </div>
 </script>
-
+<!---Models-->
+<script type="text/html" id="SwaggerBootstrapUiModelsScript">
+    <div  style="width:90%;margin:0px auto;margin-top: 30px;">
+        <div class="panel-group" id="accordion{{id}}">
+            <% for( c = 0; c < paths.length ; c++ ) { var path=paths[c]; %>
+                <%if(path.refTreetableparameters!=null && path.refTreetableparameters.length>0){ %>
+                    <% for( a = 0; a < path.refTreetableparameters.length ; a++ ) { var param=path.refTreetableparameters[a]; %>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion{{id}}"
+                                       href="#<%=param.id%>">
+                                        <%=param.name%>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="<%=param.id%>" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    <table id="SwaggerModelTable<%=param.id%>" class="layui-table"  lay-filter="SwaggerModelTable<%=param.id%>"></table>
+                                </div>
+                            </div>
+                        </div>
+                    <%}%>
+                <%}%>
+            <%}%>
+        </div>
+    </div>
+</script>
+<!--Auth-->
 <script type="text/html" id="SwaggerBootstrapUiSecurityScript">
     <div  style="width:99%;margin:0px auto;">
         <div style="margin-top: 15px;">
