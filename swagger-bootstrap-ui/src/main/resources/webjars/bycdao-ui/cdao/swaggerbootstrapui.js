@@ -1583,6 +1583,8 @@
                 })
             }
 
+            //缓存到localStorage对象中
+            that.cacheRequestParameters(apiInfo);
 
         })
 
@@ -1614,6 +1616,47 @@
 
     }
 
+    /***
+     * 更新apiInfo的请求参数缓存策略
+     * @param apiInfo
+     */
+    SwaggerBootstrapUi.prototype.cacheRequestParameters=function (apiInfo) {
+        //判断是否支持localStore对象
+        if(window.localStorage){
+            var store = window.localStorage;
+            var key="SwaggerBootstrapUiStore";
+            var storeCacheInstanceStr=store[key];
+            if(storeCacheInstanceStr!=undefined&&storeCacheInstanceStr!=null&&storeCacheInstanceStr!=""){
+                //store中存在
+                var storeCacheInstance=JSON.parse(storeCacheInstanceStr);
+                //判断是否存在
+                if($.inArray(apiInfo.id,storeCacheInstance.ids)==-1){
+                    //不存在,更新
+                    storeCacheInstance.ids.push(apiInfo.id);
+                    storeCacheInstance.stores.push(new SwaggerBootstrapUiRequestStore(apiInfo.id,apiInfo.parameters));
+                    store.setItem(key,JSON.stringify(storeCacheInstance));
+                }else{
+                    //store中存在,需更新parameter
+                    var newArr=new Array();
+                    $.each(storeCacheInstance.stores,function (i, sui) {
+                        if(sui.id!=apiInfo.id){
+                            newArr.push(sui);
+                        }
+                    })
+                    newArr.push(new SwaggerBootstrapUiRequestStore(apiInfo.id,apiInfo.parameters));
+                    storeCacheInstance.stores=newArr;
+                    store.setItem(key,JSON.stringify(storeCacheInstance));
+                }
+            }else{
+                var storeInstance=new SwaggerBootstrapUiStore();
+                //store为空
+                storeInstance.ids.push(apiInfo.id);
+                storeInstance.stores.push(new SwaggerBootstrapUiRequestStore(apiInfo.id,apiInfo.parameters));
+                store.setItem(key,JSON.stringify(storeInstance));
+            }
+        }
+
+    }
 
     /****
      * 发送请求后,创建响应元素
@@ -3952,6 +3995,29 @@
         //SwaggerBootstrapUiTreeTableRefParameter集合
         this.data=new Array();
     }
+
+    /***
+     * 存储请求参数对象
+     * @constructor
+     */
+    var SwaggerBootstrapUiStore=function () {
+        //存储接口的md5码id集合
+        this.ids=new Array();
+        //存储SwaggerBootstrapUiRequestStore对象集合
+        this.stores=new Array();
+    }
+
+    /***
+     * 缓存请求参数对象
+     * @param id
+     * @param arrs
+     * @constructor
+     */
+    var SwaggerBootstrapUiRequestStore=function (id, arrs) {
+        this.id=id;
+        this.data=arrs;
+    }
+
     /***
      * swagger 分组对象
      * @param name 分组对象名称
