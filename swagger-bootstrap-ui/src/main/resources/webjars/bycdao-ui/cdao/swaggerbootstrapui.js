@@ -1136,6 +1136,34 @@
             $.each(apiInfo.parameters,function (i, param) {
               param.show=true;
             })
+            //判断localStorage对象中是否缓存有参数信息
+            var cacheStoreInstance=that.getCacheStoreInstance();
+            if (cacheStoreInstance!=null){
+                //判断id是否存在
+                if($.inArray(apiInfo.id,cacheStoreInstance.ids)>-1){
+                    //存在缓存,更新缓存值
+                    //遍历获取缓存的parameters
+                    var cacheParameters=null;
+                    $.each(cacheStoreInstance.stores,function (j, store) {
+                        if(store.id==apiInfo.id){
+                            cacheParameters=store.data;
+                        }
+                    })
+                    if (cacheParameters!=null){
+                        //赋值txtValue
+                        $.each(apiInfo.parameters,function (i, param) {
+                            //根据参数名称查找cache中的参数值
+                            var name=param.name;
+                            $.each(cacheParameters,function (j, cache) {
+                                if(name==cache.name){
+                                    //赋值缓存的值.
+                                    param.txtValue=cache.txtValue;
+                                }
+                            })
+                        })
+                    }
+                }
+            }
         }
 
         apiInfo.globalParameters=that.getGlobalParameters();
@@ -1656,6 +1684,23 @@
             }
         }
 
+    }
+
+    /***
+     * 获取缓存在localStorage对象中的请求参数对象
+     */
+    SwaggerBootstrapUi.prototype.getCacheStoreInstance=function () {
+        var storeInstance=null;
+        if(window.localStorage){
+            var store = window.localStorage;
+            var key="SwaggerBootstrapUiStore";
+            var storeCacheInstanceStr=store[key];
+            if(storeCacheInstanceStr!=undefined&&storeCacheInstanceStr!=null&&storeCacheInstanceStr!="") {
+                //store中存在
+                storeInstance = JSON.parse(storeCacheInstanceStr);
+            }
+        }
+        return storeInstance;
     }
 
     /****
