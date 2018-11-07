@@ -418,7 +418,7 @@
             that.getMenu().append(securityLi);
         }
         //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
-        var modelsLi=$('<li  class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-zhongduancanshuguanli"></i><span class="menu-text">Swagger Models </span></a></li>');
+        var modelsLi=$('<li  class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-modeling"></i><span class="menu-text">Swagger Models </span></a></li>');
         modelsLi.on("click",function () {
             that.log("Models");
             that.createModelsElement();
