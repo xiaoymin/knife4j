@@ -544,6 +544,10 @@ code {
 .sbu-request-path{
     color: #49cc90;
 }
+
+.sbu-tag-description{
+    font-size:10px;
+}
 /**离线文档*/
 .offlineMarkdownShow{
 

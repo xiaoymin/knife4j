@@ -44,6 +44,7 @@
         //个性化配置
         this.settings={
             showApiUrl:false,//接口api地址不显示
+            showTagStatus:false,//分组tag显示description属性,针对@Api注解没有tags属性值的情况
             enableSwaggerBootstrapUi:false,//是否开启swaggerBootstrapUi增强
             treeExplain:true
         };
@@ -425,7 +426,6 @@
             modelsLi.addClass("active");
         })
         that.getMenu().append(modelsLi);
-
         //SwaggerBootstrapUi增强功能全部放置在此
         //存在子标签
         var extLi=$('<li  class="detailMenu"></li>');
@@ -433,13 +433,6 @@
         extLi.append(exttitleA);
         //循环树
         var extul=$('<ul class="submenu"></ul>')
-        /*$.each(tag.childrens,function (i, children) {
-            var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
-            //var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div></div></li>');
-            childrenLi.data("data",children);
-            ul.append(childrenLi);
-        })*/
-
         //全局参数菜单功能
         var globalArgsLi=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">全局参数设置</span> </div></div></li>');
         //var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
@@ -476,12 +469,23 @@
         $.each(that.currentInstance.tags,function (i, tag) {
             var len=tag.childrens.length;
             if(len==0){
-                var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                var li=null;
+                if (that.settings.showTagStatus){
+                    li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+') </span></a></li>');
+                }else{
+                    li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                }
                 that.getMenu().append(li);
             }else{
                 //存在子标签
                 var li=$('<li  class="detailMenu"></li>');
-                var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                var titleA=null;
+                if(that.settings.showTagStatus){
+                    titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+')<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                }else{
+                    titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                }
+                //var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                 li.append(titleA);
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
@@ -533,9 +537,11 @@
                     e.preventDefault();
                     var showApi=$("#SwaggerBootstrapUiSettings").find("input[name=showApi]");
                     var enableSbu=$("#SwaggerBootstrapUiSettings").find("input[name=enableSwaggerBootstrapUi]");
-
+                    //tag属性说明
+                    var showTagStatusElem=$("#SwaggerBootstrapUiSettings").find("input[name=showTagStatus]");
                     var showApiFlag=showApi.prop("checked");
                     var enableSbuFlag=enableSbu.prop("checked");
+                    var showTagStatus=showTagStatusElem.prop("checked");
                     var flag=true;
                     //如果开启SwawggerBootstrapUi增强,则判断当前后端是否启用注解
                     if(enableSbuFlag){
@@ -570,6 +576,7 @@
                         that.log(showApi.prop("checked")+",enable:"+enableSbu.prop("checked"));
                         var setts={
                             showApiUrl:showApiFlag,//接口api地址不显示
+                            showTagStatus:showTagStatus,//tag显示description属性.
                             enableSwaggerBootstrapUi:enableSbuFlag//是否开启swaggerBootstrapUi增强
                         }
                         that.saveSettings(setts);
