@@ -918,8 +918,8 @@
     <div  style="width:90%;margin:0px auto;margin-top: 30px;">
         <div class="panel-group" id="accordion{{id}}">
             <%if(models!=null && models.length>0){ %>
-                <% for( c = 0; c < models.length ; c++ ) { var model=models[c]; %>
-                    <div class="panel panel-default">
+                <% for( c = 0; c < models.length ; c++ ) { var model=models[c]; var mclass=model.modelClass(); %>
+                    <div class="panel panel-default <%=mclass %>">
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion{{id}}"

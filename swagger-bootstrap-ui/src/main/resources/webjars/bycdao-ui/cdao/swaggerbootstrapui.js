@@ -2397,6 +2397,7 @@
                 if(that.currentInstance.models!=null&&that.currentInstance.models.length>0){
                     var index = layer.load(2, {time: 10*1000});
                     async.forEachOf(that.currentInstance.models,function (model, key, callback) {
+                        that.log(model)
                         var smodelAccording="#SwaggerAccordingModel"+model.id;
                         $(smodelAccording).data("data",model.data);
                         $(smodelAccording).collapse('hide');
@@ -4056,6 +4057,32 @@
         //存放Model对象的属性结构
         //SwaggerBootstrapUiTreeTableRefParameter集合
         this.data=new Array();
+        this.random=parseInt(Math.random()*(6-1+1)+1,10);
+        this.modelClass=function () {
+            var cname="panel-default";
+            switch (this.random){
+                case 1:
+                    cname="panel-success";
+                    break;
+                case 2:
+                    cname="panel-success";
+                    break;
+                case 3:
+                    cname="panel-info";
+                    break;
+                case 4:
+                    cname="panel-warning";
+                    break;
+                case 5:
+                    cname="panel-danger";
+                    break;
+                case 6:
+                    cname="panel-default";
+                    break;
+            }
+            return cname;
+        }
+
     }
 
     /***
