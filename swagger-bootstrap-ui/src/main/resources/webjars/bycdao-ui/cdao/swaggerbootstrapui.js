@@ -1705,6 +1705,7 @@
 
     /****
      * 发送请求后,创建响应元素
+     * @param index
      * @param apiInfo
      * @param headerparams
      * @param reqdata
@@ -1756,7 +1757,8 @@
         responsestatus.html("")
         responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
             .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
-            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
+            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"))
+            .append($("<span class='debug-span-label' style='margin-left:10px;' id='bigScreen"+apiInfo.id+"'><i class=\"icon-text-width iconfont icon-quanping\" style='cursor: pointer;'></i></span>"));
         //赋值响应headers
         //var mimtype=xhr.overrideMimeType();
         //var allheaders=xhr.getAllResponseHeaders();
@@ -1891,6 +1893,17 @@
             layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
         });
 
+        //全屏icon点击事件
+        that.getDoc().find("#bigScreen"+apiInfo.id).click(function (e) {
+            e.preventDefault();
+            //layer.msg(apiInfo.summary+"--------全屏点击事件")
+            var showDiv="#respcontent"+apiInfo.id;
+            that.log($(showDiv))
+            that.log($(showDiv).html())
+            var element=$(showDiv)[0];
+            that.fullScreen(element);
+        })
+
     }
 
     /***
@@ -2015,6 +2028,28 @@
             }
         }
         return curlified.join(" ");
+    }
+
+
+    /***
+     * 全屏展示某div元素
+     * @param element
+     */
+    SwaggerBootstrapUi.prototype.fullScreen=function (element) {
+        //某个元素有请求
+        var requestMethod =element.requestFullScreen
+            ||element.webkitRequestFullScreen //谷歌
+            ||element.mozRequestFullScreen  //火狐
+            ||element.msRequestFullScreen; //IE11
+        if (requestMethod) {
+            requestMethod.call(element);   //执行这个请求的方法
+        } else if (typeof window.ActiveXObject !== "undefined") {  //window.ActiveXObject判断是否支持ActiveX控件
+            //这里其实就是模拟了按下键盘的F11，使浏览器全屏
+            var wscript = new ActiveXObject("WScript.Shell"); //创建ActiveX
+            if (wscript !== null) {    //创建成功
+                wscript.SendKeys("{F11}");//触发f11
+            }
+        }
     }
 
     /***
