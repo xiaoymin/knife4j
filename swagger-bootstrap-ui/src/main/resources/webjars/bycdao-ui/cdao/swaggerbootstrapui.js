@@ -2260,7 +2260,46 @@
                 });
                 //遍历创建treetable
                 if(that.currentInstance.models!=null&&that.currentInstance.models.length>0){
-                    $.each(that.currentInstance.models,function (i, model) {
+                    var index = layer.load(2, {time: 10*1000});
+                    async.forEachOf(that.currentInstance.models,function (model, key, callback) {
+                        that.log(model)
+                        var elem="#SwaggerModelTable"+model.id;
+                        treetable.render({
+                            elem:elem,
+                            data: model.data,
+                            field: 'title',
+                            treeColIndex: 0,          // treetable新增参数
+                            treeSpid: -1,             // treetable新增参数
+                            treeIdName: 'd_id',       // treetable新增参数
+                            treePidName: 'd_pid',     // treetable新增参数
+                            treeDefaultClose: true,   // treetable新增参数
+                            treeLinkage: true,        // treetable新增参数
+                            cols: [[
+                                {
+                                    field: 'name',
+                                    title: '名称',
+                                    width: '30%'
+                                }, {
+                                    field: 'type',
+                                    title: '类型',
+                                    width: '20%'
+                                },
+                                {
+                                    field: 'description',
+                                    title: '说明',
+                                    width: '30%'
+                                },
+                                {
+                                    field: 'schemaValue',
+                                    title: 'schema',
+                                    width: '20%'
+                                }
+                            ]]
+                        })
+
+                    })
+                    layer.close(index)
+                    /*$.each(that.currentInstance.models,function (i, model) {
                         var elem="#SwaggerModelTable"+model.id;
                         treetable.render({
                             elem:elem,
@@ -2290,7 +2329,7 @@
                                 }
                             ]]
                         })
-                    })
+                    })*/
                 }
             }else{
                 element.tabChange(that.layTabFilter,tabId);
