@@ -2553,6 +2553,7 @@
         //解析definition
         if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("definitions")){
             var definitions=menu["definitions"];
+            //改用async的for循环
             for(var name in definitions){
                 var swud=new SwaggerBootstrapUiDefinition();
                 swud.name=name;
@@ -2567,7 +2568,6 @@
                     if(value.hasOwnProperty("required")){
                         swud.required=value["required"];
                     }
-
                     //是否有properties
                     if(value.hasOwnProperty("properties")){
                         var properties=value["properties"];
@@ -2599,8 +2599,8 @@
                                 }else if($.checkIsBasicType(type)){
                                     propValue=$.getBasicTypeValue(type);
                                 }else{
-                                    that.log("解析属性："+property);
-                                    that.log(propobj);
+                                    //that.log("解析属性："+property);
+                                    //that.log(propobj);
                                     if(type=="array"){
                                         propValue=new Array();
                                         var items=propobj["items"];
@@ -2693,8 +2693,8 @@
             that.log("开始解析Paths.................")
             that.log(new Date().toTimeString());
             var pathStartTime=new Date().getTime();
-            for(var path in paths){
-                var pathObject=paths[path];
+            async.forEachOf(paths,function (pathObject,path, callback) {
+                //var pathObject=paths[path];
                 var apiInfo=null;
                 if(pathObject.hasOwnProperty("get")){
                     //get方式
@@ -2890,8 +2890,13 @@
                     }
 
                 }
+            })
 
-            }
+
+           /* for(var path in paths){
+
+
+            }*/
             that.log("解析Paths结束,耗时："+(new Date().getTime()-pathStartTime));
             that.log(new Date().toTimeString());
         }
@@ -3173,15 +3178,16 @@
         var newurl=newfullPath.substring(newfullPath.indexOf("/"));
         //that.log("新的url:"+newurl)
         newurl=newurl.replace("//","/");
-        that.log("")
-        that.log("开始创建api-----------------"+newurl)
         var startApiTime=new Date().getTime();
         swpinfo.showUrl=newurl;
-        swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
+        //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=newurl;
         swpinfo.originalUrl=newurl;
         swpinfo.basePathFlag=basePathFlag;
         swpinfo.methodType=mtype.toUpperCase();
+        //接口id使用MD5策略,缓存整个调试参数到localStorage对象中,供二次调用
+        var md5Str=newurl+mtype.toUpperCase();
+        swpinfo.id=md5(md5Str);
         if(apiInfo!=null){
             swpinfo.consumes=apiInfo.consumes;
             swpinfo.description=apiInfo.description;
@@ -3315,7 +3321,6 @@
                     }
                 })
             }
-
             var definitionType=null;
             var arr=false;
             //解析responsecode
@@ -3471,7 +3476,6 @@
                 }
             }
         }*/
-        that.log("创建api完成,耗时："+(new Date().getTime()-startApiTime))
         return swpinfo;
     }
 
