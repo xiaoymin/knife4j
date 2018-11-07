@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.8.6
+ * swagger-bootstrap-ui v1.8.7
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
@@ -39,7 +39,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.8.6";
+        this.version="1.8.7";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
@@ -2388,81 +2388,60 @@
                 element.tabAdd(that.layTabFilter, tabObj);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
-                that.getDoc().find("#accordion"+that.currentInstance.id).collapse({
+                /*that.getDoc().find("#accordion"+that.currentInstance.id).collapse({
                     toggle: false
-                });
-                //遍历创建treetable
+                });*/
+                //隐藏可折叠元素
+                //that.getDoc().find("#accordion"+that.currentInstance.id).collapse('hide');
+                //遍历创建treetable,赋值data值
                 if(that.currentInstance.models!=null&&that.currentInstance.models.length>0){
                     var index = layer.load(2, {time: 10*1000});
                     async.forEachOf(that.currentInstance.models,function (model, key, callback) {
-                        that.log(model)
-                        var elem="#SwaggerModelTable"+model.id;
-                        treetable.render({
-                            elem:elem,
-                            data: model.data,
-                            field: 'title',
-                            treeColIndex: 0,          // treetable新增参数
-                            treeSpid: -1,             // treetable新增参数
-                            treeIdName: 'd_id',       // treetable新增参数
-                            treePidName: 'd_pid',     // treetable新增参数
-                            treeDefaultClose: true,   // treetable新增参数
-                            treeLinkage: true,        // treetable新增参数
-                            cols: [[
-                                {
-                                    field: 'name',
-                                    title: '名称',
-                                    width: '30%'
-                                }, {
-                                    field: 'type',
-                                    title: '类型',
-                                    width: '20%'
-                                },
-                                {
-                                    field: 'description',
-                                    title: '说明',
-                                    width: '30%'
-                                },
-                                {
-                                    field: 'schemaValue',
-                                    title: 'schema',
-                                    width: '20%'
-                                }
-                            ]]
+                        var smodelAccording="#SwaggerAccordingModel"+model.id;
+                        $(smodelAccording).data("data",model.data);
+                        $(smodelAccording).collapse('hide');
+                        //显示操作,以treetable组件展示models
+                        $(smodelAccording).on('shown.bs.collapse', function () {
+                            // 执行一些动作...
+                            var athat=$(this);
+                            var elem="#SwaggerModelTable"+model.id;
+                            that.log(athat.data("data"));
+                            treetable.render({
+                                elem:elem,
+                                data: athat.data("data"),
+                                field: 'title',
+                                treeColIndex: 0,          // treetable新增参数
+                                treeSpid: -1,             // treetable新增参数
+                                treeIdName: 'd_id',       // treetable新增参数
+                                treePidName: 'd_pid',     // treetable新增参数
+                                treeDefaultClose: true,   // treetable新增参数
+                                treeLinkage: true,        // treetable新增参数
+                                cols: [[
+                                    {
+                                        field: 'name',
+                                        title: '名称',
+                                        width: '30%'
+                                    }, {
+                                        field: 'type',
+                                        title: '类型',
+                                        width: '20%'
+                                    },
+                                    {
+                                        field: 'description',
+                                        title: '说明',
+                                        width: '30%'
+                                    },
+                                    {
+                                        field: 'schemaValue',
+                                        title: 'schema',
+                                        width: '20%'
+                                    }
+                                ]]
+                            })
                         })
 
                     })
                     layer.close(index)
-                    /*$.each(that.currentInstance.models,function (i, model) {
-                        var elem="#SwaggerModelTable"+model.id;
-                        treetable.render({
-                            elem:elem,
-                            data: model.data,
-                            field: 'title',
-                            treeColIndex: 0,          // treetable新增参数
-                            treeSpid: -1,             // treetable新增参数
-                            treeIdName: 'd_id',       // treetable新增参数
-                            treePidName: 'd_pid',     // treetable新增参数
-                            treeDefaultClose: true,   // treetable新增参数
-                            treeLinkage: true,        // treetable新增参数
-                            cols: [[
-                                {
-                                    field: 'name',
-                                    title: '参数名称',
-                                    width: '40%'
-                                },
-                                {
-                                    field: 'description',
-                                    title: '说明',
-                                    width: '40%'
-                                },
-                                {
-                                    field: 'schemaValue',
-                                    title: 'schema',
-                                    width: '20%'
-                                }
-                            ]]
-                        })
-                    })*/
                 }
             }else{
                 element.tabChange(that.layTabFilter,tabId);

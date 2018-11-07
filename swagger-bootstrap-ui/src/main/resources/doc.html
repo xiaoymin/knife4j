@@ -913,7 +913,7 @@
         </div>
     </div>
 </script>
-<!---Models-->
+<!---Swagger Models-->
 <script type="text/html" id="SwaggerBootstrapUiModelsScript">
     <div  style="width:90%;margin:0px auto;margin-top: 30px;">
         <div class="panel-group" id="accordion{{id}}">
@@ -923,12 +923,12 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion{{id}}"
-                                   href="#<%=model.id%>">
+                                   href="#SwaggerAccordingModel<%=model.id%>">
                                     <%=model.name%>
                                 </a>
                             </h4>
                         </div>
-                        <div id="<%=model.id%>" class="panel-collapse collapse in">
+                        <div id="SwaggerAccordingModel<%=model.id%>" class="panel-collapse collapse in">
                             <div class="panel-body">
                                 <table id="SwaggerModelTable<%=model.id%>" class="layui-table"  lay-filter="SwaggerModelTable<%=model.id%>"></table>
                             </div>
