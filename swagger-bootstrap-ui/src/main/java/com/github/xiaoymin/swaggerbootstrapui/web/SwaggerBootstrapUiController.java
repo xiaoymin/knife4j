@@ -39,6 +39,7 @@ import springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -112,6 +113,7 @@ public class SwaggerBootstrapUiController {
     private SwaggerBootstrapUi initSwaggerBootstrapUi(HttpServletRequest request,Documentation documentation,SwaggerExt swaggerExt){
         SwaggerBootstrapUi swaggerBootstrapUi=new SwaggerBootstrapUi();
         WebApplicationContext wc=WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
+        //此处的作用是分组功能.
         Iterator<Tag> tags=documentation.getTags().iterator();
         List<SwaggerBootstrapUiTag> targetTagLists=Lists.newArrayList();
         // Ctl层排序
@@ -125,20 +127,43 @@ public class SwaggerBootstrapUiController {
             Class<?> aClass=null;
             Api api=null;
             for (Map.Entry<String, Object> entry : beansWithAnnotation.entrySet()) {
-                aClass = entry.getValue().getClass();
+                aClass = ClassUtils.getUserClass(entry.getValue().getClass());
                 api = aClass.getAnnotation(Api.class);
                 if (api!=null){
-                    //是否相等
-                    if (Lists.newArrayList(api.tags()).contains(tagName)){
-                        exists=true;
-                        break;
+                    //首先判断api是否存在tags属性
+                    if (api.tags()!=null&&api.tags().length>0){
+                        if (Lists.newArrayList(api.tags()).contains(tagName)) {
+                            exists = true;
+                            break;
+                        }
+                        ///还需判断tags第一个为""的情况
+                        String firstTag=api.tags()[0];
+                        if (StringUtils.isEmpty(firstTag)){
+                            if (checkExists(tagName,aClass)){
+                                exists=true;
+                                break;
+                            }
+                        }
+                    }else{
+                        //针对tags没有的情况,有些value的情况
+                        //api-1872-controller
+                        //针对@Api(value = "187版本",description = "187版本的所有接口",position = 297)的写法
+                        //在Springfox-Swagger中,此处value并不起作用,生成的Tag实例对象是Class的别名
+                        //此处使用正则判断是否name相同
+                        if (checkExists(tagName,aClass)){
+                            exists=true;
+                            if (!StringUtils.isEmpty(api.value())){
+                                tagName=api.value();
+                            }
+                            break;
+                        }
                     }
                 }
             }
             //获取order值
             int order=Integer.MAX_VALUE;
             SwaggerBootstrapUiTag tag=new SwaggerBootstrapUiTag(order);
-            tag.name(sourceTag.getName()).description(sourceTag.getDescription());
+            tag.name(tagName).description(sourceTag.getDescription());
             if (exists){
                 //优先获取api注解的position属性,如果不等于0,则取此值,否则获取apiSort注解,判断是否为空,如果不为空,则获取apisort的值,优先级:@Api-position>@ApiSort-value
                 int post=api.position();
@@ -196,6 +221,21 @@ public class SwaggerBootstrapUiController {
         swaggerBootstrapUi.setTagSortLists(targetTagLists);
         swaggerBootstrapUi.setPathSortLists(targetPathLists);
         return swaggerBootstrapUi;
+    }
+
+
+    private boolean checkExists(String tagName,Class<?> aClass){
+        boolean flag=false;
+        if (!StringUtils.isEmpty(tagName)){
+            String regexStr=tagName.replaceAll("\\-",".*?");
+            //同className做匹配
+            Pattern pattern=Pattern.compile(regexStr,Pattern.CASE_INSENSITIVE);
+            if (pattern.matcher(aClass.getSimpleName()).matches()){
+                //匹配
+                flag=true;
+            }
+        }
+        return flag;
     }
 
 
