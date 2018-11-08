@@ -186,12 +186,15 @@ public class SwaggerBootstrapUiController {
                 }
                 RequestMapping parent=userClass.getAnnotation(RequestMapping.class);
                 if (parent!=null){
-                    String tmp=parent.value()[0];
-                    if (!StringUtils.isEmpty(tmp)){
-                        if (!tmp.startsWith("/")){
-                            parentPath+="/";
+                    //非空判断
+                    if (parent.value()!=null&&parent.value().length>0){
+                        String tmp=parent.value()[0];
+                        if (!StringUtils.isEmpty(tmp)){
+                            if (!tmp.startsWith("/")){
+                                parentPath+="/";
+                            }
+                            parentPath+=tmp;
                         }
-                        parentPath+=tmp;
                     }
                 }
                 Method[] methods=userClass.getDeclaredMethods();
