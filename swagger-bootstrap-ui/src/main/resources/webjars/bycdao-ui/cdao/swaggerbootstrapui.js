@@ -1220,6 +1220,14 @@
             $("#"+paramBodyId).find("input:checkbox").prop("checked",chked);
         });
         that.requestSend(apiInfo,menu);
+        //绑定contentType下拉框选择事件
+        that.getDoc().find("#"+debugContentId).find("#contentTypeRequest"+apiInfo.id).find(".option").click(function(){
+            var txt=$(this).html();
+            var value=$(this).data("value")
+            var showId="dropdownMenu"+apiInfo.id;
+            $("#"+showId).html(txt+" <span class='caret'></span>");
+            $("#"+showId).data("value",value);
+        })
 
     }
 
@@ -3571,6 +3579,59 @@
             if (count==1){
                 swpinfo.requestValue=tmpJsonValue;
             }
+            //此处判断接口的请求参数类型
+            //判断consumes请求类型
+            if(apiInfo.consumes!=null&&apiInfo.consumes.length>0){
+                var ctp=apiInfo.consumes[0];
+                if(ctp=="multipart/form-data"){
+                    swpinfo.contentType=ctp;
+                    swpinfo.contentValue="form-data";
+                }else if(ctp=="text/plain"){
+                    swpinfo.contentType=ctp;
+                    swpinfo.contentValue="raw";
+                }else{
+                    //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
+                    var defaultType="application/x-www-form-urlencoded;charset=UTF-8";
+                    var defaultValue="x-www-form-urlencoded";
+                    for(var i=0;i<swpinfo.parameters.length;i++){
+                        var pt=swpinfo.parameters[i];
+                        if(pt.in=="body"){
+                            if(pt.schemaValue=="MultipartFile"){
+                                defaultType="multipart/form-data";
+                                defaultValue="form-data";
+                                break;
+                            }else{
+                                defaultValue="raw";
+                                defaultType="application/json";
+                                break;
+                            }
+                        }else{
+                            if(pt.schemaValue=="MultipartFile") {
+                                defaultType = "multipart/form-data";
+                                defaultValue = "form-data";
+                                break;
+                            }
+                        }
+
+                    }
+                    swpinfo.contentType=defaultType;
+                    swpinfo.contentValue=defaultValue;
+                }
+            }else{
+                //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
+                var defaultType="application/x-www-form-urlencoded;charset=UTF-8";
+                var defaultValue="x-www-form-urlencoded";
+                for(var i=0;i<swpinfo.parameters;i++){
+                    var pt=swpinfo.parameters[i];
+                    if(pt.schemaValue=="MultipartFile"){
+                        defaultType="multipart/form-data";
+                        defaultValue="form-data";
+                        break;
+                    }
+                }
+                swpinfo.contentType=defaultType;
+                swpinfo.contentValue=defaultValue;
+            }
         }
         /*if(swpinfo.parameters.length==1){
             //只有在参数只有一个且是body类型的参数才有请求示例
@@ -4241,6 +4302,10 @@
         this.operationId=null;
         this.produces=null;
         this.tags=null;
+        //默认请求contentType
+        this.contentType="application/json";
+        //存储请求类型，form|row|urlencode
+        this.contentValue="raw";
         this.parameters=new Array();
         //请求json示例
         this.requestValue=null;

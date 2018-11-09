@@ -548,6 +548,15 @@ code {
 .sbu-tag-description{
     font-size:10px;
 }
+.sbu-debug-content-type{
+    margin-top: 15px;
+    height: 20px;
+    line-height: 20px;
+}
+.sbu-debug-content-type-button{
+    background-color: white;
+    color: #df4646;
+}
 /**离线文档*/
 .offlineMarkdownShow{
 

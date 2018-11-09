@@ -428,6 +428,51 @@
                 <button  class="btn btn-default btn-primary btnRequest" id="btnRequest{{id}}" type="button"> 发 送 </button>
             </span>
         </div>
+        <%if(methodType!="GET"){%>
+        <div class="sbu-debug-content-type" id="contentTypeRequest{{id}}">
+            <label class="radio-inline">
+                <input type="radio" name="optionsRadiosinline{{id}}"  value="application/x-www-form-urlencoded;charset=UTF-8" <%if(contentValue=="x-www-form-urlencoded"){%> checked  <%}%> > x-www-form-urlencoded
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="optionsRadiosinline{{id}}"  value="multipart/form-data" <%if(contentValue=="form-data"){%> checked  <%}%> > form-data
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="optionsRadiosinline{{id}}"   value="raw" <%if(contentValue=="raw"){%> checked  <%}%> > raw
+            </label>
+            <label class="radio-inline">
+                <div class="dropdown" id="raw{{id}}" <%if(contentValue!="raw"){%> style="display: none;"  <%}%>  >
+                    <button type="button" class="sbu-debug-content-type-button" id="dropdownMenu{{id}}"
+                            data-toggle="dropdown">
+                        Text  <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu{{id}}">
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/plain" href="javascript:void(0);">Text</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/plain" href="javascript:void(0);">Text(text/plain)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="application/json" href="javascript:void(0);">JSON(application/json)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="application/javascript" href="javascript:void(0);">Javascript(application/javascript)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="application/xml" href="javascript:void(0);">XML(application/xml)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/xml" href="javascript:void(0);">XML(text/xml)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/html" href="javascript:void(0);">HTML(text/html)</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </label>
+        </div>
+        <%}%>
         <div style="margin-top: 15px;">
             <div class="swbu-main">
                 <%if((parameters!=null && parameters.length>0)||(globalParameters!=null && globalParameters.length>0)){ var fileform=false;var tabIndex=0;%>
