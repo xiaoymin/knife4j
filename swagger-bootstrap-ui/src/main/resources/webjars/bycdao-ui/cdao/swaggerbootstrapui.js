@@ -1560,23 +1560,31 @@
             var form=$("#uploadForm"+apiInfo.id);
             var startTime=new Date().getTime();
             var index = layer.load(1);
+            that.log("headerParams------------")
+            that.log(headerparams)
+            //增加header默认发送参数
+            headerparams["Request-Origion"]=that.requestOrigion;
+            //判断produce
+            if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
+                var first=apiInfo.produces[0];
+                headerparams["accept"]=first;
+            }
+            //判断security参数
+            if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
+                $.each(that.currentInstance.securityArrs,function (i, sa) {
+                    if(sa.in=="header"){
+                        headerparams[sa.name]=sa.value;
+                    }
+                })
+            }
+            //判断是否全局参数中包含ContentType属性
+            if(!headerparams.hasOwnProperty("Content-Type")){
+                //如果全局参数中不包含,则获取默认input选择框的
+                var _tmp=$("#DebugContentType"+apiKeyId).val();
+                headerparams["Content-Type"]=_tmp;
+            }
             if(form.length>0||formRequest){
                 that.log("form submit------------------------------------------------")
-                //判断produce
-                if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
-                    var first=apiInfo.produces[0];
-                    headerparams["accept"]=first;
-                }
-                //判断security参数
-                if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
-                    $.each(that.currentInstance.securityArrs,function (i, sa) {
-                        if(sa.in=="header"){
-                            headerparams[sa.name]=sa.value;
-                        }
-                    })
-                }
-                //增加header默认发送参数
-                headerparams["Request-Origion"]=that.requestOrigion;
                 axios.request({
                     url:url,
                     headers:headerparams,
@@ -1603,22 +1611,7 @@
                 })
             }
             else{
-                //判断produce
-                if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
-                    var first=apiInfo.produces[0];
-                    headerparams["accept"]=first;
-                }
-                //判断security参数
-                if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
-                    $.each(that.currentInstance.securityArrs,function (i, sa) {
-                        if(sa.in=="header"){
-                            headerparams[sa.name]=sa.value;
-                        }
-                    })
-                }
-                //增加header默认发送参数
-                headerparams["Request-Origion"]=that.requestOrigion;
-                headerparams["Content-Type"]=contType;
+                //headerparams["Content-Type"]=contType;
                 $.ajax({
                     url:url,
                     headers:headerparams,
