@@ -430,6 +430,7 @@
         </div>
         <%if(methodType!="GET"){%>
         <div class="sbu-debug-content-type" id="contentTypeRequest{{id}}">
+            <input type="hidden" id="DebugContentType{{id}}" value="{{contentType}}"/>
             <label class="radio-inline">
                 <input type="radio" name="optionsRadiosinline{{id}}"  value="application/x-www-form-urlencoded;charset=UTF-8" <%if(contentValue=="x-www-form-urlencoded"){%> checked  <%}%> > x-www-form-urlencoded
             </label>
@@ -443,7 +444,7 @@
                 <div class="dropdown" id="raw{{id}}" <%if(contentValue!="raw"){%> style="display: none;"  <%}%>  >
                     <button type="button" class="sbu-debug-content-type-button" id="dropdownMenu{{id}}"
                             data-toggle="dropdown">
-                        Text  <span class="caret"></span>
+                        {{contentShowValue}}  <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu{{id}}">
                         <li role="presentation">

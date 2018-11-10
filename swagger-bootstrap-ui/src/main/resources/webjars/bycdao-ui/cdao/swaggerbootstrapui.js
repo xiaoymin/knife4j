@@ -1227,6 +1227,26 @@
             var showId="dropdownMenu"+apiInfo.id;
             $("#"+showId).html(txt+" <span class='caret'></span>");
             $("#"+showId).data("value",value);
+            $("#DebugContentType"+apiInfo.id).val(value)
+        })
+        //check选择事件
+        $("input[name=optionsRadiosinline"+apiInfo.id+"]").click(function(){
+          var t=$(this);
+          that.log("check--click...")
+          if(t.val()=="raw"){
+              $("#raw"+apiInfo.id).show();
+              //判断data是否缓存的值
+              var showId="dropdownMenu"+apiInfo.id;
+              var cachedata=$("#"+showId).data("value");
+              if(cachedata!=null&&cachedata!=undefined&&cachedata!=""){
+                  $("#DebugContentType"+apiInfo.id).val(cachedata);
+              }else{
+                  $("#DebugContentType"+apiInfo.id).val("application/json");
+              }
+          }else{
+              $("#raw"+apiInfo.id).hide();
+              $("#DebugContentType"+apiInfo.id).val(t.val());
+          }
         })
 
     }
@@ -3589,6 +3609,7 @@
                 }else if(ctp=="text/plain"){
                     swpinfo.contentType=ctp;
                     swpinfo.contentValue="raw";
+                    swpinfo.contentShowValue="Text(text/plain)";
                 }else{
                     //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
                     var defaultType="application/x-www-form-urlencoded;charset=UTF-8";
@@ -4304,6 +4325,8 @@
         this.tags=null;
         //默认请求contentType
         this.contentType="application/json";
+        this.contentShowValue="JSON(application/json)";
+        //显示参数
         //存储请求类型，form|row|urlencode
         this.contentValue="raw";
         this.parameters=new Array();
