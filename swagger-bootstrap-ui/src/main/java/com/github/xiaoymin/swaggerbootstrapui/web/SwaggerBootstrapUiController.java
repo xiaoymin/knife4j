@@ -153,7 +153,12 @@ public class SwaggerBootstrapUiController {
                                 if (LOGGER.isDebugEnabled()){
                                     LOGGER.debug("url:"+url+"\r\nclass:"+clazz.toString()+"\r\nmethod:"+method.toString());
                                 }
-                                globalHandlerMappings.add(new RestHandlerMapping(url,clazz,method,restMethods));
+                                String parentPath="";
+                                //判断basePath
+                                if (!StringUtils.isEmpty(swaggerExt.getBasePath())&&!"/".equals(swaggerExt.getBasePath())){
+                                    parentPath+=swaggerExt.getBasePath();
+                                }
+                                globalHandlerMappings.add(new RestHandlerMapping(parentPath+url,clazz,method,restMethods));
                             }
                         }
                     }
