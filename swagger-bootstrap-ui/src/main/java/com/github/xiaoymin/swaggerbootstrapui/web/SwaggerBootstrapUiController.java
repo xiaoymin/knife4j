@@ -134,6 +134,11 @@ public class SwaggerBootstrapUiController {
         //自1.8.7版本后,通过Spring工具类获取所有HandleMappings
         if (globalHandlerMappings.size()==0){
             //初始化
+            String parentPath="";
+            //判断basePath
+            if (!StringUtils.isEmpty(swaggerExt.getBasePath())&&!"/".equals(swaggerExt.getBasePath())){
+                parentPath+=swaggerExt.getBasePath();
+            }
             //接口扩展自定义接口实现造成的接口增强排序失败问题
             Map<String, HandlerMapping> requestMappings = BeanFactoryUtils.beansOfTypeIncludingAncestors(wc,HandlerMapping.class,true,false);
             System.out.println("requestMappings"+requestMappings==null);
@@ -152,11 +157,6 @@ public class SwaggerBootstrapUiController {
                                 Method method = ClassUtils.getMostSpecificMethod(handlerMethod.getMethod(),clazz);
                                 if (LOGGER.isDebugEnabled()){
                                     LOGGER.debug("url:"+url+"\r\nclass:"+clazz.toString()+"\r\nmethod:"+method.toString());
-                                }
-                                String parentPath="";
-                                //判断basePath
-                                if (!StringUtils.isEmpty(swaggerExt.getBasePath())&&!"/".equals(swaggerExt.getBasePath())){
-                                    parentPath+=swaggerExt.getBasePath();
                                 }
                                 globalHandlerMappings.add(new RestHandlerMapping(parentPath+url,clazz,method,restMethods));
                             }
