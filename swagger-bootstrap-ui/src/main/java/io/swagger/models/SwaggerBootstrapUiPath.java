@@ -44,4 +44,13 @@ public class SwaggerBootstrapUiPath {
     public void setOrder(Integer order) {
         this.order = order;
     }
+
+    public SwaggerBootstrapUiPath(String path, String method, Integer order) {
+        this.path = path;
+        this.method = method;
+        this.order = order;
+    }
+
+    public SwaggerBootstrapUiPath() {
+    }
 }
