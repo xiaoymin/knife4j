@@ -1016,7 +1016,19 @@
                         width: '20%',
                         templet:function (d) {
                             if(d.validateStatus){
-                                return "<a href='javascript:void(0)' class='sbu-request-validate-jsr'>"+d.type+"</a>";
+                                var str="";
+                                if (d.validateInstance!=null){
+                                    var len=$.getJsonKeyLength(d.validateInstance);
+                                    var _size=0;
+                                    for(var k in d.validateInstance){
+                                        str+=k+":"+d.validateInstance[k];
+                                        if (_size<len){
+                                            str+="\r\n"
+                                        }
+                                        _size++;
+                                    }
+                                }
+                                return "<a href='javascript:void(0)' class='sbu-request-validate-jsr' data-tips='"+str+"' title='"+str+"'>"+d.type+"</a>";
                             }else{
                                 return d.type;
                             }
@@ -4113,10 +4125,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        if(window.console){
+        /*if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }
+        }*/
     }
     /***
      * 获取菜单元素
@@ -4453,6 +4465,15 @@
      * 公共方法
      */
     $.extend({
+        getJsonKeyLength:function (json) {
+          var size=0;
+          if (json!=null){
+              for (key in json) {
+                  if (json.hasOwnProperty(key)) size++;
+              }
+          }
+          return size;
+        },
         regexMatchStr:function (regex,str) {
             var flag=false;
             if(regex!=null&&regex!=undefined&&str!=null&&str!=undefined){
