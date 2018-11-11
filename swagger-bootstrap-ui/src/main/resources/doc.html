@@ -35,6 +35,8 @@
     <script src="webjars/bycdao-ui/ace-editor/ace.js" type="text/javascript"></script>
 
     <script src="webjars/bycdao-ui/jquery/showdown.min.js"></script>
+    <script src="webjars/bycdao-ui/jquery/async.min.js"></script>
+    <script src="webjars/bycdao-ui/jquery/md5.min.js"></script>
     <style type="text/css">
         #container {
             width: 100%;
@@ -426,6 +428,52 @@
                 <button  class="btn btn-default btn-primary btnRequest" id="btnRequest{{id}}" type="button"> 发 送 </button>
             </span>
         </div>
+        <%if(methodType!="GET"){%>
+        <div class="sbu-debug-content-type" id="contentTypeRequest{{id}}">
+            <input type="hidden" id="DebugContentType{{id}}" value="{{contentType}}"/>
+            <label class="radio-inline">
+                <input type="radio" name="optionsRadiosinline{{id}}"  value="application/x-www-form-urlencoded;charset=UTF-8" <%if(contentValue=="x-www-form-urlencoded"){%> checked  <%}%> > x-www-form-urlencoded
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="optionsRadiosinline{{id}}"  value="multipart/form-data" <%if(contentValue=="form-data"){%> checked  <%}%> > form-data
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="optionsRadiosinline{{id}}"   value="raw" <%if(contentValue=="raw"){%> checked  <%}%> > raw
+            </label>
+            <label class="radio-inline">
+                <div class="dropdown" id="raw{{id}}" <%if(contentValue!="raw"){%> style="display: none;"  <%}%>  >
+                    <button type="button" class="sbu-debug-content-type-button" id="dropdownMenu{{id}}"
+                            data-toggle="dropdown">
+                        {{contentShowValue}}  <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu{{id}}">
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/plain" href="javascript:void(0);">Text</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/plain" href="javascript:void(0);">Text(text/plain)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="application/json" href="javascript:void(0);">JSON(application/json)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="application/javascript" href="javascript:void(0);">Javascript(application/javascript)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="application/xml" href="javascript:void(0);">XML(application/xml)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/xml" href="javascript:void(0);">XML(text/xml)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/html" href="javascript:void(0);">HTML(text/html)</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </label>
+        </div>
+        <%}%>
         <div style="margin-top: 15px;">
             <div class="swbu-main">
                 <%if((parameters!=null && parameters.length>0)||(globalParameters!=null && globalParameters.length>0)){ var fileform=false;var tabIndex=0;%>
@@ -911,11 +959,40 @@
         </div>
     </div>
 </script>
-
+<!---Swagger Models-->
+<script type="text/html" id="SwaggerBootstrapUiModelsScript">
+    <div  style="width:90%;margin:0px auto;margin-top: 30px;">
+        <div class="panel-group" id="accordion{{id}}">
+            <%if(models!=null && models.length>0){ %>
+                <% for( c = 0; c < models.length ; c++ ) { var model=models[c]; var mclass=model.modelClass(); %>
+                    <div class="panel panel-default <%=mclass %>">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion{{id}}"
+                                   href="#SwaggerAccordingModel<%=model.id%>">
+                                    <%=model.name%>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="SwaggerAccordingModel<%=model.id%>" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <table id="SwaggerModelTable<%=model.id%>" class="layui-table"  lay-filter="SwaggerModelTable<%=model.id%>"></table>
+                            </div>
+                        </div>
+                    </div>
+                <%}%>
+            <%}else{%>
+            <h3>暂无Swagger Models</h3>
+            <%}%>
+        </div>
+    </div>
+</script>
+<!--Auth-->
 <script type="text/html" id="SwaggerBootstrapUiSecurityScript">
     <div  style="width:99%;margin:0px auto;">
         <div style="margin-top: 15px;">
             <div class="swbu-main">
+                <button class="btn btn-circle btn-small btn-primary btn-reset-auth" type="button">注销</button>
                 <table class="" >
                     <thead>
                     <tr>
@@ -968,6 +1045,17 @@
                             <label>
                                 <input type="checkbox" name="showApi" <%if(showApiUrl){ %> checked="checked"  <%}%> />
                                 菜单Api地址显示
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-lg-2">分组tag显示说明</label>
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="showTagStatus" <%if(showTagStatus){ %> checked="checked"  <%}%> />
+                                分组tag显示dsecription说明属性
                             </label>
                         </div>
                     </div>

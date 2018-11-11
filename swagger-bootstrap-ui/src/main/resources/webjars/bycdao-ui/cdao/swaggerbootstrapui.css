@@ -537,12 +537,29 @@ code {
 .sbu-request-form{
     color: #9012fe;
 }
+.sbu-request-validate-jsr{
+    color: #10af88;
+    border-bottom: 1px dashed #10af88;
+}
 
 .sbu-request-header{
     color: #fca130;
 }
 .sbu-request-path{
     color: #49cc90;
+}
+
+.sbu-tag-description{
+    font-size:10px;
+}
+.sbu-debug-content-type{
+    margin-top: 15px;
+    height: 20px;
+    line-height: 20px;
+}
+.sbu-debug-content-type-button{
+    background-color: white;
+    color: #df4646;
 }
 /**离线文档*/
 .offlineMarkdownShow{

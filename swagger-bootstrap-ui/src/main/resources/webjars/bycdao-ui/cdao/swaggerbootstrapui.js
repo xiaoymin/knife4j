@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.8.6
+ * swagger-bootstrap-ui v1.8.7
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
@@ -39,11 +39,12 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.8.6";
+        this.version="1.8.7";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
             showApiUrl:false,//接口api地址不显示
+            showTagStatus:false,//分组tag显示description属性,针对@Api注解没有tags属性值的情况
             enableSwaggerBootstrapUi:false,//是否开启swaggerBootstrapUi增强
             treeExplain:true
         };
@@ -416,7 +417,15 @@
             })
             that.getMenu().append(securityLi);
         }
-
+        //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
+        var modelsLi=$('<li  class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-modeling"></i><span class="menu-text">Swagger Models </span></a></li>');
+        modelsLi.on("click",function () {
+            that.log("Models");
+            that.createModelsElement();
+            that.getMenu().find("li").removeClass("active");
+            modelsLi.addClass("active");
+        })
+        that.getMenu().append(modelsLi);
         //SwaggerBootstrapUi增强功能全部放置在此
         //存在子标签
         var extLi=$('<li  class="detailMenu"></li>');
@@ -424,13 +433,6 @@
         extLi.append(exttitleA);
         //循环树
         var extul=$('<ul class="submenu"></ul>')
-        /*$.each(tag.childrens,function (i, children) {
-            var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
-            //var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div></div></li>');
-            childrenLi.data("data",children);
-            ul.append(childrenLi);
-        })*/
-
         //全局参数菜单功能
         var globalArgsLi=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">全局参数设置</span> </div></div></li>');
         //var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
@@ -467,12 +469,23 @@
         $.each(that.currentInstance.tags,function (i, tag) {
             var len=tag.childrens.length;
             if(len==0){
-                var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                var li=null;
+                if (that.settings.showTagStatus){
+                    li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+') </span></a></li>');
+                }else{
+                    li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                }
                 that.getMenu().append(li);
             }else{
                 //存在子标签
                 var li=$('<li  class="detailMenu"></li>');
-                var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                var titleA=null;
+                if(that.settings.showTagStatus){
+                    titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+')<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                }else{
+                    titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                }
+                //var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                 li.append(titleA);
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
@@ -524,9 +537,11 @@
                     e.preventDefault();
                     var showApi=$("#SwaggerBootstrapUiSettings").find("input[name=showApi]");
                     var enableSbu=$("#SwaggerBootstrapUiSettings").find("input[name=enableSwaggerBootstrapUi]");
-
+                    //tag属性说明
+                    var showTagStatusElem=$("#SwaggerBootstrapUiSettings").find("input[name=showTagStatus]");
                     var showApiFlag=showApi.prop("checked");
                     var enableSbuFlag=enableSbu.prop("checked");
+                    var showTagStatus=showTagStatusElem.prop("checked");
                     var flag=true;
                     //如果开启SwawggerBootstrapUi增强,则判断当前后端是否启用注解
                     if(enableSbuFlag){
@@ -561,6 +576,7 @@
                         that.log(showApi.prop("checked")+",enable:"+enableSbu.prop("checked"));
                         var setts={
                             showApiUrl:showApiFlag,//接口api地址不显示
+                            showTagStatus:showTagStatus,//tag显示description属性.
                             enableSwaggerBootstrapUi:enableSbuFlag//是否开启swaggerBootstrapUi增强
                         }
                         that.saveSettings(setts);
@@ -997,7 +1013,26 @@
                     {
                         field: 'type',
                         title: '类型',
-                        width: '20%'
+                        width: '20%',
+                        templet:function (d) {
+                            if(d.validateStatus){
+                                var str="";
+                                if (d.validateInstance!=null){
+                                    var len=$.getJsonKeyLength(d.validateInstance);
+                                    var _size=0;
+                                    for(var k in d.validateInstance){
+                                        str+=k+":"+d.validateInstance[k];
+                                        if (_size<len){
+                                            str+="\r\n"
+                                        }
+                                        _size++;
+                                    }
+                                }
+                                return "<a href='javascript:void(0)' class='sbu-request-validate-jsr' data-tips='"+str+"' title='"+str+"'>"+d.type+"</a>";
+                            }else{
+                                return d.type;
+                            }
+                        }
                     },
                     {
                         field: 'schemaValue',
@@ -1120,6 +1155,34 @@
             $.each(apiInfo.parameters,function (i, param) {
               param.show=true;
             })
+            //判断localStorage对象中是否缓存有参数信息
+            var cacheStoreInstance=that.getCacheStoreInstance();
+            if (cacheStoreInstance!=null){
+                //判断id是否存在
+                if($.inArray(apiInfo.id,cacheStoreInstance.ids)>-1){
+                    //存在缓存,更新缓存值
+                    //遍历获取缓存的parameters
+                    var cacheParameters=null;
+                    $.each(cacheStoreInstance.stores,function (j, store) {
+                        if(store.id==apiInfo.id){
+                            cacheParameters=store.data;
+                        }
+                    })
+                    if (cacheParameters!=null){
+                        //赋值txtValue
+                        $.each(apiInfo.parameters,function (i, param) {
+                            //根据参数名称查找cache中的参数值
+                            var name=param.name;
+                            $.each(cacheParameters,function (j, cache) {
+                                if(name==cache.name){
+                                    //赋值缓存的值.
+                                    param.txtValue=cache.txtValue;
+                                }
+                            })
+                        })
+                    }
+                }
+            }
         }
 
         apiInfo.globalParameters=that.getGlobalParameters();
@@ -1176,6 +1239,34 @@
             $("#"+paramBodyId).find("input:checkbox").prop("checked",chked);
         });
         that.requestSend(apiInfo,menu);
+        //绑定contentType下拉框选择事件
+        that.getDoc().find("#"+debugContentId).find("#contentTypeRequest"+apiInfo.id).find(".option").click(function(){
+            var txt=$(this).html();
+            var value=$(this).data("value")
+            var showId="dropdownMenu"+apiInfo.id;
+            $("#"+showId).html(txt+" <span class='caret'></span>");
+            $("#"+showId).data("value",value);
+            $("#DebugContentType"+apiInfo.id).val(value)
+        })
+        //check选择事件
+        $("input[name=optionsRadiosinline"+apiInfo.id+"]").click(function(){
+          var t=$(this);
+          that.log("check--click...")
+          if(t.val()=="raw"){
+              $("#raw"+apiInfo.id).show();
+              //判断data是否缓存的值
+              var showId="dropdownMenu"+apiInfo.id;
+              var cachedata=$("#"+showId).data("value");
+              if(cachedata!=null&&cachedata!=undefined&&cachedata!=""){
+                  $("#DebugContentType"+apiInfo.id).val(cachedata);
+              }else{
+                  $("#DebugContentType"+apiInfo.id).val("application/json");
+              }
+          }else{
+              $("#raw"+apiInfo.id).hide();
+              $("#DebugContentType"+apiInfo.id).val(t.val());
+          }
+        })
 
     }
 
@@ -1218,7 +1309,7 @@
                 laydivHeight=550;
             }
             that.log("整个tab高度："+tabsContentHeight+",请求Form表单高度："+basicContentHeight+",高度差："+responseHeight);
-            laycontentdiv.css("height",laydivHeight+"px");
+            //laycontentdiv.css("height",laydivHeight+"px");
             //respcleanDiv.html("")
             var params={};
             var headerparams={};
@@ -1488,28 +1579,31 @@
             var form=$("#uploadForm"+apiInfo.id);
             var startTime=new Date().getTime();
             var index = layer.load(1);
+            that.log("headerParams------------")
+            that.log(headerparams)
+            //增加header默认发送参数
+            headerparams["Request-Origion"]=that.requestOrigion;
+            //判断produce
+            if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
+                var first=apiInfo.produces[0];
+                headerparams["accept"]=first;
+            }
+            //判断security参数
+            if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
+                $.each(that.currentInstance.securityArrs,function (i, sa) {
+                    if(sa.in=="header"){
+                        headerparams[sa.name]=sa.value;
+                    }
+                })
+            }
+            //判断是否全局参数中包含ContentType属性
+            if(!headerparams.hasOwnProperty("Content-Type")){
+                //如果全局参数中不包含,则获取默认input选择框的
+                var _tmp=$("#DebugContentType"+apiKeyId).val();
+                headerparams["Content-Type"]=_tmp;
+            }
             if(form.length>0||formRequest){
                 that.log("form submit------------------------------------------------")
-                //判断produce
-                if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
-                    var first=apiInfo.produces[0];
-                    headerparams["accept"]=first;
-                }
-                //判断security参数
-                if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
-                    $.each(that.currentInstance.securityArrs,function (i, sa) {
-                        if(sa.in=="header"){
-                            headerparams[sa.name]=sa.value;
-                        }
-                    })
-                }
-                //增加header默认发送参数
-                headerparams["Request-Origion"]=that.requestOrigion;
-                //headerparams["Content-Type"]=contType;
-                that.log(headerparams)
-                that.log(reqdata);
-                that.log("formData-------------------------------------------------------");
-                that.log(formData);
                 axios.request({
                     url:url,
                     headers:headerparams,
@@ -1517,239 +1611,26 @@
                     data:formData,
                     timeout: 10*60*1000,
                 }).then(function (response) {
-                    respcleanDiv.show();
-                    that.log("form-------------response------------------")
-                    that.log(response);
                     var data=response.data;
                     var xhr=response.request;
-                    that.log(data);
-                    layer.close(index);
-                    var statsCode=xhr.status;
-                    if(statsCode==200){
-                        statsCode=statsCode+" OK";
-                    }
-                    var endTime=new Date().getTime();
-                    that.log(endTime)
-                    var len=0;
-                    var diff=endTime-startTime;
-                    var tp=typeof (data);
-                    if(xhr.hasOwnProperty("responseText")){
-                        len=xhr["responseText"].gblen();
-                    }
-                    responsestatus.html("")
-                    responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
-                        .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
-                        .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
-
-                    that.log(xhr);
                     var allheaders=response.headers;
-                    if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-                        var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                        for(var hk in allheaders){
-                            var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
-                            headertable.append(headertr);
-                        }
-                        //设置Headers内容
-                        resp3.html("")
-                        resp3.append(headertable);
-                    }
-                    that.log("responseTextFlag-----------------")
-                    var rtext=xhr["responseText"];
-                    that.log(xhr.hasOwnProperty("responseText"));
-                    that.log(rtext);
-                    if(rtext!=null&&rtext!=undefined){
-                        that.log("xhr---------------responseText-----------------------------")
-                        that.log(xhr["responseText"])
-                        //json
-                        resp2.html(rtext);
-                        if(tp=="string"){
-                            //转二进制
-                            var dv=data.toString(2);
-                            if(dv!=undefined&&dv!=null){
-                                that.log("二进制11..");
-                                var div=$("<div></div>");
-                                var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
-                                var downloadDiv=$("<div style='    position: absolute;\n" +
-                                    "    right: 0px;\n" +
-                                    "    width: 100px;\n" +
-                                    "    bottom: 30px;\n" +
-                                    "    text-align: center;'></div>")
-                                var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
-                                button.bind("click",function () {
-                                    window.open(url);
-                                })
-                                downloadDiv.append(button);
-                                div.append(rowDiv).append(downloadDiv);
-                                that.log(div)
-                                that.log(div[0])
-                                resp1.html("")
-                                resp1.html(div);
-                            }
-                        }
-                    }
-                    if (response.data!=null&&response.data!=undefined){
-                        //如果存在该对象,服务端返回为json格式
-                        resp1.html("")
-                        that.log(xhr["responseJSON"])
-                        var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
-                        jsondiv.html(JSON.stringify(response.data,null,2));
-                        resp1.append(jsondiv);
-                        var editor = ace.edit("responseJsonEditor"+apiKeyId);
-                        editor.getSession().setMode("ace/mode/json");
-                        editor.setTheme("ace/theme/eclipse");
-
-                    }
-                    //组件curl功能
-                    var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams,fileUploadFlat);
-                    var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl"+apiKeyId+"'>复制</button>");
-                    var curlcode=$("<code></code>");
-                    curlcode.html(curl);
-                    resp5.html("");
-                    resp5.append(curlcode).append(cpcurlBotton);
-                    var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
-                        text:function () {
-                            return curlcode.html();
-                        }
-                    });
-                    clipboard.on('success', function(e) {
-                        layer.msg("复制成功")
-                    });
-                    clipboard.on('error', function(e) {
-                        layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                    });
+                    that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                        formCurlParams,xhr,data,startTime,allheaders,true);
                 }).catch(function (error) {
                     respcleanDiv.show();
                     layer.close(index);
-                    that.log("form-------------error-------------------");
-                    that.log(error);
-                    that.log(error.response);
                     if(error.response){
                         var response=error.response;
                         var data=response.data;
                         var xhr=response.request;
-                        that.log(data);
-                        layer.close(index);
-                        var statsCode=xhr.status;
-                        if(statsCode==200){
-                            statsCode=statsCode+" OK";
-                        }
-                        var endTime=new Date().getTime();
-                        that.log(endTime)
-                        var len=0;
-                        var diff=endTime-startTime;
-                        var tp=typeof (data);
-                        if(xhr.hasOwnProperty("responseText")){
-                            len=xhr["responseText"].gblen();
-                        }
-                        responsestatus.html("")
-                        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
-                            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
-                            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
-                        that.log(xhr);
                         var allheaders=response.headers;
-                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                            for(var hk in allheaders){
-                                var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
-                                headertable.append(headertr);
-                            }
-                            //设置Headers内容
-                            resp3.html("")
-                            resp3.append(headertable);
-                        }
-                        that.log("responseTextFlag-----------------")
-                        var rtext=xhr["responseText"];
-                        that.log(xhr.hasOwnProperty("responseText"));
-                        that.log(rtext);
-                        if(rtext!=null&&rtext!=undefined){
-                            that.log("xhr---------------responseText-----------------------------")
-                            that.log(xhr["responseText"])
-                            //json
-                            resp2.html(rtext);
-                            if(tp=="string"){
-                                //转二进制
-                                var dv=data.toString(2);
-                                if(dv!=undefined&&dv!=null){
-                                    that.log("二进制11..");
-                                    var div=$("<div></div>");
-                                    var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
-                                    var downloadDiv=$("<div style='    position: absolute;\n" +
-                                        "    right: 0px;\n" +
-                                        "    width: 100px;\n" +
-                                        "    bottom: 30px;\n" +
-                                        "    text-align: center;'></div>")
-                                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
-                                    button.bind("click",function () {
-                                        window.open(url);
-                                    })
-                                    downloadDiv.append(button);
-                                    div.append(rowDiv).append(downloadDiv);
-                                    that.log(div)
-                                    that.log(div[0])
-                                    resp1.html("")
-                                    resp1.html(div);
-                                }
-                            }
-                        }
-                        if (response.data!=null&&response.data!=undefined){
-                            //如果存在该对象,服务端返回为json格式
-                            resp1.html("")
-                            that.log(xhr["responseJSON"])
-                            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
-                            jsondiv.html(JSON.stringify(response.data,null,2));
-                            resp1.append(jsondiv);
-                            var editor = ace.edit("responseJsonEditor"+apiKeyId);
-                            editor.getSession().setMode("ace/mode/json");
-                            editor.setTheme("ace/theme/eclipse");
-                        }
-                        //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams,fileUploadFlat);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary' id='btnCopyCurl"+apiKeyId+"'>复制</button>");
-                        var curlcode=$("<code></code>");
-                        curlcode.html(curl);
-
-                        resp5.html("");
-                        resp5.append(curlcode).append(cpcurlBotton);
-
-
-                        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
-                            text:function () {
-                                return curlcode.html();
-                            }
-                        });
-                        clipboard.on('success', function(e) {
-                            layer.msg("复制成功")
-                        });
-                        clipboard.on('error', function(e) {
-                            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                        });
+                        that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                            formCurlParams,xhr,data,startTime,allheaders,true);
                     }
-
                 })
-
             }
             else{
-                //判断produce
-                if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
-                    var first=apiInfo.produces[0];
-                    headerparams["accept"]=first;
-                }
-                //判断security参数
-                if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
-                    $.each(that.currentInstance.securityArrs,function (i, sa) {
-                        if(sa.in=="header"){
-                            headerparams[sa.name]=sa.value;
-                        }
-                    })
-                }
-                //增加header默认发送参数
-                headerparams["Request-Origion"]=that.requestOrigion;
-                headerparams["Content-Type"]=contType;
-                that.log("header....")
-                that.log(headerparams);
-                that.log("请求参数...........")
-                that.log(params)
-
+                //headerparams["Content-Type"]=contType;
                 $.ajax({
                     url:url,
                     headers:headerparams,
@@ -1757,240 +1638,21 @@
                     data:reqdata,
                     contentType:contType,
                     success:function (data,status,xhr) {
-                        layer.close(index);
-                        respcleanDiv.show();
-                        that.log("success...")
-                        var statsCode=xhr.status;
-                        if(statsCode==200){
-                            statsCode=statsCode+" OK";
-                        }
-                        var endTime=new Date().getTime();
-                        that.log(endTime)
-                        var len=0;
-                        var diff=endTime-startTime;
-                        var tp=typeof (data);
-                        if(xhr.hasOwnProperty("responseText")){
-                            len=xhr["responseText"].gblen();
-                        }
-                        that.log(typeof (data))
-                        that.log(status)
-                        responsestatus.html("")
-                        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
-                            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
-                            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
-
-
-                        that.log(xhr);
-                        that.log(xhr.getAllResponseHeaders());
-                        var mimtype=xhr.overrideMimeType();
-                        that.log("MIME-TYPE..")
-                        that.log(mimtype)
                         var allheaders=xhr.getAllResponseHeaders();
-                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-                            var headers=allheaders.split("\r\n");
-                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                            for(var i=0;i<headers.length;i++){
-                                var header=headers[i];
-                                if(header!=null&&header!=""){
-                                    var headerValu=header.split(":");
-                                    var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
-                                    headertable.append(headertr);
-                                }
-                            }
-                            //设置Headers内容
-                            resp3.html("")
-                            resp3.append(headertable);
-                        }
-                        var contentType=xhr.getResponseHeader("Content-Type");
-                        that.log("Content-Type:"+contentType);
-                        that.log(xhr.hasOwnProperty("responseJSON"))
-                        if(xhr.hasOwnProperty("responseText")){
-                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
-                            var rawText=$("<span></span>");
-                            rawText.html(xhr["responseText"]);
-
-                            resp2.html("");
-                            resp2.append(rawCopyBotton).append(rawText);
-                            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
-                                text:function () {
-                                    return rawText.html();
-                                }
-                            });
-                            cliprawboard.on('success', function(e) {
-                                layer.msg("复制成功")
-                            });
-                            cliprawboard.on('error', function(e) {
-                                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                            });
-
-                            if(tp=="string"){
-                                //转二进制
-                                var dv=data.toString(2);
-                                if(dv!=undefined&&dv!=null){
-                                    that.log("二进制11..");
-                                    var div=$("<div></div>");
-                                    var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
-                                    var downloadDiv=$("<div style='    position: absolute;\n" +
-                                        "    right: 0px;\n" +
-                                        "    width: 100px;\n" +
-                                        "    bottom: 30px;\n" +
-                                        "    text-align: center;'></div>")
-                                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
-                                    button.bind("click",function () {
-                                        window.open(url);
-                                    })
-                                    downloadDiv.append(button);
-                                    div.append(rowDiv).append(downloadDiv);
-                                    that.log(div)
-                                    that.log(div[0])
-                                    resp1.html("")
-                                    resp1.html(div);
-                                }
-                            }
-                        }
-                        if (xhr.hasOwnProperty("responseJSON")){
-                            //如果存在该对象,服务端返回为json格式
-                            resp1.html("")
-                            that.log(xhr["responseJSON"])
-                            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
-                            jsondiv.html(JSON.stringify(data,null,2));
-                            resp1.append(jsondiv);
-                            var editor = ace.edit("responseJsonEditor"+apiKeyId);
-                            editor.getSession().setMode("ace/mode/json");
-                            editor.setTheme("ace/theme/eclipse");
-                        }
-                        that.log("tab show...")
-                        //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
-                        var curlcode=$("<code></code>");
-                        curlcode.html(curl);
-
-                        resp5.html("");
-                        resp5.append(cpcurlBotton).append(curlcode);
-                        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
-                            text:function () {
-                                return curlcode.html();
-                            }
-                        });
-                        clipboard.on('success', function(e) {
-                            layer.msg("复制成功")
-                        });
-                        clipboard.on('error', function(e) {
-                            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                        });
+                        that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                            formCurlParams,xhr,data,startTime,allheaders,false);
                     },
                     error:function (xhr, textStatus, errorThrown) {
-                        that.log("error.....")
-                        layer.close(index);
-                        respcleanDiv.show();
-                        that.log(xhr);
-                        var statsCode=xhr.status;
-                        if(statsCode==404){
-                            statsCode=statsCode+" Not Found";
-                        }
-                        var endTime=new Date().getTime();
-                        that.log(endTime)
-                        var diff=endTime-startTime;
-                        var len=0;
-                        var rawTxt="暂无";
-                        if (xhr.hasOwnProperty("responseText")){
-                            len=xhr["responseText"].toString().gblen();
-                            rawTxt=xhr["responseText"];
-                        }
-                        responsestatus.html("")
-                        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
-                            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
-                            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"));
-
-                        if(rawTxt!=null){
-                            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
-                            var rawText=$("<span></span>");
-                            rawText.html(rawTxt);
-                            resp2.html("");
-                            resp2.append(rawCopyBotton).append(rawText);
-
-                            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
-                                text:function () {
-                                    return rawText.html();
-                                }
-                            });
-                            cliprawboard.on('success', function(e) {
-                                layer.msg("复制成功")
-                            });
-                            cliprawboard.on('error', function(e) {
-                                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                            });
-                        }
-
-                        that.log(xhr);
                         var allheaders=xhr.getAllResponseHeaders();
-                        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-                            that.log("header--------------tab--------------------")
-                            that.log(allheaders)
-                            var headers=allheaders.split("\r\n");
-                            that.log("headers------------------------")
-                            that.log(headers)
-                            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                            for(var i=0;i<headers.length;i++){
-                                var header=headers[i];
-                                if(header!=null&&header!=""){
-                                    var headerValu=header.split(":");
-                                    var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
-                                    headertable.append(headertr);
-                                }
-                            }
-                            that.log(headertable)
-                            //设置Headers内容
-                            resp3.html("")
-                            resp3.append(headertable);
-                        }
-                        var contentType=xhr.getResponseHeader("Content-Type");
-                        that.log("Content-Type:"+contentType);
-                        var jsonRegex="";
-                        that.log(xhr.hasOwnProperty("responseJSON"))
-                        if (xhr.hasOwnProperty("responseJSON")){
-                            //如果存在该对象,服务端返回为json格式
-                            resp1.html("")
-                            that.log(xhr["responseJSON"])
-                            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
-                            jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
-                            resp1.append(jsondiv);
-                            var editor = ace.edit("responseJsonEditor"+apiKeyId);
-                            editor.getSession().setMode("ace/mode/json");
-                            editor.setTheme("ace/theme/eclipse");
-                        }else{
-                            //判断是否是text
-                            var regex=new RegExp('.*?text.*','g');
-                            if(regex.test(contentType)){
-                                resp1.html("")
-                                resp1.html(xhr.responseText);
-                            }
-                        }
-
-                        //组件curl功能
-                        var curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat);
-                        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
-                        var curlcode=$("<code></code>");
-                        curlcode.html(curl);
-
-                        resp5.html("");
-                        resp5.append(cpcurlBotton).append(curlcode);
-                        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
-                            text:function () {
-                                return curlcode.html();
-                            }
-                        });
-                        clipboard.on('success', function(e) {
-                            layer.msg("复制成功")
-                        });
-                        clipboard.on('error', function(e) {
-                            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
-                        });
+                        var data=null;
+                        that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                            formCurlParams,xhr,data,startTime,allheaders,false);
                     }
                 })
             }
 
+            //缓存到localStorage对象中
+            that.cacheRequestParameters(apiInfo);
 
         })
 
@@ -2021,6 +1683,269 @@
         })
 
     }
+
+    /***
+     * 更新apiInfo的请求参数缓存策略
+     * @param apiInfo
+     */
+    SwaggerBootstrapUi.prototype.cacheRequestParameters=function (apiInfo) {
+        //判断是否支持localStore对象
+        if(window.localStorage){
+            var store = window.localStorage;
+            var key="SwaggerBootstrapUiStore";
+            var storeCacheInstanceStr=store[key];
+            if(storeCacheInstanceStr!=undefined&&storeCacheInstanceStr!=null&&storeCacheInstanceStr!=""){
+                //store中存在
+                var storeCacheInstance=JSON.parse(storeCacheInstanceStr);
+                //判断是否存在
+                if($.inArray(apiInfo.id,storeCacheInstance.ids)==-1){
+                    //不存在,更新
+                    storeCacheInstance.ids.push(apiInfo.id);
+                    storeCacheInstance.stores.push(new SwaggerBootstrapUiRequestStore(apiInfo.id,apiInfo.parameters));
+                    store.setItem(key,JSON.stringify(storeCacheInstance));
+                }else{
+                    //store中存在,需更新parameter
+                    var newArr=new Array();
+                    $.each(storeCacheInstance.stores,function (i, sui) {
+                        if(sui.id!=apiInfo.id){
+                            newArr.push(sui);
+                        }
+                    })
+                    newArr.push(new SwaggerBootstrapUiRequestStore(apiInfo.id,apiInfo.parameters));
+                    storeCacheInstance.stores=newArr;
+                    store.setItem(key,JSON.stringify(storeCacheInstance));
+                }
+            }else{
+                var storeInstance=new SwaggerBootstrapUiStore();
+                //store为空
+                storeInstance.ids.push(apiInfo.id);
+                storeInstance.stores.push(new SwaggerBootstrapUiRequestStore(apiInfo.id,apiInfo.parameters));
+                store.setItem(key,JSON.stringify(storeInstance));
+            }
+        }
+
+    }
+
+    /***
+     * 获取缓存在localStorage对象中的请求参数对象
+     */
+    SwaggerBootstrapUi.prototype.getCacheStoreInstance=function () {
+        var storeInstance=null;
+        if(window.localStorage){
+            var store = window.localStorage;
+            var key="SwaggerBootstrapUiStore";
+            var storeCacheInstanceStr=store[key];
+            if(storeCacheInstanceStr!=undefined&&storeCacheInstanceStr!=null&&storeCacheInstanceStr!="") {
+                //store中存在
+                storeInstance = JSON.parse(storeCacheInstanceStr);
+            }
+        }
+        return storeInstance;
+    }
+
+    /****
+     * 发送请求后,创建响应元素
+     * @param index
+     * @param apiInfo
+     * @param headerparams
+     * @param reqdata
+     * @param paramBodyType
+     * @param url
+     * @param fileUploadFlat
+     * @param formCurlParams
+     * @param xhr
+     * @param data
+     * @param startTime
+     * @param allheaders
+     * @param formRequest
+     */
+    SwaggerBootstrapUi.prototype.createResponseElement=function (index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat
+        ,formCurlParams,xhr,data,startTime,allheaders,formRequest) {
+        var that=this;
+        var apiKeyId=apiInfo.id;
+        var respcleanDiv=$("#responsebody"+apiKeyId);
+        var laycontentdiv=$("#layuiresponsecontentmain"+apiKeyId);
+        var responsestatus=$("#responsestatus"+apiKeyId);
+        var resp1=$("#respcontent"+apiKeyId)
+        var resp2=$("#respraw"+apiKeyId);
+        var resp3=$("#respheaders"+apiKeyId);
+        var resp5=$("#respcurl"+apiKeyId);
+        var responseHeight=500;
+        //关闭遮罩层
+        layer.close(index);
+        //清空响应内容div
+        respcleanDiv.show();
+        //响应码
+        var statsCode=xhr.status;
+        if(statsCode==200){
+            statsCode=statsCode+" OK";
+        }
+        //计算耗时
+        var endTime=new Date().getTime();
+        var len=0;
+        var diff=endTime-startTime;
+        //计算返回数据大小
+        var tp=null;
+        if (data!=null){
+            tp=typeof (data);
+        }
+        //var tp=typeof (data);
+        if(xhr.hasOwnProperty("responseText")){
+            len=xhr["responseText"].gblen();
+        }
+        //清空响应状态栏,赋值响应栏
+        responsestatus.html("")
+        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
+            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
+            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"))
+            .append($("<span class='debug-span-label' style='margin-left:10px;' id='bigScreen"+apiInfo.id+"'><i class=\"icon-text-width iconfont icon-quanping\" style='cursor: pointer;'></i></span>"));
+        //赋值响应headers
+        //var mimtype=xhr.overrideMimeType();
+        //var allheaders=xhr.getAllResponseHeaders();
+        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
+            //如果headers是string，ajax提交
+            if(typeof (allheaders)=="string"){
+                var headers=allheaders.split("\r\n");
+                for(var i=0;i<headers.length;i++){
+                    var header=headers[i];
+                    if(header!=null&&header!=""){
+                        var headerValu=header.split(":");
+                        var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
+                        headertable.append(headertr);
+                    }
+                }
+            }else{
+                for(var hk in allheaders){
+                    var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
+                    headertable.append(headertr);
+                }
+            }
+            //设置Headers内容
+            resp3.html("")
+            resp3.append(headertable);
+        }
+
+        //判断响应内容
+        var contentType=xhr.getResponseHeader("Content-Type");
+        var rtext=xhr["responseText"];
+        that.log(xhr.hasOwnProperty("responseText"));
+        that.log(rtext);
+        //响应文本内容
+        if(rtext!=null&&rtext!=undefined){
+            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
+            var rawText=$("<span></span>");
+            rawText.html(xhr["responseText"]);
+            resp2.html("");
+            resp2.append(rawCopyBotton).append(rawText);
+            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
+                text:function () {
+                    return rawText.html();
+                }
+            });
+            cliprawboard.on('success', function(e) {
+                layer.msg("复制成功")
+            });
+            cliprawboard.on('error', function(e) {
+                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+            });
+            if(tp!=null&& tp=="string"){
+                //转二进制
+                var dv=data.toString(2);
+                if(dv!=undefined&&dv!=null){
+                    that.log("二进制11..");
+                    var div=$("<div></div>");
+                    var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
+                    var downloadDiv=$("<div style='    position: absolute;\n" +
+                        "    right: 0px;\n" +
+                        "    width: 100px;\n" +
+                        "    bottom: 30px;\n" +
+                        "    text-align: center;'></div>")
+                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
+                    button.bind("click",function () {
+                        window.open(url);
+                    })
+                    downloadDiv.append(button);
+                    div.append(rowDiv).append(downloadDiv);
+                    that.log(div)
+                    that.log(div[0])
+                    resp1.html("")
+                    resp1.html(div);
+                }
+            }
+        }
+        //响应JSON
+        if (xhr.hasOwnProperty("responseJSON")||data!=null||data!=undefined){
+            //如果存在该对象,服务端返回为json格式
+            resp1.html("")
+            that.log(xhr["responseJSON"])
+            var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
+            if(xhr.hasOwnProperty("responseJSON")){
+                jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
+            }else{
+                //针对表单提交,error的情况,会产生data
+                jsondiv.html(JSON.stringify(data,null,2));
+            }
+            resp1.append(jsondiv);
+            var editor = ace.edit("responseJsonEditor"+apiKeyId);
+            editor.getSession().setMode("ace/mode/json");
+            editor.setTheme("ace/theme/eclipse");
+            //重构高度
+            var length_editor = editor.session.getLength();
+            var rows_editor = length_editor * 16;
+            that.log("重构高度："+rows_editor)
+            $("#responseJsonEditor"+apiKeyId).css('height',rows_editor+110);
+            editor.resize();
+            that.log($("#responseJsonEditor"+apiKeyId).height())
+            //重置响应面板高度
+            laycontentdiv.css("height",rows_editor+150);
+        }else{
+            //判断是否是text
+            var regex=new RegExp('.*?text.*','g');
+            if(regex.test(contentType)){
+                resp1.html("")
+                resp1.html(xhr.responseText);
+            }
+        }
+        //构建CURL功能
+        //组件curl功能
+        var curl=null;
+        if (formRequest){
+           curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,formCurlParams,fileUploadFlat);
+        }else{
+            curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat);
+        }
+        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
+        var curlcode=$("<code></code>");
+        curlcode.html(curl);
+
+        resp5.html("");
+        resp5.append(cpcurlBotton).append(curlcode);
+        var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
+            text:function () {
+                return curlcode.html();
+            }
+        });
+        clipboard.on('success', function(e) {
+            layer.msg("复制成功")
+        });
+        clipboard.on('error', function(e) {
+            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+        });
+
+        //全屏icon点击事件
+        that.getDoc().find("#bigScreen"+apiInfo.id).click(function (e) {
+            e.preventDefault();
+            //layer.msg(apiInfo.summary+"--------全屏点击事件")
+            var showDiv="#respcontent"+apiInfo.id;
+            that.log($(showDiv))
+            that.log($(showDiv).html())
+            var element=$(showDiv)[0];
+            that.fullScreen(element);
+        })
+
+    }
+
     /***
      * 构建curl
      */
@@ -2081,11 +2006,18 @@
                     }
                 }else{
                     if(tp=="string"){
-                        var jobj=JSON.parse(reqdata);
-                        var objstr=JSON.stringify( jobj ).replace(/\\n/g, "").replace(/"/g,"\\\"");
-                        that.log(objstr);
-                        curlified.push( "-d" );
-                        curlified.push( "\""+objstr +"\"")
+                        //如果装换JSON失败,以字符串拼接
+                        try{
+                            var jobj=JSON.parse(reqdata);
+                            var objstr=JSON.stringify( jobj ).replace(/\\n/g, "").replace(/"/g,"\\\"");
+                            that.log(objstr);
+                            curlified.push( "-d" );
+                            curlified.push( "\""+objstr +"\"")
+                        }catch (error){
+                            curlified.push( "-d" );
+                            curlified.push( "\""+reqdata +"\"")
+                        }
+
                     }else if(tp=="object"){
                         //req有可能为空
                         //object
@@ -2136,6 +2068,31 @@
             }
         }
         return curlified.join(" ");
+    }
+
+
+    /***
+     * 全屏展示某div元素
+     * @param element
+     */
+    SwaggerBootstrapUi.prototype.fullScreen=function (element) {
+        var requestMethod =element.requestFullScreen
+            ||element.webkitRequestFullScreen //谷歌
+            ||element.mozRequestFullScreen  //火狐
+            ||element.msRequestFullScreen; //IE11
+        if (requestMethod) {
+            requestMethod.call(element);
+        } else if (typeof window.ActiveXObject !== "undefined") {
+            //window.ActiveXObject判断是否支持ActiveX控件
+            //模拟按下键盘F11,使浏览器全屏
+            //创建ActiveX
+            var wscript = new ActiveXObject("WScript.Shell");
+            //创建成功
+            if (wscript !== null) {
+                //触发f11
+                wscript.SendKeys("{F11}");
+            }
+        }
     }
 
     /***
@@ -2372,6 +2329,7 @@
                     layer.msg("保存成功");
                     that.currentInstance.securityArrs=that.getSecurityInfos();
                 })
+                that.resetAuthEvent(tabContetId);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
             }else{
@@ -2403,7 +2361,32 @@
             that.currentInstance.securityArrs=that.getSecurityInfos();
             that.log(that.currentInstance);
         })
+        that.resetAuthEvent(tabContetId);
 
+    }
+
+    /***
+     * 注销Auth信息
+     */
+    SwaggerBootstrapUi.prototype.resetAuthEvent=function (tabContentId) {
+        var that=this;
+        that.getDoc().find("#"+tabContentId).find(".btn-reset-auth").on("click",function (e) {
+            e.preventDefault();
+            layer.confirm("确定注销吗?",function (index) {
+                $.each(that.currentInstance.securityArrs,function (i, sa) {
+                    sa.value="";
+                    that.updateGlobalParams(sa,"securityArrs");
+                })
+                that.getDoc().find("#"+tabContentId).find(".btn-save").each(function () {
+                    var saveBtn=$(this);
+                    //赋值为空
+                    saveBtn.parent().parent().find("input").val("");
+                })
+                layer.close(index);
+                layer.msg("注销成功");
+            })
+
+        })
     }
     /***
      * 创建简介页面
@@ -2422,6 +2405,91 @@
         },100)
 
 
+    }
+    /***
+     * 创建Models
+     */
+    SwaggerBootstrapUi.prototype.createModelsElement=function () {
+        var that=this;
+        var layui=that.layui;
+        var element=layui.element;
+        var treetable=layui.treetable;
+        var tabId="SwaggerBootstrapUiModelsScript"+that.currentInstance.id;
+        setTimeout(function () {
+            if(!that.tabExists(tabId)){
+                var html = template("SwaggerBootstrapUiModelsScript", that.currentInstance);
+                var title="Swagger Models ("+that.currentInstance.name+")";
+                var tabObj={
+                    id:tabId,
+                    title:title,
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:title});
+                element.tabAdd(that.layTabFilter, tabObj);
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabFinallyRight();
+                /*that.getDoc().find("#accordion"+that.currentInstance.id).collapse({
+                    toggle: false
+                });*/
+                //隐藏可折叠元素
+                //that.getDoc().find("#accordion"+that.currentInstance.id).collapse('hide');
+                //遍历创建treetable,赋值data值
+                if(that.currentInstance.models!=null&&that.currentInstance.models.length>0){
+                    var index = layer.load(2, {time: 10*1000});
+                    async.forEachOf(that.currentInstance.models,function (model, key, callback) {
+                        that.log(model)
+                        var smodelAccording="#SwaggerAccordingModel"+model.id;
+                        $(smodelAccording).data("data",model.data);
+                        $(smodelAccording).collapse('hide');
+                        //显示操作,以treetable组件展示models
+                        $(smodelAccording).on('shown.bs.collapse', function () {
+                            // 执行一些动作...
+                            var athat=$(this);
+                            var elem="#SwaggerModelTable"+model.id;
+                            that.log(athat.data("data"));
+                            treetable.render({
+                                elem:elem,
+                                data: athat.data("data"),
+                                field: 'title',
+                                treeColIndex: 0,          // treetable新增参数
+                                treeSpid: -1,             // treetable新增参数
+                                treeIdName: 'd_id',       // treetable新增参数
+                                treePidName: 'd_pid',     // treetable新增参数
+                                treeDefaultClose: true,   // treetable新增参数
+                                treeLinkage: true,        // treetable新增参数
+                                cols: [[
+                                    {
+                                        field: 'name',
+                                        title: '名称',
+                                        width: '30%'
+                                    }, {
+                                        field: 'type',
+                                        title: '类型',
+                                        width: '20%'
+                                    },
+                                    {
+                                        field: 'description',
+                                        title: '说明',
+                                        width: '30%'
+                                    },
+                                    {
+                                        field: 'schemaValue',
+                                        title: 'schema',
+                                        width: '20%'
+                                    }
+                                ]]
+                            })
+                        })
+
+                    })
+                    layer.close(index)
+                }
+            }else{
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
+            }
+
+        },100)
     }
 
     SwaggerBootstrapUi.prototype.introMarkdownDocInit=function (txt) {
@@ -2631,6 +2699,7 @@
         //解析definition
         if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("definitions")){
             var definitions=menu["definitions"];
+            //改用async的for循环
             for(var name in definitions){
                 var swud=new SwaggerBootstrapUiDefinition();
                 swud.name=name;
@@ -2645,7 +2714,6 @@
                     if(value.hasOwnProperty("required")){
                         swud.required=value["required"];
                     }
-
                     //是否有properties
                     if(value.hasOwnProperty("properties")){
                         var properties=value["properties"];
@@ -2654,6 +2722,7 @@
                             var spropObj=new SwaggerBootstrapUiProperty();
                             spropObj.name=property;
                             var propobj=properties[property];
+                            spropObj.originProperty=propobj;
                             spropObj.type=$.propValue("type",propobj,"string");
                             spropObj.description=$.propValue("description",propobj,"");
                             spropObj.example=$.propValue("example",propobj,"");
@@ -2677,8 +2746,8 @@
                                 }else if($.checkIsBasicType(type)){
                                     propValue=$.getBasicTypeValue(type);
                                 }else{
-                                    that.log("解析属性："+property);
-                                    that.log(propobj);
+                                    //that.log("解析属性："+property);
+                                    //that.log(propobj);
                                     if(type=="array"){
                                         propValue=new Array();
                                         var items=propobj["items"];
@@ -2771,8 +2840,8 @@
             that.log("开始解析Paths.................")
             that.log(new Date().toTimeString());
             var pathStartTime=new Date().getTime();
-            for(var path in paths){
-                var pathObject=paths[path];
+            async.forEachOf(paths,function (pathObject,path, callback) {
+                //var pathObject=paths[path];
                 var apiInfo=null;
                 if(pathObject.hasOwnProperty("get")){
                     //get方式
@@ -2968,8 +3037,13 @@
                     }
 
                 }
+            })
 
-            }
+
+           /* for(var path in paths){
+
+
+            }*/
             that.log("解析Paths结束,耗时："+(new Date().getTime()-pathStartTime));
             that.log(new Date().toTimeString());
         }
@@ -3023,6 +3097,134 @@
                 })
             }
         });
+        //解析models
+        //遍历paths属性中的请求以及响应Model参数,存在即加入,否则不加入
+
+        that.log("开始解析refTreetableparameters属性.................")
+        that.log(new Date().toTimeString());
+        var pathStartTime=new Date().getTime();
+        //遍历 refTreetableparameters属性
+        if(that.currentInstance.paths!=null&&that.currentInstance.paths.length>0){
+            $.each(that.currentInstance.paths,function (i, path) {
+                //解析请求Model
+                var requestParams=path.refTreetableparameters;
+                if(requestParams!=null&&requestParams!=undefined&&requestParams.length>0){
+                    $.each(requestParams,function (j, param) {
+                        var name=param.name;
+                        //判断集合中是否存在name
+                        if($.inArray(name,that.currentInstance.modelNames)==-1){
+                            that.currentInstance.modelNames.push(name);
+                            //不存在
+                            var model=new SwaggerBootstrapUiModel(param.id,name);
+                            //遍历params
+                            if(param.params!=null&&param.params.length>0){
+                                //model本身需要添加一个父类
+                                //model.data.push({id:model.id,name:name,pid:"-1"});
+                                //data数据加入本身
+                                //model.data=model.data.concat(param.params);
+                                //第一层属性设置为pid
+                                $.each(param.params,function (a, ps) {
+                                    var newparam=$.extend({},ps,{pid:"-1"});
+                                    model.data.push(newparam);
+                                    if(ps.schema){
+                                        //是schema
+                                        //查找紫属性中存在的pid
+                                        deepSchemaModel(model,requestParams,ps.id);
+                                    }
+                                })
+                            }
+                            that.currentInstance.models.push(model);
+                        }
+                    })
+                }
+                //解析响应Model
+                var responseParams=path.responseTreetableRefParameters;
+                //首先解析响应Model类
+                if(path.responseParameterRefName!=null&&path.responseParameterRefName!=""){
+                    //判断是否存在
+                    if($.inArray(path.responseParameterRefName,that.currentInstance.modelNames)==-1){
+                        that.currentInstance.modelNames.push(path.responseParameterRefName);
+                        var id="param"+Math.round(Math.random()*1000000);
+                        var model=new SwaggerBootstrapUiModel(id,path.responseParameterRefName);
+                        model.data=[].concat(path.responseParameters);
+                        if(responseParams!=null&&responseParams!=undefined&&responseParams.length>0){
+                            $.each(responseParams,function (j, param) {
+                                //遍历params
+                                if(param.params!=null&&param.params.length>0) {
+                                    //data数据加入本身
+                                    model.data = model.data.concat(param.params);
+                                }
+                            })
+                        }
+                        that.currentInstance.models.push(model);
+                    }
+                }
+
+                if(responseParams!=null&&responseParams!=undefined&&responseParams.length>0){
+                    $.each(responseParams,function (j, param) {
+                        var name=param.name;
+                        //判断集合中是否存在name
+                        if($.inArray(name,that.currentInstance.modelNames)==-1){
+                            that.currentInstance.modelNames.push(name);
+                            //不存在
+                            var model=new SwaggerBootstrapUiModel(param.id,name);
+                            //遍历params
+                            if(param.params!=null&&param.params.length>0){
+                                //model本身需要添加一个父类
+                                //model.data.push({id:model.id,name:name,pid:"-1"});
+                                //data数据加入本身
+                                //model.data=model.data.concat(param.params);
+                                $.each(param.params,function (a, ps) {
+                                    var newparam=$.extend({},ps,{pid:"-1"});
+                                    model.data.push(newparam);
+                                    if(ps.schema){
+                                        //是schema
+                                        //查找紫属性中存在的pid
+                                        deepSchemaModel(model,responseParams,ps.id);
+                                    }
+                                })
+                            }
+                            that.currentInstance.models.push(model);
+                        }
+                    })
+                }
+            })
+        }
+        //排序
+        if(that.currentInstance.models!=null&&that.currentInstance.models.length>0){
+            that.currentInstance.models.sort(function (a, b) {
+                var aname=a.name;
+                var bname=b.name;
+                if (aname < bname) {
+                    return -1;
+                } else if (aname > bname) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
+        }
+        that.log("解析refTreetableparameters结束,耗时："+(new Date().getTime()-pathStartTime));
+        that.log(new Date().toTimeString());
+
+    }
+    
+    
+    function deepSchemaModel(model, arrs,id) {
+        $.each(arrs,function (i, arr) {
+            if(arr.id==id){
+                //找到
+                model.data=model.data.concat(arr.params);
+                //遍历params
+                if(arr.params!=null&&arr.params.length>0){
+                    $.each(arr.params,function (j, ps) {
+                        if(ps.schema){
+                            deepSchemaModel(model,arrs,ps.id);
+                        }
+                    })
+                }
+            }
+        })
     }
     /***
      * 判断属性是否已经存在
@@ -3123,15 +3325,16 @@
         var newurl=newfullPath.substring(newfullPath.indexOf("/"));
         //that.log("新的url:"+newurl)
         newurl=newurl.replace("//","/");
-        that.log("")
-        that.log("开始创建api-----------------"+newurl)
         var startApiTime=new Date().getTime();
         swpinfo.showUrl=newurl;
-        swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
+        //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
         swpinfo.url=newurl;
         swpinfo.originalUrl=newurl;
         swpinfo.basePathFlag=basePathFlag;
         swpinfo.methodType=mtype.toUpperCase();
+        //接口id使用MD5策略,缓存整个调试参数到localStorage对象中,供二次调用
+        var md5Str=newurl+mtype.toUpperCase();
+        swpinfo.id=md5(md5Str);
         if(apiInfo!=null){
             swpinfo.consumes=apiInfo.consumes;
             swpinfo.description=apiInfo.description;
@@ -3252,7 +3455,8 @@
                             }
                         }
                     }
-
+                    //JSR-303 注解支持.
+                    that.validateJSR303(minfo,m);
                     if(!checkParamArrsExists(swpinfo.parameters,minfo)){
                         swpinfo.parameters.push(minfo);
                         //判断当前属性是否是schema
@@ -3265,7 +3469,6 @@
                     }
                 })
             }
-
             var definitionType=null;
             var arr=false;
             //解析responsecode
@@ -3284,6 +3487,7 @@
                         if(schema.hasOwnProperty("$ref")){
                             if(regex.test(schema["$ref"])) {
                                 var ptype=RegExp.$1;
+                                swpinfo.responseParameterRefName=ptype;
                                 definitionType=ptype;
                                 swaggerResp.schema=ptype;
                             }
@@ -3295,6 +3499,7 @@
                                     var items=schema["items"];
                                     if(regex.test(items["$ref"])) {
                                         var ptype=RegExp.$1;
+                                        swpinfo.responseParameterRefName=ptype;
                                         definitionType=ptype;
                                         swaggerResp.schema=ptype;
                                     }
@@ -3408,6 +3613,60 @@
             if (count==1){
                 swpinfo.requestValue=tmpJsonValue;
             }
+            //此处判断接口的请求参数类型
+            //判断consumes请求类型
+            if(apiInfo.consumes!=null&&apiInfo.consumes.length>0){
+                var ctp=apiInfo.consumes[0];
+                if(ctp=="multipart/form-data"){
+                    swpinfo.contentType=ctp;
+                    swpinfo.contentValue="form-data";
+                }else if(ctp=="text/plain"){
+                    swpinfo.contentType=ctp;
+                    swpinfo.contentValue="raw";
+                    swpinfo.contentShowValue="Text(text/plain)";
+                }else{
+                    //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
+                    var defaultType="application/x-www-form-urlencoded;charset=UTF-8";
+                    var defaultValue="x-www-form-urlencoded";
+                    for(var i=0;i<swpinfo.parameters.length;i++){
+                        var pt=swpinfo.parameters[i];
+                        if(pt.in=="body"){
+                            if(pt.schemaValue=="MultipartFile"){
+                                defaultType="multipart/form-data";
+                                defaultValue="form-data";
+                                break;
+                            }else{
+                                defaultValue="raw";
+                                defaultType="application/json";
+                                break;
+                            }
+                        }else{
+                            if(pt.schemaValue=="MultipartFile") {
+                                defaultType = "multipart/form-data";
+                                defaultValue = "form-data";
+                                break;
+                            }
+                        }
+
+                    }
+                    swpinfo.contentType=defaultType;
+                    swpinfo.contentValue=defaultValue;
+                }
+            }else{
+                //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
+                var defaultType="application/x-www-form-urlencoded;charset=UTF-8";
+                var defaultValue="x-www-form-urlencoded";
+                for(var i=0;i<swpinfo.parameters;i++){
+                    var pt=swpinfo.parameters[i];
+                    if(pt.schemaValue=="MultipartFile"){
+                        defaultType="multipart/form-data";
+                        defaultValue="form-data";
+                        break;
+                    }
+                }
+                swpinfo.contentType=defaultType;
+                swpinfo.contentValue=defaultValue;
+            }
         }
         /*if(swpinfo.parameters.length==1){
             //只有在参数只有一个且是body类型的参数才有请求示例
@@ -3419,8 +3678,27 @@
                 }
             }
         }*/
-        that.log("创建api完成,耗时："+(new Date().getTime()-startApiTime))
         return swpinfo;
+    }
+
+    /***
+     * JSR-303支持
+     * @param parameter
+     */
+    SwaggerBootstrapUi.prototype.validateJSR303=function (parameter,origin) {
+        var max=origin["maximum"],min=origin["minimum"],emin=origin["exclusiveMinimum"],emax=origin["exclusiveMaximum"];
+        var pattern=origin["pattern"];
+        var maxLength=origin["maxLength"],minLength=origin["minLength"];
+        if (max||min||emin||emax){
+            parameter.validateStatus=true;
+            parameter.validateInstance={minimum:min,maximum:max,exclusiveMaximum:emax,exclusiveMinimum:emin};
+        }else if(pattern){
+            parameter.validateStatus=true;
+            parameter.validateInstance={"pattern":origin["pattern"]};
+        }else if(maxLength||minLength){
+            parameter.validateStatus=true;
+            parameter.validateInstance={maxLength:maxLength,minLength:minLength};
+        }
     }
 
 
@@ -3561,6 +3839,7 @@
                         refp.in=minfo.in;
                         refp.require=p.required;
                         refp.description=$.replaceMultipLineStr(p.description);
+                        that.validateJSR303(refp,p.originProperty);
                         refParam.params.push(refp);
                         //判断类型是否基础类型
                         if(!$.checkIsBasicType(p.refType)){
@@ -3635,6 +3914,7 @@
                         refp.in=minfo.in;
                         refp.require=p.required;
                         refp.description=$.replaceMultipLineStr(p.description);
+                        that.validateJSR303(refp,p.originProperty);
                         refParam.params.push(refp);
                         //判断类型是否基础类型
                         if(!$.checkIsBasicType(p.refType)){
@@ -3882,6 +4162,69 @@
     SwaggerBootstrapUi.prototype.getTabContent=function () {
         return $("#"+this.tabContentId);
     }
+
+    /***
+     * SwaggerBootstrapUi Model树对象
+     * @param id
+     * @param name
+     * @constructor
+     */
+    var SwaggerBootstrapUiModel=function (id, name) {
+        this.id=id;
+        this.name=name;
+        //存放Model对象的属性结构
+        //SwaggerBootstrapUiTreeTableRefParameter集合
+        this.data=new Array();
+        this.random=parseInt(Math.random()*(6-1+1)+1,10);
+        this.modelClass=function () {
+            var cname="panel-default";
+            switch (this.random){
+                case 1:
+                    cname="panel-success";
+                    break;
+                case 2:
+                    cname="panel-success";
+                    break;
+                case 3:
+                    cname="panel-info";
+                    break;
+                case 4:
+                    cname="panel-warning";
+                    break;
+                case 5:
+                    cname="panel-danger";
+                    break;
+                case 6:
+                    cname="panel-default";
+                    break;
+            }
+            return cname;
+        }
+
+    }
+
+    /***
+     * 存储请求参数对象
+     * @constructor
+     */
+    var SwaggerBootstrapUiStore=function () {
+        //存储接口的md5码id集合
+        this.ids=new Array();
+        //存储SwaggerBootstrapUiRequestStore对象集合
+        this.stores=new Array();
+    }
+
+    /***
+     * 缓存请求参数对象
+     * @param id
+     * @param arrs
+     * @constructor
+     */
+    var SwaggerBootstrapUiRequestStore=function (id, arrs) {
+        this.id=id;
+        this.data=arrs;
+    }
+
     /***
      * swagger 分组对象
      * @param name 分组对象名称
@@ -3926,6 +4269,9 @@
         this.pathArrs=new Array();
         //权限信息
         this.securityArrs=new Array();
+        //Models
+        this.models=new Array();
+        this.modelNames=new Array();
     }
     /***
      * 计数器
@@ -3985,6 +4331,8 @@
         this.value=null;
         //引用类
         this.property=null;
+        //原始参数
+        this.originProperty=null;
     }
     /***
      * swagger的tag标签
@@ -4013,6 +4361,12 @@
         this.operationId=null;
         this.produces=null;
         this.tags=null;
+        //默认请求contentType
+        this.contentType="application/json";
+        this.contentShowValue="JSON(application/json)";
+        //显示参数
+        //存储请求类型，form|row|urlencode
+        this.contentValue="raw";
         this.parameters=new Array();
         //请求json示例
         this.requestValue=null;
@@ -4028,6 +4382,7 @@
         this.responseBasicType=false;
         //响应字段说明
         this.responseParameters=new Array();
+        this.responseParameterRefName="";
         this.responseRefParameters=new Array();
         //treetable组件使用对象
         this.responseTreetableRefParameters=new Array();
@@ -4068,6 +4423,10 @@
         this.schema=false;
         this.schemaValue=null;
         this.value=null;
+        //JSR-303 annotations supports since 1.8.7
+        //默认状态为false
+        this.validateStatus=false;
+        this.validateInstance=null;
         //引用类
         this.def=null;
         //des
@@ -4106,6 +4465,15 @@
      * 公共方法
      */
     $.extend({
+        getJsonKeyLength:function (json) {
+          var size=0;
+          if (json!=null){
+              for (key in json) {
+                  if (json.hasOwnProperty(key)) size++;
+              }
+          }
+          return size;
+        },
         regexMatchStr:function (regex,str) {
             var flag=false;
             if(regex!=null&&regex!=undefined&&str!=null&&str!=undefined){
