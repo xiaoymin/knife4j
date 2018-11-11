@@ -402,7 +402,7 @@ body {
 }
 
 .swbu-main a:hover {
-	text-decoration: underline;
+	/*text-decoration: underline;*/
 }
 
 .swbu-main strong {
@@ -505,7 +505,7 @@ body {
 
 .swbu-main table tr:nth-child(2n) {
 	/*background: #eee;*/
-	
+
 }
 
 #page-footer {
@@ -565,7 +565,7 @@ body {
 	margin: 30px 0 0;
 	display: none;
 }
-/* 
+/*
 @media ( max-width : 768px) {
 	#page-mobile-menu {
 		display: block;
@@ -1094,7 +1094,7 @@ a.post-title:hover {
 	text-decoration: underline;
 	color: #10af88;
 }
-/* 
+/*
 @media ( max-width : 768px) {
 	#footer-links {
 		margin-top: 25px;
@@ -1426,7 +1426,7 @@ em.d_callout_icon_success {
 		font-size: 20px;
 		cursor: pointer;
 	}
-	/* 百度分享按钮，小屏幕不出现 */ 
+	/* 百度分享按钮，小屏幕不出现 */
 	.bdshare-slide-button{
 		display: none !important;
 	}

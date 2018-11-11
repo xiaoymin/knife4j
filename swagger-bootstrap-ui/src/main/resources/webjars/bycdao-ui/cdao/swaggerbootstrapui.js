@@ -1013,7 +1013,14 @@
                     {
                         field: 'type',
                         title: '类型',
-                        width: '20%'
+                        width: '20%',
+                        templet:function (d) {
+                            if(d.validateStatus){
+                                return "<a href='javascript:void(0)' class='sbu-request-validate-jsr'>"+d.type+"</a>";
+                            }else{
+                                return d.type;
+                            }
+                        }
                     },
                     {
                         field: 'schemaValue',
@@ -2703,6 +2710,7 @@
                             var spropObj=new SwaggerBootstrapUiProperty();
                             spropObj.name=property;
                             var propobj=properties[property];
+                            spropObj.originProperty=propobj;
                             spropObj.type=$.propValue("type",propobj,"string");
                             spropObj.description=$.propValue("description",propobj,"");
                             spropObj.example=$.propValue("example",propobj,"");
@@ -3435,7 +3443,8 @@
                             }
                         }
                     }
-
+                    //JSR-303 注解支持.
+                    that.validateJSR303(minfo,m);
                     if(!checkParamArrsExists(swpinfo.parameters,minfo)){
                         swpinfo.parameters.push(minfo);
                         //判断当前属性是否是schema
@@ -3660,6 +3669,26 @@
         return swpinfo;
     }
 
+    /***
+     * JSR-303支持
+     * @param parameter
+     */
+    SwaggerBootstrapUi.prototype.validateJSR303=function (parameter,origin) {
+        var max=origin["maximum"],min=origin["minimum"],emin=origin["exclusiveMinimum"],emax=origin["exclusiveMaximum"];
+        var pattern=origin["pattern"];
+        var maxLength=origin["maxLength"],minLength=origin["minLength"];
+        if (max||min||emin||emax){
+            parameter.validateStatus=true;
+            parameter.validateInstance={minimum:min,maximum:max,exclusiveMaximum:emax,exclusiveMinimum:emin};
+        }else if(pattern){
+            parameter.validateStatus=true;
+            parameter.validateInstance={"pattern":origin["pattern"]};
+        }else if(maxLength||minLength){
+            parameter.validateStatus=true;
+            parameter.validateInstance={maxLength:maxLength,minLength:minLength};
+        }
+    }
+
 
 
 
@@ -3798,6 +3827,7 @@
                         refp.in=minfo.in;
                         refp.require=p.required;
                         refp.description=$.replaceMultipLineStr(p.description);
+                        that.validateJSR303(refp,p.originProperty);
                         refParam.params.push(refp);
                         //判断类型是否基础类型
                         if(!$.checkIsBasicType(p.refType)){
@@ -3872,6 +3902,7 @@
                         refp.in=minfo.in;
                         refp.require=p.required;
                         refp.description=$.replaceMultipLineStr(p.description);
+                        that.validateJSR303(refp,p.originProperty);
                         refParam.params.push(refp);
                         //判断类型是否基础类型
                         if(!$.checkIsBasicType(p.refType)){
@@ -4288,6 +4319,8 @@
         this.value=null;
         //引用类
         this.property=null;
+        //原始参数
+        this.originProperty=null;
     }
     /***
      * swagger的tag标签
@@ -4378,6 +4411,10 @@
         this.schema=false;
         this.schemaValue=null;
         this.value=null;
+        //JSR-303 annotations supports since 1.8.7
+        //默认状态为false
+        this.validateStatus=false;
+        this.validateInstance=null;
         //引用类
         this.def=null;
         //des

@@ -537,6 +537,10 @@ code {
 .sbu-request-form{
     color: #9012fe;
 }
+.sbu-request-validate-jsr{
+    color: #10af88;
+    border-bottom: 1px dashed #10af88;
+}
 
 .sbu-request-header{
     color: #fca130;
