@@ -20,8 +20,8 @@ import java.util.List;
  *
  * @since:swagger-bootstrap-ui 1.0
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
+ * Deprecated 1.8.7 later
  * 2018/10/12 20:46
- * @Deprecated 1.8.7 later
  */
 @Deprecated
 public class SwaggerBootstrapUiPathInstance {
