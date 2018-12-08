@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.8.7
+ * swagger-bootstrap-ui v1.8.8
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
@@ -39,7 +39,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.8.7";
+        this.version="1.8.8";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
@@ -1445,8 +1445,11 @@
                             apiInfo.url=url;
                         }else{
                             //判断是否是header
-                            if(trdata["in"]=="header"){
-                                headerparams[key]=value;
+                            if(trdata["in"]=="header") {
+                                headerparams[key] = value;
+                            }else if(trdata["in"]=="body"){
+                                bodyparams+=value;
+                                bodyRequest=true;
                             }else{
                                 if (url.indexOf("?")>-1){
                                     url=url+"&"+key+"="+value;
@@ -2771,8 +2774,8 @@
 
                             }
                             else{
-                                that.log("解析属性："+property);
-                                that.log(propobj);
+                                //that.log("解析属性："+property);
+                                //that.log(propobj);
                                 if(propobj.hasOwnProperty("$ref")){
                                     var ref=propobj["$ref"];
                                     var regex=new RegExp("#/definitions/(.*)$","ig");
@@ -3615,7 +3618,7 @@
             }
             //此处判断接口的请求参数类型
             //判断consumes请求类型
-            if(apiInfo.consumes!=null&&apiInfo.consumes.length>0){
+            if(apiInfo.consumes!=undefined&&apiInfo.consumes!=null&&apiInfo.consumes.length>0){
                 var ctp=apiInfo.consumes[0];
                 if(ctp=="multipart/form-data"){
                     swpinfo.contentType=ctp;
@@ -3656,12 +3659,24 @@
                 //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
                 var defaultType="application/x-www-form-urlencoded;charset=UTF-8";
                 var defaultValue="x-www-form-urlencoded";
-                for(var i=0;i<swpinfo.parameters;i++){
+                for(var i=0;i<swpinfo.parameters.length;i++){
                     var pt=swpinfo.parameters[i];
-                    if(pt.schemaValue=="MultipartFile"){
-                        defaultType="multipart/form-data";
-                        defaultValue="form-data";
-                        break;
+                    if(pt.in=="body"){
+                        if(pt.schemaValue=="MultipartFile"){
+                            defaultType="multipart/form-data";
+                            defaultValue="form-data";
+                            break;
+                        }else{
+                            defaultValue="raw";
+                            defaultType="application/json";
+                            break;
+                        }
+                    }else{
+                        if(pt.schemaValue=="MultipartFile") {
+                            defaultType = "multipart/form-data";
+                            defaultValue = "form-data";
+                            break;
+                        }
                     }
                 }
                 swpinfo.contentType=defaultType;
@@ -4125,10 +4140,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
