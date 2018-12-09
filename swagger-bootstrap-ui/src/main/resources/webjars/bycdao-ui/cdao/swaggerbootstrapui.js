@@ -21,6 +21,9 @@
         this.url="swagger-resources";
         //文档id
         this.docId="content";
+        this.title="swagger-bootstrap-ui";
+        this.titleOfUrl="https://gitee.com/xiaoym/swagger-bootstrap-ui";
+        this.load=1;
         //tabid
         this.tabId="tabUl";
         this.tabContentId="tabContent";
@@ -306,6 +309,13 @@
         //设置doc.html文档的title属性
         if(title!=null&&title!=undefined&&title!=""){
             $("title").html(title);
+            if(that.load==1){
+                $("#swaggerBootstrapHrefTitle").html(title);
+                that.load=2;
+                $("#swaggerBootstrapHrefTitle").attr("href","javascript:void(0)")
+            }
+        }else{
+            $("#swaggerBootstrapHrefTitle").html(that.title);
         }
     }
     /***
