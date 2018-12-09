@@ -195,14 +195,6 @@ public class SwaggerBootstrapUiDemoApplication  implements WebMvcConfigurer{
 
 ![SwaggerModels](static/models.png)
 
-## 捐赠
-
-无论捐赠金额多少都足够表达您这份心意,非常感谢!!!谢谢~~~:)
-
-<figure class="half">
-    <img src="static/pay_ali.jpg" width="300" style="">
-    <img src="static/pay_wechat.jpg" width="300">
-</figure>
 
 
 
