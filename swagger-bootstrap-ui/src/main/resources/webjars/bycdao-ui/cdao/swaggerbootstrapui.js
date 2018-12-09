@@ -49,7 +49,8 @@
             showApiUrl:false,//接口api地址不显示
             showTagStatus:false,//分组tag显示description属性,针对@Api注解没有tags属性值的情况
             enableSwaggerBootstrapUi:false,//是否开启swaggerBootstrapUi增强
-            treeExplain:true
+            treeExplain:true,
+            enableRequestCache:true//是否开启请求参数缓存
         };
         //SwaggerBootstrapUi增强注解地址
         this.extUrl="/v2/api-docs-ext";
@@ -88,6 +89,8 @@
             if(globalSettings!=undefined&&globalSettings!=null&&globalSettings!=""){
                 var settings=JSON.parse(globalSettings);
                 that.settings=$.extend({},that.settings,settings);
+                that.log("settings-----------------")
+                that.log(settings)
             }
         }
     }
@@ -532,6 +535,8 @@
         //内容覆盖
         setTimeout(function () {
             if (!that.tabExists(tabId)) {
+                that.log("settings-----------------")
+                that.log(that.settings)
                 var html = template(tabId, that.settings);
                 var tabObj={
                     id:tabId,
@@ -549,9 +554,15 @@
                     var enableSbu=$("#SwaggerBootstrapUiSettings").find("input[name=enableSwaggerBootstrapUi]");
                     //tag属性说明
                     var showTagStatusElem=$("#SwaggerBootstrapUiSettings").find("input[name=showTagStatus]");
+
+                    var enableRequestCache=$("#SwaggerBootstrapUiSettings").find("input[name=enableRequestCache]");
+
                     var showApiFlag=showApi.prop("checked");
                     var enableSbuFlag=enableSbu.prop("checked");
                     var showTagStatus=showTagStatusElem.prop("checked");
+
+                    var cacheRequest=enableRequestCache.prop("checked");
+
                     var flag=true;
                     //如果开启SwawggerBootstrapUi增强,则判断当前后端是否启用注解
                     if(enableSbuFlag){
@@ -587,9 +598,13 @@
                         var setts={
                             showApiUrl:showApiFlag,//接口api地址不显示
                             showTagStatus:showTagStatus,//tag显示description属性.
-                            enableSwaggerBootstrapUi:enableSbuFlag//是否开启swaggerBootstrapUi增强
+                            enableSwaggerBootstrapUi:enableSbuFlag,//是否开启swaggerBootstrapUi增强
+                            enableRequestCache:cacheRequest
                         }
                         that.saveSettings(setts);
+                        if (!cacheRequest){
+                            that.disableStoreRequestParams();
+                        }
                     }
                 })
             }else{
@@ -1389,7 +1404,10 @@
                             value = paramtr.find("td:eq(3)").find("textarea").val();
                             formData.append(key, value);
                         }
-                        that.updateRequestParameter(trdata.name, value, apiInfo);
+                        //如果不开启缓存,则不保留
+                        if(that.settings.enableRequestCache){
+                            that.updateRequestParameter(trdata.name, value, apiInfo);
+                        }
                     }
                     else if(trdata["in"]=="formData"){
                         //直接判断那类型
@@ -1424,11 +1442,15 @@
                             formData.append(key, value);
                             formCurlParams[key]=value;
                         }
-                        that.updateRequestParameter(trdata.name, value, apiInfo);
+                        if(that.settings.enableRequestCache){
+                            that.updateRequestParameter(trdata.name, value, apiInfo);
+                        }
                     }else{
                         if(trdata.emflag){
                             value=paramtr.find("td:eq(3)").find("select option:selected").val();
-                            that.updateRequestParameter(trdata.name,value,apiInfo);
+                            if(that.settings.enableRequestCache){
+                                that.updateRequestParameter(trdata.name,value,apiInfo);
+                            }
                             formData.append(key,value);
                         }else{
                             if(trdata["type"]=="array"){
@@ -1441,7 +1463,9 @@
                                 })
                             }else{
                                 value=paramtr.find("td:eq(3)").find("input").val();
-                                that.updateRequestParameter(trdata.name,value,apiInfo);
+                                if(that.settings.enableRequestCache){
+                                    that.updateRequestParameter(trdata.name,value,apiInfo);
+                                }
                                 formData.append(key,value);
                                 //queryStringParameterArr.push(key+"="+value)
                             }
@@ -1663,10 +1687,10 @@
                     }
                 })
             }
-
-            //缓存到localStorage对象中
-            that.cacheRequestParameters(apiInfo);
-
+            if(that.settings.enableRequestCache){
+                //缓存到localStorage对象中
+                that.cacheRequestParameters(apiInfo);
+            }
         })
 
         //path替换url-功能
@@ -1737,6 +1761,17 @@
             }
         }
 
+    }
+
+    /***
+     * 当设置不启用缓存策略时,移除缓存常量值
+     */
+    SwaggerBootstrapUi.prototype.disableStoreRequestParams=function () {
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var key = "SwaggerBootstrapUiStore";
+            store.setItem(key,"");
+        }
     }
 
     /***
