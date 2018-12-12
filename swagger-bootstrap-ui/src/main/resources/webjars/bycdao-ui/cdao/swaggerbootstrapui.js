@@ -56,6 +56,8 @@
         this.extUrl="/v2/api-docs-ext";
         //验证增强有效地址
         this.validateExtUrl="";
+        //缓存api对象,以区分是否是新的api,存储SwaggerBootstapUiCacheApi对象
+        this.cacheApis=null;
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -65,7 +67,7 @@
         that.welcome();
         that.initSettings();
         that.initWindowWidthAndHeight();
-
+        that.initApis();
         that.windowResize();
         //加载分组接口
         that.analysisGroup();
@@ -77,6 +79,32 @@
         that.tabCloseEventsInit();
     }
 
+    SwaggerBootstrapUi.prototype.initApis=function () {
+        var that=this;
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var cacheApis=store["SwaggerBootstrapUiCacheApis"];
+            if(cacheApis!=undefined&&cacheApis!=null&&cacheApis!=""){
+                var settings=JSON.parse(cacheApis);
+                that.cacheApis=settings;
+                that.cacheApis.load=false;
+            }else{
+                that.cacheApis=new SwaggerBootstrapUiCacheApis();
+            }
+        }
+    }
+
+    /***
+     * 缓存对象
+     */
+    SwaggerBootstrapUi.prototype.storeCacheApis=function () {
+        var that=this;
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var str=JSON.stringify(that.cacheApis);
+            store.setItem("SwaggerBootstrapUiCacheApis",str);
+        }
+    }
 
     /***
      * 读取个性化配置信息
@@ -94,6 +122,8 @@
             }
         }
     }
+
+
 
     SwaggerBootstrapUi.prototype.initScrollEvent=function (id) {
         var that=this;
@@ -352,7 +382,7 @@
                 url:api,
                 dataType:"json",
                 type:"get",
-                async:false,
+                //async:false,
                 success:function (data) {
                     //var menu=JSON.parse(data);
                     that.log("success")
@@ -509,7 +539,7 @@
                         childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
                     }else{
                         //不显示api地址
-                        childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div></div></li>');
+                        childrenLi=$('<li class="menuLi" ><i class="iconfont icon-new-api" style="position: absolute;"></i><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div></div></li>');
                     }
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
@@ -3094,6 +3124,16 @@
             }*/
             that.log("解析Paths结束,耗时："+(new Date().getTime()-pathStartTime));
             that.log(new Date().toTimeString());
+            //如果是第一次加载,默认缓存所有接口到store
+            if (that.cacheApis.load){
+                $.each(that.currentInstance.paths,function (i, p) {
+                    that.cacheApis.allApis.push(p.id);
+                })
+                //push完毕,
+                //所有api集合
+                that.log(that.cacheApis);
+
+            }
         }
         //解析securityDefinitions属性
         if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("securityDefinitions")){
@@ -4333,6 +4373,17 @@
         this.models=new Array();
         this.modelNames=new Array();
     }
+
+    /***
+     * 缓存apis
+     * @constructor
+     */
+    var SwaggerBootstrapUiCacheApis=function () {
+        this.allApis=new Array();
+        this.newApis=new Array();
+        this.load=true;
+    }
+
     /***
      * 计数器
      * @constructor
