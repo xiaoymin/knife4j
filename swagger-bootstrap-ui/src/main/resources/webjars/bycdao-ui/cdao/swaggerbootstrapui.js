@@ -105,6 +105,33 @@
         }
     }
 
+
+    /***
+     * 将接口id加入缓存，再页面点击后
+     * @param mid
+     */
+    SwaggerBootstrapUi.prototype.storeCacheApiAddApiInfo=function (mid) {
+        var that=this;
+        if(window.localStorage){
+            var store = window.localStorage;
+            var cacheApis=store["SwaggerBootstrapUiCacheApis"];
+            var insid=that.currentInstance.groupId;
+            if(cacheApis!=undefined&&cacheApis!=null&&cacheApis!="") {
+                var settings = JSON.parse(cacheApis);
+                $.each(settings,function (i, s) {
+                    if(s.id==insid){
+                        s.cacheApis.push(mid);
+                    }
+                })
+                var str=JSON.stringify(settings);
+                store.setItem("SwaggerBootstrapUiCacheApis",str);
+            }
+        }
+
+
+    }
+
+
     /***
      * 读取个性化配置信息
      */
@@ -1024,7 +1051,11 @@
         var that=this;
         var element=that.layui.element;
         var treetable=that.treetable;
-
+        if (apiInfo.hasNew){
+            //存储id
+            that.log("新接口,存储")
+            that.storeCacheApiAddApiInfo(apiInfo.id);
+        }
         var tabId="tab"+apiInfo.id;
         var layerTabId="layerTab"+tabId;
         //判断tabId是否存在
