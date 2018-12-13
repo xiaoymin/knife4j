@@ -1744,6 +1744,7 @@
                     that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
                         formCurlParams,xhr,data,startTime,allheaders,true);
                 }).catch(function (error) {
+                    that.log("form request--response error-------------------")
                     respcleanDiv.show();
                     layer.close(index);
                     if(error.response){
@@ -1753,6 +1754,13 @@
                         var allheaders=response.headers;
                         that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
                             formCurlParams,xhr,data,startTime,allheaders,true);
+                    }else{
+                        if (error!=null){
+                            var estr=error.toString();
+                            if(estr=="Error: Network Error"){
+                                layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                            }
+                        }
                     }
                 })
             }
@@ -1770,10 +1778,17 @@
                             formCurlParams,xhr,data,startTime,allheaders,false);
                     },
                     error:function (xhr, textStatus, errorThrown) {
-                        var allheaders=xhr.getAllResponseHeaders();
-                        var data=null;
-                        that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
-                            formCurlParams,xhr,data,startTime,allheaders,false);
+                        that.log("ajax request--response error-------------------")
+                        if(textStatus=="error"&&xhr.status==0){
+                            layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                            //关闭遮罩层
+                            layer.close(index);
+                        }else{
+                            var allheaders=xhr.getAllResponseHeaders();
+                            var data=null;
+                            that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                                formCurlParams,xhr,data,startTime,allheaders,false);
+                        }
                     }
                 })
             }
