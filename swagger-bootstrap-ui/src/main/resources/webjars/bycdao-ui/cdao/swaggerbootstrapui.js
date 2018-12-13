@@ -1064,6 +1064,7 @@
             that.tabRollPage("auto");
         }else{
             //that.createTabElement();
+            //html转义
             var dynaTab=template('BootstrapDynaTab',apiInfo);
             //不存在,添加
             var tabObj={id: tabId, title: apiInfo.summary, content: dynaTab};
@@ -1084,6 +1085,12 @@
             }
             that.log("treeTable----------------data-------------------------")
             that.log(data);
+            that.log("排序")
+            if(data!=null){
+                data.sort(function (a, b) {
+                    return b.require-a.require;
+                })
+            }
             treetable.render({
               elem:"#"+requestTableId,
                 data: data,
@@ -1298,7 +1305,13 @@
                     }
                 }
             }
+
+            //排序
+            apiInfo.parameters.sort(function (a, b) {
+                return b.require-a.require;
+            })
         }
+
 
         apiInfo.globalParameters=that.getGlobalParameters();
         var debugContentId="DebugDoc"+apiInfo.id;
@@ -1320,6 +1333,9 @@
                 }
             })
         }
+
+
+
         var html = template('DebugScript', apiInfo);
         $("#"+debugContentId).html("").html(html)
         //string类型的arr参数动态添加事件
