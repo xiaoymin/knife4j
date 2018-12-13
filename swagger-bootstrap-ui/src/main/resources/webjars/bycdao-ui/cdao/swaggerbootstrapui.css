@@ -561,6 +561,10 @@ code {
     background-color: white;
     color: #df4646;
 }
+
+.sbu-api-new-flag-icon{
+    position: absolute;font-size:26px;
+}
 /**离线文档*/
 .offlineMarkdownShow{
 
