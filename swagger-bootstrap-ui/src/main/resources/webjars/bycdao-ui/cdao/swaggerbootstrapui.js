@@ -590,12 +590,17 @@
                         //新接口
                         newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:32px;"></i>';
                     }
+                    var depStyle=' ';
+                    if(children.deprecated){
+                        depStyle=' style="text-decoration:line-through;"';
+                    }
+
                     if(that.settings.showApiUrl){
                         //显示api地址
-                        childrenLi=$('<li class="menuLi" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
+                        childrenLi=$('<li class="menuLi" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
                     }else{
                         //不显示api地址
-                        childrenLi=$('<li class="menuLi" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div></div></li>');
+                        childrenLi=$('<li class="menuLi" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
                     }
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
@@ -3541,6 +3546,9 @@
         var md5Str=newurl+mtype.toUpperCase();
         swpinfo.id=md5(md5Str);
         if(apiInfo!=null){
+            if(apiInfo.hasOwnProperty("deprecated")){
+                swpinfo.deprecated=apiInfo["deprecated"];
+            }
             swpinfo.consumes=apiInfo.consumes;
             swpinfo.description=apiInfo.description;
             swpinfo.operationId=apiInfo.operationId;
@@ -4637,8 +4645,11 @@
         this.id="";
         //排序
         this.order=2147483647;
-
+        //add by xiaoymin 2018-12-14 17:04:42
+        //是否新接口
         this.hasNew=false;
+        //是否过时
+        this.deprecated=false;
 
     }
 
