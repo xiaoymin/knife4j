@@ -3211,7 +3211,65 @@
                 }
             })
 
+           /* var selfPath="/api/new188/self";
+            var selfobj={
+                "summary": "第一个list功能",
+                "tags": [
+                    "1.8.8版本-20181208"
+                ],
+                "deprecated": false,
+                "produces": [
+                    "*!/!*"
+                ],
+                "operationId": "list3GET4997028859787988992",
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "name": "id",
+                                    "in": "formData",
+                                    "description": "标识的desc",
+                                    "required": true,
+                                    "type": "string"
+                                },
+                                "createTime": {
+                                    "name": "createTime",
+                                    "in": "formData",
+                                    "description": "时间的desc",
+                                    "required": false,
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "返回profile列表"
+                    }
+                },
+                "description": "list的description",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "formData",
+                        "description": "标识的desc",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "createTime",
+                        "in": "formData",
+                        "description": "时间的desc",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "consumes": [
+                    "application/xml"
+                ]
+            }
 
+            var selfins=that.createApiInfoInstance(selfPath,"get",selfobj);
+            that.currentInstance.paths.push(selfins);*/
            /* for(var path in paths){
 
 
@@ -3718,15 +3776,67 @@
                                     }
                                 }
                             }else{
-                                //判断是否是基础类型
-                                if($.checkIsBasicType(t)){
-                                    //基础类型
-                                    swpinfo.responseText=t;
-                                    swpinfo.responseBasicType=true;
+                                //判断是否存在properties属性
+                                if(schema.hasOwnProperty("properties")){
+                                    swaggerResp.schema=t;
+                                    //自定义类型、放入difarrs对象中
+                                    var swud=new SwaggerBootstrapUiDefinition();
+                                    swud.name=swpinfo.id;
+                                    swud.description="自定义Schema";
+                                    definitionType=swud.name;
+
+                                    var properties=schema["properties"];
+                                    var defiTypeValue={};
+                                    for(var property in properties) {
+                                        var spropObj = new SwaggerBootstrapUiProperty();
+                                        spropObj.name = property;
+                                        var propobj = properties[property];
+                                        spropObj.originProperty = propobj;
+                                        spropObj.type = $.propValue("type", propobj, "string");
+                                        spropObj.description = $.propValue("description", propobj, "");
+                                        spropObj.example = $.propValue("example", propobj, "");
+                                        spropObj.format = $.propValue("format", propobj, "");
+                                        spropObj.required = $.propValue("required", propobj, false);
+                                        if (swud.required.length > 0) {
+                                            //有required属性,需要再判断一次
+                                            if ($.inArray(spropObj.name, swud.required) > -1) {
+                                                //存在
+                                                spropObj.required = true;
+                                            }
+                                        }
+                                        //默认string类型
+                                        var propValue="";
+                                        //判断是否有类型
+                                        if(propobj.hasOwnProperty("type")){
+                                            var type=propobj["type"];
+                                            //判断是否有example
+                                            if(propobj.hasOwnProperty("example")){
+                                                propValue=propobj["example"];
+                                            }else if($.checkIsBasicType(type)){
+                                                propValue=$.getBasicTypeValue(type);
+                                            }
+
+                                        }
+                                        spropObj.value=propValue;
+                                        //判断是否有format,如果是integer,判断是64位还是32位
+                                        if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
+                                            spropObj.type=spropObj.format;
+                                        }
+                                        swud.properties.push(spropObj);
+                                        defiTypeValue[property]=propValue;
+                                    }
+                                    swud.value=defiTypeValue;
+                                    that.currentInstance.difArrs.push(swud);
+                                }else{
+                                    //判断是否是基础类型
+                                    if($.checkIsBasicType(t)){
+                                        //基础类型
+                                        swpinfo.responseText=t;
+                                        swpinfo.responseBasicType=true;
+                                    }
                                 }
                             }
                         }
-
                     }
                     swpinfo.responseCodes.push(swaggerResp);
                 }
