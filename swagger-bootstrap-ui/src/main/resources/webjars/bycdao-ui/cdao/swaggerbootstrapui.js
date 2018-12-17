@@ -3745,11 +3745,13 @@
             //解析responsecode
             if(typeof (apiInfo.responses)!='undefined'&&apiInfo.responses!=null){
                 var resp=apiInfo.responses;
+                var rpcount=0;
                 for(var status in resp) {
                     var swaggerResp=new SwaggerBootstrapUiResponseCode();
                     var rescrobj = resp[status];
                     swaggerResp.code=status;
                     swaggerResp.description=rescrobj["description"];
+                    var rptype=null;
                     if (rescrobj.hasOwnProperty("schema")){
                         var schema=rescrobj["schema"];
                         //单引用类型
@@ -3759,7 +3761,9 @@
                             if(regex.test(schema["$ref"])) {
                                 var ptype=RegExp.$1;
                                 swpinfo.responseParameterRefName=ptype;
+                                swaggerResp.responseParameterRefName=ptype;
                                 definitionType=ptype;
+                                rptype=ptype;
                                 swaggerResp.schema=ptype;
                             }
                         }else if(schema.hasOwnProperty("type")){
@@ -3771,7 +3775,9 @@
                                     if(regex.test(items["$ref"])) {
                                         var ptype=RegExp.$1;
                                         swpinfo.responseParameterRefName=ptype;
+                                        swaggerResp.responseParameterRefName=ptype;
                                         definitionType=ptype;
+                                        rptype=ptype;
                                         swaggerResp.schema=ptype;
                                     }
                                 }
@@ -3784,6 +3790,8 @@
                                     swud.name=swpinfo.id;
                                     swud.description="自定义Schema";
                                     definitionType=swud.name;
+                                    rptype=swud.name;
+                                    swaggerResp.responseParameterRefName=swud.name;
 
                                     var properties=schema["properties"];
                                     var defiTypeValue={};
@@ -3833,16 +3841,99 @@
                                         //基础类型
                                         swpinfo.responseText=t;
                                         swpinfo.responseBasicType=true;
+
+                                        //响应状态码的响应内容
+                                        swaggerResp.responseText=t;
+                                        swaggerResp.responseBasicType=true;
                                     }
                                 }
                             }
                         }
                     }
+                    if(rptype!=null){
+                        //查询
+                        for(var i=0;i<that.currentInstance.difArrs.length;i++){
+                            var ref=that.currentInstance.difArrs[i];
+                            if(ref.name==rptype){
+                                if (arr){
+                                    var na=new Array();
+                                    na.push(ref.value);
+                                    swaggerResp.responseValue=JSON.stringify(na,null,"\t");
+                                    swaggerResp.responseJson=na;
+                                }else{
+                                    swaggerResp.responseValue=JSON.stringify(ref.value,null,"\t");
+                                    swaggerResp.responseJson=ref.value;
+                                }
+                            }
+                        }
+                        //响应参数
+                        var def=that.getDefinitionByName(rptype);
+                        if (def!=null){
+                            if(def.hasOwnProperty("properties")){
+                                var props=def["properties"];
+                                $.each(props,function (i, p) {
+                                    var resParam=new SwaggerBootstrapUiParameter();
+                                    resParam.name=p.name;
+                                    if (!checkParamArrsExists(swaggerResp.responseParameters,resParam)){
+                                        swaggerResp.responseParameters.push(resParam);
+                                        resParam.description=$.replaceMultipLineStr(p.description);
+                                        if(p.type==null||p.type==""){
+                                            if(p.refType!=null){
+                                                if(!$.checkIsBasicType(p.refType)){
+                                                    resParam.schemaValue=p.refType;
+                                                    //存在引用类型,修改默认type
+                                                    resParam.type=p.refType;
+                                                    var deepDef=that.getDefinitionByName(p.refType);
+                                                    deepResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                    resParam.parentTypes.push(p.refType);
+                                                    deepTreeTableResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                }
+                                            }
+                                        }else{
+                                            resParam.type=p.type;
+                                            if(!$.checkIsBasicType(p.type)){
+                                                if(p.refType!=null){
+                                                    if(!$.checkIsBasicType(p.refType)){
+                                                        resParam.schemaValue=p.refType;
+                                                        //存在引用类型,修改默认type
+                                                        if(p.type!="array"){
+                                                            resParam.type=p.refType;
+                                                        }
+                                                        var deepDef=that.getDefinitionByName(p.refType);
+                                                        deepResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                        resParam.parentTypes.push(p.refType);
+                                                        deepTreeTableResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                    }
+                                                }else{
+                                                    resParam.schemaValue=p.type;
+                                                    //存在引用类型,修改默认type
+                                                    resParam.type=p.type;
+                                                    var deepDef=that.getDefinitionByName(p.type);
+                                                    deepResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                    resParam.parentTypes.push(p.type);
+                                                    deepTreeTableResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
+
+                            }
+                        }
+                    }
+
+                    if(swaggerResp.schema!=null&&swaggerResp.schema!=undefined){
+                        rpcount=rpcount+1;
+                    }
                     swpinfo.responseCodes.push(swaggerResp);
+                }
+                swpinfo.multipartResponseSchemaCount=rpcount;
+                if(rpcount>1){
+                    swpinfo.multipartResponseSchema=true;
                 }
             }
 
-            if (definitionType!=null){
+            if (definitionType!=null&&!swpinfo.multipartResponseSchema){
                 //查询
                 for(var i=0;i<that.currentInstance.difArrs.length;i++){
                     var ref=that.currentInstance.difArrs[i];
@@ -4760,6 +4851,9 @@
         this.hasNew=false;
         //是否过时
         this.deprecated=false;
+        //是否存在响应状态码中  存在多个schema的情况
+        this.multipartResponseSchema=false;
+        this.multipartResponseSchemaCount=0;
 
     }
 
@@ -4828,6 +4922,19 @@
         this.code=null;
         this.description=null;
         this.schema=null;
+        //treetable组件使用对象
+        this.refTreetableparameters=new Array();
+        this.responseCodes=new Array();
+        this.responseValue=null;
+        this.responseJson=null;
+        this.responseText=null;
+        this.responseBasicType=false;
+        //响应字段说明
+        this.responseParameters=new Array();
+        this.responseParameterRefName="";
+        this.responseRefParameters=new Array();
+        //treetable组件使用对象
+        this.responseTreetableRefParameters=new Array();
     }
 
     /***
