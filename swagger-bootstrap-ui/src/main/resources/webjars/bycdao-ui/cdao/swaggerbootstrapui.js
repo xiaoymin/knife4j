@@ -58,6 +58,7 @@
         this.validateExtUrl="";
         //缓存api对象,以区分是否是新的api,存储SwaggerBootstapUiCacheApi对象
         this.cacheApis=null;
+        this.hasLoad=false;
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -416,16 +417,20 @@
             if(idx==0){
                 api=api.substr(1);
             }
-            that.log("截取后的url:"+api);
-            /*api="/webjars/bycdao-ui/cdao/d1.json";
+           /* that.log("截取后的url:"+api);
+            api="/webjars/bycdao-ui/cdao/d1.json";
             that.log("截取后的url:"+api);*/
+            var async=that.hasLoad;
+            that.log("是否开启异步加载："+async)
+
             $.ajax({
                 //url:"v2/api-docs",
                 url:api,
                 dataType:"json",
                 type:"get",
-                //async:false,
+                async:async,
                 success:function (data) {
+                    that.hasLoad=true;
                     //var menu=JSON.parse(data);
                     that.log("success")
                     that.log(data);
@@ -451,6 +456,7 @@
                     that.log(xhr);
                     that.log(textStatus);
                     that.log(errorThrown);
+                    that.hasLoad=true;
                     var txt=xhr.responseText;
                     //替换带[]
                     that.log("replace...")
@@ -569,7 +575,7 @@
 
                 var tagNewApiIcon="";
                 if(tag.hasNew){
-                    tagNewApiIcon='<i class="iconfont icon-xinpin" style="float: right;margin-right: 30px;"></i>';
+                    tagNewApiIcon='<i class="iconfont icon-xinpin" style="float: right;right: 30px;position: absolute;"></i>';
                 }
                 var titleA=null;
                 if(that.settings.showTagStatus){
@@ -2825,11 +2831,26 @@
                 val=val.replace(/(^\*\*.*\*\*\:$)/igm,"\n$1\n");
                 val=val.replace(/(^\*\*.*\*\*$)/igm,"\n$1\n");
                 $("#txtOffLineDoc").val(val);
+                that.log(that.currentInstance.paths.length)
+                //如果当前接口梳理超过一定限制,md离线文档不予显示，仅仅展示源文件
+                if(that.currentInstance.paths!=null&&that.currentInstance.paths.length>300){
+                    $("#txtOffLineDoc").show();
+                    $("#txtOffLineDoc").parent().css("width","100%");
+                    layer.msg("当前接口数量超出限制,请使用第三方markdown转换软件进行转换以查看效果.")
 
-                var convert=new showdown.Converter({tables:true,tablesHeaderId:true});
+                }else{
+                    var convert=new showdown.Converter({tables:true,tablesHeaderId:true});
+                    var html=convert.makeHtml(val);
+                    $("#offlineMarkdownShow").html(html);
+                    that.markdownToTabContent();
+                }
+
+
+
+                /*var convert=new showdown.Converter({tables:true,tablesHeaderId:true});
                 var html=convert.makeHtml(val);
                 $("#offlineMarkdownShow").html(html);
-                that.markdownToTabContent();
+                that.markdownToTabContent();*/
             }else{
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
