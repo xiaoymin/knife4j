@@ -105,9 +105,9 @@
             </div>
         </div>
     </div>
-    <div class="sbu-header-left" style="width: 410px;">
+    <div class="sbu-header-left" style="width: 700px;">
         <i class="iconfont icon-zuosuojin1" style="font-size: 1.5em;margin-left: 10px;" id="leftCheck" data-display="0"></i>
-        <span><a href="https://gitee.com/xiaoym/swagger-bootstrap-ui" target="_blank">swagger-bootstrap-ui</a></span>
+        <span><a href="https://gitee.com/xiaoym/swagger-bootstrap-ui" target="_blank" id="swaggerBootstrapHrefTitle"></a></span>
     </div>
     <div class="sbu-header-right">
         <div class="form-group sbu-header-group">
@@ -781,7 +781,7 @@
                                 {{each responseCodes}}
                                 <tr>
                                     <td>{{$value.code}}</td>
-                                    <td>{{$value.description}}</td>
+                                    <td>{{# $value.description}}</td>
                                     <td>{{$value.schema}}</td>
                                 </tr>
                                 {{/each}}
@@ -792,11 +792,43 @@
                             {{/if}}
                             </tbody>
                         </table>
-                        <p><strong>响应参数</strong></p>
-                        <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
-                        </table>
-                        <p><strong>响应示例</strong></p>
-                        <div id="editorSample{{id}}" style="width: auto;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
+                        {{if multipartResponseSchema }}
+                            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                                <ul class="layui-tab-title" style="padding: 0px;margin-left: 10px;">
+                                    {{each responseCodes}}
+                                        {{if $value.schema!=null}}
+                                            <li {{if $index==0}} class="layui-this" {{/if}} >{{$value.code}}</li>
+                                        {{/if}}
+                                    {{/each}}
+                                </ul>
+                                <div class="layui-tab-content" style="height: 100%;margin-top: 0px;left: 0px;position: absolute;width: 98%;margin-left: 10px;">
+                                    {{each responseCodes}}
+                                        {{if $value.schema!=null}}
+                                            {{if $index==0 }}
+                                            <div class="layui-tab-item layui-show">
+                                            {{else}}
+                                                <div class="layui-tab-item">
+                                            {{/if}}
+                                                    <div>
+                                                        <p><strong>{{$value.code}}-响应参数</strong></p>
+                                                        <table id="responseParameter{{id}}-{{$value.code}}" class="layui-table"  lay-filter="responseParameter{{id}}-{{$value.code}}">
+                                                        </table>
+                                                        <p><strong>{{$value.code}}-响应示例</strong></p>
+                                                        <div id="editorSample{{id}}-{{$value.code}}" style="width: auto;bottom: 10px;">{{ if $value.responseBasicType }}{{$value.responseText}}{{else}}{{$value.responseValue}}{{/if}}</div>
+                                                    </div>
+
+                                                </div>
+                                        {{/if}}
+                                    {{/each}}
+                                </div>
+                            </div>
+                        {{else}}
+                                <p><strong>响应参数</strong></p>
+                                <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
+                                </table>
+                                <p><strong>响应示例</strong></p>
+                                <div id="editorSample{{id}}" style="width: auto;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
+                        {{/if}}
                     </div>
                     <textarea rows="10" cols="10" id="docText{{id}}" style="display: none;">
 
@@ -1037,6 +1069,17 @@
                         <li>2.启用SwaggerBootstrapUi增强功能时,请按照文档配置以保障生效,否则无法使用.</li>
                         <li>3.保存配置后,请刷新该文档页面使个性化配置生效.</li>
                     </ul>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-lg-2">请求参数缓存</label>
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="enableRequestCache" <%if(enableRequestCache){ %> checked="checked"  <%}%> />
+                                开启请求参数缓存
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label col-lg-2">菜单Api地址显示</label>

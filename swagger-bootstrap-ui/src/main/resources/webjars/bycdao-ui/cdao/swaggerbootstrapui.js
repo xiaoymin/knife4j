@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.8.7
+ * swagger-bootstrap-ui v1.8.8
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
@@ -21,6 +21,9 @@
         this.url="swagger-resources";
         //文档id
         this.docId="content";
+        this.title="swagger-bootstrap-ui";
+        this.titleOfUrl="https://gitee.com/xiaoym/swagger-bootstrap-ui";
+        this.load=1;
         //tabid
         this.tabId="tabUl";
         this.tabContentId="tabContent";
@@ -39,19 +42,23 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.8.7";
+        this.version="1.8.8";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
             showApiUrl:false,//接口api地址不显示
             showTagStatus:false,//分组tag显示description属性,针对@Api注解没有tags属性值的情况
             enableSwaggerBootstrapUi:false,//是否开启swaggerBootstrapUi增强
-            treeExplain:true
+            treeExplain:true,
+            enableRequestCache:true//是否开启请求参数缓存
         };
         //SwaggerBootstrapUi增强注解地址
         this.extUrl="/v2/api-docs-ext";
         //验证增强有效地址
         this.validateExtUrl="";
+        //缓存api对象,以区分是否是新的api,存储SwaggerBootstapUiCacheApi对象
+        this.cacheApis=null;
+        this.hasLoad=false;
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -61,7 +68,7 @@
         that.welcome();
         that.initSettings();
         that.initWindowWidthAndHeight();
-
+        that.initApis();
         that.windowResize();
         //加载分组接口
         that.analysisGroup();
@@ -71,6 +78,58 @@
         that.searchEvents();
         //tab事件
         that.tabCloseEventsInit();
+    }
+
+    SwaggerBootstrapUi.prototype.initApis=function () {
+        var that=this;
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var cacheApis=store["SwaggerBootstrapUiCacheApis"];
+            if(cacheApis!=undefined&&cacheApis!=null&&cacheApis!=""){
+                var settings=JSON.parse(cacheApis);
+                that.cacheApis=settings;
+            }else{
+                that.cacheApis=new Array();
+            }
+        }
+    }
+
+    /***
+     * 缓存对象
+     */
+    SwaggerBootstrapUi.prototype.storeCacheApis=function () {
+        var that=this;
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var str=JSON.stringify(that.cacheApis);
+            store.setItem("SwaggerBootstrapUiCacheApis",str);
+        }
+    }
+
+
+    /***
+     * 将接口id加入缓存，再页面点击后
+     * @param mid
+     */
+    SwaggerBootstrapUi.prototype.storeCacheApiAddApiInfo=function (mid) {
+        var that=this;
+        if(window.localStorage){
+            var store = window.localStorage;
+            var cacheApis=store["SwaggerBootstrapUiCacheApis"];
+            var insid=that.currentInstance.groupId;
+            if(cacheApis!=undefined&&cacheApis!=null&&cacheApis!="") {
+                var settings = JSON.parse(cacheApis);
+                $.each(settings,function (i, s) {
+                    if(s.id==insid){
+                        s.cacheApis.push(mid);
+                    }
+                })
+                var str=JSON.stringify(settings);
+                store.setItem("SwaggerBootstrapUiCacheApis",str);
+            }
+        }
+
+
     }
 
 
@@ -85,9 +144,13 @@
             if(globalSettings!=undefined&&globalSettings!=null&&globalSettings!=""){
                 var settings=JSON.parse(globalSettings);
                 that.settings=$.extend({},that.settings,settings);
+                that.log("settings-----------------")
+                that.log(settings)
             }
         }
     }
+
+
 
     SwaggerBootstrapUi.prototype.initScrollEvent=function (id) {
         var that=this;
@@ -265,6 +328,19 @@
                     if(that.validateExtUrl==""){
                         that.validateExtUrl=g.extUrl;
                     }
+                    //赋值查找缓存的id
+                    if (that.cacheApis.length>0){
+                        var cainstance=null;
+                        $.each(that.cacheApis,function (x, ca) {
+                            if(ca.id==g.groupId){
+                                cainstance=ca;
+                            }
+                        })
+                        if (cainstance!=null){
+                            g.firstLoad=false;
+                            g.groupApis=cainstance.cacheApis;
+                        }
+                    }
                     that.instances.push(g);
                 })
             },
@@ -276,6 +352,9 @@
             }
         })
     }
+
+
+
     /***
      * 基础实例赋值
      * @param menu
@@ -306,6 +385,14 @@
         //设置doc.html文档的title属性
         if(title!=null&&title!=undefined&&title!=""){
             $("title").html(title);
+            if(that.load==1){
+                $("#swaggerBootstrapHrefTitle").html(title);
+                that.load=2;
+                $("#swaggerBootstrapHrefTitle").attr("href","javascript:void(0)")
+            }
+        }else{
+            $("#swaggerBootstrapHrefTitle").html(that.title);
+            $("#swaggerBootstrapHrefTitle").attr("href",that.titleOfUrl)
         }
     }
     /***
@@ -331,16 +418,20 @@
             if(idx==0){
                 api=api.substr(1);
             }
-            that.log("截取后的url:"+api);
-            /*api="/webjars/bycdao-ui/cdao/d1.json";
+           /* that.log("截取后的url:"+api);
+            api="/webjars/bycdao-ui/cdao/d1.json";
             that.log("截取后的url:"+api);*/
+            var async=that.hasLoad;
+            that.log("是否开启异步加载："+async)
+
             $.ajax({
                 //url:"v2/api-docs",
                 url:api,
                 dataType:"json",
                 type:"get",
-                async:false,
+                async:async,
                 success:function (data) {
+                    that.hasLoad=true;
                     //var menu=JSON.parse(data);
                     that.log("success")
                     that.log(data);
@@ -366,6 +457,7 @@
                     that.log(xhr);
                     that.log(textStatus);
                     that.log(errorThrown);
+                    that.hasLoad=true;
                     var txt=xhr.responseText;
                     //替换带[]
                     that.log("replace...")
@@ -466,6 +558,8 @@
         extLi.append(extul);
         that.getMenu().append(extLi);
 
+
+
         $.each(that.currentInstance.tags,function (i, tag) {
             var len=tag.childrens.length;
             if(len==0){
@@ -479,24 +573,41 @@
             }else{
                 //存在子标签
                 var li=$('<li  class="detailMenu"></li>');
+
+                var tagNewApiIcon="";
+                if(tag.hasNew){
+                    tagNewApiIcon='<i class="iconfont icon-xinpin" style="float: right;right: 30px;position: absolute;"></i>';
+                }
                 var titleA=null;
                 if(that.settings.showTagStatus){
-                    titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+')<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                    titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+')<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
                 }else{
-                    titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                    titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
                 }
                 //var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                 li.append(titleA);
                 //循环树
                 var ul=$('<ul class="submenu"></ul>')
-                $.each(tag.childrens,function (i, children) {
+
+
+                  $.each(tag.childrens,function (i, children) {
                     var childrenLi=null;
+                    var newApiIcon="";
+                    if (children.hasNew){
+                        //新接口
+                        newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:32px;"></i>';
+                    }
+                    var depStyle=' ';
+                    if(children.deprecated){
+                        depStyle=' style="text-decoration:line-through;"';
+                    }
+
                     if(that.settings.showApiUrl){
                         //显示api地址
-                        childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span>'+children.showUrl+'</span></div></div></li>');
+                        childrenLi=$('<li class="menuLi" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
                     }else{
                         //不显示api地址
-                        childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.summary+'</span></span></div></div></li>');
+                        childrenLi=$('<li class="menuLi" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
                     }
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
@@ -522,6 +633,8 @@
         //内容覆盖
         setTimeout(function () {
             if (!that.tabExists(tabId)) {
+                that.log("settings-----------------")
+                that.log(that.settings)
                 var html = template(tabId, that.settings);
                 var tabObj={
                     id:tabId,
@@ -539,9 +652,15 @@
                     var enableSbu=$("#SwaggerBootstrapUiSettings").find("input[name=enableSwaggerBootstrapUi]");
                     //tag属性说明
                     var showTagStatusElem=$("#SwaggerBootstrapUiSettings").find("input[name=showTagStatus]");
+
+                    var enableRequestCache=$("#SwaggerBootstrapUiSettings").find("input[name=enableRequestCache]");
+
                     var showApiFlag=showApi.prop("checked");
                     var enableSbuFlag=enableSbu.prop("checked");
                     var showTagStatus=showTagStatusElem.prop("checked");
+
+                    var cacheRequest=enableRequestCache.prop("checked");
+
                     var flag=true;
                     //如果开启SwawggerBootstrapUi增强,则判断当前后端是否启用注解
                     if(enableSbuFlag){
@@ -577,9 +696,13 @@
                         var setts={
                             showApiUrl:showApiFlag,//接口api地址不显示
                             showTagStatus:showTagStatus,//tag显示description属性.
-                            enableSwaggerBootstrapUi:enableSbuFlag//是否开启swaggerBootstrapUi增强
+                            enableSwaggerBootstrapUi:enableSbuFlag,//是否开启swaggerBootstrapUi增强
+                            enableRequestCache:cacheRequest
                         }
                         that.saveSettings(setts);
+                        if (!cacheRequest){
+                            that.disableStoreRequestParams();
+                        }
                     }
                 })
             }else{
@@ -940,7 +1063,11 @@
         var that=this;
         var element=that.layui.element;
         var treetable=that.treetable;
-
+        if (apiInfo.hasNew){
+            //存储id
+            that.log("新接口,存储")
+            that.storeCacheApiAddApiInfo(apiInfo.id);
+        }
         var tabId="tab"+apiInfo.id;
         var layerTabId="layerTab"+tabId;
         //判断tabId是否存在
@@ -949,6 +1076,7 @@
             that.tabRollPage("auto");
         }else{
             //that.createTabElement();
+            //html转义
             var dynaTab=template('BootstrapDynaTab',apiInfo);
             //不存在,添加
             var tabObj={id: tabId, title: apiInfo.summary, content: dynaTab};
@@ -969,6 +1097,12 @@
             }
             that.log("treeTable----------------data-------------------------")
             that.log(data);
+            that.log("排序")
+            if(data!=null){
+                data.sort(function (a, b) {
+                    return b.require-a.require;
+                })
+            }
             treetable.render({
               elem:"#"+requestTableId,
                 data: data,
@@ -1044,81 +1178,169 @@
             //默认全部展开
             treetable.expandAll('#'+requestTableId);
             $("#"+requestTableId).hide();
-            //响应参数
-            var responseTableId="responseParameter"+apiInfo.id;
-            var respdata=[];
-            if(apiInfo.responseParameters!=null&&apiInfo.responseParameters.length>0){
-                respdata=respdata.concat(apiInfo.responseParameters);
-            }
-            if(apiInfo.responseTreetableRefParameters!=null&&apiInfo.responseTreetableRefParameters.length>0){
-                $.each(apiInfo.responseTreetableRefParameters,function (i, ref) {
-                    respdata=respdata.concat(ref.params);
-                })
-            }
-            treetable.render({
-                elem:"#"+responseTableId,
-                data: respdata,
-                field: 'title',
-                treeColIndex: 0,          // treetable新增参数
-                treeSpid: -1,             // treetable新增参数
-                treeIdName: 'd_id',       // treetable新增参数
-                treePidName: 'd_pid',     // treetable新增参数
-                treeDefaultClose: true,   // treetable新增参数
-                treeLinkage: true,        // treetable新增参数
-                cols: [[
-                    {
-                        field: 'name',
-                        title: '参数名称',
-                        width: '20%'
-                    },
-                    {
-                        field: 'description',
-                        title: '说明',
-                        width: '40%'
-                    },
-                    {
-                        field: 'type',
-                        title: '类型',
-                        width: '20%'
-                    },
-                    {
-                        field: 'schemaValue',
-                        title: 'schema',
-                        width: '20%'
+
+            //响应参数行
+            if(apiInfo.multipartResponseSchema){
+                var apiId=apiInfo.id;
+                if(apiInfo.requestValue!=null){
+                    var sampleRequestId="editorRequestSample"+apiId;
+                    var editor = ace.edit(sampleRequestId);
+                    /*var JsonMode = ace.require("ace/mode/json").Mode;
+                    editor.session.setMode(new JsonMode());*/
+                    editor.getSession().setMode("ace/mode/json");
+                    editor.setTheme("ace/theme/eclipse");
+                    var length_editor = editor.session.getLength();
+                    var rows_editor = length_editor * 16;
+                    that.log("rows_editor:"+rows_editor);
+                    $("#"+sampleRequestId).css('height',rows_editor);
+                    editor.resize();
+                }
+                $.each(apiInfo.responseCodes,function (ixc, rc) {
+                    if(rc.schema!=undefined&&rc.schema!=null){
+                        //响应参数
+                        var responseTableId="responseParameter"+apiId+"-"+rc.code;
+                        var respdata=[];
+                        if(rc.responseParameters!=null&&rc.responseParameters.length>0){
+                            respdata=respdata.concat(rc.responseParameters);
+                        }
+                        if(rc.responseTreetableRefParameters!=null&&rc.responseTreetableRefParameters.length>0){
+                            $.each(rc.responseTreetableRefParameters,function (i, ref) {
+                                respdata=respdata.concat(ref.params);
+                            })
+                        }
+                        treetable.render({
+                            elem:"#"+responseTableId,
+                            data: respdata,
+                            field: 'title',
+                            treeColIndex: 0,          // treetable新增参数
+                            treeSpid: -1,             // treetable新增参数
+                            treeIdName: 'd_id',       // treetable新增参数
+                            treePidName: 'd_pid',     // treetable新增参数
+                            treeDefaultClose: true,   // treetable新增参数
+                            treeLinkage: true,        // treetable新增参数
+                            cols: [[
+                                {
+                                    field: 'name',
+                                    title: '参数名称',
+                                    width: '20%'
+                                },
+                                {
+                                    field: 'description',
+                                    title: '说明',
+                                    width: '40%'
+                                },
+                                {
+                                    field: 'type',
+                                    title: '类型',
+                                    width: '20%'
+                                },
+                                {
+                                    field: 'schemaValue',
+                                    title: 'schema',
+                                    width: '20%'
+                                }
+                            ]]
+                        })
+                        $("#"+responseTableId).hide();
+                        //默认全部展开
+                        treetable.expandAll('#'+responseTableId);
+                        //初始化apiInfo响应数据
+                        that.log("初始化apiInfo响应数据")
+                        that.log(rc)
+
+                        if(rc.responseJson!=null){
+                            var sampleId="editorSample"+apiId+"-"+rc.code;
+                            var editor = ace.edit(sampleId);
+                            /*var JsonMode = ace.require("ace/mode/json").Mode;
+                            editor.session.setMode(new JsonMode());*/
+                            editor.getSession().setMode("ace/mode/json");
+                            editor.setTheme("ace/theme/eclipse");
+                            var length_editor = editor.session.getLength();
+                            var rows_editor = length_editor * 16;
+                            that.log("rows_editor:"+rows_editor);
+                            $("#"+sampleId).css('height',rows_editor);
+                            editor.resize();
+                        }
                     }
-                ]]
-            })
-            $("#"+responseTableId).hide();
-            //默认全部展开
-            treetable.expandAll('#'+responseTableId);
-            //初始化apiInfo响应数据
-            that.log("初始化apiInfo响应数据")
-            that.log(apiInfo)
-            if(apiInfo.requestValue!=null){
-                var sampleRequestId="editorRequestSample"+apiInfo.id;
-                var editor = ace.edit(sampleRequestId);
-                /*var JsonMode = ace.require("ace/mode/json").Mode;
-                editor.session.setMode(new JsonMode());*/
-                editor.getSession().setMode("ace/mode/json");
-                editor.setTheme("ace/theme/eclipse");
-                var length_editor = editor.session.getLength();
-                var rows_editor = length_editor * 16;
-                that.log("rows_editor:"+rows_editor);
-                $("#"+sampleRequestId).css('height',rows_editor);
-                editor.resize();
-            }
-            if(apiInfo.responseJson!=null){
-                var sampleId="editorSample"+apiInfo.id;
-                var editor = ace.edit(sampleId);
-                /*var JsonMode = ace.require("ace/mode/json").Mode;
-                editor.session.setMode(new JsonMode());*/
-                editor.getSession().setMode("ace/mode/json");
-                editor.setTheme("ace/theme/eclipse");
-                var length_editor = editor.session.getLength();
-                var rows_editor = length_editor * 16;
-                that.log("rows_editor:"+rows_editor);
-                $("#"+sampleId).css('height',rows_editor);
-                editor.resize();
+                })
+            }else{
+                //响应参数
+                var responseTableId="responseParameter"+apiInfo.id;
+                var respdata=[];
+                if(apiInfo.responseParameters!=null&&apiInfo.responseParameters.length>0){
+                    respdata=respdata.concat(apiInfo.responseParameters);
+                }
+                if(apiInfo.responseTreetableRefParameters!=null&&apiInfo.responseTreetableRefParameters.length>0){
+                    $.each(apiInfo.responseTreetableRefParameters,function (i, ref) {
+                        respdata=respdata.concat(ref.params);
+                    })
+                }
+                treetable.render({
+                    elem:"#"+responseTableId,
+                    data: respdata,
+                    field: 'title',
+                    treeColIndex: 0,          // treetable新增参数
+                    treeSpid: -1,             // treetable新增参数
+                    treeIdName: 'd_id',       // treetable新增参数
+                    treePidName: 'd_pid',     // treetable新增参数
+                    treeDefaultClose: true,   // treetable新增参数
+                    treeLinkage: true,        // treetable新增参数
+                    cols: [[
+                        {
+                            field: 'name',
+                            title: '参数名称',
+                            width: '20%'
+                        },
+                        {
+                            field: 'description',
+                            title: '说明',
+                            width: '40%'
+                        },
+                        {
+                            field: 'type',
+                            title: '类型',
+                            width: '20%'
+                        },
+                        {
+                            field: 'schemaValue',
+                            title: 'schema',
+                            width: '20%'
+                        }
+                    ]]
+                })
+                $("#"+responseTableId).hide();
+                //默认全部展开
+                treetable.expandAll('#'+responseTableId);
+                //初始化apiInfo响应数据
+                that.log("初始化apiInfo响应数据")
+                that.log(apiInfo)
+                if(apiInfo.requestValue!=null){
+                    var sampleRequestId="editorRequestSample"+apiInfo.id;
+                    var editor = ace.edit(sampleRequestId);
+                    /*var JsonMode = ace.require("ace/mode/json").Mode;
+                    editor.session.setMode(new JsonMode());*/
+                    editor.getSession().setMode("ace/mode/json");
+                    editor.setTheme("ace/theme/eclipse");
+                    var length_editor = editor.session.getLength();
+                    var rows_editor = length_editor * 16;
+                    that.log("rows_editor:"+rows_editor);
+                    $("#"+sampleRequestId).css('height',rows_editor);
+                    editor.resize();
+                }
+                if(apiInfo.responseJson!=null){
+                    var sampleId="editorSample"+apiInfo.id;
+                    var editor = ace.edit(sampleId);
+                    /*var JsonMode = ace.require("ace/mode/json").Mode;
+                    editor.session.setMode(new JsonMode());*/
+                    editor.getSession().setMode("ace/mode/json");
+                    editor.setTheme("ace/theme/eclipse");
+                    var length_editor = editor.session.getLength();
+                    var rows_editor = length_editor * 16;
+                    that.log("rows_editor:"+rows_editor);
+                    $("#"+sampleId).css('height',rows_editor);
+                    editor.resize();
+                }
+
             }
 
             //初始化copy按钮功能
@@ -1183,7 +1405,13 @@
                     }
                 }
             }
+
+            //排序
+            apiInfo.parameters.sort(function (a, b) {
+                return b.require-a.require;
+            })
         }
+
 
         apiInfo.globalParameters=that.getGlobalParameters();
         var debugContentId="DebugDoc"+apiInfo.id;
@@ -1205,6 +1433,9 @@
                 }
             })
         }
+
+
+
         var html = template('DebugScript', apiInfo);
         $("#"+debugContentId).html("").html(html)
         //string类型的arr参数动态添加事件
@@ -1379,7 +1610,10 @@
                             value = paramtr.find("td:eq(3)").find("textarea").val();
                             formData.append(key, value);
                         }
-                        that.updateRequestParameter(trdata.name, value, apiInfo);
+                        //如果不开启缓存,则不保留
+                        if(that.settings.enableRequestCache){
+                            that.updateRequestParameter(trdata.name, value, apiInfo);
+                        }
                     }
                     else if(trdata["in"]=="formData"){
                         //直接判断那类型
@@ -1414,11 +1648,15 @@
                             formData.append(key, value);
                             formCurlParams[key]=value;
                         }
-                        that.updateRequestParameter(trdata.name, value, apiInfo);
+                        if(that.settings.enableRequestCache){
+                            that.updateRequestParameter(trdata.name, value, apiInfo);
+                        }
                     }else{
                         if(trdata.emflag){
                             value=paramtr.find("td:eq(3)").find("select option:selected").val();
-                            that.updateRequestParameter(trdata.name,value,apiInfo);
+                            if(that.settings.enableRequestCache){
+                                that.updateRequestParameter(trdata.name,value,apiInfo);
+                            }
                             formData.append(key,value);
                         }else{
                             if(trdata["type"]=="array"){
@@ -1431,7 +1669,9 @@
                                 })
                             }else{
                                 value=paramtr.find("td:eq(3)").find("input").val();
-                                that.updateRequestParameter(trdata.name,value,apiInfo);
+                                if(that.settings.enableRequestCache){
+                                    that.updateRequestParameter(trdata.name,value,apiInfo);
+                                }
                                 formData.append(key,value);
                                 //queryStringParameterArr.push(key+"="+value)
                             }
@@ -1445,8 +1685,11 @@
                             apiInfo.url=url;
                         }else{
                             //判断是否是header
-                            if(trdata["in"]=="header"){
-                                headerparams[key]=value;
+                            if(trdata["in"]=="header") {
+                                headerparams[key] = value;
+                            }else if(trdata["in"]=="body"){
+                                bodyparams+=value;
+                                bodyRequest=true;
                             }else{
                                 if (url.indexOf("?")>-1){
                                     url=url+"&"+key+"="+value;
@@ -1617,6 +1860,7 @@
                     that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
                         formCurlParams,xhr,data,startTime,allheaders,true);
                 }).catch(function (error) {
+                    that.log("form request--response error-------------------")
                     respcleanDiv.show();
                     layer.close(index);
                     if(error.response){
@@ -1626,6 +1870,13 @@
                         var allheaders=response.headers;
                         that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
                             formCurlParams,xhr,data,startTime,allheaders,true);
+                    }else{
+                        if (error!=null){
+                            var estr=error.toString();
+                            if(estr=="Error: Network Error"){
+                                layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                            }
+                        }
                     }
                 })
             }
@@ -1643,17 +1894,24 @@
                             formCurlParams,xhr,data,startTime,allheaders,false);
                     },
                     error:function (xhr, textStatus, errorThrown) {
-                        var allheaders=xhr.getAllResponseHeaders();
-                        var data=null;
-                        that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
-                            formCurlParams,xhr,data,startTime,allheaders,false);
+                        that.log("ajax request--response error-------------------")
+                        if(textStatus=="error"&&xhr.status==0){
+                            layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                            //关闭遮罩层
+                            layer.close(index);
+                        }else{
+                            var allheaders=xhr.getAllResponseHeaders();
+                            var data=null;
+                            that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                                formCurlParams,xhr,data,startTime,allheaders,false);
+                        }
                     }
                 })
             }
-
-            //缓存到localStorage对象中
-            that.cacheRequestParameters(apiInfo);
-
+            if(that.settings.enableRequestCache){
+                //缓存到localStorage对象中
+                that.cacheRequestParameters(apiInfo);
+            }
         })
 
         //path替换url-功能
@@ -1724,6 +1982,17 @@
             }
         }
 
+    }
+
+    /***
+     * 当设置不启用缓存策略时,移除缓存常量值
+     */
+    SwaggerBootstrapUi.prototype.disableStoreRequestParams=function () {
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var key = "SwaggerBootstrapUiStore";
+            store.setItem(key,"");
+        }
     }
 
     /***
@@ -2563,11 +2832,26 @@
                 val=val.replace(/(^\*\*.*\*\*\:$)/igm,"\n$1\n");
                 val=val.replace(/(^\*\*.*\*\*$)/igm,"\n$1\n");
                 $("#txtOffLineDoc").val(val);
+                that.log(that.currentInstance.paths.length)
+                //如果当前接口梳理超过一定限制,md离线文档不予显示，仅仅展示源文件
+                if(that.currentInstance.paths!=null&&that.currentInstance.paths.length>300){
+                    $("#txtOffLineDoc").show();
+                    $("#txtOffLineDoc").parent().css("width","100%");
+                    layer.msg("当前接口数量超出限制,请使用第三方markdown转换软件进行转换以查看效果.")
 
-                var convert=new showdown.Converter({tables:true,tablesHeaderId:true});
+                }else{
+                    var convert=new showdown.Converter({tables:true,tablesHeaderId:true});
+                    var html=convert.makeHtml(val);
+                    $("#offlineMarkdownShow").html(html);
+                    that.markdownToTabContent();
+                }
+
+
+
+                /*var convert=new showdown.Converter({tables:true,tablesHeaderId:true});
                 var html=convert.makeHtml(val);
                 $("#offlineMarkdownShow").html(html);
-                that.markdownToTabContent();
+                that.markdownToTabContent();*/
             }else{
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
@@ -2771,8 +3055,8 @@
 
                             }
                             else{
-                                that.log("解析属性："+property);
-                                that.log(propobj);
+                                //that.log("解析属性："+property);
+                                //that.log(propobj);
                                 if(propobj.hasOwnProperty("$ref")){
                                     var ref=propobj["$ref"];
                                     var regex=new RegExp("#/definitions/(.*)$","ig");
@@ -3011,7 +3295,6 @@
                             })
                         }
                         that.currentInstance.paths.push(ins);
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"head",apiInfo));
                         that.methodCountAndDown("HEAD");
                     }
                 }
@@ -3032,20 +3315,78 @@
                             })
                         }
                         that.currentInstance.paths.push(ins);
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"connect",apiInfo));
                         that.methodCountAndDown("CONNECT");
                     }
 
                 }
             })
 
+           /* var selfPath="/api/new188/self";
+            var selfobj={
+                "summary": "第一个list功能",
+                "tags": [
+                    "1.8.8版本-20181208"
+                ],
+                "deprecated": false,
+                "produces": [
+                    "*!/!*"
+                ],
+                "operationId": "list3GET4997028859787988992",
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "name": "id",
+                                    "in": "formData",
+                                    "description": "标识的desc",
+                                    "required": true,
+                                    "type": "string"
+                                },
+                                "createTime": {
+                                    "name": "createTime",
+                                    "in": "formData",
+                                    "description": "时间的desc",
+                                    "required": false,
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "返回profile列表"
+                    }
+                },
+                "description": "list的description",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "formData",
+                        "description": "标识的desc",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "createTime",
+                        "in": "formData",
+                        "description": "时间的desc",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "consumes": [
+                    "application/xml"
+                ]
+            }
 
+            var selfins=that.createApiInfoInstance(selfPath,"get",selfobj);
+            that.currentInstance.paths.push(selfins);*/
            /* for(var path in paths){
 
 
             }*/
             that.log("解析Paths结束,耗时："+(new Date().getTime()-pathStartTime));
             that.log(new Date().toTimeString());
+
         }
         //解析securityDefinitions属性
         if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("securityDefinitions")){
@@ -3079,17 +3420,42 @@
                 }
             }
         }
+
         //tag分组
         $.each(that.currentInstance.tags,function (i, tag) {
-            //查找childrens
-            $.each(that.currentInstance.paths, function (k, methodApi) {
-                //判断tags是否相同
-                $.each(methodApi.tags, function (x, tagName) {
-                    if (tagName == tag.name) {
-                        tag.childrens.push(methodApi);
-                    }
+            //如果是第一次加载,则所有api都是新接口,无需判断老新
+            if(!that.currentInstance.firstLoad){
+                //判断是否新
+                var tagNewApis=false;
+                //查找childrens
+                $.each(that.currentInstance.paths, function (k, methodApi) {
+                    //判断tags是否相同
+                    $.each(methodApi.tags, function (x, tagName) {
+                        if (tagName == tag.name) {
+                            //是否存在
+                            if($.inArray(methodApi.id,that.currentInstance.groupApis)<0){
+                                tagNewApis=true;
+                                methodApi.hasNew=true;
+                            }
+                            tag.childrens.push(methodApi);
+                        }
+                    })
                 })
-            })
+                if(tagNewApis){
+                    tag.hasNew=true;
+                }
+            }else{
+                //查找childrens
+                $.each(that.currentInstance.paths, function (k, methodApi) {
+                    //判断tags是否相同
+                    $.each(methodApi.tags, function (x, tagName) {
+                        if (tagName == tag.name) {
+                            tag.childrens.push(methodApi);
+                        }
+                    })
+                })
+            }
+
             if(that.settings.enableSwaggerBootstrapUi){
                 //排序childrens
                 tag.childrens.sort(function (a, b) {
@@ -3097,6 +3463,18 @@
                 })
             }
         });
+
+        if(that.currentInstance.firstLoad){
+            var c=new SwaggerBootstrapUiCacheApis();
+            c.id=that.currentInstance.groupId;
+            c.cacheApis=that.currentInstance.groupApis;
+            that.cacheApis.push(c);
+        }else{
+            //更新？页面点击后方可更新
+        }
+
+        //当前加入的cacheApi加入localStorage对象中
+        that.storeCacheApis();
         //解析models
         //遍历paths属性中的请求以及响应Model参数,存在即加入,否则不加入
 
@@ -3336,6 +3714,9 @@
         var md5Str=newurl+mtype.toUpperCase();
         swpinfo.id=md5(md5Str);
         if(apiInfo!=null){
+            if(apiInfo.hasOwnProperty("deprecated")){
+                swpinfo.deprecated=apiInfo["deprecated"];
+            }
             swpinfo.consumes=apiInfo.consumes;
             swpinfo.description=apiInfo.description;
             swpinfo.operationId=apiInfo.operationId;
@@ -3474,11 +3855,13 @@
             //解析responsecode
             if(typeof (apiInfo.responses)!='undefined'&&apiInfo.responses!=null){
                 var resp=apiInfo.responses;
+                var rpcount=0;
                 for(var status in resp) {
                     var swaggerResp=new SwaggerBootstrapUiResponseCode();
                     var rescrobj = resp[status];
                     swaggerResp.code=status;
                     swaggerResp.description=rescrobj["description"];
+                    var rptype=null;
                     if (rescrobj.hasOwnProperty("schema")){
                         var schema=rescrobj["schema"];
                         //单引用类型
@@ -3488,7 +3871,9 @@
                             if(regex.test(schema["$ref"])) {
                                 var ptype=RegExp.$1;
                                 swpinfo.responseParameterRefName=ptype;
+                                swaggerResp.responseParameterRefName=ptype;
                                 definitionType=ptype;
+                                rptype=ptype;
                                 swaggerResp.schema=ptype;
                             }
                         }else if(schema.hasOwnProperty("type")){
@@ -3500,26 +3885,165 @@
                                     if(regex.test(items["$ref"])) {
                                         var ptype=RegExp.$1;
                                         swpinfo.responseParameterRefName=ptype;
+                                        swaggerResp.responseParameterRefName=ptype;
                                         definitionType=ptype;
+                                        rptype=ptype;
                                         swaggerResp.schema=ptype;
                                     }
                                 }
                             }else{
-                                //判断是否是基础类型
-                                if($.checkIsBasicType(t)){
-                                    //基础类型
-                                    swpinfo.responseText=t;
-                                    swpinfo.responseBasicType=true;
+                                //判断是否存在properties属性
+                                if(schema.hasOwnProperty("properties")){
+                                    swaggerResp.schema=t;
+                                    //自定义类型、放入difarrs对象中
+                                    var swud=new SwaggerBootstrapUiDefinition();
+                                    swud.name=swpinfo.id;
+                                    swud.description="自定义Schema";
+                                    definitionType=swud.name;
+                                    rptype=swud.name;
+                                    swaggerResp.responseParameterRefName=swud.name;
+
+                                    var properties=schema["properties"];
+                                    var defiTypeValue={};
+                                    for(var property in properties) {
+                                        var spropObj = new SwaggerBootstrapUiProperty();
+                                        spropObj.name = property;
+                                        var propobj = properties[property];
+                                        spropObj.originProperty = propobj;
+                                        spropObj.type = $.propValue("type", propobj, "string");
+                                        spropObj.description = $.propValue("description", propobj, "");
+                                        spropObj.example = $.propValue("example", propobj, "");
+                                        spropObj.format = $.propValue("format", propobj, "");
+                                        spropObj.required = $.propValue("required", propobj, false);
+                                        if (swud.required.length > 0) {
+                                            //有required属性,需要再判断一次
+                                            if ($.inArray(spropObj.name, swud.required) > -1) {
+                                                //存在
+                                                spropObj.required = true;
+                                            }
+                                        }
+                                        //默认string类型
+                                        var propValue="";
+                                        //判断是否有类型
+                                        if(propobj.hasOwnProperty("type")){
+                                            var type=propobj["type"];
+                                            //判断是否有example
+                                            if(propobj.hasOwnProperty("example")){
+                                                propValue=propobj["example"];
+                                            }else if($.checkIsBasicType(type)){
+                                                propValue=$.getBasicTypeValue(type);
+                                            }
+
+                                        }
+                                        spropObj.value=propValue;
+                                        //判断是否有format,如果是integer,判断是64位还是32位
+                                        if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
+                                            spropObj.type=spropObj.format;
+                                        }
+                                        swud.properties.push(spropObj);
+                                        defiTypeValue[property]=propValue;
+                                    }
+                                    swud.value=defiTypeValue;
+                                    that.currentInstance.difArrs.push(swud);
+                                }else{
+                                    //判断是否是基础类型
+                                    if($.checkIsBasicType(t)){
+                                        //基础类型
+                                        swpinfo.responseText=t;
+                                        swpinfo.responseBasicType=true;
+
+                                        //响应状态码的响应内容
+                                        swaggerResp.responseText=t;
+                                        swaggerResp.responseBasicType=true;
+                                    }
                                 }
                             }
                         }
+                    }
+                    if(rptype!=null){
+                        //查询
+                        for(var i=0;i<that.currentInstance.difArrs.length;i++){
+                            var ref=that.currentInstance.difArrs[i];
+                            if(ref.name==rptype){
+                                if (arr){
+                                    var na=new Array();
+                                    na.push(ref.value);
+                                    swaggerResp.responseValue=JSON.stringify(na,null,"\t");
+                                    swaggerResp.responseJson=na;
+                                }else{
+                                    swaggerResp.responseValue=JSON.stringify(ref.value,null,"\t");
+                                    swaggerResp.responseJson=ref.value;
+                                }
+                            }
+                        }
+                        //响应参数
+                        var def=that.getDefinitionByName(rptype);
+                        if (def!=null){
+                            if(def.hasOwnProperty("properties")){
+                                var props=def["properties"];
+                                $.each(props,function (i, p) {
+                                    var resParam=new SwaggerBootstrapUiParameter();
+                                    resParam.name=p.name;
+                                    if (!checkParamArrsExists(swaggerResp.responseParameters,resParam)){
+                                        swaggerResp.responseParameters.push(resParam);
+                                        resParam.description=$.replaceMultipLineStr(p.description);
+                                        if(p.type==null||p.type==""){
+                                            if(p.refType!=null){
+                                                if(!$.checkIsBasicType(p.refType)){
+                                                    resParam.schemaValue=p.refType;
+                                                    //存在引用类型,修改默认type
+                                                    resParam.type=p.refType;
+                                                    var deepDef=that.getDefinitionByName(p.refType);
+                                                    deepResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                    resParam.parentTypes.push(p.refType);
+                                                    deepTreeTableResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                }
+                                            }
+                                        }else{
+                                            resParam.type=p.type;
+                                            if(!$.checkIsBasicType(p.type)){
+                                                if(p.refType!=null){
+                                                    if(!$.checkIsBasicType(p.refType)){
+                                                        resParam.schemaValue=p.refType;
+                                                        //存在引用类型,修改默认type
+                                                        if(p.type!="array"){
+                                                            resParam.type=p.refType;
+                                                        }
+                                                        var deepDef=that.getDefinitionByName(p.refType);
+                                                        deepResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                        resParam.parentTypes.push(p.refType);
+                                                        deepTreeTableResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                    }
+                                                }else{
+                                                    resParam.schemaValue=p.type;
+                                                    //存在引用类型,修改默认type
+                                                    resParam.type=p.type;
+                                                    var deepDef=that.getDefinitionByName(p.type);
+                                                    deepResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                    resParam.parentTypes.push(p.type);
+                                                    deepTreeTableResponseRefParameter(swaggerResp,that,deepDef,resParam);
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
 
+                            }
+                        }
+                    }
+
+                    if(swaggerResp.schema!=null&&swaggerResp.schema!=undefined){
+                        rpcount=rpcount+1;
                     }
                     swpinfo.responseCodes.push(swaggerResp);
                 }
+                swpinfo.multipartResponseSchemaCount=rpcount;
+                if(rpcount>1){
+                    swpinfo.multipartResponseSchema=true;
+                }
             }
 
-            if (definitionType!=null){
+            if (definitionType!=null&&!swpinfo.multipartResponseSchema){
                 //查询
                 for(var i=0;i<that.currentInstance.difArrs.length;i++){
                     var ref=that.currentInstance.difArrs[i];
@@ -3615,7 +4139,7 @@
             }
             //此处判断接口的请求参数类型
             //判断consumes请求类型
-            if(apiInfo.consumes!=null&&apiInfo.consumes.length>0){
+            if(apiInfo.consumes!=undefined&&apiInfo.consumes!=null&&apiInfo.consumes.length>0){
                 var ctp=apiInfo.consumes[0];
                 if(ctp=="multipart/form-data"){
                     swpinfo.contentType=ctp;
@@ -3656,12 +4180,24 @@
                 //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
                 var defaultType="application/x-www-form-urlencoded;charset=UTF-8";
                 var defaultValue="x-www-form-urlencoded";
-                for(var i=0;i<swpinfo.parameters;i++){
+                for(var i=0;i<swpinfo.parameters.length;i++){
                     var pt=swpinfo.parameters[i];
-                    if(pt.schemaValue=="MultipartFile"){
-                        defaultType="multipart/form-data";
-                        defaultValue="form-data";
-                        break;
+                    if(pt.in=="body"){
+                        if(pt.schemaValue=="MultipartFile"){
+                            defaultType="multipart/form-data";
+                            defaultValue="form-data";
+                            break;
+                        }else{
+                            defaultValue="raw";
+                            defaultType="application/json";
+                            break;
+                        }
+                    }else{
+                        if(pt.schemaValue=="MultipartFile") {
+                            defaultType = "multipart/form-data";
+                            defaultValue = "form-data";
+                            break;
+                        }
                     }
                 }
                 swpinfo.contentType=defaultType;
@@ -3678,6 +4214,10 @@
                 }
             }
         }*/
+        //第一次加载
+        if(that.currentInstance.firstLoad){
+            that.currentInstance.groupApis.push(swpinfo.id);
+        }
         return swpinfo;
     }
 
@@ -4110,10 +4650,10 @@
             var cheight=$(window).height()-$("#sbu-header").height()-2;
             $("#leftMenu").css("height",$(window).height()-$("#sbu-header").height()-2);
             $("#content").css("height",cheight);
-            that.log("resize------------height")
-            that.log("window--"+$(window).height())
-            that.log("document--"+$(document).height())
-            that.log("left--"+$("#leftMenu").height())
+            //that.log("resize------------height")
+            //that.log("window--"+$(window).height())
+            //that.log("document--"+$(document).height())
+            //that.log("left--"+$("#leftMenu").height())
             var headerHeight=$("#"+that.globalTabId).find("div:first");
             var diff=cheight-headerHeight.height()-37;
             $(".HomeDoc").css("height",diff);
@@ -4144,7 +4684,7 @@
 
     SwaggerBootstrapUi.prototype.welcome=function () {
         var that=this;
-        var msg="欢迎使用swagger-bootstrap-ui "+that.version+"~!\r\n\r\n欢迎任何形式的反馈issue,star,pr~~~~！祝君生活愉快:)~~~!\r\n\r\nGitHub:https://github.com/xiaoymin/Swagger-Bootstrap-UI\r\n\r\n码云Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui";
+        var msg="欢迎使用swagger-bootstrap-ui "+that.version+"~!\r\n\r\n欢迎任何形式的反馈issue,star,pr~~~~！祝君生活愉快:)~~~!\r\n\r\nGitHub:https://github.com/xiaoymin/Swagger-Bootstrap-UI\r\n\r\n码云Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui\r\n\r\nQQ群:608374991";
         if(window.console){
             console.log(msg);
         }
@@ -4272,7 +4812,31 @@
         //Models
         this.models=new Array();
         this.modelNames=new Array();
+
+        //SwaggerBootstrapCacheGroupApis 对象的集合
+        //add by xiaoyumin 2018-12-12 18:49:22
+        this.groupId=md5(name);
+        this.firstLoad=true;
+        this.groupApis=new Array();
     }
+
+    /***
+     *
+     * [{
+     *  id:"md5(groupName)",
+     *  groupApis:["id1","id2"]
+     * }]
+     * @constructor
+     */
+    var SwaggerBootstrapUiCacheApis=function () {
+        this.id="";
+        //缓存api-id 对象的集合
+        this.cacheApis=new Array();
+    }
+
+
+
+
     /***
      * 计数器
      * @constructor
@@ -4344,6 +4908,8 @@
         this.name=name;
         this.description=description;
         this.childrens=new Array();
+        //是否有新接口
+        this.hasNew=false;
     }
     /***
      * Swagger接口基础信息
@@ -4390,7 +4956,14 @@
         this.id="";
         //排序
         this.order=2147483647;
-
+        //add by xiaoymin 2018-12-14 17:04:42
+        //是否新接口
+        this.hasNew=false;
+        //是否过时
+        this.deprecated=false;
+        //是否存在响应状态码中  存在多个schema的情况
+        this.multipartResponseSchema=false;
+        this.multipartResponseSchemaCount=0;
 
     }
 
@@ -4459,6 +5032,19 @@
         this.code=null;
         this.description=null;
         this.schema=null;
+        //treetable组件使用对象
+        this.refTreetableparameters=new Array();
+        this.responseCodes=new Array();
+        this.responseValue=null;
+        this.responseJson=null;
+        this.responseText=null;
+        this.responseBasicType=false;
+        //响应字段说明
+        this.responseParameters=new Array();
+        this.responseParameterRefName="";
+        this.responseRefParameters=new Array();
+        //treetable组件使用对象
+        this.responseTreetableRefParameters=new Array();
     }
 
     /***
