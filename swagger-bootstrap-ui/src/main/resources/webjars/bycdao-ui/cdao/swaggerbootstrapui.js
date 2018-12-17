@@ -1171,81 +1171,169 @@
             //默认全部展开
             treetable.expandAll('#'+requestTableId);
             $("#"+requestTableId).hide();
-            //响应参数
-            var responseTableId="responseParameter"+apiInfo.id;
-            var respdata=[];
-            if(apiInfo.responseParameters!=null&&apiInfo.responseParameters.length>0){
-                respdata=respdata.concat(apiInfo.responseParameters);
-            }
-            if(apiInfo.responseTreetableRefParameters!=null&&apiInfo.responseTreetableRefParameters.length>0){
-                $.each(apiInfo.responseTreetableRefParameters,function (i, ref) {
-                    respdata=respdata.concat(ref.params);
-                })
-            }
-            treetable.render({
-                elem:"#"+responseTableId,
-                data: respdata,
-                field: 'title',
-                treeColIndex: 0,          // treetable新增参数
-                treeSpid: -1,             // treetable新增参数
-                treeIdName: 'd_id',       // treetable新增参数
-                treePidName: 'd_pid',     // treetable新增参数
-                treeDefaultClose: true,   // treetable新增参数
-                treeLinkage: true,        // treetable新增参数
-                cols: [[
-                    {
-                        field: 'name',
-                        title: '参数名称',
-                        width: '20%'
-                    },
-                    {
-                        field: 'description',
-                        title: '说明',
-                        width: '40%'
-                    },
-                    {
-                        field: 'type',
-                        title: '类型',
-                        width: '20%'
-                    },
-                    {
-                        field: 'schemaValue',
-                        title: 'schema',
-                        width: '20%'
+
+            //响应参数行
+            if(apiInfo.multipartResponseSchema){
+                var apiId=apiInfo.id;
+                if(apiInfo.requestValue!=null){
+                    var sampleRequestId="editorRequestSample"+apiId;
+                    var editor = ace.edit(sampleRequestId);
+                    /*var JsonMode = ace.require("ace/mode/json").Mode;
+                    editor.session.setMode(new JsonMode());*/
+                    editor.getSession().setMode("ace/mode/json");
+                    editor.setTheme("ace/theme/eclipse");
+                    var length_editor = editor.session.getLength();
+                    var rows_editor = length_editor * 16;
+                    that.log("rows_editor:"+rows_editor);
+                    $("#"+sampleRequestId).css('height',rows_editor);
+                    editor.resize();
+                }
+                $.each(apiInfo.responseCodes,function (ixc, rc) {
+                    if(rc.schema!=undefined&&rc.schema!=null){
+                        //响应参数
+                        var responseTableId="responseParameter"+apiId+"-"+rc.code;
+                        var respdata=[];
+                        if(rc.responseParameters!=null&&rc.responseParameters.length>0){
+                            respdata=respdata.concat(rc.responseParameters);
+                        }
+                        if(rc.responseTreetableRefParameters!=null&&rc.responseTreetableRefParameters.length>0){
+                            $.each(rc.responseTreetableRefParameters,function (i, ref) {
+                                respdata=respdata.concat(ref.params);
+                            })
+                        }
+                        treetable.render({
+                            elem:"#"+responseTableId,
+                            data: respdata,
+                            field: 'title',
+                            treeColIndex: 0,          // treetable新增参数
+                            treeSpid: -1,             // treetable新增参数
+                            treeIdName: 'd_id',       // treetable新增参数
+                            treePidName: 'd_pid',     // treetable新增参数
+                            treeDefaultClose: true,   // treetable新增参数
+                            treeLinkage: true,        // treetable新增参数
+                            cols: [[
+                                {
+                                    field: 'name',
+                                    title: '参数名称',
+                                    width: '20%'
+                                },
+                                {
+                                    field: 'description',
+                                    title: '说明',
+                                    width: '40%'
+                                },
+                                {
+                                    field: 'type',
+                                    title: '类型',
+                                    width: '20%'
+                                },
+                                {
+                                    field: 'schemaValue',
+                                    title: 'schema',
+                                    width: '20%'
+                                }
+                            ]]
+                        })
+                        $("#"+responseTableId).hide();
+                        //默认全部展开
+                        treetable.expandAll('#'+responseTableId);
+                        //初始化apiInfo响应数据
+                        that.log("初始化apiInfo响应数据")
+                        that.log(rc)
+
+                        if(rc.responseJson!=null){
+                            var sampleId="editorSample"+apiId+"-"+rc.code;
+                            var editor = ace.edit(sampleId);
+                            /*var JsonMode = ace.require("ace/mode/json").Mode;
+                            editor.session.setMode(new JsonMode());*/
+                            editor.getSession().setMode("ace/mode/json");
+                            editor.setTheme("ace/theme/eclipse");
+                            var length_editor = editor.session.getLength();
+                            var rows_editor = length_editor * 16;
+                            that.log("rows_editor:"+rows_editor);
+                            $("#"+sampleId).css('height',rows_editor);
+                            editor.resize();
+                        }
                     }
-                ]]
-            })
-            $("#"+responseTableId).hide();
-            //默认全部展开
-            treetable.expandAll('#'+responseTableId);
-            //初始化apiInfo响应数据
-            that.log("初始化apiInfo响应数据")
-            that.log(apiInfo)
-            if(apiInfo.requestValue!=null){
-                var sampleRequestId="editorRequestSample"+apiInfo.id;
-                var editor = ace.edit(sampleRequestId);
-                /*var JsonMode = ace.require("ace/mode/json").Mode;
-                editor.session.setMode(new JsonMode());*/
-                editor.getSession().setMode("ace/mode/json");
-                editor.setTheme("ace/theme/eclipse");
-                var length_editor = editor.session.getLength();
-                var rows_editor = length_editor * 16;
-                that.log("rows_editor:"+rows_editor);
-                $("#"+sampleRequestId).css('height',rows_editor);
-                editor.resize();
-            }
-            if(apiInfo.responseJson!=null){
-                var sampleId="editorSample"+apiInfo.id;
-                var editor = ace.edit(sampleId);
-                /*var JsonMode = ace.require("ace/mode/json").Mode;
-                editor.session.setMode(new JsonMode());*/
-                editor.getSession().setMode("ace/mode/json");
-                editor.setTheme("ace/theme/eclipse");
-                var length_editor = editor.session.getLength();
-                var rows_editor = length_editor * 16;
-                that.log("rows_editor:"+rows_editor);
-                $("#"+sampleId).css('height',rows_editor);
-                editor.resize();
+                })
+            }else{
+                //响应参数
+                var responseTableId="responseParameter"+apiInfo.id;
+                var respdata=[];
+                if(apiInfo.responseParameters!=null&&apiInfo.responseParameters.length>0){
+                    respdata=respdata.concat(apiInfo.responseParameters);
+                }
+                if(apiInfo.responseTreetableRefParameters!=null&&apiInfo.responseTreetableRefParameters.length>0){
+                    $.each(apiInfo.responseTreetableRefParameters,function (i, ref) {
+                        respdata=respdata.concat(ref.params);
+                    })
+                }
+                treetable.render({
+                    elem:"#"+responseTableId,
+                    data: respdata,
+                    field: 'title',
+                    treeColIndex: 0,          // treetable新增参数
+                    treeSpid: -1,             // treetable新增参数
+                    treeIdName: 'd_id',       // treetable新增参数
+                    treePidName: 'd_pid',     // treetable新增参数
+                    treeDefaultClose: true,   // treetable新增参数
+                    treeLinkage: true,        // treetable新增参数
+                    cols: [[
+                        {
+                            field: 'name',
+                            title: '参数名称',
+                            width: '20%'
+                        },
+                        {
+                            field: 'description',
+                            title: '说明',
+                            width: '40%'
+                        },
+                        {
+                            field: 'type',
+                            title: '类型',
+                            width: '20%'
+                        },
+                        {
+                            field: 'schemaValue',
+                            title: 'schema',
+                            width: '20%'
+                        }
+                    ]]
+                })
+                $("#"+responseTableId).hide();
+                //默认全部展开
+                treetable.expandAll('#'+responseTableId);
+                //初始化apiInfo响应数据
+                that.log("初始化apiInfo响应数据")
+                that.log(apiInfo)
+                if(apiInfo.requestValue!=null){
+                    var sampleRequestId="editorRequestSample"+apiInfo.id;
+                    var editor = ace.edit(sampleRequestId);
+                    /*var JsonMode = ace.require("ace/mode/json").Mode;
+                    editor.session.setMode(new JsonMode());*/
+                    editor.getSession().setMode("ace/mode/json");
+                    editor.setTheme("ace/theme/eclipse");
+                    var length_editor = editor.session.getLength();
+                    var rows_editor = length_editor * 16;
+                    that.log("rows_editor:"+rows_editor);
+                    $("#"+sampleRequestId).css('height',rows_editor);
+                    editor.resize();
+                }
+                if(apiInfo.responseJson!=null){
+                    var sampleId="editorSample"+apiInfo.id;
+                    var editor = ace.edit(sampleId);
+                    /*var JsonMode = ace.require("ace/mode/json").Mode;
+                    editor.session.setMode(new JsonMode());*/
+                    editor.getSession().setMode("ace/mode/json");
+                    editor.setTheme("ace/theme/eclipse");
+                    var length_editor = editor.session.getLength();
+                    var rows_editor = length_editor * 16;
+                    that.log("rows_editor:"+rows_editor);
+                    $("#"+sampleId).css('height',rows_editor);
+                    editor.resize();
+                }
+
             }
 
             //初始化copy按钮功能

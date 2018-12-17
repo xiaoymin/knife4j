@@ -792,11 +792,43 @@
                             {{/if}}
                             </tbody>
                         </table>
-                        <p><strong>响应参数</strong></p>
-                        <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
-                        </table>
-                        <p><strong>响应示例</strong></p>
-                        <div id="editorSample{{id}}" style="width: auto;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
+                        {{if multipartResponseSchema }}
+                            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                                <ul class="layui-tab-title" style="padding: 0px;margin-left: 10px;">
+                                    {{each responseCodes}}
+                                        {{if $value.schema!=null}}
+                                            <li {{if $index==0}} class="layui-this" {{/if}} >{{$value.code}}</li>
+                                        {{/if}}
+                                    {{/each}}
+                                </ul>
+                                <div class="layui-tab-content" style="height: 100%;margin-top: 0px;left: 0px;position: absolute;width: 98%;margin-left: 10px;">
+                                    {{each responseCodes}}
+                                        {{if $value.schema!=null}}
+                                            {{if $index==0 }}
+                                            <div class="layui-tab-item layui-show">
+                                            {{else}}
+                                                <div class="layui-tab-item">
+                                            {{/if}}
+                                                    <div>
+                                                        <p><strong>{{$value.code}}-响应参数</strong></p>
+                                                        <table id="responseParameter{{id}}-{{$value.code}}" class="layui-table"  lay-filter="responseParameter{{id}}-{{$value.code}}">
+                                                        </table>
+                                                        <p><strong>{{$value.code}}-响应示例</strong></p>
+                                                        <div id="editorSample{{id}}-{{$value.code}}" style="width: auto;bottom: 10px;">{{ if $value.responseBasicType }}{{$value.responseText}}{{else}}{{$value.responseValue}}{{/if}}</div>
+                                                    </div>
+
+                                                </div>
+                                        {{/if}}
+                                    {{/each}}
+                                </div>
+                            </div>
+                        {{else}}
+                                <p><strong>响应参数</strong></p>
+                                <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
+                                </table>
+                                <p><strong>响应示例</strong></p>
+                                <div id="editorSample{{id}}" style="width: auto;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
+                        {{/if}}
                     </div>
                     <textarea rows="10" cols="10" id="docText{{id}}" style="display: none;">
 
