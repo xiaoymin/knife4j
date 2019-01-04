@@ -3718,7 +3718,7 @@
                 swpinfo.deprecated=apiInfo["deprecated"];
             }
             if (!apiInfo.tags){
-              apiInfo.tags=['untag'];
+              apiInfo.tags=['default'];
             }
             swpinfo.consumes=apiInfo.consumes;
             swpinfo.description=apiInfo.description;
