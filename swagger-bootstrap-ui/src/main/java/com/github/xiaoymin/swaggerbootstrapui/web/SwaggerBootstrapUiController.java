@@ -8,7 +8,6 @@
 package com.github.xiaoymin.swaggerbootstrapui.web;
 
 import com.github.xiaoymin.swaggerbootstrapui.model.RestHandlerMapping;
-import com.github.xiaoymin.swaggerbootstrapui.model.SwaggerBootstrapUiPathInstance;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;

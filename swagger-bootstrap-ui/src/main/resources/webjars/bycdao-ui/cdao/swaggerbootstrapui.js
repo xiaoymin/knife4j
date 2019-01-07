@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.8.8
+ * swagger-bootstrap-ui v1.8.9
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
@@ -42,7 +42,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.8.8";
+        this.version="1.8.9";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
