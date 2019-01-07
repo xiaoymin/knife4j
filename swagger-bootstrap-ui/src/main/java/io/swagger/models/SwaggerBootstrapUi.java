@@ -7,6 +7,7 @@
 
 package io.swagger.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /***
@@ -20,12 +21,12 @@ public class SwaggerBootstrapUi {
     /***
      * tag排序属性
      */
-    protected List<SwaggerBootstrapUiTag> tagSortLists;
+    protected List<SwaggerBootstrapUiTag> tagSortLists=new ArrayList<>();
 
     /***
      * path排序
      */
-    private List<SwaggerBootstrapUiPath> pathSortLists;
+    private List<SwaggerBootstrapUiPath> pathSortLists=new ArrayList<>();
 
     public List<SwaggerBootstrapUiPath> getPathSortLists() {
         return pathSortLists;
