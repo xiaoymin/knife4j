@@ -1247,6 +1247,7 @@
                         //初始化apiInfo响应数据
                         that.log("初始化apiInfo响应数据")
                         that.log(rc)
+                        that.log(apiInfo)
 
                         if(rc.responseJson!=null){
                             var sampleId="editorSample"+apiId+"-"+rc.code;
@@ -1446,7 +1447,11 @@
             $.each(apiInfo.globalParameters,function (i, global) {
                 if(apiInfo.parameters!=null&&apiInfo.parameters.length>0){
                     $.each(apiInfo.parameters,function (i, param) {
-                        if(global.name==param.name){
+                        //fixed bug,2019-1-10 11:14:01
+                        //如果参数类型不一样,通过名称排除存在漏洞
+                        //匹配规则为参数名称、参数类型同时比较
+                        // if(global.name==param.name){
+                        if(global.name==param.name&& global.in==param.in){
                             //判断txtValue是否有值
                             if(param.txtValue!=undefined&&param.txtValue!=null&&param.txtValue!=""){
                                 global.show=false;
