@@ -3078,7 +3078,12 @@
                             spropObj.originProperty=propobj;
                             spropObj.type=$.propValue("type",propobj,"string");
                             spropObj.description=$.propValue("description",propobj,"");
-                            spropObj.example=$.propValue("example",propobj,"");
+                            if(spropObj.type=="string"){
+                                spropObj.example=String($.propValue("example",propobj,""));
+                            }else{
+                                spropObj.example=$.propValue("example",propobj,"");
+                            }
+
                             spropObj.format=$.propValue("format",propobj,"");
                             spropObj.required=$.propValue("required",propobj,false);
                             if(swud.required.length>0){
@@ -3095,7 +3100,11 @@
                                 var type=propobj["type"];
                                 //判断是否有example
                                 if(propobj.hasOwnProperty("example")){
-                                    propValue=propobj["example"];
+                                    if(type=="string"){
+                                        propValue=String($.propValue("example",propobj,""));
+                                    }else{
+                                        propValue=propobj["example"];
+                                    }
                                 }else if($.checkIsBasicType(type)){
                                     propValue=$.getBasicTypeValue(type);
                                 }else{
@@ -4011,7 +4020,11 @@
                                             var type=propobj["type"];
                                             //判断是否有example
                                             if(propobj.hasOwnProperty("example")){
-                                                propValue=propobj["example"];
+                                                if(type=="string"){
+                                                    propValue=String($.propValue("example",propobj,""));
+                                                }else{
+                                                    propValue=propobj["example"];
+                                                }
                                             }else if($.checkIsBasicType(type)){
                                                 propValue=$.getBasicTypeValue(type);
                                             }
