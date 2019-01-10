@@ -1259,7 +1259,20 @@
                             var rows_editor = length_editor * 16;
                             that.log("rows_editor:"+rows_editor);
                             $("#"+sampleId).css('height',rows_editor);
-                            editor.resize();
+                            editor.resize(true);
+                            setTimeout(function(){
+                              appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                            }, 1000);
+                            editor.getSession().on('tokenizerUpdate', function(){
+                              setTimeout(function(){
+                                appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                              }, 1000);
+                            });
+                            editor.on('focus', function(){
+                              setTimeout(function(){
+                                appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                              }, 1000);
+                            });
                         }
                     }
                 })
@@ -1338,7 +1351,20 @@
                     var rows_editor = length_editor * 16;
                     that.log("rows_editor:"+rows_editor);
                     $("#"+sampleId).css('height',rows_editor);
-                    editor.resize();
+                    editor.resize(true);
+                    setTimeout(function(){
+                      appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                    }, 1000);
+                    editor.getSession().on('tokenizerUpdate', function(){
+                      setTimeout(function(){
+                        appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                      }, 1000);
+                    });
+                    editor.on('focus', function(){
+                      setTimeout(function(){
+                        appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                      }, 1000);
+                    });
                 }
 
             }
@@ -2164,10 +2190,23 @@
             var rows_editor = length_editor * 16;
             that.log("重构高度："+rows_editor)
             $("#responseJsonEditor"+apiKeyId).css('height',rows_editor+110);
-            editor.resize();
+            editor.resize(true);
             that.log($("#responseJsonEditor"+apiKeyId).height())
             //重置响应面板高度
             laycontentdiv.css("height",rows_editor+150);
+            setTimeout(function(){
+              appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+            }, 1000);
+            editor.getSession().on('tokenizerUpdate', function(){
+              setTimeout(function(){
+                appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+              }, 1000);
+            });
+            editor.on('focus', function(){
+              setTimeout(function(){
+                appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+              }, 1000);
+            });
         }else{
             //判断是否是text
             var regex=new RegExp('.*?text.*','g');
@@ -5024,6 +5063,69 @@
         this.level=1;
 
     }
+
+    var isObject = function (item) {
+      return (item && typeof item === 'object' && !Array.isArray(item));
+    }
+
+    var getKeyDescriptions = function(target, that) {
+      var keyList = {};
+      if (typeof(target) == 'object') {
+        if (Array.isArray(target)) {
+          for (var index in target) {
+            var objc = target[index];
+            if (typeof(objc) == 'object') {
+              var key = objc.name;
+              var keyListTemp;
+              keyList[key] = objc.description;
+              if (objc.schemaValue || objc.refType) {
+                var def=that.getDefinitionByName(objc.schemaValue || objc.refType);
+                if (def) {
+                  if (def.properties) {
+                    keyListTemp = getKeyDescriptions(def.properties, that);
+                  }
+                }
+              } else if (objc.params) {
+                keyListTemp = getKeyDescriptions(objc.params, that);
+              }
+              if (keyListTemp) {
+                for (var j in keyListTemp) {
+                  keyList[key + ">" + j ] = keyListTemp[j];
+                }
+              }
+            }
+          }
+        }
+      }
+      return keyList;
+    }
+
+    var appendDescriptionVariable = function($aceJsonContent, responseCode, that) {
+        var paths = [];
+        $aceJsonText = $aceJsonContent.find('.ace_text-layer');
+        var acePrintMarginLeft = $aceJsonContent.find('.ace_print-margin').css('left');
+        $aceJsonText.children('.ace_line').each(function(i,item){
+        var $variable = $(item).children('.ace_variable');
+        var key;
+        if ($variable.length) {
+          key = $variable.text().replace(/^"(.*)"$/g,'$1');
+          $('<span>'+responseCode.responseDescriptionFind(paths, key, that)+'</span>')
+            .css({'position':'absolute', 'left':acePrintMarginLeft, 'color':'#8c8c8c'})
+            .appendTo($(item));
+        }
+        switch($(item).children('.ace_paren').text()) {
+          case '[':
+          case '{':
+            paths.push(key?key:0);
+            break;
+          case '}':
+          case ']':
+            paths.pop();
+            break;
+        }
+
+      });
+    }
     /***
      * 响应码
      * @constructor
@@ -5045,6 +5147,17 @@
         this.responseRefParameters=new Array();
         //treetable组件使用对象
         this.responseTreetableRefParameters=new Array();
+        this.responseDescriptionFind = function(paths, key, that) {
+          if (!this.responseDescriptions) {
+            this.responseDescriptions = getKeyDescriptions(this.responseParameters, that);
+          }
+          var path = paths.join('>') + '>' + key;
+          path = path.replace(/0>/g,'');
+          if (this.responseDescriptions && this.responseDescriptions[path]) {
+            return this.responseDescriptions[path];
+          }
+          return '';
+        }
     }
 
     /***
