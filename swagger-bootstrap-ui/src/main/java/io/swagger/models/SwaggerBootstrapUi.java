@@ -28,6 +28,11 @@ public class SwaggerBootstrapUi {
      */
     private List<SwaggerBootstrapUiPath> pathSortLists=new ArrayList<>();
 
+    /***
+     * 开启增强失败,错误原因
+     */
+    private String errorMsg;
+
     public List<SwaggerBootstrapUiPath> getPathSortLists() {
         return pathSortLists;
     }
@@ -42,5 +47,14 @@ public class SwaggerBootstrapUi {
 
     public void setTagSortLists(List<SwaggerBootstrapUiTag> tagSortLists) {
         this.tagSortLists = tagSortLists;
+    }
+
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 }

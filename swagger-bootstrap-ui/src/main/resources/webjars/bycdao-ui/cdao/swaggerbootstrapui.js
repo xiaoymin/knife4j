@@ -677,6 +677,24 @@
                             async:false,
                             success:function (data) {
                                 that.log("验证成功...")
+                                that.log(data);
+                                if(data!=null){
+                                    if(data.hasOwnProperty("swaggerBootstrapUi")){
+                                        var sbu=data["swaggerBootstrapUi"];
+                                        that.log(sbu)
+                                        if(sbu!=null&&sbu!=undefined){
+                                            if(sbu.hasOwnProperty("errorMsg")){
+                                                //升级后1.8.9的属性
+                                                var em=sbu["errorMsg"];
+                                                if(em!=null&&em!=undefined&&em!=""){
+                                                    layer.msg("无法开启SwaggerBootstrapUi增强功能,错误原因:"+em);
+                                                    enableSbu.prop("checked",false);
+                                                    flag=false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             },
                             error:function (xhr, textStatus, errorThrown) {
                                 that.log("验证error...")
@@ -2180,16 +2198,23 @@
             resp1.html("")
             that.log(xhr["responseJSON"])
             var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
+            var aceValue={};
             if(xhr.hasOwnProperty("responseJSON")){
-                jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
+                aceValue=JSON.stringify(xhr["responseJSON"],null,2);
+                //that.log(JSON.stringify(xhr["responseJSON"],null,2))
+                //jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
             }else{
+                aceValue=JSON.stringify(data,null,2);
                 //针对表单提交,error的情况,会产生data
-                jsondiv.html(JSON.stringify(data,null,2));
+                //jsondiv.html(JSON.stringify(data,null,2));
             }
+            that.log(jsondiv[0])
             resp1.append(jsondiv);
             var editor = ace.edit("responseJsonEditor"+apiKeyId);
             editor.getSession().setMode("ace/mode/json");
             editor.setTheme("ace/theme/eclipse");
+            editor.setValue(aceValue);
+            editor.gotoLine(1);
             //重构高度
             var length_editor = editor.session.getLength();
             var rows_editor = length_editor * 16;

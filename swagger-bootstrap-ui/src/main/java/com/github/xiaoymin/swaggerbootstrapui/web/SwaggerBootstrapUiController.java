@@ -130,7 +130,9 @@ public class SwaggerBootstrapUiController {
         WebApplicationContext wc=WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
         //v1.8.9
         if (wc==null){
-            LOGGER.warn("WebApplicationContext is Empty~!,Enable SwaggerBootstrapUi fun fail~!");
+            String msg="WebApplicationContext is Empty~!,Enable SwaggerBootstrapUi fun fail~!";
+            LOGGER.warn(msg);
+            swaggerBootstrapUi.setErrorMsg(msg);
             return swaggerBootstrapUi;
         }
         //此处的作用是分组功能.
