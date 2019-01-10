@@ -5116,21 +5116,34 @@
         return (item && typeof item === 'object' && !Array.isArray(item));
     }
 
-    var getKeyDescriptions = function(target, that) {
+    var getKeyDescriptions = function(target, that,parentTypes) {
         var keyList = {};
         if (typeof(target) == 'object') {
             if (Array.isArray(target)) {
                 for (var index in target) {
                     var objc = target[index];
+                    //遍历属性
+                    if(parentTypes==null||parentTypes==undefined){
+                        //first init
+                        parentTypes=new Array();
+                    }
                     if (typeof(objc) == 'object') {
                         var key = objc.name;
                         var keyListTemp;
                         keyList[key] = objc.description;
                         if (objc.schemaValue || objc.refType) {
-                            var def=that.getDefinitionByName(objc.schemaValue || objc.refType);
-                            if (def) {
-                                if (def.properties) {
-                                    keyListTemp = getKeyDescriptions(def.properties, that);
+                            //此处判断父级schema不能是自己
+                            that.log("getKeyDescriptions------------------")
+                            that.log(objc)
+                            //parentTypes次数>1此,出现递归
+                            if($.inArray(objc.schemaValue || objc.refType,parentTypes)==-1){
+                                parentTypes.push(objc.schemaValue || objc.refType);
+                                var def=that.getDefinitionByName(objc.schemaValue || objc.refType);
+                                if (def) {
+                                    if (def.properties) {
+                                        //递归存在相互引用的情况,导致无限递归
+                                        keyListTemp = getKeyDescriptions(def.properties, that,parentTypes);
+                                    }
                                 }
                             }
                         } else if (objc.params) {
