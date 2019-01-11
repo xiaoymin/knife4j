@@ -1106,7 +1106,6 @@
                     </ul>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label col-lg-2">请求参数缓存</label>
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
@@ -1117,7 +1116,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label col-lg-2">菜单Api地址显示</label>
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
@@ -1128,7 +1126,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label col-lg-2">分组tag显示说明</label>
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
@@ -1139,7 +1136,16 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label col-lg-2">启用UI增强</label>
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="enableFilterMultipartApis" <%if(enableFilterMultipartApis){ %> checked="checked"  <%}%> />
+                                开启RequestMapping接口类型重复地址过滤,默认只显示POST类型的接口地址
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
@@ -1150,7 +1156,7 @@
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 5px;">
-                    <div class="col-sm-4 col-sm-offset-2">
+                    <div class="col-lg-10">
                         <button class="btn btn-primary" type="button" id="btnSaveSettings">保存内容</button>
                     </div>
                 </div>

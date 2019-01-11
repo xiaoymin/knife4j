@@ -50,6 +50,7 @@
             showTagStatus:false,//分组tag显示description属性,针对@Api注解没有tags属性值的情况
             enableSwaggerBootstrapUi:false,//是否开启swaggerBootstrapUi增强
             treeExplain:true,
+            enableFilterMultipartApis:false,//针对RequestMapping的接口请求类型,在不指定参数类型的情况下,如果不过滤,默认会显示7个类型的接口地址参数,如果开启此配置,默认展示一个Post类型的接口地址
             enableRequestCache:true//是否开启请求参数缓存
         };
         //SwaggerBootstrapUi增强注解地址
@@ -655,11 +656,15 @@
 
                     var enableRequestCache=$("#SwaggerBootstrapUiSettings").find("input[name=enableRequestCache]");
 
+                    var enableReqFilterCache=$("#SwaggerBootstrapUiSettings").find("input[name=enableFilterMultipartApis]");
+
                     var showApiFlag=showApi.prop("checked");
                     var enableSbuFlag=enableSbu.prop("checked");
                     var showTagStatus=showTagStatusElem.prop("checked");
 
                     var cacheRequest=enableRequestCache.prop("checked");
+
+                    var enableReqFilter=enableReqFilterCache.prop("checked");
 
                     var flag=true;
                     //如果开启SwawggerBootstrapUi增强,则判断当前后端是否启用注解
@@ -715,7 +720,8 @@
                             showApiUrl:showApiFlag,//接口api地址不显示
                             showTagStatus:showTagStatus,//tag显示description属性.
                             enableSwaggerBootstrapUi:enableSbuFlag,//是否开启swaggerBootstrapUi增强
-                            enableRequestCache:cacheRequest
+                            enableRequestCache:cacheRequest,
+                            enableFilterMultipartApis:enableReqFilter
                         }
                         that.saveSettings(setts);
                         if (!cacheRequest){
@@ -3470,7 +3476,38 @@
             }*/
             that.log("解析Paths结束,耗时："+(new Date().getTime()-pathStartTime));
             that.log(new Date().toTimeString());
-
+            //判断是否开启过滤
+            if(that.settings.enableFilterMultipartApis){
+                //开启过滤
+                $.each(that.currentInstance.paths, function (k, methodApi) {
+                    //判断是否包含
+                    var p=that.currentInstance.pathFilters[methodApi.url];
+                    if(p==null||p==undefined){
+                        var d=new SwaggerBootstrapUiApiFilter();
+                        d.methods.push(methodApi);
+                        that.currentInstance.pathFilters[methodApi.url]=d;
+                    }else{
+                        p.methods.push(methodApi);
+                        that.currentInstance.pathFilters[methodApi.url]=p;
+                    }
+                })
+                var newPathArr=new Array();
+                that.log(that.currentInstance.pathFilters)
+                for(var url in that.currentInstance.pathFilters){
+                    var saf=that.currentInstance.pathFilters[url];
+                    that.log(url)
+                    that.log(saf)
+                    that.log(saf.api())
+                    that.log("")
+                    newPathArr=newPathArr.concat(saf.api());
+                }
+                that.log("重新赋值。。。。。")
+                that.log(that.currentInstance.paths)
+                that.log(newPathArr)
+                //重新赋值
+                that.currentInstance.paths=newPathArr;
+                that.log(that.currentInstance.paths)
+            }
         }
         //解析securityDefinitions属性
         if(menu!=null&&typeof (menu)!="undefined"&&menu!=undefined&&menu.hasOwnProperty("securityDefinitions")){
@@ -4907,6 +4944,10 @@
         this.globalParameters=new Array();
         //参数统计信息，存放SwaggerBootstrapUiPathCountDownLatch集合
         this.pathArrs=new Array();
+        //key-value方式存放
+        //key-存放接口地址
+        //value:存放实际值
+        this.pathFilters={};
         //权限信息
         this.securityArrs=new Array();
         //Models
@@ -4932,6 +4973,34 @@
         this.id="";
         //缓存api-id 对象的集合
         this.cacheApis=new Array();
+    }
+
+
+
+    var SwaggerBootstrapUiApiFilter=function () {
+        this.api=function () {
+            var apis=new Array();
+            //判断当前methods类型,如果methods只有1条则返回
+            if(this.methods.length==7){
+                //如果是7个则 开启过滤
+                var mpt=null;
+                //如果接口梳理是7个
+                for(var c=0;c<this.methods.length;c++){
+                    if(this.methods[c].methodType=="POST"){
+                        mpt=this.methods[c];
+                    }
+                }
+                if(mpt==null){
+                    mpt=this.methods[0];
+                }
+                apis.push(mpt);
+            }else{
+                apis=apis.concat(this.methods);
+            }
+            return apis;
+
+        };
+        this.methods=new Array();
     }
 
 
