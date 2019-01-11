@@ -1891,9 +1891,16 @@
             //增加header默认发送参数
             headerparams["Request-Origion"]=that.requestOrigion;
             //判断produce
+            var streamFlag=false;
+            //判断是否是octet-stream类型
             if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
                 var first=apiInfo.produces[0];
                 headerparams["accept"]=first;
+                $.each(apiInfo.produces,function (i, p) {
+                    if(p=="application/octet-stream"){
+                        streamFlag=true;
+                    }
+                })
             }
             //判断security参数
             if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
@@ -1909,68 +1916,88 @@
                 var _tmp=$("#DebugContentType"+apiKeyId).val();
                 headerparams["Content-Type"]=_tmp;
             }
-            if(form.length>0||formRequest){
-                that.log("form submit------------------------------------------------")
-                axios.request({
-                    url:url,
-                    headers:headerparams,
-                    method:$.getStringValue(apiInfo.methodType),
-                    data:formData,
-                    timeout: 10*60*1000,
-                }).then(function (response) {
-                    var data=response.data;
-                    var xhr=response.request;
-                    var allheaders=response.headers;
-                    that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
-                        formCurlParams,xhr,data,startTime,allheaders,true);
-                }).catch(function (error) {
-                    that.log("form request--response error-------------------")
-                    respcleanDiv.show();
-                    layer.close(index);
-                    if(error.response){
-                        var response=error.response;
+
+
+            if(streamFlag){
+                that.log("下载参数")
+                that.log(reqdata)
+                //关闭遮罩层
+                if(reqdata!=null&&reqdata!=undefined){
+                    var ps=new Array();
+                    for(var p in reqdata){
+                        ps.push(p+"="+reqdata[p]);
+                    }
+                    if(ps.length>0){
+                        var lp=ps.join("&");
+                        url=url+"?"+lp;
+                    }
+                }
+                window.open(url);
+                layer.close(index);
+            }else{
+                if(form.length>0||formRequest){
+                    that.log("form submit------------------------------------------------")
+                    axios.request({
+                        url:url,
+                        headers:headerparams,
+                        method:$.getStringValue(apiInfo.methodType),
+                        data:formData,
+                        timeout: 10*60*1000,
+                    }).then(function (response) {
                         var data=response.data;
                         var xhr=response.request;
                         var allheaders=response.headers;
                         that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
                             formCurlParams,xhr,data,startTime,allheaders,true);
-                    }else{
-                        if (error!=null){
-                            var estr=error.toString();
-                            if(estr=="Error: Network Error"){
-                                layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                    }).catch(function (error) {
+                        that.log("form request--response error-------------------")
+                        respcleanDiv.show();
+                        layer.close(index);
+                        if(error.response){
+                            var response=error.response;
+                            var data=response.data;
+                            var xhr=response.request;
+                            var allheaders=response.headers;
+                            that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                                formCurlParams,xhr,data,startTime,allheaders,true);
+                        }else{
+                            if (error!=null){
+                                var estr=error.toString();
+                                if(estr=="Error: Network Error"){
+                                    layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                                }
                             }
                         }
-                    }
-                })
-            }
-            else{
-                //headerparams["Content-Type"]=contType;
-                $.ajax({
-                    url:url,
-                    headers:headerparams,
-                    type:$.getStringValue(apiInfo.methodType),
-                    data:reqdata,
-                    contentType:contType,
-                    success:function (data,status,xhr) {
-                        var allheaders=xhr.getAllResponseHeaders();
-                        that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
-                            formCurlParams,xhr,data,startTime,allheaders,false);
-                    },
-                    error:function (xhr, textStatus, errorThrown) {
-                        that.log("ajax request--response error-------------------")
-                        if(textStatus=="error"&&xhr.status==0){
-                            layer.msg("服务器正在重启或者已经挂了:(~~~~")
-                            //关闭遮罩层
-                            layer.close(index);
-                        }else{
+                    })
+                }
+                else{
+                    //headerparams["Content-Type"]=contType;
+                    $.ajax({
+                        url:url,
+                        headers:headerparams,
+                        type:$.getStringValue(apiInfo.methodType),
+                        data:reqdata,
+                        contentType:contType,
+                        success:function (data,status,xhr) {
                             var allheaders=xhr.getAllResponseHeaders();
-                            var data=null;
                             that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
                                 formCurlParams,xhr,data,startTime,allheaders,false);
+                        },
+                        error:function (xhr, textStatus, errorThrown) {
+                            that.log("ajax request--response error-------------------")
+                            if(textStatus=="error"&&xhr.status==0){
+                                layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                                //关闭遮罩层
+                                layer.close(index);
+                            }else{
+                                var allheaders=xhr.getAllResponseHeaders();
+                                var data=null;
+                                that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                                    formCurlParams,xhr,data,startTime,allheaders,false);
+                            }
                         }
-                    }
-                })
+                    })
+                }
             }
             if(that.settings.enableRequestCache){
                 //缓存到localStorage对象中
