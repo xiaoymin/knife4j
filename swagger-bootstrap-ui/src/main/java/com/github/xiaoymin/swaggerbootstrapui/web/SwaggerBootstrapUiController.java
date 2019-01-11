@@ -8,7 +8,6 @@
 package com.github.xiaoymin.swaggerbootstrapui.web;
 
 import com.github.xiaoymin.swaggerbootstrapui.model.RestHandlerMapping;
-import com.github.xiaoymin.swaggerbootstrapui.model.SwaggerBootstrapUiPathInstance;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -129,6 +128,13 @@ public class SwaggerBootstrapUiController {
     private SwaggerBootstrapUi initSwaggerBootstrapUi(HttpServletRequest request,Documentation documentation,SwaggerExt swaggerExt){
         SwaggerBootstrapUi swaggerBootstrapUi=new SwaggerBootstrapUi();
         WebApplicationContext wc=WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
+        //v1.8.9
+        if (wc==null){
+            String msg="WebApplicationContext is Empty~!,Enable SwaggerBootstrapUi fun fail~!";
+            LOGGER.warn(msg);
+            swaggerBootstrapUi.setErrorMsg(msg);
+            return swaggerBootstrapUi;
+        }
         //此处的作用是分组功能.
         Iterator<Tag> tags=documentation.getTags().iterator();
         //自1.8.7版本后,通过Spring工具类获取所有HandleMappings
@@ -141,7 +147,6 @@ public class SwaggerBootstrapUiController {
             }
             //接口扩展自定义接口实现造成的接口增强排序失败问题
             Map<String, HandlerMapping> requestMappings = BeanFactoryUtils.beansOfTypeIncludingAncestors(wc,HandlerMapping.class,true,false);
-            System.out.println("requestMappings"+requestMappings==null);
             if (requestMappings!=null){
                 for (HandlerMapping handlerMapping : requestMappings.values()) {
                     if (handlerMapping instanceof RequestMappingHandlerMapping) {

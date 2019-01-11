@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <!--页面不缓存-->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Swagger-Bootstrap-UI</title>
     <link rel="shortcut icon" href="webjars/bycdao-ui/images/api.ico"/>
     <script type="text/javascript" src="webjars/bycdao-ui/jquery/jquery-1.9.1.min.js"></script>
@@ -18,7 +22,7 @@
     <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/default.css" />
     <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
     <script src="webjars/bycdao-ui/jquery/marked.js"></script>
-    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css?v=1.8.9" />
     <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css" />
 
     <link rel="stylesheet" href="webjars/bycdao-ui/layui/css/layui.css"  media="all">
@@ -266,6 +270,36 @@
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%>| <%=rp.description%>  | <%=rp.in%> | <%=rp.require%> |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}}}%>
 
+<% if(path.multipartResponseSchema){%>
+<% for(c = 0;c < path.responseCodes.length; c++){ var rcode=path.responseCodes[c];%>
+<% if(rcode.schema!=null){%>
+
+**<%= rcode.code %>响应数据**:
+```json
+<%= rcode.responseValue %>
+```
+**<%= rcode.code %>响应参数说明**:
+<% if(rcode.responseParameters!=null && rcode.responseParameters.length>0){ %>
+| 参数名称         | 说明                             |    类型 |  schema |
+| ------------ | -------------------|-------|----------- |
+<% for( a = 0; a < rcode.responseParameters.length; a++) { var param=rcode.responseParameters[a];%>|<%=param.name%>| <%=param.description%>  |<%=param.type%>  | <%=param.schemaValue%>   |
+<%}}else{%>
+暂无
+<%}%>
+<% if(rcode.responseRefParameters!=null && rcode.responseRefParameters.length>0){ %>
+**schema属性说明**
+
+<% for( a = 0; a < rcode.responseRefParameters.length; a++) { var ref=rcode.responseRefParameters[a];%>
+**<%=ref.name%>**
+| 参数名称         |  说明          |   类型  |  schema |
+| ------------ | ------------------|--------|----------- |
+<% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
+                <%}%>
+<%}}%>
+<%}%>
+<%}%>
+
+<%}else{%>
 **响应数据**:
 ```json
 <%= path.responseValue %>
@@ -288,6 +322,7 @@
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}%>
 <%}}%>
+<%}%>
 
 **响应状态码说明**:
 <% if(path.responseCodes!=null && path.responseCodes.length>0){ %>
@@ -1071,7 +1106,6 @@
                     </ul>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label col-lg-2">请求参数缓存</label>
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
@@ -1082,7 +1116,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label col-lg-2">菜单Api地址显示</label>
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
@@ -1093,7 +1126,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label col-lg-2">分组tag显示说明</label>
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
@@ -1104,7 +1136,25 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label col-lg-2">启用UI增强</label>
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="enableFilterMultipartApis" <%if(enableFilterMultipartApis){ %> checked="checked"  <%}%> />
+                                开启RequestMapping接口类型重复地址过滤,默认只显示
+                                <select class="form-control" name="enableFilterMultipartApiMethodType" style="display: inline;width: 15%;height: 30px;line-height: 30px;">
+                                    <option value="GET"  <%if(enableFilterMultipartApiMethodType=="GET"){ %> selected  <%}%>>GET</option>
+                                    <option value="POST" <%if(enableFilterMultipartApiMethodType=="POST"){ %> selected  <%}%>>POST</option>
+                                    <option value="PUT" <%if(enableFilterMultipartApiMethodType=="PUT"){ %> selected  <%}%>>PUT</option>
+                                    <option value="DELETE" <%if(enableFilterMultipartApiMethodType=="DELETE"){ %> selected  <%}%>>DELETE</option>
+                                    <option value="PATCH" <%if(enableFilterMultipartApiMethodType=="PATCH"){ %> selected  <%}%>>PATCH</option>
+                                    <option value="OPTIONS" <%if(enableFilterMultipartApiMethodType=="OPTIONS"){ %> selected  <%}%>>OPTIONS</option>
+                                    <option value="HEAD" <%if(enableFilterMultipartApiMethodType=="HEAD"){ %> selected  <%}%>>HEAD</option>
+                                </select>类型的接口地址
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
@@ -1115,7 +1165,7 @@
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 5px;">
-                    <div class="col-sm-4 col-sm-offset-2">
+                    <div class="col-lg-10">
                         <button class="btn btn-primary" type="button" id="btnSaveSettings">保存内容</button>
                     </div>
                 </div>
@@ -1124,7 +1174,7 @@
     </div>
 </script>
 
-<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js"></script>
+<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js?v=1.8.9"></script>
 <script type="text/javascript">
     $(function () {
         /***

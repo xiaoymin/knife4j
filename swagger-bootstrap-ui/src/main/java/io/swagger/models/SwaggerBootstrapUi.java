@@ -7,6 +7,7 @@
 
 package io.swagger.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /***
@@ -20,12 +21,17 @@ public class SwaggerBootstrapUi {
     /***
      * tag排序属性
      */
-    protected List<SwaggerBootstrapUiTag> tagSortLists;
+    protected List<SwaggerBootstrapUiTag> tagSortLists=new ArrayList<>();
 
     /***
      * path排序
      */
-    private List<SwaggerBootstrapUiPath> pathSortLists;
+    private List<SwaggerBootstrapUiPath> pathSortLists=new ArrayList<>();
+
+    /***
+     * 开启增强失败,错误原因
+     */
+    private String errorMsg;
 
     public List<SwaggerBootstrapUiPath> getPathSortLists() {
         return pathSortLists;
@@ -41,5 +47,14 @@ public class SwaggerBootstrapUi {
 
     public void setTagSortLists(List<SwaggerBootstrapUiTag> tagSortLists) {
         this.tagSortLists = tagSortLists;
+    }
+
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 }
