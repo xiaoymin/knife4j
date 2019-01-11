@@ -270,6 +270,36 @@
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%>| <%=rp.description%>  | <%=rp.in%> | <%=rp.require%> |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}}}%>
 
+<% if(path.multipartResponseSchema){%>
+<% for(c = 0;c < path.responseCodes.length; c++){ var rcode=path.responseCodes[c];%>
+<% if(rcode.schema!=null){%>
+
+**<%= rcode.code %>响应数据**:
+```json
+<%= rcode.responseValue %>
+```
+**<%= rcode.code %>响应参数说明**:
+<% if(rcode.responseParameters!=null && rcode.responseParameters.length>0){ %>
+| 参数名称         | 说明                             |    类型 |  schema |
+| ------------ | -------------------|-------|----------- |
+<% for( a = 0; a < rcode.responseParameters.length; a++) { var param=rcode.responseParameters[a];%>|<%=param.name%>| <%=param.description%>  |<%=param.type%>  | <%=param.schemaValue%>   |
+<%}}else{%>
+暂无
+<%}%>
+<% if(rcode.responseRefParameters!=null && rcode.responseRefParameters.length>0){ %>
+**schema属性说明**
+
+<% for( a = 0; a < rcode.responseRefParameters.length; a++) { var ref=rcode.responseRefParameters[a];%>
+**<%=ref.name%>**
+| 参数名称         |  说明          |   类型  |  schema |
+| ------------ | ------------------|--------|----------- |
+<% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
+                <%}%>
+<%}}%>
+<%}%>
+<%}%>
+
+<%}else{%>
 **响应数据**:
 ```json
 <%= path.responseValue %>
@@ -292,6 +322,7 @@
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}%>
 <%}}%>
+<%}%>
 
 **响应状态码说明**:
 <% if(path.responseCodes!=null && path.responseCodes.length>0){ %>
