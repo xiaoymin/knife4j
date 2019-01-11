@@ -1140,7 +1140,16 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="enableFilterMultipartApis" <%if(enableFilterMultipartApis){ %> checked="checked"  <%}%> />
-                                开启RequestMapping接口类型重复地址过滤,默认只显示POST类型的接口地址
+                                开启RequestMapping接口类型重复地址过滤,默认只显示
+                                <select class="form-control" name="enableFilterMultipartApiMethodType" style="display: inline;width: 15%;height: 30px;line-height: 30px;">
+                                    <option value="GET"  <%if(enableFilterMultipartApiMethodType=="GET"){ %> selected  <%}%>>GET</option>
+                                    <option value="POST" <%if(enableFilterMultipartApiMethodType=="POST"){ %> selected  <%}%>>POST</option>
+                                    <option value="PUT" <%if(enableFilterMultipartApiMethodType=="PUT"){ %> selected  <%}%>>PUT</option>
+                                    <option value="DELETE" <%if(enableFilterMultipartApiMethodType=="DELETE"){ %> selected  <%}%>>DELETE</option>
+                                    <option value="PATCH" <%if(enableFilterMultipartApiMethodType=="PATCH"){ %> selected  <%}%>>PATCH</option>
+                                    <option value="OPTIONS" <%if(enableFilterMultipartApiMethodType=="OPTIONS"){ %> selected  <%}%>>OPTIONS</option>
+                                    <option value="HEAD" <%if(enableFilterMultipartApiMethodType=="HEAD"){ %> selected  <%}%>>HEAD</option>
+                                </select>类型的接口地址
                             </label>
                         </div>
                     </div>

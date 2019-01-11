@@ -51,6 +51,7 @@
             enableSwaggerBootstrapUi:false,//是否开启swaggerBootstrapUi增强
             treeExplain:true,
             enableFilterMultipartApis:false,//针对RequestMapping的接口请求类型,在不指定参数类型的情况下,如果不过滤,默认会显示7个类型的接口地址参数,如果开启此配置,默认展示一个Post类型的接口地址
+            enableFilterMultipartApiMethodType:"POST",//默认保存类型
             enableRequestCache:true//是否开启请求参数缓存
         };
         //SwaggerBootstrapUi增强注解地址
@@ -716,13 +717,21 @@
                     }
                     if (flag){
                         that.log(showApi.prop("checked")+",enable:"+enableSbu.prop("checked"));
+                        //获取值
+                        var multipartApiMethodType="POST";
+                        if (enableReqFilter){
+                            //如果选中
+                            multipartApiMethodType=$("#SwaggerBootstrapUiSettings").find("select[name=enableFilterMultipartApiMethodType] option:selected").val();
+                        }
                         var setts={
                             showApiUrl:showApiFlag,//接口api地址不显示
                             showTagStatus:showTagStatus,//tag显示description属性.
                             enableSwaggerBootstrapUi:enableSbuFlag,//是否开启swaggerBootstrapUi增强
                             enableRequestCache:cacheRequest,
-                            enableFilterMultipartApis:enableReqFilter
+                            enableFilterMultipartApis:enableReqFilter,
+                            enableFilterMultipartApiMethodType:multipartApiMethodType
                         }
+                        that.log(setts);
                         that.saveSettings(setts);
                         if (!cacheRequest){
                             that.disableStoreRequestParams();
@@ -3497,9 +3506,9 @@
                     var saf=that.currentInstance.pathFilters[url];
                     that.log(url)
                     that.log(saf)
-                    that.log(saf.api())
+                    that.log(saf.api(that.settings.enableFilterMultipartApiMethodType))
                     that.log("")
-                    newPathArr=newPathArr.concat(saf.api());
+                    newPathArr=newPathArr.concat(saf.api(that.settings.enableFilterMultipartApiMethodType));
                 }
                 that.log("重新赋值。。。。。")
                 that.log(that.currentInstance.paths)
@@ -4978,7 +4987,7 @@
 
 
     var SwaggerBootstrapUiApiFilter=function () {
-        this.api=function () {
+        this.api=function (methodType) {
             var apis=new Array();
             //判断当前methods类型,如果methods只有1条则返回
             if(this.methods.length==7){
@@ -4986,7 +4995,7 @@
                 var mpt=null;
                 //如果接口梳理是7个
                 for(var c=0;c<this.methods.length;c++){
-                    if(this.methods[c].methodType=="POST"){
+                    if(this.methods[c].methodType==methodType){
                         mpt=this.methods[c];
                     }
                 }
