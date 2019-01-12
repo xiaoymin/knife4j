@@ -52,7 +52,8 @@
             treeExplain:true,
             enableFilterMultipartApis:false,//针对RequestMapping的接口请求类型,在不指定参数类型的情况下,如果不过滤,默认会显示7个类型的接口地址参数,如果开启此配置,默认展示一个Post类型的接口地址
             enableFilterMultipartApiMethodType:"POST",//默认保存类型
-            enableRequestCache:true//是否开启请求参数缓存
+            enableRequestCache:true,//是否开启请求参数缓存
+            enableCacheOpenApiTable:false//是否开启缓存已打开的api文档
         };
         //SwaggerBootstrapUi增强注解地址
         this.extUrl="/v2/api-docs-ext";
@@ -133,6 +134,47 @@
 
 
     }
+    SwaggerBootstrapUi.prototype.clearCacheOpenApiTableApis=function (){
+        var that=this;
+        if(window.localStorage){
+            var store = window.localStorage;
+            store.setItem("SwaggerBootstrapUiCacheOpenApiTableApis","{}");
+        }
+    }
+
+    /***
+     * 将接口id加入缓存，再页面点击后
+     * @param mid
+     */
+    SwaggerBootstrapUi.prototype.storeCacheOpenApiTableApis=function (apiTable) {
+        var that=this;
+        if(!that.settings.enableCacheOpenApiTable){
+            return
+        }
+
+        if(window.localStorage){
+            var store = window.localStorage;
+            var cacheApis=store["SwaggerBootstrapUiCacheOpenApiTableApis"]||"{}";
+            var settings = JSON.parse(cacheApis);
+            var insid=that.currentInstance.groupId;
+            var cacheApis=settings[insid]||[];
+
+            for(var i=0;i<cacheApis.length;i++){
+                if(cacheApis[i].tabId== apiTable.tabId){
+                    return;
+                }
+            }
+
+            cacheApis.push({
+                tabId:apiTable.tabId
+            })
+
+            settings[insid]=cacheApis;
+            var str=JSON.stringify(settings);
+            store.setItem("SwaggerBootstrapUiCacheOpenApiTableApis",str);
+        }
+    }
+
 
 
     /***
@@ -659,11 +701,15 @@
 
                     var enableReqFilterCache=$("#SwaggerBootstrapUiSettings").find("input[name=enableFilterMultipartApis]");
 
+                    var enableCacheOpenApiTable=$("#SwaggerBootstrapUiSettings").find("input[name=enableCacheOpenApiTable]");
+
                     var showApiFlag=showApi.prop("checked");
                     var enableSbuFlag=enableSbu.prop("checked");
                     var showTagStatus=showTagStatusElem.prop("checked");
 
                     var cacheRequest=enableRequestCache.prop("checked");
+
+                    var enableCacheOpenApi=enableCacheOpenApiTable.prop("checked");
 
                     var enableReqFilter=enableReqFilterCache.prop("checked");
 
@@ -723,13 +769,20 @@
                             //如果选中
                             multipartApiMethodType=$("#SwaggerBootstrapUiSettings").find("select[name=enableFilterMultipartApiMethodType] option:selected").val();
                         }
+
+                        if(!enableCacheOpenApi){
+                            that.clearCacheOpenApiTableApis();
+                        }
+
+
                         var setts={
                             showApiUrl:showApiFlag,//接口api地址不显示
                             showTagStatus:showTagStatus,//tag显示description属性.
                             enableSwaggerBootstrapUi:enableSbuFlag,//是否开启swaggerBootstrapUi增强
                             enableRequestCache:cacheRequest,
                             enableFilterMultipartApis:enableReqFilter,
-                            enableFilterMultipartApiMethodType:multipartApiMethodType
+                            enableFilterMultipartApiMethodType:multipartApiMethodType,
+                            enableCacheOpenApiTable:enableCacheOpenApi
                         }
                         that.log(setts);
                         that.saveSettings(setts);
@@ -1103,6 +1156,11 @@
         }
         var tabId="tab"+apiInfo.id;
         var layerTabId="layerTab"+tabId;
+
+
+        that.storeCacheOpenApiTableApis({tabId:tabId})
+
+
         //判断tabId是否存在
         if(that.tabExists(tabId)){
             element.tabChange(that.layTabFilter,tabId);
