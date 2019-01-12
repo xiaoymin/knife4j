@@ -81,6 +81,8 @@
         that.searchEvents();
         //tab事件
         that.tabCloseEventsInit();
+        //opentab
+        that.initOpenTable();
     }
 
     SwaggerBootstrapUi.prototype.initApis=function () {
@@ -138,9 +140,10 @@
         var that=this;
         if(window.localStorage){
             var store = window.localStorage;
-            store.setItem("SwaggerBootstrapUiCacheOpenApiTableApis","{}");
+            store.removeItem("SwaggerBootstrapUiCacheOpenApiTableApis");
         }
     }
+
 
     /***
      * 将接口id加入缓存，再页面点击后
@@ -172,6 +175,61 @@
             settings[insid]=cacheApis;
             var str=JSON.stringify(settings);
             store.setItem("SwaggerBootstrapUiCacheOpenApiTableApis",str);
+        }
+    }
+
+    SwaggerBootstrapUi.prototype.initOpenTable=function(){
+        var that=this;
+        if(!that.settings.enableCacheOpenApiTable){
+            return
+        }
+        if(window.localStorage){
+            var store = window.localStorage;
+            var cacheApis=store["SwaggerBootstrapUiCacheOpenApiTableApis"]||"{}";
+            var settings = JSON.parse(cacheApis);
+            var insid=that.currentInstance.groupId;
+            var cacheApis=settings[insid]||[];
+
+            if(cacheApis.length>0){
+                for(var i=0;i<cacheApis.length;i++){
+                    var cacheApi=cacheApis[i];
+
+                    var xx=that.getMenu().find(".menuLi[lay-id='"+cacheApi.tabId+"']");
+                    xx.trigger("click");
+                }
+
+            }
+        }
+    }
+
+    SwaggerBootstrapUi.prototype.deleteCacheOpenApiTableApis=function (apiTable) {
+        var that=this;
+        if(!that.settings.enableCacheOpenApiTable){
+            return
+        }
+
+        if(window.localStorage){
+            var store = window.localStorage;
+            var cacheApis=store["SwaggerBootstrapUiCacheOpenApiTableApis"]||"{}";
+            var settings = JSON.parse(cacheApis);
+            var insid=that.currentInstance.groupId;
+            var cacheApis=settings[insid]||[];
+
+
+            var delIndwx=-1;
+            for(var i=0;i<cacheApis.length;i++){
+                if(cacheApis[i].tabId== apiTable.tabId){
+                    delIndwx=i;
+                    break;
+                }
+            }
+
+            if(delIndwx >-1){
+                cacheApis.splice(delIndwx, 1);
+                settings[insid]=cacheApis;
+                var str=JSON.stringify(settings);
+                store.setItem("SwaggerBootstrapUiCacheOpenApiTableApis",str);
+            }
         }
     }
 
@@ -495,6 +553,8 @@
                     that.currentInstance.load=true;
                     //创建swaggerbootstrapui主菜单
                     that.createDetailMenu();
+                    //opentab
+                    that.initOpenTable();
                 },
                 error:function (xhr, textStatus, errorThrown) {
                     that.log("error...")
@@ -645,13 +705,13 @@
                     if(children.deprecated){
                         depStyle=' style="text-decoration:line-through;"';
                     }
-
+                    var tabId="tab"+children.id;
                     if(that.settings.showApiUrl){
                         //显示api地址
-                        childrenLi=$('<li class="menuLi" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
+                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
                     }else{
                         //不显示api地址
-                        childrenLi=$('<li class="menuLi" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
+                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
                     }
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
@@ -2683,6 +2743,12 @@
             element.tabChange('admin-pagetabs', "main");
         })
 
+        $(document).delegate(".icon-sbu-tab-close","click",function(){
+            var tabId=$(this).parent().attr("lay-id");
+            if(tabId){
+                that.deleteCacheOpenApiTableApis({tabId:tabId});
+            }
+        })
         //tab切换状态
         element.on('tab('+that.layTabFilter+')',function (data) {
             that.log(data)
