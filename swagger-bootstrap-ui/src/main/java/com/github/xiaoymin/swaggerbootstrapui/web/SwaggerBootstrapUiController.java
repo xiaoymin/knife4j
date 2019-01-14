@@ -7,6 +7,7 @@
 
 package com.github.xiaoymin.swaggerbootstrapui.web;
 
+import com.github.xiaoymin.swaggerbootstrapui.common.SwaggerBootstrapUiHostNameProvider;
 import com.github.xiaoymin.swaggerbootstrapui.model.RestHandlerMapping;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
@@ -112,7 +113,22 @@ public class SwaggerBootstrapUiController {
             }
         }
         Swagger swagger = mapper.mapDocumentation(documentation);
-        UriComponents uriComponents = componentsFrom(request, swagger.getBasePath());
+        UriComponents uriComponents = null;
+        try{
+            uriComponents=componentsFrom(request,swagger.getBasePath());
+        }catch (Throwable e){
+            LOGGER.error(e.getClass().getName()+":"+e.getMessage());
+            if (e instanceof ClassNotFoundException||e instanceof NoClassDefFoundError){
+                //如果是ClassNotFoundException,一般是使用springfox低版本导致,导致获取springfox.documentation.swagger.common.HostNameProvider错误异常
+                //使用兼容版本
+                String msg=e.getMessage();
+                if (msg!=null&&!"".equals(msg)){
+                    if (msg.endsWith("HostNameProvider")){
+                        uriComponents= SwaggerBootstrapUiHostNameProvider.componentsFrom(request,swagger.getBasePath());
+                    }
+                }
+            }
+        }
         swagger.basePath(Strings.isNullOrEmpty(uriComponents.getPath()) ? "/" : uriComponents.getPath());
         if (isNullOrEmpty(swagger.getHost())) {
             swagger.host(hostName(uriComponents));
