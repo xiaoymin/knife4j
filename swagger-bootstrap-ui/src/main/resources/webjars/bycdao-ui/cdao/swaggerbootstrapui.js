@@ -3874,6 +3874,9 @@
             if(apiInfo.hasOwnProperty("deprecated")){
                 swpinfo.deprecated=apiInfo["deprecated"];
             }
+            if (!apiInfo.tags){
+              apiInfo.tags=['default'];
+            }
             swpinfo.consumes=apiInfo.consumes;
             swpinfo.description=apiInfo.description;
             swpinfo.operationId=apiInfo.operationId;
