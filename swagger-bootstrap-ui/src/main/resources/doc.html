@@ -1158,6 +1158,16 @@
                     <div class="col-lg-10">
                         <div class="checkbox">
                             <label>
+                                <input type="checkbox" name="enableCacheOpenApiTable" <%if(enableCacheOpenApiTable){ %> checked="checked"  <%}%> />
+                                是否开启缓存已打开的api文档
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
                                 <input type="checkbox" name="enableSwaggerBootstrapUi"  <%if(enableSwaggerBootstrapUi){ %> checked="checked"  <%}%> />
                                 启用SwaggerBootstrapUi提供的增强功能.详情请查看<a href="http://www.xiaominfo.com/2018/08/29/swagger-bootstrap-ui-description/#ui%E5%8A%9F%E8%83%BD%E5%A2%9E%E5%BC%BA" target="_blank">SwaggerBootstrapUi增强功能说明</a>
                             </label>
