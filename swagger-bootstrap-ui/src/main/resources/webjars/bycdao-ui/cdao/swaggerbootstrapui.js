@@ -2037,21 +2037,54 @@
 
 
             if(streamFlag){
-                that.log("下载参数")
-                that.log(reqdata)
-                //关闭遮罩层
-                if(reqdata!=null&&reqdata!=undefined){
-                    var ps=new Array();
-                    for(var p in reqdata){
-                        ps.push(p+"="+reqdata[p]);
-                    }
-                    if(ps.length>0){
-                        var lp=ps.join("&");
-                        url=url+"?"+lp;
-                    }
-                }
-                window.open(url);
+
                 layer.close(index);
+
+                axios.request({
+                    url:url,
+                    headers:headerparams,
+                    method:$.getStringValue(apiInfo.methodType),
+                    data:reqdata,
+                    responseType: 'blob'
+                }).then(function (res) {
+                    that.log("文件下载")
+
+                    const content = res.data;
+                    var responseHeaders=res.headers;
+                    that.log(responseHeaders);
+                    var fileName = 'SwaggerBootstrapUiDownload.txt'
+                    if(responseHeaders.hasOwnProperty("content-disposition")){
+                        var respcd=responseHeaders["content-disposition"];
+                        var respcds=respcd.split(";")
+                        for(var i=0;i<respcds.length;i++){
+                            var header=respcds[i];
+                            if(header!=null&&header!=""){
+                                var headerValu=header.split("=");
+                                if(headerValu!=null&&headerValu.length>0){
+                                    if(headerValu[0]=="fileName"){
+                                        fileName=headerValu[1];
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    const blob = new Blob([content])
+                    if ('download' in document.createElement('a')) { // 非IE下载
+                        const elink = document.createElement('a')
+                        elink.download = fileName
+                        elink.style.display = 'none'
+                        elink.href = URL.createObjectURL(blob)
+                        document.body.appendChild(elink)
+                        elink.click()
+                        URL.revokeObjectURL(elink.href) // 释放URL 对象
+                        document.body.removeChild(elink)
+                    } else { // IE10+下载
+                        navigator.msSaveBlob(blob, fileName)
+                    }
+                })
+
+
             }else{
                 if(form.length>0||formRequest){
                     that.log("form submit------------------------------------------------")
@@ -4965,10 +4998,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
