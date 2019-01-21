@@ -17,6 +17,7 @@ online of effect: http://swagger-bootstrap-ui.xiaominfo.com/doc.html
 
 Project Demo:https://gitee.com/xiaoym/swagger-bootstrap-ui-demo
 
+Document:http://www.xiaominfo.com/swagger-bootstrap-ui-en/
 
 QQ communication group: 608374991
 
