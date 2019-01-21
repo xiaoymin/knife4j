@@ -284,7 +284,7 @@ public class SwaggerBootstrapUiController {
     }
 
     /***
-     *
+     * 1.8.0~1.8.9版本使用的方法
      * @param wc
      * @param swaggerExt
      */
