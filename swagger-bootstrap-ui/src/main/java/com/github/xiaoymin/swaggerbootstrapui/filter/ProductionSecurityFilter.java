@@ -10,6 +10,8 @@ package com.github.xiaoymin.swaggerbootstrapui.filter;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /***
  *
@@ -24,18 +26,34 @@ public class ProductionSecurityFilter implements Filter{
      */
     private boolean production=false;
 
+    private List<String> urlFilters=null;
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        urlFilters=new ArrayList<>();
+        urlFilters.add("/doc.html");
+        urlFilters.add("/v2/api-docs");
+        urlFilters.add("/v2/api-docs-ext");
+        urlFilters.add("/swagger-resources");
+        urlFilters.add("/swagger-ui.html");
+        urlFilters.add("/swagger-resources/configuration/ui");
+        urlFilters.add("/swagger-resources/configuration/security");
 
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest=(HttpServletRequest)request;
-        String uri=httpServletRequest.getRequestURI();
-        System.out.println(uri);
-        chain.doFilter(request,response);
+        if (production){
+            String uri=httpServletRequest.getRequestURI();
+            System.out.println("过滤uri:"+uri);
+            if (!urlFilters.contains(uri)){
+                System.out.println(urlFilters.toString());
+                chain.doFilter(request,response);
+            }
+        }
+
     }
 
     @Override

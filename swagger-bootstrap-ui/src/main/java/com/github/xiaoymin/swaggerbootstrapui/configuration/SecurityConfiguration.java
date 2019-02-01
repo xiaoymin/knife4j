@@ -8,14 +8,12 @@
 package com.github.xiaoymin.swaggerbootstrapui.configuration;
 
 import com.github.xiaoymin.swaggerbootstrapui.filter.ProductionSecurityFilter;
-import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-
-import java.util.Map;
 
 /***
  *
@@ -26,6 +24,8 @@ import java.util.Map;
 @Configuration
 public class SecurityConfiguration {
 
+    Logger logger= LoggerFactory.getLogger(SecurityConfiguration.class);
+
     private final Environment environment;
 
     @Autowired
@@ -33,18 +33,18 @@ public class SecurityConfiguration {
         this.environment = environment;
     }
 
+
     @Bean
-    public FilterRegistrationBean xssFilterRegistrationBean()
-    {
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
-        filterRegistrationBean.setFilter(new ProductionSecurityFilter(false));
-        filterRegistrationBean.setOrder(1);
-        filterRegistrationBean.setEnabled(true);
-        filterRegistrationBean.addUrlPatterns("/*");
-        Map<String, String> initParameters = Maps.newHashMap();
-        initParameters.put("excludes", "/favicon.ico,/img/*,/js/*,/css/*,/images/*");
-        initParameters.put("isIncludeRichText", "true");
-        filterRegistrationBean.setInitParameters(initParameters);
-        return filterRegistrationBean;
+    public ProductionSecurityFilter productionSecurityFilter(){
+        boolean prod=false;
+        if (environment!=null){
+            String prodStr=environment.getProperty("swagger.production");
+            if (logger.isDebugEnabled()){
+                logger.debug("swagger.production:{}",prodStr);
+            }
+            prod=Boolean.valueOf(prodStr);
+        }
+        ProductionSecurityFilter p=new ProductionSecurityFilter(prod);
+        return p;
     }
 }
