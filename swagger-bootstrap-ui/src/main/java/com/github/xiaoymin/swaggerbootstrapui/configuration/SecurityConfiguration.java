@@ -52,11 +52,23 @@ public class SecurityConfiguration {
     @Bean
     public SecurityBasicAuthFilter securityBasicAuthFilter(){
         boolean enableSwaggerBasicAuth=false;
+        String dftUserName="admin",dftPass="123321";
         if (environment!=null){
             String enableAuth=environment.getProperty("swagger.basic.enable");
             enableSwaggerBasicAuth=Boolean.valueOf(enableAuth);
+            if (enableSwaggerBasicAuth){
+                //如果开启basic验证,从配置文件中获取用户名和密码
+                String pUser=environment.getProperty("swagger.basic.username");
+                String pPass=environment.getProperty("swagger.basic.password");
+                if (pUser!=null&&!"".equals(pUser)){
+                    dftUserName=pUser;
+                }
+                if (pPass!=null&&!"".equals(pPass)){
+                    dftPass=pPass;
+                }
+            }
         }
-        SecurityBasicAuthFilter securityBasicAuthFilter=new SecurityBasicAuthFilter(enableSwaggerBasicAuth);
+        SecurityBasicAuthFilter securityBasicAuthFilter=new SecurityBasicAuthFilter(enableSwaggerBasicAuth,dftUserName,dftPass);
         return securityBasicAuthFilter;
     }
 }

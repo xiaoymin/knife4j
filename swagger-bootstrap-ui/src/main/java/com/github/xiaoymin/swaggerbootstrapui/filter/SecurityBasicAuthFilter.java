@@ -25,6 +25,10 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter {
      */
     private boolean enableBasicAuth=false;
 
+    private String userName;
+
+    private String password;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -45,13 +49,21 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter {
                     //获取请求头Authorization
                     String auth=servletRequest.getHeader("Authorization");
                     if (auth==null||"".equals(auth)){
-                        httpServletResponse.setStatus(401);
-                        httpServletResponse.setHeader("WWW-Authenticate","Basic realm=\"input Swagger Basic userName & password \"");
-                        httpServletResponse.getWriter().write("You do not have permission to access this resource");
-                        return;
+                        writeForbiddenCode(httpServletResponse);
                     }
-                    String userAndPass=decodeBase64(auth);
-                    System.out.println(userAndPass);
+                    System.out.println("auth:"+auth);
+                    String userAndPass=decodeBase64(auth.substring(6));
+                    System.out.println("decode:"+userAndPass);
+                    String[] upArr=userAndPass.split(":");
+                    String iptUser=upArr[0];
+                    String iptPass=upArr[1];
+                    //匹配服务端用户名及密码
+                    if (iptUser.equals(userName)&&iptPass.equals(password)){
+                        servletRequest.getSession().setAttribute(SwaggerBootstrapUiBasicAuthSession,userName);
+                        chain.doFilter(request,response);
+                    }else{
+                        writeForbiddenCode(httpServletResponse);
+                    }
                 }
             }else{
                 chain.doFilter(request,response);
@@ -61,9 +73,22 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter {
         }
     }
 
+    private void writeForbiddenCode(HttpServletResponse httpServletResponse) throws IOException {
+        httpServletResponse.setStatus(401);
+        httpServletResponse.setHeader("WWW-Authenticate","Basic realm=\"input Swagger Basic userName & password \"");
+        httpServletResponse.getWriter().write("You do not have permission to access this resource");
+        return;
+    }
+
     @Override
     public void destroy() {
 
+    }
+
+    public SecurityBasicAuthFilter(boolean enableBasicAuth, String userName, String password) {
+        this.enableBasicAuth = enableBasicAuth;
+        this.userName = userName;
+        this.password = password;
     }
 
     public SecurityBasicAuthFilter(boolean enableBasicAuth) {
