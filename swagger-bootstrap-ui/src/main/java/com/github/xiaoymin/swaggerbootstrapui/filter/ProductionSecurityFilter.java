@@ -10,6 +10,7 @@ package com.github.xiaoymin.swaggerbootstrapui.filter;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
 public class ProductionSecurityFilter implements Filter{
 
     /***
-     * 是否生产环境,如果是生成环境,过滤Swagger的相关素材请求
+     * 是否生产环境,如果是生成环境,过滤Swagger的相关资源请求
      */
     private boolean production=false;
 
@@ -32,14 +33,13 @@ public class ProductionSecurityFilter implements Filter{
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         urlFilters=new ArrayList<>();
-        urlFilters.add("/doc.html");
-        urlFilters.add("/v2/api-docs");
-        urlFilters.add("/v2/api-docs-ext");
-        urlFilters.add("/swagger-resources");
-        urlFilters.add("/swagger-ui.html");
-        urlFilters.add("/swagger-resources/configuration/ui");
-        urlFilters.add("/swagger-resources/configuration/security");
-
+        urlFilters.add(".*?/doc\\.html.*");
+        urlFilters.add(".*?/v2/api-docs.*");
+        urlFilters.add(".*?/v2/api-docs-ext.*");
+        urlFilters.add(".*?/swagger-resources.*");
+        urlFilters.add(".*?/swagger-ui\\.html.*");
+        urlFilters.add(".*?/swagger-resources/configuration/ui.*");
+        urlFilters.add(".*?/swagger-resources/configuration/security.*");
     }
 
     @Override
@@ -47,13 +47,30 @@ public class ProductionSecurityFilter implements Filter{
         HttpServletRequest httpServletRequest=(HttpServletRequest)request;
         if (production){
             String uri=httpServletRequest.getRequestURI();
-            System.out.println("过滤uri:"+uri);
-            if (!urlFilters.contains(uri)){
-                System.out.println(urlFilters.toString());
+            if (!match(uri)){
                 chain.doFilter(request,response);
+            }else{
+                response.setContentType("text/palin;charset=UTF-8");
+                PrintWriter pw=response.getWriter();
+                pw.write("You do not have permission to access this page");
+                pw.flush();
+            }
+        }else{
+            chain.doFilter(request,response);
+        }
+    }
+
+    private boolean match(String uri){
+        boolean match=false;
+        if (uri!=null){
+            for (String regex:urlFilters){
+                if (uri.matches(regex)){
+                    match=true;
+                    break;
+                }
             }
         }
-
+        return match;
     }
 
     @Override
