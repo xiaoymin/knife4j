@@ -8,6 +8,7 @@
 package com.github.xiaoymin.swaggerbootstrapui.configuration;
 
 import com.github.xiaoymin.swaggerbootstrapui.filter.ProductionSecurityFilter;
+import com.github.xiaoymin.swaggerbootstrapui.filter.SecurityBasicAuthFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,16 @@ public class SecurityConfiguration {
         }
         ProductionSecurityFilter p=new ProductionSecurityFilter(prod);
         return p;
+    }
+
+    @Bean
+    public SecurityBasicAuthFilter securityBasicAuthFilter(){
+        boolean enableSwaggerBasicAuth=false;
+        if (environment!=null){
+            String enableAuth=environment.getProperty("swagger.basic.enable");
+            enableSwaggerBasicAuth=Boolean.valueOf(enableAuth);
+        }
+        SecurityBasicAuthFilter securityBasicAuthFilter=new SecurityBasicAuthFilter(enableSwaggerBasicAuth);
+        return securityBasicAuthFilter;
     }
 }
