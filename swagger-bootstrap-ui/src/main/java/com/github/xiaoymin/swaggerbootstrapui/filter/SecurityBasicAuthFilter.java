@@ -50,10 +50,9 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter {
                     String auth=servletRequest.getHeader("Authorization");
                     if (auth==null||"".equals(auth)){
                         writeForbiddenCode(httpServletResponse);
+                        return;
                     }
-                    System.out.println("auth:"+auth);
                     String userAndPass=decodeBase64(auth.substring(6));
-                    System.out.println("decode:"+userAndPass);
                     String[] upArr=userAndPass.split(":");
                     String iptUser=upArr[0];
                     String iptPass=upArr[1];
@@ -63,6 +62,7 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter {
                         chain.doFilter(request,response);
                     }else{
                         writeForbiddenCode(httpServletResponse);
+                        return;
                     }
                 }
             }else{
@@ -77,7 +77,6 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter {
         httpServletResponse.setStatus(401);
         httpServletResponse.setHeader("WWW-Authenticate","Basic realm=\"input Swagger Basic userName & password \"");
         httpServletResponse.getWriter().write("You do not have permission to access this resource");
-        return;
     }
 
     @Override
