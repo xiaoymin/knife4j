@@ -2014,11 +2014,11 @@
             if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
                 var first=apiInfo.produces[0];
                 headerparams["accept"]=first;
-               /*$.each(apiInfo.produces,function (i, p) {
+               $.each(apiInfo.produces,function (i, p) {
                     if(p=="application/octet-stream"){
                         streamFlag=true;
                     }
-                })*/
+                })
             }
             //判断security参数
             if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
@@ -2058,41 +2058,105 @@
                     data:reqdata,
                     params:sendParams,
                     responseType: 'blob'
-                }).then(function (res) {
-                    that.log("文件下载")
+                }).then(function (response) {
+                    var data=response.data;
+                    var xhr=response.request;
+                    var allheaders = xhr.getAllResponseHeaders();
 
-                    const content = res.data;
-                    var responseHeaders=res.headers;
-                    that.log(responseHeaders);
-                    var fileName = 'SwaggerBootstrapUiDownload.txt'
-                    if(responseHeaders.hasOwnProperty("content-disposition")){
-                        var respcd=responseHeaders["content-disposition"];
-                        var respcds=respcd.split(";")
-                        for(var i=0;i<respcds.length;i++){
-                            var header=respcds[i];
-                            if(header!=null&&header!=""){
-                                var headerValu=header.split("=");
-                                if(headerValu!=null&&headerValu.length>0){
-                                    if(headerValu[0]=="fileName"){
-                                        fileName=headerValu[1];
-                                    }
+                    var contentType = xhr.getResponseHeader("Content-Type");
+                    that.log("判断响应content-Type:"+contentType)
+
+                    var binaryContentType={
+                        "application/octet-stream":true,
+                        "image/png":true,
+                        "image/jpg":true,
+                        "image/jpeg":true,
+                        "image/gif":true
+                    }
+
+                    var binary=false;
+                    var binaryType=null;
+
+                    if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
+                        var first=apiInfo.produces[0];
+                        headerparams["accept"]=first;
+                        $.each(apiInfo.produces,function (i, p) {
+                            if(binaryContentType[p]){
+                                binaryType=p;
+                                binary=true;
+                            }
+                        })
+                    }
+
+                    if(!binary && binaryContentType[contentType]){
+                        binary=true;
+                        binaryType=contentType;
+                    }
+
+                    that.log("binary是否正确")
+                    that.log(binary)
+                    that.log(binaryType)
+
+                    if (binary) {
+
+                        that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
+                            formCurlParams, xhr, data, startTime, allheaders, false,binaryType);
+
+                    } else if (!data || data.size == 0) {
+                        that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
+                            formCurlParams, xhr, null, startTime, allheaders, false,null);
+                    } else {
+                        var reader = new FileReader();
+                        reader.readAsText(data);
+                        reader.onload = function (e) {
+                            var responseData = reader.result;
+                            if (contentType.indexOf("application/json") == 0) {
+                                responseData = JSON.parse(responseData);
+                            } else if (contentType.indexOf("text/xml") == 0) {
+                                responseData = $.parseXML(responseData);
+                            }
+
+                            that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
+                                formCurlParams, xhr, responseData, startTime, allheaders, false,null);
+                        }
+
+                    }
+                }).catch(function (error) {
+                    that.log("form request--response error-------------------")
+                    respcleanDiv.show();
+                    layer.close(index);
+                    if(error.response){
+                        var response=error.response;
+                        var data=response.data;
+                        var xhr=response.request;
+                        var allheaders=response.headers;
+                        if (!data || data.size == 0) {
+                            that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
+                                formCurlParams, xhr, null, startTime, allheaders, true);
+                        } else {
+                            var reader = new FileReader();
+                            reader.readAsText(data);
+                            reader.onload = function (e) {
+                                var responseData = reader.result;
+                                if (data.type.indexOf("application/json") == 0) {
+                                    responseData = JSON.parse(responseData);
+                                } else if (data.type.indexOf("text/xml") == 0) {
+                                    responseData = $.parseXML(responseData);
                                 }
 
+                                that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
+                                    formCurlParams, xhr, responseData, startTime, allheaders, true);
                             }
                         }
-                    }
-                    const blob = new Blob([content])
-                    if ('download' in document.createElement('a')) { // 非IE下载
-                        const elink = document.createElement('a')
-                        elink.download = fileName
-                        elink.style.display = 'none'
-                        elink.href = URL.createObjectURL(blob)
-                        document.body.appendChild(elink)
-                        elink.click()
-                        URL.revokeObjectURL(elink.href) // 释放URL 对象
-                        document.body.removeChild(elink)
-                    } else { // IE10+下载
-                        navigator.msSaveBlob(blob, fileName)
+
+
+                    }else{
+                        if (error!=null){
+                            var estr=error.toString();
+                            if(estr=="Error: Network Error"){
+                                layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                            }
+                        }
                     }
                 })
 
@@ -2145,194 +2209,31 @@
                     that.log($.getStringValue(apiInfo.methodType))
 
                     //headerparams["Content-Type"]=contType;
-                    axios.request({
+                    $.ajax({
                         url:url,
                         headers:headerparams,
-                        method:$.getStringValue(apiInfo.methodType),
+                        type:$.getStringValue(apiInfo.methodType),
                         data:reqdata,
                         contentType:contType,
-                        params:sendParams,
-                        responseType: 'blob'
-                    }).then(function (response) {
-                        var data=response.data;
-                        var xhr=response.request;
-                        var allheaders = xhr.getAllResponseHeaders();
-
-                        var contentType = xhr.getResponseHeader("Content-Type");
-                        that.log("判断响应content-Type:"+contentType)
-
-                        var binaryContentType={
-                            "application/octet-stream":true,
-                            "image/png":true,
-                            "image/jpg":true,
-                            "image/jpeg":true,
-                            "image/gif":true
-                        }
-
-                        var binary=false;
-                        var binaryType=null;
-
-                        if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
-                            var first=apiInfo.produces[0];
-                            headerparams["accept"]=first;
-                            $.each(apiInfo.produces,function (i, p) {
-                                if(binaryContentType[p]){
-                                    binaryType=p;
-                                    binary=true;
-                                }
-                            })
-                        }
-
-                        if(!binary && binaryContentType[contentType]){
-                            binary=true;
-                            binaryType=contentType;
-                        }
-
-                        that.log("binary是否正确")
-                        that.log(binary)
-                        that.log(binaryType)
-
-                        if (binary) {
-
-                            that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
-                                formCurlParams, xhr, data, startTime, allheaders, false,binaryType);
-
-                        } else if (!data || data.size == 0) {
-                            that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
-                                formCurlParams, xhr, null, startTime, allheaders, false,null);
-                        } else {
-                            var reader = new FileReader();
-                            reader.readAsText(data);
-                            reader.onload = function (e) {
-                                var responseData = reader.result;
-                                if (contentType.indexOf("application/json") == 0) {
-                                    responseData = JSON.parse(responseData);
-                                } else if (contentType.indexOf("text/xml") == 0) {
-                                    responseData = $.parseXML(responseData);
-                                }
-
-                                that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
-                                    formCurlParams, xhr, responseData, startTime, allheaders, false,null);
-                            }
-
-                        }
-                    }).catch(function (error) {
-                        that.log("form request--response error-------------------")
-                        respcleanDiv.show();
-                        layer.close(index);
-                        if(error.response){
-                            var response=error.response;
-                            var data=response.data;
-                            var xhr=response.request;
-                            var allheaders=response.headers;
-                            if (!data || data.size == 0) {
-                                that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
-                                    formCurlParams, xhr, null, startTime, allheaders, true);
-                            } else {
-                                var reader = new FileReader();
-                                reader.readAsText(data);
-                                reader.onload = function (e) {
-                                    var responseData = reader.result;
-                                    if (data.type.indexOf("application/json") == 0) {
-                                        responseData = JSON.parse(responseData);
-                                    } else if (data.type.indexOf("text/xml") == 0) {
-                                        responseData = $.parseXML(responseData);
-                                    }
-
-                                    that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
-                                        formCurlParams, xhr, responseData, startTime, allheaders, true);
-                                }
-                            }
-
-
-                        }else{
-                            if (error!=null){
-                                var estr=error.toString();
-                                if(estr=="Error: Network Error"){
-                                    layer.msg("服务器正在重启或者已经挂了:(~~~~")
-                                }
-                            }
-                        }
-                    })
-                  /*  $.ajax({
-                        url: url,
-                        headers: headerparams,
-                        type: $.getStringValue(apiInfo.methodType),
-                        data: reqdata,
-                        contentType: contType,
-                        dataType: "binary",
-                        success: function (data, status, xhr) {
-                            var allheaders = xhr.getAllResponseHeaders();
-                            var contentType = xhr.getResponseHeader("Content-Type");
-
-                            var binaryContentType={
-                                "application/octet-stream":true,
-                                "image/png":true,
-                                "image/jpg":true,
-                                "image/jpeg":true,
-                                "image/gif":true
-                            }
-
-                            var binary=false;
-                            var binaryType=null;
-
-                            if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
-                                var first=apiInfo.produces[0];
-                                headerparams["accept"]=first;
-                                $.each(apiInfo.produces,function (i, p) {
-                                    if(binaryContentType[p]){
-                                        binaryType=p;
-                                        binary=true;
-                                    }
-                                })
-                            }
-
-                            if(!binary && binaryContentType[contentType]){
-                                binary=true;
-                                binaryType=contentType;
-                            }
-
-                            if (binary) {
-
-                                that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
-                                    formCurlParams, xhr, data, startTime, allheaders, false,binaryType);
-
-                            } else if (!data || data.size == 0) {
-                                that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
-                                    formCurlParams, xhr, null, startTime, allheaders, false,null);
-                            } else {
-                                var reader = new FileReader();
-                                reader.readAsText(data);
-                                reader.onload = function (e) {
-                                    var responseData = reader.result;
-                                    if (contentType.indexOf("application/json") == 0) {
-                                        responseData = JSON.parse(responseData);
-                                    } else if (contentType.indexOf("text/xml") == 0) {
-                                        responseData = $.parseXML(responseData);
-                                    }
-
-                                    that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
-                                        formCurlParams, xhr, responseData, startTime, allheaders, false,null);
-                                }
-
-                            }
-
-
+                        success:function (data,status,xhr) {
+                            var allheaders=xhr.getAllResponseHeaders();
+                            that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                                formCurlParams,xhr,data,startTime,allheaders,false);
                         },
-                        error: function (xhr, textStatus, errorThrown,data) {
+                        error:function (xhr, textStatus, errorThrown) {
                             that.log("ajax request--response error-------------------")
-                            if (textStatus == "error" && xhr.status == 0) {
+                            if(textStatus=="error"&&xhr.status==0){
                                 layer.msg("服务器正在重启或者已经挂了:(~~~~")
                                 //关闭遮罩层
                                 layer.close(index);
-                            } else {
-                                var allheaders = xhr.getAllResponseHeaders();
-                                var data = xhr.statusText;
-                                that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
-                                    formCurlParams, xhr, data, startTime, allheaders, false);
+                            }else{
+                                var allheaders=xhr.getAllResponseHeaders();
+                                var data=null;
+                                that.createResponseElement(index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat,
+                                    formCurlParams,xhr,data,startTime,allheaders,false);
                             }
                         }
-                    })*/
+                    })
                 }
             }
             if(that.settings.enableRequestCache){
