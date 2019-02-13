@@ -1684,6 +1684,39 @@
     }
 
 
+    /***
+     * 判断响应类型
+     * @param produces
+     */
+    SwaggerBootstrapUi.prototype.binaryContentType=function (produces,contentType) {
+        var binaryContentType={
+            "application/octet-stream":true,
+            "image/png":true,
+            "image/jpg":true,
+            "image/jpeg":true,
+            "image/gif":true
+        }
+        var binary=false;
+        var binaryType="";
+        if(produces!=null&&produces!=undefined){
+            $.each(produces,function (i, p) {
+                if(binaryContentType[p]){
+                    binaryType=p;
+                    binary=true;
+                }
+            })
+        }
+        if (contentType!=null){
+            if(!binary && binaryContentType[contentType]){
+                binary=true;
+                binaryType=contentType;
+            }
+        }
+        var bobj={binary:binary,binaryType:binaryType};
+        return bobj;
+    }
+
+
 
     /***
      * 发送请求
@@ -2014,11 +2047,13 @@
             if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
                 var first=apiInfo.produces[0];
                 headerparams["accept"]=first;
-               $.each(apiInfo.produces,function (i, p) {
+                var binaryObject=that.binaryContentType(apiInfo.produces,null);
+                streamFlag=binaryObject.binary;
+                /*$.each(apiInfo.produces,function (i, p) {
                     if(p=="application/octet-stream"){
                         streamFlag=true;
                     }
-                })
+                })*/
             }
             //判断security参数
             if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
@@ -2066,33 +2101,9 @@
                     var contentType = xhr.getResponseHeader("Content-Type");
                     that.log("判断响应content-Type:"+contentType)
 
-                    var binaryContentType={
-                        "application/octet-stream":true,
-                        "image/png":true,
-                        "image/jpg":true,
-                        "image/jpeg":true,
-                        "image/gif":true
-                    }
-
-                    var binary=false;
-                    var binaryType=null;
-
-                    if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
-                        var first=apiInfo.produces[0];
-                        headerparams["accept"]=first;
-                        $.each(apiInfo.produces,function (i, p) {
-                            if(binaryContentType[p]){
-                                binaryType=p;
-                                binary=true;
-                            }
-                        })
-                    }
-
-                    if(!binary && binaryContentType[contentType]){
-                        binary=true;
-                        binaryType=contentType;
-                    }
-
+                    var binaryObject=that.binaryContentType(apiInfo.produces,contentType);
+                    var binary=binaryObject.binary;
+                    var binaryType=binaryObject.binaryType;
                     that.log("binary是否正确")
                     that.log(binary)
                     that.log(binaryType)
@@ -2452,7 +2463,7 @@
                 }
                 resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
             }else {
-                resp2Html=$("<img  height='200'  src='"+downloadurl+"'>");
+                resp2Html=$("<img  src='"+downloadurl+"'>");
             }
 
             resp2.html("");
@@ -2523,7 +2534,7 @@
                 }
                 resp2Html=$("<a style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
             }else {
-                resp2Html=$("<img  height='200'  src='"+downloadurl+"'>");
+                resp2Html=$("<img   src='"+downloadurl+"'>");
             }
 
             resp1.html("");
