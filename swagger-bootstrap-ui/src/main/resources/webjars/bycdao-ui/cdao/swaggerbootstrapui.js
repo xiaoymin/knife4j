@@ -2029,10 +2029,15 @@
                 })
             }
             //判断是否全局参数中包含ContentType属性
+            that.log("判断是否全局参数中包含ContentType属性--------------------")
             if(!headerparams.hasOwnProperty("Content-Type")){
                 //如果全局参数中不包含,则获取默认input选择框的
+                that.log($("#DebugContentType"+apiKeyId))
                 var _tmp=$("#DebugContentType"+apiKeyId).val();
-                headerparams["Content-Type"]=_tmp;
+                that.log(_tmp);
+                if (_tmp!=undefined&&_tmp!=null&&_tmp!=""){
+                    headerparams["Content-Type"]=_tmp;
+                }
             }
 
 
@@ -2526,7 +2531,7 @@
         if (data&&data.toString() =="[object Blob]" ) {
             var resp2Html =null;
 
-            var url=window.URL.createObjectURL(data);
+            var downloadurl=window.URL.createObjectURL(data);
             if(binaryType == "application/octet-stream"){
                 var fileName = 'SwaggerBootstrapUiDownload.txt';
                 var contentDisposition=xhr.getResponseHeader("Content-Disposition");
@@ -2544,13 +2549,11 @@
                         }
                     }
                 }
-                resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+url+"' download='"+fileName+"'>下载文件</a>");
+                resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
             }else {
-                resp2Html=$("<img  height='200'  src='"+url+"'>");
+                resp2Html=$("<img  height='200'  src='"+downloadurl+"'>");
             }
 
-            resp1.html("");
-            resp1.append(resp2Html);
             resp2.html("");
             resp2.append(resp2Html);
         }else if(rtext!=null&&rtext!=undefined){
@@ -2599,7 +2602,7 @@
         if (data&&data.toString() =="[object Blob]" ) {
             var resp2Html =null;
 
-            var url=window.URL.createObjectURL(data);
+            var downloadurl=window.URL.createObjectURL(data);
             if(binaryType == "application/octet-stream"){
                 var fileName = 'SwaggerBootstrapUiDownload.txt';
                 var contentDisposition=xhr.getResponseHeader("Content-Disposition");
@@ -2617,9 +2620,9 @@
                         }
                     }
                 }
-                resp2Html=$("<a style='color: blue;font-size: 18px;text-decoration: underline;' href='"+url+"' download='"+fileName+"'>下载文件</a>");
+                resp2Html=$("<a style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
             }else {
-                resp2Html=$("<img  height='200'  src='"+url+"'>");
+                resp2Html=$("<img  height='200'  src='"+downloadurl+"'>");
             }
 
             resp1.html("");
