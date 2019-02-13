@@ -11,6 +11,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Enumeration;
 
 /***
  *
@@ -31,9 +32,13 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter{
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        setEnableBasicAuth(Boolean.valueOf(filterConfig.getInitParameter("enableBasicAuth")));
-        setUserName(filterConfig.getInitParameter("userName"));
-        setPassword(filterConfig.getInitParameter("password"));
+        Enumeration<String> enumeration=filterConfig.getInitParameterNames();
+        //SpringMVC环境中,由此init方法初始化此Filter,SpringBoot环境中则不同
+        if (enumeration.hasMoreElements()){
+            setEnableBasicAuth(Boolean.valueOf(filterConfig.getInitParameter("enableBasicAuth")));
+            setUserName(filterConfig.getInitParameter("userName"));
+            setPassword(filterConfig.getInitParameter("password"));
+        }
     }
 
     @Override

@@ -11,6 +11,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
 
 /***
  *
@@ -28,7 +29,11 @@ public class ProductionSecurityFilter extends BasicFilter implements Filter{
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         //判断filterConfig
-        setProduction(Boolean.valueOf(filterConfig.getInitParameter("production")));
+        Enumeration<String> enumeration=filterConfig.getInitParameterNames();
+        //SpringMVC环境中,由此init方法初始化此Filter,SpringBoot环境中则不同
+        if (enumeration.hasMoreElements()){
+            setProduction(Boolean.valueOf(filterConfig.getInitParameter("production")));
+        }
     }
 
     @Override
