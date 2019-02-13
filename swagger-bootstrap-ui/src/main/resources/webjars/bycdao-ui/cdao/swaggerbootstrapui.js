@@ -2014,7 +2014,7 @@
             if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
                 var first=apiInfo.produces[0];
                 headerparams["accept"]=first;
-               /* $.each(apiInfo.produces,function (i, p) {
+               /*$.each(apiInfo.produces,function (i, p) {
                     if(p=="application/octet-stream"){
                         streamFlag=true;
                     }
@@ -2037,14 +2037,21 @@
 
 
             if(streamFlag){
-
                 layer.close(index);
-
+                that.log("sendParams-------------------------------------")
+                //判断请求类型,如果是Get请求,参数拼装发送为param,否则为data类型参数
+                var sendParams={};
+                if($.getStringValue(apiInfo.methodType)=="GET"){
+                    sendParams=reqdata;
+                }
+                that.log(sendParams)
+                that.log($.getStringValue(apiInfo.methodType))
                 axios.request({
                     url:url,
                     headers:headerparams,
                     method:$.getStringValue(apiInfo.methodType),
                     data:reqdata,
+                    params:sendParams,
                     responseType: 'blob'
                 }).then(function (res) {
                     that.log("文件下载")
@@ -2122,12 +2129,24 @@
                     })
                 }
                 else{
+                    that.log("发送参数0000-----------")
+                    that.log(reqdata)
+                    //判断请求类型,如果是Get请求,参数拼装发送为param,否则为data类型参数
+                    var sendParams={};
+                    if($.getStringValue(apiInfo.methodType)=="GET"){
+                        sendParams=reqdata;
+                    }
+                    that.log(sendParams)
+                    that.log($.getStringValue(apiInfo.methodType))
+
                     //headerparams["Content-Type"]=contType;
                     axios.request({
                         url:url,
                         headers:headerparams,
                         method:$.getStringValue(apiInfo.methodType),
-                        data:formData,
+                        data:reqdata,
+                        contentType:contType,
+                        params:sendParams,
                         responseType: 'blob'
                     }).then(function (response) {
                         var data=response.data;
@@ -2135,6 +2154,7 @@
                         var allheaders = xhr.getAllResponseHeaders();
 
                         var contentType = xhr.getResponseHeader("Content-Type");
+                        that.log("判断响应content-Type:"+contentType)
 
                         var binaryContentType={
                             "application/octet-stream":true,
@@ -2162,6 +2182,10 @@
                             binary=true;
                             binaryType=contentType;
                         }
+
+                        that.log("binary是否正确")
+                        that.log(binary)
+                        that.log(binaryType)
 
                         if (binary) {
 
@@ -2504,23 +2528,29 @@
 
             var url=window.URL.createObjectURL(data);
             if(binaryType == "application/octet-stream"){
-                var fileName="未命名";
-
+                var fileName = 'SwaggerBootstrapUiDownload.txt';
                 var contentDisposition=xhr.getResponseHeader("Content-Disposition");
                 if(contentDisposition){
-                    var selectName="filename=";
-                    var index=contentDisposition.indexOf(selectName);
-                    if(index!=-1){
-                        fileName=contentDisposition.substring(index+selectName.length);
+                    var respcds=contentDisposition.split(";")
+                    for(var i=0;i<respcds.length;i++){
+                        var header=respcds[i];
+                        if(header!=null&&header!=""){
+                            var headerValu=header.split("=");
+                            if(headerValu!=null&&headerValu.length>0){
+                                if(headerValu[0]=="fileName"){
+                                    fileName=headerValu[1];
+                                }
+                            }
+                        }
                     }
                 }
-
-                resp2Html=$("<a href='"+url+"' download='"+fileName+"'>下载文件</a>");
+                resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+url+"' download='"+fileName+"'>下载文件</a>");
             }else {
                 resp2Html=$("<img  height='200'  src='"+url+"'>");
             }
 
-
+            resp1.html("");
+            resp1.append(resp2Html);
             resp2.html("");
             resp2.append(resp2Html);
         }else if(rtext!=null&&rtext!=undefined){
@@ -2566,29 +2596,31 @@
             }
         }
         //响应JSON
-        if(data&&data.toString() =="[object Blob]"){
+        if (data&&data.toString() =="[object Blob]" ) {
             var resp2Html =null;
 
             var url=window.URL.createObjectURL(data);
             if(binaryType == "application/octet-stream"){
-                var fileName="未命名";
-
+                var fileName = 'SwaggerBootstrapUiDownload.txt';
                 var contentDisposition=xhr.getResponseHeader("Content-Disposition");
                 if(contentDisposition){
-                    var selectName="filename=";
-                    var index=contentDisposition.indexOf(selectName);
-                    if(index!=-1){
-                        fileName=contentDisposition.substring(index+selectName.length);
+                    var respcds=contentDisposition.split(";")
+                    for(var i=0;i<respcds.length;i++){
+                        var header=respcds[i];
+                        if(header!=null&&header!=""){
+                            var headerValu=header.split("=");
+                            if(headerValu!=null&&headerValu.length>0){
+                                if(headerValu[0]=="fileName"){
+                                    fileName=headerValu[1];
+                                }
+                            }
+                        }
                     }
                 }
-
-                resp2Html=$("<a href='"+url+"' download='"+fileName+"'>下载文件</a>");
+                resp2Html=$("<a style='color: blue;font-size: 18px;text-decoration: underline;' href='"+url+"' download='"+fileName+"'>下载文件</a>");
             }else {
-                resp2Html=$("<img height='200' src='"+url+"'>");
-                $("#responseJsonEditor" + apiKeyId).css('height', 310);
-                laycontentdiv.css("height", 350);
+                resp2Html=$("<img  height='200'  src='"+url+"'>");
             }
-
 
             resp1.html("");
             resp1.append(resp2Html);
