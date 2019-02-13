@@ -18,7 +18,7 @@ import java.io.IOException;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/02/02 19:55
  */
-public class SecurityBasicAuthFilter extends BasicFilter implements Filter {
+public class SecurityBasicAuthFilter extends BasicFilter implements Filter{
 
     /***
      * 是否开启basic验证,默认不开启
@@ -31,6 +31,9 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        setEnableBasicAuth(Boolean.valueOf(filterConfig.getInitParameter("enableBasicAuth")));
+        setUserName(filterConfig.getInitParameter("userName"));
+        setPassword(filterConfig.getInitParameter("password"));
     }
 
     @Override
@@ -73,15 +76,15 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter {
         }
     }
 
+    @Override
+    public void destroy() {
+
+    }
+
     private void writeForbiddenCode(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.setStatus(401);
         httpServletResponse.setHeader("WWW-Authenticate","Basic realm=\"input Swagger Basic userName & password \"");
         httpServletResponse.getWriter().write("You do not have permission to access this resource");
-    }
-
-    @Override
-    public void destroy() {
-
     }
 
     public SecurityBasicAuthFilter(boolean enableBasicAuth, String userName, String password) {
@@ -92,5 +95,32 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter {
 
     public SecurityBasicAuthFilter(boolean enableBasicAuth) {
         this.enableBasicAuth = enableBasicAuth;
+    }
+
+    public SecurityBasicAuthFilter() {
+    }
+
+    public boolean isEnableBasicAuth() {
+        return enableBasicAuth;
+    }
+
+    public void setEnableBasicAuth(boolean enableBasicAuth) {
+        this.enableBasicAuth = enableBasicAuth;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

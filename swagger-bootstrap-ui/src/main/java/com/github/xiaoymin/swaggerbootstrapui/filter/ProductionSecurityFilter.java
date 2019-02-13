@@ -25,10 +25,10 @@ public class ProductionSecurityFilter extends BasicFilter implements Filter{
      */
     private boolean production=false;
 
-
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        //判断filterConfig
+        setProduction(Boolean.valueOf(filterConfig.getInitParameter("production")));
     }
 
     @Override
@@ -56,6 +56,9 @@ public class ProductionSecurityFilter extends BasicFilter implements Filter{
 
     public ProductionSecurityFilter(boolean production) {
         this.production = production;
+    }
+
+    public ProductionSecurityFilter() {
     }
 
     public boolean isProduction() {

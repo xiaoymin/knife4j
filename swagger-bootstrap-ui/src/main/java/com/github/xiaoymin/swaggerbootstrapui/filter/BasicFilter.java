@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Decoder;
 
+import javax.servlet.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,4 +73,5 @@ public class BasicFilter implements Consts{
     public void setUrlFilters(List<String> urlFilters) {
         this.urlFilters = urlFilters;
     }
+
 }
