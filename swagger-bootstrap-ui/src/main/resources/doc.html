@@ -513,7 +513,7 @@
             <div class="swbu-main">
                 <%if((parameters!=null && parameters.length>0)||(globalParameters!=null && globalParameters.length>0)){ var fileform=false;var tabIndex=0;%>
                 <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
-                <%  if(param.schemaValue=="MultipartFile"){ fileform=true;}%>
+                <%  if(param.schemaValue=="MultipartFile" || param.schemaValue=="file" || param.type=="file"){ fileform=true;}%>
                 <%}%>
 
                 <%if(fileform){%>
@@ -546,7 +546,7 @@
                                         <input class="form-control p-key" value="<%=param.name%>">
                                     </td>
                                     <td>
-                                        <%if(param.schemaValue=="MultipartFile"){%>
+                                        <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file" ){%>
                                             <input name="<%=param.name%>" type="file" tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                         <%}else{%>
                                             <%if(param.in=="body"){  %>
@@ -575,7 +575,7 @@
                                     <input class="form-control p-key" value="<%=param.name%>">
                                 </td>
                                 <td>
-                                    <%if(param.schemaValue=="MultipartFile"){%>
+                                    <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file"){%>
                                     <div class="row">
                                         <div class="col-lg-10">
                                             <input name="<%=param.name%>" type="file" tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>" <%if(param.type=="array"){%> multiple <%}%>/>
@@ -644,7 +644,7 @@
                                 <input class="form-control p-key" value="<%=param.name%>">
                             </td>
                             <td>
-                                <%if(param.schemaValue=="MultipartFile"){%>
+                                <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file"){%>
                                 <input name="<%=param.name%>" type="file" tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                 <%}else{%>
                                 <%if(param.in=="body"){  %>
@@ -675,7 +675,7 @@
                             </td>
                             <td>
                                 <%if(param.in=="body"||param.in=="formdata"||param.in=="formData"){  %>
-                                    <%if(param.schemaValue=="MultipartFile"){%>
+                                    <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file"){%>
                                     <input name="<%=param.name%>" type="file"  tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                     <%}else {%>
                                         <%if(param.in=="body"){  %>

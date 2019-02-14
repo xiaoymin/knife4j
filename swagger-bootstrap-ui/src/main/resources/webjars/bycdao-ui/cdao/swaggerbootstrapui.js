@@ -1801,7 +1801,7 @@
                     if(trdata["in"]=="body") {
                         //这里需要判断schema
                         //直接判断那类型
-                        if (trdata.schemavalue == "MultipartFile") {
+                        if (trdata.schemavalue == "MultipartFile" || trdata.schemavalue == "file" || trdata.type=="file") {
                             value = paramtr.find("td:eq(3)").find("input").val();
                             var fileEle = paramtr.find("td:eq(3)").find("input")[0];
                             fileUploadFlat = true;
@@ -1832,7 +1832,7 @@
                     }
                     else if(trdata["in"]=="formData"){
                         //直接判断那类型
-                        if (trdata.schemavalue == "MultipartFile") {
+                        if (trdata.schemavalue == "MultipartFile" || trdata.schemavalue == "file"  || trdata.type=="file") {
                             value = paramtr.find("td:eq(3)").find("input").val();
                             var fileEle = paramtr.find("td:eq(3)").find("input")[0];
                             fileUploadFlat = true;
@@ -1925,7 +1925,7 @@
                                 if(trdata["in"]=="header"){
                                     headerparams[key]=value;
                                 }else{
-                                    if (trdata.schemavalue != "MultipartFile") {
+                                    if (trdata.schemavalue != "MultipartFile" &&  trdata.schemavalue != "file" && trdata.type!="file") {
                                         //判断数组
                                         if(trdata["type"]!="array"){
                                             params[key]=value;
