@@ -329,17 +329,64 @@
                    $.each(newTagArrs,function (i, tag) {
                        var len=tag.childrens.length;
                        if(len==0){
-                           var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                           //var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                           var li=null;
+                           if (that.settings.showTagStatus){
+                               li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+') </span></a></li>');
+                           }else{
+                               li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                           }
                            that.getSearchMenu().append(li);
                        }else{
                            //存在子标签
-                           var li=$('<li  class="detailMenu"></li>');
+                           /*var li=$('<li  class="detailMenu"></li>');
                            var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                            li.append(titleA);
                            //循环树
                            var ul=$('<ul class="submenu"></ul>')
                            $.each(tag.childrens,function (i, children) {
                                var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.url+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
+                               childrenLi.data("data",children);
+                               ul.append(childrenLi);
+                           })*/
+                           //存在子标签
+                           var li=$('<li  class="detailMenu"></li>');
+
+                           var tagNewApiIcon="";
+                           if(tag.hasNew){
+                               tagNewApiIcon='<i class="iconfont icon-xinpin" style="float: right;right: 30px;position: absolute;"></i>';
+                           }
+                           var titleA=null;
+                           if(that.settings.showTagStatus){
+                               titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+')<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
+                           }else{
+                               titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
+                           }
+                           //var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                           li.append(titleA);
+                           //循环树
+                           var ul=$('<ul class="submenu"></ul>')
+
+
+                           $.each(tag.childrens,function (i, children) {
+                               var childrenLi=null;
+                               var newApiIcon="";
+                               if (children.hasNew){
+                                   //新接口
+                                   newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:32px;"></i>';
+                               }
+                               var depStyle=' ';
+                               if(children.deprecated){
+                                   depStyle=' style="text-decoration:line-through;"';
+                               }
+                               var tabId="tab"+children.id;
+                               if(that.settings.showApiUrl){
+                                   //显示api地址
+                                   childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
+                               }else{
+                                   //不显示api地址
+                                   childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
+                               }
                                childrenLi.data("data",children);
                                ul.append(childrenLi);
                            })
