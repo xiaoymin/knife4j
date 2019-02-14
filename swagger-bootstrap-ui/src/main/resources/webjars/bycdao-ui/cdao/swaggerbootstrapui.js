@@ -3459,32 +3459,31 @@
                                     }
                                 }else if($.checkIsBasicType(type)){
                                     propValue=$.getBasicTypeValue(type);
-                                }else{
-                                    //that.log("解析属性："+property);
-                                    //that.log(propobj);
-                                    if(type=="array"){
-                                        propValue=new Array();
-                                        var items=propobj["items"];
-                                        var ref=items["$ref"];
-                                        //此处有可能items是array
-                                        if (items.hasOwnProperty("type")){
-                                            if(items["type"]=="array"){
-                                                ref=items["items"]["$ref"];
-                                            }
+                                }
+                                //that.log("解析属性："+property);
+                                //that.log(propobj);
+                                if(type=="array"){
+                                    propValue=new Array();
+                                    var items=propobj["items"];
+                                    var ref=items["$ref"];
+                                    //此处有可能items是array
+                                    if (items.hasOwnProperty("type")){
+                                        if(items["type"]=="array"){
+                                            ref=items["items"]["$ref"];
                                         }
-                                        var regex=new RegExp("#/definitions/(.*)$","ig");
-                                        if(regex.test(ref)){
-                                            var refType=RegExp.$1;
-                                            spropObj.refType=refType;
-                                            //这里需要递归判断是否是本身,如果是,则退出递归查找
-                                            var globalArr=new Array();
-                                            //添加类本身
-                                            globalArr.push(name);
-                                            if(refType!=name){
-                                                propValue.push(that.findRefDefinition(refType,definitions,false,globalArr));
-                                            }else{
-                                                propValue.push(that.findRefDefinition(refType,definitions,true,name,globalArr));
-                                            }
+                                    }
+                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                    if(regex.test(ref)){
+                                        var refType=RegExp.$1;
+                                        spropObj.refType=refType;
+                                        //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                        var globalArr=new Array();
+                                        //添加类本身
+                                        globalArr.push(name);
+                                        if(refType!=name){
+                                            propValue.push(that.findRefDefinition(refType,definitions,false,globalArr));
+                                        }else{
+                                            propValue.push(that.findRefDefinition(refType,definitions,true,name,globalArr));
                                         }
                                     }
                                 }
