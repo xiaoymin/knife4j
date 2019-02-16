@@ -5647,9 +5647,13 @@
             var key;
             if ($variable.length) {
                 key = $variable.text().replace(/^"(.*)"$/g,'$1');
-                $('<span>'+responseCode.responseDescriptionFind(paths, key, that)+'</span>')
-                    .css({'position':'absolute', 'left':acePrintMarginLeft, 'color':'#8c8c8c'})
-                    .appendTo($(item));
+                //判断是否存在
+                var sfd=$(item).children(".sbu-field-description");
+                if (sfd.length==0){
+                    $('<span class="sbu-field-description">'+responseCode.responseDescriptionFind(paths, key, that)+'</span>')
+                        .css({'position':'absolute', 'left':acePrintMarginLeft, 'color':'#8c8c8c'})
+                        .appendTo($(item));
+                }
             }
             switch($(item).children('.ace_paren').text()) {
                 case '[':
