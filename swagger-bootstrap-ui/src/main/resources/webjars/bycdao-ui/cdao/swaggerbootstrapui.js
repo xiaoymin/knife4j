@@ -3343,7 +3343,7 @@
                 $("#txtOffLineDoc").val(val);
                 that.log(that.currentInstance.paths.length)
                 //如果当前接口梳理超过一定限制,md离线文档不予显示，仅仅展示源文件
-                if(that.currentInstance.paths!=null&&that.currentInstance.paths.length>300){
+                if(that.currentInstance.paths!=null&&that.currentInstance.paths.length>100){
                     $("#txtOffLineDoc").show();
                     $("#txtOffLineDoc").parent().css("width","100%");
                     layer.msg("当前接口数量超出限制,请使用第三方markdown转换软件进行转换以查看效果.")
