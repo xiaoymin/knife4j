@@ -3545,8 +3545,66 @@
                                     }else{
                                         propValue=propobj["example"];
                                     }
-                                }else if($.checkIsBasicType(type)){
+                                }
+                                if($.checkIsBasicType(type)){
                                     propValue=$.getBasicTypeValue(type);
+                                    //此处如果是object情况,需要判断additionalProperties属性的情况
+                                    if (type=="object"){
+                                        if(propobj.hasOwnProperty("additionalProperties")){
+                                            var addpties=propobj["additionalProperties"];
+                                            that.log("------解析map-=-----------additionalProperties,defName:"+name);
+                                            //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+                                            if (addpties.hasOwnProperty("$ref")){
+                                                var adref=addpties["$ref"];
+                                                var regex=new RegExp("#/definitions/(.*)$","ig");
+                                                if(regex.test(adref)) {
+                                                    var addrefType = RegExp.$1;
+                                                    var addTempValue=null;
+                                                    //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                                    var globalArr=new Array();
+                                                    //添加类本身
+                                                    globalArr.push(name);
+
+                                                    if(addrefType!=name){
+                                                        addTempValue=that.findRefDefinition(addrefType,definitions,false,globalArr);
+                                                    }else{
+                                                        addTempValue=that.findRefDefinition(addrefType,definitions,true,name,globalArr);
+                                                    }
+                                                    propValue={"additionalProperties1":addTempValue}
+                                                    that.log("解析map-=完毕：")
+                                                    that.log(propValue);
+                                                    spropObj.type=addrefType;
+                                                }
+                                            }else if(addpties.hasOwnProperty("items")){
+                                                //数组
+                                                var addPropItems=addpties["items"];
+
+                                                var adref=addPropItems["$ref"];
+                                                var regex=new RegExp("#/definitions/(.*)$","ig");
+                                                if(regex.test(adref)) {
+                                                    var addrefType = RegExp.$1;
+                                                    var addTempValue=null;
+                                                    //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                                    var globalArr=new Array();
+                                                    //添加类本身
+                                                    globalArr.push(name);
+
+                                                    if(addrefType!=name){
+                                                        addTempValue=that.findRefDefinition(addrefType,definitions,false,globalArr);
+                                                    }else{
+                                                        addTempValue=that.findRefDefinition(addrefType,definitions,true,name,globalArr);
+                                                    }
+                                                    var tempAddValue=new Array();
+                                                    tempAddValue.push(addTempValue);
+                                                    propValue={"additionalProperties1":tempAddValue}
+                                                    that.log("解析map-=完毕：")
+                                                    that.log(propValue);
+                                                    spropObj.type="array";
+                                                    spropObj.refType=addrefType;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                                 //that.log("解析属性："+property);
                                 //that.log(propobj);
@@ -3928,18 +3986,18 @@
                 that.log(that.currentInstance.pathFilters)
                 for(var url in that.currentInstance.pathFilters){
                     var saf=that.currentInstance.pathFilters[url];
-                    that.log(url)
-                    that.log(saf)
-                    that.log(saf.api(that.settings.enableFilterMultipartApiMethodType))
-                    that.log("")
+                    //that.log(url)
+                    //that.log(saf)
+                    //that.log(saf.api(that.settings.enableFilterMultipartApiMethodType))
+                    //that.log("")
                     newPathArr=newPathArr.concat(saf.api(that.settings.enableFilterMultipartApiMethodType));
                 }
                 that.log("重新赋值。。。。。")
-                that.log(that.currentInstance.paths)
-                that.log(newPathArr)
+                //that.log(that.currentInstance.paths)
+                ///that.log(newPathArr)
                 //重新赋值
                 that.currentInstance.paths=newPathArr;
-                that.log(that.currentInstance.paths)
+                //that.log(that.currentInstance.paths)
             }
         }
         //解析securityDefinitions属性
@@ -4349,10 +4407,49 @@
                                     }
                                 }
                             }else{
-                                if (schemaObject.hasOwnProperty("type")){
-                                    minfo.type=schemaObject["type"];
+                                //判断是否包含addtionalProperties属性
+                                if(schemaObject.hasOwnProperty("additionalProperties")){
+                                    //判断是否是数组
+                                    var addProp=schemaObject["additionalProperties"];
+                                    if(addProp.hasOwnProperty("$ref")){
+                                        //object
+                                        var className=$.getClassName(addProp["$ref"]);
+                                        if(className!=null){
+                                            var def=that.getDefinitionByName(className);
+                                            if(def!=null){
+                                                minfo.def=def;
+                                                minfo.value={"additionalProperties1":def.value};
+                                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                                    minfo.description=$.replaceMultipLineStr(def.description);
+                                                }
+                                            }
+                                        }
+                                    }else if(addProp.hasOwnProperty("items")){
+                                        //数组
+                                        var addItems=addProp["items"];
+                                        var className=$.getClassName(addItems["$ref"]);
+                                        if(className!=null){
+                                            var def=that.getDefinitionByName(className);
+                                            if(def!=null){
+                                                var addArrValue=new Array();
+                                                addArrValue.push(def.value)
+                                                minfo.def=def;
+                                                minfo.value={"additionalProperties1":addArrValue};
+                                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                                    minfo.description=$.replaceMultipLineStr(def.description);
+                                                }
+                                            }
+                                        }
+
+                                    }
+
+
+                                }else{
+                                    if (schemaObject.hasOwnProperty("type")){
+                                        minfo.type=schemaObject["type"];
+                                    }
+                                    minfo.value="";
                                 }
-                                minfo.value="";
                             }
                         }
                     }
@@ -5086,8 +5183,30 @@
                             //判断是否有example
                             if(propobj.hasOwnProperty("example")) {
                                 propValue = propobj["example"];
-                            }else if($.checkIsBasicType(type)){
+                            }
+                            if($.checkIsBasicType(type)){
                                 propValue=$.getBasicTypeValue(type);
+                                //此处如果是object情况,需要判断additionalProperties属性的情况
+                                if (type=="object"){
+                                    if(propobj.hasOwnProperty("additionalProperties")){
+                                        var addpties=propobj["additionalProperties"];
+                                        //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+                                        if (addpties.hasOwnProperty("$ref")){
+                                            var adref=addpties["$ref"];
+                                            var regex=new RegExp("#/definitions/(.*)$","ig");
+                                            if(regex.test(adref)) {
+                                                var addrefType = RegExp.$1;
+                                                var addTempValue=null;
+                                                if(!flag){
+                                                    if($.inArray(addrefType,globalArr) == -1){
+                                                        addTempValue=that.findRefDefinition(addrefType,definitions,flag,globalArr);
+                                                        propValue={"additionalProperties1":addTempValue}
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }else{
                                 if(type=="array"){
                                     propValue=new Array();
