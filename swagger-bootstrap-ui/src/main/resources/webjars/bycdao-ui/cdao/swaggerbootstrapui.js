@@ -2448,9 +2448,12 @@
         if(xhr.hasOwnProperty("responseText")){
             len=xhr["responseText"].gblen();
         }
+        var ckShowDesEle=$('<span class="debug-span-label" style="margin-right:30px;font-weight: bold;"><div class="checkbox" style="display: inline;"><label><input  id="checkboxShowDescription'+apiInfo.id+'"  type="checkbox" checked="checked">显示说明</label></div></span>')
         //清空响应状态栏,赋值响应栏
         responsestatus.html("")
-        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
+        responsestatus
+            .append(ckShowDesEle)
+            .append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
             .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
             .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"))
             .append($("<span class='debug-span-label' style='margin-left:10px;' id='bigScreen"+apiInfo.id+"'><i class=\"icon-text-width iconfont icon-quanping\" style='cursor: pointer;'></i></span>"));
@@ -2515,7 +2518,8 @@
 
             resp2.html("");
             resp2.append(resp2Html);
-        }else if(rtext!=null&&rtext!=undefined){
+        }
+        else if(rtext!=null&&rtext!=undefined){
             var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
             var rawText=$("<span></span>");
             rawText.html(rtext);
@@ -2586,7 +2590,8 @@
 
             resp1.html("");
             resp1.append(resp2Html);
-        }else if (xhr.hasOwnProperty("responseJSON")||data!=null||data!=undefined){
+        }
+        else if (xhr.hasOwnProperty("responseJSON")||data!=null||data!=undefined){
             //如果存在该对象,服务端返回为json格式
             resp1.html("")
             that.log(xhr["responseJSON"])
@@ -2617,17 +2622,36 @@
             that.log($("#responseJsonEditor"+apiKeyId).height())
             //重置响应面板高度
             laycontentdiv.css("height",rows_editor+150);
+
             setTimeout(function(){
-                appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                //判断是否选中,如果选中显示说明,则执行,否则不执行此操作
+                var desShowStatus=that.getDoc().find("#checkboxShowDescription"+apiInfo.id).prop("checked");
+                that.log("是否选中：")
+                that.log(desShowStatus)
+                if (desShowStatus){
+                    appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                }
             }, 1000);
             editor.getSession().on('tokenizerUpdate', function(){
                 setTimeout(function(){
-                    appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    //判断是否选中,如果选中显示说明,则执行,否则不执行此操作
+                    var desShowStatus=that.getDoc().find("#checkboxShowDescription"+apiInfo.id).prop("checked");
+                    that.log("是否选中：")
+                    that.log(desShowStatus)
+                    if(desShowStatus){
+                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    }
                 }, 1000);
             });
             editor.on('focus', function(){
                 setTimeout(function(){
-                    appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    //判断是否选中,如果选中显示说明,则执行,否则不执行此操作
+                    var desShowStatus=that.getDoc().find("#checkboxShowDescription"+apiInfo.id).prop("checked");
+                    that.log("是否选中：")
+                    that.log(desShowStatus)
+                    if (desShowStatus){
+                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    }
                 }, 1000);
             });
         }else{
@@ -2675,6 +2699,23 @@
             that.fullScreen(element);
         })
 
+        //显示字段说明
+        that.getDoc().find("#checkboxShowDescription"+apiInfo.id).change(function (e) {
+            that.log("显示说明")
+            var tck=$(this);
+            var checkedStatus=tck.prop("checked");
+            that.log("状态："+checkedStatus)
+            var showDiv="#respcontent"+apiInfo.id;
+            if(checkedStatus){
+                appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                $(showDiv).find(".sbu-field-description").show();
+            }else{
+                $(showDiv).find(".sbu-field-description").hide();
+            }
+
+
+        })
+
     }
 
     /***
@@ -2688,7 +2729,7 @@
         var href=window.location.href;
         that.log("href:"+href);
         //判断是否是https
-        var proRegex=new RegExp("^https.*","ig");
+         var proRegex=new RegExp("^https.*","ig");
         if (proRegex.test(href)){
             protocol="https";
         }
