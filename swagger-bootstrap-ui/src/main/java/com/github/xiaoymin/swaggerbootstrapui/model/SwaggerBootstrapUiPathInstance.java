@@ -44,10 +44,6 @@ public class SwaggerBootstrapUiPathInstance {
 
 
 
-    /***
-     * 获取所有
-     * @return
-     */
     public List<SwaggerBootstrapUiPath> match(){
         List<SwaggerBootstrapUiPath> pathList=Lists.newArrayList();
         RequestMapping requestMapping=target.getAnnotation(RequestMapping.class);

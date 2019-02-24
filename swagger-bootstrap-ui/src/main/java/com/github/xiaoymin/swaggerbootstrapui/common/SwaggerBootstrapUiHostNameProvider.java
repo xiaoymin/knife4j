@@ -20,7 +20,7 @@ import static org.springframework.util.StringUtils.hasText;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromContextPath;
 
 /***
- * 兼容低版本的springfox-swagger>=2.7.0
+ *
  * @since:swagger-bootstrap-ui 1.9.0
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/01/14 16:29
