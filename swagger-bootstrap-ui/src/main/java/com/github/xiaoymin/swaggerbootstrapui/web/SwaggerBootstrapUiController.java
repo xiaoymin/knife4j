@@ -7,7 +7,9 @@
 
 package com.github.xiaoymin.swaggerbootstrapui.web;
 
+import com.github.xiaoymin.swaggerbootstrapui.common.SwaggerBootstrapUiHostNameProvider;
 import com.github.xiaoymin.swaggerbootstrapui.model.RestHandlerMapping;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -35,10 +37,13 @@ import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.UriComponents;
+import springfox.documentation.RequestHandler;
 import springfox.documentation.annotations.ApiIgnore;
 import springfox.documentation.service.Documentation;
 import springfox.documentation.service.Tag;
+import springfox.documentation.spi.service.RequestHandlerProvider;
 import springfox.documentation.spring.web.DocumentationCache;
+import springfox.documentation.spring.web.WebMvcRequestHandler;
 import springfox.documentation.spring.web.json.Json;
 import springfox.documentation.spring.web.json.JsonSerializer;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -50,6 +55,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.FluentIterable.from;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static springfox.documentation.swagger.common.HostNameProvider.componentsFrom;
 
@@ -74,6 +80,7 @@ public class SwaggerBootstrapUiController {
     private final DocumentationCache documentationCache;
     private final JsonSerializer jsonSerializer;
     private final String hostNameOverride;
+    private final List<RequestHandlerProvider> handlerProviders;
     /***
      * 全局所有mappings
      */
@@ -85,15 +92,24 @@ public class SwaggerBootstrapUiController {
 
     @Autowired
     public SwaggerBootstrapUiController(Environment environment,
-                                        ServiceModelToSwagger2Mapper mapper, DocumentationCache documentationCache, JsonSerializer jsonSerializer) {
+                                        ServiceModelToSwagger2Mapper mapper, DocumentationCache documentationCache, JsonSerializer jsonSerializer,List<RequestHandlerProvider> handlerProviders) {
         this.mapper = mapper;
         this.documentationCache = documentationCache;
         this.jsonSerializer = jsonSerializer;
         this.hostNameOverride = environment.getProperty(
                 "springfox.documentation.swagger.v2.host",
                 "DEFAULT");
+        this.handlerProviders = handlerProviders;
     }
 
+    private Function<RequestHandlerProvider, ? extends Iterable<RequestHandler>> handlers() {
+        return new Function<RequestHandlerProvider, Iterable<RequestHandler>>() {
+            @Override
+            public Iterable<RequestHandler> apply(RequestHandlerProvider input) {
+                return input.requestHandlers();
+            }
+        };
+    }
     @RequestMapping(value = DEFAULT_SORT_URL,
             method = RequestMethod.GET,
             produces = { APPLICATION_JSON_VALUE, HAL_MEDIA_TYPE })
@@ -112,7 +128,22 @@ public class SwaggerBootstrapUiController {
             }
         }
         Swagger swagger = mapper.mapDocumentation(documentation);
-        UriComponents uriComponents = componentsFrom(request, swagger.getBasePath());
+        UriComponents uriComponents = null;
+        try{
+            uriComponents=componentsFrom(request,swagger.getBasePath());
+        }catch (Throwable e){
+            LOGGER.error(e.getClass().getName()+":"+e.getMessage());
+            if (e instanceof ClassNotFoundException||e instanceof NoClassDefFoundError){
+                //如果是ClassNotFoundException,一般是使用springfox低版本导致,导致获取springfox.documentation.swagger.common.HostNameProvider错误异常
+                //使用兼容版本
+                String msg=e.getMessage();
+                if (msg!=null&&!"".equals(msg)){
+                    if (msg.endsWith("HostNameProvider")){
+                        uriComponents= SwaggerBootstrapUiHostNameProvider.componentsFrom(request,swagger.getBasePath());
+                    }
+                }
+            }
+        }
         swagger.basePath(Strings.isNullOrEmpty(uriComponents.getPath()) ? "/" : uriComponents.getPath());
         if (isNullOrEmpty(swagger.getHost())) {
             swagger.host(hostName(uriComponents));
@@ -138,41 +169,13 @@ public class SwaggerBootstrapUiController {
         //此处的作用是分组功能.
         Iterator<Tag> tags=documentation.getTags().iterator();
         //自1.8.7版本后,通过Spring工具类获取所有HandleMappings
-        if (globalHandlerMappings.size()==0){
-            //初始化
-            String parentPath="";
-            //判断basePath
-            if (!StringUtils.isEmpty(swaggerExt.getBasePath())&&!"/".equals(swaggerExt.getBasePath())){
-                parentPath+=swaggerExt.getBasePath();
-            }
-            //接口扩展自定义接口实现造成的接口增强排序失败问题
-            Map<String, HandlerMapping> requestMappings = BeanFactoryUtils.beansOfTypeIncludingAncestors(wc,HandlerMapping.class,true,false);
-            if (requestMappings!=null){
-                for (HandlerMapping handlerMapping : requestMappings.values()) {
-                    if (handlerMapping instanceof RequestMappingHandlerMapping) {
-                        RequestMappingHandlerMapping rmhMapping = (RequestMappingHandlerMapping) handlerMapping;
-                        Map<RequestMappingInfo, HandlerMethod> handlerMethods = rmhMapping.getHandlerMethods();
-                        for (RequestMappingInfo rmi : handlerMethods.keySet()) {
-                            PatternsRequestCondition prc = rmi.getPatternsCondition();
-                            Set<RequestMethod> restMethods=rmi.getMethodsCondition().getMethods();
-                            Set<String> patterns = prc.getPatterns();
-                            HandlerMethod handlerMethod = handlerMethods.get(rmi);
-                            for (String url : patterns) {
-                                Class<?> clazz = ClassUtils.getUserClass(handlerMethod.getBeanType());
-                                Method method = ClassUtils.getMostSpecificMethod(handlerMethod.getMethod(),clazz);
-                                if (LOGGER.isDebugEnabled()){
-                                    LOGGER.debug("url:"+url+"\r\nclass:"+clazz.toString()+"\r\nmethod:"+method.toString());
-                                }
-                                globalHandlerMappings.add(new RestHandlerMapping(parentPath+url,clazz,method,restMethods));
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //initGlobalRequestMappingArray(wc,swaggerExt);
+        //since 1.9.0 SpringMvc增强失败的情况
+        initGlobalRequestMappingArray(swaggerExt);
         //1.8.7
         List<SwaggerBootstrapUiTag> targetTagLists=Lists.newArrayList();
         List<SwaggerBootstrapUiPath> targetPathLists=Lists.newArrayList();
+
         while (tags.hasNext()) {
             Tag sourceTag = tags.next();
             String tagName = sourceTag.getName();
@@ -243,6 +246,83 @@ public class SwaggerBootstrapUiController {
         return swaggerBootstrapUi;
     }
 
+    /***
+     * since 1.9.0
+     * @param swaggerExt
+     */
+    private void initGlobalRequestMappingArray(SwaggerExt swaggerExt){
+        if (globalHandlerMappings.size()==0) {
+            //初始化
+            String parentPath = "";
+            //判断basePath
+            if (!StringUtils.isEmpty(swaggerExt.getBasePath()) && !"/".equals(swaggerExt.getBasePath())) {
+                parentPath += swaggerExt.getBasePath();
+            }
+            try{
+                List<RequestHandler> requestHandlers = from(handlerProviders).transformAndConcat(handlers()).toList();
+                for (RequestHandler requestHandler:requestHandlers){
+                    if (requestHandler instanceof WebMvcRequestHandler){
+                        WebMvcRequestHandler webMvcRequestHandler=(WebMvcRequestHandler)requestHandler;
+                        Set<String> patterns =webMvcRequestHandler.getRequestMapping().getPatternsCondition().getPatterns();
+                        Set<RequestMethod> restMethods=webMvcRequestHandler.getRequestMapping().getMethodsCondition().getMethods();
+                        HandlerMethod handlerMethod=webMvcRequestHandler.getHandlerMethod();
+                        Class<?> controllerClazz=ClassUtils.getUserClass(handlerMethod.getBeanType());
+                        Method method = ClassUtils.getMostSpecificMethod(handlerMethod.getMethod(),controllerClazz);
+                        for (String url : patterns) {
+                            if (LOGGER.isDebugEnabled()){
+                                LOGGER.debug("url:"+url+"\r\nclass:"+controllerClazz.toString()+"\r\nmethod:"+method.toString());
+                            }
+                            globalHandlerMappings.add(new RestHandlerMapping(parentPath+url,controllerClazz,method,restMethods));
+                        }
+                    }
+                }
+            }catch (Exception e){
+                LOGGER.error(e.getMessage(),e);
+            }
+        }
+
+    }
+
+    /***
+     * 1.8.0~1.8.9版本使用的方法
+     * @param wc
+     * @param swaggerExt
+     */
+    @Deprecated
+    private void initGlobalRequestMappingArray(WebApplicationContext wc,SwaggerExt swaggerExt){
+        if (globalHandlerMappings.size()==0){
+            //初始化
+            String parentPath="";
+            //判断basePath
+            if (!StringUtils.isEmpty(swaggerExt.getBasePath())&&!"/".equals(swaggerExt.getBasePath())){
+                parentPath+=swaggerExt.getBasePath();
+            }
+            //接口扩展自定义接口实现造成的接口增强排序失败问题
+            Map<String, HandlerMapping> requestMappings = BeanFactoryUtils.beansOfTypeIncludingAncestors(wc,HandlerMapping.class,true,false);
+            if (requestMappings!=null){
+                for (HandlerMapping handlerMapping : requestMappings.values()) {
+                    if (handlerMapping instanceof RequestMappingHandlerMapping) {
+                        RequestMappingHandlerMapping rmhMapping = (RequestMappingHandlerMapping) handlerMapping;
+                        Map<RequestMappingInfo, HandlerMethod> handlerMethods = rmhMapping.getHandlerMethods();
+                        for (RequestMappingInfo rmi : handlerMethods.keySet()) {
+                            PatternsRequestCondition prc = rmi.getPatternsCondition();
+                            Set<RequestMethod> restMethods=rmi.getMethodsCondition().getMethods();
+                            Set<String> patterns = prc.getPatterns();
+                            HandlerMethod handlerMethod = handlerMethods.get(rmi);
+                            for (String url : patterns) {
+                                Class<?> clazz = ClassUtils.getUserClass(handlerMethod.getBeanType());
+                                Method method = ClassUtils.getMostSpecificMethod(handlerMethod.getMethod(),clazz);
+                                if (LOGGER.isDebugEnabled()){
+                                    LOGGER.debug("url:"+url+"\r\nclass:"+clazz.toString()+"\r\nmethod:"+method.toString());
+                                }
+                                globalHandlerMappings.add(new RestHandlerMapping(parentPath+url,clazz,method,restMethods));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     /***
      * 根据匹配到tag分组进入targetPathLists集合中

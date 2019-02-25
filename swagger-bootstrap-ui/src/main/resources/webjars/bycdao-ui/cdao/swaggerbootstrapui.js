@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.8.9
+ * swagger-bootstrap-ui v1.9.0
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
@@ -42,7 +42,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.8.9";
+        this.version="1.9.0";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
@@ -52,7 +52,8 @@
             treeExplain:true,
             enableFilterMultipartApis:false,//针对RequestMapping的接口请求类型,在不指定参数类型的情况下,如果不过滤,默认会显示7个类型的接口地址参数,如果开启此配置,默认展示一个Post类型的接口地址
             enableFilterMultipartApiMethodType:"POST",//默认保存类型
-            enableRequestCache:true//是否开启请求参数缓存
+            enableRequestCache:true,//是否开启请求参数缓存
+            enableCacheOpenApiTable:false//是否开启缓存已打开的api文档
         };
         //SwaggerBootstrapUi增强注解地址
         this.extUrl="/v2/api-docs-ext";
@@ -80,6 +81,8 @@
         that.searchEvents();
         //tab事件
         that.tabCloseEventsInit();
+        //opentab
+        that.initOpenTable();
     }
 
     SwaggerBootstrapUi.prototype.initApis=function () {
@@ -133,6 +136,103 @@
 
 
     }
+    SwaggerBootstrapUi.prototype.clearCacheOpenApiTableApis=function (){
+        var that=this;
+        if(window.localStorage){
+            var store = window.localStorage;
+            store.removeItem("SwaggerBootstrapUiCacheOpenApiTableApis");
+        }
+    }
+
+
+    /***
+     * 将接口id加入缓存，再页面点击后
+     * @param mid
+     */
+    SwaggerBootstrapUi.prototype.storeCacheOpenApiTableApis=function (apiTable) {
+        var that=this;
+        if(!that.settings.enableCacheOpenApiTable){
+            return
+        }
+
+        if(window.localStorage){
+            var store = window.localStorage;
+            var cacheApis=store["SwaggerBootstrapUiCacheOpenApiTableApis"]||"{}";
+            var settings = JSON.parse(cacheApis);
+            var insid=that.currentInstance.groupId;
+            var cacheApis=settings[insid]||[];
+
+            for(var i=0;i<cacheApis.length;i++){
+                if(cacheApis[i].tabId== apiTable.tabId){
+                    return;
+                }
+            }
+
+            cacheApis.push({
+                tabId:apiTable.tabId
+            })
+
+            settings[insid]=cacheApis;
+            var str=JSON.stringify(settings);
+            store.setItem("SwaggerBootstrapUiCacheOpenApiTableApis",str);
+        }
+    }
+
+    SwaggerBootstrapUi.prototype.initOpenTable=function(){
+        var that=this;
+        if(!that.settings.enableCacheOpenApiTable){
+            return
+        }
+        if(window.localStorage){
+            var store = window.localStorage;
+            var cacheApis=store["SwaggerBootstrapUiCacheOpenApiTableApis"]||"{}";
+            var settings = JSON.parse(cacheApis);
+            var insid=that.currentInstance.groupId;
+            var cacheApis=settings[insid]||[];
+
+            if(cacheApis.length>0){
+                for(var i=0;i<cacheApis.length;i++){
+                    var cacheApi=cacheApis[i];
+
+                    var xx=that.getMenu().find(".menuLi[lay-id='"+cacheApi.tabId+"']");
+                    xx.trigger("click");
+                }
+
+            }
+        }
+    }
+
+    SwaggerBootstrapUi.prototype.deleteCacheOpenApiTableApis=function (apiTable) {
+        var that=this;
+        if(!that.settings.enableCacheOpenApiTable){
+            return
+        }
+
+        if(window.localStorage){
+            var store = window.localStorage;
+            var cacheApis=store["SwaggerBootstrapUiCacheOpenApiTableApis"]||"{}";
+            var settings = JSON.parse(cacheApis);
+            var insid=that.currentInstance.groupId;
+            var cacheApis=settings[insid]||[];
+
+
+            var delIndwx=-1;
+            for(var i=0;i<cacheApis.length;i++){
+                if(cacheApis[i].tabId== apiTable.tabId){
+                    delIndwx=i;
+                    break;
+                }
+            }
+
+            if(delIndwx >-1){
+                cacheApis.splice(delIndwx, 1);
+                settings[insid]=cacheApis;
+                var str=JSON.stringify(settings);
+                store.setItem("SwaggerBootstrapUiCacheOpenApiTableApis",str);
+            }
+        }
+    }
+
 
 
     /***
@@ -229,17 +329,64 @@
                    $.each(newTagArrs,function (i, tag) {
                        var len=tag.childrens.length;
                        if(len==0){
-                           var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                           //var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                           var li=null;
+                           if (that.settings.showTagStatus){
+                               li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+') </span></a></li>');
+                           }else{
+                               li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                           }
                            that.getSearchMenu().append(li);
                        }else{
                            //存在子标签
-                           var li=$('<li  class="detailMenu"></li>');
+                           /*var li=$('<li  class="detailMenu"></li>');
                            var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                            li.append(titleA);
                            //循环树
                            var ul=$('<ul class="submenu"></ul>')
                            $.each(tag.childrens,function (i, children) {
                                var childrenLi=$('<li class="menuLi" ><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url">'+children.url+'</span></span></div><div class="swu-menu-api-des">'+children.summary+'</div></div></li>');
+                               childrenLi.data("data",children);
+                               ul.append(childrenLi);
+                           })*/
+                           //存在子标签
+                           var li=$('<li  class="detailMenu"></li>');
+
+                           var tagNewApiIcon="";
+                           if(tag.hasNew){
+                               tagNewApiIcon='<i class="iconfont icon-xinpin" style="float: right;right: 30px;position: absolute;"></i>';
+                           }
+                           var titleA=null;
+                           if(that.settings.showTagStatus){
+                               titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+')<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
+                           }else{
+                               titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
+                           }
+                           //var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
+                           li.append(titleA);
+                           //循环树
+                           var ul=$('<ul class="submenu"></ul>')
+
+
+                           $.each(tag.childrens,function (i, children) {
+                               var childrenLi=null;
+                               var newApiIcon="";
+                               if (children.hasNew){
+                                   //新接口
+                                   newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:32px;"></i>';
+                               }
+                               var depStyle=' ';
+                               if(children.deprecated){
+                                   depStyle=' style="text-decoration:line-through;"';
+                               }
+                               var tabId="tab"+children.id;
+                               if(that.settings.showApiUrl){
+                                   //显示api地址
+                                   childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
+                               }else{
+                                   //不显示api地址
+                                   childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
+                               }
                                childrenLi.data("data",children);
                                ul.append(childrenLi);
                            })
@@ -453,6 +600,8 @@
                     that.currentInstance.load=true;
                     //创建swaggerbootstrapui主菜单
                     that.createDetailMenu();
+                    //opentab
+                    that.initOpenTable();
                 },
                 error:function (xhr, textStatus, errorThrown) {
                     that.log("error...")
@@ -603,13 +752,13 @@
                     if(children.deprecated){
                         depStyle=' style="text-decoration:line-through;"';
                     }
-
+                    var tabId="tab"+children.id;
                     if(that.settings.showApiUrl){
                         //显示api地址
-                        childrenLi=$('<li class="menuLi" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
+                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
                     }else{
                         //不显示api地址
-                        childrenLi=$('<li class="menuLi" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
+                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
                     }
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
@@ -659,11 +808,15 @@
 
                     var enableReqFilterCache=$("#SwaggerBootstrapUiSettings").find("input[name=enableFilterMultipartApis]");
 
+                    var enableCacheOpenApiTable=$("#SwaggerBootstrapUiSettings").find("input[name=enableCacheOpenApiTable]");
+
                     var showApiFlag=showApi.prop("checked");
                     var enableSbuFlag=enableSbu.prop("checked");
                     var showTagStatus=showTagStatusElem.prop("checked");
 
                     var cacheRequest=enableRequestCache.prop("checked");
+
+                    var enableCacheOpenApi=enableCacheOpenApiTable.prop("checked");
 
                     var enableReqFilter=enableReqFilterCache.prop("checked");
 
@@ -723,13 +876,20 @@
                             //如果选中
                             multipartApiMethodType=$("#SwaggerBootstrapUiSettings").find("select[name=enableFilterMultipartApiMethodType] option:selected").val();
                         }
+
+                        if(!enableCacheOpenApi){
+                            that.clearCacheOpenApiTableApis();
+                        }
+
+
                         var setts={
                             showApiUrl:showApiFlag,//接口api地址不显示
                             showTagStatus:showTagStatus,//tag显示description属性.
                             enableSwaggerBootstrapUi:enableSbuFlag,//是否开启swaggerBootstrapUi增强
                             enableRequestCache:cacheRequest,
                             enableFilterMultipartApis:enableReqFilter,
-                            enableFilterMultipartApiMethodType:multipartApiMethodType
+                            enableFilterMultipartApiMethodType:multipartApiMethodType,
+                            enableCacheOpenApiTable:enableCacheOpenApi
                         }
                         that.log(setts);
                         that.saveSettings(setts);
@@ -1103,6 +1263,11 @@
         }
         var tabId="tab"+apiInfo.id;
         var layerTabId="layerTab"+tabId;
+
+
+        that.storeCacheOpenApiTableApis({tabId:tabId})
+
+
         //判断tabId是否存在
         if(that.tabExists(tabId)){
             element.tabChange(that.layTabFilter,tabId);
@@ -1566,6 +1731,39 @@
     }
 
 
+    /***
+     * 判断响应类型
+     * @param produces
+     */
+    SwaggerBootstrapUi.prototype.binaryContentType=function (produces,contentType) {
+        var binaryContentType={
+            "application/octet-stream":true,
+            "image/png":true,
+            "image/jpg":true,
+            "image/jpeg":true,
+            "image/gif":true
+        }
+        var binary=false;
+        var binaryType="";
+        if(produces!=null&&produces!=undefined){
+            $.each(produces,function (i, p) {
+                if(binaryContentType[p]){
+                    binaryType=p;
+                    binary=true;
+                }
+            })
+        }
+        if (contentType!=null){
+            if(!binary && binaryContentType[contentType]){
+                binary=true;
+                binaryType=contentType;
+            }
+        }
+        var bobj={binary:binary,binaryType:binaryType};
+        return bobj;
+    }
+
+
 
     /***
      * 发送请求
@@ -1650,7 +1848,7 @@
                     if(trdata["in"]=="body") {
                         //这里需要判断schema
                         //直接判断那类型
-                        if (trdata.schemavalue == "MultipartFile") {
+                        if (trdata.schemavalue == "MultipartFile" || trdata.schemavalue == "file" || trdata.type=="file") {
                             value = paramtr.find("td:eq(3)").find("input").val();
                             var fileEle = paramtr.find("td:eq(3)").find("input")[0];
                             fileUploadFlat = true;
@@ -1681,7 +1879,7 @@
                     }
                     else if(trdata["in"]=="formData"){
                         //直接判断那类型
-                        if (trdata.schemavalue == "MultipartFile") {
+                        if (trdata.schemavalue == "MultipartFile" || trdata.schemavalue == "file"  || trdata.type=="file") {
                             value = paramtr.find("td:eq(3)").find("input").val();
                             var fileEle = paramtr.find("td:eq(3)").find("input")[0];
                             fileUploadFlat = true;
@@ -1774,7 +1972,7 @@
                                 if(trdata["in"]=="header"){
                                     headerparams[key]=value;
                                 }else{
-                                    if (trdata.schemavalue != "MultipartFile") {
+                                    if (trdata.schemavalue != "MultipartFile" &&  trdata.schemavalue != "file" && trdata.type!="file") {
                                         //判断数组
                                         if(trdata["type"]!="array"){
                                             params[key]=value;
@@ -1896,11 +2094,13 @@
             if(apiInfo.produces!=undefined&&apiInfo.produces!=null&&apiInfo.produces.length>0){
                 var first=apiInfo.produces[0];
                 headerparams["accept"]=first;
-                $.each(apiInfo.produces,function (i, p) {
+                var binaryObject=that.binaryContentType(apiInfo.produces,null);
+                streamFlag=binaryObject.binary;
+                /*$.each(apiInfo.produces,function (i, p) {
                     if(p=="application/octet-stream"){
                         streamFlag=true;
                     }
-                })
+                })*/
             }
             //判断security参数
             if(that.currentInstance.securityArrs!=null&&that.currentInstance.securityArrs.length>0){
@@ -1911,29 +2111,114 @@
                 })
             }
             //判断是否全局参数中包含ContentType属性
+            that.log("判断是否全局参数中包含ContentType属性--------------------")
             if(!headerparams.hasOwnProperty("Content-Type")){
                 //如果全局参数中不包含,则获取默认input选择框的
+                that.log($("#DebugContentType"+apiKeyId))
                 var _tmp=$("#DebugContentType"+apiKeyId).val();
-                headerparams["Content-Type"]=_tmp;
+                that.log(_tmp);
+                if (_tmp!=undefined&&_tmp!=null&&_tmp!=""){
+                    headerparams["Content-Type"]=_tmp;
+                }
             }
 
 
             if(streamFlag){
-                that.log("下载参数")
-                that.log(reqdata)
-                //关闭遮罩层
-                if(reqdata!=null&&reqdata!=undefined){
-                    var ps=new Array();
-                    for(var p in reqdata){
-                        ps.push(p+"="+reqdata[p]);
-                    }
-                    if(ps.length>0){
-                        var lp=ps.join("&");
-                        url=url+"?"+lp;
-                    }
-                }
-                window.open(url);
                 layer.close(index);
+                that.log("sendParams-------------------------------------")
+                //判断请求类型,如果是Get请求,参数拼装发送为param,否则为data类型参数
+                var sendParams={};
+                if($.getStringValue(apiInfo.methodType)=="GET"){
+                    sendParams=reqdata;
+                }
+                that.log(sendParams)
+                that.log($.getStringValue(apiInfo.methodType))
+                axios.request({
+                    url:url,
+                    headers:headerparams,
+                    method:$.getStringValue(apiInfo.methodType),
+                    data:reqdata,
+                    params:sendParams,
+                    responseType: 'blob'
+                }).then(function (response) {
+                    var data=response.data;
+                    var xhr=response.request;
+                    var allheaders = xhr.getAllResponseHeaders();
+
+                    var contentType = xhr.getResponseHeader("Content-Type");
+                    that.log("判断响应content-Type:"+contentType)
+
+                    var binaryObject=that.binaryContentType(apiInfo.produces,contentType);
+                    var binary=binaryObject.binary;
+                    var binaryType=binaryObject.binaryType;
+                    that.log("binary是否正确")
+                    that.log(binary)
+                    that.log(binaryType)
+
+                    if (binary) {
+
+                        that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
+                            formCurlParams, xhr, data, startTime, allheaders, false,binaryType);
+
+                    } else if (!data || data.size == 0) {
+                        that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
+                            formCurlParams, xhr, null, startTime, allheaders, false,null);
+                    } else {
+                        var reader = new FileReader();
+                        reader.readAsText(data);
+                        reader.onload = function (e) {
+                            var responseData = reader.result;
+                            if (contentType.indexOf("application/json") == 0) {
+                                responseData = JSON.parse(responseData);
+                            } else if (contentType.indexOf("text/xml") == 0) {
+                                responseData = $.parseXML(responseData);
+                            }
+
+                            that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
+                                formCurlParams, xhr, responseData, startTime, allheaders, false,null);
+                        }
+
+                    }
+                }).catch(function (error) {
+                    that.log("form request--response error-------------------")
+                    respcleanDiv.show();
+                    layer.close(index);
+                    if(error.response){
+                        var response=error.response;
+                        var data=response.data;
+                        var xhr=response.request;
+                        var allheaders=response.headers;
+                        if (!data || data.size == 0) {
+                            that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
+                                formCurlParams, xhr, null, startTime, allheaders, true);
+                        } else {
+                            var reader = new FileReader();
+                            reader.readAsText(data);
+                            reader.onload = function (e) {
+                                var responseData = reader.result;
+                                if (data.type.indexOf("application/json") == 0) {
+                                    responseData = JSON.parse(responseData);
+                                } else if (data.type.indexOf("text/xml") == 0) {
+                                    responseData = $.parseXML(responseData);
+                                }
+
+                                that.createResponseElement(index, apiInfo, headerparams, reqdata, paramBodyType, url, fileUploadFlat,
+                                    formCurlParams, xhr, responseData, startTime, allheaders, true);
+                            }
+                        }
+
+
+                    }else{
+                        if (error!=null){
+                            var estr=error.toString();
+                            if(estr=="Error: Network Error"){
+                                layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                            }
+                        }
+                    }
+                })
+
+
             }else{
                 if(form.length>0||formRequest){
                     that.log("form submit------------------------------------------------")
@@ -1971,6 +2256,16 @@
                     })
                 }
                 else{
+                    that.log("发送参数0000-----------")
+                    that.log(reqdata)
+                    //判断请求类型,如果是Get请求,参数拼装发送为param,否则为data类型参数
+                    var sendParams={};
+                    if($.getStringValue(apiInfo.methodType)=="GET"){
+                        sendParams=reqdata;
+                    }
+                    that.log(sendParams)
+                    that.log($.getStringValue(apiInfo.methodType))
+
                     //headerparams["Content-Type"]=contType;
                     $.ajax({
                         url:url,
@@ -2120,7 +2415,7 @@
      * @param formRequest
      */
     SwaggerBootstrapUi.prototype.createResponseElement=function (index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat
-        ,formCurlParams,xhr,data,startTime,allheaders,formRequest) {
+        ,formCurlParams,xhr,data,startTime,allheaders,formRequest,binaryType) {
         var that=this;
         var apiKeyId=apiInfo.id;
         var respcleanDiv=$("#responsebody"+apiKeyId);
@@ -2153,9 +2448,12 @@
         if(xhr.hasOwnProperty("responseText")){
             len=xhr["responseText"].gblen();
         }
+        var ckShowDesEle=$('<span class="debug-span-label" style="margin-right:30px;font-weight: bold;"><div class="checkbox" style="display: inline;"><label><input  id="checkboxShowDescription'+apiInfo.id+'"  type="checkbox" checked="checked">显示说明</label></div></span>')
         //清空响应状态栏,赋值响应栏
         responsestatus.html("")
-        responsestatus.append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
+        responsestatus
+            .append(ckShowDesEle)
+            .append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
             .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
             .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"))
             .append($("<span class='debug-span-label' style='margin-left:10px;' id='bigScreen"+apiInfo.id+"'><i class=\"icon-text-width iconfont icon-quanping\" style='cursor: pointer;'></i></span>"));
@@ -2188,14 +2486,43 @@
 
         //判断响应内容
         var contentType=xhr.getResponseHeader("Content-Type");
-        var rtext=xhr["responseText"];
+        var rtext=data || xhr["responseText"];
         that.log(xhr.hasOwnProperty("responseText"));
         that.log(rtext);
         //响应文本内容
-        if(rtext!=null&&rtext!=undefined){
+        if (data&&data.toString() =="[object Blob]" ) {
+            var resp2Html =null;
+
+            var downloadurl=window.URL.createObjectURL(data);
+            if(binaryType == "application/octet-stream"){
+                var fileName = 'SwaggerBootstrapUiDownload.txt';
+                var contentDisposition=xhr.getResponseHeader("Content-Disposition");
+                if(contentDisposition){
+                    var respcds=contentDisposition.split(";")
+                    for(var i=0;i<respcds.length;i++){
+                        var header=respcds[i];
+                        if(header!=null&&header!=""){
+                            var headerValu=header.split("=");
+                            if(headerValu!=null&&headerValu.length>0){
+                                if(headerValu[0]=="fileName"){
+                                    fileName=headerValu[1];
+                                }
+                            }
+                        }
+                    }
+                }
+                resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
+            }else {
+                resp2Html=$("<img  src='"+downloadurl+"'>");
+            }
+
+            resp2.html("");
+            resp2.append(resp2Html);
+        }
+        else if(rtext!=null&&rtext!=undefined){
             var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
             var rawText=$("<span></span>");
-            rawText.html(xhr["responseText"]);
+            rawText.html(rtext);
             resp2.html("");
             resp2.append(rawCopyBotton).append(rawText);
             var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
@@ -2235,7 +2562,36 @@
             }
         }
         //响应JSON
-        if (xhr.hasOwnProperty("responseJSON")||data!=null||data!=undefined){
+        if (data&&data.toString() =="[object Blob]" ) {
+            var resp2Html =null;
+
+            var downloadurl=window.URL.createObjectURL(data);
+            if(binaryType == "application/octet-stream"){
+                var fileName = 'SwaggerBootstrapUiDownload.txt';
+                var contentDisposition=xhr.getResponseHeader("Content-Disposition");
+                if(contentDisposition){
+                    var respcds=contentDisposition.split(";")
+                    for(var i=0;i<respcds.length;i++){
+                        var header=respcds[i];
+                        if(header!=null&&header!=""){
+                            var headerValu=header.split("=");
+                            if(headerValu!=null&&headerValu.length>0){
+                                if(headerValu[0]=="fileName"){
+                                    fileName=headerValu[1];
+                                }
+                            }
+                        }
+                    }
+                }
+                resp2Html=$("<a style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
+            }else {
+                resp2Html=$("<img   src='"+downloadurl+"'>");
+            }
+
+            resp1.html("");
+            resp1.append(resp2Html);
+        }
+        else if (xhr.hasOwnProperty("responseJSON")||data!=null||data!=undefined){
             //如果存在该对象,服务端返回为json格式
             resp1.html("")
             that.log(xhr["responseJSON"])
@@ -2266,17 +2622,36 @@
             that.log($("#responseJsonEditor"+apiKeyId).height())
             //重置响应面板高度
             laycontentdiv.css("height",rows_editor+150);
+
             setTimeout(function(){
-                appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                //判断是否选中,如果选中显示说明,则执行,否则不执行此操作
+                var desShowStatus=that.getDoc().find("#checkboxShowDescription"+apiInfo.id).prop("checked");
+                that.log("是否选中：")
+                that.log(desShowStatus)
+                if (desShowStatus){
+                    appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                }
             }, 1000);
             editor.getSession().on('tokenizerUpdate', function(){
                 setTimeout(function(){
-                    appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    //判断是否选中,如果选中显示说明,则执行,否则不执行此操作
+                    var desShowStatus=that.getDoc().find("#checkboxShowDescription"+apiInfo.id).prop("checked");
+                    that.log("是否选中：")
+                    that.log(desShowStatus)
+                    if(desShowStatus){
+                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    }
                 }, 1000);
             });
             editor.on('focus', function(){
                 setTimeout(function(){
-                    appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    //判断是否选中,如果选中显示说明,则执行,否则不执行此操作
+                    var desShowStatus=that.getDoc().find("#checkboxShowDescription"+apiInfo.id).prop("checked");
+                    that.log("是否选中：")
+                    that.log(desShowStatus)
+                    if (desShowStatus){
+                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    }
                 }, 1000);
             });
         }else{
@@ -2284,7 +2659,7 @@
             var regex=new RegExp('.*?text.*','g');
             if(regex.test(contentType)){
                 resp1.html("")
-                resp1.html(xhr.responseText);
+                resp1.html(rtext);
             }
         }
         //构建CURL功能
@@ -2324,6 +2699,23 @@
             that.fullScreen(element);
         })
 
+        //显示字段说明
+        that.getDoc().find("#checkboxShowDescription"+apiInfo.id).change(function (e) {
+            that.log("显示说明")
+            var tck=$(this);
+            var checkedStatus=tck.prop("checked");
+            that.log("状态："+checkedStatus)
+            var showDiv="#respcontent"+apiInfo.id;
+            if(checkedStatus){
+                appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                $(showDiv).find(".sbu-field-description").show();
+            }else{
+                $(showDiv).find(".sbu-field-description").hide();
+            }
+
+
+        })
+
     }
 
     /***
@@ -2337,7 +2729,7 @@
         var href=window.location.href;
         that.log("href:"+href);
         //判断是否是https
-        var proRegex=new RegExp("^https.*","ig");
+         var proRegex=new RegExp("^https.*","ig");
         if (proRegex.test(href)){
             protocol="https";
         }
@@ -2625,6 +3017,12 @@
             element.tabChange('admin-pagetabs', "main");
         })
 
+        $(document).delegate(".icon-sbu-tab-close","click",function(){
+            var tabId=$(this).parent().attr("lay-id");
+            if(tabId){
+                that.deleteCacheOpenApiTableApis({tabId:tabId});
+            }
+        })
         //tab切换状态
         element.on('tab('+that.layTabFilter+')',function (data) {
             that.log(data)
@@ -2945,7 +3343,7 @@
                 $("#txtOffLineDoc").val(val);
                 that.log(that.currentInstance.paths.length)
                 //如果当前接口梳理超过一定限制,md离线文档不予显示，仅仅展示源文件
-                if(that.currentInstance.paths!=null&&that.currentInstance.paths.length>300){
+                if(that.currentInstance.paths!=null&&that.currentInstance.paths.length>100){
                     $("#txtOffLineDoc").show();
                     $("#txtOffLineDoc").parent().css("width","100%");
                     layer.msg("当前接口数量超出限制,请使用第三方markdown转换软件进行转换以查看效果.")
@@ -3147,34 +3545,91 @@
                                     }else{
                                         propValue=propobj["example"];
                                     }
-                                }else if($.checkIsBasicType(type)){
+                                }
+                                if($.checkIsBasicType(type)){
                                     propValue=$.getBasicTypeValue(type);
-                                }else{
-                                    //that.log("解析属性："+property);
-                                    //that.log(propobj);
-                                    if(type=="array"){
-                                        propValue=new Array();
-                                        var items=propobj["items"];
-                                        var ref=items["$ref"];
-                                        //此处有可能items是array
-                                        if (items.hasOwnProperty("type")){
-                                            if(items["type"]=="array"){
-                                                ref=items["items"]["$ref"];
+                                    //此处如果是object情况,需要判断additionalProperties属性的情况
+                                    if (type=="object"){
+                                        if(propobj.hasOwnProperty("additionalProperties")){
+                                            var addpties=propobj["additionalProperties"];
+                                            that.log("------解析map-=-----------additionalProperties,defName:"+name);
+                                            //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+                                            if (addpties.hasOwnProperty("$ref")){
+                                                var adref=addpties["$ref"];
+                                                var regex=new RegExp("#/definitions/(.*)$","ig");
+                                                if(regex.test(adref)) {
+                                                    var addrefType = RegExp.$1;
+                                                    var addTempValue=null;
+                                                    //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                                    var globalArr=new Array();
+                                                    //添加类本身
+                                                    globalArr.push(name);
+
+                                                    if(addrefType!=name){
+                                                        addTempValue=that.findRefDefinition(addrefType,definitions,false,globalArr);
+                                                    }else{
+                                                        addTempValue=that.findRefDefinition(addrefType,definitions,true,name,globalArr);
+                                                    }
+                                                    propValue={"additionalProperties1":addTempValue}
+                                                    that.log("解析map-=完毕：")
+                                                    that.log(propValue);
+                                                    spropObj.type=addrefType;
+                                                }
+                                            }else if(addpties.hasOwnProperty("items")){
+                                                //数组
+                                                var addPropItems=addpties["items"];
+
+                                                var adref=addPropItems["$ref"];
+                                                var regex=new RegExp("#/definitions/(.*)$","ig");
+                                                if(regex.test(adref)) {
+                                                    var addrefType = RegExp.$1;
+                                                    var addTempValue=null;
+                                                    //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                                    var globalArr=new Array();
+                                                    //添加类本身
+                                                    globalArr.push(name);
+
+                                                    if(addrefType!=name){
+                                                        addTempValue=that.findRefDefinition(addrefType,definitions,false,globalArr);
+                                                    }else{
+                                                        addTempValue=that.findRefDefinition(addrefType,definitions,true,name,globalArr);
+                                                    }
+                                                    var tempAddValue=new Array();
+                                                    tempAddValue.push(addTempValue);
+                                                    propValue={"additionalProperties1":tempAddValue}
+                                                    that.log("解析map-=完毕：")
+                                                    that.log(propValue);
+                                                    spropObj.type="array";
+                                                    spropObj.refType=addrefType;
+                                                }
                                             }
                                         }
-                                        var regex=new RegExp("#/definitions/(.*)$","ig");
-                                        if(regex.test(ref)){
-                                            var refType=RegExp.$1;
-                                            spropObj.refType=refType;
-                                            //这里需要递归判断是否是本身,如果是,则退出递归查找
-                                            var globalArr=new Array();
-                                            //添加类本身
-                                            globalArr.push(name);
-                                            if(refType!=name){
-                                                propValue.push(that.findRefDefinition(refType,definitions,false,globalArr));
-                                            }else{
-                                                propValue.push(that.findRefDefinition(refType,definitions,true,name,globalArr));
-                                            }
+                                    }
+                                }
+                                //that.log("解析属性："+property);
+                                //that.log(propobj);
+                                if(type=="array"){
+                                    propValue=new Array();
+                                    var items=propobj["items"];
+                                    var ref=items["$ref"];
+                                    //此处有可能items是array
+                                    if (items.hasOwnProperty("type")){
+                                        if(items["type"]=="array"){
+                                            ref=items["items"]["$ref"];
+                                        }
+                                    }
+                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                    if(regex.test(ref)){
+                                        var refType=RegExp.$1;
+                                        spropObj.refType=refType;
+                                        //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                        var globalArr=new Array();
+                                        //添加类本身
+                                        globalArr.push(name);
+                                        if(refType!=name){
+                                            propValue.push(that.findRefDefinition(refType,definitions,false,globalArr));
+                                        }else{
+                                            propValue.push(that.findRefDefinition(refType,definitions,true,name,globalArr));
                                         }
                                     }
                                 }
@@ -3531,18 +3986,18 @@
                 that.log(that.currentInstance.pathFilters)
                 for(var url in that.currentInstance.pathFilters){
                     var saf=that.currentInstance.pathFilters[url];
-                    that.log(url)
-                    that.log(saf)
-                    that.log(saf.api(that.settings.enableFilterMultipartApiMethodType))
-                    that.log("")
+                    //that.log(url)
+                    //that.log(saf)
+                    //that.log(saf.api(that.settings.enableFilterMultipartApiMethodType))
+                    //that.log("")
                     newPathArr=newPathArr.concat(saf.api(that.settings.enableFilterMultipartApiMethodType));
                 }
                 that.log("重新赋值。。。。。")
-                that.log(that.currentInstance.paths)
-                that.log(newPathArr)
+                //that.log(that.currentInstance.paths)
+                ///that.log(newPathArr)
                 //重新赋值
                 that.currentInstance.paths=newPathArr;
-                that.log(that.currentInstance.paths)
+                //that.log(that.currentInstance.paths)
             }
         }
         //解析securityDefinitions属性
@@ -3874,6 +4329,9 @@
             if(apiInfo.hasOwnProperty("deprecated")){
                 swpinfo.deprecated=apiInfo["deprecated"];
             }
+            if (!apiInfo.tags){
+              apiInfo.tags=['default'];
+            }
             swpinfo.consumes=apiInfo.consumes;
             swpinfo.description=apiInfo.description;
             swpinfo.operationId=apiInfo.operationId;
@@ -3949,10 +4407,49 @@
                                     }
                                 }
                             }else{
-                                if (schemaObject.hasOwnProperty("type")){
-                                    minfo.type=schemaObject["type"];
+                                //判断是否包含addtionalProperties属性
+                                if(schemaObject.hasOwnProperty("additionalProperties")){
+                                    //判断是否是数组
+                                    var addProp=schemaObject["additionalProperties"];
+                                    if(addProp.hasOwnProperty("$ref")){
+                                        //object
+                                        var className=$.getClassName(addProp["$ref"]);
+                                        if(className!=null){
+                                            var def=that.getDefinitionByName(className);
+                                            if(def!=null){
+                                                minfo.def=def;
+                                                minfo.value={"additionalProperties1":def.value};
+                                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                                    minfo.description=$.replaceMultipLineStr(def.description);
+                                                }
+                                            }
+                                        }
+                                    }else if(addProp.hasOwnProperty("items")){
+                                        //数组
+                                        var addItems=addProp["items"];
+                                        var className=$.getClassName(addItems["$ref"]);
+                                        if(className!=null){
+                                            var def=that.getDefinitionByName(className);
+                                            if(def!=null){
+                                                var addArrValue=new Array();
+                                                addArrValue.push(def.value)
+                                                minfo.def=def;
+                                                minfo.value={"additionalProperties1":addArrValue};
+                                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                                    minfo.description=$.replaceMultipLineStr(def.description);
+                                                }
+                                            }
+                                        }
+
+                                    }
+
+
+                                }else{
+                                    if (schemaObject.hasOwnProperty("type")){
+                                        minfo.type=schemaObject["type"];
+                                    }
+                                    minfo.value="";
                                 }
-                                minfo.value="";
                             }
                         }
                     }
@@ -4686,8 +5183,30 @@
                             //判断是否有example
                             if(propobj.hasOwnProperty("example")) {
                                 propValue = propobj["example"];
-                            }else if($.checkIsBasicType(type)){
+                            }
+                            if($.checkIsBasicType(type)){
                                 propValue=$.getBasicTypeValue(type);
+                                //此处如果是object情况,需要判断additionalProperties属性的情况
+                                if (type=="object"){
+                                    if(propobj.hasOwnProperty("additionalProperties")){
+                                        var addpties=propobj["additionalProperties"];
+                                        //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+                                        if (addpties.hasOwnProperty("$ref")){
+                                            var adref=addpties["$ref"];
+                                            var regex=new RegExp("#/definitions/(.*)$","ig");
+                                            if(regex.test(adref)) {
+                                                var addrefType = RegExp.$1;
+                                                var addTempValue=null;
+                                                if(!flag){
+                                                    if($.inArray(addrefType,globalArr) == -1){
+                                                        addTempValue=that.findRefDefinition(addrefType,definitions,flag,globalArr);
+                                                        propValue={"additionalProperties1":addTempValue}
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }else{
                                 if(type=="array"){
                                     propValue=new Array();
@@ -5288,9 +5807,13 @@
             var key;
             if ($variable.length) {
                 key = $variable.text().replace(/^"(.*)"$/g,'$1');
-                $('<span>'+responseCode.responseDescriptionFind(paths, key, that)+'</span>')
-                    .css({'position':'absolute', 'left':acePrintMarginLeft, 'color':'#8c8c8c'})
-                    .appendTo($(item));
+                //判断是否存在
+                var sfd=$(item).children(".sbu-field-description");
+                if (sfd.length==0){
+                    $('<span class="sbu-field-description">'+responseCode.responseDescriptionFind(paths, key, that)+'</span>')
+                        .css({'position':'absolute', 'left':acePrintMarginLeft, 'color':'#8c8c8c'})
+                        .appendTo($(item));
+                }
             }
             switch($(item).children('.ace_paren').text()) {
                 case '[':

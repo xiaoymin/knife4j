@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/default.css" />
     <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
     <script src="webjars/bycdao-ui/jquery/marked.js"></script>
-    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css?v=1.8.9" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css?v=1.9.0" />
     <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css" />
 
     <link rel="stylesheet" href="webjars/bycdao-ui/layui/css/layui.css"  media="all">
@@ -97,7 +97,7 @@
             var s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
         })();*/
-    </script>
+   </script>
 </head>
 <body style="overflow: hidden;">
 <div class="sbu-header" id="sbu-header">
@@ -513,7 +513,7 @@
             <div class="swbu-main">
                 <%if((parameters!=null && parameters.length>0)||(globalParameters!=null && globalParameters.length>0)){ var fileform=false;var tabIndex=0;%>
                 <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
-                <%  if(param.schemaValue=="MultipartFile"){ fileform=true;}%>
+                <%  if(param.schemaValue=="MultipartFile" || param.schemaValue=="file" || param.type=="file"){ fileform=true;}%>
                 <%}%>
 
                 <%if(fileform){%>
@@ -546,7 +546,7 @@
                                         <input class="form-control p-key" value="<%=param.name%>">
                                     </td>
                                     <td>
-                                        <%if(param.schemaValue=="MultipartFile"){%>
+                                        <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file" ){%>
                                             <input name="<%=param.name%>" type="file" tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                         <%}else{%>
                                             <%if(param.in=="body"){  %>
@@ -575,7 +575,7 @@
                                     <input class="form-control p-key" value="<%=param.name%>">
                                 </td>
                                 <td>
-                                    <%if(param.schemaValue=="MultipartFile"){%>
+                                    <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file"){%>
                                     <div class="row">
                                         <div class="col-lg-10">
                                             <input name="<%=param.name%>" type="file" tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>" <%if(param.type=="array"){%> multiple <%}%>/>
@@ -644,7 +644,7 @@
                                 <input class="form-control p-key" value="<%=param.name%>">
                             </td>
                             <td>
-                                <%if(param.schemaValue=="MultipartFile"){%>
+                                <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file"){%>
                                 <input name="<%=param.name%>" type="file" tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                 <%}else{%>
                                 <%if(param.in=="body"){  %>
@@ -675,7 +675,7 @@
                             </td>
                             <td>
                                 <%if(param.in=="body"||param.in=="formdata"||param.in=="formData"){  %>
-                                    <%if(param.schemaValue=="MultipartFile"){%>
+                                    <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file"){%>
                                     <input name="<%=param.name%>" type="file"  tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
                                     <%}else {%>
                                         <%if(param.in=="body"){  %>
@@ -1093,18 +1093,9 @@
 <!--settings个性化配置页-->
 <script type="text/html" id="SwaggerBootstrapUiSettingsScript">
     <div style="margin: 0px auto;width: 80%;margin-top: 30px;">
-        <div class="panel panel-primary">
+        <div class="panel panel-default">
             <div class="panel-heading"><h5>个性化设置</h5></div>
-            <div class="panel-body" style="height: 400px;" id="SwaggerBootstrapUiSettings">
-                <div class="alert alert-success" role="alert">
-                    SwaggerBootstrapUi允许用户开启一些个性化的配置功能,
-                    个性化设置注意点：
-                    <ul>
-                        <li>1.浏览器不支持localStorage对象时,该功能无法使用</li>
-                        <li>2.启用SwaggerBootstrapUi增强功能时,请按照文档配置以保障生效,否则无法使用.</li>
-                        <li>3.保存配置后,请刷新该文档页面使个性化配置生效.</li>
-                    </ul>
-                </div>
+            <div class="panel-body" style="height: 310px;" id="SwaggerBootstrapUiSettings">
                 <div class="form-group">
                     <div class="col-lg-10">
                         <div class="checkbox">
@@ -1140,8 +1131,8 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="enableFilterMultipartApis" <%if(enableFilterMultipartApis){ %> checked="checked"  <%}%> />
-                                开启RequestMapping接口类型重复地址过滤,默认只显示
-                                <select class="form-control" name="enableFilterMultipartApiMethodType" style="display: inline;width: 15%;height: 30px;line-height: 30px;">
+                                开启RequestMapping接口过滤,默认只显示
+                                <select class="form-control" name="enableFilterMultipartApiMethodType" style="display: inline;width: 25%;height: 30px;line-height: 30px;">
                                     <option value="GET"  <%if(enableFilterMultipartApiMethodType=="GET"){ %> selected  <%}%>>GET</option>
                                     <option value="POST" <%if(enableFilterMultipartApiMethodType=="POST"){ %> selected  <%}%>>POST</option>
                                     <option value="PUT" <%if(enableFilterMultipartApiMethodType=="PUT"){ %> selected  <%}%>>PUT</option>
@@ -1149,7 +1140,17 @@
                                     <option value="PATCH" <%if(enableFilterMultipartApiMethodType=="PATCH"){ %> selected  <%}%>>PATCH</option>
                                     <option value="OPTIONS" <%if(enableFilterMultipartApiMethodType=="OPTIONS"){ %> selected  <%}%>>OPTIONS</option>
                                     <option value="HEAD" <%if(enableFilterMultipartApiMethodType=="HEAD"){ %> selected  <%}%>>HEAD</option>
-                                </select>类型的接口地址
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="enableCacheOpenApiTable" <%if(enableCacheOpenApiTable){ %> checked="checked"  <%}%> />
+                                开启缓存已打开的api文档
                             </label>
                         </div>
                     </div>
@@ -1159,7 +1160,7 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="enableSwaggerBootstrapUi"  <%if(enableSwaggerBootstrapUi){ %> checked="checked"  <%}%> />
-                                启用SwaggerBootstrapUi提供的增强功能.详情请查看<a href="http://www.xiaominfo.com/2018/08/29/swagger-bootstrap-ui-description/#ui%E5%8A%9F%E8%83%BD%E5%A2%9E%E5%BC%BA" target="_blank">SwaggerBootstrapUi增强功能说明</a>
+                                启用SwaggerBootstrapUi提供的增强功能
                             </label>
                         </div>
                     </div>
@@ -1174,7 +1175,7 @@
     </div>
 </script>
 
-<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js?v=1.8.9"></script>
+<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js?v=1.9.0"></script>
 <script type="text/javascript">
     $(function () {
         /***
