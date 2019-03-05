@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.9.0
+ * swagger-bootstrap-ui v1.9.1
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
@@ -42,7 +42,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.9.0";
+        this.version="1.9.1";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
@@ -1771,8 +1771,8 @@
      */
     SwaggerBootstrapUi.prototype.requestSend=function (apiInfo,eleObject) {
         var that=this;
-        that.log("发送之前...")
-        that.log(apiInfo)
+        //that.log("发送之前...")
+        //that.log(apiInfo)
         var apiKeyId=apiInfo.id;
         var btnRequest=$("#btnRequest"+apiInfo.id);
         var respcleanDiv=$("#responsebody"+apiInfo.id);
@@ -1789,19 +1789,19 @@
         btnRequest.on("click",function (e) {
             e.preventDefault();
             var tabsContentHeight=$("#tabsContent"+apiKeyId).height();
-            that.log($("#tabsContent"+apiKeyId))
+            //that.log($("#tabsContent"+apiKeyId))
             var basicContentHeight=$("#DebugScriptBasic"+apiKeyId).height();
-            that.log($("#DebugScriptBasic"+apiKeyId))
+            //that.log($("#DebugScriptBasic"+apiKeyId))
             //计算basic和tabs的占比
             var perc=parseInt((basicContentHeight/tabsContentHeight)*100);
-            that.log("tabs高度:"+tabsContentHeight+",basic高度："+basicContentHeight+",占比："+perc)
+            //that.log("tabs高度:"+tabsContentHeight+",basic高度："+basicContentHeight+",占比："+perc)
             var laydivHeight=tabsContentHeight-basicContentHeight-5;
             responseHeight=laydivHeight-40;
             if(perc>65){
                 responseHeight=500;
                 laydivHeight=550;
             }
-            that.log("整个tab高度："+tabsContentHeight+",请求Form表单高度："+basicContentHeight+",高度差："+responseHeight);
+            //that.log("整个tab高度："+tabsContentHeight+",请求Form表单高度："+basicContentHeight+",高度差："+responseHeight);
             //laycontentdiv.css("height",laydivHeight+"px");
             //respcleanDiv.html("")
             var params={};
@@ -1813,8 +1813,8 @@
             var validateobj={};
             //获取参数
             var paramBody=$("#paramBody"+apiInfo.id);
-            that.log("paramsbody..")
-            that.log(paramBody)
+            //that.log("paramsbody..")
+            //that.log(paramBody)
             //获取url
             var url=$("#txtreqUrl"+apiInfo.id).val();
             if(url==null||url==""){
@@ -1833,12 +1833,12 @@
             paramBody.find("tr").each(function () {
                 var paramtr=$(this);
                 var cked=paramtr.find("td:first").find(":checked").prop("checked");
-                that.log(cked)
+                //that.log(cked)
                 if (cked){
                     //如果选中
                     var trdata={name:paramtr.find("td:eq(2)").find("input").val(),in:paramtr.data("in"),required:paramtr.data("required"),type:paramtr.data("type"),emflag:paramtr.data("emflag"),schemavalue:paramtr.data("schemavalue")};
-                    that.log("trdata....")
-                    that.log(trdata);
+                    //that.log("trdata....")
+                    //that.log(trdata);
                     //获取key
                     //var key=paramtr.find("td:eq(1)").find("input").val();
                     var key=trdata["name"];
@@ -1852,16 +1852,16 @@
                             value = paramtr.find("td:eq(3)").find("input").val();
                             var fileEle = paramtr.find("td:eq(3)").find("input")[0];
                             fileUploadFlat = true;
-                            that.log("files------------------------------")
+                            //that.log("files------------------------------")
                             var files = fileEle.files;
-                            that.log(files);
+                            //that.log(files);
                             if(files.length>1){
                                 //多个
                                 for( var i = 0; i < files.length; i++ ){
                                     var file = files[i];
                                     var formKey=key+"["+i+"]";
-                                    that.log("formKey------------------------------")
-                                    that.log(formKey);
+                                    //that.log("formKey------------------------------")
+                                    //that.log(formKey);
                                     formData.append(key, file);
                                 }
                             }else if(files.length==1){
@@ -1883,10 +1883,10 @@
                             value = paramtr.find("td:eq(3)").find("input").val();
                             var fileEle = paramtr.find("td:eq(3)").find("input")[0];
                             fileUploadFlat = true;
-                            that.log("files-form-data------------------------------");
-                            that.log(fileEle);
+                            //that.log("files-form-data------------------------------");
+                            //that.log(fileEle);
                             var files = fileEle.files;
-                            that.log(files);
+                            //that.log(files);
                             if(files.length>1){
                                 //多个
                                 for( var i = 0; i < files.length; i++ ){
@@ -1998,13 +1998,13 @@
                         }
 
                     }
-                    that.log("key:"+key+",value:"+value);
+                    //that.log("key:"+key+",value:"+value);
                 }
             })
-            that.log("获取参数..")
-            that.log(params);
-            that.log(apiInfo)
-            that.log("请求url："+url);
+            //that.log("获取参数..")
+            //that.log(params);
+            //that.log(apiInfo)
+            //that.log("请求url："+url);
             var reqdata=null;
             var contType="application/json;charset=UTF-8";
             var paramBodyType="json";
@@ -2020,9 +2020,9 @@
                     }
                     if(requestArr.length>0){
                         var reqStrArr=requestArr.join("&");
-                        that.log("body请求，尚有其他form表单参数................")
-                        that.log(requestArr)
-                        that.log(reqStrArr)
+                        //that.log("body请求，尚有其他form表单参数................")
+                        //that.log(requestArr)
+                        //that.log(reqStrArr)
                         if (url.indexOf("?")>-1){
                             url=url+"&"+reqStrArr;
                         }else{
@@ -2077,15 +2077,15 @@
                 layer.msg(validateobj.message);
                 return;
             }
-            that.log("发送之后bai...")
-            that.log(apiInfo)
+            //that.log("发送之后bai...")
+           // that.log(apiInfo)
             eleObject.data("data",apiInfo);
             //判断是否有表单
             var form=$("#uploadForm"+apiInfo.id);
             var startTime=new Date().getTime();
             var index = layer.load(1);
-            that.log("headerParams------------")
-            that.log(headerparams)
+            //that.log("headerParams------------")
+            //that.log(headerparams)
             //增加header默认发送参数
             headerparams["Request-Origion"]=that.requestOrigion;
             //判断produce
@@ -2111,12 +2111,12 @@
                 })
             }
             //判断是否全局参数中包含ContentType属性
-            that.log("判断是否全局参数中包含ContentType属性--------------------")
+           // that.log("判断是否全局参数中包含ContentType属性--------------------")
             if(!headerparams.hasOwnProperty("Content-Type")){
                 //如果全局参数中不包含,则获取默认input选择框的
-                that.log($("#DebugContentType"+apiKeyId))
+                //that.log($("#DebugContentType"+apiKeyId))
                 var _tmp=$("#DebugContentType"+apiKeyId).val();
-                that.log(_tmp);
+                //that.log(_tmp);
                 if (_tmp!=undefined&&_tmp!=null&&_tmp!=""){
                     headerparams["Content-Type"]=_tmp;
                 }
@@ -2263,8 +2263,8 @@
                     if($.getStringValue(apiInfo.methodType)=="GET"){
                         sendParams=reqdata;
                     }
-                    that.log(sendParams)
-                    that.log($.getStringValue(apiInfo.methodType))
+                    //that.log(sendParams)
+                    //that.log($.getStringValue(apiInfo.methodType))
 
                     //headerparams["Content-Type"]=contType;
                     $.ajax({
@@ -2487,8 +2487,8 @@
         //判断响应内容
         var contentType=xhr.getResponseHeader("Content-Type");
         var rtext=data || xhr["responseText"];
-        that.log(xhr.hasOwnProperty("responseText"));
-        that.log(rtext);
+        //that.log(xhr.hasOwnProperty("responseText"));
+        //that.log(rtext);
         //响应文本内容
         if (data&&data.toString() =="[object Blob]" ) {
             var resp2Html =null;
@@ -2540,7 +2540,7 @@
                 //转二进制
                 var dv=data.toString(2);
                 if(dv!=undefined&&dv!=null){
-                    that.log("二进制11..");
+                    //that.log("二进制11..");
                     var div=$("<div></div>");
                     var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
                     var downloadDiv=$("<div style='    position: absolute;\n" +
@@ -2554,8 +2554,8 @@
                     })
                     downloadDiv.append(button);
                     div.append(rowDiv).append(downloadDiv);
-                    that.log(div)
-                    that.log(div[0])
+                    //that.log(div)
+                    //that.log(div[0])
                     resp1.html("")
                     resp1.html(div);
                 }
@@ -2594,9 +2594,11 @@
         else if (xhr.hasOwnProperty("responseJSON")||data!=null||data!=undefined){
             //如果存在该对象,服务端返回为json格式
             resp1.html("")
-            that.log(xhr["responseJSON"])
+            //that.log(xhr["responseJSON"])
             var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
             var aceValue={};
+            that.log("解析ResponseJSON")
+            that.log(new Date())
             if(xhr.hasOwnProperty("responseJSON")){
                 aceValue=JSON.stringify(xhr["responseJSON"],null,2);
                 //that.log(JSON.stringify(xhr["responseJSON"],null,2))
@@ -2606,7 +2608,9 @@
                 //针对表单提交,error的情况,会产生data
                 //jsondiv.html(JSON.stringify(data,null,2));
             }
-            that.log(jsondiv[0])
+            that.log("解析ResponseJSON结束")
+            that.log(new Date())
+            //that.log(jsondiv[0])
             resp1.append(jsondiv);
             var editor = ace.edit("responseJsonEditor"+apiKeyId);
             editor.getSession().setMode("ace/mode/json");
@@ -2616,12 +2620,36 @@
             //重构高度
             var length_editor = editor.session.getLength();
             var rows_editor = length_editor * 16;
-            that.log("重构高度："+rows_editor)
-            $("#responseJsonEditor"+apiKeyId).css('height',rows_editor+110);
+            //that.log("重构高度："+rows_editor)
+            that.log("重构高度开始")
+            that.log(new Date())
+            var rzheight=rows_editor+110;
+            var rzdivHeight=rows_editor+150;
+            that.log(rzheight)
+            if (rows_editor>20000){
+                that.log("高度很高")
+                rzheight=500+110;
+                rzdivHeight=500+150;
+                $("#responseJsonEditor"+apiKeyId).css('height',rzheight);
+                editor.resize(true);
+                //重置响应面板高度
+                laycontentdiv.css("height",rzdivHeight);
+                //设置response的滚动条
+                resp1.css("overflow-y","auto");
+            }else{
+                $("#responseJsonEditor"+apiKeyId).css('height',rzheight);
+                editor.resize(true);
+                //重置响应面板高度
+                laycontentdiv.css("height",rzdivHeight);
+            }
+           /* that.log(rzheight)
+            $("#responseJsonEditor"+apiKeyId).css('height',rzheight);
             editor.resize(true);
+            that.log("重构高度结束")
+            that.log(new Date())
             that.log($("#responseJsonEditor"+apiKeyId).height())
-            //重置响应面板高度
-            laycontentdiv.css("height",rows_editor+150);
+
+            laycontentdiv.css("height",rzdivHeight);*/
 
             setTimeout(function(){
                 //判断是否选中,如果选中显示说明,则执行,否则不执行此操作
@@ -5357,10 +5385,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
