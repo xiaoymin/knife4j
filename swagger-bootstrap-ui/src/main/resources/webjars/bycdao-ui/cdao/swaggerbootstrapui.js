@@ -4379,16 +4379,20 @@
                         if (schemaType=="array"){
                             minfo.type=schemaType;
                             var schItem=schemaObject["items"];
-                            var ref=schItem["$ref"];
-                            var className=$.getClassName(ref);
-                            minfo.schemaValue=className;
-                            var def=that.getDefinitionByName(className);
-                            if(def!=null){
-                                minfo.def=def;
-                                minfo.value=def.value;
-                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                    minfo.description=$.replaceMultipLineStr(def.description);
+                            if(schItem.hasOwnProperty("$ref")){
+                                var ref=schItem["$ref"];
+                                var className=$.getClassName(ref);
+                                minfo.schemaValue=className;
+                                var def=that.getDefinitionByName(className);
+                                if(def!=null){
+                                    minfo.def=def;
+                                    minfo.value=def.value;
+                                    if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                        minfo.description=$.replaceMultipLineStr(def.description);
+                                    }
                                 }
+                            } else{
+                                minfo.schemaValue = schItem["type"]
                             }
                         }else{
                             if (schemaObject.hasOwnProperty("$ref")){
