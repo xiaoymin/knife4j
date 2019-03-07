@@ -3669,6 +3669,9 @@
                                                 }else{
                                                     propValue.push(that.findRefDefinition(refType,definitions,true,name,globalArr));
                                                 }
+                                            }else{
+                                                //schema基础类型显示
+                                                spropObj.refType=items["type"];
                                             }
                                         }
                                     }
@@ -4429,6 +4432,8 @@
                                 if(def.description!=undefined&&def.description!=null&&def.description!=""){
                                     minfo.description=$.replaceMultipLineStr(def.description);
                                 }
+                            }else{
+                                minfo.schemaValue = schItem["type"]
                             }
                         }else{
                             if (schemaObject.hasOwnProperty("$ref")){
@@ -5046,6 +5051,12 @@
                                         deepTreeTableResponseRefParameter(swpinfo,that,deepDef,refp);
                                     }
                                 }
+                            }else{
+                                if(p.type=="array"){
+                                    if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
+                                        refp.schemaValue=p.refType;
+                                    }
+                                }
                             }
                         })
                     }
@@ -5171,6 +5182,13 @@
                                 var deepDef=that.getDefinitionByName(p.refType);
                                 if(!checkDeepTypeAppear(refp.parentTypes,p.refType)){
                                     deepTreeTableRefParameter(refp,that,deepDef,apiInfo);
+                                }
+                            }
+                        }else{
+                            if(p.type=="array"){
+                                if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
+                                    //修复针对schema类型的参数,显示类型为schema类型
+                                    refp.schemaValue=p.refType;
                                 }
                             }
                         }
