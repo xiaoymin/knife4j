@@ -1460,16 +1460,19 @@
                             $("#"+sampleId).css('height',rows_editor);
                             editor.resize(true);
                             setTimeout(function(){
-                                appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                             }, 1000);
                             editor.getSession().on('tokenizerUpdate', function(){
                                 setTimeout(function(){
-                                    appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                    //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                    appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                                 }, 1000);
                             });
                             editor.on('focus', function(){
                                 setTimeout(function(){
-                                    appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                    //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                    appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                                 }, 1000);
                             });
                         }
@@ -1552,16 +1555,19 @@
                     $("#"+sampleId).css('height',rows_editor);
                     editor.resize(true);
                     setTimeout(function(){
-                        appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                        //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                        appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                     }, 1000);
                     editor.getSession().on('tokenizerUpdate', function(){
                         setTimeout(function(){
-                            appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                            //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                            appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                         }, 1000);
                     });
                     editor.on('focus', function(){
                         setTimeout(function(){
-                            appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                            //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                            appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                         }, 1000);
                     });
                 }
@@ -2650,6 +2656,7 @@
             that.log($("#responseJsonEditor"+apiKeyId).height())
 
             laycontentdiv.css("height",rzdivHeight);*/
+           that.log(apiInfo);
 
             setTimeout(function(){
                 //判断是否选中,如果选中显示说明,则执行,否则不执行此操作
@@ -2657,7 +2664,8 @@
                 that.log("是否选中：")
                 that.log(desShowStatus)
                 if (desShowStatus){
-                    appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    //appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.getHttpSuccessCodeObject(),that);
                 }
             }, 1000);
             editor.getSession().on('tokenizerUpdate', function(){
@@ -2667,7 +2675,8 @@
                     that.log("是否选中：")
                     that.log(desShowStatus)
                     if(desShowStatus){
-                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                        //appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.getHttpSuccessCodeObject(),that);
                     }
                 }, 1000);
             });
@@ -2678,7 +2687,8 @@
                     that.log("是否选中：")
                     that.log(desShowStatus)
                     if (desShowStatus){
-                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                        //appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.getHttpSuccessCodeObject(),that);
                     }
                 }, 1000);
             });
@@ -2735,7 +2745,8 @@
             that.log("状态："+checkedStatus)
             var showDiv="#respcontent"+apiInfo.id;
             if(checkedStatus){
-                appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                //appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.getHttpSuccessCodeObject(),that);
                 $(showDiv).find(".sbu-field-description").show();
             }else{
                 $(showDiv).find(".sbu-field-description").hide();
@@ -5694,6 +5705,26 @@
         //treetable组件使用对象
         this.refTreetableparameters=new Array();
         this.responseCodes=new Array();
+        this.responseHttpObject=null;
+        /***
+         * 返回状态码为200的
+         */
+        this.getHttpSuccessCodeObject=function () {
+            if (this.responseHttpObject==null){
+                if(this.responseCodes!=null&&this.responseCodes.length>0){
+                    var _tmp=null;
+                    for(var i=0;i<this.responseCodes.length;i++){
+                        if(this.responseCodes[i].code=="200"){
+                            _tmp=this.responseCodes[i];
+                            break;
+                        }
+                    }
+                    this.responseHttpObject=_tmp;
+                }
+            }
+            return this.responseHttpObject;
+        }
+
         this.responseValue=null;
         this.responseJson=null;
         this.responseText=null;
