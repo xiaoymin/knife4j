@@ -2619,6 +2619,8 @@
             //that.log(jsondiv[0])
             resp1.append(jsondiv);
             var editor = ace.edit("responseJsonEditor"+apiKeyId);
+            //启动自动换行
+            editor.getSession().setUseWrapMode(true);
             editor.getSession().setMode("ace/mode/json");
             editor.setTheme("ace/theme/eclipse");
             editor.setValue(aceValue);
@@ -5879,8 +5881,10 @@
         var paths = [];
         $aceJsonText = $aceJsonContent.find('.ace_text-layer');
         var acePrintMarginLeft = $aceJsonContent.find('.ace_print-margin').css('left');
-        $aceJsonText.children('.ace_line').each(function(i,item){
+        console.log("ace-left-margin:"+acePrintMarginLeft)
+        $aceJsonText.find('.ace_line').each(function(i,item){
             var $variable = $(item).children('.ace_variable');
+            console.log($variable)
             var key;
             if ($variable.length) {
                 key = $variable.text().replace(/^"(.*)"$/g,'$1');
