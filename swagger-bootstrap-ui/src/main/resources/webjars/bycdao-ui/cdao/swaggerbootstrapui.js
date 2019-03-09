@@ -1101,6 +1101,15 @@
         }
         return params;
     }
+    /***
+     * 清空security
+     */
+    SwaggerBootstrapUi.prototype.clearSecuritys=function(){
+        if(window.localStorage){
+            var store = window.localStorage;
+            store.setItem("securityArrs","");
+        }
+    }
 
     /***
      * 获取全局参数
@@ -4052,6 +4061,7 @@
                 //判断是否有缓存cache值
                 //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
                 var cacheSecurityData=that.getSecurityInfos();
+                var securityArr=new Array();
                 for(var j in securityDefinitions){
                     var sdf=new SwaggerBootstrapUiSecurityDefinition();
                     var sdobj=securityDefinitions[j];
@@ -4069,12 +4079,26 @@
                             }
                         })
                     }
-                    if (!flag){
+                   /* if (!flag){
                         //如果cache不存在,存储
                         that.storeGlobalParam(sdf,"securityArrs");
-                    }
-                    that.currentInstance.securityArrs.push(sdf);
+                    }*/
+                    securityArr.push(sdf);
+                    //that.currentInstance.securityArrs.push(sdf);
                 }
+                if(securityArr.length>0){
+                    that.currentInstance.securityArrs=securityArr;
+                    if(window.localStorage) {
+                        var store = window.localStorage;
+                        store.setItem("securityArrs",JSON.stringify(securityArr))
+                    }
+                }else{
+                    //清空缓存
+                    that.clearSecuritys();
+                }
+            }else{
+                //清空缓存security
+                that.clearSecuritys();
             }
         }
 
