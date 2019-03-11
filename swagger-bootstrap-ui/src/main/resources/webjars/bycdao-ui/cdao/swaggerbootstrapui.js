@@ -5459,7 +5459,7 @@
 
     SwaggerBootstrapUi.prototype.welcome=function () {
         var that=this;
-        var msg="欢迎使用swagger-bootstrap-ui "+that.version+"~!\r\n\r\n欢迎任何形式的反馈issue,star,pr~~~~！祝君生活愉快:)~~~!\r\n\r\nGitHub:https://github.com/xiaoymin/Swagger-Bootstrap-UI\r\n\r\n码云Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui\r\n\r\nQQ群:608374991";
+        var msg="欢迎使用swagger-bootstrap-ui "+that.version+"~!\r\n\r\n欢迎任何形式的反馈issue,star,pr~~~~!\r\n\r\nGitHub:https://github.com/xiaoymin/Swagger-Bootstrap-UI\r\n\r\nGitee:https://gitee.com/xiaoym/swagger-bootstrap-ui\r\n\r\nQQ群:608374991";
         if(window.console){
             console.log(msg);
         }
@@ -5905,10 +5905,8 @@
         var paths = [];
         $aceJsonText = $aceJsonContent.find('.ace_text-layer');
         var acePrintMarginLeft = $aceJsonContent.find('.ace_print-margin').css('left');
-        console.log("ace-left-margin:"+acePrintMarginLeft)
         $aceJsonText.find('.ace_line').each(function(i,item){
             var $variable = $(item).children('.ace_variable');
-            console.log($variable)
             var key;
             if ($variable.length) {
                 key = $variable.text().replace(/^"(.*)"$/g,'$1');
