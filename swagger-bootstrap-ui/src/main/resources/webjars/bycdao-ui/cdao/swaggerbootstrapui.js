@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.9.0
+ * swagger-bootstrap-ui v1.9.1
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
@@ -42,7 +42,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.9.0";
+        this.version="1.9.1";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
@@ -1101,6 +1101,15 @@
         }
         return params;
     }
+    /***
+     * 清空security
+     */
+    SwaggerBootstrapUi.prototype.clearSecuritys=function(){
+        if(window.localStorage){
+            var store = window.localStorage;
+            store.setItem("securityArrs","");
+        }
+    }
 
     /***
      * 获取全局参数
@@ -1460,16 +1469,19 @@
                             $("#"+sampleId).css('height',rows_editor);
                             editor.resize(true);
                             setTimeout(function(){
-                                appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                             }, 1000);
                             editor.getSession().on('tokenizerUpdate', function(){
                                 setTimeout(function(){
-                                    appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                    //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                    appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                                 }, 1000);
                             });
                             editor.on('focus', function(){
                                 setTimeout(function(){
-                                    appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                    //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                                    appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                                 }, 1000);
                             });
                         }
@@ -1552,16 +1564,19 @@
                     $("#"+sampleId).css('height',rows_editor);
                     editor.resize(true);
                     setTimeout(function(){
-                        appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                        //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                        appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                     }, 1000);
                     editor.getSession().on('tokenizerUpdate', function(){
                         setTimeout(function(){
-                            appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                            //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                            appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                         }, 1000);
                     });
                     editor.on('focus', function(){
                         setTimeout(function(){
-                            appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                            //appendDescriptionVariable($("#"+sampleId),apiInfo.responseCodes[0],that);
+                            appendDescriptionVariable($("#"+sampleId),apiInfo.getHttpSuccessCodeObject(),that);
                         }, 1000);
                     });
                 }
@@ -1771,8 +1786,8 @@
      */
     SwaggerBootstrapUi.prototype.requestSend=function (apiInfo,eleObject) {
         var that=this;
-        that.log("发送之前...")
-        that.log(apiInfo)
+        //that.log("发送之前...")
+        //that.log(apiInfo)
         var apiKeyId=apiInfo.id;
         var btnRequest=$("#btnRequest"+apiInfo.id);
         var respcleanDiv=$("#responsebody"+apiInfo.id);
@@ -1789,19 +1804,19 @@
         btnRequest.on("click",function (e) {
             e.preventDefault();
             var tabsContentHeight=$("#tabsContent"+apiKeyId).height();
-            that.log($("#tabsContent"+apiKeyId))
+            //that.log($("#tabsContent"+apiKeyId))
             var basicContentHeight=$("#DebugScriptBasic"+apiKeyId).height();
-            that.log($("#DebugScriptBasic"+apiKeyId))
+            //that.log($("#DebugScriptBasic"+apiKeyId))
             //计算basic和tabs的占比
             var perc=parseInt((basicContentHeight/tabsContentHeight)*100);
-            that.log("tabs高度:"+tabsContentHeight+",basic高度："+basicContentHeight+",占比："+perc)
+            //that.log("tabs高度:"+tabsContentHeight+",basic高度："+basicContentHeight+",占比："+perc)
             var laydivHeight=tabsContentHeight-basicContentHeight-5;
             responseHeight=laydivHeight-40;
             if(perc>65){
                 responseHeight=500;
                 laydivHeight=550;
             }
-            that.log("整个tab高度："+tabsContentHeight+",请求Form表单高度："+basicContentHeight+",高度差："+responseHeight);
+            //that.log("整个tab高度："+tabsContentHeight+",请求Form表单高度："+basicContentHeight+",高度差："+responseHeight);
             //laycontentdiv.css("height",laydivHeight+"px");
             //respcleanDiv.html("")
             var params={};
@@ -1813,8 +1828,8 @@
             var validateobj={};
             //获取参数
             var paramBody=$("#paramBody"+apiInfo.id);
-            that.log("paramsbody..")
-            that.log(paramBody)
+            //that.log("paramsbody..")
+            //that.log(paramBody)
             //获取url
             var url=$("#txtreqUrl"+apiInfo.id).val();
             if(url==null||url==""){
@@ -1833,12 +1848,12 @@
             paramBody.find("tr").each(function () {
                 var paramtr=$(this);
                 var cked=paramtr.find("td:first").find(":checked").prop("checked");
-                that.log(cked)
+                //that.log(cked)
                 if (cked){
                     //如果选中
                     var trdata={name:paramtr.find("td:eq(2)").find("input").val(),in:paramtr.data("in"),required:paramtr.data("required"),type:paramtr.data("type"),emflag:paramtr.data("emflag"),schemavalue:paramtr.data("schemavalue")};
-                    that.log("trdata....")
-                    that.log(trdata);
+                    //that.log("trdata....")
+                    //that.log(trdata);
                     //获取key
                     //var key=paramtr.find("td:eq(1)").find("input").val();
                     var key=trdata["name"];
@@ -1852,16 +1867,16 @@
                             value = paramtr.find("td:eq(3)").find("input").val();
                             var fileEle = paramtr.find("td:eq(3)").find("input")[0];
                             fileUploadFlat = true;
-                            that.log("files------------------------------")
+                            //that.log("files------------------------------")
                             var files = fileEle.files;
-                            that.log(files);
+                            //that.log(files);
                             if(files.length>1){
                                 //多个
                                 for( var i = 0; i < files.length; i++ ){
                                     var file = files[i];
                                     var formKey=key+"["+i+"]";
-                                    that.log("formKey------------------------------")
-                                    that.log(formKey);
+                                    //that.log("formKey------------------------------")
+                                    //that.log(formKey);
                                     formData.append(key, file);
                                 }
                             }else if(files.length==1){
@@ -1883,10 +1898,10 @@
                             value = paramtr.find("td:eq(3)").find("input").val();
                             var fileEle = paramtr.find("td:eq(3)").find("input")[0];
                             fileUploadFlat = true;
-                            that.log("files-form-data------------------------------");
-                            that.log(fileEle);
+                            //that.log("files-form-data------------------------------");
+                            //that.log(fileEle);
                             var files = fileEle.files;
-                            that.log(files);
+                            //that.log(files);
                             if(files.length>1){
                                 //多个
                                 for( var i = 0; i < files.length; i++ ){
@@ -1998,13 +2013,13 @@
                         }
 
                     }
-                    that.log("key:"+key+",value:"+value);
+                    //that.log("key:"+key+",value:"+value);
                 }
             })
-            that.log("获取参数..")
-            that.log(params);
-            that.log(apiInfo)
-            that.log("请求url："+url);
+            //that.log("获取参数..")
+            //that.log(params);
+            //that.log(apiInfo)
+            //that.log("请求url："+url);
             var reqdata=null;
             var contType="application/json;charset=UTF-8";
             var paramBodyType="json";
@@ -2020,9 +2035,9 @@
                     }
                     if(requestArr.length>0){
                         var reqStrArr=requestArr.join("&");
-                        that.log("body请求，尚有其他form表单参数................")
-                        that.log(requestArr)
-                        that.log(reqStrArr)
+                        //that.log("body请求，尚有其他form表单参数................")
+                        //that.log(requestArr)
+                        //that.log(reqStrArr)
                         if (url.indexOf("?")>-1){
                             url=url+"&"+reqStrArr;
                         }else{
@@ -2077,15 +2092,15 @@
                 layer.msg(validateobj.message);
                 return;
             }
-            that.log("发送之后bai...")
-            that.log(apiInfo)
+            //that.log("发送之后bai...")
+           // that.log(apiInfo)
             eleObject.data("data",apiInfo);
             //判断是否有表单
             var form=$("#uploadForm"+apiInfo.id);
             var startTime=new Date().getTime();
             var index = layer.load(1);
-            that.log("headerParams------------")
-            that.log(headerparams)
+            //that.log("headerParams------------")
+            //that.log(headerparams)
             //增加header默认发送参数
             headerparams["Request-Origion"]=that.requestOrigion;
             //判断produce
@@ -2111,12 +2126,12 @@
                 })
             }
             //判断是否全局参数中包含ContentType属性
-            that.log("判断是否全局参数中包含ContentType属性--------------------")
+           // that.log("判断是否全局参数中包含ContentType属性--------------------")
             if(!headerparams.hasOwnProperty("Content-Type")){
                 //如果全局参数中不包含,则获取默认input选择框的
-                that.log($("#DebugContentType"+apiKeyId))
+                //that.log($("#DebugContentType"+apiKeyId))
                 var _tmp=$("#DebugContentType"+apiKeyId).val();
-                that.log(_tmp);
+                //that.log(_tmp);
                 if (_tmp!=undefined&&_tmp!=null&&_tmp!=""){
                     headerparams["Content-Type"]=_tmp;
                 }
@@ -2263,8 +2278,8 @@
                     if($.getStringValue(apiInfo.methodType)=="GET"){
                         sendParams=reqdata;
                     }
-                    that.log(sendParams)
-                    that.log($.getStringValue(apiInfo.methodType))
+                    //that.log(sendParams)
+                    //that.log($.getStringValue(apiInfo.methodType))
 
                     //headerparams["Content-Type"]=contType;
                     $.ajax({
@@ -2487,8 +2502,8 @@
         //判断响应内容
         var contentType=xhr.getResponseHeader("Content-Type");
         var rtext=data || xhr["responseText"];
-        that.log(xhr.hasOwnProperty("responseText"));
-        that.log(rtext);
+        //that.log(xhr.hasOwnProperty("responseText"));
+        //that.log(rtext);
         //响应文本内容
         if (data&&data.toString() =="[object Blob]" ) {
             var resp2Html =null;
@@ -2540,7 +2555,7 @@
                 //转二进制
                 var dv=data.toString(2);
                 if(dv!=undefined&&dv!=null){
-                    that.log("二进制11..");
+                    //that.log("二进制11..");
                     var div=$("<div></div>");
                     var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
                     var downloadDiv=$("<div style='    position: absolute;\n" +
@@ -2554,8 +2569,8 @@
                     })
                     downloadDiv.append(button);
                     div.append(rowDiv).append(downloadDiv);
-                    that.log(div)
-                    that.log(div[0])
+                    //that.log(div)
+                    //that.log(div[0])
                     resp1.html("")
                     resp1.html(div);
                 }
@@ -2594,9 +2609,11 @@
         else if (xhr.hasOwnProperty("responseJSON")||data!=null||data!=undefined){
             //如果存在该对象,服务端返回为json格式
             resp1.html("")
-            that.log(xhr["responseJSON"])
+            //that.log(xhr["responseJSON"])
             var jsondiv=$('<div style="width: auto;height: '+responseHeight+'px;" id="responseJsonEditor'+apiKeyId+'"></div>')
             var aceValue={};
+            that.log("解析ResponseJSON")
+            that.log(new Date())
             if(xhr.hasOwnProperty("responseJSON")){
                 aceValue=JSON.stringify(xhr["responseJSON"],null,2);
                 //that.log(JSON.stringify(xhr["responseJSON"],null,2))
@@ -2606,9 +2623,13 @@
                 //针对表单提交,error的情况,会产生data
                 //jsondiv.html(JSON.stringify(data,null,2));
             }
-            that.log(jsondiv[0])
+            that.log("解析ResponseJSON结束")
+            that.log(new Date())
+            //that.log(jsondiv[0])
             resp1.append(jsondiv);
             var editor = ace.edit("responseJsonEditor"+apiKeyId);
+            //启动自动换行
+            editor.getSession().setUseWrapMode(true);
             editor.getSession().setMode("ace/mode/json");
             editor.setTheme("ace/theme/eclipse");
             editor.setValue(aceValue);
@@ -2616,12 +2637,37 @@
             //重构高度
             var length_editor = editor.session.getLength();
             var rows_editor = length_editor * 16;
-            that.log("重构高度："+rows_editor)
-            $("#responseJsonEditor"+apiKeyId).css('height',rows_editor+110);
+            //that.log("重构高度："+rows_editor)
+            that.log("重构高度开始")
+            that.log(new Date())
+            var rzheight=rows_editor+110;
+            var rzdivHeight=rows_editor+150;
+            that.log(rzheight)
+            if (rows_editor>20000){
+                that.log("高度很高")
+                rzheight=500+110;
+                rzdivHeight=500+150;
+                $("#responseJsonEditor"+apiKeyId).css('height',rzheight);
+                editor.resize(true);
+                //重置响应面板高度
+                laycontentdiv.css("height",rzdivHeight);
+                //设置response的滚动条
+                resp1.css("overflow-y","auto");
+            }else{
+                $("#responseJsonEditor"+apiKeyId).css('height',rzheight);
+                editor.resize(true);
+                //重置响应面板高度
+                laycontentdiv.css("height",rzdivHeight);
+            }
+           /* that.log(rzheight)
+            $("#responseJsonEditor"+apiKeyId).css('height',rzheight);
             editor.resize(true);
+            that.log("重构高度结束")
+            that.log(new Date())
             that.log($("#responseJsonEditor"+apiKeyId).height())
-            //重置响应面板高度
-            laycontentdiv.css("height",rows_editor+150);
+
+            laycontentdiv.css("height",rzdivHeight);*/
+           that.log(apiInfo);
 
             setTimeout(function(){
                 //判断是否选中,如果选中显示说明,则执行,否则不执行此操作
@@ -2629,7 +2675,8 @@
                 that.log("是否选中：")
                 that.log(desShowStatus)
                 if (desShowStatus){
-                    appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    //appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                    appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.getHttpSuccessCodeObject(),that);
                 }
             }, 1000);
             editor.getSession().on('tokenizerUpdate', function(){
@@ -2639,7 +2686,8 @@
                     that.log("是否选中：")
                     that.log(desShowStatus)
                     if(desShowStatus){
-                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                        //appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.getHttpSuccessCodeObject(),that);
                     }
                 }, 1000);
             });
@@ -2650,7 +2698,8 @@
                     that.log("是否选中：")
                     that.log(desShowStatus)
                     if (desShowStatus){
-                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                        //appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                        appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.getHttpSuccessCodeObject(),that);
                     }
                 }, 1000);
             });
@@ -2707,7 +2756,8 @@
             that.log("状态："+checkedStatus)
             var showDiv="#respcontent"+apiInfo.id;
             if(checkedStatus){
-                appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                //appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.responseCodes[0],that);
+                appendDescriptionVariable($("#responseJsonEditor"+apiKeyId),apiInfo.getHttpSuccessCodeObject(),that);
                 $(showDiv).find(".sbu-field-description").show();
             }else{
                 $(showDiv).find(".sbu-field-description").hide();
@@ -3512,170 +3562,174 @@
                         var properties=value["properties"];
                         var defiTypeValue={};
                         for(var property in properties){
-                            var spropObj=new SwaggerBootstrapUiProperty();
-                            spropObj.name=property;
                             var propobj=properties[property];
-                            spropObj.originProperty=propobj;
-                            spropObj.type=$.propValue("type",propobj,"string");
-                            spropObj.description=$.propValue("description",propobj,"");
-                            if(spropObj.type=="string"){
-                                spropObj.example=String($.propValue("example",propobj,""));
-                            }else{
-                                spropObj.example=$.propValue("example",propobj,"");
-                            }
-
-                            spropObj.format=$.propValue("format",propobj,"");
-                            spropObj.required=$.propValue("required",propobj,false);
-                            if(swud.required.length>0){
-                                //有required属性,需要再判断一次
-                                if($.inArray(spropObj.name,swud.required)>-1){
-                                    //存在
-                                    spropObj.required=true;
+                            //判断是否包含readOnly属性
+                            if (!propobj.hasOwnProperty("readOnly")||!propobj["readOnly"]){
+                                var spropObj=new SwaggerBootstrapUiProperty();
+                                spropObj.name=property;
+                                spropObj.originProperty=propobj;
+                                spropObj.type=$.propValue("type",propobj,"string");
+                                spropObj.description=$.propValue("description",propobj,"");
+                                if(spropObj.type=="string"){
+                                    spropObj.example=String($.propValue("example",propobj,""));
+                                }else{
+                                    spropObj.example=$.propValue("example",propobj,"");
                                 }
-                            }
-                            //默认string类型
-                            var propValue="";
-                            //判断是否有类型
-                            if(propobj.hasOwnProperty("type")){
-                                var type=propobj["type"];
-                                //判断是否有example
-                                if(propobj.hasOwnProperty("example")){
-                                    if(type=="string"){
-                                        propValue=String($.propValue("example",propobj,""));
-                                    }else{
-                                        propValue=propobj["example"];
+
+                                spropObj.format=$.propValue("format",propobj,"");
+                                spropObj.required=$.propValue("required",propobj,false);
+                                if(swud.required.length>0){
+                                    //有required属性,需要再判断一次
+                                    if($.inArray(spropObj.name,swud.required)>-1){
+                                        //存在
+                                        spropObj.required=true;
                                     }
                                 }
-                                if($.checkIsBasicType(type)){
-                                    propValue=$.getBasicTypeValue(type);
-                                    //此处如果是object情况,需要判断additionalProperties属性的情况
-                                    if (type=="object"){
-                                        if(propobj.hasOwnProperty("additionalProperties")){
-                                            var addpties=propobj["additionalProperties"];
-                                            that.log("------解析map-=-----------additionalProperties,defName:"+name);
-                                            //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
-                                            if (addpties.hasOwnProperty("$ref")){
-                                                var adref=addpties["$ref"];
-                                                var regex=new RegExp("#/definitions/(.*)$","ig");
-                                                if(regex.test(adref)) {
-                                                    var addrefType = RegExp.$1;
-                                                    var addTempValue=null;
-                                                    //这里需要递归判断是否是本身,如果是,则退出递归查找
-                                                    var globalArr=new Array();
-                                                    //添加类本身
-                                                    globalArr.push(name);
+                                //默认string类型
+                                var propValue="";
+                                //判断是否有类型
+                                if(propobj.hasOwnProperty("type")){
+                                    var type=propobj["type"];
+                                    //判断是否有example
+                                    if(propobj.hasOwnProperty("example")){
+                                        if(type=="string"){
+                                            propValue=String($.propValue("example",propobj,""));
+                                        }else{
+                                            propValue=propobj["example"];
+                                        }
+                                    }else if($.checkIsBasicType(type)){
+                                        propValue=$.getBasicTypeValue(type);
+                                        //此处如果是object情况,需要判断additionalProperties属性的情况
+                                        if (type=="object"){
+                                            if(propobj.hasOwnProperty("additionalProperties")){
+                                                var addpties=propobj["additionalProperties"];
+                                                that.log("------解析map-=-----------additionalProperties,defName:"+name);
+                                                //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+                                                if (addpties.hasOwnProperty("$ref")){
+                                                    var adref=addpties["$ref"];
+                                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                                    if(regex.test(adref)) {
+                                                        var addrefType = RegExp.$1;
+                                                        var addTempValue=null;
+                                                        //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                                        var globalArr=new Array();
+                                                        //添加类本身
+                                                        globalArr.push(name);
 
-                                                    if(addrefType!=name){
-                                                        addTempValue=that.findRefDefinition(addrefType,definitions,false,globalArr);
-                                                    }else{
-                                                        addTempValue=that.findRefDefinition(addrefType,definitions,true,name,globalArr);
+                                                        if(addrefType!=name){
+                                                            addTempValue=that.findRefDefinition(addrefType,definitions,false,globalArr);
+                                                        }else{
+                                                            addTempValue=that.findRefDefinition(addrefType,definitions,true,name,globalArr);
+                                                        }
+                                                        propValue={"additionalProperties1":addTempValue}
+                                                        that.log("解析map-=完毕：")
+                                                        that.log(propValue);
+                                                        spropObj.type=addrefType;
                                                     }
-                                                    propValue={"additionalProperties1":addTempValue}
-                                                    that.log("解析map-=完毕：")
-                                                    that.log(propValue);
-                                                    spropObj.type=addrefType;
-                                                }
-                                            }else if(addpties.hasOwnProperty("items")){
-                                                //数组
-                                                var addPropItems=addpties["items"];
+                                                }else if(addpties.hasOwnProperty("items")){
+                                                    //数组
+                                                    var addPropItems=addpties["items"];
 
-                                                var adref=addPropItems["$ref"];
-                                                var regex=new RegExp("#/definitions/(.*)$","ig");
-                                                if(regex.test(adref)) {
-                                                    var addrefType = RegExp.$1;
-                                                    var addTempValue=null;
-                                                    //这里需要递归判断是否是本身,如果是,则退出递归查找
-                                                    var globalArr=new Array();
-                                                    //添加类本身
-                                                    globalArr.push(name);
+                                                    var adref=addPropItems["$ref"];
+                                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                                    if(regex.test(adref)) {
+                                                        var addrefType = RegExp.$1;
+                                                        var addTempValue=null;
+                                                        //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                                        var globalArr=new Array();
+                                                        //添加类本身
+                                                        globalArr.push(name);
 
-                                                    if(addrefType!=name){
-                                                        addTempValue=that.findRefDefinition(addrefType,definitions,false,globalArr);
-                                                    }else{
-                                                        addTempValue=that.findRefDefinition(addrefType,definitions,true,name,globalArr);
+                                                        if(addrefType!=name){
+                                                            addTempValue=that.findRefDefinition(addrefType,definitions,false,globalArr);
+                                                        }else{
+                                                            addTempValue=that.findRefDefinition(addrefType,definitions,true,name,globalArr);
+                                                        }
+                                                        var tempAddValue=new Array();
+                                                        tempAddValue.push(addTempValue);
+                                                        propValue={"additionalProperties1":tempAddValue}
+                                                        that.log("解析map-=完毕：")
+                                                        that.log(propValue);
+                                                        spropObj.type="array";
+                                                        spropObj.refType=addrefType;
                                                     }
-                                                    var tempAddValue=new Array();
-                                                    tempAddValue.push(addTempValue);
-                                                    propValue={"additionalProperties1":tempAddValue}
-                                                    that.log("解析map-=完毕：")
-                                                    that.log(propValue);
-                                                    spropObj.type="array";
-                                                    spropObj.refType=addrefType;
                                                 }
                                             }
                                         }
-                                    }
-                                }
-                                //that.log("解析属性："+property);
-                                //that.log(propobj);
-                                if(type=="array"){
-                                    propValue=new Array();
-                                    var items=propobj["items"];
-                                    var ref=items["$ref"];
-                                    //此处有可能items是array
-                                    if (items.hasOwnProperty("type")){
-                                        if(items["type"]=="array"){
-                                            ref=items["items"]["$ref"];
+                                    }else {
+                                        if(type=="array"){
+                                            propValue=new Array();
+                                            var items=propobj["items"];
+                                            var ref=items["$ref"];
+                                            //此处有可能items是array
+                                            if (items.hasOwnProperty("type")){
+                                                if(items["type"]=="array"){
+                                                    ref=items["items"]["$ref"];
+                                                }
+                                            }
+                                            var regex=new RegExp("#/definitions/(.*)$","ig");
+                                            if(regex.test(ref)){
+                                                var refType=RegExp.$1;
+                                                spropObj.refType=refType;
+                                                //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                                var globalArr=new Array();
+                                                //添加类本身
+                                                globalArr.push(name);
+                                                if(refType!=name){
+                                                    propValue.push(that.findRefDefinition(refType,definitions,false,globalArr));
+                                                }else{
+                                                    propValue.push(that.findRefDefinition(refType,definitions,true,name,globalArr));
+                                                }
+                                            }else{
+                                                //schema基础类型显示
+                                                spropObj.refType=items["type"];
+                                            }
                                         }
                                     }
-                                    var regex=new RegExp("#/definitions/(.*)$","ig");
-                                    if(regex.test(ref)){
-                                        var refType=RegExp.$1;
-                                        spropObj.refType=refType;
-                                        //这里需要递归判断是否是本身,如果是,则退出递归查找
-                                        var globalArr=new Array();
-                                        //添加类本身
-                                        globalArr.push(name);
-                                        if(refType!=name){
-                                            propValue.push(that.findRefDefinition(refType,definitions,false,globalArr));
-                                        }else{
-                                            propValue.push(that.findRefDefinition(refType,definitions,true,name,globalArr));
-                                        }
-                                    }
-                                }
 
-                            }
-                            else{
-                                //that.log("解析属性："+property);
-                                //that.log(propobj);
-                                if(propobj.hasOwnProperty("$ref")){
-                                    var ref=propobj["$ref"];
-                                    var regex=new RegExp("#/definitions/(.*)$","ig");
-                                    if(regex.test(ref)) {
-                                        var refType = RegExp.$1;
-                                        spropObj.refType=refType;
-                                        //这里需要递归判断是否是本身,如果是,则退出递归查找
-                                        var globalArr=new Array();
-                                        //添加类本身
-                                        globalArr.push(name);
-                                        if(refType!=name){
-                                            propValue=that.findRefDefinition(refType,definitions,false,globalArr);
-                                        }else{
-                                            propValue=that.findRefDefinition(refType,definitions,true,globalArr);
-                                        }
+                                }
+                                else{
+                                    //that.log("解析属性："+property);
+                                    //that.log(propobj);
+                                    if(propobj.hasOwnProperty("$ref")){
+                                        var ref=propobj["$ref"];
+                                        var regex=new RegExp("#/definitions/(.*)$","ig");
+                                        if(regex.test(ref)) {
+                                            var refType = RegExp.$1;
+                                            spropObj.refType=refType;
+                                            //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                            var globalArr=new Array();
+                                            //添加类本身
+                                            globalArr.push(name);
+                                            if(refType!=name){
+                                                propValue=that.findRefDefinition(refType,definitions,false,globalArr);
+                                            }else{
+                                                propValue=that.findRefDefinition(refType,definitions,true,globalArr);
+                                            }
 
+                                        }
+                                    }else{
+                                        propValue={};
                                     }
-                                }else{
-                                    propValue={};
                                 }
-                            }
-                            spropObj.value=propValue;
-                            //判断是否有format,如果是integer,判断是64位还是32位
-                            if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
-                                spropObj.type=spropObj.format;
-                            }
-                            //判断最终类型
-                            if(spropObj.refType!=null&&spropObj.refType!=""){
-                                //判断基础类型,非数字类型
-                                if(spropObj.type=="string"){
-                                    spropObj.type=spropObj.refType;
+                                spropObj.value=propValue;
+                                //判断是否有format,如果是integer,判断是64位还是32位
+                                if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
+                                    spropObj.type=spropObj.format;
                                 }
-                            }
-                            //addprop
-                            //这里判断去重
-                            if(!that.checkPropertiesExists(swud.properties,spropObj)){
-                                swud.properties.push(spropObj);
-                                defiTypeValue[property]=propValue;
+                                //判断最终类型
+                                if(spropObj.refType!=null&&spropObj.refType!=""){
+                                    //判断基础类型,非数字类型
+                                    if(spropObj.type=="string"){
+                                        spropObj.type=spropObj.refType;
+                                    }
+                                }
+                                //addprop
+                                //这里判断去重
+                                if(!that.checkPropertiesExists(swud.properties,spropObj)){
+                                    swud.properties.push(spropObj);
+                                    defiTypeValue[property]=propValue;
+                                }
                             }
                         }
                         swud.value=defiTypeValue;
@@ -4007,6 +4061,7 @@
                 //判断是否有缓存cache值
                 //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
                 var cacheSecurityData=that.getSecurityInfos();
+                var securityArr=new Array();
                 for(var j in securityDefinitions){
                     var sdf=new SwaggerBootstrapUiSecurityDefinition();
                     var sdobj=securityDefinitions[j];
@@ -4024,12 +4079,26 @@
                             }
                         })
                     }
-                    if (!flag){
+                   /* if (!flag){
                         //如果cache不存在,存储
                         that.storeGlobalParam(sdf,"securityArrs");
-                    }
-                    that.currentInstance.securityArrs.push(sdf);
+                    }*/
+                    securityArr.push(sdf);
+                    //that.currentInstance.securityArrs.push(sdf);
                 }
+                if(securityArr.length>0){
+                    that.currentInstance.securityArrs=securityArr;
+                    if(window.localStorage) {
+                        var store = window.localStorage;
+                        store.setItem("securityArrs",JSON.stringify(securityArr))
+                    }
+                }else{
+                    //清空缓存
+                    that.clearSecuritys();
+                }
+            }else{
+                //清空缓存security
+                that.clearSecuritys();
             }
         }
 
@@ -4379,19 +4448,17 @@
                         if (schemaType=="array"){
                             minfo.type=schemaType;
                             var schItem=schemaObject["items"];
-                            if(schItem.hasOwnProperty("$ref")){
-                                var ref=schItem["$ref"];
-                                var className=$.getClassName(ref);
-                                minfo.schemaValue=className;
-                                var def=that.getDefinitionByName(className);
-                                if(def!=null){
-                                    minfo.def=def;
-                                    minfo.value=def.value;
-                                    if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                        minfo.description=$.replaceMultipLineStr(def.description);
-                                    }
+                            var ref=schItem["$ref"];
+                            var className=$.getClassName(ref);
+                            minfo.schemaValue=className;
+                            var def=that.getDefinitionByName(className);
+                            if(def!=null){
+                                minfo.def=def;
+                                minfo.value=def.value;
+                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                    minfo.description=$.replaceMultipLineStr(def.description);
                                 }
-                            } else{
+                            }else{
                                 minfo.schemaValue = schItem["type"]
                             }
                         }else{
@@ -5010,6 +5077,12 @@
                                         deepTreeTableResponseRefParameter(swpinfo,that,deepDef,refp);
                                     }
                                 }
+                            }else{
+                                if(p.type=="array"){
+                                    if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
+                                        refp.schemaValue=p.refType;
+                                    }
+                                }
                             }
                         })
                     }
@@ -5137,6 +5210,13 @@
                                     deepTreeTableRefParameter(refp,that,deepDef,apiInfo);
                                 }
                             }
+                        }else{
+                            if(p.type=="array"){
+                                if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
+                                    //修复针对schema类型的参数,显示类型为schema类型
+                                    refp.schemaValue=p.refType;
+                                }
+                            }
                         }
                     })
                 }
@@ -5187,8 +5267,7 @@
                             //判断是否有example
                             if(propobj.hasOwnProperty("example")) {
                                 propValue = propobj["example"];
-                            }
-                            if($.checkIsBasicType(type)){
+                            }else if($.checkIsBasicType(type)){
                                 propValue=$.getBasicTypeValue(type);
                                 //此处如果是object情况,需要判断additionalProperties属性的情况
                                 if (type=="object"){
@@ -5380,7 +5459,7 @@
 
     SwaggerBootstrapUi.prototype.welcome=function () {
         var that=this;
-        var msg="欢迎使用swagger-bootstrap-ui "+that.version+"~!\r\n\r\n欢迎任何形式的反馈issue,star,pr~~~~！祝君生活愉快:)~~~!\r\n\r\nGitHub:https://github.com/xiaoymin/Swagger-Bootstrap-UI\r\n\r\n码云Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui\r\n\r\nQQ群:608374991";
+        var msg="欢迎使用swagger-bootstrap-ui "+that.version+"~!\r\n\r\n欢迎任何形式的反馈issue,star,pr~~~~!\r\n\r\nGitHub:https://github.com/xiaoymin/Swagger-Bootstrap-UI\r\n\r\nGitee:https://gitee.com/xiaoym/swagger-bootstrap-ui\r\n\r\nQQ群:608374991";
         if(window.console){
             console.log(msg);
         }
@@ -5670,6 +5749,26 @@
         //treetable组件使用对象
         this.refTreetableparameters=new Array();
         this.responseCodes=new Array();
+        this.responseHttpObject=null;
+        /***
+         * 返回状态码为200的
+         */
+        this.getHttpSuccessCodeObject=function () {
+            if (this.responseHttpObject==null){
+                if(this.responseCodes!=null&&this.responseCodes.length>0){
+                    var _tmp=null;
+                    for(var i=0;i<this.responseCodes.length;i++){
+                        if(this.responseCodes[i].code=="200"){
+                            _tmp=this.responseCodes[i];
+                            break;
+                        }
+                    }
+                    this.responseHttpObject=_tmp;
+                }
+            }
+            return this.responseHttpObject;
+        }
+
         this.responseValue=null;
         this.responseJson=null;
         this.responseText=null;
@@ -5806,7 +5905,7 @@
         var paths = [];
         $aceJsonText = $aceJsonContent.find('.ace_text-layer');
         var acePrintMarginLeft = $aceJsonContent.find('.ace_print-margin').css('left');
-        $aceJsonText.children('.ace_line').each(function(i,item){
+        $aceJsonText.find('.ace_line').each(function(i,item){
             var $variable = $(item).children('.ace_variable');
             var key;
             if ($variable.length) {
