@@ -3716,7 +3716,8 @@
                                 spropObj.value=propValue;
                                 //判断是否有format,如果是integer,判断是64位还是32位
                                 if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
-                                    spropObj.type=spropObj.format;
+                                    //spropObj.type=spropObj.format;
+                                    spropObj.type += "("+spropObj.format+")";
                                 }
                                 //判断最终类型
                                 if(spropObj.refType!=null&&spropObj.refType!=""){
@@ -4675,7 +4676,8 @@
                                         spropObj.value=propValue;
                                         //判断是否有format,如果是integer,判断是64位还是32位
                                         if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
-                                            spropObj.type=spropObj.format;
+                                            //spropObj.type=spropObj.format;
+                                            spropObj.type += "("+ spropObj.format+")";
                                         }
                                         swud.properties.push(spropObj);
                                         defiTypeValue[property]=propValue;
