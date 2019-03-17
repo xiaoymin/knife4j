@@ -45,6 +45,7 @@
         this.layTabFilter="admin-pagetabs";
         this.version="1.9.2";
         this.requestOrigion="SwaggerBootstrapUi";
+        this.requestParameter={};//浏览器请求参数
         //个性化配置
         this.settings={
             showApiUrl:false,//接口api地址不显示
@@ -70,6 +71,7 @@
     SwaggerBootstrapUi.prototype.main=function () {
         var that=this;
         that.welcome();
+        that.initRequestParameters();
         that.initSettings();
         that.initWindowWidthAndHeight();
         that.initApis();
@@ -251,6 +253,112 @@
                 that.log(settings)
             }
         }
+        //此处判断浏览器参数
+        if(that.requestParameter!=null){
+            //开启请求参数缓存：cache=1
+            if(checkFiledExistsAndEqStr(that.requestParameter,"cache","1")){
+                that.settings.enableRequestCache=true;
+            }else{
+                that.settings.enableRequestCache=false;
+            }
+
+            //菜单Api地址显示
+            if(checkFiledExistsAndEqStr(that.requestParameter,"showMenuApi","1")){
+                that.settings.showApiUrl=true;
+            }else{
+                that.settings.showApiUrl=false;
+            }
+
+            //分组tag显示dsecription说明属性
+            if(checkFiledExistsAndEqStr(that.requestParameter,"showDes","1")){
+                that.settings.showTagStatus=true;
+            }else{
+                that.settings.showTagStatus=false;
+            }
+
+            //开启RequestMapping接口过滤,默认只显示
+            if(checkFiledExistsAndEqStr(that.requestParameter,"filterApi","1")){
+                that.settings.enableFilterMultipartApis=true;
+                //判断是否传了默认类型
+                if(that.requestParameter.hasOwnProperty("filterApiType")){
+                    var type=that.requestParameter["filterApiType"];
+                    //判断是否在默认类型中
+                    if(type!=undefined&&type!=null&&type!=""){
+                        var methodArr=["POST","GET","PUT","DELETE","PATCH","OPTIONS","HEAD"];
+                        if($.inArray(type.toUpperCase(),methodArr)!=-1){
+                            that.settings.enableFilterMultipartApiMethodType=type.toUpperCase();
+                        }
+                    }
+                }
+            }else{
+                that.settings.enableFilterMultipartApis=false;
+            }
+
+
+            //开启缓存已打开的api文档
+            if(checkFiledExistsAndEqStr(that.requestParameter,"cacheApi","1")){
+                that.settings.enableCacheOpenApiTable=true;
+            }else{
+                that.settings.enableCacheOpenApiTable=false;
+            }
+
+            //启用SwaggerBootstrapUi提供的增强功能
+            if(checkFiledExistsAndEqStr(that.requestParameter,"plus","1")){
+                that.settings.enableSwaggerBootstrapUi=true;
+            }else{
+                that.settings.enableSwaggerBootstrapUi=false;
+            }
+
+            that.log("参数初始化Settings结束")
+            that.log(that.settings);
+
+            if(window.localStorage) {
+                var store = window.localStorage;
+                var gbStr = JSON.stringify(that.settings);
+                store.setItem("SwaggerBootstrapUiSettings", gbStr);
+            }
+        }
+    }
+
+    function checkFiledExistsAndEqStr(object,filed,eq) {
+        var flag=false;
+        if(object.hasOwnProperty(filed)){
+            if(object[filed]==eq){
+                flag=true;
+            }
+        }
+        return flag;
+    }
+
+
+    /***
+     * 初始化请求参数
+     * 开启请求参数缓存：cache=1
+     * 菜单Api地址显示: showMenuApi=1
+     * 分组tag显示dsecription说明属性: showDes=1
+     * 开启RequestMapping接口过滤,默认只显示: filterApi=1  filterApiType=post
+     * 开启缓存已打开的api文档:cacheApi=1
+     * 启用SwaggerBootstrapUi提供的增强功能:plus=1
+     */
+    SwaggerBootstrapUi.prototype.initRequestParameters=function () {
+        var that=this;
+        var params=window.location.search;
+        if(params!=undefined&&params!=""){
+            var notQus=params.substr(1);
+            if(notQus!=undefined&&notQus!=null&&notQus!=""){
+                var pms=notQus.split("&");
+                for(var i=0;i<pms.length;i++){
+                    var pm=pms[i];
+                    if(pm!=undefined&&pm!=null&&pm!=""){
+                        var pmArr=pm.split("=");
+                        that.requestParameter[$.trim(pmArr[0])]=$.trim(pmArr[1]);
+                    }
+                }
+            }
+        }
+        that.log("请求参数========================================")
+        that.log(that.requestParameter)
+
     }
 
 
@@ -797,6 +905,8 @@
                 element.tabAdd(that.layTabFilter, tabObj);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
+                //显示地址
+                $("#useSettingsCopyOnUrl").val(that.getFastViewDocUrl());
                 //保存按钮功能
                 $("#btnSaveSettings").on("click",function (e) {
                     e.preventDefault();
@@ -894,17 +1004,65 @@
                         }
                         that.log(setts);
                         that.saveSettings(setts);
+                        that.settings=setts;
                         if (!cacheRequest){
                             that.disableStoreRequestParams();
                         }
+                        $("#useSettingsCopyOnUrl").val(that.getFastViewDocUrl());
                     }
                 })
+                //初始化复制功能
+                var clipboard = new ClipboardJS('#btnCopyUserSettingsUrl',{
+                    text:function () {
+                        return $("#useSettingsCopyOnUrl").val();
+                    }
+                });
+                clipboard.on('success', function(e) {
+                    layer.msg("复制成功")
+                });
+                clipboard.on('error', function(e) {
+                    layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                });
             }else{
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
             }
         },100)
 
+    }
+
+    /***
+     * 根据当前settings配置生成快速访问doc的访问地址
+     */
+    SwaggerBootstrapUi.prototype.getFastViewDocUrl=function () {
+        var that=this;
+        var location=window.location;
+        var baseUrl=location.origin+location.pathname;
+        var paramArr=new Array();
+        var sett=that.settings;
+        if(sett.showApiUrl){
+            paramArr.push("showMenuApi=1");
+        }
+        if(sett.showTagStatus){
+            paramArr.push("showDes=1");
+        }
+        if(sett.enableSwaggerBootstrapUi){
+            paramArr.push("plus=1");
+        }
+        if(sett.enableRequestCache){
+            paramArr.push("cache=1");
+        }
+        if(sett.enableCacheOpenApiTable){
+            paramArr.push("cacheApi=1");
+        }
+        if(sett.enableFilterMultipartApis){
+            paramArr.push("filterApi=1");
+            paramArr.push("filterApiType="+sett.enableFilterMultipartApiMethodType);
+        }
+        if(paramArr.length>0){
+            baseUrl+="?"+paramArr.join("&");
+        }
+        return baseUrl;
     }
 
     /***
@@ -5445,10 +5603,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
