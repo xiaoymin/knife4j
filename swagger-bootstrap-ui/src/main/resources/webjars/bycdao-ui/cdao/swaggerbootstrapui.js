@@ -1,12 +1,13 @@
 /***
- * swagger-bootstrap-ui v1.9.1
+ * swagger-bootstrap-ui v1.9.2 / 2019-3-17 13:40:34
+ *
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
  *
  * Author: xiaoyumin
  * email:xiaoymin@foxmail.com
- * Copyright: 2017 - 2018, xiaoyumin, http://www.xiaominfo.com/
+ * Copyright: 2017 - 2019, xiaoyumin, http://www.xiaominfo.com/
  *
  * Licensed under Apache License 2.0
  * https://github.com/xiaoymin/Swagger-Bootstrap-UI/blob/master/LICENSE
@@ -42,7 +43,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.9.1";
+        this.version="1.9.2";
         this.requestOrigion="SwaggerBootstrapUi";
         //个性化配置
         this.settings={
@@ -5259,90 +5260,92 @@
                     var defiTypeValue={};
                     for(var property in properties){
                         var propobj=properties[property];
-                        //默认string类型
-                        var propValue="";
-                        //判断是否有类型
-                        if(propobj.hasOwnProperty("type")){
-                            var type=propobj["type"];
-                            //判断是否有example
-                            if(propobj.hasOwnProperty("example")) {
-                                propValue = propobj["example"];
-                            }else if($.checkIsBasicType(type)){
-                                propValue=$.getBasicTypeValue(type);
-                                //此处如果是object情况,需要判断additionalProperties属性的情况
-                                if (type=="object"){
-                                    if(propobj.hasOwnProperty("additionalProperties")){
-                                        var addpties=propobj["additionalProperties"];
-                                        //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
-                                        if (addpties.hasOwnProperty("$ref")){
-                                            var adref=addpties["$ref"];
-                                            var regex=new RegExp("#/definitions/(.*)$","ig");
-                                            if(regex.test(adref)) {
-                                                var addrefType = RegExp.$1;
-                                                var addTempValue=null;
-                                                if(!flag){
-                                                    if($.inArray(addrefType,globalArr) == -1){
-                                                        addTempValue=that.findRefDefinition(addrefType,definitions,flag,globalArr);
-                                                        propValue={"additionalProperties1":addTempValue}
+                        if (!propobj.hasOwnProperty("readOnly")||!propobj["readOnly"]){
+                            //默认string类型
+                            var propValue="";
+                            //判断是否有类型
+                            if(propobj.hasOwnProperty("type")){
+                                var type=propobj["type"];
+                                //判断是否有example
+                                if(propobj.hasOwnProperty("example")) {
+                                    propValue = propobj["example"];
+                                }else if($.checkIsBasicType(type)){
+                                    propValue=$.getBasicTypeValue(type);
+                                    //此处如果是object情况,需要判断additionalProperties属性的情况
+                                    if (type=="object"){
+                                        if(propobj.hasOwnProperty("additionalProperties")){
+                                            var addpties=propobj["additionalProperties"];
+                                            //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+                                            if (addpties.hasOwnProperty("$ref")){
+                                                var adref=addpties["$ref"];
+                                                var regex=new RegExp("#/definitions/(.*)$","ig");
+                                                if(regex.test(adref)) {
+                                                    var addrefType = RegExp.$1;
+                                                    var addTempValue=null;
+                                                    if(!flag){
+                                                        if($.inArray(addrefType,globalArr) == -1){
+                                                            addTempValue=that.findRefDefinition(addrefType,definitions,flag,globalArr);
+                                                            propValue={"additionalProperties1":addTempValue}
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                }
-                            }else{
-                                if(type=="array"){
-                                    propValue=new Array();
-                                    var items=propobj["items"];
-                                    var ref=items["$ref"];
-                                    if(items.hasOwnProperty("type")){
-                                        if(items["type"]=="array"){
-                                            ref=items["items"]["$ref"];
-                                        }
-                                    }
-                                    var regex=new RegExp("#/definitions/(.*)$","ig");
-                                    if(regex.test(ref)){
-                                        var refType=RegExp.$1;
-                                        if (!flag){
-                                            //判断是否存在集合中
-                                            if($.inArray(refType,globalArr) != -1){
-                                                //存在
-                                                propValue.push({});
-                                            }else{
-                                                globalArr.push(definitionName);
-                                                propValue.push(that.findRefDefinition(refType,definitions,flag,globalArr));
+                                }else{
+                                    if(type=="array"){
+                                        propValue=new Array();
+                                        var items=propobj["items"];
+                                        var ref=items["$ref"];
+                                        if(items.hasOwnProperty("type")){
+                                            if(items["type"]=="array"){
+                                                ref=items["items"]["$ref"];
                                             }
                                         }
+                                        var regex=new RegExp("#/definitions/(.*)$","ig");
+                                        if(regex.test(ref)){
+                                            var refType=RegExp.$1;
+                                            if (!flag){
+                                                //判断是否存在集合中
+                                                if($.inArray(refType,globalArr) != -1){
+                                                    //存在
+                                                    propValue.push({});
+                                                }else{
+                                                    globalArr.push(definitionName);
+                                                    propValue.push(that.findRefDefinition(refType,definitions,flag,globalArr));
+                                                }
+                                            }
 
-                                    }
-                                }
-                            }
-
-                        }
-                        else{
-                            //存在ref
-                            if(propobj.hasOwnProperty("$ref")){
-                                var ref=propobj["$ref"];
-                                var regex=new RegExp("#/definitions/(.*)$","ig");
-                                if(regex.test(ref)) {
-                                    var refType = RegExp.$1;
-                                    //这里需要递归判断是否是本身,如果是,则退出递归查找
-                                    if(!flag){
-                                        if($.inArray(refType,globalArr) != -1){
-                                            //存在
-                                            propValue={};
-                                        }else{
-                                            globalArr.push(definitionName);
-                                            propValue=that.findRefDefinition(refType,definitions,flag,globalArr);
                                         }
                                     }
                                 }
-                            }else{
-                                propValue={};
-                            }
 
+                            }
+                            else{
+                                //存在ref
+                                if(propobj.hasOwnProperty("$ref")){
+                                    var ref=propobj["$ref"];
+                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                    if(regex.test(ref)) {
+                                        var refType = RegExp.$1;
+                                        //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                        if(!flag){
+                                            if($.inArray(refType,globalArr) != -1){
+                                                //存在
+                                                propValue={};
+                                            }else{
+                                                globalArr.push(definitionName);
+                                                propValue=that.findRefDefinition(refType,definitions,flag,globalArr);
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    propValue={};
+                                }
+
+                            }
+                            defiTypeValue[property]=propValue;
                         }
-                        defiTypeValue[property]=propValue;
                     }
                     defaultValue=defiTypeValue;
                 }else{
