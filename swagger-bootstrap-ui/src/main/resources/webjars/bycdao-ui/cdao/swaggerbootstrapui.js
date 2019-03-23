@@ -3772,6 +3772,7 @@
                                                         that.log("解析map-=完毕：")
                                                         that.log(propValue);
                                                         spropObj.type=addrefType;
+                                                        spropObj.refType=addrefType;
                                                     }
                                                 }else if(addpties.hasOwnProperty("items")){
                                                     //数组
