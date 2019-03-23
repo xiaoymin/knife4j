@@ -258,22 +258,16 @@
             //开启请求参数缓存：cache=1
             if(checkFiledExistsAndEqStr(that.requestParameter,"cache","1")){
                 that.settings.enableRequestCache=true;
-            }else{
-                that.settings.enableRequestCache=false;
             }
 
             //菜单Api地址显示
             if(checkFiledExistsAndEqStr(that.requestParameter,"showMenuApi","1")){
                 that.settings.showApiUrl=true;
-            }else{
-                that.settings.showApiUrl=false;
             }
 
             //分组tag显示dsecription说明属性
             if(checkFiledExistsAndEqStr(that.requestParameter,"showDes","1")){
                 that.settings.showTagStatus=true;
-            }else{
-                that.settings.showTagStatus=false;
             }
 
             //开启RequestMapping接口过滤,默认只显示
@@ -290,23 +284,17 @@
                         }
                     }
                 }
-            }else{
-                that.settings.enableFilterMultipartApis=false;
             }
 
 
             //开启缓存已打开的api文档
             if(checkFiledExistsAndEqStr(that.requestParameter,"cacheApi","1")){
                 that.settings.enableCacheOpenApiTable=true;
-            }else{
-                that.settings.enableCacheOpenApiTable=false;
             }
 
             //启用SwaggerBootstrapUi提供的增强功能
             if(checkFiledExistsAndEqStr(that.requestParameter,"plus","1")){
                 that.settings.enableSwaggerBootstrapUi=true;
-            }else{
-                that.settings.enableSwaggerBootstrapUi=false;
             }
 
             that.log("参数初始化Settings结束")
@@ -4619,7 +4607,27 @@
                                     minfo.description=$.replaceMultipLineStr(def.description);
                                 }
                             }else{
+                                var sty=schItem["type"];
                                 minfo.schemaValue = schItem["type"]
+                                //此处判断Array的类型,如果
+                                if(sty=="string"){
+                                    minfo.value="exmpale Value";
+                                }
+                                if(sty=="integer"){
+                                    //判断format
+                                    if(schItem["format"]!=undefined&&schItem["format"]!=null&&schItem["format"]=="int32"){
+                                        minfo.value=0;
+                                    }else{
+                                        minfo.value=1054661322597744642;
+                                    }
+                                }
+                                if(sty=="number"){
+                                    if(schItem["format"]!=undefined&&schItem["format"]!=null&&schItem["format"]=="double"){
+                                        minfo.value=0.5;
+                                    }else{
+                                        minfo.value=0;
+                                    }
+                                }
                             }
                         }else{
                             if (schemaObject.hasOwnProperty("$ref")){
