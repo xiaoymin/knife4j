@@ -3717,6 +3717,13 @@
                                 spropObj.originProperty=propobj;
                                 spropObj.type=$.propValue("type",propobj,"string");
                                 spropObj.description=$.propValue("description",propobj,"");
+
+                                //枚举类型,描述显示可用值
+                                if (propobj.hasOwnProperty("enum")) {
+                                    spropObj.description = (spropObj.description ? spropObj.description : "枚举类型")
+                                        + ",可用值:" + propobj.enum.join(",");
+                                }
+
                                 if(spropObj.type=="string"){
                                     spropObj.example=String($.propValue("example",propobj,""));
                                 }else{
