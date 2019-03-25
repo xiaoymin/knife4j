@@ -470,7 +470,7 @@
                                var newApiIcon="";
                                if (children.hasNew){
                                    //新接口
-                                   newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:32px;"></i>';
+                                   newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:17px;"></i>';
                                }
                                var depStyle=' ';
                                if(children.deprecated){
@@ -607,35 +607,42 @@
      */
     SwaggerBootstrapUi.prototype.setInstanceBasicPorperties=function (menu) {
         var that=this;
+        that.log("setInstanceBasicPorperties----------------------")
         var title="",description="",name="",version="",termsOfService="";
         var host=$.getValue(menu,"host","",true);
-        if (menu.hasOwnProperty("info")){
-            var info=menu.info;
-            title=$.getValue(info,"title","Swagger-Bootstrap-UI-前后端api接口文档",true);
-            description=$.getValue(info,"description","",true);
-            if(info.hasOwnProperty("contact")){
-                var contact=info["contact"];
-                name=$.getValue(contact,"name","",true);
+        if(menu!=null&&menu!=undefined){
+            if (menu.hasOwnProperty("info")){
+                var info=menu.info;
+                title=$.getValue(info,"title","Swagger-Bootstrap-UI-前后端api接口文档",true);
+                description=$.getValue(info,"description","",true);
+                if(info.hasOwnProperty("contact")){
+                    var contact=info["contact"];
+                    name=$.getValue(contact,"name","",true);
+                }
+                version=$.getValue(info,"version","",true);
+                termsOfService=$.getValue(info,"termsOfService","",true);
             }
-            version=$.getValue(info,"version","",true);
-            termsOfService=$.getValue(info,"termsOfService","",true);
+            that.currentInstance.host=host;
+            that.currentInstance.title=title;
+            that.currentInstance.description=description;
+            that.currentInstance.contact=name;
+            that.currentInstance.version=version;
+            that.currentInstance.termsOfService=termsOfService;
+            that.currentInstance.basePath=menu["basePath"];
+        }else{
+            title=that.currentInstance.title;
         }
-        that.currentInstance.host=host;
-        that.currentInstance.title=title;
-        that.currentInstance.description=description;
-        that.currentInstance.contact=name;
-        that.currentInstance.version=version;
-        that.currentInstance.termsOfService=termsOfService;
-        that.currentInstance.basePath=menu["basePath"];
-        //that.currentInstance.basePath="/";
         //设置doc.html文档的title属性
+        that.log(title)
         if(title!=null&&title!=undefined&&title!=""){
             $("title").html(title);
-            if(that.load==1){
+            $("#swaggerBootstrapHrefTitle").html(title);
+            $("#swaggerBootstrapHrefTitle").attr("href","javascript:void(0)")
+            /*if(that.load==1){
                 $("#swaggerBootstrapHrefTitle").html(title);
                 that.load=2;
                 $("#swaggerBootstrapHrefTitle").attr("href","javascript:void(0)")
-            }
+            }*/
         }else{
             $("#swaggerBootstrapHrefTitle").html(that.title);
             $("#swaggerBootstrapHrefTitle").attr("href",that.titleOfUrl)
@@ -724,6 +731,7 @@
                 }
             })
         }else{
+            that.setInstanceBasicPorperties(null);
             //更新当前缓存security
             that.updateCurrentInstanceSecuritys();
             that.createDescriptionElement();
@@ -843,7 +851,7 @@
                     var newApiIcon="";
                     if (children.hasNew){
                         //新接口
-                        newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:32px;"></i>';
+                        newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:17px;"></i>';
                     }
                     var depStyle=' ';
                     if(children.deprecated){
