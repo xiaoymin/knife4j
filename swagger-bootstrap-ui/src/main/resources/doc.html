@@ -517,6 +517,24 @@
                 <%}%>
 
                 <%if(fileform){%>
+
+                <% if(parameterSize>5){%>
+                <div class="panel-group" id="accordionParameters{{id}}">
+                    <div class="panel panel-default panel-default">
+                        <div class="panel-heading sbu-mul-request-param-header">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordionParameters{{id}}"
+                                   href="#SwaggerAccordingParameter{{id}}">
+                                    请求参数列表
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="SwaggerAccordingParameter{{id}}" class="panel-collapse collapse in">
+                            <div class="panel-body">
+
+                <% } %>
+
+
                 <form id="uploadForm{{id}}"  target="uploadIframe{{id}}" action="<%=url%>" type="" enctype="multipart/form-data" method="{{methodType}}">
                     <table class="">
                         <thead>
@@ -615,7 +633,29 @@
                 <div id="resptab{{id}}" class="tabs-container" >
                     <iframe name="uploadIframe{{id}}" id="uploadIframe{{id}}" style="border: none;height: 1%;display: none;"></iframe>
                 </div>
+                <% if(parameterSize>5){%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%}%>
+
                 <%}else{%>
+
+                <% if(parameterSize>5){%>
+                <div class="panel-group" id="accordionParameters{{id}}">
+                    <div class="panel panel-default panel-default">
+                        <div class="panel-heading sbu-mul-request-param-header">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordionParameters{{id}}"
+                                   href="#SwaggerAccordingParameter{{id}}">
+                                    请求参数列表
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="SwaggerAccordingParameter{{id}}" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                <% } %>
                     <table class="">
                         <thead>
                         <tr>
@@ -712,6 +752,12 @@
                         <%}}%>
                         </tbody>
                     </table>
+                    <% if(parameterSize>5){%>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%}%>
                 <%}%>
 
                 <%}%>

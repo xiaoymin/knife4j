@@ -1768,9 +1768,11 @@
         //赋值全局参数
         //apiInfo.globalParameters=that.currentInstance.globalParameters;
         //恢复原始show状态
+        var paramSize=0;
         if(apiInfo.parameters!=null&&apiInfo.parameters.length>0){
             $.each(apiInfo.parameters,function (i, param) {
               param.show=true;
+              paramSize+=1;
             })
             //判断localStorage对象中是否缓存有参数信息
             var cacheStoreInstance=that.getCacheStoreInstance();
@@ -1810,6 +1812,7 @@
 
         apiInfo.globalParameters=that.getGlobalParameters();
         var debugContentId="DebugDoc"+apiInfo.id;
+        var globalParamSize=0;
         //判断全局参数中和parameter对比，是否存在相同参数，如果存在，判断是否parameters参数有值，如果后端有值,则globalParams中的参数值不显示
         if(apiInfo.globalParameters!=null&&apiInfo.globalParameters.length>0){
             $.each(apiInfo.globalParameters,function (i, global) {
@@ -1824,6 +1827,7 @@
                             if(param.txtValue!=undefined&&param.txtValue!=null&&param.txtValue!=""){
                                 global.show=false;
                             }else{
+                                globalParamSize+=1;
                                 //反之，param不显示
                                 param.show=false;
                             }
@@ -1833,8 +1837,9 @@
             })
         }
 
-
-
+        paramSize+=globalParamSize;
+        //赋值参数值数量,如果参数超过5个,则显示折叠框进行折叠
+        apiInfo.parameterSize=paramSize;
         var html = template('DebugScript', apiInfo);
         $("#"+debugContentId).html("").html(html)
         //string类型的arr参数动态添加事件
@@ -1958,6 +1963,11 @@
 
         btnRequest.on("click",function (e) {
             e.preventDefault();
+            //判断当前参数数量,如果超过5个,自动折叠参数
+            if(apiInfo.parameterSize>5){
+                var smodelAccording="#SwaggerAccordingParameter"+apiInfo.id;
+                $(smodelAccording).collapse('hide');
+            }
             var tabsContentHeight=$("#tabsContent"+apiKeyId).height();
             //that.log($("#tabsContent"+apiKeyId))
             var basicContentHeight=$("#DebugScriptBasic"+apiKeyId).height();
@@ -5921,6 +5931,8 @@
         //存储请求类型，form|row|urlencode
         this.contentValue="raw";
         this.parameters=new Array();
+        //参数数量
+        this.parameterSize=0;
         //请求json示例
         this.requestValue=null;
         //针对parameter属性有引用类型的参数,继续以table 的形式展现
