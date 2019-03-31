@@ -2694,6 +2694,10 @@
                 resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
             }else {
                 resp2Html=$("<img  src='"+downloadurl+"'>");
+                setTimeout(function () {
+                    var rph=resp1.find("img:eq(0)").height()+30;
+                    resp1.css({"height":rph+"px"})
+                },500)
             }
 
             resp2.html("");
@@ -2766,6 +2770,11 @@
                 resp2Html=$("<a style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
             }else {
                 resp2Html=$("<img   src='"+downloadurl+"'>");
+                setTimeout(function () {
+                    var rph=resp1.find("img:eq(0)").height()+30;
+                    resp1.css({"height":rph+"px"})
+                },500)
+
             }
 
             resp1.html("");
@@ -3735,6 +3744,14 @@
                                 spropObj.originProperty=propobj;
                                 spropObj.type=$.propValue("type",propobj,"string");
                                 spropObj.description=$.propValue("description",propobj,"");
+                                //判断是否包含枚举
+                                if(propobj.hasOwnProperty("enum")){
+                                    spropObj.enum=propobj["enum"];
+                                    if(spropObj.description!=""){
+                                        spropObj.description+=",";
+                                    }
+                                    spropObj.description=spropObj.description+"可用值:"+spropObj.enum.join(",");
+                                }
                                 if(spropObj.type=="string"){
                                     spropObj.example=String($.propValue("example",propobj,""));
                                 }else{
@@ -5894,6 +5911,8 @@
         this.property=null;
         //原始参数
         this.originProperty=null;
+        //是否枚举
+        this.enum=null;
     }
     /***
      * swagger的tag标签
