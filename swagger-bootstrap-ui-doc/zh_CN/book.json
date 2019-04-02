@@ -5,7 +5,6 @@
     "plugins": [
         "github",
         "editlink",
-        "prism",
         "-highlight",
         "prism-themes",
         "splitter",
@@ -43,7 +42,7 @@
             "url": "https://github.com/xiaoymin/Swagger-Bootstrap-UI"
         },
         "editlink": {
-            "base": "https://gitee.com/xiaoym/swagger-bootstrap-ui-doc/blob/master/zh_CN",
+            "base": "https://gitee.com/xiaoym/swagger-bootstrap-ui/blob/master/swagger-bootstrap-ui-doc/zh_CN/",
             "label": "编辑本页面"
         },
         "theme-default": {
