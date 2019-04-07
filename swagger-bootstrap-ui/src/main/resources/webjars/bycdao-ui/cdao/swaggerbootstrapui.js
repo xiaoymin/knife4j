@@ -19,7 +19,7 @@
 
     var SwaggerBootstrapUi=function (options) {
         //swagger请求api地址
-        this.url="swagger-resources";
+        this.url=options.url||"swagger-resources";
         //文档id
         this.docId="content";
         this.title="swagger-bootstrap-ui";
@@ -573,6 +573,10 @@
                     g.extUrl=extBasePath+that.extUrl+"?group="+group.name;
                     if(that.validateExtUrl==""){
                         that.validateExtUrl=g.extUrl;
+                    }
+                    //判断当前分组url是否存在basePath
+                    if(group.basePath!=null&&group.basePath!=undefined&&group.basePath!=""){
+                        g.baseUrl=group.basePath;
                     }
                     //赋值查找缓存的id
                     if (that.cacheApis.length>0){
@@ -4568,6 +4572,10 @@
         var newurl=newfullPath.substring(newfullPath.indexOf("/"));
         //that.log("新的url:"+newurl)
         newurl=newurl.replace("//","/");
+        //判断应用实例的baseurl
+        if(that.currentInstance.baseUrl!=""&&that.currentInstance.baseUrl!="/"){
+            newurl=that.currentInstance.baseUrl+newurl;
+        }
         var startApiTime=new Date().getTime();
         swpinfo.showUrl=newurl;
         //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
@@ -5769,6 +5777,8 @@
         this.groupVersion=version;
         //分组url请求实例
         this.basePath="";
+        //使用nginx,反向代理服务名称
+        this.baseUrl="";
         this.host="";
         this.swagger="";
         this.description="";
