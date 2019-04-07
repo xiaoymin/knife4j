@@ -47,7 +47,11 @@
         },
         "theme-default": {
             "showLevel": true
-        }
+        },
+		"ghcomment": {
+			"owner": "xiaoymin",
+			"repo": "blog-comments"
+		}
     },
     "styles": {
         "website": "styles/website.css"
