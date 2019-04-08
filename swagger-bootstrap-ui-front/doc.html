@@ -8,39 +8,39 @@
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Swagger-Bootstrap-UI</title>
-    <link rel="shortcut icon" href="images/api.ico"/>
-    <script type="text/javascript" src="jquery/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="ace/bootstrap.min.js"></script>
-    <script type="text/javascript" src="ace/ace.min.js"></script>
+    <link rel="shortcut icon" href="webjars/bycdao-ui/images/api.ico"/>
+    <script type="text/javascript" src="webjars/bycdao-ui/jquery/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="webjars/bycdao-ui/ace/bootstrap.min.js"></script>
+    <script type="text/javascript" src="webjars/bycdao-ui/ace/ace.min.js"></script>
 
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="jquery/clipboard/clipboard.min.js"></script>
-    <script type="text/javascript" src="layer3.0.3/layer.js"></script>
-    <link rel="stylesheet" href="layer3.0.3/skin/default/layer.css" />
-    <link rel="stylesheet" href="highlight/styles/docco.css" />
-    <link rel="stylesheet" href="highlight/styles/style.css" />
-    <link rel="stylesheet" href="highlight/styles/default.css" />
-    <script src="highlight/highlight.pack.js"></script>
-    <script src="jquery/marked.js"></script>
-    <link rel="stylesheet" href="cdao/swaggerbootstrapui.css?v=1.9.1" />
-    <link rel="stylesheet" type="text/css" href="iconfont/iconfont.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="webjars/bycdao-ui/jquery/clipboard/clipboard.min.js"></script>
+    <script type="text/javascript" src="webjars/bycdao-ui/layer3.0.3/layer.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/layer3.0.3/skin/default/layer.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/docco.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/style.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/default.css" />
+    <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
+    <script src="webjars/bycdao-ui/jquery/marked.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css?v=1.9.2" />
+    <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css" />
 
-    <link rel="stylesheet" href="layui/css/layui.css"  media="all">
-    <link rel="stylesheet" href="ext/sbuadmin.css" media="all">
+    <link rel="stylesheet" href="webjars/bycdao-ui/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="webjars/bycdao-ui/ext/sbuadmin.css" media="all">
 
-    <script src="jquery/template-web.js"></script>
+    <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
 
-    <script src="jquery/axios.min.js"></script>
-    <link rel="stylesheet" href="bootstrap-tabx/css/bootstrap-tabs-x.min.css" />
-    <script src="bootstrap-tabx/js/bootstrap-tabs-x.min.js"></script>
+    <script src="webjars/bycdao-ui/jquery/axios.min.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap-tabx/css/bootstrap-tabs-x.min.css" />
+    <script src="webjars/bycdao-ui/bootstrap-tabx/js/bootstrap-tabs-x.min.js"></script>
 
-    <script src="layui/layui.js" charset="utf-8"></script>
+    <script src="webjars/bycdao-ui/layui/layui.js" charset="utf-8"></script>
 
-    <script src="ace-editor/ace.js" type="text/javascript"></script>
+    <script src="webjars/bycdao-ui/ace-editor/ace.js" type="text/javascript"></script>
 
-    <script src="jquery/showdown.min.js"></script>
-    <script src="jquery/async.min.js"></script>
-    <script src="jquery/md5.min.js"></script>
+    <script src="webjars/bycdao-ui/jquery/showdown.min.js"></script>
+    <script src="webjars/bycdao-ui/jquery/async.min.js"></script>
+    <script src="webjars/bycdao-ui/jquery/md5.min.js"></script>
     <style type="text/css">
         #container {
             width: 100%;
@@ -517,6 +517,24 @@
                 <%}%>
 
                 <%if(fileform){%>
+
+                <% if(parameterSize>5){%>
+                <div class="panel-group" id="accordionParameters{{id}}">
+                    <div class="panel panel-default panel-default">
+                        <div class="panel-heading sbu-mul-request-param-header">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordionParameters{{id}}"
+                                   href="#SwaggerAccordingParameter{{id}}">
+                                    请求参数列表
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="SwaggerAccordingParameter{{id}}" class="panel-collapse collapse in">
+                            <div class="panel-body">
+
+                <% } %>
+
+
                 <form id="uploadForm{{id}}"  target="uploadIframe{{id}}" action="<%=url%>" type="" enctype="multipart/form-data" method="{{methodType}}">
                     <table class="">
                         <thead>
@@ -615,7 +633,29 @@
                 <div id="resptab{{id}}" class="tabs-container" >
                     <iframe name="uploadIframe{{id}}" id="uploadIframe{{id}}" style="border: none;height: 1%;display: none;"></iframe>
                 </div>
+                <% if(parameterSize>5){%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%}%>
+
                 <%}else{%>
+
+                <% if(parameterSize>5){%>
+                <div class="panel-group" id="accordionParameters{{id}}">
+                    <div class="panel panel-default panel-default">
+                        <div class="panel-heading sbu-mul-request-param-header">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordionParameters{{id}}"
+                                   href="#SwaggerAccordingParameter{{id}}">
+                                    请求参数列表
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="SwaggerAccordingParameter{{id}}" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                <% } %>
                     <table class="">
                         <thead>
                         <tr>
@@ -712,6 +752,12 @@
                         <%}}%>
                         </tbody>
                     </table>
+                    <% if(parameterSize>5){%>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%}%>
                 <%}%>
 
                 <%}%>
@@ -866,6 +912,7 @@
                         {{/if}}
                     </div>
                     <textarea rows="10" cols="10" id="docText{{id}}" style="display: none;">
+## {{ summary }}
 
 **接口地址** `{{showUrl}}`
 
@@ -1170,12 +1217,30 @@
                         <button class="btn btn-primary" type="button" id="btnSaveSettings">保存内容</button>
                     </div>
                 </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div style="margin: 0px auto;width: 80%;margin-top: 5px;">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h5>通过 <kbd>ctrl + c</kbd> 复制以下地址,打开浏览器快速个性化设置</h5></div>
+            <div class="panel-body" style="height: 65px;" >
+                <div class="col-lg-12" style="margin-top:10px;">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for..."  id="useSettingsCopyOnUrl" readonly="readonly">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="btnCopyUserSettingsUrl">复制</button>
+                        </span>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </script>
 
-<script type="text/javascript" src="cdao/swaggerbootstrapui.js?v=1.9.1"></script>
+<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js?v=1.9.2"></script>
 <script type="text/javascript">
     $(function () {
         /***
@@ -1253,6 +1318,7 @@
                 url:"/json/group.json"
             });
         });
+    })
     })
 </script>
 </body>

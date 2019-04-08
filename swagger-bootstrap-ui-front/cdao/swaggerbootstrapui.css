@@ -68,6 +68,9 @@ html {
 .sbu-param-header{
     /* color: #0d5aa7;*/
 }
+.sbu-mul-request-param-header{
+    padding:1px 3px;
+}
 
 .sbu-param-body{
     /*color: #7f0055;*/

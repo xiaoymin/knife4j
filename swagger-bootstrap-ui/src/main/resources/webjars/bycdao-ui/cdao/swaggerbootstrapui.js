@@ -1,12 +1,13 @@
 /***
- * swagger-bootstrap-ui v1.9.1
+ * swagger-bootstrap-ui v1.9.2 / 2019-3-17 13:40:34
+ *
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
  * Swagger enhanced UI component package
  *
  * Author: xiaoyumin
  * email:xiaoymin@foxmail.com
- * Copyright: 2017 - 2018, xiaoyumin, http://www.xiaominfo.com/
+ * Copyright: 2017 - 2019, xiaoyumin, http://www.xiaominfo.com/
  *
  * Licensed under Apache License 2.0
  * https://github.com/xiaoymin/Swagger-Bootstrap-UI/blob/master/LICENSE
@@ -18,7 +19,7 @@
 
     var SwaggerBootstrapUi=function (options) {
         //swagger请求api地址
-        this.url="swagger-resources";
+        this.url=options.url||"swagger-resources";
         //文档id
         this.docId="content";
         this.title="swagger-bootstrap-ui";
@@ -42,8 +43,9 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.9.1";
+        this.version="1.9.2";
         this.requestOrigion="SwaggerBootstrapUi";
+        this.requestParameter={};//浏览器请求参数
         //个性化配置
         this.settings={
             showApiUrl:false,//接口api地址不显示
@@ -69,6 +71,7 @@
     SwaggerBootstrapUi.prototype.main=function () {
         var that=this;
         that.welcome();
+        that.initRequestParameters();
         that.initSettings();
         that.initWindowWidthAndHeight();
         that.initApis();
@@ -250,6 +253,100 @@
                 that.log(settings)
             }
         }
+        //此处判断浏览器参数
+        if(that.requestParameter!=null){
+            //开启请求参数缓存：cache=1
+            if(checkFiledExistsAndEqStr(that.requestParameter,"cache","1")){
+                that.settings.enableRequestCache=true;
+            }
+
+            //菜单Api地址显示
+            if(checkFiledExistsAndEqStr(that.requestParameter,"showMenuApi","1")){
+                that.settings.showApiUrl=true;
+            }
+
+            //分组tag显示dsecription说明属性
+            if(checkFiledExistsAndEqStr(that.requestParameter,"showDes","1")){
+                that.settings.showTagStatus=true;
+            }
+
+            //开启RequestMapping接口过滤,默认只显示
+            if(checkFiledExistsAndEqStr(that.requestParameter,"filterApi","1")){
+                that.settings.enableFilterMultipartApis=true;
+                //判断是否传了默认类型
+                if(that.requestParameter.hasOwnProperty("filterApiType")){
+                    var type=that.requestParameter["filterApiType"];
+                    //判断是否在默认类型中
+                    if(type!=undefined&&type!=null&&type!=""){
+                        var methodArr=["POST","GET","PUT","DELETE","PATCH","OPTIONS","HEAD"];
+                        if($.inArray(type.toUpperCase(),methodArr)!=-1){
+                            that.settings.enableFilterMultipartApiMethodType=type.toUpperCase();
+                        }
+                    }
+                }
+            }
+
+
+            //开启缓存已打开的api文档
+            if(checkFiledExistsAndEqStr(that.requestParameter,"cacheApi","1")){
+                that.settings.enableCacheOpenApiTable=true;
+            }
+
+            //启用SwaggerBootstrapUi提供的增强功能
+            if(checkFiledExistsAndEqStr(that.requestParameter,"plus","1")){
+                that.settings.enableSwaggerBootstrapUi=true;
+            }
+
+            that.log("参数初始化Settings结束")
+            that.log(that.settings);
+
+            if(window.localStorage) {
+                var store = window.localStorage;
+                var gbStr = JSON.stringify(that.settings);
+                store.setItem("SwaggerBootstrapUiSettings", gbStr);
+            }
+        }
+    }
+
+    function checkFiledExistsAndEqStr(object,filed,eq) {
+        var flag=false;
+        if(object.hasOwnProperty(filed)){
+            if(object[filed]==eq){
+                flag=true;
+            }
+        }
+        return flag;
+    }
+
+
+    /***
+     * 初始化请求参数
+     * 开启请求参数缓存：cache=1
+     * 菜单Api地址显示: showMenuApi=1
+     * 分组tag显示dsecription说明属性: showDes=1
+     * 开启RequestMapping接口过滤,默认只显示: filterApi=1  filterApiType=post
+     * 开启缓存已打开的api文档:cacheApi=1
+     * 启用SwaggerBootstrapUi提供的增强功能:plus=1
+     */
+    SwaggerBootstrapUi.prototype.initRequestParameters=function () {
+        var that=this;
+        var params=window.location.search;
+        if(params!=undefined&&params!=""){
+            var notQus=params.substr(1);
+            if(notQus!=undefined&&notQus!=null&&notQus!=""){
+                var pms=notQus.split("&");
+                for(var i=0;i<pms.length;i++){
+                    var pm=pms[i];
+                    if(pm!=undefined&&pm!=null&&pm!=""){
+                        var pmArr=pm.split("=");
+                        that.requestParameter[$.trim(pmArr[0])]=$.trim(pmArr[1]);
+                    }
+                }
+            }
+        }
+        that.log("请求参数========================================")
+        that.log(that.requestParameter)
+
     }
 
 
@@ -373,7 +470,7 @@
                                var newApiIcon="";
                                if (children.hasNew){
                                    //新接口
-                                   newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:32px;"></i>';
+                                   newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:17px;"></i>';
                                }
                                var depStyle=' ';
                                if(children.deprecated){
@@ -477,6 +574,10 @@
                     if(that.validateExtUrl==""){
                         that.validateExtUrl=g.extUrl;
                     }
+                    //判断当前分组url是否存在basePath
+                    if(group.basePath!=null&&group.basePath!=undefined&&group.basePath!=""){
+                        g.baseUrl=group.basePath;
+                    }
                     //赋值查找缓存的id
                     if (that.cacheApis.length>0){
                         var cainstance=null;
@@ -510,35 +611,42 @@
      */
     SwaggerBootstrapUi.prototype.setInstanceBasicPorperties=function (menu) {
         var that=this;
+        that.log("setInstanceBasicPorperties----------------------")
         var title="",description="",name="",version="",termsOfService="";
         var host=$.getValue(menu,"host","",true);
-        if (menu.hasOwnProperty("info")){
-            var info=menu.info;
-            title=$.getValue(info,"title","Swagger-Bootstrap-UI-前后端api接口文档",true);
-            description=$.getValue(info,"description","",true);
-            if(info.hasOwnProperty("contact")){
-                var contact=info["contact"];
-                name=$.getValue(contact,"name","",true);
+        if(menu!=null&&menu!=undefined){
+            if (menu.hasOwnProperty("info")){
+                var info=menu.info;
+                title=$.getValue(info,"title","Swagger-Bootstrap-UI-前后端api接口文档",true);
+                description=$.getValue(info,"description","",true);
+                if(info.hasOwnProperty("contact")){
+                    var contact=info["contact"];
+                    name=$.getValue(contact,"name","",true);
+                }
+                version=$.getValue(info,"version","",true);
+                termsOfService=$.getValue(info,"termsOfService","",true);
             }
-            version=$.getValue(info,"version","",true);
-            termsOfService=$.getValue(info,"termsOfService","",true);
+            that.currentInstance.host=host;
+            that.currentInstance.title=title;
+            that.currentInstance.description=description;
+            that.currentInstance.contact=name;
+            that.currentInstance.version=version;
+            that.currentInstance.termsOfService=termsOfService;
+            that.currentInstance.basePath=menu["basePath"];
+        }else{
+            title=that.currentInstance.title;
         }
-        that.currentInstance.host=host;
-        that.currentInstance.title=title;
-        that.currentInstance.description=description;
-        that.currentInstance.contact=name;
-        that.currentInstance.version=version;
-        that.currentInstance.termsOfService=termsOfService;
-        that.currentInstance.basePath=menu["basePath"];
-        //that.currentInstance.basePath="/";
         //设置doc.html文档的title属性
+        that.log(title)
         if(title!=null&&title!=undefined&&title!=""){
             $("title").html(title);
-            if(that.load==1){
+            $("#swaggerBootstrapHrefTitle").html(title);
+            $("#swaggerBootstrapHrefTitle").attr("href","javascript:void(0)")
+            /*if(that.load==1){
                 $("#swaggerBootstrapHrefTitle").html(title);
                 that.load=2;
                 $("#swaggerBootstrapHrefTitle").attr("href","javascript:void(0)")
-            }
+            }*/
         }else{
             $("#swaggerBootstrapHrefTitle").html(that.title);
             $("#swaggerBootstrapHrefTitle").attr("href",that.titleOfUrl)
@@ -627,6 +735,7 @@
                 }
             })
         }else{
+            that.setInstanceBasicPorperties(null);
             //更新当前缓存security
             that.updateCurrentInstanceSecuritys();
             that.createDescriptionElement();
@@ -746,7 +855,7 @@
                     var newApiIcon="";
                     if (children.hasNew){
                         //新接口
-                        newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:32px;"></i>';
+                        newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:17px;"></i>';
                     }
                     var depStyle=' ';
                     if(children.deprecated){
@@ -796,6 +905,8 @@
                 element.tabAdd(that.layTabFilter, tabObj);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
+                //显示地址
+                $("#useSettingsCopyOnUrl").val(that.getFastViewDocUrl());
                 //保存按钮功能
                 $("#btnSaveSettings").on("click",function (e) {
                     e.preventDefault();
@@ -893,17 +1004,65 @@
                         }
                         that.log(setts);
                         that.saveSettings(setts);
+                        that.settings=setts;
                         if (!cacheRequest){
                             that.disableStoreRequestParams();
                         }
+                        $("#useSettingsCopyOnUrl").val(that.getFastViewDocUrl());
                     }
                 })
+                //初始化复制功能
+                var clipboard = new ClipboardJS('#btnCopyUserSettingsUrl',{
+                    text:function () {
+                        return $("#useSettingsCopyOnUrl").val();
+                    }
+                });
+                clipboard.on('success', function(e) {
+                    layer.msg("复制成功")
+                });
+                clipboard.on('error', function(e) {
+                    layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                });
             }else{
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
             }
         },100)
 
+    }
+
+    /***
+     * 根据当前settings配置生成快速访问doc的访问地址
+     */
+    SwaggerBootstrapUi.prototype.getFastViewDocUrl=function () {
+        var that=this;
+        var location=window.location;
+        var baseUrl=location.origin+location.pathname;
+        var paramArr=new Array();
+        var sett=that.settings;
+        if(sett.showApiUrl){
+            paramArr.push("showMenuApi=1");
+        }
+        if(sett.showTagStatus){
+            paramArr.push("showDes=1");
+        }
+        if(sett.enableSwaggerBootstrapUi){
+            paramArr.push("plus=1");
+        }
+        if(sett.enableRequestCache){
+            paramArr.push("cache=1");
+        }
+        if(sett.enableCacheOpenApiTable){
+            paramArr.push("cacheApi=1");
+        }
+        if(sett.enableFilterMultipartApis){
+            paramArr.push("filterApi=1");
+            paramArr.push("filterApiType="+sett.enableFilterMultipartApiMethodType);
+        }
+        if(paramArr.length>0){
+            baseUrl+="?"+paramArr.join("&");
+        }
+        return baseUrl;
     }
 
     /***
@@ -1613,9 +1772,11 @@
         //赋值全局参数
         //apiInfo.globalParameters=that.currentInstance.globalParameters;
         //恢复原始show状态
+        var paramSize=0;
         if(apiInfo.parameters!=null&&apiInfo.parameters.length>0){
             $.each(apiInfo.parameters,function (i, param) {
               param.show=true;
+              paramSize+=1;
             })
             //判断localStorage对象中是否缓存有参数信息
             var cacheStoreInstance=that.getCacheStoreInstance();
@@ -1655,6 +1816,7 @@
 
         apiInfo.globalParameters=that.getGlobalParameters();
         var debugContentId="DebugDoc"+apiInfo.id;
+        var globalParamSize=0;
         //判断全局参数中和parameter对比，是否存在相同参数，如果存在，判断是否parameters参数有值，如果后端有值,则globalParams中的参数值不显示
         if(apiInfo.globalParameters!=null&&apiInfo.globalParameters.length>0){
             $.each(apiInfo.globalParameters,function (i, global) {
@@ -1669,6 +1831,7 @@
                             if(param.txtValue!=undefined&&param.txtValue!=null&&param.txtValue!=""){
                                 global.show=false;
                             }else{
+                                globalParamSize+=1;
                                 //反之，param不显示
                                 param.show=false;
                             }
@@ -1678,8 +1841,9 @@
             })
         }
 
-
-
+        paramSize+=globalParamSize;
+        //赋值参数值数量,如果参数超过5个,则显示折叠框进行折叠
+        apiInfo.parameterSize=paramSize;
         var html = template('DebugScript', apiInfo);
         $("#"+debugContentId).html("").html(html)
         //string类型的arr参数动态添加事件
@@ -1803,6 +1967,11 @@
 
         btnRequest.on("click",function (e) {
             e.preventDefault();
+            //判断当前参数数量,如果超过5个,自动折叠参数
+            if(apiInfo.parameterSize>5){
+                var smodelAccording="#SwaggerAccordingParameter"+apiInfo.id;
+                $(smodelAccording).collapse('hide');
+            }
             var tabsContentHeight=$("#tabsContent"+apiKeyId).height();
             //that.log($("#tabsContent"+apiKeyId))
             var basicContentHeight=$("#DebugScriptBasic"+apiKeyId).height();
@@ -2529,6 +2698,10 @@
                 resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
             }else {
                 resp2Html=$("<img  src='"+downloadurl+"'>");
+                setTimeout(function () {
+                    var rph=resp1.find("img:eq(0)").height()+30;
+                    resp1.css({"height":rph+"px"})
+                },500)
             }
 
             resp2.html("");
@@ -2601,6 +2774,11 @@
                 resp2Html=$("<a style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
             }else {
                 resp2Html=$("<img   src='"+downloadurl+"'>");
+                setTimeout(function () {
+                    var rph=resp1.find("img:eq(0)").height()+30;
+                    resp1.css({"height":rph+"px"})
+                },500)
+
             }
 
             resp1.html("");
@@ -3570,6 +3748,14 @@
                                 spropObj.originProperty=propobj;
                                 spropObj.type=$.propValue("type",propobj,"string");
                                 spropObj.description=$.propValue("description",propobj,"");
+                                //判断是否包含枚举
+                                if(propobj.hasOwnProperty("enum")){
+                                    spropObj.enum=propobj["enum"];
+                                    if(spropObj.description!=""){
+                                        spropObj.description+=",";
+                                    }
+                                    spropObj.description=spropObj.description+"可用值:"+spropObj.enum.join(",");
+                                }
                                 if(spropObj.type=="string"){
                                     spropObj.example=String($.propValue("example",propobj,""));
                                 }else{
@@ -3625,6 +3811,7 @@
                                                         that.log("解析map-=完毕：")
                                                         that.log(propValue);
                                                         spropObj.type=addrefType;
+                                                        spropObj.refType=addrefType;
                                                     }
                                                 }else if(addpties.hasOwnProperty("items")){
                                                     //数组
@@ -3715,7 +3902,8 @@
                                 spropObj.value=propValue;
                                 //判断是否有format,如果是integer,判断是64位还是32位
                                 if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
-                                    spropObj.type=spropObj.format;
+                                    //spropObj.type=spropObj.format;
+                                    spropObj.type += "("+spropObj.format+")";
                                 }
                                 //判断最终类型
                                 if(spropObj.refType!=null&&spropObj.refType!=""){
@@ -4384,6 +4572,10 @@
         var newurl=newfullPath.substring(newfullPath.indexOf("/"));
         //that.log("新的url:"+newurl)
         newurl=newurl.replace("//","/");
+        //判断应用实例的baseurl
+        if(that.currentInstance.baseUrl!=""&&that.currentInstance.baseUrl!="/"){
+            newurl=that.currentInstance.baseUrl+newurl;
+        }
         var startApiTime=new Date().getTime();
         swpinfo.showUrl=newurl;
         //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
@@ -4459,7 +4651,27 @@
                                     minfo.description=$.replaceMultipLineStr(def.description);
                                 }
                             }else{
+                                var sty=schItem["type"];
                                 minfo.schemaValue = schItem["type"]
+                                //此处判断Array的类型,如果
+                                if(sty=="string"){
+                                    minfo.value="exmpale Value";
+                                }
+                                if(sty=="integer"){
+                                    //判断format
+                                    if(schItem["format"]!=undefined&&schItem["format"]!=null&&schItem["format"]=="int32"){
+                                        minfo.value=0;
+                                    }else{
+                                        minfo.value=1054661322597744642;
+                                    }
+                                }
+                                if(sty=="number"){
+                                    if(schItem["format"]!=undefined&&schItem["format"]!=null&&schItem["format"]=="double"){
+                                        minfo.value=0.5;
+                                    }else{
+                                        minfo.value=0;
+                                    }
+                                }
                             }
                         }else{
                             if (schemaObject.hasOwnProperty("$ref")){
@@ -4674,7 +4886,8 @@
                                         spropObj.value=propValue;
                                         //判断是否有format,如果是integer,判断是64位还是32位
                                         if(spropObj.format!=null&&spropObj.format!=undefined&&spropObj.format!=""){
-                                            spropObj.type=spropObj.format;
+                                            //spropObj.type=spropObj.format;
+                                            spropObj.type += "("+ spropObj.format+")";
                                         }
                                         swud.properties.push(spropObj);
                                         defiTypeValue[property]=propValue;
@@ -5259,90 +5472,92 @@
                     var defiTypeValue={};
                     for(var property in properties){
                         var propobj=properties[property];
-                        //默认string类型
-                        var propValue="";
-                        //判断是否有类型
-                        if(propobj.hasOwnProperty("type")){
-                            var type=propobj["type"];
-                            //判断是否有example
-                            if(propobj.hasOwnProperty("example")) {
-                                propValue = propobj["example"];
-                            }else if($.checkIsBasicType(type)){
-                                propValue=$.getBasicTypeValue(type);
-                                //此处如果是object情况,需要判断additionalProperties属性的情况
-                                if (type=="object"){
-                                    if(propobj.hasOwnProperty("additionalProperties")){
-                                        var addpties=propobj["additionalProperties"];
-                                        //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
-                                        if (addpties.hasOwnProperty("$ref")){
-                                            var adref=addpties["$ref"];
-                                            var regex=new RegExp("#/definitions/(.*)$","ig");
-                                            if(regex.test(adref)) {
-                                                var addrefType = RegExp.$1;
-                                                var addTempValue=null;
-                                                if(!flag){
-                                                    if($.inArray(addrefType,globalArr) == -1){
-                                                        addTempValue=that.findRefDefinition(addrefType,definitions,flag,globalArr);
-                                                        propValue={"additionalProperties1":addTempValue}
+                        if (!propobj.hasOwnProperty("readOnly")||!propobj["readOnly"]){
+                            //默认string类型
+                            var propValue="";
+                            //判断是否有类型
+                            if(propobj.hasOwnProperty("type")){
+                                var type=propobj["type"];
+                                //判断是否有example
+                                if(propobj.hasOwnProperty("example")) {
+                                    propValue = propobj["example"];
+                                }else if($.checkIsBasicType(type)){
+                                    propValue=$.getBasicTypeValue(type);
+                                    //此处如果是object情况,需要判断additionalProperties属性的情况
+                                    if (type=="object"){
+                                        if(propobj.hasOwnProperty("additionalProperties")){
+                                            var addpties=propobj["additionalProperties"];
+                                            //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+                                            if (addpties.hasOwnProperty("$ref")){
+                                                var adref=addpties["$ref"];
+                                                var regex=new RegExp("#/definitions/(.*)$","ig");
+                                                if(regex.test(adref)) {
+                                                    var addrefType = RegExp.$1;
+                                                    var addTempValue=null;
+                                                    if(!flag){
+                                                        if($.inArray(addrefType,globalArr) == -1){
+                                                            addTempValue=that.findRefDefinition(addrefType,definitions,flag,globalArr);
+                                                            propValue={"additionalProperties1":addTempValue}
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                }
-                            }else{
-                                if(type=="array"){
-                                    propValue=new Array();
-                                    var items=propobj["items"];
-                                    var ref=items["$ref"];
-                                    if(items.hasOwnProperty("type")){
-                                        if(items["type"]=="array"){
-                                            ref=items["items"]["$ref"];
-                                        }
-                                    }
-                                    var regex=new RegExp("#/definitions/(.*)$","ig");
-                                    if(regex.test(ref)){
-                                        var refType=RegExp.$1;
-                                        if (!flag){
-                                            //判断是否存在集合中
-                                            if($.inArray(refType,globalArr) != -1){
-                                                //存在
-                                                propValue.push({});
-                                            }else{
-                                                globalArr.push(definitionName);
-                                                propValue.push(that.findRefDefinition(refType,definitions,flag,globalArr));
+                                }else{
+                                    if(type=="array"){
+                                        propValue=new Array();
+                                        var items=propobj["items"];
+                                        var ref=items["$ref"];
+                                        if(items.hasOwnProperty("type")){
+                                            if(items["type"]=="array"){
+                                                ref=items["items"]["$ref"];
                                             }
                                         }
+                                        var regex=new RegExp("#/definitions/(.*)$","ig");
+                                        if(regex.test(ref)){
+                                            var refType=RegExp.$1;
+                                            if (!flag){
+                                                //判断是否存在集合中
+                                                if($.inArray(refType,globalArr) != -1){
+                                                    //存在
+                                                    propValue.push({});
+                                                }else{
+                                                    globalArr.push(definitionName);
+                                                    propValue.push(that.findRefDefinition(refType,definitions,flag,globalArr));
+                                                }
+                                            }
 
-                                    }
-                                }
-                            }
-
-                        }
-                        else{
-                            //存在ref
-                            if(propobj.hasOwnProperty("$ref")){
-                                var ref=propobj["$ref"];
-                                var regex=new RegExp("#/definitions/(.*)$","ig");
-                                if(regex.test(ref)) {
-                                    var refType = RegExp.$1;
-                                    //这里需要递归判断是否是本身,如果是,则退出递归查找
-                                    if(!flag){
-                                        if($.inArray(refType,globalArr) != -1){
-                                            //存在
-                                            propValue={};
-                                        }else{
-                                            globalArr.push(definitionName);
-                                            propValue=that.findRefDefinition(refType,definitions,flag,globalArr);
                                         }
                                     }
                                 }
-                            }else{
-                                propValue={};
-                            }
 
+                            }
+                            else{
+                                //存在ref
+                                if(propobj.hasOwnProperty("$ref")){
+                                    var ref=propobj["$ref"];
+                                    var regex=new RegExp("#/definitions/(.*)$","ig");
+                                    if(regex.test(ref)) {
+                                        var refType = RegExp.$1;
+                                        //这里需要递归判断是否是本身,如果是,则退出递归查找
+                                        if(!flag){
+                                            if($.inArray(refType,globalArr) != -1){
+                                                //存在
+                                                propValue={};
+                                            }else{
+                                                globalArr.push(definitionName);
+                                                propValue=that.findRefDefinition(refType,definitions,flag,globalArr);
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    propValue={};
+                                }
+
+                            }
+                            defiTypeValue[property]=propValue;
                         }
-                        defiTypeValue[property]=propValue;
                     }
                     defaultValue=defiTypeValue;
                 }else{
@@ -5562,6 +5777,8 @@
         this.groupVersion=version;
         //分组url请求实例
         this.basePath="";
+        //使用nginx,反向代理服务名称
+        this.baseUrl="";
         this.host="";
         this.swagger="";
         this.description="";
@@ -5704,6 +5921,8 @@
         this.property=null;
         //原始参数
         this.originProperty=null;
+        //是否枚举
+        this.enum=null;
     }
     /***
      * swagger的tag标签
@@ -5741,6 +5960,8 @@
         //存储请求类型，form|row|urlencode
         this.contentValue="raw";
         this.parameters=new Array();
+        //参数数量
+        this.parameterSize=0;
         //请求json示例
         this.requestValue=null;
         //针对parameter属性有引用类型的参数,继续以table 的形式展现

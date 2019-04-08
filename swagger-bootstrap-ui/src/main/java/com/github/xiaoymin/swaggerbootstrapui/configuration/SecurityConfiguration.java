@@ -27,13 +27,8 @@ public class SecurityConfiguration {
 
     Logger logger= LoggerFactory.getLogger(SecurityConfiguration.class);
 
-    private final Environment environment;
-
     @Autowired
-    public SecurityConfiguration(Environment environment) {
-        this.environment = environment;
-    }
-
+    private Environment environment;
 
     @Bean
     public ProductionSecurityFilter productionSecurityFilter(){
