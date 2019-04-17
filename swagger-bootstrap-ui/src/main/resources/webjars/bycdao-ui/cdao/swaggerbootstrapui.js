@@ -3469,6 +3469,7 @@
      */
     SwaggerBootstrapUi.prototype.createModelsElement=function () {
         var that=this;
+        var i18n=that.i18n.instance;
         var layui=that.layui;
         var element=layui.element;
         var treetable=layui.treetable;
@@ -3518,16 +3519,16 @@
                                 cols: [[
                                     {
                                         field: 'name',
-                                        title: '名称',
+                                        title: i18n.swaggerModel.tableHeader.name,
                                         width: '30%'
                                     }, {
                                         field: 'type',
-                                        title: '类型',
+                                        title: i18n.swaggerModel.tableHeader.type,
                                         width: '20%'
                                     },
                                     {
                                         field: 'description',
-                                        title: '说明',
+                                        title: i18n.swaggerModel.tableHeader.des,
                                         width: '30%'
                                     },
                                     {

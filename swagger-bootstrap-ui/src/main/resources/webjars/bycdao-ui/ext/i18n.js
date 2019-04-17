@@ -91,6 +91,14 @@
                 apiCount:"接口统计信息",
                 searchText:"请输入搜索内容"
             },
+            swaggerModel:{
+                nodata:"暂无Swagger Models",
+                tableHeader:{
+                    name:"名称",
+                    des:"说明",
+                    type:"类型"
+                }
+            },
             global:{
                 tab:"全局参数设置",
                 add:"添加参数",
@@ -254,6 +262,14 @@
                 groupLocation:"Group Location",
                 apiCount:"Api Counts",
                 searchText:"Search..."
+            },
+            swaggerModel:{
+                nodata:"No Swagger Models",
+                tableHeader:{
+                    name:"name",
+                    des:"description",
+                    type:"type"
+                }
             },
             global:{
                 tab:"Global Parameter Settings",
