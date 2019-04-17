@@ -1141,7 +1141,7 @@
 <script type="text/html" id="SwaggerBootstrapUiSettingsScript">
     <div style="margin: 0px auto;width: 80%;margin-top: 30px;">
         <div class="panel panel-default">
-            <div class="panel-heading"><h5>个性化设置</h5></div>
+            <div class="panel-heading"><h5>{{i18n.settings.title}}</h5></div>
             <div class="panel-body" style="height: 310px;" id="SwaggerBootstrapUiSettings">
                 <div class="form-group">
                     <div class="col-lg-10">
@@ -1158,7 +1158,7 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="enableRequestCache" <%if(enableRequestCache){ %> checked="checked"  <%}%> />
-                                开启请求参数缓存
+                                {{i18n.settings.openCache}}
                             </label>
                         </div>
                     </div>
@@ -1168,7 +1168,7 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="showApi" <%if(showApiUrl){ %> checked="checked"  <%}%> />
-                                菜单Api地址显示
+                                {{i18n.settings.showApi}}
                             </label>
                         </div>
                     </div>
@@ -1178,7 +1178,7 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="showTagStatus" <%if(showTagStatus){ %> checked="checked"  <%}%> />
-                                分组tag显示dsecription说明属性
+                                {{i18n.settings.tagDes}}
                             </label>
                         </div>
                     </div>
@@ -1188,7 +1188,7 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="enableFilterMultipartApis" <%if(enableFilterMultipartApis){ %> checked="checked"  <%}%> />
-                                开启RequestMapping接口过滤,默认只显示
+                                {{i18n.settings.apiFilter}}
                                 <select class="form-control" name="enableFilterMultipartApiMethodType" style="display: inline;width: 25%;height: 30px;line-height: 30px;">
                                     <option value="GET"  <%if(enableFilterMultipartApiMethodType=="GET"){ %> selected  <%}%>>GET</option>
                                     <option value="POST" <%if(enableFilterMultipartApiMethodType=="POST"){ %> selected  <%}%>>POST</option>
@@ -1207,7 +1207,7 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="enableCacheOpenApiTable" <%if(enableCacheOpenApiTable){ %> checked="checked"  <%}%> />
-                                开启缓存已打开的api文档
+                                {{i18n.settings.openCacheApi}}
                             </label>
                         </div>
                     </div>
@@ -1217,14 +1217,14 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="enableSwaggerBootstrapUi"  <%if(enableSwaggerBootstrapUi){ %> checked="checked"  <%}%> />
-                                启用SwaggerBootstrapUi提供的增强功能
+                                {{i18n.settings.plus}}
                             </label>
                         </div>
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 5px;">
                     <div class="col-lg-10">
-                        <button class="btn btn-primary" type="button" id="btnSaveSettings">保存内容</button>
+                        <button class="btn btn-primary" type="button" id="btnSaveSettings">{{i18n.settings.save}}</button>
                     </div>
                 </div>
 
@@ -1234,13 +1234,13 @@
     </div>
     <div style="margin: 0px auto;width: 80%;margin-top: 5px;">
         <div class="panel panel-default">
-            <div class="panel-heading"><h5>通过 <kbd>ctrl + c</kbd> 复制以下地址,打开浏览器快速个性化设置</h5></div>
+            <div class="panel-heading">{{# i18n.settings.fastTitle}}</div>
             <div class="panel-body" style="height: 65px;" >
                 <div class="col-lg-12" style="margin-top:10px;">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search for..."  id="useSettingsCopyOnUrl" readonly="readonly">
                         <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" id="btnCopyUserSettingsUrl">复制</button>
+                            <button class="btn btn-default" type="button" id="btnCopyUserSettingsUrl">{{i18n.settings.copy}}</button>
                         </span>
                     </div>
                 </div>

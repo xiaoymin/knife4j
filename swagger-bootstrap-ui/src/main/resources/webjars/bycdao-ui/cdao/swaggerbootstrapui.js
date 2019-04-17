@@ -915,6 +915,8 @@
         var layui=that.layui;
         var element=layui.element;
         var tabId="SwaggerBootstrapUiSettingsScript";
+        var i18n=that.i18n.instance;
+
         var tabContetId="layerTab"+tabId;
         //内容覆盖
         setTimeout(function () {
@@ -925,10 +927,10 @@
                 var html = template(tabId, nsettings);
                 var tabObj={
                     id:tabId,
-                    title:'个性化设置',
+                    title:i18n.settings.title,
                     content:html
                 };
-                that.globalTabs.push({id:tabId,title:'个性化设置'});
+                that.globalTabs.push({id:tabId,title:i18n.settings.title});
                 element.tabAdd(that.layTabFilter, tabObj);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
@@ -987,7 +989,8 @@
                                                 //升级后1.8.9的属性
                                                 var em=sbu["errorMsg"];
                                                 if(em!=null&&em!=undefined&&em!=""){
-                                                    layer.msg("无法开启SwaggerBootstrapUi增强功能,错误原因:"+em);
+                                                    var errMsg=i18n.message.settings.plusError+em;
+                                                    layer.msg(errMsg);
                                                     enableSbu.prop("checked",false);
                                                     flag=false;
                                                 }
@@ -1002,7 +1005,7 @@
                                 //获取响应码
                                 var status=xhr.status;
                                 if(status!=200){
-                                    layer.msg("无法开启SwaggerBootstrapUi增强功能,请确保后端启用注解@EnableSwaggerBootstrapUi");
+                                    layer.msg(i18n.message.settings.plusFail);
                                     enableSbu.prop("checked",false);
                                     flag=false;
                                 }
@@ -1049,10 +1052,10 @@
                     }
                 });
                 clipboard.on('success', function(e) {
-                    layer.msg("复制成功")
+                    layer.msg(i18n.message.copy.success)
                 });
                 clipboard.on('error', function(e) {
-                    layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                    layer.msg(i18n.message.copy.fail)
                 });
             }else{
                 element.tabChange(that.layTabFilter,tabId);
@@ -1101,13 +1104,15 @@
      * @param settings
      */
     SwaggerBootstrapUi.prototype.saveSettings=function (settings) {
+        var that=this;
+        var i18n=that.i18n.instance;
         if(window.localStorage){
             var store = window.localStorage;
             var gbStr=JSON.stringify(settings);
             store.setItem("SwaggerBootstrapUiSettings",gbStr);
-            layer.msg("保存成功,请刷新该文档页");
+            layer.msg(i18n.message.settings.success);
         }else{
-            layer.msg("当前浏览器不支持localStorage对象,无法使用该功能");
+            layer.msg(i18n.message.unsupportstore);
         }
     }
     /***

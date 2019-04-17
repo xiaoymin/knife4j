@@ -44,6 +44,11 @@
             title:"swagger-bootstrap-ui-前后端api接口文档",
             message:{
                 success:"保存成功",
+                unsupportstore:"当前浏览器不支持localStorage对象,无法使用该功能",
+                copy:{
+                  success:"复制成功",
+                  fail:"复制失败,您当前浏览器版本不兼容,请手动复制."
+                },
                 layer:{
                     title:"信息",
                     yes:"确定",
@@ -58,6 +63,11 @@
                     iptname:"请输入全局参数名称",
                     iptvalue:"请输入全局参数值",
                     deleteSuccess:"删除成功"
+                },
+                settings:{
+                    plusFail:"无法开启SwaggerBootstrapUi增强功能,请确保后端启用注解@EnableSwaggerBootstrapUi",
+                    plusError:"无法开启SwaggerBootstrapUi增强功能,错误原因:",
+                    success:"保存成功,请刷新该文档页"
                 }
             },
             home:{
@@ -84,6 +94,18 @@
                 delete:"删除",
                 note:"swagger-bootstrap-ui 提供全局参数Debug功能,目前默认提供header(请求头)、query(form)两种方式的入参.<br /><br />在此添加全局参数后,默认Debug调试tab页会带上该参数,该全局参数只在该分组下有效,不同的分组需要分别设置"
 
+            },
+            settings:{
+                title:"个性化设置",
+                openCache:"开启请求参数缓存",
+                showApi:"菜单Api地址显示",
+                tagDes:"分组tag显示dsecription说明属性",
+                apiFilter:"开启RequestMapping接口过滤,默认只显示",
+                openCacheApi:"开启缓存已打开的api文档",
+                plus:"启用SwaggerBootstrapUi提供的增强功能",
+                save:"保存内容",
+                copy:"复制",
+                fastTitle:"<h5>通过 <kbd>ctrl + c</kbd> 复制以下地址,打开浏览器快速个性化设置</h5>"
             },
             auth:{
                 cancel:"注销",
@@ -136,6 +158,11 @@
             title:"swagger-bootstrap-ui RESTful Api Docs",
             message:{
                 success:"Save successfully",
+                unsupportstore:"Current browsers do not support localStorage objects and cannot use this feature",
+                copy:{
+                    success:"Copy Success",
+                    fail:"Copy failed. Your current browser version is incompatible. Please copy manually."
+                },
                 layer:{
                     title:"message",
                     yes:"Yes",
@@ -150,6 +177,11 @@
                     iptname:"Please enter the global parameter name",
                     iptvalue:"Please enter the global parameter value",
                     deleteSuccess:"Delete Success"
+                },
+                settings:{
+                    plusFail:"SwaggerBootstrapUi enhancements cannot be turned on. Make sure that the annotation @EnableSwaggerBootstrapUi is enabled on the back end",
+                    plusError:"Unable to turn on Swagger BootstrapUi Enhancement, Error Cause:",
+                    success:"Save successfully, please refresh the document page"
                 }
             },
             home:{
@@ -176,6 +208,18 @@
                 delete:"Delete",
                 note:"swagger-bootstrap-ui Provide global parameter Debug function, currently default to provide header (request header), query (form) two ways of entry.<br /><br />After adding the global parameter here, the default Debug debug tab page will take this parameter, which is valid only under this group, and different groups need to be set separately."
 
+            },
+            settings:{
+                title:"Personalized Settings",
+                openCache:"Enable request parameter cache",
+                showApi:"Enable Menu Api Address Display",
+                tagDes:"Enable Grouping tag displays dsecription description properties",
+                apiFilter:"Open RequestMapping Interface Filtering,Default",
+                openCacheApi:"Enable Open cached open API documents",
+                plus:"Enabling enhancements provided by Swagger BootstrapUi",
+                save:"Save",
+                copy:"copy",
+                fastTitle:"<h5>Copy the following address through <kbd>ctrl + c</kbd> to open the browser's quick personalization settings</h5>"
             },
             auth:{
                 cancel:"Logout",
