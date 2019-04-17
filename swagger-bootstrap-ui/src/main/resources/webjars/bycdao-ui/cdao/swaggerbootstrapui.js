@@ -100,6 +100,11 @@
         var i18n=that.i18n.instance;
         //主页
         $("#sbu-tab-home").html(i18n.menu.home);
+        $("#searchTxt").attr("placeholder",i18n.home.searchText)
+        //关闭页面
+        $("#closeThisTabs").find("a:first").html(i18n.tab.closeCurrent);
+        $("#closeOtherTabs").find("a:first").html(i18n.tab.closeOther);
+        $("#closeAllTabs").find("a:first").html(i18n.tab.closeAll);
 
 
     }

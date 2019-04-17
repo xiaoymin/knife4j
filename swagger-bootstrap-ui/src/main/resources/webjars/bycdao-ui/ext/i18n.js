@@ -174,6 +174,11 @@
                 title:"调试",
                 send:"发送"
 
+            },
+            tab:{
+                closeCurrent:"关闭当前标签页",
+                closeOther:"关闭其它标签页",
+                closeAll:"关闭全部标签页"
             }
 
         },
@@ -310,6 +315,11 @@
                 title:"Debug",
                 send:"Send"
 
+            },
+            tab:{
+                closeCurrent:"Close Current Tab",
+                closeOther:"Close Other Tab",
+                closeAll:"Close All Tab"
             }
         }
     }
