@@ -151,7 +151,8 @@
                     name:"参数名称",
                     des:"参数说明",
                     require:"是否必须",
-                    type:"类型"
+                    type:"类型",
+                    requestType:"请求类型"
 
                 },
                 response:"响应状态",
@@ -286,7 +287,8 @@
                     name:"name",
                     des:"description",
                     require:"require",
-                    type:"type"
+                    type:"type",
+                    requestType:"request type"
 
                 },
                 response:"Response Status",

@@ -1476,16 +1476,19 @@
 
 
         that.storeCacheOpenApiTableApis({tabId:tabId})
+        var i18n=that.i18n.instance;
 
 
         //判断tabId是否存在
         if(that.tabExists(tabId)){
             element.tabChange(that.layTabFilter,tabId);
             that.tabRollPage("auto");
-        }else{
+        }
+        else{
             //that.createTabElement();
             //html转义
-            var dynaTab=template('BootstrapDynaTab',apiInfo);
+            var nApiInfo=$.extend({},apiInfo,{i18n:i18n})
+            var dynaTab=template('BootstrapDynaTab',nApiInfo);
             //不存在,添加
             var tabObj={id: tabId, title: apiInfo.summary, content: dynaTab};
             element.tabAdd(that.layTabFilter, tabObj);
@@ -1524,17 +1527,17 @@
                 cols: [[
                     {
                         field: 'name',
-                        title: '参数名称',
+                        title: i18n.doc.paramsHeader.name,
                         width: '20%'
                     },
                     {
                         field: 'description',
-                        title: '说明',
+                        title:  i18n.doc.paramsHeader.des,
                         width: '20%'
                     },
                     {
                         field: 'in',
-                        title: '请求类型',
+                        title:  i18n.doc.paramsHeader.requestType,
                         width: '10%',
                         templet:function (d) {
                             return "<span class='sbu-request-"+d.in+"'>"+d.in+"</span>";
@@ -1542,7 +1545,7 @@
                     },
                     {
                         field: 'require',
-                        title: '必填',
+                        title:  i18n.doc.paramsHeader.require,
                         width: '10%',
                         templet:function (d) {
                             if(d.require){
@@ -1554,7 +1557,7 @@
                     },
                     {
                         field: 'type',
-                        title: '类型',
+                        title: i18n.doc.paramsHeader.type,
                         width: '20%',
                         templet:function (d) {
                             if(d.validateStatus){
@@ -1629,17 +1632,17 @@
                             cols: [[
                                 {
                                     field: 'name',
-                                    title: '参数名称',
+                                    title: i18n.doc.responseParamsHeader.name,
                                     width: '20%'
                                 },
                                 {
                                     field: 'description',
-                                    title: '说明',
+                                    title: i18n.doc.responseParamsHeader.des,
                                     width: '40%'
                                 },
                                 {
                                     field: 'type',
-                                    title: '类型',
+                                    title:  i18n.doc.responseParamsHeader.type,
                                     width: '20%'
                                 },
                                 {
@@ -1713,17 +1716,17 @@
                     cols: [[
                         {
                             field: 'name',
-                            title: '参数名称',
+                            title: i18n.doc.responseParamsHeader.name,
                             width: '20%'
                         },
                         {
                             field: 'description',
-                            title: '说明',
+                            title: i18n.doc.responseParamsHeader.des,
                             width: '40%'
                         },
                         {
                             field: 'type',
-                            title: '类型',
+                            title:  i18n.doc.responseParamsHeader.type,
                             width: '20%'
                         },
                         {
@@ -1791,10 +1794,10 @@
                 }
             });
             clipboard.on('success', function(e) {
-                layer.msg("复制成功")
+                layer.msg(i18n.message.copy.success)
             });
             clipboard.on('error', function(e) {
-                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                layer.msg(i18n.message.copy.fail)
             });
             that.log(that.currentInstance);
             //创建调试页面

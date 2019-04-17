@@ -823,36 +823,36 @@
 <script type="text/html" id="BootstrapDynaTab">
     <div class='tabs-x tabs-left tabs-krajee' id="tabsContent{{id}}" >
         <ul id="myTab-tabs-left" class="nav nav-tabs" role="tablist">
-            <li class="active"><a href="#HomeDoc{{id}}" role="tab" data-toggle="tab"><i class="iconfont icon-ic_description"></i>文档</a></li>
-            <li><a href="#DebugDoc{{id}}" role="tab-kv" data-toggle="tab"><i class="iconfont icon-debug"></i>调试</a></li>
+            <li class="active"><a href="#HomeDoc{{id}}" role="tab" data-toggle="tab"><i class="iconfont icon-ic_description"></i>{{i18n.doc.title}}</a></li>
+            <li><a href="#DebugDoc{{id}}" role="tab-kv" data-toggle="tab"><i class="iconfont icon-debug"></i>{{i18n.debug.title}}</a></li>
         </ul>
         <div id="myTabContent-tabs-left" class="tab-content">
             <div class="tab-pane fade in active" id="HomeDoc{{id}}" >
                 <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
                     <div style="    float: left;width: 90%;font-size: 20px;">{{summary}}</div>
                     <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHref{{id}}" style="cursor: pointer;text-decoration: none;
-" href="javascript:void(0);">复制文档</a></div>
+" href="javascript:void(0);">{{i18n.doc.copy}}</a></div>
                 </div>
                 <div class="swbu-main" itemprop="articleBody">
                     <div id="contentDoc{{id}}">
-                        <p><span class="sbu-api-title">接口地址</span> <code style="background-color: transparent;">{{showUrl}}</code></p>
-                        <p><span class="sbu-api-title">请求方式</span> <code style="background-color: transparent;">{{methodType}}</code></p>
+                        <p><span class="sbu-api-title">{{i18n.doc.url}}</span> <code style="background-color: transparent;">{{showUrl}}</code></p>
+                        <p><span class="sbu-api-title">{{i18n.doc.method}}</span> <code style="background-color: transparent;">{{methodType}}</code></p>
                         <p><span class="sbu-api-title">consumes</span> <code style="background-color: transparent;">{{consumes}}</code></p>
                         <p><span class="sbu-api-title">produces</span> <code style="background-color: transparent;">{{produces}}</code></p>
-                        <p><span class="sbu-api-title">接口描述</span> <code style="background-color: transparent;">{{description}}</code></p>
+                        <p><span class="sbu-api-title">{{i18n.doc.des}}</span> <code style="background-color: transparent;">{{description}}</code></p>
                         {{ if requestValue }}
-                        <p><strong>请求示例</strong></p>
+                        <p><strong>{{i18n.doc.requestExample}}</strong></p>
                         <div id="editorRequestSample{{id}}" style="width: auto;bottom: 10px;">{{ requestValue }}</div>
                         {{ /if }}
-                        <p><strong>请求参数</strong></p>
+                        <p><strong>{{i18n.doc.params}}</strong></p>
                         <table id="requestParameter{{id}}" class="layui-table"  lay-filter="requestParameter{{id}}">
                         </table>
-                        <p><strong>响应状态</strong></p>
+                        <p><strong>{{i18n.doc.response}}</strong></p>
                         <table class="layui-table">
                             <thead>
                             <tr>
-                                <th>状态码</th>
-                                <th>说明</th>
+                                <th>{{i18n.doc.responseHeader.code}}</th>
+                                <th>{{i18n.doc.responseHeader.des}}</th>
                                 <th>schema</th>
                             </tr>
                             </thead>
@@ -867,7 +867,7 @@
                                 {{/each}}
                             {{else}}
                                 <tr>
-                                    <td colspan="3" style="text-align: center;">暂无</td>
+                                    <td colspan="3" style="text-align: center;">{{i18n.doc.nodata}}</td>
                                 </tr>
                             {{/if}}
                             </tbody>
@@ -890,10 +890,10 @@
                                                 <div class="layui-tab-item">
                                             {{/if}}
                                                     <div>
-                                                        <p><strong>{{$value.code}}-响应参数</strong></p>
+                                                        <p><strong>{{$value.code}}-{{i18n.doc.responseParams}}</strong></p>
                                                         <table id="responseParameter{{id}}-{{$value.code}}" class="layui-table"  lay-filter="responseParameter{{id}}-{{$value.code}}">
                                                         </table>
-                                                        <p><strong>{{$value.code}}-响应示例</strong></p>
+                                                        <p><strong>{{$value.code}}-{{i18n.doc.responseExample}}</strong></p>
                                                         <div id="editorSample{{id}}-{{$value.code}}" style="width: auto;bottom: 10px;">{{ if $value.responseBasicType }}{{$value.responseText}}{{else}}{{$value.responseValue}}{{/if}}</div>
                                                     </div>
 
@@ -903,10 +903,10 @@
                                 </div>
                             </div>
                         {{else}}
-                                <p><strong>响应参数</strong></p>
+                                <p><strong>{{i18n.doc.responseParams}}</strong></p>
                                 <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
                                 </table>
-                                <p><strong>响应示例</strong></p>
+                                <p><strong>{{i18n.doc.responseExample}}</strong></p>
                                 <div id="editorSample{{id}}" style="width: auto;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
                         {{/if}}
                     </div>
