@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.9.2 / 2019-3-17 13:40:34
+ * swagger-bootstrap-ui v1.9.3 / 2019-4-17 19:50:25
  *
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
@@ -43,7 +43,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.9.2";
+        this.version="1.9.3";
         this.requestOrigion="SwaggerBootstrapUi";
         this.requestParameter={};//浏览器请求参数
         //个性化配置
@@ -55,7 +55,8 @@
             enableFilterMultipartApis:false,//针对RequestMapping的接口请求类型,在不指定参数类型的情况下,如果不过滤,默认会显示7个类型的接口地址参数,如果开启此配置,默认展示一个Post类型的接口地址
             enableFilterMultipartApiMethodType:"POST",//默认保存类型
             enableRequestCache:true,//是否开启请求参数缓存
-            enableCacheOpenApiTable:false//是否开启缓存已打开的api文档
+            enableCacheOpenApiTable:false,//是否开启缓存已打开的api文档
+            language:"zh"//默认语言版本
         };
         //SwaggerBootstrapUi增强注解地址
         this.extUrl="/v2/api-docs-ext";
@@ -64,6 +65,8 @@
         //缓存api对象,以区分是否是新的api,存储SwaggerBootstapUiCacheApi对象
         this.cacheApis=null;
         this.hasLoad=false;
+        //add i18n supports by xiaoymin at 2019-4-17 20:27:34
+        this.i18n=new I18n();
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -73,6 +76,7 @@
         that.welcome();
         that.initRequestParameters();
         that.initSettings();
+        that.initUnTemplatePageI18n();
         that.initWindowWidthAndHeight();
         that.initApis();
         that.windowResize();
@@ -86,6 +90,18 @@
         that.tabCloseEventsInit();
         //opentab
         that.initOpenTable();
+    }
+
+    /***
+     * 非模板页渲染i18n初始化
+     */
+    SwaggerBootstrapUi.prototype.initUnTemplatePageI18n=function () {
+        var that=this;
+        var i18n=that.i18n.instance;
+        //主页
+        $("#sbu-tab-home").html(i18n.menu.home);
+
+
     }
 
     SwaggerBootstrapUi.prototype.initApis=function () {
@@ -306,6 +322,13 @@
                 store.setItem("SwaggerBootstrapUiSettings", gbStr);
             }
         }
+
+        //判断语言
+        if(that.settings.language!=null&&that.settings.language!=undefined&&that.settings.language!=""){
+            //初始化切换
+            that.i18n.instance=that.i18n.getSupportLanguage(that.settings.language);
+        }
+
     }
 
     function checkFiledExistsAndEqStr(object,filed,eq) {
@@ -591,6 +614,7 @@
                             g.groupApis=cainstance.cacheApis;
                         }
                     }
+                    g.i18n=that.i18n.instance;
                     that.instances.push(g);
                 })
             },
@@ -613,11 +637,12 @@
         var that=this;
         that.log("setInstanceBasicPorperties----------------------")
         var title="",description="",name="",version="",termsOfService="";
+        var i18nInstance=that.i18n.instance;
         var host=$.getValue(menu,"host","",true);
         if(menu!=null&&menu!=undefined){
             if (menu.hasOwnProperty("info")){
                 var info=menu.info;
-                title=$.getValue(info,"title","Swagger-Bootstrap-UI-前后端api接口文档",true);
+                title=$.getValue(info,"title",i18nInstance.title,true);
                 description=$.getValue(info,"description","",true);
                 if(info.hasOwnProperty("contact")){
                     var contact=info["contact"];
@@ -749,8 +774,9 @@
     SwaggerBootstrapUi.prototype.createDetailMenu=function () {
         var that=this;
         that.getMenu().find(".detailMenu").remove();
+        var i18nInstance=that.i18n.instance;
         //简介li
-        var dli=$('<li  class="active detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-icon_home"></i><span class="menu-text"> 主页 </span></a></li>')
+        var dli=$('<li  class="active detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-icon_home"></i><span class="menu-text"> '+i18nInstance.menu.home+' </span></a></li>')
         dli.on("click",function () {
             that.log("简介click")
             that.createDescriptionElement();
@@ -781,12 +807,12 @@
         //SwaggerBootstrapUi增强功能全部放置在此
         //存在子标签
         var extLi=$('<li  class="detailMenu"></li>');
-        var exttitleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-zhongduancanshuguanli"></i><span class="menu-text"> 文档管理</span><span class="badge badge-primary ">3</span><b class="arrow icon-angle-down"></b></a>');
+        var exttitleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-zhongduancanshuguanli"></i><span class="menu-text"> '+i18nInstance.menu.manager+'</span><span class="badge badge-primary ">3</span><b class="arrow icon-angle-down"></b></a>');
         extLi.append(exttitleA);
         //循环树
         var extul=$('<ul class="submenu"></ul>')
         //全局参数菜单功能
-        var globalArgsLi=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">全局参数设置</span> </div></div></li>');
+        var globalArgsLi=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">'+i18nInstance.menu.globalsettings+'</span> </div></div></li>');
         //var globalArgsLi=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-zhongduancanshuguanli\"></i><span class=\"menu-text\"> 全局参数设置 </span></a></li>");
         globalArgsLi.on("click",function () {
             that.getMenu().find("li").removeClass("active");
@@ -796,7 +822,7 @@
         extul.append(globalArgsLi);
 
         //离线文档功能
-        var mddocli=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">离线文档(MD)</span> </div></div></li>');
+        var mddocli=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">'+i18nInstance.menu.officeline+'</span> </div></div></li>');
         //var mddocli=$("<li  class=\"detailMenu\"><a href=\"javascript:void(0)\"><i class=\"icon-text-width iconfont icon-iconset0118\"></i><span class=\"menu-text\"> 离线文档(MD) </span></a></li>");
         mddocli.on("click",function () {
             that.log("离线文档功能click")
@@ -806,7 +832,7 @@
         })
         extul.append(mddocli);
         //个性化设置
-        var settingsli=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">个性化设置</span> </div></div></li>');
+        var settingsli=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">'+i18nInstance.menu.selfSettings+'</span> </div></div></li>');
         settingsli.on("click",function () {
             that.log("个性化设置功能click")
             that.createSettingsPage();
@@ -895,7 +921,8 @@
             if (!that.tabExists(tabId)) {
                 that.log("settings-----------------")
                 that.log(that.settings)
-                var html = template(tabId, that.settings);
+                var nsettings=$.extend({},that.settings,{i18n:that.i18n.instance})
+                var html = template(tabId, nsettings);
                 var tabObj={
                     id:tabId,
                     title:'个性化设置',
@@ -910,6 +937,7 @@
                 //保存按钮功能
                 $("#btnSaveSettings").on("click",function (e) {
                     e.preventDefault();
+                    var langEle=$("#SwaggerBootstrapUiSettings").find("input[name=language]:checked");
                     var showApi=$("#SwaggerBootstrapUiSettings").find("input[name=showApi]");
                     var enableSbu=$("#SwaggerBootstrapUiSettings").find("input[name=enableSwaggerBootstrapUi]");
                     //tag属性说明
@@ -930,6 +958,8 @@
                     var enableCacheOpenApi=enableCacheOpenApiTable.prop("checked");
 
                     var enableReqFilter=enableReqFilterCache.prop("checked");
+
+                    var language=langEle.val();
 
                     var flag=true;
                     //如果开启SwawggerBootstrapUi增强,则判断当前后端是否启用注解
@@ -1000,7 +1030,8 @@
                             enableRequestCache:cacheRequest,
                             enableFilterMultipartApis:enableReqFilter,
                             enableFilterMultipartApiMethodType:multipartApiMethodType,
-                            enableCacheOpenApiTable:enableCacheOpenApi
+                            enableCacheOpenApiTable:enableCacheOpenApi,
+                            language:language
                         }
                         that.log(setts);
                         that.saveSettings(setts);
@@ -3302,6 +3333,7 @@
         var element=layui.element;
         var tabId="SwaggerBootstrapUiSecurityScript";
         var tabContetId="layerTab"+tabId;
+        var i18n=that.i18n.instance;
         setTimeout(function () {
             if(!that.tabExists(tabId)){
                 that.currentInstance.securityArrs=that.getSecurityInfos();
@@ -3322,7 +3354,7 @@
                     var data={key:ptr.data("key"),name:ptr.data("name")};
                     var value=ptr.find("input").val();
                     if(!value){
-                        layer.msg("值无效");
+                        layer.msg(i18n.message.auth.invalid);
                         return false;
                     }
                     $.each(that.currentInstance.securityArrs,function (i, sa) {
@@ -3332,7 +3364,7 @@
                         }
                     })
                     that.log(that.currentInstance);
-                    layer.msg("保存成功");
+                    layer.msg(i18n.message.success);
                     that.currentInstance.securityArrs=that.getSecurityInfos();
                 })
                 that.resetAuthEvent(tabContetId);
@@ -3355,7 +3387,7 @@
             var data={key:ptr.data("key"),name:ptr.data("name")};
             var value=ptr.find("input").val();
             if(!value){
-                layer.msg("值无效");
+                layer.msg(i18n.message.auth.invalid);
                 return false;
             }
             $.each(that.currentInstance.securityArrs,function (i, sa) {
@@ -3376,9 +3408,10 @@
      */
     SwaggerBootstrapUi.prototype.resetAuthEvent=function (tabContentId) {
         var that=this;
+        var i18n=that.i18n.instance;
         that.getDoc().find("#"+tabContentId).find(".btn-reset-auth").on("click",function (e) {
             e.preventDefault();
-            layer.confirm("确定注销吗?",function (index) {
+            layer.confirm(i18n.message.auth.confirm,{title:i18n.message.layer.title,btn:[i18n.message.layer.yes,i18n.message.layer.no]},function (index) {
                 $.each(that.currentInstance.securityArrs,function (i, sa) {
                     sa.value="";
                     that.updateGlobalParams(sa,"securityArrs");
@@ -3389,7 +3422,7 @@
                     saveBtn.parent().parent().find("input").val("");
                 })
                 layer.close(index);
-                layer.msg("注销成功");
+                layer.msg(i18n.message.auth.success);
             })
 
         })
@@ -5655,10 +5688,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
@@ -5814,6 +5847,8 @@
         this.groupId=md5(name);
         this.firstLoad=true;
         this.groupApis=new Array();
+
+        this.i18n=null;
     }
 
     /***

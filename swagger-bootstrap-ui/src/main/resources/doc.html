@@ -9,6 +9,7 @@
     <meta http-equiv="Expires" content="0">
     <title>Swagger-Bootstrap-UI</title>
     <link rel="shortcut icon" href="webjars/bycdao-ui/images/api.ico"/>
+    <script src="webjars/bycdao-ui/ext/i18n.js"></script>
     <script type="text/javascript" src="webjars/bycdao-ui/jquery/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="webjars/bycdao-ui/ace/bootstrap.min.js"></script>
     <script type="text/javascript" src="webjars/bycdao-ui/ace/ace.min.js"></script>
@@ -22,7 +23,7 @@
     <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/default.css" />
     <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
     <script src="webjars/bycdao-ui/jquery/marked.js"></script>
-    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css?v=1.9.2" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css?v=1.9.3" />
     <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css" />
 
     <link rel="stylesheet" href="webjars/bycdao-ui/layui/css/layui.css"  media="all">
@@ -178,7 +179,7 @@
             <div class="layui-body">
                 <div class="layui-tab" lay-allowclose="true" lay-filter="admin-pagetabs">
                     <ul class="layui-tab-title">
-                        <li class="layui-this" lay-id="main">主页</li>
+                        <li class="layui-this" lay-id="main" id="sbu-tab-home">主页</li>
                     </ul>
                     <div class="layui-tab-content" style="height: 150px;">
                         <div class="layui-tab-item layui-show" id="mainTabContent">
@@ -1018,15 +1019,15 @@
                             <td colspan="2" style="text-align: center;">{{title}}</td>
                         </tr>
                         <tr>
-                            <td>简介</td>
+                            <td>{{ i18n.home.des}}</td>
                             <td>{{# description}}</td>
                         </tr>
                         <tr>
-                            <td>作者</td>
+                            <td>{{ i18n.home.author}}</td>
                             <td>{{contact}}</td>
                         </tr>
                         <tr>
-                            <td>版本</td>
+                            <td>{{ i18n.home.version}}</td>
                             <td>{{version}}</td>
                         </tr>
                         <tr>
@@ -1038,23 +1039,23 @@
                             <td>{{basePath}}</td>
                         </tr>
                         <tr>
-                            <td>服务url</td>
+                            <td>{{ i18n.home.serviceUrl}}</td>
                             <td>{{termsOfService}}</td>
                         </tr>
                         <tr>
-                            <td>分组名称</td>
+                            <td>{{ i18n.home.groupName}}</td>
                             <td>{{name}}</td>
                         </tr>
                         <tr>
-                            <td>分组url</td>
+                            <td>{{ i18n.home.groupUrl}}</td>
                             <td>{{url}}</td>
                         </tr>
                         <tr>
-                            <td>分组location</td>
+                            <td>{{ i18n.home.groupLocation}}</td>
                             <td>{{location}}</td>
                         </tr>
                         <tr>
-                            <td style="vertical-align: top;">接口统计信息</td>
+                            <td style="vertical-align: top;">{{ i18n.home.apiCount}}</td>
                             <td>
                                 <table>
                                     <%if(pathArrs!=null && pathArrs.length>0){ %>
@@ -1106,15 +1107,15 @@
     <div  style="width:99%;margin:0px auto;">
         <div style="margin-top: 15px;">
             <div class="swbu-main">
-                <button class="btn btn-circle btn-small btn-primary btn-reset-auth" type="button">注销</button>
+                <button class="btn btn-circle btn-small btn-primary btn-reset-auth" type="button">{{i18n.auth.cancel}}</button>
                 <table class="" >
                     <thead>
                     <tr>
-                        <th>参数key</th>
-                        <th>参数名称</th>
-                        <th>in</th>
-                        <th>参数值</th>
-                        <th>操作</th>
+                        <th>{{i18n.auth.tableHeader.key}}</th>
+                        <th>{{i18n.auth.tableHeader.name}}</th>
+                        <th>{{i18n.auth.tableHeader.in}}</th>
+                        <th>{{i18n.auth.tableHeader.value}}</th>
+                        <th>{{i18n.auth.tableHeader.operator}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -1125,7 +1126,7 @@
                         <td><%=param.name%></td>
                         <td><%=param.in%></td>
                         <td><input class="form-control p-key" value="<%=param.value%>"></td>
-                        <td><button class="btn btn-circle btn-info btn-small btn-save" type="button">保存</button></td>
+                        <td><button class="btn btn-circle btn-info btn-small btn-save" type="button">{{i18n.auth.save}}</button></td>
                     </tr>
 
                     <%}}%>
@@ -1143,6 +1144,16 @@
         <div class="panel panel-default">
             <div class="panel-heading"><h5>个性化设置</h5></div>
             <div class="panel-body" style="height: 310px;" id="SwaggerBootstrapUiSettings">
+                <div class="form-group">
+                    <div class="col-lg-10">
+                        <label class="radio-inline">
+                            <input type="radio" name="language" value="zh"  <%if(language=="zh"){ %> checked  <%}%> > 中文
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="language" value="en"   <%if(language=="en"){ %> checked  <%}%> > English
+                        </label>
+                    </div>
+                </div>
                 <div class="form-group">
                     <div class="col-lg-10">
                         <div class="checkbox">
@@ -1240,7 +1251,7 @@
     </div>
 </script>
 
-<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js?v=1.9.2"></script>
+<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js?v=1.9.3"></script>
 <script type="text/javascript">
     $(function () {
         /***
