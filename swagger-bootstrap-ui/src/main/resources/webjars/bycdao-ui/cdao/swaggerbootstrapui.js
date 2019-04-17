@@ -3584,16 +3584,17 @@
         var element=layui.element;
         var tabId="offLinecontentScript";
         var tabContetId="layerTab"+tabId;
+        var i18n=that.i18n.instance;
 
         setTimeout(function () {
             if(!that.tabExists(tabId)){
                 var html = template('offLinecontentScript', that.currentInstance);
                 var tabObj={
                     id:tabId,
-                    title:'离线文档(MD)',
+                    title:i18n.menu.officeline,
                     content:html
                 };
-                that.globalTabs.push({id:tabId,title:'离线文档(MD)'});
+                that.globalTabs.push({id:tabId,title:i18n.menu.officeline});
                 element.tabAdd(that.layTabFilter, tabObj);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
@@ -3613,7 +3614,7 @@
                 if(that.currentInstance.paths!=null&&that.currentInstance.paths.length>100){
                     $("#txtOffLineDoc").show();
                     $("#txtOffLineDoc").parent().css("width","100%");
-                    layer.msg("当前接口数量超出限制,请使用第三方markdown转换软件进行转换以查看效果.")
+                    layer.msg(i18n.message.offline.toomany)
 
                 }else{
                     var convert=new showdown.Converter({tables:true,tablesHeaderId:true});
@@ -3639,10 +3640,10 @@
             }
         });
         clipboard.on('success', function(e) {
-            layer.msg("复制成功")
+            layer.msg(i18n.message.copy.success)
         });
         clipboard.on('error', function(e) {
-            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+            layer.msg(i18n.message.copy.fail)
         });
 
     }

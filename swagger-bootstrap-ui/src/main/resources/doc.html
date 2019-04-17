@@ -209,9 +209,9 @@
 <!--离线文档说明-->
 <script type="text/html" id="offLinecontentScript">
     <div  style="width:99%;margin:0px auto;margin-top: 10px;">
-        <div class="alert alert-info" role="alert">swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.</div>
+        <div class="alert alert-info" role="alert">{{i18n.message.offline.note}}</div>
         <div class="input-inline" style="margin-bottom:10px;">
-            <button class="btn btn-primary" type="button" id="btnCopy"  >拷贝文档</button>
+            <button class="btn btn-primary" type="button" id="btnCopy"  >{{i18n.message.offline.copy}}</button>
         </div>
         <div class='input-inline'>
             <div style="width: 100%;height:100%;">
@@ -219,28 +219,27 @@
                     <textarea class='form-control' style='width: 100%;height: 100%;display: none;' id="txtOffLineDoc">
 **{{title}}**
 
-**简介**：{{description}}
+**{{i18n.offline.note}}**：{{description}}
 
 **HOST**:{{host}}
 
-**联系人**:{{contact}}
+**{{i18n.offline.contact}}**:{{contact}}
 
 **Version**:{{version}}
 
-**接口路径**：{{location}}
+**{{i18n.offline.url}}**：{{location}}
 
 
 <% for( i = 0; i < tags.length; i++) { var tag=tags[i] ; %># <%= tag.name %><% for( j = 0; j < paths.length; j++) {var path=paths[j]; if(path.tags.indexOf(tag.name)>-1){ %>
 
 ## <%= path.summary %>
 
-**接口说明**:<%= path.description %>
+**{{i18n.doc.des}}**:<%= path.description %>
+
+**{{i18n.doc.url}}**:`<%= path.showUrl %>`
 
 
-**接口地址**:`<%= path.showUrl %>`
-
-
-**请求方式**：`<%= path.methodType %>`
+**{{i18n.doc.method}}**：`<%= path.methodType %>`
 
 
 **consumes**:`<%= path.consumes %>`
@@ -249,24 +248,24 @@
 **produces**:`<%= path.produces %>`
 
 <%if(path.requestValue!=null && path.requestValue!=""){%>
-**请求示例**：
+**{{i18n.doc.requestExample}}**：
 ```json
 <%= path.requestValue %>
 ```
 <%}%>
 
-**请求参数**：
+**{{i18n.doc.params}}**：
 <% if(path.parameters!=null && path.parameters.length>0){ %>
-| 参数名称         | 说明     |     in |  是否必须      |  类型   |  schema  |
+| {{i18n.doc.paramsHeader.name}}         | {{i18n.doc.paramsHeader.des}}     |     in |  {{i18n.doc.paramsHeader.require}}      |  {{i18n.doc.paramsHeader.type}}  |  schema  |
 | ------------ | -------------------------------- |-----------|--------|----|--- |
 <% for( a = 0; a < path.parameters.length; a++) {var param=path.parameters[a]; %>|<%=param.name%>| <%=param.description%>  | <%=param.in%> | <%=param.require%> |<%=param.type%>  | <%=param.schemaValue%>   |
                 <%}%>
 <%}else{%>暂无<%}%><% if(path.refparameters!=null && path.refparameters.length>0){ %>
 
-**schema属性说明**
+**{{i18n.offline.schemaDes}}**
 <% for( a = 0; a < path.refparameters.length; a++) { var ref=path.refparameters[a];%>
 **<%=ref.name%>**
-| 参数名称         | 说明    |     in |  是否必须   |  类型  |  schema |
+| {{i18n.doc.paramsHeader.name}}         | {{i18n.doc.paramsHeader.des}}     |     in |  {{i18n.doc.paramsHeader.require}}      |  {{i18n.doc.paramsHeader.type}}  |  schema  |
 | ------------ | -------------------------------- |-----------|--------|----|--- |
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%>| <%=rp.description%>  | <%=rp.in%> | <%=rp.require%> |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}}}%>
@@ -275,24 +274,24 @@
 <% for(c = 0;c < path.responseCodes.length; c++){ var rcode=path.responseCodes[c];%>
 <% if(rcode.schema!=null){%>
 
-**<%= rcode.code %>响应数据**:
+**<%= rcode.code %>{{i18n.doc.responseExample}}**:
 ```json
 <%= rcode.responseValue %>
 ```
-**<%= rcode.code %>响应参数说明**:
+**<%= rcode.code %>{{i18n.doc.responseParams}}**:
 <% if(rcode.responseParameters!=null && rcode.responseParameters.length>0){ %>
-| 参数名称         | 说明                             |    类型 |  schema |
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
 | ------------ | -------------------|-------|----------- |
 <% for( a = 0; a < rcode.responseParameters.length; a++) { var param=rcode.responseParameters[a];%>|<%=param.name%>| <%=param.description%>  |<%=param.type%>  | <%=param.schemaValue%>   |
 <%}}else{%>
-暂无
+{{i18n.doc.nodata}}
 <%}%>
 <% if(rcode.responseRefParameters!=null && rcode.responseRefParameters.length>0){ %>
-**schema属性说明**
+**{{i18n.offline.schemaDes}}**
 
 <% for( a = 0; a < rcode.responseRefParameters.length; a++) { var ref=rcode.responseRefParameters[a];%>
 **<%=ref.name%>**
-| 参数名称         |  说明          |   类型  |  schema |
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
 | ------------ | ------------------|--------|----------- |
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}%>
@@ -301,38 +300,38 @@
 <%}%>
 
 <%}else{%>
-**响应数据**:
+**{{i18n.doc.responseExample}}**:
 ```json
 <%= path.responseValue %>
 ```
-**响应参数说明**:
+**{{i18n.doc.responseParams}}**:
 <% if(path.responseParameters!=null && path.responseParameters.length>0){ %>
-| 参数名称         | 说明                             |    类型 |  schema |
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
 | ------------ | -------------------|-------|----------- |
 <% for( a = 0; a < path.responseParameters.length; a++) { var param=path.responseParameters[a];%>|<%=param.name%>| <%=param.description%>  |<%=param.type%>  | <%=param.schemaValue%>   |
 <%}}else{%>
-暂无
+{{i18n.doc.nodata}}
 <%}%>
 <% if(path.responseRefParameters!=null && path.responseRefParameters.length>0){ %>
-**schema属性说明**
+**{{i18n.offline.schemaDes}}**
 
 <% for( a = 0; a < path.responseRefParameters.length; a++) { var ref=path.responseRefParameters[a];%>
 **<%=ref.name%>**
-| 参数名称         |  说明          |   类型  |  schema |
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
 | ------------ | ------------------|--------|----------- |
 <% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
                 <%}%>
 <%}}%>
 <%}%>
 
-**响应状态码说明**:
+**{{i18n.doc.response}}**:
 <% if(path.responseCodes!=null && path.responseCodes.length>0){ %>
-| 状态码         | 说明                             |    schema                         |
+| {{i18n.doc.responseHeader.code}}         | {{i18n.doc.responseHeader.des}}                            |    schema                         |
 | ------------ | -------------------------------- |---------------------- |
 <% for( a = 0; a < path.responseCodes.length; a++) { var param=path.responseCodes[a];%>| <%=param.code%> | <%=param.description%>  |<%=param.schema%>|
                 <%}%>
 <%}else{%>
-暂无
+{{i18n.doc.nodata}}
 <%}%>
         <%}%>
     <%}%>

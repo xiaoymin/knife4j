@@ -68,6 +68,11 @@
                     plusFail:"无法开启SwaggerBootstrapUi增强功能,请确保后端启用注解@EnableSwaggerBootstrapUi",
                     plusError:"无法开启SwaggerBootstrapUi增强功能,错误原因:",
                     success:"保存成功,请刷新该文档页"
+                },
+                offline:{
+                    copy:"拷贝文档",
+                    toomany:"当前接口数量超出限制,请使用第三方markdown转换软件进行转换以查看效果.",
+                    note:"swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf."
                 }
             },
             home:{
@@ -126,25 +131,43 @@
                 officeline:"离线文档(MD)",
                 selfSettings:"个性化设置"
             },
+            offline:{
+                des:"简介",
+                contact:"联系人",
+                url:"接口路径",
+                note:"简介",
+                schemaDes:"schema属性说明"
+            },
             doc:{
                 title:"文档",
+                note:"接口说明",
                 copy:"复制文档",
                 url:"接口地址",
                 method:"请求方式",
                 des:"接口描述",
                 params:"请求参数",
+                requestExample:"请求示例",
                 paramsHeader:{
+                    name:"参数名称",
+                    des:"参数说明",
+                    require:"是否必须",
+                    type:"类型"
 
                 },
                 response:"响应状态",
                 responseHeader:{
+                    code:"状态码",
+                    des:"说明"
 
                 },
                 responseParams:"响应参数",
                 responseParamsHeader:{
-
+                    name:"参数名称",
+                    des:"参数说明",
+                    type:"类型"
                 },
-                responseExample:"响应示例"
+                responseExample:"响应示例",
+                nodata:"暂无"
 
             },
             debug:{
@@ -182,6 +205,11 @@
                     plusFail:"SwaggerBootstrapUi enhancements cannot be turned on. Make sure that the annotation @EnableSwaggerBootstrapUi is enabled on the back end",
                     plusError:"Unable to turn on Swagger BootstrapUi Enhancement, Error Cause:",
                     success:"Save successfully, please refresh the document page"
+                },
+                offline:{
+                    copy:"Copy",
+                    toomany:"The current number of interfaces exceeds the limit. Please use the third-party markdown conversion software for conversion to see the effect.",
+                    note:"swagger-bootstrap-ui provides markdwon-formatted offline documents that developers can copy and convert to HTML or PDF through other markdown conversion tools.."
                 }
             },
             home:{
@@ -242,24 +270,41 @@
             },
             doc:{
                 title:"Doc",
+                note:"Description",
                 copy:"Copy",
                 url:"url",
                 method:"method",
-                des:"Description",
+                des:"note",
                 params:"Request Params",
+                requestExample:"Request Example",
                 paramsHeader:{
+                    name:"name",
+                    des:"description",
+                    require:"require",
+                    type:"type"
 
                 },
                 response:"Response Status",
                 responseHeader:{
-
+                    code:"code",
+                    des:"description"
                 },
                 responseParams:"Response Params",
                 responseParamsHeader:{
-
+                    name:"name",
+                    des:"description",
+                    type:"type"
                 },
-                responseExample:"Response Example"
+                responseExample:"Response Example",
+                nodata:"No data"
 
+            },
+            offline:{
+                des:"Description",
+                contact:"Contact",
+                url:"api url",
+                note:"Description",
+                schemaDes:"schema Description"
             },
             debug:{
                 title:"Debug",
