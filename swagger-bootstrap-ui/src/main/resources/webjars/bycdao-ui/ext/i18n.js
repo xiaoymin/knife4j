@@ -151,7 +151,7 @@
                     name:"参数名称",
                     des:"参数说明",
                     require:"是否必须",
-                    type:"类型",
+                    type:"数据类型",
                     requestType:"请求类型"
 
                 },
@@ -173,7 +173,21 @@
             },
             debug:{
                 title:"调试",
-                send:"发送"
+                send:" 发 送 ",
+                params:"请求参数列表",
+                tableHeader:{
+                    selectAll:"全选",
+                    type:"参数类型",
+                    name:"参数名称",
+                    value:"参数值"
+                },
+                response:{
+                    content:"响应内容",
+                    showDes:"显示说明",
+                    code:"响应码",
+                    cost:"耗时",
+                    size:"大小"
+                }
 
             },
             tab:{
@@ -287,7 +301,7 @@
                     name:"name",
                     des:"description",
                     require:"require",
-                    type:"type",
+                    type:"data type",
                     requestType:"request type"
 
                 },
@@ -315,7 +329,18 @@
             },
             debug:{
                 title:"Debug",
-                send:"Send"
+                send:"Send",
+                params:"Request parameter list",
+                tableHeader:{
+                    selectAll:"Select All",
+                    type:"type",
+                    name:"name",
+                    value:"value"
+                },
+                response:{
+                    content:"响应内容",
+                    showDes:"显示说明",
+                }
 
             },
             tab:{

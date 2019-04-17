@@ -1528,7 +1528,7 @@
                     {
                         field: 'name',
                         title: i18n.doc.paramsHeader.name,
-                        width: '20%'
+                        width: '15%'
                     },
                     {
                         field: 'description',
@@ -1538,7 +1538,7 @@
                     {
                         field: 'in',
                         title:  i18n.doc.paramsHeader.requestType,
-                        width: '10%',
+                        width: '15%',
                         templet:function (d) {
                             return "<span class='sbu-request-"+d.in+"'>"+d.in+"</span>";
                         }
@@ -1814,6 +1814,7 @@
      */
     SwaggerBootstrapUi.prototype.createDebugTab=function(apiInfo,menu){
         var that=this;
+        var i18n=that.i18n.instance;
         //赋值全局参数
         //apiInfo.globalParameters=that.currentInstance.globalParameters;
         //恢复原始show状态
@@ -1889,6 +1890,7 @@
         paramSize+=globalParamSize;
         //赋值参数值数量,如果参数超过5个,则显示折叠框进行折叠
         apiInfo.parameterSize=paramSize;
+        apiInfo.i18n=i18n;
         var html = template('DebugScript', apiInfo);
         $("#"+debugContentId).html("").html(html)
         //string类型的arr参数动态添加事件

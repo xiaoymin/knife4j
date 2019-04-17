@@ -460,7 +460,7 @@
             </span>
             <input type="text" id="txtreqUrl{{id}}" data-originalurl="<%=originalUrl%>" class="form-control" value="<%=url%>">
             <span class="input-group-btn">
-                <button  class="btn btn-default btn-primary btnRequest" id="btnRequest{{id}}" type="button"> 发 送 </button>
+                <button  class="btn btn-default btn-primary btnRequest" id="btnRequest{{id}}" type="button">{{i18n.debug.send}}</button>
             </span>
         </div>
         <%if(methodType!="GET"){%>
@@ -541,12 +541,12 @@
                         <tr>
                             <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll" id="parameterCheckAll{{id}}">
                                 <label style="font-weight: bold;">
-                                    <input type="checkbox" checked> 全选
+                                    <input type="checkbox" checked> {{i18n.debug.tableHeader.selectAll}}
                                 </label>
                             </div></th>
-                            <th>参数类型</th>
-                            <th>参数名称</th>
-                            <th>参数值</th>
+                            <th>{{i18n.debug.tableHeader.type}}</th>
+                            <th>{{i18n.debug.tableHeader.name}}</th>
+                            <th>{{i18n.debug.tableHeader.value}}</th>
                         </tr>
                         </thead>
                         <tbody id="paramBody{{id}}">
@@ -649,7 +649,7 @@
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordionParameters{{id}}"
                                    href="#SwaggerAccordingParameter{{id}}">
-                                    请求参数列表
+                                    {{i18n.debug.params}}
                                 </a>
                             </h4>
                         </div>
@@ -661,12 +661,12 @@
                         <tr>
                             <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll"  id="parameterCheckAll{{id}}">
                                 <label style="font-weight: bold;">
-                                    <input type="checkbox" checked> 全选
+                                    <input type="checkbox" checked> {{i18n.debug.tableHeader.selectAll}}
                                 </label>
                             </div></th>
-                            <th>参数类型</th>
-                            <th>参数名称</th>
-                            <th>参数值</th>
+                            <th>{{i18n.debug.tableHeader.type}}</th>
+                            <th>{{i18n.debug.tableHeader.name}}</th>
+                            <th>{{i18n.debug.tableHeader.value}}</th>
                         </tr>
                         </thead>
                         <tbody id="paramBody{{id}}">
@@ -913,10 +913,10 @@
                     <textarea rows="10" cols="10" id="docText{{id}}" style="display: none;">
 ## {{ summary }}
 
-**接口地址** `{{showUrl}}`
+**{{i18n.doc.url}}** `{{showUrl}}`
 
 
-**请求方式** `{{methodType}}`
+**{{i18n.doc.method}}** `{{methodType}}`
 
 
 **consumes** `{{consumes}}`
@@ -925,24 +925,24 @@
 **produces** `{{produces}}`
 
 
-**接口描述** `{{description}}`
+**{{i18n.doc.des}}** `{{description}}`
 
-**请求参数**
+**{{i18n.doc.params}}**
 {{ if parameters && parameters.length>0 }}
-| 参数名称         | 说明     |     参数类型 |  是否必须      |  类型   |  schema  |
+| {{i18n.doc.paramsHeader.name}}         | {{i18n.doc.paramsHeader.des}}     |     {{i18n.doc.paramsHeader.requestType}} |  {{i18n.doc.paramsHeader.require}}      |  {{i18n.doc.paramsHeader.type}}   |  schema  |
 | ------------ | -------------------------------- |-----------|--------|----|--- |
 {{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
             {{/each}}
 {{else}}
-暂无
+{{i18n.doc.nodata}}
 {{/if}}
 
 {{ if refparameters && refparameters.length>0 }}
-**schema属性说明**
+**{{i18n.offline.schemaDes}}**
   {{each refparameters}}
 **{{$value.name}}**
 
-| 参数名称         | 说明    |     参数类型 |  是否必须   |  类型  |  schema |
+| {{i18n.doc.paramsHeader.name}}         | {{i18n.doc.paramsHeader.des}}     |     {{i18n.doc.paramsHeader.requestType}} |  {{i18n.doc.paramsHeader.require}}      |  {{i18n.doc.paramsHeader.type}}   |  schema  |
 | ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
 | {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
 {{/each}}
@@ -950,33 +950,33 @@
 {{/if}}
 
 
-**响应状态**
+**{{i18n.doc.response}}**
 {{ if responseCodes}}
-| 状态码         | 说明                             |    schema                         |
+| {{i18n.doc.responseHeader.code}}         | {{i18n.doc.responseHeader.des}}                             |    schema                         |
 | ------------ | -------------------------------- |---------------------- |
 {{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
 {{/each}}
 {{else}}
-暂无
+{{i18n.doc.nodata}}
 {{/if}}
 
 
-**响应参数**
+**{{i18n.doc.responseParams}}**
 {{ if responseParameters && responseParameters.length>0 }}
-| 参数名称         | 说明                             |    类型 |  schema |
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
 | ------------ | -------------------|-------|----------- |
 {{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
             {{/each}}
 {{else}}
-暂无
+{{i18n.doc.nodata}}
 {{/if}}
 
 {{ if responseRefParameters && responseRefParameters.length>0 }}
-**schema属性说明**
+**{{i18n.offline.schemaDes}}**
   {{each responseRefParameters}}
 **{{$value.name}}**
 
-| 属性名称         |  说明          |   类型  |  schema |
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
 | ------------ | ------------------|--------|----------- |
 {{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
             {{/each}}
@@ -984,7 +984,7 @@
 
 {{/if}}
 
-**响应示例**
+**{{i18n.doc.responseExample}}**
 
 {{ if responseBasicType }}
 ```text
