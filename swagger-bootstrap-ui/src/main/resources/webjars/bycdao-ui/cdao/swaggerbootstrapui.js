@@ -1997,6 +1997,7 @@
      */
     SwaggerBootstrapUi.prototype.requestSend=function (apiInfo,eleObject) {
         var that=this;
+        var i18n=that.i18n.instance;
         //that.log("发送之前...")
         //that.log(apiInfo)
         var apiKeyId=apiInfo.id;
@@ -2049,7 +2050,7 @@
             //获取url
             var url=$("#txtreqUrl"+apiInfo.id).val();
             if(url==null||url==""){
-                layer.msg("请求url地址不能为空");
+                layer.msg(i18n.message.debug.urlNotEmpty);
                 return false;
             }
             var bodyRequest=false;
@@ -2222,7 +2223,8 @@
                                 if(value==null||value==""){
                                     validateflag=true;
                                     var des=trdata["name"]
-                                    validateobj={message:des+"不能为空"};
+                                    //validateobj={message:des+"不能为空"};
+                                    validateobj={message:des+i18n.message.debug.fieldNotEmpty};
                                     return false;
                                 }
                             }
@@ -2443,7 +2445,7 @@
                         if (error!=null){
                             var estr=error.toString();
                             if(estr=="Error: Network Error"){
-                                layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                                layer.msg(i18n.message.debug.networkErr)
                             }
                         }
                     }
@@ -2480,7 +2482,7 @@
                             if (error!=null){
                                 var estr=error.toString();
                                 if(estr=="Error: Network Error"){
-                                    layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                                    layer.msg(i18n.message.debug.networkErr)
                                 }
                             }
                         }
@@ -2512,7 +2514,7 @@
                         error:function (xhr, textStatus, errorThrown) {
                             that.log("ajax request--response error-------------------")
                             if(textStatus=="error"&&xhr.status==0){
-                                layer.msg("服务器正在重启或者已经挂了:(~~~~")
+                                layer.msg(i18n.message.debug.networkErr)
                                 //关闭遮罩层
                                 layer.close(index);
                             }else{
@@ -2648,6 +2650,7 @@
     SwaggerBootstrapUi.prototype.createResponseElement=function (index,apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat
         ,formCurlParams,xhr,data,startTime,allheaders,formRequest,binaryType) {
         var that=this;
+        var i18n=that.i18n.instance;
         var apiKeyId=apiInfo.id;
         var respcleanDiv=$("#responsebody"+apiKeyId);
         var laycontentdiv=$("#layuiresponsecontentmain"+apiKeyId);
@@ -2679,20 +2682,20 @@
         if(xhr.hasOwnProperty("responseText")){
             len=xhr["responseText"].gblen();
         }
-        var ckShowDesEle=$('<span class="debug-span-label" style="margin-right:30px;font-weight: bold;"><div class="checkbox" style="display: inline;"><label><input  id="checkboxShowDescription'+apiInfo.id+'"  type="checkbox" checked="checked">显示说明</label></div></span>')
+        var ckShowDesEle=$('<span class="debug-span-label" style="margin-right:30px;font-weight: bold;"><div class="checkbox" style="display: inline;"><label><input  id="checkboxShowDescription'+apiInfo.id+'"  type="checkbox" checked="checked">'+i18n.debug.response.showDes+'</label></div></span>')
         //清空响应状态栏,赋值响应栏
         responsestatus.html("")
         responsestatus
             .append(ckShowDesEle)
-            .append($("<span class='debug-span-label'>响应码:</span><span class='debug-span-value'>"+statsCode+"</span>"))
-            .append($("<span class='debug-span-label'>耗时:</span><span class='debug-span-value'>"+diff+" ms</span>"))
-            .append($("<span class='debug-span-label'>大小:</span><span class='debug-span-value'>"+len+" b</span>"))
+            .append($("<span class='debug-span-label'>"+i18n.debug.response.code+":</span><span class='debug-span-value'>"+statsCode+"</span>"))
+            .append($("<span class='debug-span-label'>"+i18n.debug.response.cost+":</span><span class='debug-span-value'>"+diff+" ms</span>"))
+            .append($("<span class='debug-span-label'>"+i18n.debug.response.size+":</span><span class='debug-span-value'>"+len+" b</span>"))
             .append($("<span class='debug-span-label' style='margin-left:10px;' id='bigScreen"+apiInfo.id+"'><i class=\"icon-text-width iconfont icon-quanping\" style='cursor: pointer;'></i></span>"));
         //赋值响应headers
         //var mimtype=xhr.overrideMimeType();
         //var allheaders=xhr.getAllResponseHeaders();
         if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
+            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>'+i18n.debug.response.header+'</th><th>value</th></tr></table>');
             //如果headers是string，ajax提交
             if(typeof (allheaders)=="string"){
                 var headers=allheaders.split("\r\n");
@@ -2742,7 +2745,7 @@
                         }
                     }
                 }
-                resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
+                resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>"+i18n.debug.response.download+"</a>");
             }else {
                 resp2Html=$("<img  src='"+downloadurl+"'>");
                 setTimeout(function () {
@@ -2755,7 +2758,7 @@
             resp2.append(resp2Html);
         }
         else if(rtext!=null&&rtext!=undefined){
-            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>复制</button><br /><br />");
+            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>"+i18n.settings.copy+"</button><br /><br />");
             var rawText=$("<span></span>");
             rawText.html(rtext);
             resp2.html("");
@@ -2766,10 +2769,10 @@
                 }
             });
             cliprawboard.on('success', function(e) {
-                layer.msg("复制成功")
+                layer.msg(i18n.message.copy.success)
             });
             cliprawboard.on('error', function(e) {
-                layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+                layer.msg(i18n.message.copy.fail)
             });
             if(tp!=null&& tp=="string"){
                 //转二进制
@@ -2783,7 +2786,7 @@
                         "    width: 100px;\n" +
                         "    bottom: 30px;\n" +
                         "    text-align: center;'></div>")
-                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\"> 下 载 </button>");
+                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\">"+i18n.debug.response.download+"</button>");
                     button.bind("click",function () {
                         window.open(url);
                     })
@@ -2818,7 +2821,7 @@
                         }
                     }
                 }
-                resp2Html=$("<a style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>下载文件</a>");
+                resp2Html=$("<a style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>"+i18n.debug.response.download+"</a>");
             }else {
                 resp2Html=$("<img   src='"+downloadurl+"'>");
                 setTimeout(function () {
@@ -2944,7 +2947,7 @@
         }else{
             curl=that.buildCurl(apiInfo,headerparams,reqdata,paramBodyType,url,fileUploadFlat);
         }
-        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>复制</button><br /><br />");
+        var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>"+i18n.settings.copy+"</button><br /><br />");
         var curlcode=$("<code></code>");
         curlcode.html(curl);
 
@@ -2956,10 +2959,10 @@
             }
         });
         clipboard.on('success', function(e) {
-            layer.msg("复制成功")
+            layer.msg(i18n.message.copy.success)
         });
         clipboard.on('error', function(e) {
-            layer.msg("复制失败,您当前浏览器版本不兼容,请手动复制.")
+            layer.msg(i18n.message.copy.fail)
         });
 
         //全屏icon点击事件

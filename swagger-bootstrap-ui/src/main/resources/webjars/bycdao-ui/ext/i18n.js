@@ -73,6 +73,11 @@
                     copy:"拷贝文档",
                     toomany:"当前接口数量超出限制,请使用第三方markdown转换软件进行转换以查看效果.",
                     note:"swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf."
+                },
+                debug:{
+                    urlNotEmpty:"请求url地址不能为空",
+                    fieldNotEmpty:"不能为空",
+                    networkErr:"服务器正在重启或者已经挂了:(~~~~"
                 }
             },
             home:{
@@ -186,7 +191,9 @@
                     showDes:"显示说明",
                     code:"响应码",
                     cost:"耗时",
-                    size:"大小"
+                    size:"大小",
+                    header:"请求头",
+                    download:"下载文件"
                 }
 
             },
@@ -230,6 +237,11 @@
                     copy:"Copy",
                     toomany:"The current number of interfaces exceeds the limit. Please use the third-party markdown conversion software for conversion to see the effect.",
                     note:"swagger-bootstrap-ui provides markdwon-formatted offline documents that developers can copy and convert to HTML or PDF through other markdown conversion tools.."
+                },
+                debug:{
+                    urlNotEmpty:"Request URL address cannot be empty",
+                    fieldNotEmpty:"cannot be empty",
+                    networkErr:"The server is restarting or hanging up:(~~~~"
                 }
             },
             home:{
@@ -338,8 +350,13 @@
                     value:"value"
                 },
                 response:{
-                    content:"响应内容",
-                    showDes:"显示说明",
+                    content:"Response",
+                    showDes:"Show Description",
+                    code:"code",
+                    cost:"cost",
+                    size:"size",
+                    header:"Request Header",
+                    download:"Download File"
                 }
 
             },
