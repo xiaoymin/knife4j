@@ -1119,6 +1119,7 @@
         var element=layui.element;
         var tabId="GlobalParamScript";
         var tabContetId="layerTab"+tabId;
+        var i18n=that.i18n.instance;
         //内容覆盖
         setTimeout(function () {
             if(!that.tabExists(tabId)){
@@ -1126,10 +1127,10 @@
                 var html = template('GlobalParamScript', that.currentInstance);
                 var tabObj={
                     id:tabId,
-                    title:'全局参数设置',
+                    title:i18n.global.tab,
                     content:html
                 };
-                that.globalTabs.push({id:tabId,title:'全局参数设置'});
+                that.globalTabs.push({id:tabId,title:i18n.global.tab});
                 element.tabAdd(that.layTabFilter, tabObj);
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabFinallyRight();
@@ -1146,8 +1147,8 @@
                     var typeTd=$("<td><select class='form-control'><option value='header'>header</option><option value='query'>query</option></select></td>");
                     //操作
                     var operateTd=$("<td>&nbsp;&nbsp;</td>")
-                    var btnSave=$("<button class=\"btn btn-circle btn-info btn-small btn-save\" type=\"button\">保存</button>");
-                    var btnCancel=$("<button class=\"btn btn-circle  btn-danger btn-small btn-cancel\" type=\"button\">删除</button>");
+                    var btnSave=$("<button class=\"btn btn-circle btn-info btn-small btn-save\" type=\"button\">"+i18n.global.save+"</button>");
+                    var btnCancel=$("<button class=\"btn btn-circle  btn-danger btn-small btn-cancel\" type=\"button\">"+i18n.global.delete+"</button>");
                     operateTd.append(btnSave).append("&nbsp;&nbsp;").append(btnCancel);
                     tr.append(nameTd).append(valueTd).append(typeTd).append(operateTd);
                     that.getDoc().find("#globalTabBody").append(tr);
@@ -1162,11 +1163,11 @@
                         var type=ptr.find("td:eq(2)").find("select:first").val();
                         that.log("name:"+name+",value:"+value+",type:"+type+",oldname:"+oldname);
                         if(name==null||name==""){
-                            layer.msg("请输入全局参数名称");
+                            layer.msg(i18n.message.global.iptname);
                             return false;
                         }
                         if(value==null||value==""){
-                            layer.msg("请输入全局参数值");
+                            layer.msg(i18n.message.global.iptvalue);
                             return false;
                         }
                         var globalParameterInstance=new SwaggerBootstrapUiParameter();
@@ -1190,7 +1191,7 @@
                         }
                         that.log("目前全局参数..")
                         that.log(that.currentInstance.globalParameters);
-                        layer.msg("保存成功")
+                        layer.msg(i18n.message.success)
                     })
                     //取消时间
                     btnCancel.on("click",function (e) {
@@ -1207,7 +1208,7 @@
                             that.deleteGlobalParamsByName(name);
                         }
                         cancel.parent().parent().remove();
-                        layer.msg("删除成功")
+                        layer.msg(i18n.message.global.deleteSuccess)
                     })
                 })
                 //全局保存事件
@@ -1220,11 +1221,11 @@
                     var type=ptr.find("td:eq(2)").find("select:first").val();
                     that.log("name:"+name+",value:"+value+",type:"+type+",oldname:"+oldname);
                     if(name==null||name==""){
-                        layer.msg("请输入全局参数名称");
+                        layer.msg(i18n.message.global.iptname);
                         return false;
                     }
                     if(value==null||value==""){
-                        layer.msg("请输入全局参数值");
+                        layer.msg(i18n.message.global.iptvalue);
                         return false;
                     }
                     var globalParameterInstance=new SwaggerBootstrapUiParameter();
@@ -1246,7 +1247,7 @@
                     }
                     that.log("目前全局参数..")
                     that.log(that.currentInstance.globalParameters);
-                    layer.msg("保存成功")
+                    layer.msg(i18n.message.success)
                 })
                 //全局取消事件
                 that.getDoc().find("#"+tabContetId).find(".btn-cancel").on("click",function (e) {
@@ -1263,7 +1264,7 @@
                         that.deleteGlobalParamsByName(name);
                     }
                     cancel.parent().parent().remove();
-                    layer.msg("删除成功")
+                    layer.msg(i18n.message.global.deleteSuccess)
                 })
             }else{
                 element.tabChange(that.layTabFilter,tabId);

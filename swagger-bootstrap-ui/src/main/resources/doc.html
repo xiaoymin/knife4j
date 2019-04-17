@@ -787,20 +787,19 @@
 <!--全局参数-->
 <script type="text/html" id="GlobalParamScript">
     <div  style="width:99%;margin:0px auto;margin-top: 10px;">
-        <div class="alert alert-info" role="alert">swagger-bootstrap-ui 提供全局参数Debug功能,目前默认提供header(请求头)、query(form)两种方式的入参.<br /><br />
-            在此添加全局参数后,默认Debug调试tab页会带上该参数,该全局参数只在该分组下有效,不同的分组需要分别设置</div>
+        <div class="alert alert-info" role="alert">{{# i18n.global.note }}</div>
         <div class="input-inline" style="margin-bottom:10px;">
-            <button class="btn btn-primary" type="button" id="btnAddParam"  >添加参数</button>
+            <button class="btn btn-primary" type="button" id="btnAddParam"  >{{i18n.global.add}}</button>
         </div>
         <div style="margin-top: 15px;">
             <div class="swbu-main">
                 <table class="" id="globalTable">
                     <thead>
                     <tr>
-                        <th>参数名称</th>
-                        <th>参数值</th>
-                        <th>参数类型</th>
-                        <th>操作</th>
+                        <th>{{i18n.global.tableHeader.name}}</th>
+                        <th>{{i18n.global.tableHeader.value}}</th>
+                        <th>{{i18n.global.tableHeader.type}}</th>
+                        <th>{{i18n.global.tableHeader.operator}}</th>
                     </tr>
                     </thead>
                     <tbody id="globalTabBody">
@@ -810,7 +809,7 @@
                         <td><input class="form-control p-key" value="<%=param.name%>" data-old='<%=param.name%>'></td>
                         <td><input class="form-control p-key" value="<%=param.value%>"></td>
                         <td><select class='form-control'><option value='header'<%if(param.in=="header"){%>  selected  <%}%> >header</option><option value='query' <%if(param.in=="query"){%>  selected  <%}%>>query</option></select></td>
-                        <td><button class="btn btn-circle btn-info btn-small btn-save" type="button">保存</button>&nbsp;&nbsp;<button class="btn btn-circle btn-danger btn-small btn-cancel" type="button">删除</button></td>
+                        <td><button class="btn btn-circle btn-info btn-small btn-save" type="button">{{i18n.global.save}}</button>&nbsp;&nbsp;<button class="btn btn-circle btn-danger btn-small btn-cancel" type="button">{{i18n.global.delete}}</button></td>
                     </tr>
 
                     <%}}%>
