@@ -42,6 +42,9 @@
     var i18n_instance={
         zh:{
             title:"swagger-bootstrap-ui-前后端api接口文档",
+            markdown:{
+              title:"其他文档"
+            },
             message:{
                 success:"保存成功",
                 unsupportstore:"当前浏览器不支持localStorage对象,无法使用该功能",
@@ -214,6 +217,9 @@
         },
         en:{
             title:"swagger-bootstrap-ui RESTful Api Docs",
+            markdown:{
+                title:"Other Document"
+            },
             message:{
                 success:"Save successfully",
                 unsupportstore:"Current browsers do not support localStorage objects and cannot use this feature",

@@ -1,5 +1,6 @@
 package com.github.xiaoymin.swaggerbootstrapui.annotations;
 
+import com.github.xiaoymin.swaggerbootstrapui.configuration.MarkdownFileConfiguration;
 import com.github.xiaoymin.swaggerbootstrapui.configuration.SecurityConfiguration;
 import com.github.xiaoymin.swaggerbootstrapui.configuration.SwaggerBootstrapUIConfiguration;
 import org.springframework.context.annotation.Import;
@@ -20,7 +21,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Documented
-@Import({SwaggerBootstrapUIConfiguration.class, SecurityConfiguration.class})
+@Import({SwaggerBootstrapUIConfiguration.class, SecurityConfiguration.class, MarkdownFileConfiguration.class})
 public @interface EnableSwaggerBootstrapUI {
 
 }

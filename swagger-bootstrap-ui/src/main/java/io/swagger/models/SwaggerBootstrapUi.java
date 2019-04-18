@@ -29,6 +29,11 @@ public class SwaggerBootstrapUi {
     private List<SwaggerBootstrapUiPath> pathSortLists=new ArrayList<>();
 
     /***
+     * 自定义菜单内容
+     */
+    private List<MarkdownFile> markdownFiles;
+
+    /***
      * 开启增强失败,错误原因
      */
     private String errorMsg;
@@ -56,5 +61,14 @@ public class SwaggerBootstrapUi {
 
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
+    }
+
+
+    public List<MarkdownFile> getMarkdownFiles() {
+        return markdownFiles;
+    }
+
+    public void setMarkdownFiles(List<MarkdownFile> markdownFiles) {
+        this.markdownFiles = markdownFiles;
     }
 }

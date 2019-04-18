@@ -849,6 +849,38 @@
         extLi.append(extul);
         that.getMenu().append(extLi);
 
+        //自定义文档
+        if(that.settings.enableSwaggerBootstrapUi){
+            //如果是启用
+            //判断自定义文档是否不为空
+            if(that.currentInstance.markdownFiles!=null&&that.currentInstance.markdownFiles.length>0){
+                var mdlength=that.currentInstance.markdownFiles.length;
+                var markdownLi=$('<li  class="detailMenu"></li>');
+                var mdla=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+i18nInstance.markdown.title+'</span><span class="badge badge-primary ">'+mdlength+'</span><b class="arrow icon-angle-down"></b></a>');
+                markdownLi.append(mdla);
+
+                //循环树
+                var mdul=$('<ul class="submenu"></ul>')
+                $.each(that.currentInstance.markdownFiles,function (i, md) {
+                    var mdli=$('<li class="menuLidoc" ><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left">'+md.title+'</span> </div></div></li>');
+                    mdli.data("data",md)
+                    mdli.on("click",function () {
+                        var _mddata=$(this).data("data");
+                        that.log("其他文档click")
+                        that.createOtherMarkdownFile(_mddata);
+                        that.getMenu().find("li").removeClass("active");
+                        mdli.addClass("active");
+                    })
+                    mdul.append(mdli);
+                })
+
+                markdownLi.append(mdul);
+
+                that.getMenu().append(markdownLi);
+
+            }
+        }
+
 
 
         $.each(that.currentInstance.tags,function (i, tag) {
@@ -910,6 +942,44 @@
         that.log("菜单初始化完成...")
         //DApiUI.initLiClick();
         that.initializationMenuClickEvents();
+    }
+
+    /***
+     * 创建文档页
+     * @param md
+     */
+    SwaggerBootstrapUi.prototype.createOtherMarkdownFile=function (md) {
+        var that=this;
+        var layui=that.layui;
+        var element=layui.element;
+
+        var i18n=that.i18n.instance;
+
+        var title=md.title;
+        var data=$.extend({},md,{id:md5(title)})
+        that.log(data)
+        var tabId="otherMarkdownFileScript"+data.id;
+        setTimeout(function () {
+            if(!that.tabExists(tabId)){
+                var html = template("otherMarkdownFileScript", data);
+                var tabObj={
+                    id:tabId,
+                    title:md.title,
+                    content:html
+                };
+                that.globalTabs.push({id:tabId,title:md.title});
+                element.tabAdd(that.layTabFilter, tabObj);
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabFinallyRight();
+                //markdown渲染
+                //var convert=new showdown.Converter({tables:true,tablesHeaderId:true});
+                //var html=convert.makeHtml(md.content);
+                $("#otherMarkdownFile"+data.id).html(marked(md.content));
+            }else{
+                element.tabChange(that.layTabFilter,tabId);
+                that.tabRollPage("auto");
+            }
+        },100)
     }
 
     /***
@@ -4505,6 +4575,11 @@
                 }
             })
         }
+        //自定义文档
+        if (that.settings.enableSwaggerBootstrapUi){
+            var sbu=menu["swaggerBootstrapUi"]
+            that.currentInstance.markdownFiles=sbu.markdownFiles;
+        }
         that.log("解析refTreetableparameters结束,耗时："+(new Date().getTime()-pathStartTime));
         that.log(new Date().toTimeString());
 
@@ -5868,6 +5943,8 @@
         this.groupId=md5(name);
         this.firstLoad=true;
         this.groupApis=new Array();
+        //自定义文档
+        this.markdownFiles=null;
 
         this.i18n=null;
     }

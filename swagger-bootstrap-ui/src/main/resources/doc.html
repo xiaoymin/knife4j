@@ -42,6 +42,7 @@
     <script src="webjars/bycdao-ui/jquery/showdown.min.js"></script>
     <script src="webjars/bycdao-ui/jquery/async.min.js"></script>
     <script src="webjars/bycdao-ui/jquery/md5.min.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui-md.css?v=1.9.3" />
     <style type="text/css">
         #container {
             width: 100%;
@@ -206,6 +207,15 @@
         </div>
     </div>
 </div>
+
+<!--其他markdown文档说明-->
+<script type="text/html" id="otherMarkdownFileScript">
+    <div id="otherMarkdownFile{{id}}" class="othermarkdown">
+
+    </div>
+
+</script>
+
 <!--离线文档说明-->
 <script type="text/html" id="offLinecontentScript">
     <div  style="width:99%;margin:0px auto;margin-top: 10px;">
@@ -839,7 +849,7 @@
                         <p><span class="sbu-api-title">{{i18n.doc.method}}</span> <code style="background-color: transparent;">{{methodType}}</code></p>
                         <p><span class="sbu-api-title">consumes</span> <code style="background-color: transparent;">{{consumes}}</code></p>
                         <p><span class="sbu-api-title">produces</span> <code style="background-color: transparent;">{{produces}}</code></p>
-                        <p><span class="sbu-api-title">{{i18n.doc.des}}</span> <code style="background-color: transparent;">{{description}}</code></p>
+                        <p><span class="sbu-api-title">{{i18n.doc.des}}</span> <code style="background-color: transparent;">{{# description}}</code></p>
                         {{ if requestValue }}
                         <p><strong>{{i18n.doc.requestExample}}</strong></p>
                         <div id="editorRequestSample{{id}}" style="width: auto;bottom: 10px;">{{ requestValue }}</div>
