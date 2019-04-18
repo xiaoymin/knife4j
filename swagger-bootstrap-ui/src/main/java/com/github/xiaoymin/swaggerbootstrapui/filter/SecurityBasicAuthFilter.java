@@ -62,15 +62,19 @@ public class SecurityBasicAuthFilter extends BasicFilter implements Filter{
                     }
                     String userAndPass=decodeBase64(auth.substring(6));
                     String[] upArr=userAndPass.split(":");
-                    String iptUser=upArr[0];
-                    String iptPass=upArr[1];
-                    //匹配服务端用户名及密码
-                    if (iptUser.equals(userName)&&iptPass.equals(password)){
-                        servletRequest.getSession().setAttribute(SwaggerBootstrapUiBasicAuthSession,userName);
-                        chain.doFilter(request,response);
-                    }else{
+                    if (upArr.length!=2){
                         writeForbiddenCode(httpServletResponse);
-                        return;
+                    }else{
+                        String iptUser=upArr[0];
+                        String iptPass=upArr[1];
+                        //匹配服务端用户名及密码
+                        if (iptUser.equals(userName)&&iptPass.equals(password)){
+                            servletRequest.getSession().setAttribute(SwaggerBootstrapUiBasicAuthSession,userName);
+                            chain.doFilter(request,response);
+                        }else{
+                            writeForbiddenCode(httpServletResponse);
+                            return;
+                        }
                     }
                 }
             }else{
