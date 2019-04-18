@@ -68,29 +68,32 @@ public class MarkdownFileConfiguration {
         MarkdownFile markdownFile=new MarkdownFile();
         if (resource!=null){
             logger.info(resource.getFilename());
-            BufferedReader reader=null;
-            try {
-                reader=new BufferedReader(new InputStreamReader(resource.getInputStream(),"UTF-8"));
-                String le=null;
-                String title=resource.getFilename();
-                String reg="#{1,3}\\s{1}(.*)";
-                Pattern pattern=Pattern.compile(reg,Pattern.CASE_INSENSITIVE);
-                Matcher matcher=null;
-                while ((le=reader.readLine())!=null){
-                    //判断line是否是包含标题
-                    matcher=pattern.matcher(le);
-                    if (matcher.matches()){
-                        title=matcher.group(1);
-                        break;
+            //只读取md
+            if (resource.getFilename().toLowerCase().endsWith(".md")){
+                BufferedReader reader=null;
+                try {
+                    reader=new BufferedReader(new InputStreamReader(resource.getInputStream(),"UTF-8"));
+                    String le=null;
+                    String title=resource.getFilename();
+                    String reg="#{1,3}\\s{1}(.*)";
+                    Pattern pattern=Pattern.compile(reg,Pattern.CASE_INSENSITIVE);
+                    Matcher matcher=null;
+                    while ((le=reader.readLine())!=null){
+                        //判断line是否是包含标题
+                        matcher=pattern.matcher(le);
+                        if (matcher.matches()){
+                            title=matcher.group(1);
+                            break;
+                        }
                     }
+                    markdownFile.setTitle(title);
+                    markdownFile.setContent(new String(readBytes(resource.getFile()),"UTF-8"));
+                    return markdownFile;
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                }finally {
+                    closeQuiltly(reader);
                 }
-                markdownFile.setTitle(title);
-                markdownFile.setContent(new String(readBytes(resource.getFile()),"UTF-8"));
-                return markdownFile;
-            } catch (Exception e) {
-                logger.error(e.getMessage(),e);
-            }finally {
-                closeQuiltly(reader);
             }
         }
         return null;
