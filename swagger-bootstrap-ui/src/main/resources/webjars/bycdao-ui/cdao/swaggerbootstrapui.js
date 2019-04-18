@@ -307,7 +307,6 @@
                 }
             }
 
-
             //开启缓存已打开的api文档
             if(checkFiledExistsAndEqStr(that.requestParameter,"cacheApi","1")){
                 that.settings.enableCacheOpenApiTable=true;
@@ -318,6 +317,19 @@
                 that.settings.enableSwaggerBootstrapUi=true;
             }
 
+            //判断语言版本
+            if(that.requestParameter.hasOwnProperty("lang")){
+                var currentLanguage=that.i18n.language;
+                var reqLanguage=that.requestParameter["lang"];
+                $.each(that.i18n.supports,function (i, sp) {
+                    if(reqLanguage==sp.lang){
+                        currentLanguage=sp.lang;
+                    }
+                });
+                that.settings.language=currentLanguage;
+                that.log("当前语言版本");
+                that.log(that.settings);
+            }
             that.log("参数初始化Settings结束")
             that.log(that.settings);
 
@@ -355,6 +367,7 @@
      * 开启RequestMapping接口过滤,默认只显示: filterApi=1  filterApiType=post
      * 开启缓存已打开的api文档:cacheApi=1
      * 启用SwaggerBootstrapUi提供的增强功能:plus=1
+     * i18n支持：lang=zh|en
      */
     SwaggerBootstrapUi.prototype.initRequestParameters=function () {
         var that=this;
@@ -1168,6 +1181,8 @@
             paramArr.push("filterApi=1");
             paramArr.push("filterApiType="+sett.enableFilterMultipartApiMethodType);
         }
+        //添加语言
+        paramArr.push("lang="+sett.language);
         if(paramArr.length>0){
             baseUrl+="?"+paramArr.join("&");
         }
@@ -2738,6 +2753,14 @@
         var statsCode=xhr.status;
         if(statsCode==200){
             statsCode=statsCode+" OK";
+        }else{
+            //非200 重构高度
+            that.log("非200 重构高度");
+            that.log(xhr);
+            resp1.css({"height":responseHeight+"px"})
+            resp2.css({"height":responseHeight+"px"})
+            resp3.css({"height":responseHeight+"px"})
+            resp5.css({"height":responseHeight+"px"})
         }
         //计算耗时
         var endTime=new Date().getTime();
@@ -3009,6 +3032,9 @@
                 resp1.html(rtext);
             }
         }
+
+
+
         //构建CURL功能
         //组件curl功能
         var curl=null;
