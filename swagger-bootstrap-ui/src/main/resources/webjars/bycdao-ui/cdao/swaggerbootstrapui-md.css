@@ -549,7 +549,22 @@ body.typora-export {
     padding-right: 0px;
 }
 
-.othermarkdown .md-fences, code, tt {
+.othermarkdown .md-fences{
+    margin: 0px 0.3em;
+    padding: 0px 0.3em;
+    background: rgb(238, 238, 238);
+    font-family: mononoki, monospace;
+    text-shadow: rgb(255, 255, 255) 0px 1px;
+}
+
+.othermarkdown tt{
+    margin: 0px 0.3em;
+    padding: 0px 0.3em;
+    background: rgb(238, 238, 238);
+    font-family: mononoki, monospace;
+    text-shadow: rgb(255, 255, 255) 0px 1px;
+}
+.othermarkdown code{
     margin: 0px 0.3em;
     padding: 0px 0.3em;
     background: rgb(238, 238, 238);

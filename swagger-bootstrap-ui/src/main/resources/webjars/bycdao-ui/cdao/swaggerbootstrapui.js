@@ -466,13 +466,16 @@
                if(newTagArrs.length>0){
                    $.each(newTagArrs,function (i, tag) {
                        var len=tag.childrens.length;
+                       var _lititle="";
                        if(len==0){
                            //var li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
                            var li=null;
                            if (that.settings.showTagStatus){
-                               li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+') </span></a></li>');
+                               _lititle=tag.name+"("+tag.description+")";
+                               li=$('<li class="detailMenu" title="'+_lititle+'"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+') </span></a></li>');
                            }else{
-                               li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                               _lititle=tag.name
+                               li=$('<li class="detailMenu" title="'+_lititle+'"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
                            }
                            that.getSearchMenu().append(li);
                        }else{
@@ -487,8 +490,7 @@
                                childrenLi.data("data",children);
                                ul.append(childrenLi);
                            })*/
-                           //存在子标签
-                           var li=$('<li  class="detailMenu"></li>');
+
 
                            var tagNewApiIcon="";
                            if(tag.hasNew){
@@ -496,10 +498,14 @@
                            }
                            var titleA=null;
                            if(that.settings.showTagStatus){
+                               _lititle=tag.name+"("+tag.description+")";
                                titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+')<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
                            }else{
+                               _lititle=tag.name
                                titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
                            }
+                           //存在子标签
+                           var li=$('<li  class="detailMenu" title="'+_lititle+'"></li>');
                            //var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                            li.append(titleA);
                            //循环树
@@ -898,28 +904,33 @@
 
         $.each(that.currentInstance.tags,function (i, tag) {
             var len=tag.childrens.length;
+            var _lititle="";
             if(len==0){
                 var li=null;
                 if (that.settings.showTagStatus){
-                    li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+') </span></a></li>');
+                    _lititle=tag.name+"("+tag.description+")";
+                    li=$('<li class="detailMenu" title="'+_lititle+'"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+') </span></a></li>');
                 }else{
-                    li=$('<li class="detailMenu"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
+                    _lititle=tag.name;
+                    li=$('<li class="detailMenu" title="'+_lititle+'"><a href="javascript:void(0)"><i class="icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+' </span></a></li>');
                 }
                 that.getMenu().append(li);
             }else{
-                //存在子标签
-                var li=$('<li  class="detailMenu"></li>');
-
                 var tagNewApiIcon="";
                 if(tag.hasNew){
                     tagNewApiIcon='<i class="iconfont icon-xinpin" style="float: right;right: 30px;position: absolute;"></i>';
                 }
                 var titleA=null;
                 if(that.settings.showTagStatus){
+                    _lititle=tag.name+"("+tag.description+")";
                     titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+')<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
                 }else{
+                    _lititle=tag.name;
                     titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
                 }
+                //存在子标签
+                var li=$('<li  class="detailMenu" title="'+_lititle+'"></li>');
+
                 //var titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text"> '+tag.name+'<span class="badge badge-primary ">'+len+'</span></span><b class="arrow icon-angle-down"></b></a>');
                 li.append(titleA);
                 //循环树
