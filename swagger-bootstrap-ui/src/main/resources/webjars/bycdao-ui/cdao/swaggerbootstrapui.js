@@ -1386,12 +1386,18 @@
      */
     SwaggerBootstrapUi.prototype.getSecurityInfos=function () {
         var that=this;
+        var id=md5(that.currentInstance.name);
         var params=[];
         if(window.localStorage){
             var store = window.localStorage;
-            var globalparams=store["securityArrs"];
+            var globalparams=store["SwaggerBootstrapUiSecuritys"];
             if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
-                params=JSON.parse(globalparams);
+                var gpJson=JSON.parse(globalparams);
+                $.each(gpJson,function (i, j) {
+                    if(j.key==id){
+                        params=j.value;
+                    }
+                })
             }
         }else{
             params=$("#sbu-header").data("cacheSecurity");
@@ -1402,9 +1408,25 @@
      * 清空security
      */
     SwaggerBootstrapUi.prototype.clearSecuritys=function(){
+        var that=this;
+        var id=md5(that.currentInstance.name);
         if(window.localStorage){
             var store = window.localStorage;
-            store.setItem("securityArrs","");
+            var storeKey="SwaggerBootstrapUiSecuritys";
+            var _securityValue=store[storeKey];
+            //初始化
+            var _secArr=new Array();
+            if(_securityValue!=undefined&&_securityValue!=null&&_securityValue!=""){
+                var _secTempArr=JSON.parse(_securityValue);
+                $.each(_secTempArr,function (i, sta) {
+                    if(sta.key==id) {
+                        _secArr.push({key:id,value:[]});
+                    }else{
+                        _secArr.push(sta)
+                    }
+                })
+            }
+            store.setItem("SwaggerBootstrapUiSecuritys",JSON.stringify(_secArr));
         }
     }
 
@@ -1453,6 +1475,52 @@
         }
         return flag;
     }
+
+    /***
+     * 更新auth权限
+     * @param param
+     */
+    SwaggerBootstrapUi.prototype.updateSecuritysParams=function (param) {
+        var that=this;
+        var key="securityArrs";
+        if(window.localStorage) {
+            var store = window.localStorage;
+            var storeKey="SwaggerBootstrapUiSecuritys";
+            var globalparams=store[storeKey];
+            if(globalparams!=null&&globalparams!=undefined&&globalparams!=""){
+                globalparams=JSON.parse(globalparams);
+                var id=md5(that.currentInstance.name);
+                var arr=new Array();
+                $.each(globalparams,function (i, gp) {
+                    if(gp.key==id){
+                        var _value=gp.value;
+                        $.each(_value,function (j, au) {
+                            if(au.name==param.name){
+                                au.in=param.in;
+                                au.value=param.value;
+                                au.txtValue=param.value;
+                            }
+                        })
+                        arr.push({key:id,value:_value});
+
+                    }else{
+                        arr.push(gp);
+                    }
+                })
+                var gbStr=JSON.stringify(arr);
+                store.setItem(storeKey,gbStr);
+            }
+        }else{
+            $.each(that.currentInstance[key],function (i, gp) {
+                if(gp.name==param.name){
+                    gp.in=param.in;
+                    gp.value=param.value;
+                    gp.txtValue=param.value;
+                }
+            })
+        }
+    }
+
     SwaggerBootstrapUi.prototype.updateGlobalParams=function (param,key) {
         var that=this;
         if(window.localStorage) {
@@ -3457,7 +3525,7 @@
         var that=this;
         var layui=that.layui;
         var element=layui.element;
-        var tabId="SwaggerBootstrapUiSecurityScript";
+        var tabId="SwaggerBootstrapUiSecurityScript"+md5(that.currentInstance.name);
         var tabContetId="layerTab"+tabId;
         var i18n=that.i18n.instance;
         setTimeout(function () {
@@ -3466,7 +3534,7 @@
                 var html = template('SwaggerBootstrapUiSecurityScript', that.currentInstance);
                 var tabObj={
                     id:tabId,
-                    title:'Authorize',
+                    title:'Authorize-'+that.currentInstance.name,
                     content:html
                 };
                 that.globalTabs.push({id:tabId,title:'Authorize'});
@@ -3486,7 +3554,8 @@
                     $.each(that.currentInstance.securityArrs,function (i, sa) {
                         if(sa.key==data.key&&sa.name==data.name){
                             sa.value=value;
-                            that.updateGlobalParams(sa,"securityArrs");
+                            //that.updateGlobalParams(sa,"securityArrs");
+                            that.updateSecuritysParams(sa);
                         }
                     })
                     that.log(that.currentInstance);
@@ -3519,7 +3588,8 @@
             $.each(that.currentInstance.securityArrs,function (i, sa) {
                 if(sa.key==data.key&&sa.name==data.name){
                     sa.value=value;
-                    that.updateGlobalParams(sa,"securityArrs");
+                    //that.updateGlobalParams(sa,"securityArrs");
+                    that.updateSecuritysParams(sa);
                 }
             })
             that.currentInstance.securityArrs=that.getSecurityInfos();
@@ -3540,7 +3610,8 @@
             layer.confirm(i18n.message.auth.confirm,{title:i18n.message.layer.title,btn:[i18n.message.layer.yes,i18n.message.layer.no]},function (index) {
                 $.each(that.currentInstance.securityArrs,function (i, sa) {
                     sa.value="";
-                    that.updateGlobalParams(sa,"securityArrs");
+                    //that.updateGlobalParams(sa,"securityArrs");
+                    that.updateSecuritysParams(sa);
                 })
                 that.getDoc().find("#"+tabContentId).find(".btn-save").each(function () {
                     var saveBtn=$(this);
@@ -4437,9 +4508,42 @@
                 }
                 if(securityArr.length>0){
                     that.currentInstance.securityArrs=securityArr;
+                    that.log("解析securityDefinitions属性--------------------------------------------------------------->")
                     if(window.localStorage) {
                         var store = window.localStorage;
-                        store.setItem("securityArrs",JSON.stringify(securityArr))
+                        var storeKey="SwaggerBootstrapUiSecuritys";
+                        var _securityValue=store[storeKey];
+                        that.log(that.currentInstance.name)
+                        //初始化
+                        var _secArr=new Array();
+                        var _key=md5(that.currentInstance.name);
+                        that.log(_securityValue)
+                        if(_securityValue!=undefined&&_securityValue!=null&&_securityValue!=""){
+                            that.log("判断："+_key)
+                            //有值
+                            var _secTempArr=JSON.parse(_securityValue);
+                            var flag=false;
+                            //判断值是否存在
+                            $.each(_secTempArr,function (i, sta) {
+                                if(sta.key==_key){
+                                    that.log("exists")
+                                    flag=true;
+                                    _secArr.push({key:_key,value:securityArr})
+                                }else{
+                                    _secArr.push(sta)
+                                }
+                            })
+                            if(!flag){
+                                _secArr.push({key:_key,value:securityArr})
+                            }
+                        }else{
+                            var _secObject={key:_key,value:securityArr};
+                            _secArr.push(_secObject);
+
+                        }
+                        that.log(_secArr)
+                        //store.setItem("securityArrs",JSON.stringify(securityArr))
+                        store.setItem(storeKey,JSON.stringify(_secArr))
                     }
                 }else{
                     //清空缓存
