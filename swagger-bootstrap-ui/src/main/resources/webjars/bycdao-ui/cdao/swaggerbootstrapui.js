@@ -4760,7 +4760,7 @@
               apiInfo.tags=['default'];
             }
             swpinfo.consumes=apiInfo.consumes;
-            swpinfo.description=apiInfo.description;
+            swpinfo.description=$.getValue(apiInfo,"description","",true);
             swpinfo.operationId=apiInfo.operationId;
             swpinfo.summary=apiInfo.summary;
             swpinfo.tags=apiInfo.tags;
