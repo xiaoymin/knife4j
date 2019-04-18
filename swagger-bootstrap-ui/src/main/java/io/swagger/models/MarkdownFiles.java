@@ -102,8 +102,8 @@ public class MarkdownFiles {
                         matcher=pattern.matcher(le);
                         if (matcher.matches()){
                             title=matcher.group(1);
-                            break;
                         }
+                        break;
                     }
                     markdownFile.setTitle(title);
                     markdownFile.setContent(new String(CommonUtils.readBytes(resource.getFile()),"UTF-8"));
