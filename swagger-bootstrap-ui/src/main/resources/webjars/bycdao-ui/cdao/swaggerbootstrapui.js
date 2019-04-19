@@ -582,73 +582,80 @@
      */
     SwaggerBootstrapUi.prototype.analysisGroup=function () {
         var that=this;
-        $.ajax({
-            url:that.url,
-            type:"get",
-            dataType:"json",
-            async:false,
-            success:function (data) {
-                that.log("请求成功");
-                that.log(data);
-                var t=typeof(data);
-                var groupData=null;
-                if(t=="string"){
-                    groupData=JSON.parse(data);
-                }else{
-                    groupData=data;
-                }
-                that.log("响应分组json数据");
-                that.log(groupData);
-                $.each(groupData,function (i, group) {
-                    var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
-                    g.url=group.url;
-                    var newUrl="";
-                    //此处需要判断basePath路径的情况
-                    if (group.url!=null&&group.url!=undefined&&group.url!=""){
-                        newUrl=group.url;
+        var i18n=that.i18n.instance;
+        try{
+            $.ajax({
+                url:that.url,
+                type:"get",
+                dataType:"json",
+                async:false,
+                success:function (data) {
+                    that.log("请求成功");
+                    that.log(data);
+                    var t=typeof(data);
+                    var groupData=null;
+                    if(t=="string"){
+                        groupData=JSON.parse(data);
                     }else{
-                        newUrl=group.location;
+                        groupData=data;
                     }
-                    var extBasePath="";
-                    var idx=newUrl.indexOf("/v2/api-docs");
-                    if(idx>0){
-                        //增强地址存在basePath
-                        extBasePath=newUrl.substr(0,idx);
-                    }
-                    that.log("增强basePath地址："+extBasePath);
-                    //赋值增强地址
-                    g.extUrl=extBasePath+that.extUrl+"?group="+group.name;
-                    if(that.validateExtUrl==""){
-                        that.validateExtUrl=g.extUrl;
-                    }
-                    //判断当前分组url是否存在basePath
-                    if(group.basePath!=null&&group.basePath!=undefined&&group.basePath!=""){
-                        g.baseUrl=group.basePath;
-                    }
-                    //赋值查找缓存的id
-                    if (that.cacheApis.length>0){
-                        var cainstance=null;
-                        $.each(that.cacheApis,function (x, ca) {
-                            if(ca.id==g.groupId){
-                                cainstance=ca;
-                            }
-                        })
-                        if (cainstance!=null){
-                            g.firstLoad=false;
-                            g.groupApis=cainstance.cacheApis;
+                    that.log("响应分组json数据");
+                    that.log(groupData);
+                    $.each(groupData,function (i, group) {
+                        var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
+                        g.url=group.url;
+                        var newUrl="";
+                        //此处需要判断basePath路径的情况
+                        if (group.url!=null&&group.url!=undefined&&group.url!=""){
+                            newUrl=group.url;
+                        }else{
+                            newUrl=group.location;
                         }
-                    }
-                    g.i18n=that.i18n.instance;
-                    that.instances.push(g);
-                })
-            },
-            error:function (xhr, textStatus, errorThrown) {
-                that.log("error...")
-                that.log(xhr)
-                that.log(textStatus);
-                that.log(errorThrown)
-            }
-        })
+                        var extBasePath="";
+                        var idx=newUrl.indexOf("/v2/api-docs");
+                        if(idx>0){
+                            //增强地址存在basePath
+                            extBasePath=newUrl.substr(0,idx);
+                        }
+                        that.log("增强basePath地址："+extBasePath);
+                        //赋值增强地址
+                        g.extUrl=extBasePath+that.extUrl+"?group="+group.name;
+                        if(that.validateExtUrl==""){
+                            that.validateExtUrl=g.extUrl;
+                        }
+                        //判断当前分组url是否存在basePath
+                        if(group.basePath!=null&&group.basePath!=undefined&&group.basePath!=""){
+                            g.baseUrl=group.basePath;
+                        }
+                        //赋值查找缓存的id
+                        if (that.cacheApis.length>0){
+                            var cainstance=null;
+                            $.each(that.cacheApis,function (x, ca) {
+                                if(ca.id==g.groupId){
+                                    cainstance=ca;
+                                }
+                            })
+                            if (cainstance!=null){
+                                g.firstLoad=false;
+                                g.groupApis=cainstance.cacheApis;
+                            }
+                        }
+                        g.i18n=that.i18n.instance;
+                        that.instances.push(g);
+                    })
+                },
+                error:function (xhr, textStatus, errorThrown) {
+                    that.log("error...")
+                    that.log(xhr)
+                    that.log(textStatus);
+                    that.log(errorThrown)
+                }
+            })
+        }
+        catch (err){
+            layer.msg(i18n.message.sys.loadErr+",Err:"+err.message);
+        }
+
     }
 
 
@@ -707,89 +714,96 @@
      */
     SwaggerBootstrapUi.prototype.analysisApi=function (instance) {
         var that=this;
-        //赋值
-        that.currentInstance=instance;
-        if(!that.currentInstance.load){
-            var api=instance.url;
-            if (api==undefined||api==null||api==""){
-                api=instance.location;
-            }
-            //判断是否开启增强功能
-            if (that.settings.enableSwaggerBootstrapUi){
-                api=instance.extUrl;
-            }
-            //这里判断url请求是否已加载过
-            //防止出现根路径的情况
-            var idx=api.indexOf("/");
-            if(idx==0){
-                api=api.substr(1);
-            }
-           /* that.log("截取后的url:"+api);
-            api="/webjars/bycdao-ui/cdao/d1.json";
-            that.log("截取后的url:"+api);*/
-            var async=that.hasLoad;
-            that.log("是否开启异步加载："+async)
-
-            $.ajax({
-                //url:"v2/api-docs",
-                url:api,
-                dataType:"json",
-                type:"get",
-                async:async,
-                success:function (data) {
-                    that.hasLoad=true;
-                    //var menu=JSON.parse(data);
-                    that.log("success")
-                    that.log(data);
-                    var t=typeof(data);
-                    var menu=null;
-                    if(t=="string"){
-                        menu=JSON.parse(data);
-                    }else{
-                        menu=data;
-                    }
-                    that.setInstanceBasicPorperties(menu);
-                    that.analysisDefinition(menu);
-                    //DApiUI.definitions(menu);
-                    that.log(menu);
-                    that.createDescriptionElement();
-                    //当前实例已加载
-                    that.currentInstance.load=true;
-                    //创建swaggerbootstrapui主菜单
-                    that.createDetailMenu();
-                    //opentab
-                    that.initOpenTable();
-                },
-                error:function (xhr, textStatus, errorThrown) {
-                    that.log("error...")
-                    that.log(xhr);
-                    that.log(textStatus);
-                    that.log(errorThrown);
-                    that.hasLoad=true;
-                    var txt=xhr.responseText;
-                    //替换带[]
-                    that.log("replace...")
-                    var replaceData=txt.replace(/'/g,"\"");
-                    var menu=JSON.parse(replaceData);
-                    that.setInstanceBasicPorperties(menu);
-                    that.analysisDefinition(menu);
-                    //DApiUI.definitions(menu);
-                    that.log(menu);
-                    that.createDescriptionElement();
-                    //当前实例已加载
-                    that.currentInstance.load=true;
-                    //创建swaggerbootstrapui主菜单
-                    that.createDetailMenu();
-
+        var i18n=that.i18n.instance;
+        try{
+            //赋值
+            that.currentInstance=instance;
+            if(!that.currentInstance.load){
+                var api=instance.url;
+                if (api==undefined||api==null||api==""){
+                    api=instance.location;
                 }
-            })
-        }else{
-            that.setInstanceBasicPorperties(null);
-            //更新当前缓存security
-            that.updateCurrentInstanceSecuritys();
-            that.createDescriptionElement();
-            that.createDetailMenu();
+                //判断是否开启增强功能
+                if (that.settings.enableSwaggerBootstrapUi){
+                    api=instance.extUrl;
+                }
+                //这里判断url请求是否已加载过
+                //防止出现根路径的情况
+                var idx=api.indexOf("/");
+                if(idx==0){
+                    api=api.substr(1);
+                }
+               /* that.log("截取后的url:"+api);
+                api="/webjars/bycdao-ui/cdao/d1.json";
+                that.log("截取后的url:"+api);*/
+                var async=that.hasLoad;
+                that.log("是否开启异步加载："+async)
+
+                $.ajax({
+                    //url:"v2/api-docs",
+                    url:api,
+                    dataType:"json",
+                    type:"get",
+                    async:async,
+                    success:function (data) {
+                        that.hasLoad=true;
+                        //var menu=JSON.parse(data);
+                        that.log("success")
+                        that.log(data);
+                        var t=typeof(data);
+                        var menu=null;
+                        if(t=="string"){
+                            menu=JSON.parse(data);
+                        }else{
+                            menu=data;
+                        }
+                        that.setInstanceBasicPorperties(menu);
+                        that.analysisDefinition(menu);
+                        //DApiUI.definitions(menu);
+                        that.log(menu);
+                        that.createDescriptionElement();
+                        //当前实例已加载
+                        that.currentInstance.load=true;
+                        //创建swaggerbootstrapui主菜单
+                        that.createDetailMenu();
+                        //opentab
+                        that.initOpenTable();
+                    },
+                    error:function (xhr, textStatus, errorThrown) {
+                        that.log("error...")
+                        that.log(xhr);
+                        that.log(textStatus);
+                        that.log(errorThrown);
+                        that.hasLoad=true;
+                        var txt=xhr.responseText;
+                        //替换带[]
+                        that.log("replace...")
+                        var replaceData=txt.replace(/'/g,"\"");
+                        var menu=JSON.parse(replaceData);
+                        that.setInstanceBasicPorperties(menu);
+                        that.analysisDefinition(menu);
+                        //DApiUI.definitions(menu);
+                        that.log(menu);
+                        that.createDescriptionElement();
+                        //当前实例已加载
+                        that.currentInstance.load=true;
+                        //创建swaggerbootstrapui主菜单
+                        that.createDetailMenu();
+
+                    }
+                })
+            }
+            else{
+                that.setInstanceBasicPorperties(null);
+                //更新当前缓存security
+                that.updateCurrentInstanceSecuritys();
+                that.createDescriptionElement();
+                that.createDetailMenu();
+            }
+        }catch (err){
+            layer.msg(i18n.message.sys.loadErr);
         }
+
     }
     /***
      * 创建左侧菜单按钮

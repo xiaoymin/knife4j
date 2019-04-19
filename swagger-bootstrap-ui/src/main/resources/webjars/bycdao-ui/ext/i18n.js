@@ -81,6 +81,9 @@
                     urlNotEmpty:"请求url地址不能为空",
                     fieldNotEmpty:"不能为空",
                     networkErr:"服务器正在重启或者已经挂了:(~~~~"
+                },
+                sys:{
+                    loadErr:"请确保swagger资源接口正确."
                 }
             },
             home:{
@@ -256,6 +259,9 @@
                     urlNotEmpty:"Request URL address cannot be empty",
                     fieldNotEmpty:"cannot be empty",
                     networkErr:"The server is restarting or hanging up:(~~~~"
+                },
+                sys:{
+                    loadErr:"Make sure the swagger resource interface is correct."
                 }
             },
             home:{
