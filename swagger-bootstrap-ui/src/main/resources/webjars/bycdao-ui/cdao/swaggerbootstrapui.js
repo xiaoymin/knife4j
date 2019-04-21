@@ -128,8 +128,10 @@
      */
     SwaggerBootstrapUi.prototype.storeCacheApis=function () {
         var that=this;
+        that.log("缓存对象...storeCacheApis-->")
         if(window.localStorage) {
             var store = window.localStorage;
+            that.log(that.cacheApis);
             var str=JSON.stringify(that.cacheApis);
             store.setItem("SwaggerBootstrapUiCacheApis",str);
         }
@@ -139,26 +141,45 @@
     /***
      * 将接口id加入缓存，再页面点击后
      * @param mid
+     * @param versionId
      */
-    SwaggerBootstrapUi.prototype.storeCacheApiAddApiInfo=function (mid) {
+    SwaggerBootstrapUi.prototype.storeCacheApiAddApiInfo=function (apiInfo) {
         var that=this;
-        if(window.localStorage){
-            var store = window.localStorage;
-            var cacheApis=store["SwaggerBootstrapUiCacheApis"];
-            var insid=that.currentInstance.groupId;
-            if(cacheApis!=undefined&&cacheApis!=null&&cacheApis!="") {
-                var settings = JSON.parse(cacheApis);
-                $.each(settings,function (i, s) {
-                    if(s.id==insid){
-                        s.cacheApis.push(mid);
-                    }
-                })
-                var str=JSON.stringify(settings);
-                store.setItem("SwaggerBootstrapUiCacheApis",str);
+        if (apiInfo.hasNew||apiInfo.hasChanged){
+            if(window.localStorage){
+                var store = window.localStorage;
+                var cacheApis=store["SwaggerBootstrapUiCacheApis"];
+                var insid=that.currentInstance.groupId;
+                if(cacheApis!=undefined&&cacheApis!=null&&cacheApis!="") {
+                    var settings = JSON.parse(cacheApis);
+
+                    $.each(settings,function (i, s) {
+                        if(s.id==insid){
+                            //判断是新增还是修改
+                            if(apiInfo.hasNew){
+                                s.cacheApis.push(apiInfo.id);
+                            }else if(apiInfo.hasChanged){
+                                var _upt=s.updateApis;
+                                if(_upt!=undefined&&_upt!=null){
+                                    //判断是否有值
+                                    if(_upt.hasOwnProperty(apiInfo.id)){
+                                        s.updateApis[apiInfo.id].versionId=apiInfo.versionId;
+                                        s.updateApis[apiInfo.id].lastTime=new Date();
+                                    }
+                                }else{
+                                    s.updateApis=new Object();
+                                    s.updateApis[apiInfo.id].url=apiInfo.url;
+                                    s.updateApis[apiInfo.id].versionId=apiInfo.versionId;
+                                    s.updateApis[apiInfo.id].lastTime=new Date();
+                                }
+                            }
+                        }
+                    })
+                    var str=JSON.stringify(settings);
+                    store.setItem("SwaggerBootstrapUiCacheApis",str);
+                }
             }
         }
-
-
     }
     SwaggerBootstrapUi.prototype.clearCacheOpenApiTableApis=function (){
         var that=this;
@@ -493,7 +514,7 @@
 
 
                            var tagNewApiIcon="";
-                           if(tag.hasNew){
+                           if(tag.hasNew||tag.hasChanged){
                                tagNewApiIcon='<i class="iconfont icon-xinpin" style="float: right;right: 30px;position: absolute;"></i>';
                            }
                            var titleA=null;
@@ -515,7 +536,7 @@
                            $.each(tag.childrens,function (i, children) {
                                var childrenLi=null;
                                var newApiIcon="";
-                               if (children.hasNew){
+                               if (children.hasNew||children.hasChanged){
                                    //新接口
                                    newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:17px;"></i>';
                                }
@@ -637,7 +658,8 @@
                             })
                             if (cainstance!=null){
                                 g.firstLoad=false;
-                                g.groupApis=cainstance.cacheApis;
+                                g.cacheInstance=cainstance;
+                                //g.groupApis=cainstance.cacheApis;
                             }
                         }
                         g.i18n=that.i18n.instance;
@@ -931,7 +953,7 @@
                 that.getMenu().append(li);
             }else{
                 var tagNewApiIcon="";
-                if(tag.hasNew){
+                if(tag.hasNew||tag.hasChanged){
                     tagNewApiIcon='<i class="iconfont icon-xinpin" style="float: right;right: 30px;position: absolute;"></i>';
                 }
                 var titleA=null;
@@ -954,7 +976,7 @@
                   $.each(tag.childrens,function (i, children) {
                     var childrenLi=null;
                     var newApiIcon="";
-                    if (children.hasNew){
+                    if (children.hasNew||children.hasChanged){
                         //新接口
                         newApiIcon='<i class="iconfont icon-new-api" style="position: absolute;font-size:17px;"></i>';
                     }
@@ -1644,11 +1666,9 @@
         var that=this;
         var element=that.layui.element;
         var treetable=that.treetable;
-        if (apiInfo.hasNew){
-            //存储id
-            that.log("新接口,存储")
-            that.storeCacheApiAddApiInfo(apiInfo.id);
-        }
+        //存储id
+        that.log("新接口||编号接口,存储")
+        that.storeCacheApiAddApiInfo(apiInfo);
         var tabId="tab"+apiInfo.id;
         var layerTabId="layerTab"+tabId;
 
@@ -4575,13 +4595,15 @@
             if(!that.currentInstance.firstLoad){
                 //判断是否新
                 var tagNewApis=false;
+                //是否改变
+                var tagChangeApis=false;
                 //查找childrens
                 $.each(that.currentInstance.paths, function (k, methodApi) {
                     //判断tags是否相同
                     $.each(methodApi.tags, function (x, tagName) {
                         if (tagName == tag.name) {
                             //是否存在
-                            if($.inArray(methodApi.id,that.currentInstance.groupApis)<0){
+                            if($.inArray(methodApi.id,that.currentInstance.cacheInstance.cacheApis)<0){
                                 tagNewApis=true;
                                 methodApi.hasNew=true;
                             }
@@ -4591,6 +4613,20 @@
                 })
                 if(tagNewApis){
                     tag.hasNew=true;
+                }else{
+                    //不是新接口,判断接口是否变更
+                    $.each(that.currentInstance.paths, function (k, methodApi) {
+                        //判断tags是否相同
+                        $.each(methodApi.tags, function (x, tagName) {
+                            if (tagName == tag.name) {
+                                if (methodApi.hasChanged){
+                                    //已经存在变更
+                                    tagChangeApis=true;
+                                }
+                            }
+                        })
+                    })
+                    tag.hasChanged=tagChangeApis;
                 }
             }else{
                 //查找childrens
@@ -4613,10 +4649,12 @@
         });
 
         if(that.currentInstance.firstLoad){
-            var c=new SwaggerBootstrapUiCacheApis();
+            /*var c=new SwaggerBootstrapUiCacheApis();
             c.id=that.currentInstance.groupId;
-            c.cacheApis=that.currentInstance.groupApis;
-            that.cacheApis.push(c);
+            c.name=that.currentInstance.name;
+            c.cacheApis=that.currentInstance.groupApis;*/
+            //that.cacheApis.push(c);
+            that.cacheApis.push(that.currentInstance.cacheInstance);
         }else{
             //更新？页面点击后方可更新
         }
@@ -4870,6 +4908,7 @@
         //接口id使用MD5策略,缓存整个调试参数到localStorage对象中,供二次调用
         var md5Str=newurl+mtype.toUpperCase();
         swpinfo.id=md5(md5Str);
+        swpinfo.versionId=$.md5Id(apiInfo);
         if(apiInfo!=null){
             if(apiInfo.hasOwnProperty("deprecated")){
                 swpinfo.deprecated=apiInfo["deprecated"];
@@ -5449,10 +5488,30 @@
         }*/
         //第一次加载
         if(that.currentInstance.firstLoad){
-            that.currentInstance.groupApis.push(swpinfo.id);
+            that.currentInstance.cacheInstance.cacheApis.push(swpinfo.id);
+            //that.currentInstance.groupApis.push(swpinfo.id);
+            //构建当前版本对象
+            var _uptObject=new SwaggerBootstrapUiCacheUptApi(swpinfo.versionId);
+            _uptObject.url=swpinfo.url;
+            that.currentInstance.cacheInstance.updateApis[swpinfo.id]=_uptObject;
+        }else{
+            //判断当前是否接口信息有变更
+            var _cacheUa=that.currentInstance.cacheInstance.updateApis;
+            if(_cacheUa.hasOwnProperty(swpinfo.id)){
+                var _uptInfo=_cacheUa[swpinfo.id];
+                if (_uptInfo!=null&&_uptInfo!=undefined){
+                    if (_uptInfo.versionId!=swpinfo.versionId){
+                        //已经存在变更
+                        swpinfo.hasChanged=true;
+                    }
+                }
+            }
         }
         return swpinfo;
     }
+
+
+
 
     /***
      * JSR-303支持
@@ -6098,6 +6157,8 @@
         this.groupId=md5(name);
         this.firstLoad=true;
         this.groupApis=new Array();
+        //缓存对象
+        this.cacheInstance=new SwaggerBootstrapUiCacheApis({id:this.groupId,name:this.name});
         //自定义文档
         this.markdownFiles=null;
 
@@ -6112,10 +6173,27 @@
      * }]
      * @constructor
      */
-    var SwaggerBootstrapUiCacheApis=function () {
-        this.id="";
+    var SwaggerBootstrapUiCacheApis=function (options) {
+        //分组id
+        this.id=options.id||"";
+        //分组名称
+        this.name=options.name||"";
         //缓存api-id 对象的集合
         this.cacheApis=new Array();
+        //缓存整个对象的id?
+        //存储 id:{"uptversion":"102010221299393993","lastTime":"2019/11/12 12:30:33"}
+        this.updateApis=new Object();
+    }
+
+    /***
+     * 缓存更新对象
+     * @constructor
+     */
+    var SwaggerBootstrapUiCacheUptApi=function (id) {
+        //当前版本id
+        this.url="";
+        this.versionId=id;
+        this.lastTime=new Date();
     }
 
 
@@ -6224,6 +6302,8 @@
         this.childrens=new Array();
         //是否有新接口
         this.hasNew=false;
+        //是否有接口变更
+        this.hasChanged=false;
     }
     /***
      * Swagger接口基础信息
@@ -6290,11 +6370,15 @@
         this.responseTreetableRefParameters=new Array();
         //新增菜单id
         this.id="";
+        //版本id
+        this.versionId="";
         //排序
         this.order=2147483647;
         //add by xiaoymin 2018-12-14 17:04:42
         //是否新接口
         this.hasNew=false;
+        //是否有接口变更
+        this.hasChanged=false;
         //是否过时
         this.deprecated=false;
         //是否存在响应状态码中  存在多个schema的情况
@@ -6478,6 +6562,27 @@
      * 公共方法
      */
     $.extend({
+        md5Id:function (obj) {
+            console.log(obj);
+            var md5Id="";
+            try{
+                if (obj!=null&&obj!=undefined){
+                    var str=JSON.stringify(obj);
+                    if (str!=""){
+                        var strArr=str.split("");
+                        strArr.sort();
+                        var newStr=strArr.join("");
+                        console.log(newStr);
+                        md5Id=md5(newStr);
+                        console.log(md5Id);
+                    }
+
+                }
+            }catch (err){
+            }
+            return md5Id;
+
+        },
         getJsonKeyLength:function (json) {
           var size=0;
           if (json!=null){
