@@ -1082,6 +1082,19 @@
         </div>
     </div>
 </script>
+<!---Swagger Models 自定义说明-->
+<script type="text/html" id="SwaggerBootstrapUiModelsDescriptionTpl">
+{{d.description}}
+{{#  if(d.readOnly){ }}
+<span style="color: rgb(107, 107, 107);"> readOnly:true</span>
+{{#  } }}
+
+{{#  if(d.example!=""&&d.example!=null){ }}
+<span style="color: rgb(107, 107, 107);">example:{{d.example}}</span>
+{{#  } }}
+
+</script>
+
 <!---Swagger Models-->
 <script type="text/html" id="SwaggerBootstrapUiModelsScript">
     <div  style="width:90%;margin:0px auto;margin-top: 30px;">
