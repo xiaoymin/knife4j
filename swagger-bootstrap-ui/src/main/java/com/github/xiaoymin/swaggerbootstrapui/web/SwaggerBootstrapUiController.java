@@ -21,6 +21,7 @@ import io.swagger.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -81,6 +82,8 @@ public class SwaggerBootstrapUiController {
     private final JsonSerializer jsonSerializer;
     private final String hostNameOverride;
     private final List<RequestHandlerProvider> handlerProviders;
+
+    private final MarkdownFiles markdownFiles;
     /***
      * 全局所有mappings
      */
@@ -92,7 +95,8 @@ public class SwaggerBootstrapUiController {
 
     @Autowired
     public SwaggerBootstrapUiController(Environment environment,
-                                        ServiceModelToSwagger2Mapper mapper, DocumentationCache documentationCache, JsonSerializer jsonSerializer,List<RequestHandlerProvider> handlerProviders) {
+                                        ServiceModelToSwagger2Mapper mapper, DocumentationCache documentationCache, JsonSerializer jsonSerializer, List<RequestHandlerProvider> handlerProviders,
+                                        ObjectProvider<MarkdownFiles> markdownFilesObjectProvider) {
         this.mapper = mapper;
         this.documentationCache = documentationCache;
         this.jsonSerializer = jsonSerializer;
@@ -100,6 +104,7 @@ public class SwaggerBootstrapUiController {
                 "springfox.documentation.swagger.v2.host",
                 "DEFAULT");
         this.handlerProviders = handlerProviders;
+        this.markdownFiles=markdownFilesObjectProvider.getIfAvailable();
     }
 
     private Function<RequestHandlerProvider, ? extends Iterable<RequestHandler>> handlers() {
@@ -243,6 +248,9 @@ public class SwaggerBootstrapUiController {
 
         swaggerBootstrapUi.setTagSortLists(targetTagLists);
         swaggerBootstrapUi.setPathSortLists(targetPathLists);
+        if (markdownFiles!=null){
+            swaggerBootstrapUi.setMarkdownFiles(markdownFiles.getMarkdownFiles());
+        }
         return swaggerBootstrapUi;
     }
 

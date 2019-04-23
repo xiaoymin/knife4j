@@ -114,7 +114,13 @@ html {
     border-top: 1px solid #fcfcfc;
     border-bottom: 1px solid #e5e5e5;
     position: relative;
+
+    white-space: nowrap;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
+
 .nav-list>li.active {
     background-color: #fff;
 }

@@ -7,6 +7,11 @@
 
 package com.github.xiaoymin.swaggerbootstrapui.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+
 /***
  *
  * @since:swagger-bootstrap-ui 1.8.5
@@ -14,6 +19,9 @@ package com.github.xiaoymin.swaggerbootstrapui.util;
  * 2018/10/11 13:47
  */
 public class CommonUtils {
+
+
+    static Logger logger= LoggerFactory.getLogger(CommonUtils.class);
 
     public static String UpperCase(String str){
         StringBuffer  aa=new StringBuffer();
@@ -37,6 +45,70 @@ public class CommonUtils {
         }
         aa.append(str.substring(index, len));
         return aa.toString();
+    }
+
+
+    public static byte[] readBytes(File file) {
+        long len = file.length();
+        if (len >= Integer.MAX_VALUE) {
+            throw new RuntimeException("File is larger then max array size");
+        }
+
+        byte[] bytes = new byte[(int) len];
+        FileInputStream in = null;
+        int readLength;
+        try {
+            in = new FileInputStream(file);
+            readLength = in.read(bytes);
+            if(readLength < len){
+                throw new IOException("File length is ["+len+"] but read ["+readLength+"]!");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeQuiltly(in);
+        }
+
+        return bytes;
+    }
+
+    public static byte[] readBytes(InputStream ins){
+        if (ins==null){
+            return null;
+        }
+        ByteArrayOutputStream byteOutArr=new ByteArrayOutputStream();
+        int r=-1;
+        byte[] bytes = new byte[1024*1024];
+        try {
+            while ((r=ins.read(bytes))!=-1){
+                byteOutArr.write(bytes,0,r);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeQuiltly(ins);
+        }
+        return byteOutArr.toByteArray();
+    }
+
+    public static void closeQuiltly(InputStream ins){
+        if (ins!=null){
+            try {
+                ins.close();
+            } catch (IOException e) {
+                logger.error(e.getMessage(),e);
+            }
+        }
+    }
+
+    public static void closeQuiltly(Reader reader){
+        if (reader!=null){
+            try {
+                reader.close();
+            } catch (IOException e) {
+                logger.error(e.getMessage(),e);
+            }
+        }
     }
 
 }
