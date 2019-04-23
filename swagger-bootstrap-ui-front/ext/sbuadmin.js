@@ -39,6 +39,7 @@ layui.define(['layer','element','treetable','form'], function (exports) {
             /**
              * 运行
              */
+            //new SwaggerBootstrapUi({layui:layui,treetable:treetable,ace:ace}).main();
             new SwaggerBootstrapUi({layui:layui,treetable:treetable,ace:options.ace,url:options.url}).main();
         }
     };
