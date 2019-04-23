@@ -72,6 +72,25 @@ public class CommonUtils {
         return bytes;
     }
 
+    public static byte[] readBytes(InputStream ins){
+        if (ins==null){
+            return null;
+        }
+        ByteArrayOutputStream byteOutArr=new ByteArrayOutputStream();
+        int r=-1;
+        byte[] bytes = new byte[1024*1024];
+        try {
+            while ((r=ins.read(bytes))!=-1){
+                byteOutArr.write(bytes,0,r);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeQuiltly(ins);
+        }
+        return byteOutArr.toByteArray();
+    }
+
     public static void closeQuiltly(InputStream ins){
         if (ins!=null){
             try {

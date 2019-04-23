@@ -105,8 +105,10 @@ public class MarkdownFiles {
                         }
                         break;
                     }
+                    CommonUtils.closeQuiltly(reader);
+
                     markdownFile.setTitle(title);
-                    markdownFile.setContent(new String(CommonUtils.readBytes(resource.getFile()),"UTF-8"));
+                    markdownFile.setContent(new String(CommonUtils.readBytes(resource.getInputStream()),"UTF-8"));
                     return markdownFile;
                 } catch (Exception e) {
                     logger.error(e.getMessage(),e);
