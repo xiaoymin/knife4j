@@ -2260,6 +2260,10 @@
                 layer.msg(i18n.message.debug.urlNotEmpty);
                 return false;
             }
+			//解决设置请求HOST无效的问题#85
+			if(that.currentInstance.termsOfService){
+				url=that.currentInstance.termsOfService+url;
+			}
             var bodyRequest=false;
             //构建一个formdata对象,发送表单
             var formData=new FormData();
