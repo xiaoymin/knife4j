@@ -1,0 +1,18 @@
+.treeTable-empty {
+    width: 20px;
+    display: inline-block;
+}
+
+.treeTable-icon {
+    cursor: pointer;
+}
+
+.treeTable-icon .layui-icon-triangle-d:before {
+    content: "\e620";
+}
+
+.treeTable-icon.open .layui-icon-triangle-d:before {
+    content: "\e65d";
+    background-color: transparent;
+}
+
