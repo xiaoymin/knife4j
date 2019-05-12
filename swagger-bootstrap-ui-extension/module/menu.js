@@ -19,4 +19,9 @@
         }
         layer.msg("清除缓存成功!")
     })
+    //选项
+    $("#options").click(function(e){
+        e.preventDefault();
+        window.open(chrome.extension.getURL('options.html'));
+    })
 })(jQuery)
