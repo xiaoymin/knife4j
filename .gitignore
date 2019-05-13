@@ -1,5 +1,4 @@
-HELP.md
-/target/
+target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -9,22 +8,23 @@ HELP.md
 .project
 .settings
 .springBeans
-.sts4-cache
+
+.mvn
+logs
 
 ### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
+front/.idea
 
 ### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-/build/
-/.mvn/
-/.idea/
-### VS Code ###
-.vscode/
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+/swagger-bootstrap-ui-front/.idea/
