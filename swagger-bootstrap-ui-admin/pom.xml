@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.xiaominfo.swagger</groupId>
 	<artifactId>swagger-bootstrap-ui-admin</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>swagger-bootstrap-ui-admin</name>
 	<description>云端Swagger管理平台</description>
 
