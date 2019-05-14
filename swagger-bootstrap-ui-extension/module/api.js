@@ -26,11 +26,11 @@
                 }
                 var prefix = url.substr(0, url.lastIndexOf("/"));
                 var dataArr = new Array();
+                layer.load(2);
                 try {
-                    layer.load(2);
                     $.ajax({
                         url: url,
-                        async: false,
+                        timeout: 30000,
                         success: function (data) {
                             if (type == "group") {
                                 if (!Array.isArray(data)) {
@@ -46,6 +46,7 @@
                                     $.ajax({
                                         url: singleUrl,
                                         async: false,
+                                        timeout: 30000,
                                         success: function (sd) {
                                             dataArr.push({
                                                 name: name,
@@ -54,9 +55,13 @@
                                                 swaggerVersion: "2.0",
                                                 data: sd
                                             });
+                                        },
+                                        error: function (xhr, status, err) {
+                                            layer.closeAll();
+                                            layer.msg("请求接口出错:" + err);
                                         }
-                                    })
-                                })
+                                    });
+                                });
                             } else {
                                 var tp = typeof (data);
                                 if (tp != "object") {
@@ -81,24 +86,26 @@
                                 };
                                 dataArr.push(swaggerData);
                             }
+
+                            if (dataArr.length == 0) {
+                                layer.msg("请求接口资源格式非法");
+                                return false;
+                            }
+                            layer.closeAll();
+                            Store.set(SwaggerBootstrapUiGlobal.cache.json, dataArr);
+                            Store.set(SwaggerBootstrapUiGlobal.cache.type, 'api');
+                            window.location = chrome.extension.getURL('doc.html');
                         },
                         error: function (xhr, status, err) {
+                            layer.closeAll();
                             layer.msg("请求接口出错:" + err);
                         }
-                    })
-
-                    layer.closeAll();
-                    if (dataArr.length == 0) {
-                        layer.msg("请求接口资源格式非法");
-                        return false;
-                    }
-                    Store.set(SwaggerBootstrapUiGlobal.cache.json, dataArr);
-                    Store.set(SwaggerBootstrapUiGlobal.cache.type, 'api');
-                    window.location = chrome.extension.getURL('doc.html');
+                    });
                 } catch (e) {
+                    layer.closeAll();
                     layer.msg("请求非法:" + e);
                 }
-            })
+            });
 
         }
     }
