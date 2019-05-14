@@ -20,6 +20,7 @@
     var SwaggerBootstrapUi = function (options) {
         //swagger请求api地址
         this.url = options.url || "swagger-resources";
+        this.proxy = "";
         //文档id
         this.docId = "content";
         this.title = "swagger-bootstrap-ui";
@@ -74,6 +75,7 @@
     SwaggerBootstrapUi.prototype.main = function () {
         var that = this;
         that.welcome();
+        that.initProxy();
         that.initRequestParameters();
         that.initSettings();
         that.initUnTemplatePageI18n();
@@ -90,6 +92,17 @@
         that.tabCloseEventsInit();
         //opentab
         that.initOpenTable();
+    };
+
+    SwaggerBootstrapUi.prototype.initProxy = function () {
+        var that = this;
+        if (window.localStorage) {
+            var store = window.localStorage;
+            var py = store["SwagerBootstrapUiExtensionHost"];
+            if (py != null && py != undefined && py != "") {
+                that.proxy = py;
+            }
+        }
     }
 
     /***
@@ -2581,6 +2594,10 @@
                 }
                 that.log(sendParams)
                 that.log($.getStringValue(apiInfo.methodType))
+                //此处判断url,如果有proxy,则追加上
+                if (that.proxy != "" && that.proxy != null) {
+                    url = that.proxy + url;
+                }
                 axios.request({
                     url: url,
                     headers: headerparams,
@@ -2669,7 +2686,10 @@
 
             } else {
                 if (form.length > 0 || formRequest) {
-                    that.log("form submit------------------------------------------------")
+                    that.log("form submit------------------------------------------------");
+                    if (that.proxy != "" && that.proxy != null) {
+                        url = that.proxy + url;
+                    }
                     axios.request({
                         url: url,
                         headers: headerparams,
@@ -2714,6 +2734,9 @@
                     //that.log($.getStringValue(apiInfo.methodType))
 
                     //headerparams["Content-Type"]=contType;
+                    if (that.proxy != "" && that.proxy != null) {
+                        url = that.proxy + url;
+                    }
                     $.ajax({
                         url: url,
                         headers: headerparams,

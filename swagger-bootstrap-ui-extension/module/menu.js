@@ -22,6 +22,6 @@
     //选项
     $("#options").click(function (e) {
         e.preventDefault();
-        window.open(chrome.extension.getURL('options.html#!/about'));
+        window.open(chrome.extension.getURL('options.html#!/settings'));
     })
 })(jQuery)

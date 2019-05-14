@@ -7,6 +7,21 @@
         init: function () {
             this.initButtons();
         },
+        cacheOrigin: function (origin) {
+            chrome.storage.sync.get({
+                "SwagerBootstrapUiExtensionHost": []
+            }, function (result) {
+                var t = result.SwagerBootstrapUiExtensionHost;
+                if ($.inArray(origin, t) == -1) {
+                    t.push(origin);
+                }
+                //set
+                chrome.storage.sync.set({
+                    "SwagerBootstrapUiExtensionHost": t
+                }, function () {});
+            });
+
+        },
         initButtons: function () {
             var that = this;
             //init buttons events
@@ -24,7 +39,11 @@
                     layer.msg("请求url非法");
                     return false;
                 }
+                var origin = RegExp.$1;
+                //域名
                 var prefix = url.substr(0, url.lastIndexOf("/"));
+                Store.set(SwaggerBootstrapUiGlobal.cache.host, origin);
+                that.cacheOrigin(origin);
                 var dataArr = new Array();
                 layer.load(2);
                 try {

@@ -2,7 +2,7 @@
   "name": "swagger-bootstrap-ui",
   "version": "1.0.0",
   "description": "swagger-bootstrap-ui extension program for fast rendering of Swagger resources",
-  "permissions": ["webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "storage"],
+  "permissions": ["webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "storage", "proxy"],
   "browser_action": {
     "default_popup": "menu.html",
     "default_title": "swagger-bootstrap-ui Extension",
