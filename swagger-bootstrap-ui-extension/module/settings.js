@@ -13,7 +13,6 @@
       //保存
       $("#btnSaveSettings").click(function (e) {
         e.preventDefault();
-        layer.msg("save");
         var langEle = $("#SwaggerBootstrapUiSettings").find("input[name=language]:checked");
         var showApi = $("#SwaggerBootstrapUiSettings").find("input[name=showApi]");
         var enableSbu = $("#SwaggerBootstrapUiSettings").find("input[name=enableSwaggerBootstrapUi]");

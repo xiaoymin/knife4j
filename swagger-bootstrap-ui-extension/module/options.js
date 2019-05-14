@@ -9,7 +9,6 @@
       var that = this;
       this.initHeaderMenuEvents();
       var location = window.location;
-      console.log(location);
       that.loadHtml(location.hash, that.getUrlByHash(location.hash));
     },
     initHeaderMenuEvents: function () {

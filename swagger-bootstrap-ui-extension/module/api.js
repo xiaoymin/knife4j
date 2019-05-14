@@ -25,8 +25,6 @@
                     return false;
                 }
                 var prefix = url.substr(0, url.lastIndexOf("/"));
-                var origin = RegExp.$1;
-                console.log("origin:" + origin);
                 var dataArr = new Array();
                 try {
                     layer.load(2);
@@ -45,7 +43,6 @@
                                         singleUrl = singleUrl + "/";
                                     }
                                     singleUrl = singleUrl + d.url;
-                                    console.log(singleUrl);
                                     $.ajax({
                                         url: singleUrl,
                                         async: false,
@@ -62,7 +59,6 @@
                                 })
                             } else {
                                 var tp = typeof (data);
-                                console.log(tp);
                                 if (tp != "object") {
                                     return false;
                                 }
@@ -96,7 +92,6 @@
                         layer.msg("请求接口资源格式非法");
                         return false;
                     }
-                    console.log(dataArr)
                     Store.set(SwaggerBootstrapUiGlobal.cache.json, dataArr);
                     Store.set(SwaggerBootstrapUiGlobal.cache.type, 'api');
                     window.location = chrome.extension.getURL('doc.html');
