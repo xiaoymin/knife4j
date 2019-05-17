@@ -23,7 +23,7 @@ import java.util.Objects;
 
 public final class MetaDataBuilder {
 
-    private final java.util.LinkedHashMap<String, String> metaData = new LinkedHashMap<>();
+    private final LinkedHashMap<String, String> metaData = new LinkedHashMap<>();
 
     public void putMetaData(String key, String value) {
         metaData.put(key, value);

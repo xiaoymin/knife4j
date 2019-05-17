@@ -33,6 +33,35 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.github.swagger2markup/swagger2markup -->
+		<dependency>
+			<groupId>io.github.swagger2markup</groupId>
+			<artifactId>swagger2markup</artifactId>
+			<version>1.3.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>nl.jworks.markdown_to_asciidoc</groupId>
+					<artifactId>markdown_to_asciidoc</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.netzwerg</groupId>
+					<artifactId>paleo-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.pegdown</groupId>
+			<artifactId>pegdown</artifactId>
+			<version>1.4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.8.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
