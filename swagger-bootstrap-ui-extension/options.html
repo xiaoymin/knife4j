@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>swagger-bootstrap-ui-extension 选项</title>
+  <link rel="icon" href="/img/sbu_favicon.ico" />
+  <script src="js/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="extension/bootstrap/css/bootstrap.min.css" />
+  <script type="text/javascript" src="extension/bootstrap/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="iconfont/iconfont.css" />
+  <link rel="stylesheet" href="css/options.css" />
+  <script type="text/javascript" src="extension/layer3.0.3/layer.js"></script>
+  <script type="text/javascript" src="module/store.js"></script>
+  <script type="text/javascript" src="module/global.js"></script>
+</head>
+
+<body>
+  <div class="sbu-wrap">
+    <div class="sbu-footer">
+      <div class="links-row">
+        <div class="wlimit">
+          <div class="copy">
+            <img src="img/icon48.png" /> swagger-bootstrap-ui-extension v1.0
+          </div>
+          <div class="links">
+            <a href="https://doc.xiaominfo.com/" target="_blank" i18n="options_site">官方文档</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <header class="col-lg-2 col-sm-3 side-nav">
+      <nav class="nav nav-pills nav-stacked">
+        <!-- <li class="nav-header ng-binding">功能</li>
+        <li ui-sref-active="active">
+          <a ui-sref="ui" class="ng-binding" href="#!/project"><span class="iconfont icon-xiangmu"></span> 项目中心</a>
+        </li>
+        <li ui-sref-active="active" class="">
+          <a ui-sref="general" class="ng-binding" href="#!/service"><span class="iconfont icon-fuwu"></span>
+            服务中心</a>
+        </li>
+        <li ui-sref-active="active" class="">
+          <a ui-sref="general" class="ng-binding" href="#!/codegen"><span class="iconfont icon-daima"></span>
+            swagger-codegen</a>
+        </li> -->
+        <li class="nav-header ng-binding">设定</li>
+        <li ui-sref-active="active">
+          <a ui-sref="ui" class="ng-binding" href="#!/proxy"><span
+              class="iconfont icon-dailizizhizizhiqiyezizhi"></span> 代理</a>
+        </li>
+        <li ui-sref-active="active">
+          <a ui-sref="ui" class="ng-binding" href="#!/settings"><span class="iconfont icon-peizhi"></span> 设置</a>
+        </li>
+        <li ui-sref-active="active" class="">
+          <a ui-sref="general" class="ng-binding" href="#!/about"><span class="iconfont icon-guanyu"></span> 关于</a>
+        </li>
+        </li>
+      </nav>
+    </header>
+    <main ui-view="" id="main-container"
+      class="col-lg-10 col-sm-9 col-lg-offset-2 col-sm-offset-3 angular-animate ng-scope" style="">
+
+    </main>
+  </div>
+
+
+  <script src="module/options.js"></script>
+
+</body>
+
+</html>

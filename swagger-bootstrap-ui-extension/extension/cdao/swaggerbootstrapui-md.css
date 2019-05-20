@@ -1,0 +1,573 @@
+
+.othermarkdown {
+    margin: 0px auto;
+    height: auto;
+    padding:30px;
+    width: inherit;
+    word-break: normal;
+    word-wrap: break-word;
+    position: relative;
+    white-space: normal;
+    overflow-x: visible;
+    padding-top: 40px;
+    font-family: Monaco, "Source Han Sans SC", sans-serif;
+    color: rgb(85, 85, 85);
+    background: rgb(255, 255, 255);
+}
+
+.othermarkdown.first-line-indent p {
+    text-indent: 2em;
+}
+
+.othermarkdown.first-line-indent li p, .othermarkdown.first-line-indent p * {
+    text-indent: 0px;
+}
+
+.othermarkdown.first-line-indent li {
+    margin-left: 2em;
+}
+
+.for-image .othermarkdown {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+body.typora-export {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.typora-export .footnote-line, .typora-export li, .typora-export p {
+    white-space: pre-wrap;
+}
+
+
+.othermarkdown li > figure:first-child {
+    margin-top: -20px;
+}
+
+.othermarkdown ol, .othermarkdown ul {
+    position: relative;
+}
+.othermarkdown ul ol{
+    padding-left: 2em;
+}
+.othermarkdown ul{
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+.othermarkdown img {
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+.othermarkdown button, input, select, textarea {
+    color: inherit;
+    font-style: inherit;
+    font-variant: inherit;
+    font-weight: inherit;
+    font-stretch: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+}
+
+.othermarkdown input[type="checkbox"], input[type="radio"] {
+    line-height: normal;
+    padding: 0px;
+}
+
+
+.othermarkdown h1, .othermarkdown h2, .othermarkdown h3, .othermarkdown h4, .othermarkdown h5, .othermarkdown h6, .othermarkdown p, .othermarkdown pre {
+    width: inherit;
+}
+
+.othermarkdown h1, .othermarkdown h2, .othermarkdown h3, .othermarkdown h4, .othermarkdown h5, .othermarkdown h6, .othermarkdown p {
+    position: relative;
+}
+
+.othermarkdown h1, h2, h3, h4, h5, h6 {
+    break-after: avoid-page;
+    break-inside: avoid;
+    orphans: 2;
+}
+
+.othermarkdown p {
+    orphans: 4;
+    padding:5px;
+}
+
+.othermarkdown strong, b {
+    font-weight: bold;
+}
+
+.othermarkdown h1 {
+    font-size: 2rem;
+}
+
+.othermarkdown h2 {
+    font-size: 1.8rem;
+}
+
+.othermarkdown h3 {
+    font-size: 1.6rem;
+}
+
+.othermarkdown h4 {
+    font-size: 1.4rem;
+}
+
+.othermarkdown h5 {
+    font-size: 1.2rem;
+}
+
+.othermarkdown h6 {
+    font-size: 1rem;
+}
+
+
+.othermarkdown a {
+    cursor: pointer;
+}
+
+
+
+.othermarkdown input[type="checkbox"] {
+    cursor: pointer;
+    width: inherit;
+    height: inherit;
+}
+
+.othermarkdown figure {
+    overflow-x: auto;
+    margin: 1.2em 0px;
+    max-width: calc(100% + 16px);
+    padding: 0px;
+}
+
+.othermarkdown figure > table {
+    margin: 0px !important;
+}
+
+.othermarkdown tr {
+    break-inside: avoid;
+    break-after: auto;
+}
+
+.othermarkdown thead {
+    display: table-header-group;
+    border: 1px solid rgb(221, 221, 221);
+}
+
+.othermarkdown table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+    width: 100%;
+    overflow: auto;
+    break-inside: auto;
+    text-align: left;
+}
+
+.othermarkdown table.md-table td {
+    min-width: 32px;
+}
+
+.CodeMirror-gutters {
+    border-right: 0px;
+    background-color: inherit;
+}
+
+.CodeMirror-linenumber {
+    user-select: none;
+}
+
+.CodeMirror {
+    text-align: left;
+}
+
+.CodeMirror-placeholder {
+    opacity: 0.3;
+}
+
+.CodeMirror pre {
+    padding: 0px 4px;
+}
+
+.CodeMirror-lines {
+    padding: 0px;
+}
+
+.othermarkdown div.hr:focus {
+    cursor: none;
+}
+
+.othermarkdown pre {
+    white-space: pre-wrap;
+}
+
+.othermarkdown.fences-no-line-wrapping pre {
+    white-space: pre;
+}
+
+.othermarkdown pre.ty-contain-cm {
+    white-space: normal;
+}
+
+.CodeMirror-gutters {
+    margin-right: 4px;
+}
+
+.othermarkdown .md-fences {
+    font-size: 0.9rem;
+    display: block;
+    break-inside: avoid;
+    text-align: left;
+    overflow: visible;
+    white-space: pre;
+    background: inherit;
+    position: relative !important;
+}
+
+.othermarkdown .md-diagram-panel {
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+    padding-top: 0px;
+    padding-bottom: 8px;
+    overflow-x: auto;
+}
+
+.othermarkdown .md-fences.mock-cm {
+    white-space: pre-wrap;
+}
+
+.othermarkdown .md-fences.md-fences-with-lineno {
+    padding-left: 0px;
+}
+
+.othermarkdown.fences-no-line-wrapping .md-fences.mock-cm {
+    white-space: pre;
+    overflow-x: auto;
+}
+
+.othermarkdown .md-fences.mock-cm.md-fences-with-lineno {
+    padding-left: 8px;
+}
+
+.othermarkdown .CodeMirror-line, twitterwidget {
+    break-inside: avoid;
+}
+
+.othermarkdown .footnotes {
+    opacity: 0.8;
+    font-size: 0.9rem;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.othermarkdown .footnotes + .footnotes {
+    margin-top: 0px;
+}
+
+.othermarkdown .md-reset {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    outline: 0px;
+    vertical-align: top;
+    background: 0px 0px;
+    text-decoration: none;
+    text-shadow: none;
+    float: none;
+    position: static;
+    width: auto;
+    height: auto;
+    white-space: nowrap;
+    cursor: inherit;
+    -webkit-tap-highlight-color: transparent;
+    line-height: normal;
+    font-weight: 400;
+    text-align: left;
+    box-sizing: content-box;
+    direction: ltr;
+}
+
+.othermarkdown li div {
+    padding-top: 0px;
+}
+
+.othermarkdown blockquote {
+    margin: 1rem 0px;
+}
+
+.othermarkdown li .mathjax-block, li p {
+    margin: 0.5rem 0px;
+}
+
+.othermarkdown li {
+    margin: 0px;
+    position: relative;
+    list-style:disc;
+    padding: 2px;
+}
+
+
+.othermarkdown blockquote > :last-child {
+    margin-bottom: 0px;
+}
+
+.othermarkdown blockquote > :first-child, li > :first-child {
+    margin-top: 0px;
+}
+
+.othermarkdown .footnotes-area {
+    color: rgb(136, 136, 136);
+    margin-top: 0.714rem;
+    padding-bottom: 0.143rem;
+    white-space: normal;
+}
+
+.othermarkdown .footnote-line {
+    white-space: pre-wrap;
+}
+
+
+.othermarkdown .footnote-line {
+    margin-top: 0.714em;
+    font-size: 0.7em;
+}
+
+.othermarkdown a img, img a {
+    cursor: pointer;
+}
+
+.othermarkdown pre.md-meta-block {
+    font-size: 0.8rem;
+    min-height: 0.8rem;
+    white-space: pre-wrap;
+    background: rgb(204, 204, 204);
+    display: block;
+    overflow-x: hidden;
+}
+
+.othermarkdown p > .md-image:only-child:not(.md-img-error) img, p > img:only-child {
+    display: block;
+    margin: auto;
+}
+
+.othermarkdown p > .md-image:only-child {
+    display: inline-block;
+    width: 100%;
+}
+
+.othermarkdown .MathJax_Display {
+    margin: 0.8em 0px 0px;
+}
+
+.othermarkdown .md-math-block {
+    width: 100%;
+}
+
+
+.othermarkdown .md-task-list-item {
+    position: relative;
+    list-style-type: none;
+}
+
+.othermarkdown .task-list-item.md-task-list-item {
+    padding-left: 0px;
+}
+
+.othermarkdown .md-task-list-item > input {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin-left: -1.2em;
+    margin-top: calc(1em - 10px);
+    border: none;
+}
+
+.othermarkdown .math {
+    font-size: 1rem;
+}
+
+.othermarkdown .md-toc {
+    min-height: 3.58rem;
+    position: relative;
+    font-size: 0.9rem;
+    border-radius: 10px;
+}
+
+.othermarkdown .md-toc-content {
+    position: relative;
+    margin-left: 0px;
+}
+
+.othermarkdown .md-toc-content::after, .md-toc::after {
+    display: none;
+}
+
+.othermarkdown .md-toc-item {
+    display: block;
+    color: rgb(65, 131, 196);
+}
+
+
+
+.othermarkdown code, pre, samp, tt {
+    font-family: var(--monospace);
+}
+
+.othermarkdown kbd {
+    margin: 0px 0.1em;
+    padding: 0.1em 0.6em;
+    font-size: 0.8em;
+    color: rgb(36, 39, 41);
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(173, 179, 185);
+    border-radius: 3px;
+    box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.othermarkdown .md-comment {
+    color: rgb(162, 127, 3);
+    opacity: 0.8;
+    font-family: var(--monospace);
+}
+
+.othermarkdown code {
+    text-align: left;
+    vertical-align: initial;
+}
+
+.othermarkdown a.md-print-anchor {
+    white-space: pre !important;
+    border-width: initial !important;
+    border-style: none !important;
+    border-color: initial !important;
+    display: inline-block !important;
+    position: absolute !important;
+    width: 1px !important;
+    right: 0px !important;
+    outline: 0px !important;
+    background: 0px 0px !important;
+    text-decoration: initial !important;
+    text-shadow: initial !important;
+}
+
+.othermarkdown .md-inline-math .MathJax_SVG .noError {
+    display: none !important;
+}
+
+.othermarkdown .html-for-mac .inline-math-svg .MathJax_SVG {
+    vertical-align: 0.2px;
+}
+
+.othermarkdown .md-math-block .MathJax_SVG_Display {
+    text-align: center;
+    margin: 0px;
+    position: relative;
+    text-indent: 0px;
+    max-width: none;
+    max-height: none;
+    min-height: 0px;
+    min-width: 100%;
+    width: auto;
+    overflow-y: hidden;
+    display: block !important;
+}
+
+
+.othermarkdown table tr th {
+    border: 1px solid rgb(221, 221, 221);
+}
+
+.othermarkdown video {
+    max-width: 100%;
+    display: block;
+    margin: 0px auto;
+}
+
+.othermarkdown iframe {
+    max-width: 100%;
+    width: 100%;
+    border: none;
+}
+
+.othermarkdown .highlight td, .highlight tr {
+    border: 0px;
+}
+
+.othermarkdown .CodeMirror {
+    height: auto;
+}
+
+.othermarkdown .CodeMirror.cm-s-inner {
+    background: inherit;
+}
+
+.othermarkdown .CodeMirror-scroll {
+    overflow-y: hidden;
+    overflow-x: auto;
+    z-index: 3;
+}
+
+
+.othermarkdown table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid rgb(221, 221, 221);
+    border-spacing: 0px;
+}
+
+.othermarkdown table th {
+    font-weight: bold;
+    border: 1px solid rgb(221, 221, 221);
+    padding-bottom: 0.5em;
+}
+
+.othermarkdown table td {
+    border-bottom: 1px solid rgb(221, 221, 221);
+    padding: 10px 0px;
+}
+
+.othermarkdown blockquote {
+    border-left: 5px solid rgb(221, 221, 221);
+    padding-left: 0.5em;
+    font-family: "Source Han Serif SC", serif;
+    color: rgb(85, 85, 85);
+}
+
+.othermarkdown blockquote blockquote {
+    padding-right: 0px;
+}
+
+.othermarkdown .md-fences{
+    margin: 0px 0.3em;
+    padding: 0px 0.3em;
+    background: rgb(238, 238, 238);
+    font-family: mononoki, monospace;
+    text-shadow: rgb(255, 255, 255) 0px 1px;
+}
+
+.othermarkdown tt{
+    margin: 0px 0.3em;
+    padding: 0px 0.3em;
+    background: rgb(238, 238, 238);
+    font-family: mononoki, monospace;
+    text-shadow: rgb(255, 255, 255) 0px 1px;
+}
+.othermarkdown code{
+    margin: 0px 0.3em;
+    padding: 0px 0.3em;
+    background: rgb(238, 238, 238);
+    font-family: mononoki, monospace;
+    text-shadow: rgb(255, 255, 255) 0px 1px;
+}
