@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.9.3 / 2019-4-17 19:50:25
+ * swagger-bootstrap-ui v1.9.4 / 2019-5-18 16:21:54
  *
  * https://gitee.com/xiaoym/swagger-bootstrap-ui
  *
@@ -43,7 +43,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.9.3";
+        this.version="1.9.4";
         this.requestOrigion="SwaggerBootstrapUi";
         this.requestParameter={};//浏览器请求参数
         //个性化配置
@@ -90,6 +90,27 @@
         that.tabCloseEventsInit();
         //opentab
         that.initOpenTable();
+        //hash
+        that.hashInitEvent();
+    }
+
+    /***
+     * 地址栏一致性hash发生变化调整指定地址
+     */
+    SwaggerBootstrapUi.prototype.hashInitEvent=function () {
+        var that=this;
+        var i18n=that.i18n.instance;
+        try{
+            window.onhashchange=function () {
+                var url=window.location;
+                that.log(url)
+            }
+        }catch (e){
+            if(window.console){
+                console.log("Current browser version is too low to use this feature")
+            }
+
+        }
     }
 
     /***
@@ -685,6 +706,9 @@
         }
         catch (err){
             layer.msg(i18n.message.sys.loadErr+",Err:"+err.message);
+            if (window.console){
+                console.error(err);
+            }
         }
 
     }
@@ -833,6 +857,9 @@
             }
         }catch (err){
             layer.msg(i18n.message.sys.loadErr);
+            if (window.console){
+                console.error(err);
+            }
         }
 
     }
@@ -4205,6 +4232,9 @@
                         swud.value=defiTypeValue;
                     }
                 }
+
+                deepTreeTableRefParameter(swud,that,swud,swud);
+
                 that.currentInstance.difArrs.push(swud);
             }
         }
@@ -4229,266 +4259,35 @@
             that.log("开始解析Paths.................")
             that.log(new Date().toTimeString());
             var pathStartTime=new Date().getTime();
+            var _supportMethods=["get","post","put","delete","patch","options","trace","head","connect"];
             async.forEachOf(paths,function (pathObject,path, callback) {
                 //var pathObject=paths[path];
                 var apiInfo=null;
-                if(pathObject.hasOwnProperty("get")){
-                    //get方式
-                    apiInfo=pathObject["get"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"get",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        that.methodCountAndDown("GET");
-
-                    }
-                }
-                if(pathObject.hasOwnProperty("post")){
-                    //post 方式
-                    apiInfo=pathObject["post"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"post",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        that.methodCountAndDown("POST");
-                    }
-                }
-                if(pathObject.hasOwnProperty("put")){
-                    //put
-                    apiInfo=pathObject["put"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"put",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"put",apiInfo));
-                        that.methodCountAndDown("PUT");
-                    }
-                }
-                if(pathObject.hasOwnProperty("delete")){
-                    //delete
-                    apiInfo=pathObject["delete"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"delete",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"delete",apiInfo));
-                        that.methodCountAndDown("DELETE");
-                    }
-                }
-                if (pathObject.hasOwnProperty("patch")){
-                    //扩展 支持http其余请求方法接口
-                    //add by xiaoymin 2018-4-28 07:16:12
-                    //patch
-                    apiInfo=pathObject["patch"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"patch",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"patch",apiInfo));
-                        that.methodCountAndDown("PATCH");
-                    }
-                }
-                if (pathObject.hasOwnProperty("options")){
-                    //OPTIONS
-                    apiInfo=pathObject["options"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"options",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"options",apiInfo));
-                        that.methodCountAndDown("OPTIONS");
-                    }
-                }
-                if (pathObject.hasOwnProperty("trace")){
-                    //TRACE
-                    apiInfo=pathObject["trace"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"trace",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"trace",apiInfo));
-                        that.methodCountAndDown("TRACE");
-                    }
-                }
-                if (pathObject.hasOwnProperty("head")){
-                    //HEAD
-                    apiInfo=pathObject["head"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"head",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        that.methodCountAndDown("HEAD");
-                    }
-                }
-                if (pathObject.hasOwnProperty("connect")){
-                    //CONNECT
-                    apiInfo=pathObject["connect"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"connect",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        that.methodCountAndDown("CONNECT");
-                    }
-
-                }
-            })
-
-           /* var selfPath="/api/new188/self";
-            var selfobj={
-                "summary": "第一个list功能",
-                "tags": [
-                    "1.8.8版本-20181208"
-                ],
-                "deprecated": false,
-                "produces": [
-                    "*!/!*"
-                ],
-                "operationId": "list3GET4997028859787988992",
-                "responses": {
-                    "200": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "name": "id",
-                                    "in": "formData",
-                                    "description": "标识的desc",
-                                    "required": true,
-                                    "type": "string"
-                                },
-                                "createTime": {
-                                    "name": "createTime",
-                                    "in": "formData",
-                                    "description": "时间的desc",
-                                    "required": false,
-                                    "type": "string"
+                $.each(_supportMethods,function (i, method) {
+                    if(pathObject.hasOwnProperty(method)){
+                        apiInfo=pathObject[method]
+                        if(apiInfo!=null){
+                            var ins=that.createApiInfoInstance(path,method,apiInfo);
+                            //排序属性赋值
+                            //判断是否开启增强配置
+                            if(that.settings.enableSwaggerBootstrapUi){
+                                var sbu=menu["swaggerBootstrapUi"]
+                                if(sbu!=null&&sbu!=undefined){
+                                    var pathSortLists=sbu["pathSortLists"];
+                                    $.each(pathSortLists,function (i, ps) {
+                                        if(ps.path==ins.url&&ps.method==ins.methodType){
+                                            ins.order=ps.order;
+                                        }
+                                    })
                                 }
                             }
-                        },
-                        "description": "返回profile列表"
+                            that.currentInstance.paths.push(ins);
+                            that.methodCountAndDown(method.toUpperCase());
+                        }
                     }
-                },
-                "description": "list的description",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "formData",
-                        "description": "标识的desc",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "createTime",
-                        "in": "formData",
-                        "description": "时间的desc",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "consumes": [
-                    "application/xml"
-                ]
-            }
+                })
 
-            var selfins=that.createApiInfoInstance(selfPath,"get",selfobj);
-            that.currentInstance.paths.push(selfins);*/
-           /* for(var path in paths){
-
-
-            }*/
+            })
             that.log("解析Paths结束,耗时："+(new Date().getTime()-pathStartTime));
             that.log(new Date().toTimeString());
             //判断是否开启过滤
@@ -4781,6 +4580,47 @@
                 }
             })
         }
+        //遍历models,如果存在自定义Model,则添加进去
+        //遍历definitions
+        if(that.currentInstance.difArrs!=undefined&&that.currentInstance.difArrs!=null&&that.currentInstance.difArrs.length>0){
+            $.each(that.currentInstance.difArrs,function (i, dif) {
+                //判断models是否存在
+                var name=dif.name;
+                //判断集合中是否存在name
+                if($.inArray(name,that.currentInstance.modelNames)==-1){
+                    //当前Models是自定义
+                    that.currentInstance.modelNames.push(name);
+
+                    //var requestParams=path.refTreetableparameters;
+                    var requestParams=dif.refTreetableModelsparameters;
+                    if(requestParams!=null&&requestParams!=undefined&&requestParams.length>0){
+                        var param=requestParams[0];
+                        //判断集合中是否存在name
+                        that.currentInstance.modelNames.push(name);
+                        //不存在
+                        var model=new SwaggerBootstrapUiModel(param.id,name);
+                        //遍历params
+                        if(param.params!=null&&param.params.length>0){
+                            //model本身需要添加一个父类
+                            //model.data.push({id:model.id,name:name,pid:"-1"});
+                            //data数据加入本身
+                            //model.data=model.data.concat(param.params);
+                            //第一层属性设置为pid
+                            $.each(param.params,function (a, ps) {
+                                var newparam=$.extend({},ps,{pid:"-1"});
+                                model.data.push(newparam);
+                                if(ps.schema){
+                                    //是schema
+                                    //查找紫属性中存在的pid
+                                    deepSchemaModel(model,requestParams,ps.id);
+                                }
+                            })
+                        }
+                        that.currentInstance.models.push(model);
+                    }
+                }
+            })
+        }
         //排序
         if(that.currentInstance.models!=null&&that.currentInstance.models.length>0){
             that.currentInstance.models.sort(function (a, b) {
@@ -4948,6 +4788,13 @@
             swpinfo.operationId=apiInfo.operationId;
             swpinfo.summary=apiInfo.summary;
             swpinfo.tags=apiInfo.tags;
+            //operationId
+            swpinfo.operationId=$.getValue(apiInfo,"operationId","",true);
+            //设置hashurl
+            $.each(swpinfo.tags,function (i, tag) {
+                var _hashUrl="#/"+tag+"/"+swpinfo.operationId;
+                swpinfo.hashCollections.push(_hashUrl);
+            })
             swpinfo.produces=apiInfo.produces;
             if (apiInfo.hasOwnProperty("parameters")){
                 var pameters=apiInfo["parameters"];
@@ -6050,10 +5897,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
@@ -6298,6 +6145,12 @@
     var SwaggerBootstrapUiDefinition=function () {
         //类型名称
         this.name="";
+        this.schemaValue=null;
+        this.id="definition"+Math.round(Math.random()*1000000);
+        this.pid="-1";
+        this.level=1;
+        this.childrenTypes=new Array();
+        this.parentTypes=new Array();
         //介绍
         this.description="";
         //类型
@@ -6308,6 +6161,10 @@
         //add by xiaoymin 2018-8-1 13:35:32
         this.required=new Array();
         this.title="";
+        //treetable组件使用对象
+        this.refTreetableparameters=new Array();
+        //swaggerModels功能
+        this.refTreetableModelsparameters=new Array();
     }
     /**
      * 权限验证
@@ -6444,6 +6301,8 @@
         //是否存在响应状态码中  存在多个schema的情况
         this.multipartResponseSchema=false;
         this.multipartResponseSchemaCount=0;
+        //hashUrl
+        this.hashCollections=[];
 
     }
 

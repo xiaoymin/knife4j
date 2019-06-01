@@ -133,6 +133,8 @@ public class SwaggerBootstrapUiController {
             }
         }
         Swagger swagger = mapper.mapDocumentation(documentation);
+        swagger.getTags().get(0).setVendorExtension("order","1");
+        swagger.setVendorExtension("x-files","abc");
         UriComponents uriComponents = null;
         try{
             uriComponents=componentsFrom(request,swagger.getBasePath());
