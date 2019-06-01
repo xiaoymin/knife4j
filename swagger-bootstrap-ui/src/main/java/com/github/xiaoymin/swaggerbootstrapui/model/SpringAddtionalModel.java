@@ -31,13 +31,8 @@ public class SpringAddtionalModel {
     private List<ResolvedType> remaining=new ArrayList<>();
 
 
-
-
     public ResolvedType[] getRemaining() {
-        if (!remaining.isEmpty()){
-            return remaining.toArray(new ResolvedType[]{});
-        }
-        return new ResolvedType[]{};
+        return remaining.toArray(new ResolvedType[]{});
     }
 
     public ResolvedType getFirst() {
