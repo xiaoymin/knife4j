@@ -42,6 +42,7 @@
     <script src="webjars/bycdao-ui/jquery/showdown.min.js"></script>
     <script src="webjars/bycdao-ui/jquery/async.min.js"></script>
     <script src="webjars/bycdao-ui/jquery/md5.min.js"></script>
+
     <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui-md.css?v=1.9.4" />
     <style type="text/css">
         #container {
@@ -365,7 +366,7 @@
 <!--文档说明-->
 <script type="text/html" id="contentScript">
     <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
-        <div style="    float: left;width: 90%;font-size: 20px;">{{summary}}</div>
+        <div style="    float: left;width: 80%;font-size: 20px;">{{summary}}</div>
         <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHref" style="cursor: pointer;text-decoration: none;
 " href="javascript:void(0);">复制文档</a></div>
     </div>
@@ -838,8 +839,14 @@
         </ul>
         <div id="myTabContent-tabs-left" class="tab-content">
             <div class="tab-pane fade in active" id="HomeDoc{{id}}" >
+                <div>
+                    <input id="copyDocHashInput{{id}}" type="hidden" value="{{hashCollections[0]}}"/>
+                </div>
+
                 <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
-                    <div style="    float: left;width: 90%;font-size: 20px;">{{summary}}</div>
+                    <div style="    float: left;width: 80%;font-size: 20px;">{{summary}}</div>
+                    <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHash{{id}}" style="cursor: pointer;text-decoration: none;
+" href="javascript:void(0);">{{i18n.doc.copyHash}}</a></div>
                     <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHref{{id}}" style="cursor: pointer;text-decoration: none;
 " href="javascript:void(0);">{{i18n.doc.copy}}</a></div>
                 </div>

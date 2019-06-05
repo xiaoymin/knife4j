@@ -91,33 +91,79 @@
         //opentab
         that.initOpenTable();
         //hash
-        that.hashInitEvent();
+        //that.hashInitEvent();
+        //init hashMethod
+        that.initCurrentHashApi();
     }
 
     /***
      * 地址栏一致性hash发生变化调整指定地址
+     * 效率有问题,待解决
+     * 使用第二种方案,不改变location.hash的属性值,但是提供location.hash值的初次访问加载方式,供接口定位
      */
     SwaggerBootstrapUi.prototype.hashInitEvent=function () {
         var that=this;
-        var i18n=that.i18n.instance;
         try{
-            //注册onload时间
-            window.onhashchange=function () {
+            /*$(window).hashchange=function (e) {
+                e.preventDefault();
                 var location=window.location;
                 //获取hash值
                 that.log(location);
                 that.openApiByHashUrl(location.hash);
-            }
-            setTimeout(function () {
-                //初始化当前地址是否包含hash
-                that.openApiByHashUrl(window.location.hash);
-            },50);
+            }*/
+            window.addEventListener("hashchange",function () {
+                console.log("hashchange-------------------------")
+                var location=window.location;
+                //获取hash值
+                that.log(location);
+                that.openApiByHashUrl(location.hash);
+            },false);
+            //注册onload时间
+            /*window.onhashchange=function (e) {
+                that.log("onhashchange--------------------------")
+                that.log(e);
+                console.log($(e))
+                //阻止事件冒泡
+                e.preventDefault();
+
+            }*/
         }catch (e){
             if(window.console){
                 console.log("Current browser version is too low to use this feature")
             }
 
         }
+    }
+    /***
+     * 初始化打开当前存在的api地址
+     */
+    SwaggerBootstrapUi.prototype.initCurrentHashApi=function () {
+        var that=this;
+        that.log("--------------------------------initCurrentHashApi")
+        setTimeout(function () {
+            //初始化当前地址是否包含hash
+            //that.openApiByHashUrl(window.location.hash);
+            var _hash=window.location.hash;
+            if(_hash!=null&&_hash!=undefined&&_hash!=""){
+                _hash=decodeURIComponent(_hash);
+                var apiinfo=that.currentInstance.pathsDictionary[_hash];
+                that.log("findapi---------");
+                that.log(apiinfo)
+                if(apiinfo!=null){
+                    //open
+                    that.createApiInfoTable(apiinfo,null);
+                    //左侧菜单栏展开,获取分组地址
+                    var reg=new RegExp("#/(.*?)/(.*?)/.*","ig");
+                    if(reg.test(_hash)){
+                        var _tagName=RegExp.$2;
+                        var _li=$("#menu").find("li[title='"+_tagName+"']");
+                        _li.addClass("open");
+                        _li.find("ul:first").show();
+                        _li.find("ul:first").find("li[data-hashurl='"+_hash+"']").addClass("active");
+                    }
+                }
+            }
+        },50);
     }
 
     /***
@@ -129,19 +175,23 @@
         if(_hash!=null&&_hash!=undefined&&_hash!=""){
             _hash=decodeURIComponent(_hash);
             //遍历获取apiInfo对象
-            var instance=that.currentInstance;
-            var apiinfo=null;
-            $.each(instance.paths,function (i, path) {
+            //遍历效率低下,需要换成散列数据结构
+            /*$.each(instance.paths,function (i, path) {
                 if($.inArray(_hash,path.hashCollections)!=-1){
                     apiinfo=path;
                     return;
                 }
-            })
+            })*/
+            that.log(new Date()+"----------------------openApiByHashUrl----------------start--------------------")
+            var apiinfo=that.currentInstance.pathsDictionary[_hash];
+            that.log(new Date()+"----------------------openApiByHashUrl----------------end--------------------")
             that.log("findapi---------");
             that.log(apiinfo)
             if(apiinfo!=null){
                 //open
+                that.log(new Date()+"----------------------openApiByHashUrl----------------start1--------------------")
                 that.createApiInfoTable(apiinfo,null);
+                that.log(new Date()+"----------------------openApiByHashUrl----------------end1--------------------")
             }
         }
     }
@@ -200,6 +250,7 @@
     SwaggerBootstrapUi.prototype.storeCacheApiAddApiInfo=function (apiInfo) {
         var that=this;
         if (apiInfo.hasNew||apiInfo.hasChanged){
+            that.log("将接口id加入缓存，再页面点击后-------------------------------")
             if(window.localStorage){
                 var store = window.localStorage;
                 var cacheApis=store["SwaggerBootstrapUiCacheApis"];
@@ -251,7 +302,7 @@
     SwaggerBootstrapUi.prototype.storeCacheOpenApiTableApis=function (apiTable) {
         var that=this;
         if(!that.settings.enableCacheOpenApiTable){
-            return
+            return;
         }
 
         if(window.localStorage){
@@ -1058,10 +1109,10 @@
                     var _hashUrl=children.hashCollections[0];
                     if(that.settings.showApiUrl){
                         //显示api地址
-                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<a href="'+_hashUrl+'"><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></a></li>');
+                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" data-hashurl="'+_hashUrl+'">'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
                     }else{
                         //不显示api地址
-                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<a href="'+_hashUrl+'"><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></a></li>');
+                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" data-hashurl="'+_hashUrl+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
                     }
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
@@ -1714,7 +1765,7 @@
     SwaggerBootstrapUi.prototype.initializationMenuClickEvents=function () {
         var that=this;
         that.getMenu().find(".menuLi").bind("click",function (e) {
-            //e.preventDefault();
+            e.preventDefault();
             var menu=$(this);
             var data=menu.data("data");
             that.log("Li标签click事件");
@@ -1730,8 +1781,9 @@
             menu.addClass("active");
             //此处不调用apiInfo的table事件,交给hashchange事件调用
             //缓存当前目标对象
-            $("body").data("data-menu",menu);
-            //that.createApiInfoTable(data,menu);
+            //location.hash=menu.data("hashurl");
+            //$("body").data("data-menu",menu);
+            that.createApiInfoTable(data,menu);
             //DApiUI.createDebugTab(data);
         })
     }
@@ -1753,8 +1805,11 @@
 
         //判断tabId是否存在
         if(that.tabExists(tabId)){
+            that.log("tabId存在,选中")
+            that.log(new Date())
             element.tabChange(that.layTabFilter,tabId);
             that.tabRollPage("auto");
+            that.log(new Date())
         }
         else{
             that.log("created---------------------------")
@@ -2074,6 +2129,21 @@
                 layer.msg(i18n.message.copy.fail)
             });
             that.log(that.currentInstance);
+
+            //复制接口地址功能
+
+            var copyHash=new ClipboardJS('#copyDocHash'+apiInfo.id,{
+                text:function () {
+                    var _hashurl=window.location.origin+window.location.pathname+$("#copyDocHashInput"+apiInfo.id).val();
+                    return _hashurl;
+                }
+            })
+            copyHash.on('success', function(e) {
+                layer.msg(i18n.message.copy.success)
+            });
+            copyHash.on('error', function(e) {
+                layer.msg(i18n.message.copy.fail)
+            });
             //创建调试页面
             that.createDebugTab(apiInfo,menu);
 
@@ -3748,7 +3818,7 @@
             $("#mainTabContent").html("").html(html);
             element.tabChange('admin-pagetabs',"main");
             that.tabRollPage("auto");
-        },100)
+        },10)
 
 
     }
@@ -4322,6 +4392,9 @@
                                 }
                             }
                             that.currentInstance.paths.push(ins);
+                            $.each(ins.hashCollections,function (j, hashurl) {
+                                that.currentInstance.pathsDictionary[hashurl]=ins;
+                            })
                             that.methodCountAndDown(method.toUpperCase());
                         }
                     }
@@ -5877,8 +5950,43 @@
             that.log(instance);
             that.analysisApi(instance);
         })
-        //默认加载第一个url
-        that.analysisApi(that.instances[0]);
+        //判断当前location中是否存在hash,如果存在,获取hash中的分组名称,加载该分组,否则加载第一个
+        var location=window.location;
+        var _hash=location.hash;
+        if(_hash!=null&&_hash!=undefined&&_hash!=""){
+            //判断hash是否符合规范
+            _hash=decodeURIComponent(_hash);
+            var reg=new RegExp('#\/(.*?)\/.*','ig');
+            if(reg.test(_hash)){
+                var _gpName=RegExp.$1;
+                if(_gpName!=null&&_gpName!=undefined&&_gpName!=""){
+                    //find
+                    var _instance=null;
+                    $.each(that.instances,function (i, ins) {
+                        if(ins.name==_gpName){
+                            _instance=ins;
+                        }
+                    })
+                    if(_instance!=null){
+                        //选中
+                        groupSele.find("option[data-name='"+_gpName+"']").prop("selected",true);
+                        that.analysisApi(_instance);
+                    }else{
+                        //默认加载第一个url
+                        that.analysisApi(that.instances[0]);
+                    }
+                }else{
+                    //默认加载第一个url
+                    that.analysisApi(that.instances[0]);
+                }
+            }else{
+                //默认加载第一个url
+                that.analysisApi(that.instances[0]);
+            }
+        }else{
+            //默认加载第一个url
+            that.analysisApi(that.instances[0]);
+        }
     }
     /***
      * 获取当前分组实例
@@ -6080,6 +6188,8 @@
         //接口url信息
         //存储SwaggerBootstrapUiApiInfo 集合
         this.paths=new Array();
+        //字典
+        this.pathsDictionary={};
         //全局参数,存放SwaggerBootstrapUiParameter集合
         this.globalParameters=new Array();
         //参数统计信息，存放SwaggerBootstrapUiPathCountDownLatch集合
@@ -6344,7 +6454,6 @@
         this.multipartResponseSchemaCount=0;
         //hashUrl
         this.hashCollections=[];
-
     }
 
     var SwaggerBootstrapUiRefParameter=function () {
