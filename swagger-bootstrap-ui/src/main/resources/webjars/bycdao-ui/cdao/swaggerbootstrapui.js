@@ -101,15 +101,48 @@
         var that=this;
         var i18n=that.i18n.instance;
         try{
+            //注册onload时间
             window.onhashchange=function () {
-                var url=window.location;
-                that.log(url)
+                var location=window.location;
+                //获取hash值
+                that.log(location);
+                that.openApiByHashUrl(location.hash);
             }
+            setTimeout(function () {
+                //初始化当前地址是否包含hash
+                that.openApiByHashUrl(window.location.hash);
+            },50);
         }catch (e){
             if(window.console){
                 console.log("Current browser version is too low to use this feature")
             }
 
+        }
+    }
+
+    /***
+     * 根据hashurl查找apiinfo详情
+     * @param _hash
+     */
+    SwaggerBootstrapUi.prototype.openApiByHashUrl=function(_hash){
+        var that=this;
+        if(_hash!=null&&_hash!=undefined&&_hash!=""){
+            _hash=decodeURIComponent(_hash);
+            //遍历获取apiInfo对象
+            var instance=that.currentInstance;
+            var apiinfo=null;
+            $.each(instance.paths,function (i, path) {
+                if($.inArray(_hash,path.hashCollections)!=-1){
+                    apiinfo=path;
+                    return;
+                }
+            })
+            that.log("findapi---------");
+            that.log(apiinfo)
+            if(apiinfo!=null){
+                //open
+                that.createApiInfoTable(apiinfo,null);
+            }
         }
     }
 
@@ -993,6 +1026,7 @@
                     tagNewApiIcon='<i class="iconfont icon-xinpin" style="float: right;right: 30px;position: absolute;"></i>';
                 }
                 var titleA=null;
+
                 if(that.settings.showTagStatus){
                     _lititle=tag.name+"("+tag.description+")";
                     titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+')<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
@@ -1021,12 +1055,13 @@
                         depStyle=' style="text-decoration:line-through;"';
                     }
                     var tabId="tab"+children.id;
+                    var _hashUrl=children.hashCollections[0];
                     if(that.settings.showApiUrl){
                         //显示api地址
-                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
+                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<a href="'+_hashUrl+'"><div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></a></li>');
                     }else{
                         //不显示api地址
-                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
+                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<a href="'+_hashUrl+'"><div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></a></li>');
                     }
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
@@ -1679,7 +1714,7 @@
     SwaggerBootstrapUi.prototype.initializationMenuClickEvents=function () {
         var that=this;
         that.getMenu().find(".menuLi").bind("click",function (e) {
-            e.preventDefault();
+            //e.preventDefault();
             var menu=$(this);
             var data=menu.data("data");
             that.log("Li标签click事件");
@@ -1693,7 +1728,10 @@
             that.getMenu().find("li").removeClass("active");
             //parentLi.addClass("active");
             menu.addClass("active");
-            that.createApiInfoTable(data,menu);
+            //此处不调用apiInfo的table事件,交给hashchange事件调用
+            //缓存当前目标对象
+            $("body").data("data-menu",menu);
+            //that.createApiInfoTable(data,menu);
             //DApiUI.createDebugTab(data);
         })
     }
@@ -1719,6 +1757,7 @@
             that.tabRollPage("auto");
         }
         else{
+            that.log("created---------------------------")
             //that.createTabElement();
             //html转义
             var nApiInfo=$.extend({},apiInfo,{i18n:i18n})
@@ -1925,7 +1964,8 @@
                         }
                     }
                 })
-            }else{
+            }
+            else{
                 //响应参数
                 var responseTableId="responseParameter"+apiInfo.id;
                 var respdata=[];
@@ -2546,7 +2586,7 @@
             }
             //that.log("发送之后bai...")
            // that.log(apiInfo)
-            eleObject.data("data",apiInfo);
+            //eleObject.data("data",apiInfo);
             //判断是否有表单
             var form=$("#uploadForm"+apiInfo.id);
             var startTime=new Date().getTime();
@@ -4790,9 +4830,10 @@
             swpinfo.tags=apiInfo.tags;
             //operationId
             swpinfo.operationId=$.getValue(apiInfo,"operationId","",true);
+            var _groupName=that.currentInstance.name;
             //设置hashurl
             $.each(swpinfo.tags,function (i, tag) {
-                var _hashUrl="#/"+tag+"/"+swpinfo.operationId;
+                var _hashUrl="#/"+_groupName+"/"+tag+"/"+swpinfo.operationId;
                 swpinfo.hashCollections.push(_hashUrl);
             })
             swpinfo.produces=apiInfo.produces;
