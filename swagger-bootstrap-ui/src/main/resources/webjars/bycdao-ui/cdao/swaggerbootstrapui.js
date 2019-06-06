@@ -73,7 +73,7 @@
      */
     SwaggerBootstrapUi.prototype.main=function () {
         var that=this;
-        that.welcome();
+        //that.welcome();
         that.initRequestParameters();
         that.initSettings();
         that.initUnTemplatePageI18n();
