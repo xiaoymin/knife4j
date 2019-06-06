@@ -3060,7 +3060,23 @@
 
         //判断响应内容
         var contentType=xhr.getResponseHeader("Content-Type");
+        var xmlflag=false,htmlflag=false,textflag=false;
         var rtext=data || xhr["responseText"];
+        //支持xml
+        if(contentType!=null&&contentType!=undefined&&contentType!=""){
+            if(contentType.toLowerCase().indexOf("xml")!=-1){
+                //xml类型
+                rtext=xhr["responseText"];
+                xmlflag=true;
+            }else if(contentType.toLowerCase().indexOf("html")!=-1){
+                rtext=xhr["responseText"];
+                htmlflag=true;
+            }else{
+                rtext=xhr["responseText"];
+                textflag=true;
+            }
+        }
+
         //that.log(xhr.hasOwnProperty("responseText"));
         //that.log(rtext);
         //响应文本内容
@@ -3102,8 +3118,9 @@
         }
         else if(rtext!=null&&rtext!=undefined){
             var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>"+i18n.settings.copy+"</button><br /><br />");
-            var rawText=$("<span></span>");
-            rawText.html(rtext);
+            //var rawText=$("<span></span>");
+            var rawText=$("<textarea cols='10' rows='10' style='height: "+responseHeight+"px;width: 98%;'></textarea>");
+            rawText.val(rtext);
             resp2.html("");
             resp2.append(rawCopyBotton).append(rawText);
             var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
@@ -3117,7 +3134,7 @@
             cliprawboard.on('error', function(e) {
                 layer.msg(i18n.message.copy.fail)
             });
-            if(tp!=null&& tp=="string"){
+            /*if(tp!=null&& tp=="string"){
                 //转二进制
                 var dv=data.toString(2);
                 if(dv!=undefined&&dv!=null){
@@ -3140,7 +3157,7 @@
                     resp1.html("")
                     resp1.html(div);
                 }
-            }
+            }*/
         }
         //响应JSON
         if (data&&data.toString() =="[object Blob]" ) {
@@ -3180,7 +3197,7 @@
             resp1.html("");
             resp1.append(resp2Html);
         }
-        else if (xhr.hasOwnProperty("responseJSON")||data!=null||data!=undefined){
+        else if (xhr.hasOwnProperty("responseJSON")&&data!=null&&data!=undefined){
             //如果存在该对象,服务端返回为json格式
             resp1.html("")
             //that.log(xhr["responseJSON"])
@@ -3278,11 +3295,13 @@
                 }, 1000);
             });
         }else{
-            //判断是否是text
-            var regex=new RegExp('.*?text.*','g');
-            if(regex.test(contentType)){
-                resp1.html("")
-                resp1.html(rtext);
+            //判断是否xml
+            if(xmlflag) {
+                that.buildNonJsonEditor("ace/mode/xml",responseHeight,apiKeyId,rtext,resp1,laycontentdiv);
+            }else if(htmlflag){
+                that.buildNonJsonEditor("ace/mode/html",responseHeight,apiKeyId,rtext,resp1,laycontentdiv);
+            }else{
+                that.buildNonJsonEditor("ace/mode/text",responseHeight,apiKeyId,rtext,resp1,laycontentdiv);
             }
         }
 
@@ -3342,7 +3361,42 @@
 
 
         })
+    }
 
+    SwaggerBootstrapUi.prototype.buildNonJsonEditor=function (mode,responseHeight,apiKeyId,aceValue,resp1,laycontentdiv) {
+        //如果存在该对象,服务端返回为json格式
+        resp1.html("")
+        //that.log(xhr["responseJSON"])
+        var jsondiv = $('<div style="width: auto;height: ' + responseHeight + 'px;" id="responseJsonEditor' + apiKeyId + '"></div>')
+        resp1.append(jsondiv);
+        var editor = ace.edit("responseJsonEditor" + apiKeyId);
+        //启动自动换行
+        editor.getSession().setUseWrapMode(true);
+        editor.getSession().setMode(mode);
+        editor.setTheme("ace/theme/eclipse");
+        editor.setValue(aceValue);
+        editor.gotoLine(1);
+        //重构高度
+        var length_editor = editor.session.getLength();
+        var rows_editor = length_editor * 16;
+        //that.log("重构高度："+rows_editor)
+        var rzheight = rows_editor + 110;
+        var rzdivHeight = rows_editor + 150;
+        if (rows_editor > 20000) {
+            rzheight = 500 + 110;
+            rzdivHeight = 500 + 150;
+            $("#responseJsonEditor" + apiKeyId).css('height', rzheight);
+            editor.resize(true);
+            //重置响应面板高度
+            laycontentdiv.css("height", rzdivHeight);
+            //设置response的滚动条
+            resp1.css("overflow-y", "auto");
+        } else {
+            $("#responseJsonEditor" + apiKeyId).css('height', rzheight);
+            editor.resize(true);
+            //重置响应面板高度
+            laycontentdiv.css("height", rzdivHeight);
+        }
     }
 
     /***
