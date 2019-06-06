@@ -44,18 +44,18 @@ public @interface ApiOperationSupport {
      *     }
      * </code>
      */
-    ApiImplicitParam[] params();
+    ApiImplicitParam[] params() default @ApiImplicitParam;
 
     /***
      * A list of ignore parameters
      * @return
      */
-    String[] ignoredParameters();
+    String[] ignoredParameters() default "";
 
     /***
      * A list of ignore parameter Type
      * @return
      */
-    Class<?>[] ignoredParameterTypes();
+    Class<?>[] ignoredParameterTypes() default Void.class;
 
 }
