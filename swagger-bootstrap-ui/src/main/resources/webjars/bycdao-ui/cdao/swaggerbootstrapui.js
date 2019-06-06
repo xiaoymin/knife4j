@@ -3653,14 +3653,16 @@
         element.on('tab('+that.layTabFilter+')',function (data) {
             var _currentTab=$(this);
             var _tabAttr=_currentTab.attr("lay-attr");
+            that.log(_tabAttr)
+            //获取默认hash
+            var href=decodeURIComponent(window.location.hash);
             if(_tabAttr!=undefined&&_tabAttr!=null&&_tabAttr!=""){
                 //判断是否相等
-                var href=decodeURIComponent(window.location.hash);
                 if(_tabAttr!=href){
                     location.hash=_tabAttr;
                 }
             }else{
-                location.hash="";
+                //location.hash="";
             }
             that.log("切换")
             that.removeLayerTips();
