@@ -3119,7 +3119,7 @@
         else if(rtext!=null&&rtext!=undefined){
             var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>"+i18n.settings.copy+"</button><br /><br />");
             //var rawText=$("<span></span>");
-            var rawText=$("<textarea cols='10' rows='10' style='height: "+responseHeight+"px;width: 98%;'></textarea>");
+            var rawText=$("<textarea cols='10' rows='10' style='height: "+(responseHeight-150)+"px;width: 98%;'></textarea>");
             rawText.val(rtext);
             resp2.html("");
             resp2.append(rawCopyBotton).append(rawText);
@@ -3247,6 +3247,9 @@
             }else{
                 $("#responseJsonEditor"+apiKeyId).css('height',rzheight);
                 editor.resize(true);
+                if(rzdivHeight<450){
+                    rzdivHeight=450;
+                }
                 //重置响应面板高度
                 laycontentdiv.css("height",rzdivHeight);
             }
@@ -3394,6 +3397,9 @@
         } else {
             $("#responseJsonEditor" + apiKeyId).css('height', rzheight);
             editor.resize(true);
+            if(rzdivHeight<450){
+                rzdivHeight=450;
+            }
             //重置响应面板高度
             laycontentdiv.css("height", rzdivHeight);
         }
