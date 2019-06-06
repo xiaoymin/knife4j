@@ -809,7 +809,8 @@
             }
             that.currentInstance.host=host;
             that.currentInstance.title=title;
-            that.currentInstance.description=description;
+            //impl markdown syntax
+            that.currentInstance.description=marked(description);
             that.currentInstance.contact=name;
             that.currentInstance.version=version;
             that.currentInstance.termsOfService=termsOfService;
