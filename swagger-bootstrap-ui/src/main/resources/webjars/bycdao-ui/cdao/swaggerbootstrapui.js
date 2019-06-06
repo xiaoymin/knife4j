@@ -98,19 +98,12 @@
 
     /***
      * 地址栏一致性hash发生变化调整指定地址
-     * 效率有问题,待解决
+     * 多个tab直接切换存在卡顿问题,待解决
      * 使用第二种方案,不改变location.hash的属性值,但是提供location.hash值的初次访问加载方式,供接口定位
      */
     SwaggerBootstrapUi.prototype.hashInitEvent=function () {
         var that=this;
         try{
-            /*$(window).hashchange=function (e) {
-                e.preventDefault();
-                var location=window.location;
-                //获取hash值
-                that.log(location);
-                that.openApiByHashUrl(location.hash);
-            }*/
             window.addEventListener("hashchange",function () {
                 console.log("hashchange-------------------------")
                 var location=window.location;
@@ -118,15 +111,7 @@
                 that.log(location);
                 that.openApiByHashUrl(location.hash);
             },false);
-            //注册onload时间
-            /*window.onhashchange=function (e) {
-                that.log("onhashchange--------------------------")
-                that.log(e);
-                console.log($(e))
-                //阻止事件冒泡
-                e.preventDefault();
 
-            }*/
         }catch (e){
             if(window.console){
                 console.log("Current browser version is too low to use this feature")
@@ -1781,7 +1766,7 @@
             menu.addClass("active");
             //此处不调用apiInfo的table事件,交给hashchange事件调用
             //缓存当前目标对象
-            //location.hash=menu.data("hashurl");
+            location.hash=menu.data("hashurl");
             //$("body").data("data-menu",menu);
             that.createApiInfoTable(data,menu);
             //DApiUI.createDebugTab(data);
@@ -1817,8 +1802,10 @@
             //html转义
             var nApiInfo=$.extend({},apiInfo,{i18n:i18n})
             var dynaTab=template('BootstrapDynaTab',nApiInfo);
+
+            var _hashurl=apiInfo.hashCollections[0];
             //不存在,添加
-            var tabObj={id: tabId, title: apiInfo.summary, content: dynaTab};
+            var tabObj={id: tabId, title: apiInfo.summary, content: dynaTab,attr:_hashurl};
             element.tabAdd(that.layTabFilter, tabObj);
             element.tabChange(that.layTabFilter,tabId);
             that.tabFinallyRight();
@@ -3664,7 +3651,17 @@
         })
         //tab切换状态
         element.on('tab('+that.layTabFilter+')',function (data) {
-            that.log(data)
+            var _currentTab=$(this);
+            var _tabAttr=_currentTab.attr("lay-attr");
+            if(_tabAttr!=undefined&&_tabAttr!=null&&_tabAttr!=""){
+                //判断是否相等
+                var href=decodeURIComponent(window.location.hash);
+                if(_tabAttr!=href){
+                    location.hash=_tabAttr;
+                }
+            }else{
+                location.hash="";
+            }
             that.log("切换")
             that.removeLayerTips();
         })
