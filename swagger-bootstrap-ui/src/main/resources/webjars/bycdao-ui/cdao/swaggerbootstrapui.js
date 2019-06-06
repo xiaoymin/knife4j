@@ -3090,8 +3090,11 @@
                         if(header!=null&&header!=""){
                             var headerValu=header.split("=");
                             if(headerValu!=null&&headerValu.length>0){
-                                if(headerValu[0]=="fileName"){
-                                    fileName=headerValu[1];
+                                var _hdvalue=headerValu[0];
+                                if(_hdvalue!=null&&_hdvalue!=undefined&&_hdvalue!=""){
+                                    if(_hdvalue.toLowerCase()=="filename"){
+                                        fileName=headerValu[1];
+                                    }
                                 }
                             }
                         }
@@ -3166,8 +3169,11 @@
                         if(header!=null&&header!=""){
                             var headerValu=header.split("=");
                             if(headerValu!=null&&headerValu.length>0){
-                                if(headerValu[0]=="fileName"){
-                                    fileName=headerValu[1];
+                                var _hdvalue=headerValu[0];
+                                if(_hdvalue!=null&&_hdvalue!=undefined&&_hdvalue!=""){
+                                    if(_hdvalue.toLowerCase()=="filename"){
+                                        fileName=headerValu[1];
+                                    }
                                 }
                             }
                         }
