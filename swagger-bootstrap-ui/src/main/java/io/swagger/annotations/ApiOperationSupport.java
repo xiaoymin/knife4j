@@ -36,7 +36,7 @@ public @interface ApiOperationSupport {
 
 
     /**
-     * A list of {@link ApiImplicitParam}s available to the API operation.
+     * A list of {@link DynamicParameter}s available to the API operation.
      * Only parameters annotated with {@link org.springframework.web.bind.annotation.RequestBody}  annotation are supported <br/>
      * <code>
      *     public void request(@RequestBody JSONObject jsonobject){
@@ -44,18 +44,6 @@ public @interface ApiOperationSupport {
      *     }
      * </code>
      */
-    ApiImplicitParam[] params() default @ApiImplicitParam;
-
-    /***
-     * A list of ignore parameters
-     * @return
-     */
-    String[] ignoredParameters() default "";
-
-    /***
-     * A list of ignore parameter Type
-     * @return
-     */
-    Class<?>[] ignoredParameterTypes() default Void.class;
+    DynamicParameters params() default @DynamicParameters;
 
 }
