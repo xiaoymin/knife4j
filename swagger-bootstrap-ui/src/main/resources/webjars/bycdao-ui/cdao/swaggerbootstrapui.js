@@ -4454,7 +4454,8 @@
                             var ins=that.createApiInfoInstance(path,method,apiInfo);
                             //排序属性赋值
                             //判断是否开启增强配置
-                            if(that.settings.enableSwaggerBootstrapUi){
+                            //@Deprecated since 1.9.4
+                            /*if(that.settings.enableSwaggerBootstrapUi){
                                 var sbu=menu["swaggerBootstrapUi"]
                                 if(sbu!=null&&sbu!=undefined){
                                     var pathSortLists=sbu["pathSortLists"];
@@ -4464,7 +4465,7 @@
                                         }
                                     })
                                 }
-                            }
+                            }*/
                             that.currentInstance.paths.push(ins);
                             $.each(ins.hashCollections,function (j, hashurl) {
                                 that.currentInstance.pathsDictionary[hashurl]=ins;
@@ -4975,6 +4976,10 @@
             swpinfo.operationId=apiInfo.operationId;
             swpinfo.summary=apiInfo.summary;
             swpinfo.tags=apiInfo.tags;
+            //读取扩展属性x-order值
+            if(apiInfo.hasOwnProperty("x-order")){
+                swpinfo.order=parseInt(apiInfo["x-order"]);
+            }
             //operationId
             swpinfo.operationId=$.getValue(apiInfo,"operationId","",true);
             var _groupName=that.currentInstance.name;
