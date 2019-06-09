@@ -856,6 +856,9 @@
                         <p><span class="sbu-api-title">{{i18n.doc.method}}</span> <code style="background-color: transparent;">{{methodType}}</code></p>
                         <p><span class="sbu-api-title">consumes</span> <code style="background-color: transparent;">{{consumes}}</code></p>
                         <p><span class="sbu-api-title">produces</span> <code style="background-color: transparent;">{{produces}}</code></p>
+                        {{ if author }}
+                        <p><span class="sbu-api-title">{{i18n.doc.author}}</span> <code style="background-color: transparent;">{{author}}</code></p>
+                        {{ /if }}
                         <p><span class="sbu-api-title">{{i18n.doc.des}}</span> <code style="background-color: transparent;">{{# description}}</code></p>
                         {{ if requestValue }}
                         <p><strong>{{i18n.doc.requestExample}}</strong></p>

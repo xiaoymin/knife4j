@@ -4980,6 +4980,10 @@
             if(apiInfo.hasOwnProperty("x-order")){
                 swpinfo.order=parseInt(apiInfo["x-order"]);
             }
+            //读取扩展属性x-author
+            if(apiInfo.hasOwnProperty("x-author")){
+                swpinfo.author=apiInfo["x-author"];
+            }
             //operationId
             swpinfo.operationId=$.getValue(apiInfo,"operationId","",true);
             var _groupName=that.currentInstance.name;
@@ -6458,6 +6462,8 @@
         this.originalUrl=null;
         this.showUrl="";
         this.basePathFlag=false;
+        //接口作者
+        this.author=null;
         this.methodType=null;
         this.description=null;
         this.summary=null;
