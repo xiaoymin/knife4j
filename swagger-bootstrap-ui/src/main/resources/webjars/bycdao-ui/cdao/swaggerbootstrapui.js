@@ -3126,7 +3126,7 @@
             resp2.append(rawCopyBotton).append(rawText);
             var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
                 text:function () {
-                    return rawText.html();
+                    return rawText.val();
                 }
             });
             cliprawboard.on('success', function(e) {
