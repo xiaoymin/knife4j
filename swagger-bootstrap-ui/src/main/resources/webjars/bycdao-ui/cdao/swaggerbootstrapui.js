@@ -1549,6 +1549,27 @@
         }
         return params;
     }
+
+    /***
+    * 获取全局缓存auth信息
+     */
+    SwaggerBootstrapUi.prototype.getGlobalSecurityInfos=function () {
+        var that=this;
+        var params=[];
+        if(window.localStorage){
+            var store = window.localStorage;
+            var globalparams=store["SwaggerBootstrapUiSecuritys"];
+            if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
+                var gpJson=JSON.parse(globalparams);
+                $.each(gpJson,function (i, j) {
+                        params=params.concat(j.value);
+                })
+            }
+        }else{
+            //params=$("#sbu-header").data("cacheSecurity");
+        }
+        return params;
+    }
     /***
      * 清空security
      */
@@ -1634,23 +1655,18 @@
             var globalparams=store[storeKey];
             if(globalparams!=null&&globalparams!=undefined&&globalparams!=""){
                 globalparams=JSON.parse(globalparams);
-                var id=md5(that.currentInstance.name);
                 var arr=new Array();
                 $.each(globalparams,function (i, gp) {
-                    if(gp.key==id){
-                        var _value=gp.value;
-                        $.each(_value,function (j, au) {
-                            if(au.name==param.name){
-                                au.in=param.in;
-                                au.value=param.value;
-                                au.txtValue=param.value;
-                            }
-                        })
-                        arr.push({key:id,value:_value});
-
-                    }else{
-                        arr.push(gp);
-                    }
+                    //更新所有
+                    var _value=gp.value;
+                    $.each(_value,function (j, au) {
+                        if(au.name==param.name){
+                            au.in=param.in;
+                            au.value=param.value;
+                            au.txtValue=param.value;
+                        }
+                    })
+                    arr.push({key:gp.key,value:_value});
                 })
                 var gbStr=JSON.stringify(arr);
                 store.setItem(storeKey,gbStr);
@@ -4517,7 +4533,8 @@
             if(securityDefinitions!=null){
                 //判断是否有缓存cache值
                 //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
-                var cacheSecurityData=that.getSecurityInfos();
+                //var cacheSecurityData=that.getSecurityInfos();
+                var cacheSecurityData=that.getGlobalSecurityInfos();
                 var securityArr=new Array();
                 for(var j in securityDefinitions){
                     var sdf=new SwaggerBootstrapUiSecurityDefinition();
