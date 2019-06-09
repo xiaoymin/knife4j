@@ -4338,6 +4338,13 @@
                                                 ref=items["items"]["$ref"];
                                             }
                                         }
+                                        //判断是否存在枚举
+                                        if(items.hasOwnProperty("enum")){
+                                            if(spropObj.description!=""){
+                                                spropObj.description+=",";
+                                            }
+                                            spropObj.description=spropObj.description+"可用值:"+items["enum"].join(",");
+                                        }
                                         var regex=new RegExp("#/definitions/(.*)$","ig");
                                         if(regex.test(ref)){
                                             var refType=RegExp.$1;
