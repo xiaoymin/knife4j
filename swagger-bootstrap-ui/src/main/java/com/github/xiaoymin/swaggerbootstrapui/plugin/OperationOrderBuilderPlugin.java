@@ -34,8 +34,8 @@ public class OperationOrderBuilderPlugin extends AbstractOperationBuilderPlugin 
      * {@link io.swagger.annotations.ApiOperationSupport} field order
      * {@link io.swagger.annotations.ApiOperationSort} field value
      * {@link io.swagger.annotations.ApiOperation} field position
-     * ApiOperation > ApiOperationSort > ApioperationSupport
-     * @param context
+     * ApiOperation - ApiOperationSort - ApioperationSupport
+     * @param context 操作上下文
      */
     @Override
     public void apply(OperationContext context) {

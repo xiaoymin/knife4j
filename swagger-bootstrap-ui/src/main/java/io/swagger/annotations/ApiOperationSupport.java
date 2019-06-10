@@ -23,26 +23,27 @@ public @interface ApiOperationSupport {
 
     /***
      * Sort Fields
-     * @return
+     * @return 排序
      */
     int order() default 0;
 
 
     /***
      * author
-     * @return
+     * @return 开发者
      */
     String author() default "";
 
 
     /**
      * A list of {@link DynamicParameter}s available to the API operation.
-     * Only parameters annotated with {@link org.springframework.web.bind.annotation.RequestBody}  annotation are supported <br/>
+     * Only parameters annotated with {@link org.springframework.web.bind.annotation.RequestBody}  annotation are supported
      * <code>
      *     public void request(@RequestBody JSONObject jsonobject){
      *
      *     }
      * </code>
+     * @return 动态类声明
      */
     DynamicParameters params() default @DynamicParameters;
 

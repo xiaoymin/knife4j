@@ -46,9 +46,9 @@ public class VFS {
 
     /***
      * get Resources by path
-     * @param path
-     * @return
-     * @throws IOException
+     * @param path 扫描路径
+     * @return 扫描集合URL
+     * @throws IOException 文件异常
      */
     public static List<URL> getResources(String path) throws IOException {
         return Collections.list(Thread.currentThread().getContextClassLoader().getResources(path));
@@ -251,9 +251,9 @@ public class VFS {
 
     /***
      * list resources
-     * @param path
-     * @return
-     * @throws IOException
+     * @param path 扫描路径
+     * @return 扫描类集合
+     * @throws IOException 文件异常
      */
     public List<String> list(String path) throws IOException {
         List<String> names=new ArrayList<>();

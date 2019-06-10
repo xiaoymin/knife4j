@@ -126,9 +126,9 @@ public class CommonUtils {
 
     /**
      * createModel
-     * @param name
-     * @param parameters
-     * @return
+     * @param name 类名
+     * @param parameters 属性集合
+     * @return 动态生成类
      */
     public static Class<?> createDynamicModelClass(String name,DynamicParameter[] parameters){
         String clazzName=basePackage+name;

@@ -42,8 +42,8 @@ public class ResourceUtil{
 
     /***
      * find resource by packageNames
-     * @param packageNames
-     * @return
+     * @param packageNames 包路径名称
+     * @return 扫描结果
      */
     public ResourceUtil find(String... packageNames){
         if (packageNames==null){
@@ -82,8 +82,8 @@ public class ResourceUtil{
 
     /***
      * 收集所有class
-     * @param packagePath
-     * @return
+     * @param packagePath  包路径
+     * @return 收集扫描结果
      */
     public Set<String> collectPaths(String packagePath) throws IOException {
         Set<String> list=new HashSet<>();

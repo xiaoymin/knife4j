@@ -17,13 +17,13 @@ public @interface DynamicParameters {
 
     /***
      * dynamic Model name
-     * @return
+     * @return 类名
      */
     String name() default "";
 
     /***
      * list of properties
-     * @return
+     * @return 类属性集合
      */
     DynamicParameter[] properties() default @DynamicParameter;
 }

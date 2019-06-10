@@ -17,11 +17,13 @@ public @interface DynamicParameter {
 
     /**
      * Name of the parameter.
+     * @return 属性名称
      */
     String name() default "";
 
     /**
      * A brief description of the parameter.
+     * @return 属性说明
      */
     String value() default "";
 
@@ -30,6 +32,7 @@ public @interface DynamicParameter {
      * Specifies if the parameter is required or not.
      * <p>
      * Path parameters should always be set as required.
+     * @return 是否必传
      */
     boolean required() default false;
 
@@ -37,6 +40,7 @@ public @interface DynamicParameter {
      * The class of the parameter.
      * <p>
      * Overrides {@code dataType} if provided.
+     * @return 属性类型
      */
     Class<?> dataTypeClass() default Void.class;
 
@@ -45,7 +49,7 @@ public @interface DynamicParameter {
      *
      * @since 1.5.4
      *
-     * @return
+     * @return 属性示例
      */
     String example() default "";
 

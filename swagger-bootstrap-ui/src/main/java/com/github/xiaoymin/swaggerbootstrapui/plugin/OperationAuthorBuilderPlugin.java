@@ -29,7 +29,7 @@ public class OperationAuthorBuilderPlugin extends AbstractOperationBuilderPlugin
 
     /***
      * 添加作者属性
-     * @param context
+     * @param context 接口上下文
      */
     @Override
     public void apply(OperationContext context) {

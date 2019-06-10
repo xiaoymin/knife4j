@@ -30,8 +30,8 @@ public class SpringAddtionalModelService{
 
     /***
      * 扫描包,获取对象
-     * @param basePackage
-     * @return
+     * @param basePackage 扫描包路径
+     * @return SpringAddtionModel实例
      */
     public SpringAddtionalModel scan(String... basePackage){
         if (basePackage==null||basePackage.length==0){
