@@ -158,8 +158,11 @@ public class CommonUtils {
         AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
         Annotation ann = new Annotation("io.swagger.annotations.ApiModelProperty", constPool);
         ann.addMemberValue("value", new StringMemberValue(parameter.value(), constPool));
-        ann.addMemberValue("example", new StringMemberValue(parameter.example(), constPool));
         ann.addMemberValue("required", new BooleanMemberValue(parameter.required(),constPool));
+        //判断example是否不为空
+        if (parameter.example()!=null&&!"".equals(parameter.example())){
+            ann.addMemberValue("example", new StringMemberValue(parameter.example(), constPool));
+        }
         attr.addAnnotation(ann);
         field.getFieldInfo().addAttribute(attr);
         return field;
