@@ -168,12 +168,24 @@ public class CommonUtils {
         return field;
     }
 
-    private static CtClass getFieldType(Class<?> propetyType) throws NotFoundException {
+    private static CtClass getFieldType(Class<?> propetyType)  {
         CtClass fieldType= null;
-        if (!propetyType.isAssignableFrom(Void.class)){
-            fieldType=classPool.get(propetyType.getName());
-        }else{
-            fieldType=classPool.get(String.class.getName());
+        try{
+            if (!propetyType.isAssignableFrom(Void.class)){
+                fieldType=classPool.get(propetyType.getName());
+            }else{
+                fieldType=classPool.get(String.class.getName());
+            }
+        }catch (NotFoundException e){
+            //抛异常
+            ClassClassPath path=new ClassClassPath(propetyType);
+            classPool.insertClassPath(path);
+            try {
+                fieldType=classPool.get(propetyType.getName());
+            } catch (NotFoundException e1) {
+                logger.error(e1.getMessage(),e1);
+                //can't find
+            }
         }
         return fieldType;
     }

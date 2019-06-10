@@ -13,6 +13,8 @@ import com.google.common.base.Optional;
 import io.swagger.annotations.ApiOperationSupport;
 import io.swagger.annotations.DynamicParameter;
 import io.swagger.annotations.DynamicParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -36,6 +38,8 @@ import java.util.Map;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE+101)
 public class OperationDynamicModelProvider implements OperationModelsProviderPlugin {
+
+    static Logger logger= LoggerFactory.getLogger(OperationDynamicModelProvider.class);
     @Autowired
     private TypeResolver typeResolver;
 

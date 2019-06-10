@@ -3,6 +3,7 @@
  *
  * Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui
  * GitHub:https://github.com/xiaoymin/swagger-bootstrap-ui
+ * QQ:621154782
  *
  * Swagger enhanced UI component package
  *
@@ -6146,10 +6147,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        if(window.console){
+        /*if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }
+        }*/
     }
     /***
      * 获取菜单元素
