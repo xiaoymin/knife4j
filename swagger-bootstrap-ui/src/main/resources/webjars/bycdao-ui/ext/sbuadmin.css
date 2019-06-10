@@ -53,16 +53,25 @@
 .layui-layout-admin .layui-body .layui-tab .layui-tab-title .layui-tab-bar {
     display: none;
 }
-.layui-layout-admin .layui-body .layui-tab .layui-tab-title li.layui-this,
+/*.layui-layout-admin .layui-body .layui-tab .layui-tab-title li.layui-this,
 .layui-layout-admin .layui-body .layui-tab .layui-tab-title li:hover {
     background-color: #f6f6f6;
 }
+.layui-tab-title li.layui-this{
+    background-color:transparent!important;
+}*/
 .layui-layout-admin .layui-body .layui-tab .layui-tab-title li.layui-this:after {
-    width: 100%;
+   /* width: 100%;
     border: none;
     height: 2px;
     background-color: #292B34;
-    border-radius: 0;
+    border-radius: 0;*/
+    width:100%;
+    border:none;
+    height:100%;
+    background-color:rgba(167, 165, 165, 0.1);
+    border-radius:0;
+    border-top:2px solid #000;
 }
 .layui-layout-admin .layui-body .layui-tab .layui-tab-title li .icon-sbu-tab-close {
     width: 16px;

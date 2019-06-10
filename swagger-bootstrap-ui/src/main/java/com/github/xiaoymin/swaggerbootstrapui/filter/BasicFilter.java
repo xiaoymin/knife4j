@@ -10,11 +10,11 @@ package com.github.xiaoymin.swaggerbootstrapui.filter;
 import com.github.xiaoymin.swaggerbootstrapui.conf.Consts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.BASE64Decoder;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /***
  *
@@ -26,24 +26,24 @@ public class BasicFilter implements Consts{
 
     private Logger logger= LoggerFactory.getLogger(BasicFilter.class);
 
-    protected List<String> urlFilters=null;
+    protected List<Pattern> urlFilters=null;
 
     public BasicFilter(){
         urlFilters=new ArrayList<>();
-        urlFilters.add(".*?/doc\\.html.*");
-        urlFilters.add(".*?/v2/api-docs.*");
-        urlFilters.add(".*?/v2/api-docs-ext.*");
-        urlFilters.add(".*?/swagger-resources.*");
-        urlFilters.add(".*?/swagger-ui\\.html.*");
-        urlFilters.add(".*?/swagger-resources/configuration/ui.*");
-        urlFilters.add(".*?/swagger-resources/configuration/security.*");
+        urlFilters.add(Pattern.compile(".*?/doc\\.html.*",Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/v2/api-docs.*",Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/v2/api-docs-ext.*",Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/swagger-resources.*",Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/swagger-ui\\.html.*",Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/ui.*",Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/security.*",Pattern.CASE_INSENSITIVE));
     }
 
     protected boolean match(String uri){
         boolean match=false;
         if (uri!=null){
-            for (String regex:getUrlFilters()){
-                if (uri.matches(regex)){
+            for (Pattern pattern:getUrlFilters()){
+                if (pattern.matcher(uri).matches()){
                     match=true;
                     break;
                 }
@@ -54,23 +54,19 @@ public class BasicFilter implements Consts{
     protected String decodeBase64(String source){
         String decodeStr=null;
         if (source!=null){
-            BASE64Decoder decoder=new BASE64Decoder();
+            //BASE64Decoder decoder=new BASE64Decoder();
             try {
-                byte[] bytes=decoder.decodeBuffer(source);
+                //byte[] bytes=decoder.decodeBuffer(source);
+                byte[] bytes=Base64.getDecoder().decode(source);
                 decodeStr=new String(bytes);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(),e);
             }
         }
         return decodeStr;
     }
 
-    public List<String> getUrlFilters() {
+    public List<Pattern> getUrlFilters() {
         return urlFilters;
     }
-
-    public void setUrlFilters(List<String> urlFilters) {
-        this.urlFilters = urlFilters;
-    }
-
 }

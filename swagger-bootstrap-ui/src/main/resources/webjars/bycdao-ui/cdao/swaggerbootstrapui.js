@@ -1,16 +1,18 @@
 /***
- * swagger-bootstrap-ui v1.9.3 / 2019-4-17 19:50:25
+ * swagger-bootstrap-ui v1.9.4 / 2019-5-18 16:21:54
  *
- * https://gitee.com/xiaoym/swagger-bootstrap-ui
+ * Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui
+ * GitHub:https://github.com/xiaoymin/swagger-bootstrap-ui
+ * QQ:621154782
  *
  * Swagger enhanced UI component package
  *
  * Author: xiaoyumin
  * email:xiaoymin@foxmail.com
- * Copyright: 2017 - 2019, xiaoyumin, http://www.xiaominfo.com/
+ * Copyright: 2017 - 2019, xiaoyumin, https://doc.xiaominfo.com/
  *
  * Licensed under Apache License 2.0
- * https://github.com/xiaoymin/Swagger-Bootstrap-UI/blob/master/LICENSE
+ * https://github.com/xiaoymin/swagger-bootstrap-ui/blob/master/LICENSE
  *
  * create by xiaoymin on 2018-7-4 15:32:07
  * 重构swagger-bootstrap-ui组件,为以后动态扩展更高效,扩展接口打下基础
@@ -43,7 +45,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.9.3";
+        this.version="1.9.4";
         this.requestOrigion="SwaggerBootstrapUi";
         this.requestParameter={};//浏览器请求参数
         //个性化配置
@@ -73,7 +75,7 @@
      */
     SwaggerBootstrapUi.prototype.main=function () {
         var that=this;
-        that.welcome();
+        //that.welcome();
         that.initRequestParameters();
         that.initSettings();
         that.initUnTemplatePageI18n();
@@ -90,6 +92,95 @@
         that.tabCloseEventsInit();
         //opentab
         that.initOpenTable();
+        //hash
+        //that.hashInitEvent();
+        //init hashMethod
+        that.initCurrentHashApi();
+    }
+
+    /***
+     * 地址栏一致性hash发生变化调整指定地址
+     * 多个tab直接切换存在卡顿问题,待解决
+     * 使用第二种方案,不改变location.hash的属性值,但是提供location.hash值的初次访问加载方式,供接口定位
+     */
+    SwaggerBootstrapUi.prototype.hashInitEvent=function () {
+        var that=this;
+        try{
+            window.addEventListener("hashchange",function () {
+                console.log("hashchange-------------------------")
+                var location=window.location;
+                //获取hash值
+                that.log(location);
+                that.openApiByHashUrl(location.hash);
+            },false);
+
+        }catch (e){
+            if(window.console){
+                console.log("Current browser version is too low to use this feature")
+            }
+
+        }
+    }
+    /***
+     * 初始化打开当前存在的api地址
+     */
+    SwaggerBootstrapUi.prototype.initCurrentHashApi=function () {
+        var that=this;
+        that.log("--------------------------------initCurrentHashApi")
+        setTimeout(function () {
+            //初始化当前地址是否包含hash
+            //that.openApiByHashUrl(window.location.hash);
+            var _hash=window.location.hash;
+            if(_hash!=null&&_hash!=undefined&&_hash!=""){
+                _hash=decodeURIComponent(_hash);
+                var apiinfo=that.currentInstance.pathsDictionary[_hash];
+                that.log("findapi---------");
+                that.log(apiinfo)
+                if(apiinfo!=null){
+                    //open
+                    that.createApiInfoTable(apiinfo,null);
+                    //左侧菜单栏展开,获取分组地址
+                    var reg=new RegExp("#/(.*?)/(.*?)/.*","ig");
+                    if(reg.test(_hash)){
+                        var _tagName=RegExp.$2;
+                        var _li=$("#menu").find("li[title='"+_tagName+"']");
+                        _li.addClass("open");
+                        _li.find("ul:first").show();
+                        _li.find("ul:first").find("li[data-hashurl='"+_hash+"']").addClass("active");
+                    }
+                }
+            }
+        },50);
+    }
+
+    /***
+     * 根据hashurl查找apiinfo详情
+     * @param _hash
+     */
+    SwaggerBootstrapUi.prototype.openApiByHashUrl=function(_hash){
+        var that=this;
+        if(_hash!=null&&_hash!=undefined&&_hash!=""){
+            _hash=decodeURIComponent(_hash);
+            //遍历获取apiInfo对象
+            //遍历效率低下,需要换成散列数据结构
+            /*$.each(instance.paths,function (i, path) {
+                if($.inArray(_hash,path.hashCollections)!=-1){
+                    apiinfo=path;
+                    return;
+                }
+            })*/
+            that.log(new Date()+"----------------------openApiByHashUrl----------------start--------------------")
+            var apiinfo=that.currentInstance.pathsDictionary[_hash];
+            that.log(new Date()+"----------------------openApiByHashUrl----------------end--------------------")
+            that.log("findapi---------");
+            that.log(apiinfo)
+            if(apiinfo!=null){
+                //open
+                that.log(new Date()+"----------------------openApiByHashUrl----------------start1--------------------")
+                that.createApiInfoTable(apiinfo,null);
+                that.log(new Date()+"----------------------openApiByHashUrl----------------end1--------------------")
+            }
+        }
     }
 
     /***
@@ -146,6 +237,7 @@
     SwaggerBootstrapUi.prototype.storeCacheApiAddApiInfo=function (apiInfo) {
         var that=this;
         if (apiInfo.hasNew||apiInfo.hasChanged){
+            that.log("将接口id加入缓存，再页面点击后-------------------------------")
             if(window.localStorage){
                 var store = window.localStorage;
                 var cacheApis=store["SwaggerBootstrapUiCacheApis"];
@@ -197,7 +289,7 @@
     SwaggerBootstrapUi.prototype.storeCacheOpenApiTableApis=function (apiTable) {
         var that=this;
         if(!that.settings.enableCacheOpenApiTable){
-            return
+            return;
         }
 
         if(window.localStorage){
@@ -685,6 +777,9 @@
         }
         catch (err){
             layer.msg(i18n.message.sys.loadErr+",Err:"+err.message);
+            if (window.console){
+                console.error(err);
+            }
         }
 
     }
@@ -715,7 +810,8 @@
             }
             that.currentInstance.host=host;
             that.currentInstance.title=title;
-            that.currentInstance.description=description;
+            //impl markdown syntax
+            that.currentInstance.description=marked(description);
             that.currentInstance.contact=name;
             that.currentInstance.version=version;
             that.currentInstance.termsOfService=termsOfService;
@@ -833,6 +929,9 @@
             }
         }catch (err){
             layer.msg(i18n.message.sys.loadErr);
+            if (window.console){
+                console.error(err);
+            }
         }
 
     }
@@ -966,6 +1065,7 @@
                     tagNewApiIcon='<i class="iconfont icon-xinpin" style="float: right;right: 30px;position: absolute;"></i>';
                 }
                 var titleA=null;
+
                 if(that.settings.showTagStatus){
                     _lititle=tag.name+"("+tag.description+")";
                     titleA=$('<a href="#" class="dropdown-toggle"><i class="icon-file-alt icon-text-width iconfont icon-APIwendang"></i><span class="menu-text sbu-tag-description"> '+tag.name+"("+tag.description+')<span class="badge badge-primary ">'+len+'</span></span>'+tagNewApiIcon+'<b class="arrow icon-angle-down"></b></a>');
@@ -994,12 +1094,13 @@
                         depStyle=' style="text-decoration:line-through;"';
                     }
                     var tabId="tab"+children.id;
+                    var _hashUrl=children.hashCollections[0];
                     if(that.settings.showApiUrl){
                         //显示api地址
-                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
+                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" data-hashurl="'+_hashUrl+'">'+newApiIcon+'<div class="mhed"><div class="swu-hei"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url"  '+depStyle+'>'+children.summary+'</span></span></div><div class="swu-menu-api-des"><span  '+depStyle+'>'+children.showUrl+'</span></div></div></li>');
                     }else{
                         //不显示api地址
-                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
+                        childrenLi=$('<li class="menuLi"  lay-id="'+tabId+'" data-hashurl="'+_hashUrl+'" >'+newApiIcon+'<div class="mhed"><div class="swu-hei-none-url"><span class="swu-menu swu-left"><span class="menu-url-'+children.methodType.toLowerCase()+'">'+children.methodType.toUpperCase()+'</span></span><span class="swu-menu swu-left"><span class="menu-url" '+depStyle+'>'+children.summary+'</span></span></div></div></li>');
                     }
                     childrenLi.data("data",children);
                     ul.append(childrenLi);
@@ -1449,6 +1550,27 @@
         }
         return params;
     }
+
+    /***
+    * 获取全局缓存auth信息
+     */
+    SwaggerBootstrapUi.prototype.getGlobalSecurityInfos=function () {
+        var that=this;
+        var params=[];
+        if(window.localStorage){
+            var store = window.localStorage;
+            var globalparams=store["SwaggerBootstrapUiSecuritys"];
+            if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
+                var gpJson=JSON.parse(globalparams);
+                $.each(gpJson,function (i, j) {
+                        params=params.concat(j.value);
+                })
+            }
+        }else{
+            //params=$("#sbu-header").data("cacheSecurity");
+        }
+        return params;
+    }
     /***
      * 清空security
      */
@@ -1534,23 +1656,18 @@
             var globalparams=store[storeKey];
             if(globalparams!=null&&globalparams!=undefined&&globalparams!=""){
                 globalparams=JSON.parse(globalparams);
-                var id=md5(that.currentInstance.name);
                 var arr=new Array();
                 $.each(globalparams,function (i, gp) {
-                    if(gp.key==id){
-                        var _value=gp.value;
-                        $.each(_value,function (j, au) {
-                            if(au.name==param.name){
-                                au.in=param.in;
-                                au.value=param.value;
-                                au.txtValue=param.value;
-                            }
-                        })
-                        arr.push({key:id,value:_value});
-
-                    }else{
-                        arr.push(gp);
-                    }
+                    //更新所有
+                    var _value=gp.value;
+                    $.each(_value,function (j, au) {
+                        if(au.name==param.name){
+                            au.in=param.in;
+                            au.value=param.value;
+                            au.txtValue=param.value;
+                        }
+                    })
+                    arr.push({key:gp.key,value:_value});
                 })
                 var gbStr=JSON.stringify(arr);
                 store.setItem(storeKey,gbStr);
@@ -1666,6 +1783,10 @@
             that.getMenu().find("li").removeClass("active");
             //parentLi.addClass("active");
             menu.addClass("active");
+            //此处不调用apiInfo的table事件,交给hashchange事件调用
+            //缓存当前目标对象
+            location.hash=menu.data("hashurl");
+            //$("body").data("data-menu",menu);
             that.createApiInfoTable(data,menu);
             //DApiUI.createDebugTab(data);
         })
@@ -1688,16 +1809,22 @@
 
         //判断tabId是否存在
         if(that.tabExists(tabId)){
+            that.log("tabId存在,选中")
+            that.log(new Date())
             element.tabChange(that.layTabFilter,tabId);
             that.tabRollPage("auto");
+            that.log(new Date())
         }
         else{
+            that.log("created---------------------------")
             //that.createTabElement();
             //html转义
             var nApiInfo=$.extend({},apiInfo,{i18n:i18n})
             var dynaTab=template('BootstrapDynaTab',nApiInfo);
+
+            var _hashurl=apiInfo.hashCollections[0];
             //不存在,添加
-            var tabObj={id: tabId, title: apiInfo.summary, content: dynaTab};
+            var tabObj={id: tabId, title: apiInfo.summary, content: dynaTab,attr:_hashurl};
             element.tabAdd(that.layTabFilter, tabObj);
             element.tabChange(that.layTabFilter,tabId);
             that.tabFinallyRight();
@@ -1898,7 +2025,8 @@
                         }
                     }
                 })
-            }else{
+            }
+            else{
                 //响应参数
                 var responseTableId="responseParameter"+apiInfo.id;
                 var respdata=[];
@@ -2007,6 +2135,21 @@
                 layer.msg(i18n.message.copy.fail)
             });
             that.log(that.currentInstance);
+
+            //复制接口地址功能
+
+            var copyHash=new ClipboardJS('#copyDocHash'+apiInfo.id,{
+                text:function () {
+                    var _hashurl=window.location.origin+window.location.pathname+$("#copyDocHashInput"+apiInfo.id).val();
+                    return _hashurl;
+                }
+            })
+            copyHash.on('success', function(e) {
+                layer.msg(i18n.message.copy.success)
+            });
+            copyHash.on('error', function(e) {
+                layer.msg(i18n.message.copy.fail)
+            });
             //创建调试页面
             that.createDebugTab(apiInfo,menu);
 
@@ -2519,7 +2662,7 @@
             }
             //that.log("发送之后bai...")
            // that.log(apiInfo)
-            eleObject.data("data",apiInfo);
+            //eleObject.data("data",apiInfo);
             //判断是否有表单
             var form=$("#uploadForm"+apiInfo.id);
             var startTime=new Date().getTime();
@@ -2935,7 +3078,23 @@
 
         //判断响应内容
         var contentType=xhr.getResponseHeader("Content-Type");
+        var xmlflag=false,htmlflag=false,textflag=false;
         var rtext=data || xhr["responseText"];
+        //支持xml
+        if(contentType!=null&&contentType!=undefined&&contentType!=""){
+            if(contentType.toLowerCase().indexOf("xml")!=-1){
+                //xml类型
+                rtext=xhr["responseText"];
+                xmlflag=true;
+            }else if(contentType.toLowerCase().indexOf("html")!=-1){
+                rtext=xhr["responseText"];
+                htmlflag=true;
+            }else{
+                rtext=xhr["responseText"];
+                textflag=true;
+            }
+        }
+
         //that.log(xhr.hasOwnProperty("responseText"));
         //that.log(rtext);
         //响应文本内容
@@ -2953,8 +3112,11 @@
                         if(header!=null&&header!=""){
                             var headerValu=header.split("=");
                             if(headerValu!=null&&headerValu.length>0){
-                                if(headerValu[0]=="fileName"){
-                                    fileName=headerValu[1];
+                                var _hdvalue=headerValu[0];
+                                if(_hdvalue!=null&&_hdvalue!=undefined&&_hdvalue!=""){
+                                    if(_hdvalue.toLowerCase()=="filename"){
+                                        fileName=headerValu[1];
+                                    }
                                 }
                             }
                         }
@@ -2974,13 +3136,14 @@
         }
         else if(rtext!=null&&rtext!=undefined){
             var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>"+i18n.settings.copy+"</button><br /><br />");
-            var rawText=$("<span></span>");
-            rawText.html(rtext);
+            //var rawText=$("<span></span>");
+            var rawText=$("<textarea cols='10' rows='10' style='height: "+(responseHeight-150)+"px;width: 98%;'></textarea>");
+            rawText.val(rtext);
             resp2.html("");
             resp2.append(rawCopyBotton).append(rawText);
             var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
                 text:function () {
-                    return rawText.html();
+                    return rawText.val();
                 }
             });
             cliprawboard.on('success', function(e) {
@@ -2989,7 +3152,7 @@
             cliprawboard.on('error', function(e) {
                 layer.msg(i18n.message.copy.fail)
             });
-            if(tp!=null&& tp=="string"){
+            /*if(tp!=null&& tp=="string"){
                 //转二进制
                 var dv=data.toString(2);
                 if(dv!=undefined&&dv!=null){
@@ -3012,7 +3175,7 @@
                     resp1.html("")
                     resp1.html(div);
                 }
-            }
+            }*/
         }
         //响应JSON
         if (data&&data.toString() =="[object Blob]" ) {
@@ -3029,8 +3192,11 @@
                         if(header!=null&&header!=""){
                             var headerValu=header.split("=");
                             if(headerValu!=null&&headerValu.length>0){
-                                if(headerValu[0]=="fileName"){
-                                    fileName=headerValu[1];
+                                var _hdvalue=headerValu[0];
+                                if(_hdvalue!=null&&_hdvalue!=undefined&&_hdvalue!=""){
+                                    if(_hdvalue.toLowerCase()=="filename"){
+                                        fileName=headerValu[1];
+                                    }
                                 }
                             }
                         }
@@ -3049,7 +3215,7 @@
             resp1.html("");
             resp1.append(resp2Html);
         }
-        else if (xhr.hasOwnProperty("responseJSON")||data!=null||data!=undefined){
+        else if (xhr.hasOwnProperty("responseJSON")&&data!=null&&data!=undefined){
             //如果存在该对象,服务端返回为json格式
             resp1.html("")
             //that.log(xhr["responseJSON"])
@@ -3099,6 +3265,9 @@
             }else{
                 $("#responseJsonEditor"+apiKeyId).css('height',rzheight);
                 editor.resize(true);
+                if(rzdivHeight<450){
+                    rzdivHeight=450;
+                }
                 //重置响应面板高度
                 laycontentdiv.css("height",rzdivHeight);
             }
@@ -3147,11 +3316,13 @@
                 }, 1000);
             });
         }else{
-            //判断是否是text
-            var regex=new RegExp('.*?text.*','g');
-            if(regex.test(contentType)){
-                resp1.html("")
-                resp1.html(rtext);
+            //判断是否xml
+            if(xmlflag) {
+                that.buildNonJsonEditor("ace/mode/xml",responseHeight,apiKeyId,rtext,resp1,laycontentdiv);
+            }else if(htmlflag){
+                that.buildNonJsonEditor("ace/mode/html",responseHeight,apiKeyId,rtext,resp1,laycontentdiv);
+            }else{
+                that.buildNonJsonEditor("ace/mode/text",responseHeight,apiKeyId,rtext,resp1,laycontentdiv);
             }
         }
 
@@ -3211,7 +3382,45 @@
 
 
         })
+    }
 
+    SwaggerBootstrapUi.prototype.buildNonJsonEditor=function (mode,responseHeight,apiKeyId,aceValue,resp1,laycontentdiv) {
+        //如果存在该对象,服务端返回为json格式
+        resp1.html("")
+        //that.log(xhr["responseJSON"])
+        var jsondiv = $('<div style="width: auto;height: ' + responseHeight + 'px;" id="responseJsonEditor' + apiKeyId + '"></div>')
+        resp1.append(jsondiv);
+        var editor = ace.edit("responseJsonEditor" + apiKeyId);
+        //启动自动换行
+        editor.getSession().setUseWrapMode(true);
+        editor.getSession().setMode(mode);
+        editor.setTheme("ace/theme/eclipse");
+        editor.setValue(aceValue);
+        editor.gotoLine(1);
+        //重构高度
+        var length_editor = editor.session.getLength();
+        var rows_editor = length_editor * 16;
+        //that.log("重构高度："+rows_editor)
+        var rzheight = rows_editor + 110;
+        var rzdivHeight = rows_editor + 150;
+        if (rows_editor > 20000) {
+            rzheight = 500 + 110;
+            rzdivHeight = 500 + 150;
+            $("#responseJsonEditor" + apiKeyId).css('height', rzheight);
+            editor.resize(true);
+            //重置响应面板高度
+            laycontentdiv.css("height", rzdivHeight);
+            //设置response的滚动条
+            resp1.css("overflow-y", "auto");
+        } else {
+            $("#responseJsonEditor" + apiKeyId).css('height', rzheight);
+            editor.resize(true);
+            if(rzdivHeight<450){
+                rzdivHeight=450;
+            }
+            //重置响应面板高度
+            laycontentdiv.css("height", rzdivHeight);
+        }
     }
 
     /***
@@ -3521,7 +3730,19 @@
         })
         //tab切换状态
         element.on('tab('+that.layTabFilter+')',function (data) {
-            that.log(data)
+            var _currentTab=$(this);
+            var _tabAttr=_currentTab.attr("lay-attr");
+            that.log(_tabAttr)
+            //获取默认hash
+            var href=decodeURIComponent(window.location.hash);
+            if(_tabAttr!=undefined&&_tabAttr!=null&&_tabAttr!=""){
+                //判断是否相等
+                if(_tabAttr!=href){
+                    location.hash=_tabAttr;
+                }
+            }else{
+                //location.hash="";
+            }
             that.log("切换")
             that.removeLayerTips();
         })
@@ -3681,7 +3902,7 @@
             $("#mainTabContent").html("").html(html);
             element.tabChange('admin-pagetabs',"main");
             that.tabRollPage("auto");
-        },100)
+        },10)
 
 
     }
@@ -4134,6 +4355,13 @@
                                                 ref=items["items"]["$ref"];
                                             }
                                         }
+                                        //判断是否存在枚举
+                                        if(items.hasOwnProperty("enum")){
+                                            if(spropObj.description!=""){
+                                                spropObj.description+=",";
+                                            }
+                                            spropObj.description=spropObj.description+"可用值:"+items["enum"].join(",");
+                                        }
                                         var regex=new RegExp("#/definitions/(.*)$","ig");
                                         if(regex.test(ref)){
                                             var refType=RegExp.$1;
@@ -4205,6 +4433,9 @@
                         swud.value=defiTypeValue;
                     }
                 }
+
+                deepTreeTableRefParameter(swud,that,swud,swud);
+
                 that.currentInstance.difArrs.push(swud);
             }
         }
@@ -4229,266 +4460,39 @@
             that.log("开始解析Paths.................")
             that.log(new Date().toTimeString());
             var pathStartTime=new Date().getTime();
+            var _supportMethods=["get","post","put","delete","patch","options","trace","head","connect"];
             async.forEachOf(paths,function (pathObject,path, callback) {
                 //var pathObject=paths[path];
                 var apiInfo=null;
-                if(pathObject.hasOwnProperty("get")){
-                    //get方式
-                    apiInfo=pathObject["get"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"get",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
+                $.each(_supportMethods,function (i, method) {
+                    if(pathObject.hasOwnProperty(method)){
+                        apiInfo=pathObject[method]
+                        if(apiInfo!=null){
+                            var ins=that.createApiInfoInstance(path,method,apiInfo);
+                            //排序属性赋值
+                            //判断是否开启增强配置
+                            //@Deprecated since 1.9.4
+                            /*if(that.settings.enableSwaggerBootstrapUi){
+                                var sbu=menu["swaggerBootstrapUi"]
+                                if(sbu!=null&&sbu!=undefined){
+                                    var pathSortLists=sbu["pathSortLists"];
+                                    $.each(pathSortLists,function (i, ps) {
+                                        if(ps.path==ins.url&&ps.method==ins.methodType){
+                                            ins.order=ps.order;
+                                        }
+                                    })
                                 }
+                            }*/
+                            that.currentInstance.paths.push(ins);
+                            $.each(ins.hashCollections,function (j, hashurl) {
+                                that.currentInstance.pathsDictionary[hashurl]=ins;
                             })
+                            that.methodCountAndDown(method.toUpperCase());
                         }
-                        that.currentInstance.paths.push(ins);
-                        that.methodCountAndDown("GET");
+                    }
+                })
 
-                    }
-                }
-                if(pathObject.hasOwnProperty("post")){
-                    //post 方式
-                    apiInfo=pathObject["post"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"post",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        that.methodCountAndDown("POST");
-                    }
-                }
-                if(pathObject.hasOwnProperty("put")){
-                    //put
-                    apiInfo=pathObject["put"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"put",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"put",apiInfo));
-                        that.methodCountAndDown("PUT");
-                    }
-                }
-                if(pathObject.hasOwnProperty("delete")){
-                    //delete
-                    apiInfo=pathObject["delete"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"delete",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"delete",apiInfo));
-                        that.methodCountAndDown("DELETE");
-                    }
-                }
-                if (pathObject.hasOwnProperty("patch")){
-                    //扩展 支持http其余请求方法接口
-                    //add by xiaoymin 2018-4-28 07:16:12
-                    //patch
-                    apiInfo=pathObject["patch"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"patch",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"patch",apiInfo));
-                        that.methodCountAndDown("PATCH");
-                    }
-                }
-                if (pathObject.hasOwnProperty("options")){
-                    //OPTIONS
-                    apiInfo=pathObject["options"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"options",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"options",apiInfo));
-                        that.methodCountAndDown("OPTIONS");
-                    }
-                }
-                if (pathObject.hasOwnProperty("trace")){
-                    //TRACE
-                    apiInfo=pathObject["trace"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"trace",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-
-                        //that.currentInstance.paths.push(that.createApiInfoInstance(path,"trace",apiInfo));
-                        that.methodCountAndDown("TRACE");
-                    }
-                }
-                if (pathObject.hasOwnProperty("head")){
-                    //HEAD
-                    apiInfo=pathObject["head"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"head",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        that.methodCountAndDown("HEAD");
-                    }
-                }
-                if (pathObject.hasOwnProperty("connect")){
-                    //CONNECT
-                    apiInfo=pathObject["connect"]
-                    if(apiInfo!=null){
-                        var ins=that.createApiInfoInstance(path,"connect",apiInfo);
-                        //排序属性赋值
-                        //判断是否开启增强配置
-                        if(that.settings.enableSwaggerBootstrapUi){
-                            var sbu=menu["swaggerBootstrapUi"]
-                            var pathSortLists=sbu["pathSortLists"];
-                            $.each(pathSortLists,function (i, ps) {
-                                if(ps.path==ins.url&&ps.method==ins.methodType){
-                                    ins.order=ps.order;
-                                }
-                            })
-                        }
-                        that.currentInstance.paths.push(ins);
-                        that.methodCountAndDown("CONNECT");
-                    }
-
-                }
             })
-
-           /* var selfPath="/api/new188/self";
-            var selfobj={
-                "summary": "第一个list功能",
-                "tags": [
-                    "1.8.8版本-20181208"
-                ],
-                "deprecated": false,
-                "produces": [
-                    "*!/!*"
-                ],
-                "operationId": "list3GET4997028859787988992",
-                "responses": {
-                    "200": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "name": "id",
-                                    "in": "formData",
-                                    "description": "标识的desc",
-                                    "required": true,
-                                    "type": "string"
-                                },
-                                "createTime": {
-                                    "name": "createTime",
-                                    "in": "formData",
-                                    "description": "时间的desc",
-                                    "required": false,
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "description": "返回profile列表"
-                    }
-                },
-                "description": "list的description",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "formData",
-                        "description": "标识的desc",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "createTime",
-                        "in": "formData",
-                        "description": "时间的desc",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "consumes": [
-                    "application/xml"
-                ]
-            }
-
-            var selfins=that.createApiInfoInstance(selfPath,"get",selfobj);
-            that.currentInstance.paths.push(selfins);*/
-           /* for(var path in paths){
-
-
-            }*/
             that.log("解析Paths结束,耗时："+(new Date().getTime()-pathStartTime));
             that.log(new Date().toTimeString());
             //判断是否开启过滤
@@ -4530,7 +4534,8 @@
             if(securityDefinitions!=null){
                 //判断是否有缓存cache值
                 //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
-                var cacheSecurityData=that.getSecurityInfos();
+                //var cacheSecurityData=that.getSecurityInfos();
+                var cacheSecurityData=that.getGlobalSecurityInfos();
                 var securityArr=new Array();
                 for(var j in securityDefinitions){
                     var sdf=new SwaggerBootstrapUiSecurityDefinition();
@@ -4781,6 +4786,47 @@
                 }
             })
         }
+        //遍历models,如果存在自定义Model,则添加进去
+        //遍历definitions
+        if(that.currentInstance.difArrs!=undefined&&that.currentInstance.difArrs!=null&&that.currentInstance.difArrs.length>0){
+            $.each(that.currentInstance.difArrs,function (i, dif) {
+                //判断models是否存在
+                var name=dif.name;
+                //判断集合中是否存在name
+                if($.inArray(name,that.currentInstance.modelNames)==-1){
+                    //当前Models是自定义
+                    that.currentInstance.modelNames.push(name);
+
+                    //var requestParams=path.refTreetableparameters;
+                    var requestParams=dif.refTreetableModelsparameters;
+                    if(requestParams!=null&&requestParams!=undefined&&requestParams.length>0){
+                        var param=requestParams[0];
+                        //判断集合中是否存在name
+                        that.currentInstance.modelNames.push(name);
+                        //不存在
+                        var model=new SwaggerBootstrapUiModel(param.id,name);
+                        //遍历params
+                        if(param.params!=null&&param.params.length>0){
+                            //model本身需要添加一个父类
+                            //model.data.push({id:model.id,name:name,pid:"-1"});
+                            //data数据加入本身
+                            //model.data=model.data.concat(param.params);
+                            //第一层属性设置为pid
+                            $.each(param.params,function (a, ps) {
+                                var newparam=$.extend({},ps,{pid:"-1"});
+                                model.data.push(newparam);
+                                if(ps.schema){
+                                    //是schema
+                                    //查找紫属性中存在的pid
+                                    deepSchemaModel(model,requestParams,ps.id);
+                                }
+                            })
+                        }
+                        that.currentInstance.models.push(model);
+                    }
+                }
+            })
+        }
         //排序
         if(that.currentInstance.models!=null&&that.currentInstance.models.length>0){
             that.currentInstance.models.sort(function (a, b) {
@@ -4948,6 +4994,22 @@
             swpinfo.operationId=apiInfo.operationId;
             swpinfo.summary=apiInfo.summary;
             swpinfo.tags=apiInfo.tags;
+            //读取扩展属性x-order值
+            if(apiInfo.hasOwnProperty("x-order")){
+                swpinfo.order=parseInt(apiInfo["x-order"]);
+            }
+            //读取扩展属性x-author
+            if(apiInfo.hasOwnProperty("x-author")){
+                swpinfo.author=apiInfo["x-author"];
+            }
+            //operationId
+            swpinfo.operationId=$.getValue(apiInfo,"operationId","",true);
+            var _groupName=that.currentInstance.name;
+            //设置hashurl
+            $.each(swpinfo.tags,function (i, tag) {
+                var _hashUrl="#/"+_groupName+"/"+tag+"/"+swpinfo.operationId;
+                swpinfo.hashCollections.push(_hashUrl);
+            })
             swpinfo.produces=apiInfo.produces;
             if (apiInfo.hasOwnProperty("parameters")){
                 var pameters=apiInfo["parameters"];
@@ -5989,8 +6051,43 @@
             that.log(instance);
             that.analysisApi(instance);
         })
-        //默认加载第一个url
-        that.analysisApi(that.instances[0]);
+        //判断当前location中是否存在hash,如果存在,获取hash中的分组名称,加载该分组,否则加载第一个
+        var location=window.location;
+        var _hash=location.hash;
+        if(_hash!=null&&_hash!=undefined&&_hash!=""){
+            //判断hash是否符合规范
+            _hash=decodeURIComponent(_hash);
+            var reg=new RegExp('#\/(.*?)\/.*','ig');
+            if(reg.test(_hash)){
+                var _gpName=RegExp.$1;
+                if(_gpName!=null&&_gpName!=undefined&&_gpName!=""){
+                    //find
+                    var _instance=null;
+                    $.each(that.instances,function (i, ins) {
+                        if(ins.name==_gpName){
+                            _instance=ins;
+                        }
+                    })
+                    if(_instance!=null){
+                        //选中
+                        groupSele.find("option[data-name='"+_gpName+"']").prop("selected",true);
+                        that.analysisApi(_instance);
+                    }else{
+                        //默认加载第一个url
+                        that.analysisApi(that.instances[0]);
+                    }
+                }else{
+                    //默认加载第一个url
+                    that.analysisApi(that.instances[0]);
+                }
+            }else{
+                //默认加载第一个url
+                that.analysisApi(that.instances[0]);
+            }
+        }else{
+            //默认加载第一个url
+            that.analysisApi(that.instances[0]);
+        }
     }
     /***
      * 获取当前分组实例
@@ -6192,6 +6289,8 @@
         //接口url信息
         //存储SwaggerBootstrapUiApiInfo 集合
         this.paths=new Array();
+        //字典
+        this.pathsDictionary={};
         //全局参数,存放SwaggerBootstrapUiParameter集合
         this.globalParameters=new Array();
         //参数统计信息，存放SwaggerBootstrapUiPathCountDownLatch集合
@@ -6298,6 +6397,12 @@
     var SwaggerBootstrapUiDefinition=function () {
         //类型名称
         this.name="";
+        this.schemaValue=null;
+        this.id="definition"+Math.round(Math.random()*1000000);
+        this.pid="-1";
+        this.level=1;
+        this.childrenTypes=new Array();
+        this.parentTypes=new Array();
         //介绍
         this.description="";
         //类型
@@ -6308,6 +6413,10 @@
         //add by xiaoymin 2018-8-1 13:35:32
         this.required=new Array();
         this.title="";
+        //treetable组件使用对象
+        this.refTreetableparameters=new Array();
+        //swaggerModels功能
+        this.refTreetableModelsparameters=new Array();
     }
     /**
      * 权限验证
@@ -6371,6 +6480,8 @@
         this.originalUrl=null;
         this.showUrl="";
         this.basePathFlag=false;
+        //接口作者
+        this.author=null;
         this.methodType=null;
         this.description=null;
         this.summary=null;
@@ -6444,7 +6555,8 @@
         //是否存在响应状态码中  存在多个schema的情况
         this.multipartResponseSchema=false;
         this.multipartResponseSchemaCount=0;
-
+        //hashUrl
+        this.hashCollections=[];
     }
 
     var SwaggerBootstrapUiRefParameter=function () {

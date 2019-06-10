@@ -62,7 +62,7 @@ layui.define(['layer','element','treetable','form'], function (exports) {
         var te = admin.events[event];
         te && te.call(this, $(this));
     });
-    $(".admin-tabs-select").on("mouseenter",function () {
+    $(".admin-tabs-select").on("click",function () {
         $(this).find("dl:first").addClass("layui-show")
     }).on("mouseleave",function () {
         $(this).find("dl:first").removeClass("layui-show")
