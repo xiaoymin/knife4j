@@ -89,12 +89,14 @@ public class OperationDynamicModelProvider implements OperationModelsProviderPlu
                 name=genClassName(context);
             }
             name=name.replaceAll("[_-]","");
-            cacheGenModelMaps.put(name,name);
             DynamicParameter[] dynamics=dynamicParameters.properties();
-            //追加groupController
-            name=context.getGroupName().replaceAll("[_-]","")+"."+name;
-            Class<?> clazz= CommonUtils.createDynamicModelClass(name,dynamics);
-            context.operationModelsBuilder().addInputParam(typeResolver.resolve(clazz));
+            if (dynamics!=null&&dynamics.length>0){
+                cacheGenModelMaps.put(name,name);
+                //追加groupController
+                name=context.getGroupName().replaceAll("[_-]","")+"."+name;
+                Class<?> clazz= CommonUtils.createDynamicModelClass(name,dynamics);
+                context.operationModelsBuilder().addInputParam(typeResolver.resolve(clazz));
+            }
         }
     }
 
