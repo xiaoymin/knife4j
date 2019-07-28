@@ -3050,29 +3050,7 @@
             .append($("<span class='debug-span-label'>"+i18n.debug.response.size+":</span><span class='debug-span-value'>"+len+" b</span>"))
             .append($("<span class='debug-span-label' style='margin-left:10px;' id='bigScreen"+apiInfo.id+"'><i class=\"icon-text-width iconfont icon-quanping\" style='cursor: pointer;'></i></span>"));
         //赋值响应headers
-        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>'+i18n.debug.response.header+'</th><th>value</th></tr></table>');
-            //如果headers是string，ajax提交
-            if(typeof (allheaders)=="string"){
-                var headers=allheaders.split("\r\n");
-                for(var i=0;i<headers.length;i++){
-                    var header=headers[i];
-                    if(header!=null&&header!=""){
-                        var headerValu=header.split(":");
-                        var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
-                        headertable.append(headertr);
-                    }
-                }
-            }else{
-                for(var hk in allheaders){
-                    var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
-                    headertable.append(headertr);
-                }
-            }
-            //设置Headers内容
-            resp3.html("")
-            resp3.append(headertable);
-        }
+        that.createRequestHeaderResponse(allheaders,resp3,i18n);
 
         //判断响应内容
         var contentType=xhr.getResponseHeader("Content-Type");
@@ -3082,16 +3060,16 @@
         if(contentType!=null&&contentType!=undefined&&contentType!=""){
             if(contentType.toLowerCase().indexOf("xml")!=-1){
                 //xml类型
-                rtext=xhr["responseText"];
+                //rtext=xhr["responseText"];
                 xmlflag=true;
             }else if(contentType.toLowerCase().indexOf("html")!=-1) {
-                rtext = xhr["responseText"];
+                //rtext = xhr["responseText"];
                 htmlflag = true;
             }else if(contentType.toLowerCase().indexOf("json")!=-1){
-                rtext = xhr["responseText"];
+                //rtext = xhr["responseText"];
                 jsonflag=true;
             }else{
-                rtext=xhr["responseText"];
+                //rtext=xhr["responseText"];
                 textflag=true;
             }
         }
@@ -3099,85 +3077,8 @@
         //that.log(xhr.hasOwnProperty("responseText"));
         //that.log(rtext);
         //响应文本内容
-        if (data&&data.toString() =="[object Blob]" ) {
-            var resp2Html =null;
+        that.createReuqestRawResponse(xhr,data,jsonflag,resp1,resp2,resp3,resp5,rtext,responseHeight,apiKeyId,i18n,binaryType);
 
-            var downloadurl=window.URL.createObjectURL(data);
-            if(binaryType == "application/octet-stream"){
-                var fileName = 'SwaggerBootstrapUiDownload.txt';
-                var contentDisposition=xhr.getResponseHeader("Content-Disposition");
-                if(contentDisposition){
-                    var respcds=contentDisposition.split(";")
-                    for(var i=0;i<respcds.length;i++){
-                        var header=respcds[i];
-                        if(header!=null&&header!=""){
-                            var headerValu=header.split("=");
-                            if(headerValu!=null&&headerValu.length>0){
-                                var _hdvalue=headerValu[0];
-                                if(_hdvalue!=null&&_hdvalue!=undefined&&_hdvalue!=""){
-                                    if(_hdvalue.toLowerCase()=="filename"){
-                                        fileName=headerValu[1];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>"+i18n.debug.response.download+"</a>");
-            }else {
-                resp2Html=$("<img  src='"+downloadurl+"'>");
-                setTimeout(function () {
-                    var rph=resp1.find("img:eq(0)").height()+30;
-                    resp1.css({"height":rph+"px"})
-                },500)
-            }
-
-            resp2.html("");
-            resp2.append(resp2Html);
-        }
-        else if(rtext!=null&&rtext!=undefined){
-            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>"+i18n.settings.copy+"</button><br /><br />");
-            //var rawText=$("<span></span>");
-            var rawText=$("<textarea cols='10' rows='10' style='height: "+(responseHeight-150)+"px;width: 98%;'></textarea>");
-            rawText.val(rtext);
-            resp2.html("");
-            resp2.append(rawCopyBotton).append(rawText);
-            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
-                text:function () {
-                    return rawText.val();
-                }
-            });
-            cliprawboard.on('success', function(e) {
-                layer.msg(i18n.message.copy.success)
-            });
-            cliprawboard.on('error', function(e) {
-                layer.msg(i18n.message.copy.fail)
-            });
-            /*if(tp!=null&& tp=="string"){
-                //转二进制
-                var dv=data.toString(2);
-                if(dv!=undefined&&dv!=null){
-                    //that.log("二进制11..");
-                    var div=$("<div></div>");
-                    var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
-                    var downloadDiv=$("<div style='    position: absolute;\n" +
-                        "    right: 0px;\n" +
-                        "    width: 100px;\n" +
-                        "    bottom: 30px;\n" +
-                        "    text-align: center;'></div>")
-                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\">"+i18n.debug.response.download+"</button>");
-                    button.bind("click",function () {
-                        window.open(url);
-                    })
-                    downloadDiv.append(button);
-                    div.append(rowDiv).append(downloadDiv);
-                    //that.log(div)
-                    //that.log(div[0])
-                    resp1.html("")
-                    resp1.html(div);
-                }
-            }*/
-        }
         //响应JSON
         if (data&&data.toString() =="[object Blob]" ) {
             var resp2Html =null;
@@ -3225,7 +3126,7 @@
             that.log("解析ResponseJSON")
             that.log(new Date())
             if(jsonflag){
-                aceValue=JSON.stringify(JSON.parse(rtext),null,2);
+                aceValue=JSON.stringify(rtext,null,2);
             }else if(xhr.hasOwnProperty("responseJSON")){
                 aceValue=JSON.stringify(xhr["responseJSON"],null,2);
                 //that.log(JSON.stringify(xhr["responseJSON"],null,2))
@@ -3377,6 +3278,118 @@
 
 
         })
+    }
+
+    /**
+     * 创建Hedaer面板
+     * @param allheaders
+     * @param resp3
+     * @param i18n
+     */
+    SwaggerBootstrapUi.prototype.createRequestHeaderResponse=function (allheaders,resp3,i18n) {
+        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>'+i18n.debug.response.header+'</th><th>value</th></tr></table>');
+            //如果headers是string，ajax提交
+            if(typeof (allheaders)=="string"){
+                var headers=allheaders.split("\r\n");
+                for(var i=0;i<headers.length;i++){
+                    var header=headers[i];
+                    if(header!=null&&header!=""){
+                        var headerValu=header.split(":");
+                        var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
+                        headertable.append(headertr);
+                    }
+                }
+            }else{
+                for(var hk in allheaders){
+                    var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
+                    headertable.append(headertr);
+                }
+            }
+            //设置Headers内容
+            resp3.html("")
+            resp3.append(headertable);
+        }
+    }
+
+    /**
+     * 创建Raw响应内容面板
+     * @param data
+     * @param jsonflag
+     * @param resp1
+     * @param resp2
+     * @param resp3
+     * @param resp5
+     * @param rtext
+     * @param responseHeight
+     * @param apiKeyId
+     * @param i18n
+     * @param binaryType
+     */
+    SwaggerBootstrapUi.prototype.createReuqestRawResponse=function (xhr,data,jsonflag,resp1,resp2,resp3,resp5,rtext,responseHeight,apiKeyId,i18n,binaryType) {
+        if (data&&data.toString() =="[object Blob]" ) {
+            var resp2Html =null;
+
+            var downloadurl=window.URL.createObjectURL(data);
+            if(binaryType == "application/octet-stream"){
+                var fileName = 'SwaggerBootstrapUiDownload.txt';
+                var contentDisposition=xhr.getResponseHeader("Content-Disposition");
+                if(contentDisposition){
+                    var respcds=contentDisposition.split(";")
+                    for(var i=0;i<respcds.length;i++){
+                        var header=respcds[i];
+                        if(header!=null&&header!=""){
+                            var headerValu=header.split("=");
+                            if(headerValu!=null&&headerValu.length>0){
+                                var _hdvalue=headerValu[0];
+                                if(_hdvalue!=null&&_hdvalue!=undefined&&_hdvalue!=""){
+                                    if(_hdvalue.toLowerCase()=="filename"){
+                                        fileName=headerValu[1];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>"+i18n.debug.response.download+"</a>");
+            }else {
+                resp2Html=$("<img  src='"+downloadurl+"'>");
+                setTimeout(function () {
+                    var rph=resp1.find("img:eq(0)").height()+30;
+                    resp1.css({"height":rph+"px"})
+                },500)
+            }
+
+            resp2.html("");
+            resp2.append(resp2Html);
+        }
+        else if(rtext!=null&&rtext!=undefined){
+            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>"+i18n.settings.copy+"</button><br /><br />");
+            //var rawText=$("<span></span>");
+            var rawText=$("<textarea cols='10' rows='10' style='height: "+(responseHeight-150)+"px;width: 98%;'></textarea>");
+            if(jsonflag){
+                rawText.val(JSON.stringify(rtext));
+            }else{
+                rawText.val(rtext);
+            }
+            resp2.html("");
+            resp2.append(rawCopyBotton).append(rawText);
+            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
+                text:function () {
+                    return rawText.val();
+                }
+            });
+            cliprawboard.on('success', function(e) {
+                layer.msg(i18n.message.copy.success)
+            });
+            cliprawboard.on('error', function(e) {
+                layer.msg(i18n.message.copy.fail)
+            });
+        }
+
+        resp2.css({"height":responseHeight+"px"})
+        resp3.css({"height":responseHeight+"px"})
+        resp5.css({"height":responseHeight+"px"})
     }
 
     SwaggerBootstrapUi.prototype.buildNonJsonEditor=function (mode,responseHeight,apiKeyId,aceValue,resp1,laycontentdiv) {
