@@ -2025,6 +2025,42 @@
                                 }, 1000);
                             });
                         }
+
+                        //响应请求头
+                        if(rc.responseHeaderParameters!=null){
+                            var responseHeaderTableId="responseHeaderParameter"+apiId+"-"+rc.code;
+                            treetable.render({
+                                elem:"#"+responseHeaderTableId,
+                                data: rc.responseHeaderParameters,
+                                field: 'title',
+                                treeColIndex: 0,          // treetable新增参数
+                                treeSpid: -1,             // treetable新增参数
+                                treeIdName: 'd_id',       // treetable新增参数
+                                treePidName: 'd_pid',     // treetable新增参数
+                                treeDefaultClose: true,   // treetable新增参数
+                                treeLinkage: true,        // treetable新增参数
+                                cols: [[
+                                    {
+                                        field: 'name',
+                                        title: i18n.doc.paramsHeader.name,
+                                        width: '25%'
+                                    },
+                                    {
+                                        field: 'description',
+                                        title:  i18n.doc.paramsHeader.des,
+                                        width: '20%'
+                                    } ,
+                                    {
+                                        field: 'type',
+                                        title: i18n.doc.paramsHeader.type,
+                                        width: '20%',
+                                    }
+                                ]]
+                            })
+                            //默认全部展开
+                            treetable.expandAll('#'+responseHeaderTableId);
+                            $("#"+responseHeaderTableId).hide();
+                        }
                     }
                 })
             }
@@ -2122,7 +2158,46 @@
                     });
                 }
 
+                //响应请求头
+                if(apiInfo.responseHeaderParameters!=null){
+                    var responseHeaderTableId="responseHeaderParameter"+apiInfo.id;
+                    that.log("respoinse-------------------responseHeaderParameters");
+                    that.log(apiInfo.responseHeaderParameters);
+                    treetable.render({
+                        elem:"#"+responseHeaderTableId,
+                        data: apiInfo.responseHeaderParameters,
+                        field: 'title',
+                        treeColIndex: 0,          // treetable新增参数
+                        treeSpid: -1,             // treetable新增参数
+                        treeIdName: 'd_id',       // treetable新增参数
+                        treePidName: 'd_pid',     // treetable新增参数
+                        treeDefaultClose: true,   // treetable新增参数
+                        treeLinkage: true,        // treetable新增参数
+                        cols: [[
+                            {
+                                field: 'name',
+                                title: i18n.doc.paramsHeader.name,
+                                width: '25%'
+                            },
+                            {
+                                field: 'description',
+                                title:  i18n.doc.paramsHeader.des,
+                                width: '20%'
+                            } ,
+                            {
+                                field: 'type',
+                                title: i18n.doc.paramsHeader.type,
+                                width: '20%',
+                            }
+                        ]]
+                    })
+                    //默认全部展开
+                    treetable.expandAll('#'+responseHeaderTableId);
+                    $("#"+responseHeaderTableId).hide();
+                }
             }
+
+
 
             //初始化copy按钮功能
             var clipboard = new ClipboardJS('#copyDocHref'+apiInfo.id,{
@@ -5408,6 +5483,18 @@
                     if(swaggerResp.schema!=null&&swaggerResp.schema!=undefined){
                         rpcount=rpcount+1;
                     }
+                    //判断是否有响应headers
+                    if(rescrobj.hasOwnProperty("headers")){
+                        var _headers=rescrobj["headers"];
+                        swaggerResp.responseHeaderParameters=new Array();
+                        for(var _headerN in _headers){
+                            var  _hv=$.extend({},_headers[_headerN],{name:_headerN,id:md5(_headerN),pid:"-1"});
+                            swaggerResp.responseHeaderParameters.push(_hv);
+                        }
+                        if(status=="200"){
+                            swpinfo.responseHeaderParameters=swaggerResp.responseHeaderParameters;
+                        }
+                    }
                     swpinfo.responseCodes.push(swaggerResp);
                 }
                 swpinfo.multipartResponseSchemaCount=rpcount;
@@ -6554,6 +6641,8 @@
         this.responseJson=null;
         this.responseText=null;
         this.responseBasicType=false;
+        //响应Header字段说明
+        this.responseHeaderParameters=null;
         //响应字段说明
         this.responseParameters=new Array();
         this.responseParameterRefName="";
@@ -6736,6 +6825,8 @@
         this.responseJson=null;
         this.responseText=null;
         this.responseBasicType=false;
+        //响应Header字段说明
+        this.responseHeaderParameters=null;
         //响应字段说明
         this.responseParameters=new Array();
         this.responseParameterRefName="";

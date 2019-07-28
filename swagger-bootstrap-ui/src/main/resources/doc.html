@@ -912,6 +912,10 @@
                                                 <div class="layui-tab-item">
                                             {{/if}}
                                                     <div>
+                                                        {{if $value.responseHeaderParameters }}
+                                                        <p><strong>{{$value.code}}-{{i18n.doc.responseHeaderParams}}</strong></p>
+                                                        <table id="responseHeaderParameter{{id}}-{{$value.code}}" class="layui-table"  lay-filter="responseHeaderParameter{{id}}-{{$value.code}}"></table>
+                                                        {{/if}}
                                                         <p><strong>{{$value.code}}-{{i18n.doc.responseParams}}</strong></p>
                                                         <table id="responseParameter{{id}}-{{$value.code}}" class="layui-table"  lay-filter="responseParameter{{id}}-{{$value.code}}">
                                                         </table>
@@ -925,6 +929,10 @@
                                 </div>
                             </div>
                         {{else}}
+                                {{if responseHeaderParameters }}
+                                <p><strong>{{i18n.doc.responseHeaderParams}}</strong></p>
+                                <table id="responseHeaderParameter{{id}}" class="layui-table"  lay-filter="responseHeaderParameter{{id}}"></table>
+                                {{/if}}
                                 <p><strong>{{i18n.doc.responseParams}}</strong></p>
                                 <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
                                 </table>
