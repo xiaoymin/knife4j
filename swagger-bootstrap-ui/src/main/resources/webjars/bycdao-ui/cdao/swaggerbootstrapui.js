@@ -776,6 +776,7 @@
             })
         }
         catch (err){
+            that.error(err);
             layer.msg(i18n.message.sys.loadErr+",Err:"+err.message);
             if (window.console){
                 console.error(err);
@@ -928,6 +929,7 @@
                 that.createDetailMenu();
             }
         }catch (err){
+            that.error(err);
             layer.msg(i18n.message.sys.loadErr);
             if (window.console){
                 console.error(err);
@@ -2530,7 +2532,7 @@
                         }else{
                             //判断是否是header
                             if(trdata["in"]=="header") {
-                                headerparams[key] = value;
+                                headerparams[key] = encodeURIComponent(value);
                             }else if(trdata["in"]=="body"){
                                 bodyparams+=value;
                                 bodyRequest=true;
@@ -2552,7 +2554,7 @@
                                 bodyRequest=true;
                             }else{
                                 if(trdata["in"]=="header"){
-                                    headerparams[key]=value;
+                                    headerparams[key]=encodeURIComponent(value);
                                 }else{
                                     if (trdata.schemavalue != "MultipartFile" &&  trdata.schemavalue != "file" && trdata.type!="file") {
                                         //判断数组
@@ -2764,6 +2766,7 @@
                     }
                 }).catch(function (error) {
                     that.log("form request--response error-------------------")
+                    that.error(error);
                     respcleanDiv.show();
                     layer.close(index);
                     if(error.response){
@@ -2819,6 +2822,7 @@
                             formCurlParams,xhr,data,startTime,allheaders,true);
                     }).catch(function (error) {
                         that.log("form request--response error-------------------")
+                        that.error(error)
                         respcleanDiv.show();
                         layer.close(index);
                         if(error.response){
@@ -6158,6 +6162,15 @@
         if(window.console){
             //正式版不开启console功能
             console.log(msg);
+        }
+    }
+    /***
+     * 错误异常输出
+     * @param msg
+     */
+    SwaggerBootstrapUi.prototype.error=function (msg) {
+        if(window.console){
+            console.error(msg);
         }
     }
     /***
