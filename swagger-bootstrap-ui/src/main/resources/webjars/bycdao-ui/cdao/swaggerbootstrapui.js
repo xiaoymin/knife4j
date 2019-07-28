@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.9.4 / 2019-5-18 16:21:54
+ * swagger-bootstrap-ui v1.9.5 / 2019-7-28 14:53:45
  *
  * Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui
  * GitHub:https://github.com/xiaoymin/swagger-bootstrap-ui
@@ -45,7 +45,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.9.4";
+        this.version="1.9.5";
         this.requestOrigion="SwaggerBootstrapUi";
         this.requestParameter={};//浏览器请求参数
         //个性化配置
@@ -3050,8 +3050,6 @@
             .append($("<span class='debug-span-label'>"+i18n.debug.response.size+":</span><span class='debug-span-value'>"+len+" b</span>"))
             .append($("<span class='debug-span-label' style='margin-left:10px;' id='bigScreen"+apiInfo.id+"'><i class=\"icon-text-width iconfont icon-quanping\" style='cursor: pointer;'></i></span>"));
         //赋值响应headers
-        //var mimtype=xhr.overrideMimeType();
-        //var allheaders=xhr.getAllResponseHeaders();
         if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
             var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>'+i18n.debug.response.header+'</th><th>value</th></tr></table>');
             //如果headers是string，ajax提交
@@ -3078,7 +3076,7 @@
 
         //判断响应内容
         var contentType=xhr.getResponseHeader("Content-Type");
-        var xmlflag=false,htmlflag=false,textflag=false;
+        var xmlflag=false,htmlflag=false,textflag=false,jsonflag=false;
         var rtext=data || xhr["responseText"];
         //支持xml
         if(contentType!=null&&contentType!=undefined&&contentType!=""){
@@ -3086,9 +3084,12 @@
                 //xml类型
                 rtext=xhr["responseText"];
                 xmlflag=true;
-            }else if(contentType.toLowerCase().indexOf("html")!=-1){
-                rtext=xhr["responseText"];
-                htmlflag=true;
+            }else if(contentType.toLowerCase().indexOf("html")!=-1) {
+                rtext = xhr["responseText"];
+                htmlflag = true;
+            }else if(contentType.toLowerCase().indexOf("json")!=-1){
+                rtext = xhr["responseText"];
+                jsonflag=true;
             }else{
                 rtext=xhr["responseText"];
                 textflag=true;
@@ -3215,7 +3216,7 @@
             resp1.html("");
             resp1.append(resp2Html);
         }
-        else if (xhr.hasOwnProperty("responseJSON")&&data!=null&&data!=undefined){
+        else if ((xhr.hasOwnProperty("responseJSON")&&data!=null&&data!=undefined)||jsonflag){
             //如果存在该对象,服务端返回为json格式
             resp1.html("")
             //that.log(xhr["responseJSON"])
@@ -3223,7 +3224,9 @@
             var aceValue={};
             that.log("解析ResponseJSON")
             that.log(new Date())
-            if(xhr.hasOwnProperty("responseJSON")){
+            if(jsonflag){
+                aceValue=JSON.stringify(JSON.parse(rtext),null,2);
+            }else if(xhr.hasOwnProperty("responseJSON")){
                 aceValue=JSON.stringify(xhr["responseJSON"],null,2);
                 //that.log(JSON.stringify(xhr["responseJSON"],null,2))
                 //jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
@@ -3271,14 +3274,6 @@
                 //重置响应面板高度
                 laycontentdiv.css("height",rzdivHeight);
             }
-           /* that.log(rzheight)
-            $("#responseJsonEditor"+apiKeyId).css('height',rzheight);
-            editor.resize(true);
-            that.log("重构高度结束")
-            that.log(new Date())
-            that.log($("#responseJsonEditor"+apiKeyId).height())
-
-            laycontentdiv.css("height",rzdivHeight);*/
            that.log(apiInfo);
 
             setTimeout(function(){
@@ -6147,10 +6142,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 获取菜单元素
