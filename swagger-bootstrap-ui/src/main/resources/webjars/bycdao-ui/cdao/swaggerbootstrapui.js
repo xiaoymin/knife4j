@@ -4966,7 +4966,7 @@
         //截取字符串
         var newurl=newfullPath.substring(newfullPath.indexOf("/"));
         //that.log("新的url:"+newurl)
-        newurl=newurl.replace("//","/");
+        newurl = newurl.replace("//","/");
         //判断应用实例的baseurl
         if(that.currentInstance.baseUrl!=""&&that.currentInstance.baseUrl!="/"){
             newurl=that.currentInstance.baseUrl+newurl;
@@ -4974,8 +4974,9 @@
         var startApiTime=new Date().getTime();
         swpinfo.showUrl=newurl;
         //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
-        swpinfo.url=newurl;
-        swpinfo.originalUrl=newurl;
+        var urlForRealUsage=newurl.replace(/^([^{]+).*$/g, '$1');
+        swpinfo.url=urlForRealUsage;
+        swpinfo.originalUrl=urlForRealUsage;
         swpinfo.basePathFlag=basePathFlag;
         swpinfo.methodType=mtype.toUpperCase();
         //接口id使用MD5策略,缓存整个调试参数到localStorage对象中,供二次调用
