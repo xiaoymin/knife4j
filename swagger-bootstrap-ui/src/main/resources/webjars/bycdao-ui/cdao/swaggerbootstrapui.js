@@ -2492,6 +2492,7 @@
             paramBody.find("tr").each(function () {
                 var paramtr=$(this);
                 var cked=paramtr.find("td:first").find(":checked").prop("checked");
+                var _urlAppendflag=true;
                 //that.log(cked)
                 if (cked){
                     //如果选中
@@ -2582,6 +2583,7 @@
                         }else{
                             if(trdata["type"]=="array"){
                                 queryStringParameterFlag=true;
+                                _urlAppendflag=false;
                                 reqflag=true;
                                 //数组类型
                                 paramtr.find("td:eq(3)").find("input").each(function (i, x) {
@@ -2612,10 +2614,12 @@
                                 bodyparams+=value;
                                 bodyRequest=true;
                             }else{
-                                if (url.indexOf("?")>-1){
-                                    url=url+"&"+key+"="+value;
-                                }else{
-                                    url+="?"+key+"="+value;
+                                if(_urlAppendflag){
+                                    if (url.indexOf("?")>-1){
+                                        url=url+"&"+key+"="+value;
+                                    }else{
+                                        url+="?"+key+"="+value;
+                                    }
                                 }
                             }
                         }
