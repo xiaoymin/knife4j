@@ -5099,8 +5099,16 @@
         var startApiTime=new Date().getTime();
         swpinfo.showUrl=newurl;
         //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
-        swpinfo.url=newurl;
-        swpinfo.originalUrl=newurl;
+
+        /*swpinfo.url=newurl;
+        swpinfo.originalUrl=newurl;*/
+
+        //new --> https://github.com/xiaoymin/swagger-bootstrap-ui/pull/108
+        var urlForRealUsage=newurl.replace(/^([^{]+).*$/g, '$1');
+        swpinfo.url=urlForRealUsage;
+        swpinfo.originalUrl=urlForRealUsage;
+
+
         swpinfo.basePathFlag=basePathFlag;
         swpinfo.methodType=mtype.toUpperCase();
         //接口id使用MD5策略,缓存整个调试参数到localStorage对象中,供二次调用
