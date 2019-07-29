@@ -2929,9 +2929,8 @@
                     if($.getStringValue(apiInfo.methodType)=="GET"){
                         sendParams=reqdata;
                     }
+                    that.log(reqdata)
                     //that.log(sendParams)
-                    //that.log($.getStringValue(apiInfo.methodType))
-
                     //headerparams["Content-Type"]=contType;
                     $.ajax({
                         url:url,
@@ -3208,12 +3207,14 @@
             var aceValue={};
             that.log("解析ResponseJSON")
             that.log(new Date())
-            if(jsonflag){
-                aceValue=JSON.stringify(rtext,null,2);
-            }else if(xhr.hasOwnProperty("responseJSON")){
-                aceValue=JSON.stringify(xhr["responseJSON"],null,2);
-                //that.log(JSON.stringify(xhr["responseJSON"],null,2))
-                //jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
+            if(xhr.hasOwnProperty("responseJSON")) {
+                aceValue = JSON.stringify(xhr["responseJSON"], null, 2);
+            }else if(jsonflag){
+                if(typeof (rtext)=="string"){
+                    aceValue=JSON.stringify(JSON.parse(rtext),null,2);
+                }else{
+                    aceValue=JSON.stringify(rtext,null,2);
+                }
             }else{
                 aceValue=JSON.stringify(data,null,2);
                 //针对表单提交,error的情况,会产生data
@@ -3536,6 +3537,36 @@
             fullurl+="/";
         }
         fullurl+=url;
+        //判断是否是GET请求
+        if(apiInfo.methodType.toLowerCase()=="get"){
+            if(paramBodyType=="form"){
+                if(formCurlParams==null||formCurlParams==undefined||!formCurlParams){
+                    if(reqdata!=null&&reqdata!=undefined){
+                        var urlAppend=new Array();
+                        //判断是否包含参数
+                        var paramExists=false;
+                        for(var d in reqdata){
+                            urlAppend.push(d+"="+reqdata[d]);
+                            if(fullurl.indexOf(d+"=")!=-1){
+                                paramExists=true;
+                            }
+                        }
+                        if (!paramExists){
+                            if(urlAppend.length>0){
+                                var _appendStr=urlAppend.join("&");
+                                if (fullurl.indexOf("?")==-1){
+                                    fullurl=fullurl+"?"+_appendStr;
+                                }else{
+                                    fullurl=fullurl+"&"+_appendStr;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
         curlified.push( "curl" );
         curlified.push( "-X", apiInfo.methodType.toUpperCase() );
         //此处url需要encoding
@@ -3620,11 +3651,14 @@
                 }
             }else{
                 //form
-                for(var d in reqdata){
-                    curlified.push( "-d" );
-                    curlified.push("\"" + d + "=" + reqdata[d] + "\"");
-                    //formArr.push(d+"="+reqdata[d]);
+                if(apiInfo.methodType.toLowerCase()!="get"){
+                    for(var d in reqdata){
+                        curlified.push( "-d" );
+                        curlified.push("\"" + d + "=" + reqdata[d] + "\"");
+                        //formArr.push(d+"="+reqdata[d]);
+                    }
                 }
+
                 /*var formStr=formArr.join("&");
                 that.log("表单...");
                 that.log(formStr);
