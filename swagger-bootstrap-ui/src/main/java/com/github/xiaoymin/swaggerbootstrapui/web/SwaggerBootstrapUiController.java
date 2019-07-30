@@ -228,6 +228,11 @@ public class SwaggerBootstrapUiController {
                             createPathInstance(rhm,targetPathLists);
                         }
                     }
+                }else{
+                    if (checkExists(tagName,rhm.getBeanType())){
+                        tagMapping=rhm;
+                        createPathInstance(rhm,targetPathLists);
+                    }
                 }
             }
             if (tagMapping!=null){
@@ -373,8 +378,14 @@ public class SwaggerBootstrapUiController {
             }else{
                 order=post;
             }
+        }else{
+            if (aClass!=null){
+                ApiSort annotation = ClassUtils.getUserClass(aClass).getAnnotation(ApiSort.class);
+                if (annotation!=null){
+                    order=annotation.value();
+                }
+            }
         }
-
         return order;
     }
 
