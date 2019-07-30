@@ -5127,6 +5127,12 @@
             swpinfo.operationId=apiInfo.operationId;
             swpinfo.summary=apiInfo.summary;
             swpinfo.tags=apiInfo.tags;
+            //读取扩展属性x-ignoreParameters
+            if(apiInfo.hasOwnProperty("x-ignoreParameters")){
+                var ignoArr=apiInfo["x-ignoreParameters"];
+                //忽略参数对象
+                swpinfo.ignoreParameters=ignoArr[0];
+            }
             //读取扩展属性x-order值
             if(apiInfo.hasOwnProperty("x-order")){
                 swpinfo.order=parseInt(apiInfo["x-order"]);
@@ -5148,6 +5154,10 @@
                 var pameters=apiInfo["parameters"];
                 $.each(pameters,function (i, m) {
                     var minfo=new SwaggerBootstrapUiParameter();
+                    //忽略参数
+                    if (swpinfo.ignoreParameters==null||(swpinfo.ignoreParameters!=null&&!swpinfo.ignoreParameters.hasOwnProperty(minfo.name))){
+
+                    }
 
                     minfo.name=$.propValue("name",m,"");
                     minfo.type=$.propValue("type",m,"");
@@ -6713,6 +6723,8 @@
         this.multipartResponseSchemaCount=0;
         //hashUrl
         this.hashCollections=[];
+        //ignoreParameters add 2019-7-30 16:10:08
+        this.ignoreParameters=null;
     }
 
     var SwaggerBootstrapUiRefParameter=function () {
