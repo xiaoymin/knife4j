@@ -7,7 +7,6 @@
 
 package com.github.xiaoymin.swaggerbootstrapui.util;
 
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.DynamicParameter;
 import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
@@ -142,7 +141,11 @@ public class CommonUtils {
         CtClass ctClass=classPool.makeClass(clazzName);
         try{
             for (DynamicParameter dynamicParameter:parameters){
-                ctClass.addField(createField(dynamicParameter,ctClass));
+                //field名称不能为空,导致非空异常
+                // https://gitee.com/xiaoym/swagger-bootstrap-ui/issues/IYLVC
+                if (dynamicParameter.name()!=null&&!"".equals(dynamicParameter.name())&&!"null".equals(dynamicParameter.name())){
+                    ctClass.addField(createField(dynamicParameter,ctClass));
+                }
             }
             return ctClass.toClass();
         }catch (Exception e){
