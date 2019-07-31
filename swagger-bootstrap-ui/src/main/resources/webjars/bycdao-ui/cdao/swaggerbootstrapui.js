@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.9.4 / 2019-5-18 16:21:54
+ * swagger-bootstrap-ui v1.9.5 / 2019-7-28 14:53:45
  *
  * Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui
  * GitHub:https://github.com/xiaoymin/swagger-bootstrap-ui
@@ -45,7 +45,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.9.4";
+        this.version="1.9.5";
         this.requestOrigion="SwaggerBootstrapUi";
         this.requestParameter={};//浏览器请求参数
         //个性化配置
@@ -776,6 +776,7 @@
             })
         }
         catch (err){
+            that.error(err);
             layer.msg(i18n.message.sys.loadErr+",Err:"+err.message);
             if (window.console){
                 console.error(err);
@@ -928,6 +929,7 @@
                 that.createDetailMenu();
             }
         }catch (err){
+            that.error(err);
             layer.msg(i18n.message.sys.loadErr);
             if (window.console){
                 console.error(err);
@@ -2023,6 +2025,42 @@
                                 }, 1000);
                             });
                         }
+
+                        //响应请求头
+                        if(rc.responseHeaderParameters!=null){
+                            var responseHeaderTableId="responseHeaderParameter"+apiId+"-"+rc.code;
+                            treetable.render({
+                                elem:"#"+responseHeaderTableId,
+                                data: rc.responseHeaderParameters,
+                                field: 'title',
+                                treeColIndex: 0,          // treetable新增参数
+                                treeSpid: -1,             // treetable新增参数
+                                treeIdName: 'd_id',       // treetable新增参数
+                                treePidName: 'd_pid',     // treetable新增参数
+                                treeDefaultClose: true,   // treetable新增参数
+                                treeLinkage: true,        // treetable新增参数
+                                cols: [[
+                                    {
+                                        field: 'name',
+                                        title: i18n.doc.paramsHeader.name,
+                                        width: '25%'
+                                    },
+                                    {
+                                        field: 'description',
+                                        title:  i18n.doc.paramsHeader.des,
+                                        width: '20%'
+                                    } ,
+                                    {
+                                        field: 'type',
+                                        title: i18n.doc.paramsHeader.type,
+                                        width: '20%',
+                                    }
+                                ]]
+                            })
+                            //默认全部展开
+                            treetable.expandAll('#'+responseHeaderTableId);
+                            $("#"+responseHeaderTableId).hide();
+                        }
                     }
                 })
             }
@@ -2120,7 +2158,46 @@
                     });
                 }
 
+                //响应请求头
+                if(apiInfo.responseHeaderParameters!=null){
+                    var responseHeaderTableId="responseHeaderParameter"+apiInfo.id;
+                    that.log("respoinse-------------------responseHeaderParameters");
+                    that.log(apiInfo.responseHeaderParameters);
+                    treetable.render({
+                        elem:"#"+responseHeaderTableId,
+                        data: apiInfo.responseHeaderParameters,
+                        field: 'title',
+                        treeColIndex: 0,          // treetable新增参数
+                        treeSpid: -1,             // treetable新增参数
+                        treeIdName: 'd_id',       // treetable新增参数
+                        treePidName: 'd_pid',     // treetable新增参数
+                        treeDefaultClose: true,   // treetable新增参数
+                        treeLinkage: true,        // treetable新增参数
+                        cols: [[
+                            {
+                                field: 'name',
+                                title: i18n.doc.paramsHeader.name,
+                                width: '25%'
+                            },
+                            {
+                                field: 'description',
+                                title:  i18n.doc.paramsHeader.des,
+                                width: '20%'
+                            } ,
+                            {
+                                field: 'type',
+                                title: i18n.doc.paramsHeader.type,
+                                width: '20%',
+                            }
+                        ]]
+                    })
+                    //默认全部展开
+                    treetable.expandAll('#'+responseHeaderTableId);
+                    $("#"+responseHeaderTableId).hide();
+                }
             }
+
+
 
             //初始化copy按钮功能
             var clipboard = new ClipboardJS('#copyDocHref'+apiInfo.id,{
@@ -2415,6 +2492,7 @@
             paramBody.find("tr").each(function () {
                 var paramtr=$(this);
                 var cked=paramtr.find("td:first").find(":checked").prop("checked");
+                var _urlAppendflag=true;
                 //that.log(cked)
                 if (cked){
                     //如果选中
@@ -2505,6 +2583,7 @@
                         }else{
                             if(trdata["type"]=="array"){
                                 queryStringParameterFlag=true;
+                                _urlAppendflag=false;
                                 reqflag=true;
                                 //数组类型
                                 paramtr.find("td:eq(3)").find("input").each(function (i, x) {
@@ -2530,15 +2609,17 @@
                         }else{
                             //判断是否是header
                             if(trdata["in"]=="header") {
-                                headerparams[key] = value;
+                                headerparams[key] = encodeURIComponent(value);
                             }else if(trdata["in"]=="body"){
                                 bodyparams+=value;
                                 bodyRequest=true;
                             }else{
-                                if (url.indexOf("?")>-1){
-                                    url=url+"&"+key+"="+value;
-                                }else{
-                                    url+="?"+key+"="+value;
+                                if(_urlAppendflag){
+                                    if (url.indexOf("?")>-1){
+                                        url=url+"&"+key+"="+value;
+                                    }else{
+                                        url+="?"+key+"="+value;
+                                    }
                                 }
                             }
                         }
@@ -2552,7 +2633,7 @@
                                 bodyRequest=true;
                             }else{
                                 if(trdata["in"]=="header"){
-                                    headerparams[key]=value;
+                                    headerparams[key]=encodeURIComponent(value);
                                 }else{
                                     if (trdata.schemavalue != "MultipartFile" &&  trdata.schemavalue != "file" && trdata.type!="file") {
                                         //判断数组
@@ -2764,6 +2845,7 @@
                     }
                 }).catch(function (error) {
                     that.log("form request--response error-------------------")
+                    that.error(error);
                     respcleanDiv.show();
                     layer.close(index);
                     if(error.response){
@@ -2819,6 +2901,7 @@
                             formCurlParams,xhr,data,startTime,allheaders,true);
                     }).catch(function (error) {
                         that.log("form request--response error-------------------")
+                        that.error(error)
                         respcleanDiv.show();
                         layer.close(index);
                         if(error.response){
@@ -2846,9 +2929,8 @@
                     if($.getStringValue(apiInfo.methodType)=="GET"){
                         sendParams=reqdata;
                     }
+                    that.log(reqdata)
                     //that.log(sendParams)
-                    //that.log($.getStringValue(apiInfo.methodType))
-
                     //headerparams["Content-Type"]=contType;
                     $.ajax({
                         url:url,
@@ -3050,47 +3132,26 @@
             .append($("<span class='debug-span-label'>"+i18n.debug.response.size+":</span><span class='debug-span-value'>"+len+" b</span>"))
             .append($("<span class='debug-span-label' style='margin-left:10px;' id='bigScreen"+apiInfo.id+"'><i class=\"icon-text-width iconfont icon-quanping\" style='cursor: pointer;'></i></span>"));
         //赋值响应headers
-        //var mimtype=xhr.overrideMimeType();
-        //var allheaders=xhr.getAllResponseHeaders();
-        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
-            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>'+i18n.debug.response.header+'</th><th>value</th></tr></table>');
-            //如果headers是string，ajax提交
-            if(typeof (allheaders)=="string"){
-                var headers=allheaders.split("\r\n");
-                for(var i=0;i<headers.length;i++){
-                    var header=headers[i];
-                    if(header!=null&&header!=""){
-                        var headerValu=header.split(":");
-                        var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
-                        headertable.append(headertr);
-                    }
-                }
-            }else{
-                for(var hk in allheaders){
-                    var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
-                    headertable.append(headertr);
-                }
-            }
-            //设置Headers内容
-            resp3.html("")
-            resp3.append(headertable);
-        }
+        that.createRequestHeaderResponse(allheaders,resp3,i18n);
 
         //判断响应内容
         var contentType=xhr.getResponseHeader("Content-Type");
-        var xmlflag=false,htmlflag=false,textflag=false;
+        var xmlflag=false,htmlflag=false,textflag=false,jsonflag=false;
         var rtext=data || xhr["responseText"];
         //支持xml
         if(contentType!=null&&contentType!=undefined&&contentType!=""){
             if(contentType.toLowerCase().indexOf("xml")!=-1){
                 //xml类型
-                rtext=xhr["responseText"];
+                //rtext=xhr["responseText"];
                 xmlflag=true;
-            }else if(contentType.toLowerCase().indexOf("html")!=-1){
-                rtext=xhr["responseText"];
-                htmlflag=true;
+            }else if(contentType.toLowerCase().indexOf("html")!=-1) {
+                //rtext = xhr["responseText"];
+                htmlflag = true;
+            }else if(contentType.toLowerCase().indexOf("json")!=-1){
+                //rtext = xhr["responseText"];
+                jsonflag=true;
             }else{
-                rtext=xhr["responseText"];
+                //rtext=xhr["responseText"];
                 textflag=true;
             }
         }
@@ -3098,85 +3159,8 @@
         //that.log(xhr.hasOwnProperty("responseText"));
         //that.log(rtext);
         //响应文本内容
-        if (data&&data.toString() =="[object Blob]" ) {
-            var resp2Html =null;
+        that.createReuqestRawResponse(xhr,data,jsonflag,resp1,resp2,resp3,resp5,rtext,responseHeight,apiKeyId,i18n,binaryType);
 
-            var downloadurl=window.URL.createObjectURL(data);
-            if(binaryType == "application/octet-stream"){
-                var fileName = 'SwaggerBootstrapUiDownload.txt';
-                var contentDisposition=xhr.getResponseHeader("Content-Disposition");
-                if(contentDisposition){
-                    var respcds=contentDisposition.split(";")
-                    for(var i=0;i<respcds.length;i++){
-                        var header=respcds[i];
-                        if(header!=null&&header!=""){
-                            var headerValu=header.split("=");
-                            if(headerValu!=null&&headerValu.length>0){
-                                var _hdvalue=headerValu[0];
-                                if(_hdvalue!=null&&_hdvalue!=undefined&&_hdvalue!=""){
-                                    if(_hdvalue.toLowerCase()=="filename"){
-                                        fileName=headerValu[1];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>"+i18n.debug.response.download+"</a>");
-            }else {
-                resp2Html=$("<img  src='"+downloadurl+"'>");
-                setTimeout(function () {
-                    var rph=resp1.find("img:eq(0)").height()+30;
-                    resp1.css({"height":rph+"px"})
-                },500)
-            }
-
-            resp2.html("");
-            resp2.append(resp2Html);
-        }
-        else if(rtext!=null&&rtext!=undefined){
-            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>"+i18n.settings.copy+"</button><br /><br />");
-            //var rawText=$("<span></span>");
-            var rawText=$("<textarea cols='10' rows='10' style='height: "+(responseHeight-150)+"px;width: 98%;'></textarea>");
-            rawText.val(rtext);
-            resp2.html("");
-            resp2.append(rawCopyBotton).append(rawText);
-            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
-                text:function () {
-                    return rawText.val();
-                }
-            });
-            cliprawboard.on('success', function(e) {
-                layer.msg(i18n.message.copy.success)
-            });
-            cliprawboard.on('error', function(e) {
-                layer.msg(i18n.message.copy.fail)
-            });
-            /*if(tp!=null&& tp=="string"){
-                //转二进制
-                var dv=data.toString(2);
-                if(dv!=undefined&&dv!=null){
-                    //that.log("二进制11..");
-                    var div=$("<div></div>");
-                    var rowDiv=$("<div style='word-wrap: break-word;'>"+dv+"</div>");
-                    var downloadDiv=$("<div style='    position: absolute;\n" +
-                        "    right: 0px;\n" +
-                        "    width: 100px;\n" +
-                        "    bottom: 30px;\n" +
-                        "    text-align: center;'></div>")
-                    var button=$("<button style='width: 100px;' class=\"btn btn-default btn-primary\">"+i18n.debug.response.download+"</button>");
-                    button.bind("click",function () {
-                        window.open(url);
-                    })
-                    downloadDiv.append(button);
-                    div.append(rowDiv).append(downloadDiv);
-                    //that.log(div)
-                    //that.log(div[0])
-                    resp1.html("")
-                    resp1.html(div);
-                }
-            }*/
-        }
         //响应JSON
         if (data&&data.toString() =="[object Blob]" ) {
             var resp2Html =null;
@@ -3215,7 +3199,7 @@
             resp1.html("");
             resp1.append(resp2Html);
         }
-        else if (xhr.hasOwnProperty("responseJSON")&&data!=null&&data!=undefined){
+        else if ((xhr.hasOwnProperty("responseJSON")&&data!=null&&data!=undefined)||jsonflag){
             //如果存在该对象,服务端返回为json格式
             resp1.html("")
             //that.log(xhr["responseJSON"])
@@ -3223,10 +3207,14 @@
             var aceValue={};
             that.log("解析ResponseJSON")
             that.log(new Date())
-            if(xhr.hasOwnProperty("responseJSON")){
-                aceValue=JSON.stringify(xhr["responseJSON"],null,2);
-                //that.log(JSON.stringify(xhr["responseJSON"],null,2))
-                //jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
+            if(xhr.hasOwnProperty("responseJSON")) {
+                aceValue = JSON.stringify(xhr["responseJSON"], null, 2);
+            }else if(jsonflag){
+                if(typeof (rtext)=="string"){
+                    aceValue=JSON.stringify(JSON.parse(rtext),null,2);
+                }else{
+                    aceValue=JSON.stringify(rtext,null,2);
+                }
             }else{
                 aceValue=JSON.stringify(data,null,2);
                 //针对表单提交,error的情况,会产生data
@@ -3271,14 +3259,6 @@
                 //重置响应面板高度
                 laycontentdiv.css("height",rzdivHeight);
             }
-           /* that.log(rzheight)
-            $("#responseJsonEditor"+apiKeyId).css('height',rzheight);
-            editor.resize(true);
-            that.log("重构高度结束")
-            that.log(new Date())
-            that.log($("#responseJsonEditor"+apiKeyId).height())
-
-            laycontentdiv.css("height",rzdivHeight);*/
            that.log(apiInfo);
 
             setTimeout(function(){
@@ -3384,6 +3364,118 @@
         })
     }
 
+    /**
+     * 创建Hedaer面板
+     * @param allheaders
+     * @param resp3
+     * @param i18n
+     */
+    SwaggerBootstrapUi.prototype.createRequestHeaderResponse=function (allheaders,resp3,i18n) {
+        if(allheaders!=null&&typeof (allheaders)!='undefined'&&allheaders!=""){
+            var headertable=$('<table class="table table-hover table-bordered table-text-center"><tr><th>'+i18n.debug.response.header+'</th><th>value</th></tr></table>');
+            //如果headers是string，ajax提交
+            if(typeof (allheaders)=="string"){
+                var headers=allheaders.split("\r\n");
+                for(var i=0;i<headers.length;i++){
+                    var header=headers[i];
+                    if(header!=null&&header!=""){
+                        var headerValu=header.split(":");
+                        var headertr=$('<tr><th class="active">'+headerValu[0]+'</th><td>'+headerValu[1]+'</td></tr>');
+                        headertable.append(headertr);
+                    }
+                }
+            }else{
+                for(var hk in allheaders){
+                    var headertr=$('<tr><th class="active">'+hk+'</th><td>'+allheaders[hk]+'</td></tr>');
+                    headertable.append(headertr);
+                }
+            }
+            //设置Headers内容
+            resp3.html("")
+            resp3.append(headertable);
+        }
+    }
+
+    /**
+     * 创建Raw响应内容面板
+     * @param data
+     * @param jsonflag
+     * @param resp1
+     * @param resp2
+     * @param resp3
+     * @param resp5
+     * @param rtext
+     * @param responseHeight
+     * @param apiKeyId
+     * @param i18n
+     * @param binaryType
+     */
+    SwaggerBootstrapUi.prototype.createReuqestRawResponse=function (xhr,data,jsonflag,resp1,resp2,resp3,resp5,rtext,responseHeight,apiKeyId,i18n,binaryType) {
+        if (data&&data.toString() =="[object Blob]" ) {
+            var resp2Html =null;
+
+            var downloadurl=window.URL.createObjectURL(data);
+            if(binaryType == "application/octet-stream"){
+                var fileName = 'SwaggerBootstrapUiDownload.txt';
+                var contentDisposition=xhr.getResponseHeader("Content-Disposition");
+                if(contentDisposition){
+                    var respcds=contentDisposition.split(";")
+                    for(var i=0;i<respcds.length;i++){
+                        var header=respcds[i];
+                        if(header!=null&&header!=""){
+                            var headerValu=header.split("=");
+                            if(headerValu!=null&&headerValu.length>0){
+                                var _hdvalue=headerValu[0];
+                                if(_hdvalue!=null&&_hdvalue!=undefined&&_hdvalue!=""){
+                                    if(_hdvalue.toLowerCase()=="filename"){
+                                        fileName=headerValu[1];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                resp2Html=$("<a  style='color: blue;font-size: 18px;text-decoration: underline;' href='"+downloadurl+"' download='"+fileName+"'>"+i18n.debug.response.download+"</a>");
+            }else {
+                resp2Html=$("<img  src='"+downloadurl+"'>");
+                setTimeout(function () {
+                    var rph=resp1.find("img:eq(0)").height()+30;
+                    resp1.css({"height":rph+"px"})
+                },500)
+            }
+
+            resp2.html("");
+            resp2.append(resp2Html);
+        }
+        else if(rtext!=null&&rtext!=undefined){
+            var rawCopyBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyRaw"+apiKeyId+"'>"+i18n.settings.copy+"</button><br /><br />");
+            //var rawText=$("<span></span>");
+            var rawText=$("<textarea cols='10' rows='10' style='height: "+(responseHeight-150)+"px;width: 98%;'></textarea>");
+            if(jsonflag){
+                rawText.val(JSON.stringify(rtext));
+            }else{
+                rawText.val(rtext);
+            }
+            resp2.html("");
+            resp2.append(rawCopyBotton).append(rawText);
+            var cliprawboard = new ClipboardJS('#btnCopyRaw'+apiKeyId,{
+                text:function () {
+                    return rawText.val();
+                }
+            });
+            cliprawboard.on('success', function(e) {
+                layer.msg(i18n.message.copy.success)
+            });
+            cliprawboard.on('error', function(e) {
+                layer.msg(i18n.message.copy.fail)
+            });
+        }
+
+        resp2.css({"height":responseHeight+"px"})
+        resp3.css({"height":responseHeight+"px"})
+        resp5.css({"height":responseHeight+"px"})
+    }
+
     SwaggerBootstrapUi.prototype.buildNonJsonEditor=function (mode,responseHeight,apiKeyId,aceValue,resp1,laycontentdiv) {
         //如果存在该对象,服务端返回为json格式
         resp1.html("")
@@ -3445,6 +3537,36 @@
             fullurl+="/";
         }
         fullurl+=url;
+        //判断是否是GET请求
+        if(apiInfo.methodType.toLowerCase()=="get"){
+            if(paramBodyType=="form"){
+                if(formCurlParams==null||formCurlParams==undefined||!formCurlParams){
+                    if(reqdata!=null&&reqdata!=undefined){
+                        var urlAppend=new Array();
+                        //判断是否包含参数
+                        var paramExists=false;
+                        for(var d in reqdata){
+                            urlAppend.push(d+"="+reqdata[d]);
+                            if(fullurl.indexOf(d+"=")!=-1){
+                                paramExists=true;
+                            }
+                        }
+                        if (!paramExists){
+                            if(urlAppend.length>0){
+                                var _appendStr=urlAppend.join("&");
+                                if (fullurl.indexOf("?")==-1){
+                                    fullurl=fullurl+"?"+_appendStr;
+                                }else{
+                                    fullurl=fullurl+"&"+_appendStr;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
         curlified.push( "curl" );
         curlified.push( "-X", apiInfo.methodType.toUpperCase() );
         //此处url需要encoding
@@ -3529,11 +3651,14 @@
                 }
             }else{
                 //form
-                for(var d in reqdata){
-                    curlified.push( "-d" );
-                    curlified.push("\"" + d + "=" + reqdata[d] + "\"");
-                    //formArr.push(d+"="+reqdata[d]);
+                if(apiInfo.methodType.toLowerCase()!="get"){
+                    for(var d in reqdata){
+                        curlified.push( "-d" );
+                        curlified.push("\"" + d + "=" + reqdata[d] + "\"");
+                        //formArr.push(d+"="+reqdata[d]);
+                    }
                 }
+
                 /*var formStr=formArr.join("&");
                 that.log("表单...");
                 that.log(formStr);
@@ -4220,6 +4345,7 @@
             for(var name in definitions){
                 var swud=new SwaggerBootstrapUiDefinition();
                 swud.name=name;
+                swud.ignoreFilterName=name;
                 //that.log("开始解析Definition:"+name);
                 //获取value
                 var value=definitions[name];
@@ -4966,7 +5092,7 @@
         //截取字符串
         var newurl=newfullPath.substring(newfullPath.indexOf("/"));
         //that.log("新的url:"+newurl)
-        newurl = newurl.replace("//","/");
+        newurl=newurl.replace("//","/");
         //判断应用实例的baseurl
         if(that.currentInstance.baseUrl!=""&&that.currentInstance.baseUrl!="/"){
             newurl=that.currentInstance.baseUrl+newurl;
@@ -4974,9 +5100,16 @@
         var startApiTime=new Date().getTime();
         swpinfo.showUrl=newurl;
         //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
+
+        /*swpinfo.url=newurl;
+        swpinfo.originalUrl=newurl;*/
+
+        //new --> https://github.com/xiaoymin/swagger-bootstrap-ui/pull/108
         var urlForRealUsage=newurl.replace(/^([^{]+).*$/g, '$1');
         swpinfo.url=urlForRealUsage;
         swpinfo.originalUrl=urlForRealUsage;
+
+
         swpinfo.basePathFlag=basePathFlag;
         swpinfo.methodType=mtype.toUpperCase();
         //接口id使用MD5策略,缓存整个调试参数到localStorage对象中,供二次调用
@@ -4995,6 +5128,12 @@
             swpinfo.operationId=apiInfo.operationId;
             swpinfo.summary=apiInfo.summary;
             swpinfo.tags=apiInfo.tags;
+            //读取扩展属性x-ignoreParameters
+            if(apiInfo.hasOwnProperty("x-ignoreParameters")){
+                var ignoArr=apiInfo["x-ignoreParameters"];
+                //忽略参数对象
+                swpinfo.ignoreParameters=ignoArr[0];
+            }
             //读取扩展属性x-order值
             if(apiInfo.hasOwnProperty("x-order")){
                 swpinfo.order=parseInt(apiInfo["x-order"]);
@@ -5015,84 +5154,149 @@
             if (apiInfo.hasOwnProperty("parameters")){
                 var pameters=apiInfo["parameters"];
                 $.each(pameters,function (i, m) {
-                    var minfo=new SwaggerBootstrapUiParameter();
-
-                    minfo.name=$.propValue("name",m,"");
-                    minfo.type=$.propValue("type",m,"");
-                    minfo.in=$.propValue("in",m,"");
-                    minfo.require=$.propValue("required",m,false);
-                    minfo.description=$.replaceMultipLineStr($.propValue("description",m,""));
-                    //判断是否有枚举类型
-                    if(m.hasOwnProperty("enum")){
-                        //that.log("包括枚举类型...")
-                        //that.log(m.enum);
-                        minfo.enum=m.enum;
-                        //that.log(minfo);
-                        //枚举类型,描述显示可用值
-                        var avaiableArrStr=m.enum.join(",");
-                        if(m.description!=null&&m.description!=undefined&&m.description!=""){
-                            minfo.description=m.description+",可用值:"+avaiableArrStr;
-                        }else{
-                            minfo.description="枚举类型,可用值:"+avaiableArrStr;
-                        }
-
-                    }
-                    //判断你是否有默认值(后台)
-                    if(m.hasOwnProperty("default")){
-                        minfo.txtValue=m["default"];
-                    }
-                    //swagger 2.9.2版本默认值响应X-EXAMPLE的值为2.9.2
-                    if(m.hasOwnProperty("x-example")){
-                        minfo.txtValue=m["x-example"];
-                    }
-                    if (m.hasOwnProperty("schema")){
-                        //存在schema属性,请求对象是实体类
-                        minfo.schema=true;
-                        var schemaObject=m["schema"];
-                        var schemaType=schemaObject["type"];
-                        if (schemaType=="array"){
-                            minfo.type=schemaType;
-                            var schItem=schemaObject["items"];
-                            var ref=schItem["$ref"];
-                            var className=$.getClassName(ref);
-                            minfo.schemaValue=className;
-                            var def=that.getDefinitionByName(className);
-                            if(def!=null){
-                                minfo.def=def;
-                                minfo.value=def.value;
-                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                    minfo.description=$.replaceMultipLineStr(def.description);
-                                }
+                    var originalName=$.propValue("name",m,"");
+                    //忽略参数
+                    if (swpinfo.ignoreParameters==null||(swpinfo.ignoreParameters!=null&&!swpinfo.ignoreParameters.hasOwnProperty(originalName))){
+                        var minfo=new SwaggerBootstrapUiParameter();
+                        minfo.name=originalName;
+                        minfo.ignoreFilterName=originalName;
+                        minfo.type=$.propValue("type",m,"");
+                        minfo.in=$.propValue("in",m,"");
+                        minfo.require=$.propValue("required",m,false);
+                        minfo.description=$.replaceMultipLineStr($.propValue("description",m,""));
+                        //判断是否有枚举类型
+                        if(m.hasOwnProperty("enum")){
+                            //that.log("包括枚举类型...")
+                            //that.log(m.enum);
+                            minfo.enum=m.enum;
+                            //that.log(minfo);
+                            //枚举类型,描述显示可用值
+                            var avaiableArrStr=m.enum.join(",");
+                            if(m.description!=null&&m.description!=undefined&&m.description!=""){
+                                minfo.description=m.description+",可用值:"+avaiableArrStr;
                             }else{
-                                var sty=schItem["type"];
-                                minfo.schemaValue = schItem["type"]
-                                //此处判断Array的类型,如果
-                                if(sty=="string"){
-                                    minfo.value="exmpale Value";
-                                }
-                                if(sty=="integer"){
-                                    //判断format
-                                    if(schItem["format"]!=undefined&&schItem["format"]!=null&&schItem["format"]=="int32"){
-                                        minfo.value=0;
-                                    }else{
-                                        minfo.value=1054661322597744642;
+                                minfo.description="枚举类型,可用值:"+avaiableArrStr;
+                            }
+
+                        }
+                        //判断你是否有默认值(后台)
+                        if(m.hasOwnProperty("default")){
+                            minfo.txtValue=m["default"];
+                        }
+                        //swagger 2.9.2版本默认值响应X-EXAMPLE的值为2.9.2
+                        if(m.hasOwnProperty("x-example")){
+                            minfo.txtValue=m["x-example"];
+                        }
+                        if (m.hasOwnProperty("schema")){
+                            //存在schema属性,请求对象是实体类
+                            minfo.schema=true;
+                            var schemaObject=m["schema"];
+                            var schemaType=schemaObject["type"];
+                            if (schemaType=="array"){
+                                minfo.type=schemaType;
+                                var schItem=schemaObject["items"];
+                                var ref=schItem["$ref"];
+                                var className=$.getClassName(ref);
+                                minfo.schemaValue=className;
+                                var def=that.getDefinitionByName(className);
+                                if(def!=null){
+                                    minfo.def=def;
+                                    minfo.value=def.value;
+                                    if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                        minfo.description=$.replaceMultipLineStr(def.description);
+                                    }
+                                }else{
+                                    var sty=schItem["type"];
+                                    minfo.schemaValue = schItem["type"]
+                                    //此处判断Array的类型,如果
+                                    if(sty=="string"){
+                                        minfo.value="exmpale Value";
+                                    }
+                                    if(sty=="integer"){
+                                        //判断format
+                                        if(schItem["format"]!=undefined&&schItem["format"]!=null&&schItem["format"]=="int32"){
+                                            minfo.value=0;
+                                        }else{
+                                            minfo.value=1054661322597744642;
+                                        }
+                                    }
+                                    if(sty=="number"){
+                                        if(schItem["format"]!=undefined&&schItem["format"]!=null&&schItem["format"]=="double"){
+                                            minfo.value=0.5;
+                                        }else{
+                                            minfo.value=0;
+                                        }
                                     }
                                 }
-                                if(sty=="number"){
-                                    if(schItem["format"]!=undefined&&schItem["format"]!=null&&schItem["format"]=="double"){
-                                        minfo.value=0.5;
+                            }else{
+                                if (schemaObject.hasOwnProperty("$ref")){
+                                    var ref=m["schema"]["$ref"];
+                                    var className=$.getClassName(ref);
+                                    if(minfo.type!="array"){
+                                        minfo.type=className;
+                                    }
+                                    minfo.schemaValue=className;
+                                    var def=that.getDefinitionByName(className);
+                                    if(def!=null){
+                                        minfo.def=def;
+                                        minfo.value=def.value;
+                                        if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                            minfo.description=$.replaceMultipLineStr(def.description);
+                                        }
+                                    }
+                                }else{
+                                    //判断是否包含addtionalProperties属性
+                                    if(schemaObject.hasOwnProperty("additionalProperties")){
+                                        //判断是否是数组
+                                        var addProp=schemaObject["additionalProperties"];
+                                        if(addProp.hasOwnProperty("$ref")){
+                                            //object
+                                            var className=$.getClassName(addProp["$ref"]);
+                                            if(className!=null){
+                                                var def=that.getDefinitionByName(className);
+                                                if(def!=null){
+                                                    minfo.def=def;
+                                                    minfo.value={"additionalProperties1":def.value};
+                                                    if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                                        minfo.description=$.replaceMultipLineStr(def.description);
+                                                    }
+                                                }
+                                            }
+                                        }else if(addProp.hasOwnProperty("items")){
+                                            //数组
+                                            var addItems=addProp["items"];
+                                            var className=$.getClassName(addItems["$ref"]);
+                                            if(className!=null){
+                                                var def=that.getDefinitionByName(className);
+                                                if(def!=null){
+                                                    var addArrValue=new Array();
+                                                    addArrValue.push(def.value)
+                                                    minfo.def=def;
+                                                    minfo.value={"additionalProperties1":addArrValue};
+                                                    if(def.description!=undefined&&def.description!=null&&def.description!=""){
+                                                        minfo.description=$.replaceMultipLineStr(def.description);
+                                                    }
+                                                }
+                                            }
+
+                                        }
+
+
                                     }else{
-                                        minfo.value=0;
+                                        if (schemaObject.hasOwnProperty("type")){
+                                            minfo.type=schemaObject["type"];
+                                        }
+                                        minfo.value="";
                                     }
                                 }
                             }
-                        }else{
-                            if (schemaObject.hasOwnProperty("$ref")){
-                                var ref=m["schema"]["$ref"];
+                        }
+                        if(m.hasOwnProperty("items")){
+                            var items=m["items"];
+                            if(items.hasOwnProperty("$ref")){
+                                var ref=items["$ref"];
                                 var className=$.getClassName(ref);
-                                if(minfo.type!="array"){
-                                    minfo.type=className;
-                                }
+                                //minfo.type=className;
                                 minfo.schemaValue=className;
                                 var def=that.getDefinitionByName(className);
                                 if(def!=null){
@@ -5103,101 +5307,47 @@
                                     }
                                 }
                             }else{
-                                //判断是否包含addtionalProperties属性
-                                if(schemaObject.hasOwnProperty("additionalProperties")){
-                                    //判断是否是数组
-                                    var addProp=schemaObject["additionalProperties"];
-                                    if(addProp.hasOwnProperty("$ref")){
-                                        //object
-                                        var className=$.getClassName(addProp["$ref"]);
-                                        if(className!=null){
-                                            var def=that.getDefinitionByName(className);
-                                            if(def!=null){
-                                                minfo.def=def;
-                                                minfo.value={"additionalProperties1":def.value};
-                                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                                    minfo.description=$.replaceMultipLineStr(def.description);
-                                                }
-                                            }
-                                        }
-                                    }else if(addProp.hasOwnProperty("items")){
-                                        //数组
-                                        var addItems=addProp["items"];
-                                        var className=$.getClassName(addItems["$ref"]);
-                                        if(className!=null){
-                                            var def=that.getDefinitionByName(className);
-                                            if(def!=null){
-                                                var addArrValue=new Array();
-                                                addArrValue.push(def.value)
-                                                minfo.def=def;
-                                                minfo.value={"additionalProperties1":addArrValue};
-                                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                                    minfo.description=$.replaceMultipLineStr(def.description);
-                                                }
-                                            }
-                                        }
-
-                                    }
-
-
-                                }else{
-                                    if (schemaObject.hasOwnProperty("type")){
-                                        minfo.type=schemaObject["type"];
-                                    }
-                                    minfo.value="";
+                                if (items.hasOwnProperty("type")){
+                                    //minfo.type=items["type"];
+                                    minfo.schemaValue=items["type"];
+                                }
+                                minfo.value="";
+                            }
+                        }
+                        if(minfo.in=="body"){
+                            //判断属性是否是array
+                            if(minfo.type=="array"){
+                                var txtArr=new Array();
+                                //针对参数过滤
+                                var newValue=$.filterJsonObject(minfo.ignoreFilterName,minfo.value,swpinfo.ignoreParameters);
+                                //txtArr.push(minfo.value);
+                                txtArr.push(newValue);
+                                //JSON显示
+                                minfo.txtValue=JSON.stringify(txtArr,null,"\t")
+                            }else{
+                                //引用类型
+                                if(!$.checkIsBasicType(minfo.type)){
+                                    var newValue=$.filterJsonObject(minfo.ignoreFilterName,minfo.value,swpinfo.ignoreParameters);
+                                    //minfo.txtValue=JSON.stringify(minfo.value,null,"\t");
+                                    minfo.txtValue=JSON.stringify(newValue,null,"\t");
                                 }
                             }
                         }
-                    }
-                    if(m.hasOwnProperty("items")){
-                        var items=m["items"];
-                        if(items.hasOwnProperty("$ref")){
-                            var ref=items["$ref"];
-                            var className=$.getClassName(ref);
-                            //minfo.type=className;
-                            minfo.schemaValue=className;
-                            var def=that.getDefinitionByName(className);
-                            if(def!=null){
-                                minfo.def=def;
-                                minfo.value=def.value;
-                                if(def.description!=undefined&&def.description!=null&&def.description!=""){
-                                    minfo.description=$.replaceMultipLineStr(def.description);
-                                }
-                            }
-                        }else{
-                            if (items.hasOwnProperty("type")){
-                                //minfo.type=items["type"];
-                                minfo.schemaValue=items["type"];
-                            }
-                            minfo.value="";
-                        }
-                    }
-                    if(minfo.in=="body"){
-                        //判断属性是否是array
-                        if(minfo.type=="array"){
-                            var txtArr=new Array();
-                            txtArr.push(minfo.value);
-                            //JSON显示
-                            minfo.txtValue=JSON.stringify(txtArr,null,"\t")
-                        }else{
-                            //引用类型
-                            if(!$.checkIsBasicType(minfo.type)){
-                                minfo.txtValue=JSON.stringify(minfo.value,null,"\t");
+                        //JSR-303 注解支持.
+                        that.validateJSR303(minfo,m);
+                        if(!checkParamArrsExists(swpinfo.parameters,minfo)){
+                            swpinfo.parameters.push(minfo);
+                            //判断当前属性是否是schema
+                            if(minfo.schema){
+                                deepRefParameter(minfo,that,minfo.def,swpinfo);
+                                minfo.parentTypes.push(minfo.schemaValue);
+                                //第一层的对象要一直传递
+                                deepTreeTableRefParameter(minfo,that,minfo.def,swpinfo);
                             }
                         }
                     }
-                    //JSR-303 注解支持.
-                    that.validateJSR303(minfo,m);
-                    if(!checkParamArrsExists(swpinfo.parameters,minfo)){
-                        swpinfo.parameters.push(minfo);
-                        //判断当前属性是否是schema
-                        if(minfo.schema){
-                            deepRefParameter(minfo,that,minfo.def,swpinfo);
-                            minfo.parentTypes.push(minfo.schemaValue);
-                            //第一层的对象要一直传递
-                            deepTreeTableRefParameter(minfo,that,minfo.def,swpinfo);
-                        }
-                    }
+
+
                 })
             }
             var definitionType=null;
@@ -5396,6 +5546,18 @@
 
                     if(swaggerResp.schema!=null&&swaggerResp.schema!=undefined){
                         rpcount=rpcount+1;
+                    }
+                    //判断是否有响应headers
+                    if(rescrobj.hasOwnProperty("headers")){
+                        var _headers=rescrobj["headers"];
+                        swaggerResp.responseHeaderParameters=new Array();
+                        for(var _headerN in _headers){
+                            var  _hv=$.extend({},_headers[_headerN],{name:_headerN,id:md5(_headerN),pid:"-1"});
+                            swaggerResp.responseHeaderParameters.push(_hv);
+                        }
+                        if(status=="200"){
+                            swpinfo.responseHeaderParameters=swaggerResp.responseHeaderParameters;
+                        }
                     }
                     swpinfo.responseCodes.push(swaggerResp);
                 }
@@ -5766,30 +5928,36 @@
                     $.each(props,function (i, p) {
                         //如果当前属性为readOnly，则不加入
                         if(!p.readOnly){
-                            var refp=new SwaggerBootstrapUiParameter();
-                            refp.pid=minfo.id;
-                            refp.name=p.name;
-                            refp.type=p.type;
-                            //判断非array
-                            if(p.type!="array"){
-                                if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
-                                    //修复针对schema类型的参数,显示类型为schema类型
-                                    refp.type=p.refType;
+                            var _filterName=minfo.ignoreFilterName+"."+p.name;
+                            //判断是否忽略
+                            if (apiInfo.ignoreParameters==null||(apiInfo.ignoreParameters!=null&&!apiInfo.ignoreParameters.hasOwnProperty(_filterName))){
+                                var refp=new SwaggerBootstrapUiParameter();
+                                refp.pid=minfo.id;
+                                refp.name=p.name;
+                                refp.ignoreFilterName=_filterName;
+
+                                refp.type=p.type;
+                                //判断非array
+                                if(p.type!="array"){
+                                    if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
+                                        //修复针对schema类型的参数,显示类型为schema类型
+                                        refp.type=p.refType;
+                                    }
                                 }
-                            }
-                            refp.in=minfo.in;
-                            refp.require=p.required;
-                            refp.description=$.replaceMultipLineStr(p.description);
-                            that.validateJSR303(refp,p.originProperty);
-                            refParam.params.push(refp);
-                            //判断类型是否基础类型
-                            if(!$.checkIsBasicType(p.refType)){
-                                refp.schemaValue=p.refType;
-                                refp.schema=true;
-                                //属性名称不同,或者ref类型不同
-                                if(minfo.name!=refp.name||minfo.schemaValue!=p.refType){
-                                    var deepDef=that.getDefinitionByName(p.refType);
-                                    deepRefParameter(refp,that,deepDef,apiInfo);
+                                refp.in=minfo.in;
+                                refp.require=p.required;
+                                refp.description=$.replaceMultipLineStr(p.description);
+                                that.validateJSR303(refp,p.originProperty);
+                                refParam.params.push(refp);
+                                //判断类型是否基础类型
+                                if(!$.checkIsBasicType(p.refType)){
+                                    refp.schemaValue=p.refType;
+                                    refp.schema=true;
+                                    //属性名称不同,或者ref类型不同
+                                    if(minfo.name!=refp.name||minfo.schemaValue!=p.refType){
+                                        var deepDef=that.getDefinitionByName(p.refType);
+                                        deepRefParameter(refp,that,deepDef,apiInfo);
+                                    }
                                 }
                             }
                         }
@@ -5841,51 +6009,55 @@
                 if(def.hasOwnProperty("properties")){
                     var props=def["properties"];
                     $.each(props,function (i, p) {
-                        var refp=new SwaggerBootstrapUiParameter();
-                        refp.pid=minfo.id;
-                        $.each(minfo.parentTypes,function (i, pt) {
-                            refp.parentTypes.push(pt);
-                        })
-                        refp.readOnly=p.readOnly;
-                        //refp.parentTypes=minfo.parentTypes;
-                        refp.parentTypes.push(def.name)
-                        //level+1
-                        refp.level=minfo.level+1;
-                        refp.name=p.name;
-                        refp.type=p.type;
-                        //判断非array
-                        if(p.type!="array"){
-                            if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
-                                //修复针对schema类型的参数,显示类型为schema类型
-                                refp.type=p.refType;
-                            }
-                        }
-                        refp.in=minfo.in;
-                        refp.require=p.required;
-                        refp.example=p.example;
-                        refp.description=$.replaceMultipLineStr(p.description);
-                        that.validateJSR303(refp,p.originProperty);
-                        //models添加所有属性
-                        refModelParam.params.push(refp);
-                        if(!p.readOnly){
-                            refParam.params.push(refp);
-                        }
-                        //判断类型是否基础类型
-                        if(!$.checkIsBasicType(p.refType)){
-                            refp.schemaValue=p.refType;
-                            refp.schema=true;
-                            //属性名称不同,或者ref类型不同
-                            if(minfo.name!=refp.name||minfo.schemaValue!=p.refType){
-                                var deepDef=that.getDefinitionByName(p.refType);
-                                if(!checkDeepTypeAppear(refp.parentTypes,p.refType)){
-                                    deepTreeTableRefParameter(refp,that,deepDef,apiInfo);
-                                }
-                            }
-                        }else{
-                            if(p.type=="array"){
+                        var _ignoreFilterName=minfo.ignoreFilterName+"."+p.name;
+                        if (apiInfo.ignoreParameters==null||(apiInfo.ignoreParameters!=null&&!apiInfo.ignoreParameters.hasOwnProperty(_ignoreFilterName))){
+                            var refp=new SwaggerBootstrapUiParameter();
+                            refp.pid=minfo.id;
+                            $.each(minfo.parentTypes,function (i, pt) {
+                                refp.parentTypes.push(pt);
+                            })
+                            refp.readOnly=p.readOnly;
+                            //refp.parentTypes=minfo.parentTypes;
+                            refp.parentTypes.push(def.name)
+                            //level+1
+                            refp.level=minfo.level+1;
+                            refp.name=p.name;
+                            refp.ignoreFilterName=_ignoreFilterName;
+                            refp.type=p.type;
+                            //判断非array
+                            if(p.type!="array"){
                                 if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
                                     //修复针对schema类型的参数,显示类型为schema类型
-                                    refp.schemaValue=p.refType;
+                                    refp.type=p.refType;
+                                }
+                            }
+                            refp.in=minfo.in;
+                            refp.require=p.required;
+                            refp.example=p.example;
+                            refp.description=$.replaceMultipLineStr(p.description);
+                            that.validateJSR303(refp,p.originProperty);
+                            //models添加所有属性
+                            refModelParam.params.push(refp);
+                            if(!p.readOnly){
+                                refParam.params.push(refp);
+                            }
+                            //判断类型是否基础类型
+                            if(!$.checkIsBasicType(p.refType)){
+                                refp.schemaValue=p.refType;
+                                refp.schema=true;
+                                //属性名称不同,或者ref类型不同
+                                if(minfo.name!=refp.name||minfo.schemaValue!=p.refType){
+                                    var deepDef=that.getDefinitionByName(p.refType);
+                                    if(!checkDeepTypeAppear(refp.parentTypes,p.refType)){
+                                        deepTreeTableRefParameter(refp,that,deepDef,apiInfo);
+                                    }
+                                }
+                            }else{
+                                if(p.type=="array"){
+                                    if(p.refType!=null&&p.refType!=undefined&&p.refType!=""){
+                                        //修复针对schema类型的参数,显示类型为schema类型
+                                        refp.schemaValue=p.refType;
+                                    }
                                 }
                             }
                         }
@@ -6154,6 +6326,15 @@
         }*/
     }
     /***
+     * 错误异常输出
+     * @param msg
+     */
+    SwaggerBootstrapUi.prototype.error=function (msg) {
+        if(window.console){
+            console.error(msg);
+        }
+    }
+    /***
      * 获取菜单元素
      */
     SwaggerBootstrapUi.prototype.getMenu=function () {
@@ -6398,6 +6579,7 @@
     var SwaggerBootstrapUiDefinition=function () {
         //类型名称
         this.name="";
+        this.ignoreFilterName=null;
         this.schemaValue=null;
         this.id="definition"+Math.round(Math.random()*1000000);
         this.pid="-1";
@@ -6534,6 +6716,8 @@
         this.responseJson=null;
         this.responseText=null;
         this.responseBasicType=false;
+        //响应Header字段说明
+        this.responseHeaderParameters=null;
         //响应字段说明
         this.responseParameters=new Array();
         this.responseParameterRefName="";
@@ -6558,6 +6742,8 @@
         this.multipartResponseSchemaCount=0;
         //hashUrl
         this.hashCollections=[];
+        //ignoreParameters add 2019-7-30 16:10:08
+        this.ignoreParameters=null;
     }
 
     var SwaggerBootstrapUiRefParameter=function () {
@@ -6583,6 +6769,8 @@
      */
     var SwaggerBootstrapUiParameter=function () {
         this.name=null;
+        //该属性用于过滤参数使用
+        this.ignoreFilterName=null;
         this.require=null;
         this.type=null;
         this.in=null;
@@ -6716,6 +6904,8 @@
         this.responseJson=null;
         this.responseText=null;
         this.responseBasicType=false;
+        //响应Header字段说明
+        this.responseHeaderParameters=null;
         //响应字段说明
         this.responseParameters=new Array();
         this.responseParameterRefName="";
@@ -6756,6 +6946,53 @@
             }
             return md5Id;
 
+        },
+        filterJsonObject:function (prefix,originalJson,filterObject) {
+            var _tmpValue=null;
+          try{
+                _tmpValue=$.filterObject(prefix,originalJson,filterObject);
+          }  catch (err){
+              _tmpValue=originalJson;
+          }
+          return _tmpValue;
+        },
+        filterObject:function (preName,originalJsonObject,filterObject) {
+            var newObj={};
+            if(filterObject!=undefined&&filterObject!=null){
+                for(var x in originalJsonObject){
+                    var _tmp=originalJsonObject[x];
+                    var filterName=preName+"."+x;
+                    if(!filterObject.hasOwnProperty(filterName)){
+                        newObj[x]=_tmp;
+                    }
+                    var _type=$.genericType(_tmp);
+                    if(_type=="object"){
+                        newObj[x]=$.filterObject(filterName,_tmp,filterObject);
+                    }else if(_type=="array"){
+                        var _t1=_tmp[0];
+                        var _na=new Array();
+                        _na.push($.filterObject(filterName,_t1,filterObject));
+                        newObj[x]=_na;
+                    }
+
+                }
+            }else{
+                newObj=originalJsonObject;
+            }
+
+            return newObj;
+        },
+        genericType:function (value) {
+            var _tmp=Object.prototype.toString.call(value);
+            var _tmpType="";
+            if(_tmp!=null&&_tmp!=undefined){
+                if(_tmp.indexOf("Array")!=-1){
+                    _tmpType="array";
+                }else if(_tmp.indexOf("Object")!=-1){
+                    _tmpType="object";
+                }
+            }
+            return _tmpType;
         },
         getJsonKeyLength:function (json) {
           var size=0;

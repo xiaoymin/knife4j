@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/default.css" />
     <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
     <script src="webjars/bycdao-ui/jquery/marked.js"></script>
-    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css?v=1.9.4" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css?v=1.9.5" />
     <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css" />
 
     <link rel="stylesheet" href="webjars/bycdao-ui/layui/css/layui.css"  media="all">
@@ -45,7 +45,7 @@
 
     <link rel="stylesheet" href="webjars/bycdao-ui/ext/editormd.min.css" />
 
-    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui-md.css?v=1.9.4" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui-md.css?v=1.9.5" />
     <style type="text/css">
         #container {
             width: 100%;
@@ -912,6 +912,10 @@
                                                 <div class="layui-tab-item">
                                             {{/if}}
                                                     <div>
+                                                        {{if $value.responseHeaderParameters }}
+                                                        <p><strong>{{$value.code}}-{{i18n.doc.responseHeaderParams}}</strong></p>
+                                                        <table id="responseHeaderParameter{{id}}-{{$value.code}}" class="layui-table"  lay-filter="responseHeaderParameter{{id}}-{{$value.code}}"></table>
+                                                        {{/if}}
                                                         <p><strong>{{$value.code}}-{{i18n.doc.responseParams}}</strong></p>
                                                         <table id="responseParameter{{id}}-{{$value.code}}" class="layui-table"  lay-filter="responseParameter{{id}}-{{$value.code}}">
                                                         </table>
@@ -925,6 +929,10 @@
                                 </div>
                             </div>
                         {{else}}
+                                {{if responseHeaderParameters }}
+                                <p><strong>{{i18n.doc.responseHeaderParams}}</strong></p>
+                                <table id="responseHeaderParameter{{id}}" class="layui-table"  lay-filter="responseHeaderParameter{{id}}"></table>
+                                {{/if}}
                                 <p><strong>{{i18n.doc.responseParams}}</strong></p>
                                 <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
                                 </table>
@@ -1284,7 +1292,7 @@
     </div>
 </script>
 
-<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js?v=1.9.4"></script>
+<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js?v=1.9.5"></script>
 <script type="text/javascript">
     $(function () {
         /***

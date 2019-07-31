@@ -176,6 +176,7 @@
                     requestType:"请求类型"
 
                 },
+                responseHeaderParams:"响应Header",
                 response:"响应状态",
                 responseHeader:{
                     code:"状态码",
@@ -349,6 +350,7 @@
                     requestType:"request type"
 
                 },
+                responseHeaderParams:"Response Header",
                 response:"Response Status",
                 responseHeader:{
                     code:"code",

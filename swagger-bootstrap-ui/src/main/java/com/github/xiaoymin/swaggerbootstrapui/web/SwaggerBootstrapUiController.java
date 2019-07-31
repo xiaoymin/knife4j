@@ -133,8 +133,8 @@ public class SwaggerBootstrapUiController {
             }
         }
         Swagger swagger = mapper.mapDocumentation(documentation);
-        swagger.getTags().get(0).setVendorExtension("x-order","1");
-        swagger.setVendorExtension("x-files","abc");
+        //swagger.getTags().get(0).setVendorExtension("x-order","1");
+        //swagger.setVendorExtension("x-files","abc");
         UriComponents uriComponents = null;
         try{
             uriComponents=componentsFrom(request,swagger.getBasePath());
@@ -227,6 +227,11 @@ public class SwaggerBootstrapUiController {
                             tagMapping=rhm;
                             createPathInstance(rhm,targetPathLists);
                         }
+                    }
+                }else{
+                    if (checkExists(tagName,rhm.getBeanType())){
+                        tagMapping=rhm;
+                        createPathInstance(rhm,targetPathLists);
                     }
                 }
             }
@@ -373,8 +378,14 @@ public class SwaggerBootstrapUiController {
             }else{
                 order=post;
             }
+        }else{
+            if (aClass!=null){
+                ApiSort annotation = ClassUtils.getUserClass(aClass).getAnnotation(ApiSort.class);
+                if (annotation!=null){
+                    order=annotation.value();
+                }
+            }
         }
-
         return order;
     }
 

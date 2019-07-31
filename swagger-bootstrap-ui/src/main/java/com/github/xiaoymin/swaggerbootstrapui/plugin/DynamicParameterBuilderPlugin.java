@@ -9,6 +9,7 @@ package com.github.xiaoymin.swaggerbootstrapui.plugin;
 
 import com.google.common.base.Optional;
 import io.swagger.annotations.ApiOperationSupport;
+import io.swagger.annotations.DynamicParameter;
 import io.swagger.annotations.DynamicParameters;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -70,11 +71,14 @@ public class DynamicParameterBuilderPlugin implements ParameterBuilderPlugin {
                 name=genClassName(parameterContext);
             }
             name=name.replaceAll("[_-]","");
-            cacheGenModelMaps.put(name,name);
-            parameterContext.parameterBuilder()  //修改Map参数的ModelRef为我们动态生成的class
-                    .parameterType("body")
-                    .modelRef(new ModelRef(name))
-                    .name(name);
+            DynamicParameter[] dynamics=dynamicParameters.properties();
+            if (dynamics!=null&&dynamics.length>0){
+                cacheGenModelMaps.put(name,name);
+                parameterContext.parameterBuilder()  //修改Map参数的ModelRef为我们动态生成的class
+                        .parameterType("body")
+                        .modelRef(new ModelRef(name))
+                        .name(name);
+            }
         }
     }
 
