@@ -30,7 +30,7 @@ public class CommonUtils {
 
     static Logger logger= LoggerFactory.getLogger(CommonUtils.class);
 
-    static final String basePackage="com.github.xiaoymin.swaggerbootstrapui.model.";
+    public static final String basePackage="com.github.xiaoymin.swaggerbootstrapui.model.";
 
     static final ClassPool classPool=ClassPool.getDefault();
 
@@ -140,16 +140,30 @@ public class CommonUtils {
         }
         CtClass ctClass=classPool.makeClass(clazzName);
         try{
+            int fieldCount=0;
             for (DynamicParameter dynamicParameter:parameters){
                 //field名称不能为空,导致非空异常
                 // https://gitee.com/xiaoym/swagger-bootstrap-ui/issues/IYLVC
                 if (dynamicParameter.name()!=null&&!"".equals(dynamicParameter.name())&&!"null".equals(dynamicParameter.name())){
                     ctClass.addField(createField(dynamicParameter,ctClass));
+                    fieldCount++;
                 }
             }
-            return ctClass.toClass();
+            if (fieldCount>0){
+                return ctClass.toClass();
+            }
         }catch (Exception e){
             logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
+
+
+    public static Class<?> load(String classPathName){
+        try{
+            return Class.forName(classPathName);
+        }catch (Exception e){
+
         }
         return null;
     }

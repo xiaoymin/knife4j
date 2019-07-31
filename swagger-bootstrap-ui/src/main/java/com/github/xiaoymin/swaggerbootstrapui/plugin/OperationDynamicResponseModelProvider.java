@@ -7,12 +7,14 @@
 
 package com.github.xiaoymin.swaggerbootstrapui.plugin;
 
+import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
 import com.github.xiaoymin.swaggerbootstrapui.util.CommonUtils;
 import com.google.common.base.Optional;
 import io.swagger.annotations.ApiOperationSupport;
 import io.swagger.annotations.DynamicParameter;
 import io.swagger.annotations.DynamicParameters;
+import io.swagger.annotations.DynamicResponseParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,26 +22,27 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
+import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ResolvedMethodParameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.OperationModelsProviderPlugin;
 import springfox.documentation.spi.service.contexts.RequestMappingContext;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /***
- *
- * @since:swagger-bootstrap-ui 1.9.4
+ * 动态添加响应类
+ * @since:swagger-bootstrap-ui 1.9.5
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/06/10 13:01
  */
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE+101)
-public class OperationDynamicModelProvider implements OperationModelsProviderPlugin {
+@Order(Ordered.HIGHEST_PRECEDENCE+12)
+public class OperationDynamicResponseModelProvider implements OperationModelsProviderPlugin {
 
-    static Logger logger= LoggerFactory.getLogger(OperationDynamicModelProvider.class);
     @Autowired
     private TypeResolver typeResolver;
 
@@ -47,25 +50,13 @@ public class OperationDynamicModelProvider implements OperationModelsProviderPlu
 
     @Override
     public void apply(RequestMappingContext context) {
-        List<ResolvedMethodParameter> parameterTypes = context.getParameters();
-        if (parameterTypes!=null&&parameterTypes.size()>0){
-            for (ResolvedMethodParameter parameterType : parameterTypes) {
-                if (parameterType.hasParameterAnnotation(RequestBody.class)) {
-                    if (Map.class.isAssignableFrom(parameterType.getParameterType().getErasedType())) {
-                        //查询注解
-                        Optional<ApiOperationSupport> supportOptional=context.findAnnotation(ApiOperationSupport.class);
-                        if (supportOptional.isPresent()){
-                            ApiOperationSupport support=supportOptional.get();
-                            //判断是否包含自定义注解
-                            collectDynamicParameter(support.params(),context);
-                        }else{
-                            Optional<DynamicParameters> dynamicParametersOptional=context.findAnnotation(DynamicParameters.class);
-                            if (dynamicParametersOptional.isPresent()){
-                                collectDynamicParameter(dynamicParametersOptional.get(),context);
-                            }
-                        }
-                    }
-                }
+        Optional<ApiOperationSupport> supportOptional=context.findAnnotation(ApiOperationSupport.class);
+        if(supportOptional.isPresent()){
+            collectDynamicParameter(supportOptional.get().responses(),context);
+        }else{
+            Optional<DynamicResponseParameters> dynamicParametersOptional=context.findAnnotation(DynamicResponseParameters.class);
+            if (dynamicParametersOptional.isPresent()){
+                collectDynamicParameter(dynamicParametersOptional.get(),context);
             }
         }
     }
@@ -75,7 +66,7 @@ public class OperationDynamicModelProvider implements OperationModelsProviderPlu
         return true;
     }
 
-    private void collectDynamicParameter(DynamicParameters dynamicParameters,RequestMappingContext context){
+    private void collectDynamicParameter(DynamicResponseParameters dynamicParameters,RequestMappingContext context){
         if (dynamicParameters!=null){
             //name是否包含
             String name=dynamicParameters.name();
@@ -88,7 +79,6 @@ public class OperationDynamicModelProvider implements OperationModelsProviderPlu
                 //存在,以方法名称作为ClassName
                 name=genClassName(context);
             }
-            name=name.replaceAll("[_-]","");
             DynamicParameter[] dynamics=dynamicParameters.properties();
             if (dynamics!=null&&dynamics.length>0){
                 cacheGenModelMaps.put(name,name);
@@ -96,8 +86,10 @@ public class OperationDynamicModelProvider implements OperationModelsProviderPlu
                 name=context.getGroupName().replaceAll("[_-]","")+"."+name;
                 Class<?> clazz= CommonUtils.createDynamicModelClass(name,dynamics);
                 if (clazz!=null){
-                    context.operationModelsBuilder().addInputParam(typeResolver.resolve(clazz));
+                    ResolvedType modelType=context.alternateFor(typeResolver.resolve(clazz));
+                    context.operationModelsBuilder().addReturn(modelType);
                 }
+                //context.operationModelsBuilder().addInputParam(typeResolver.resolve(clazz));
             }
         }
     }
@@ -106,6 +98,7 @@ public class OperationDynamicModelProvider implements OperationModelsProviderPlu
         //gen
         String name=context.getName();
         if (name!=null&&!"".equals(name)){
+            name=name.replaceAll("[_-]","");
             if (name.length()==1){
                 name=name.toUpperCase();
             }else{
