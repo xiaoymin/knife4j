@@ -11,6 +11,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ *
+ * @Author: xiaoymin@foxmail.com
+ * @date 2019-7-31 12:54:24
+ * @since 1.9.5
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DynamicResponseParameters {
@@ -26,4 +32,6 @@ public @interface DynamicResponseParameters {
      * @return 类属性集合
      */
     DynamicParameter[] properties() default @DynamicParameter;
+
+
 }

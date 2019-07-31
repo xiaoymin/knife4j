@@ -9,6 +9,7 @@ package com.github.xiaoymin.swaggerbootstrapui.plugin;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
+import com.github.xiaoymin.swaggerbootstrapui.model.DynamicClass;
 import com.github.xiaoymin.swaggerbootstrapui.util.CommonUtils;
 import com.google.common.base.Optional;
 import io.swagger.annotations.ApiOperationSupport;
@@ -84,6 +85,20 @@ public class OperationDynamicResponseModelProvider implements OperationModelsPro
                 cacheGenModelMaps.put(name,name);
                 //追加groupController
                 name=context.getGroupName().replaceAll("[_-]","")+"."+name;
+                /*Class<?> fieldClazz=null;
+                String genericFieldName=dynamicParameters.genericFieldName();
+                if (genericFieldName!=null&&!"".equals(genericFieldName)&&!"null".equals(genericFieldName)){
+                    ResolvedType defaultType=context.alternateFor(context.getReturnType());
+                    Class<?> defaultReturnClazz=defaultType.getErasedType();
+                    DynamicClass dynamicClass=CommonUtils.createDynamicModelByOriginalGenericClass(defaultReturnClazz,name,dynamicParameters);
+                    clazz=dynamicClass.getTargetClazz();
+                    fieldClazz=dynamicClass.getFieldClazz();
+                    if (clazz==null){
+                        clazz= CommonUtils.createDynamicModelClass(name,dynamics);
+                    }
+                }else{
+                    clazz= CommonUtils.createDynamicModelClass(name,dynamics);
+                }*/
                 Class<?> clazz= CommonUtils.createDynamicModelClass(name,dynamics);
                 if (clazz!=null){
                     ResolvedType modelType=context.alternateFor(typeResolver.resolve(clazz));

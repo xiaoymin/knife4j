@@ -19,7 +19,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ResponseMessageBuilder;
-import springfox.documentation.schema.ModelRef;
 import springfox.documentation.schema.ModelReference;
 import springfox.documentation.schema.TypeNameExtractor;
 import springfox.documentation.service.ResponseMessage;
@@ -28,6 +27,7 @@ import springfox.documentation.spi.schema.contexts.ModelContext;
 import springfox.documentation.spi.service.OperationBuilderPlugin;
 import springfox.documentation.spi.service.contexts.OperationContext;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,10 +105,21 @@ public class DynamicResponseModelReader  implements OperationBuilderPlugin {
                 name=operationContext.getGroupName().replaceAll("[_-]","")+"."+name;
                 String classPath=CommonUtils.basePackage+name;
                 Class<?> loadClass=CommonUtils.load(classPath);
-                if (loadClass==null){
-                    loadClass= CommonUtils.createDynamicModelClass(name,parameters);
-                }
+                /*if (loadClass==null){
+                    String genericFieldName=dynamicResponseParameters.genericFieldName();
+                    if (genericFieldName!=null&&!"".equals(genericFieldName)&&!"null".equals(genericFieldName)){
+                        ResolvedType defaultType=operationContext.alternateFor(operationContext.getReturnType());
+                        Class<?> defaultReturnClazz=defaultType.getErasedType();
+                        loadClass=CommonUtils.createDynamicModelByOriginalGenericClass(defaultReturnClazz,name,dynamicResponseParameters);
+                        if (loadClass==null){
+                            loadClass= CommonUtils.createDynamicModelClass(name,parameters);
+                        }
+                    }else{
+                        loadClass= CommonUtils.createDynamicModelClass(name,parameters);
+                    }
+                }*/
                 if (loadClass!=null) {
+
                     ResolvedType returnType = operationContext.alternateFor(typeResolver.resolve(loadClass));
                     int httpStatusCode = httpStatusCode(operationContext);
                     String message = message(operationContext);
