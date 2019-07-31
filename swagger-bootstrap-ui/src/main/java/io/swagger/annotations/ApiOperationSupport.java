@@ -62,9 +62,9 @@ public @interface ApiOperationSupport {
      *     <li>如果存在多个层次的参数过滤,则使用名称.属性的方式,例如 ignoreParameters={"uptModel.id","uptModel.uptPo.id"},其中uptModel是实体对象参数名称,id为其属性,uptPo为实体类,作为uptModel类的属性名称</li>
      *     <li>如果参数层级只是一级的情况下,并且参数是实体类的情况下,不需要设置参数名称,直接给定属性值名称即可.</li>
      * </ul>
-     * 例如一级参数情况下：<br />
+     * 例如一级参数情况下：
      * <code>
-     *     @ApiOperationSupport(ignoreParameters={"id"})
+     *     {@code @ApiOperationSupport(ignoreParameters={"id"}) }
      *     public void api(UptModel uptModel){
      *
      *     }
