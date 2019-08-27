@@ -7,10 +7,11 @@
 
 package com.github.xiaoymin.knife4j.spring.plugin;
 
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
+import com.github.xiaoymin.knife4j.annotations.DynamicParameters;
+import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 import com.google.common.base.Optional;
-import io.swagger.annotations.ApiOperationSupport;
-import io.swagger.annotations.DynamicParameter;
-import io.swagger.annotations.DynamicParameters;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -86,14 +87,7 @@ public class DynamicParameterBuilderPlugin implements ParameterBuilderPlugin {
     public String genClassName(ParameterContext parameterContext){
         //gen
         String name=parameterContext.getOperationContext().getName();
-        if (name!=null&&!"".equals(name)){
-            if (name.length()==1){
-                name=name.toUpperCase();
-            }else{
-                name=name.substring(0,1).toUpperCase()+name.substring(1);
-            }
-        }
-        return name;
+        return CommonUtils.genSupperName(name);
     }
 
     @Override

@@ -24,6 +24,23 @@ public class CommonUtils {
 
     static Logger logger= LoggerFactory.getLogger(CommonUtils.class);
 
+    /**
+     * 首字母大写
+     * @param name
+     * @return
+     */
+    public static String genSupperName(String name){
+        String supperName="";
+        if (name!=null&&!"".equals(name)){
+            if (name.length()==1){
+                supperName=name.toUpperCase();
+            }else{
+                supperName=name.substring(0,1).toUpperCase()+name.substring(1);
+            }
+        }
+        return supperName;
+    }
+
     public static String UpperCase(String str){
         StringBuffer  aa=new StringBuffer();
         int index = 0;

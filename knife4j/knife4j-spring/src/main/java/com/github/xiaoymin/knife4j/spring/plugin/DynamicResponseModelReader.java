@@ -9,11 +9,12 @@ package com.github.xiaoymin.knife4j.spring.plugin;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
-import com.github.xiaoymin.swaggerbootstrapui.util.CommonUtils;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
+import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
+import com.github.xiaoymin.knife4j.core.conf.Consts;
+import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
 import com.google.common.base.Optional;
-import io.swagger.annotations.ApiOperationSupport;
-import io.swagger.annotations.DynamicParameter;
-import io.swagger.annotations.DynamicResponseParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -102,8 +103,8 @@ public class DynamicResponseModelReader  implements OperationBuilderPlugin {
                 }
                 //追加groupController
                 name=operationContext.getGroupName().replaceAll("[_-]","")+"."+name+"Response";
-                String classPath=CommonUtils.basePackage+name;
-                Class<?> loadClass=CommonUtils.load(classPath);
+                String classPath= Consts.BASE_PACKAGE_PREFIX+name;
+                Class<?> loadClass= ByteUtils.load(classPath);
                /* if (loadClass==null){
                     loadClass= CommonUtils.createDynamicModelClass(name,parameters);
                 }*/

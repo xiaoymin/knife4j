@@ -11,6 +11,7 @@ import com.fasterxml.classmate.TypeResolver;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameters;
+import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
 import com.google.common.base.Optional;
 import org.slf4j.Logger;
@@ -105,13 +106,6 @@ public class OperationDynamicModelProvider implements OperationModelsProviderPlu
     public String genClassName(RequestMappingContext context){
         //gen
         String name=context.getName();
-        if (name!=null&&!"".equals(name)){
-            if (name.length()==1){
-                name=name.toUpperCase();
-            }else{
-                name=name.substring(0,1).toUpperCase()+name.substring(1);
-            }
-        }
-        return name;
+        return CommonUtils.genSupperName(name);
     }
 }
