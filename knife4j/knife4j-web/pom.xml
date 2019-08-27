@@ -8,17 +8,16 @@
         <version>1.9.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>knife4j-spring-boot-starter</artifactId>
-    <description>Spring Boot 项目starter,快速使用knife4j增强文档</description>
+
+    <artifactId>knife4j-web</artifactId>
+    <description>Web模块相关</description>
+
     <dependencies>
         <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring-ui</artifactId>
-        </dependency>
+
     </dependencies>
 
 

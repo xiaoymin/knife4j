@@ -4,19 +4,14 @@
  * Official Web Site: http://www.xiaominfo.com.
  * Developer Web Site: http://open.xiaominfo.com.
  */
-package com.github.xiaoymin.knife4j.core.conf;
+
+package com.github.xiaoymin.knife4j.spring.configuration;
 
 /***
- *
- * @since:swagger-bootstrap-ui 1.9.0
+ * 配置文件
+ * @since:knife4j 1.9.6
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
- * 2019/02/02 19:57
+ * 2019/08/27 15:40
  */
-public class Consts {
-
-
-    /**
-     * 动态生成class包名前缀
-     */
-    public static final String BASE_PACKAGE_PREFIX="com.github.xiaoymin.knife4j.model.";
+public class Knife4jProperties {
 }
