@@ -2609,7 +2609,12 @@
                         }else{
                             //判断是否是header
                             if(trdata["in"]=="header") {
-                                headerparams[key] = encodeURIComponent(value);
+                                //此处判断是否是中文,如果包含中文,则进行encode处理,否则不处理
+                                if($.isChinese(value)){
+                                    headerparams[key] = encodeURIComponent(value);
+                                }else{
+                                    headerparams[key] = value;
+                                }
                             }else if(trdata["in"]=="body"){
                                 bodyparams+=value;
                                 bodyRequest=true;
@@ -2633,7 +2638,12 @@
                                 bodyRequest=true;
                             }else{
                                 if(trdata["in"]=="header"){
-                                    headerparams[key]=encodeURIComponent(value);
+                                    //此处判断是否是中文,如果包含中文,则进行encode处理,否则不处理
+                                    if($.isChinese(value)){
+                                        headerparams[key]=encodeURIComponent(value);
+                                    }else{
+                                        headerparams[key]=value;
+                                    }
                                 }else{
                                     if (trdata.schemavalue != "MultipartFile" &&  trdata.schemavalue != "file" && trdata.type!="file") {
                                         //判断数组
@@ -6952,6 +6962,11 @@
             }
             return md5Id;
 
+        },
+        isChinese:function (keyword) {
+            //判断是否包含中文
+            var reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
+            return reg.test(keyword);
         },
         json5stringify:function (rtext) {
           var ret=null;
