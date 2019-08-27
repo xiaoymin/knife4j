@@ -759,7 +759,9 @@ JSON5.stringify = function (obj, replacer, space) {
 									key = isWord(prop) ? prop : escapeString(prop);
 								}
                                 
-                                buffer += key + ":" + (indentStr ? ' ' : '') + value + ",";
+                                //buffer += key + ":" + (indentStr ? ' ' : '') + value + ",";
+                                //此处会把key的双引号去掉,导致在editor中显示异常
+                                buffer += "\""+ key +"\""+ ":" + (indentStr ? ' ' : '') + value + ",";
                             }
                         }
                     }

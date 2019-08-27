@@ -3208,15 +3208,21 @@
             that.log("解析ResponseJSON")
             that.log(new Date())
             if(xhr.hasOwnProperty("responseJSON")) {
-                aceValue = JSON.stringify(xhr["responseJSON"], null, 2);
+                //aceValue = JSON.stringify(xhr["responseJSON"], null, 2);
+                //此处使用responseJSON属性会出现丢失精度的问题,直接使用responseText属性
+                //aceValue=$.json5stringify(xhr["responseJSON"])
+                aceValue=$.json5stringify($.json5parse(xhr["responseText"]));
             }else if(jsonflag){
                 if(typeof (rtext)=="string"){
-                    aceValue=JSON.stringify(JSON.parse(rtext),null,2);
+                    //aceValue=JSON.stringify(JSON.parse(rtext),null,2);
+                    aceValue=$.json5stringify($.json5parse(rtext));
                 }else{
-                    aceValue=JSON.stringify(rtext,null,2);
+                    //aceValue=JSON.stringify(rtext,null,2);
+                    aceValue=$.json5stringify(rtext);
                 }
             }else{
-                aceValue=JSON.stringify(data,null,2);
+                //aceValue=JSON.stringify(data,null,2);
+                aceValue=$.json5stringify(data);
                 //针对表单提交,error的情况,会产生data
                 //jsondiv.html(JSON.stringify(data,null,2));
             }
@@ -6946,6 +6952,24 @@
             }
             return md5Id;
 
+        },
+        json5stringify:function (rtext) {
+          var ret=null;
+          try{
+              ret=JSON5.stringify(rtext,null,2);
+          }catch (err){
+              ret=JSON.stringify(rtext,null,2);
+          }
+          return ret;
+        },
+        json5parse:function (rtext) {
+          var ret=null;
+          try{
+              ret=JSON5.parse(rtext)
+          }catch (err){
+              ret=JSON.parse(rtext);
+          }
+          return ret;
         },
         filterJsonObject:function (prefix,originalJson,filterObject) {
             var _tmpValue=null;
