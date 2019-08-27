@@ -51,7 +51,7 @@ public class OperationDynamicModelProvider implements OperationModelsProviderPlu
         if (parameterTypes!=null&&parameterTypes.size()>0){
             for (ResolvedMethodParameter parameterType : parameterTypes) {
                 if (parameterType.hasParameterAnnotation(RequestBody.class)) {
-                    if (Map.class.isAssignableFrom(parameterType.getParameterType().getErasedType())) {
+                    if (Map.class.isAssignableFrom(parameterType.getParameterType().getErasedType()) || parameterType.getParameterType().getErasedType().getName() == "com.google.gson.JsonObject" ) {
                         //查询注解
                         Optional<ApiOperationSupport> supportOptional=context.findAnnotation(ApiOperationSupport.class);
                         if (supportOptional.isPresent()){
