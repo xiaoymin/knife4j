@@ -14,4 +14,6 @@ package com.github.xiaoymin.knife4j.spring.configuration;
  * 2019/08/27 15:40
  */
 public class Knife4jProperties {
+
+
 }

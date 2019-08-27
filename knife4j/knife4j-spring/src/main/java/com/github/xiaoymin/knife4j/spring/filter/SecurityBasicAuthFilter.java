@@ -5,7 +5,7 @@
  * Developer Web Site: http://open.xiaominfo.com.
  */
 
-package com.github.xiaoymin.knife4j.web.filter;
+package com.github.xiaoymin.knife4j.spring.filter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

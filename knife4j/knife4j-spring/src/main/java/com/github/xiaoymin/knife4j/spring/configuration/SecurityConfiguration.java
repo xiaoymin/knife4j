@@ -7,8 +7,8 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
-import com.github.xiaoymin.swaggerbootstrapui.filter.ProductionSecurityFilter;
-import com.github.xiaoymin.swaggerbootstrapui.filter.SecurityBasicAuthFilter;
+import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
+import com.github.xiaoymin.knife4j.spring.filter.SecurityBasicAuthFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

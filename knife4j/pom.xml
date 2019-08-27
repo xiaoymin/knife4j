@@ -13,7 +13,6 @@
         <module>knife4j-spring-boot-starter</module>
         <module>knife4j-spring-ui</module>
         <module>knife4j-core</module>
-        <module>knife4j-web</module>
     </modules>
     <packaging>pom</packaging>
     <description>knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案,前身是swagger-bootstrap-ui,取名kni4j是希望她能像小刀一样小巧,轻量,并且功能强悍.</description>
@@ -70,23 +69,23 @@
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-annotations</artifactId>
-                <version>1.9.6</version>
+                <version>${knife4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-spring</artifactId>
-                <version>1.9.6</version>
+                <version>${knife4j.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-core</artifactId>
-                <version>1.9.6</version>
+                <version>${knife4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-spring-ui</artifactId>
-                <version>1.9.6</version>
+                <version>${knife4j.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
             <dependency>
