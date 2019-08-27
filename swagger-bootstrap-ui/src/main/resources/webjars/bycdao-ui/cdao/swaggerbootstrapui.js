@@ -1,5 +1,5 @@
 /***
- * swagger-bootstrap-ui v1.9.5 / 2019-7-28 14:53:45
+ * swagger-bootstrap-ui v1.9.6 / 2019-08-27 16:10:52
  *
  * Gitee:https://gitee.com/xiaoym/swagger-bootstrap-ui
  * GitHub:https://github.com/xiaoymin/swagger-bootstrap-ui
@@ -45,7 +45,7 @@
         this.ace=options.ace;
         this.treetable=options.treetable;
         this.layTabFilter="admin-pagetabs";
-        this.version="1.9.5";
+        this.version="1.9.6";
         this.requestOrigion="SwaggerBootstrapUi";
         this.requestParameter={};//浏览器请求参数
         //个性化配置
@@ -5101,13 +5101,13 @@
         swpinfo.showUrl=newurl;
         //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
 
-        /*swpinfo.url=newurl;
-        swpinfo.originalUrl=newurl;*/
+        swpinfo.url=newurl;
+        swpinfo.originalUrl=newurl;
 
         //new --> https://github.com/xiaoymin/swagger-bootstrap-ui/pull/108
-        var urlForRealUsage=newurl.replace(/^([^{]+).*$/g, '$1');
+        /*var urlForRealUsage=newurl.replace(/^([^{]+).*$/g, '$1');
         swpinfo.url=urlForRealUsage;
-        swpinfo.originalUrl=urlForRealUsage;
+        swpinfo.originalUrl=urlForRealUsage;*/
 
 
         swpinfo.basePathFlag=basePathFlag;
