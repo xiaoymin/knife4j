@@ -7,9 +7,9 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
-import com.github.xiaoymin.knife4j.spring.annotations.EnableSwaggerBootstrapUi;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /***
  *
@@ -17,8 +17,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/08/28 21:08
  */
-@EnableSwagger2
-@EnableSwaggerBootstrapUi
 @Configuration
 public class Knife4jAutoConfiguration {
+
+
+    @Bean
+    @ConditionalOnMissingBean
+    public Knife4jProperties knife4jProperties(){
+        return new Knife4jProperties();
+    }
+
 }

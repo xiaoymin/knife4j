@@ -2,34 +2,34 @@
   "hints": [],
   "properties": [
     {
-      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
-      "description": "Enable HTTP Basic Auth",
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jHttpBasic",
+      "description": "Enable HTTP Basic Auth.",
       "name": "knife4j.basic.enable",
       "defaultValue":false,
       "type": "java.lang.Boolean"
     },
     {
-      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
-      "description": "HTTP Basic Auth UserName",
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jHttpBasic",
+      "description": "HTTP Basic Auth UserName.",
       "name": "knife4j.basic.username",
       "type": "java.lang.String"
     },
     {
-      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
-      "description": "HTTP Basic Auth PassWord",
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jHttpBasic",
+      "description": "HTTP Basic Auth PassWord.",
       "name": "knife4j.basic.password",
       "type": "java.lang.String"
     },
     {
       "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
-      "description": "Whether to Enable the Generation Environment",
+      "description": "Whether to Enable the Generation Environment.",
       "name": "knife4j.production",
       "defaultValue":false,
       "type": "java.lang.Boolean"
     },
     {
       "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
-      "description": "markdown files path",
+      "description": "markdown files path.",
       "name": "knife4j.markdowns",
       "type": "java.lang.String"
     }
@@ -40,6 +40,11 @@
       "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
       "name": "knife4j",
       "type": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties"
+    },
+    {
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jHttpBasic",
+      "name": "knife4j.basic",
+      "type": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jHttpBasic"
     }
   ]
 }
