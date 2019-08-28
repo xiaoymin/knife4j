@@ -3435,12 +3435,19 @@
         var cpcurlBotton=$("<button class='btn btn-default btn-primary iconfont icon-fuzhi' id='btnCopyCurl"+apiKeyId+"'>"+i18n.settings.copy+"</button><br /><br />");
         var curlcode=$("<code></code>");
         curlcode.html(curl);
+        //追加一个隐藏的textarea,复制code元素的html属性值,会出现被转义的情况
+        // https://github.com/xiaoymin/swagger-bootstrap-ui/issues/136
+        var _hiddiv=$("<div style='display:none'></div>")
+        var _txtcurl=$('<textarea></textarea>')
+        _txtcurl.val(curl);
+        _hiddiv.append(_txtcurl);
 
         resp5.html("");
-        resp5.append(cpcurlBotton).append(curlcode);
+        resp5.append(cpcurlBotton).append(curlcode).append(_hiddiv);
         var clipboard = new ClipboardJS('#btnCopyCurl'+apiKeyId,{
             text:function () {
-                return curlcode.html();
+                //return curlcode.html();
+                return _txtcurl.val();
             }
         });
         clipboard.on('success', function(e) {
