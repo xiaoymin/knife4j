@@ -87,12 +87,11 @@
         that.initWindowWidthAndHeight();
         that.initApis();
         that.windowResize();
-        //加载分组接口
-        that.analysisGroup();
         //2019/08/28 13:16:50 支持configuration接口,主要是相关配置,目前支持属性supportedSubmitMethods(请求调试)
         //接口地址:/swagger-resources/configuration/ui
         that.configInit();
-
+        //加载分组接口
+        that.analysisGroup();
     }
 
     /**
