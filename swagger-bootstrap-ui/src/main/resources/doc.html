@@ -435,9 +435,11 @@
                 <button class="btn btn-default btn-info" type="button">{{methodType}}</button>
             </span>
             <input type="text" id="txtreqUrl{{id}}" data-originalurl="<%=originalUrl%>" class="form-control" value="<%=url%>">
+            <%if(configurationDebugSupport){%>
             <span class="input-group-btn">
                 <button  class="btn btn-default btn-primary btnRequest" id="btnRequest{{id}}" type="button">{{i18n.debug.send}}</button>
             </span>
+            <%}%>
         </div>
         <%if(methodType!="GET"){%>
         <div class="sbu-debug-content-type" id="contentTypeRequest{{id}}">

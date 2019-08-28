@@ -22,6 +22,7 @@
     var SwaggerBootstrapUi=function (options) {
         //swagger请求api地址
         this.url=options.url||"swagger-resources";
+        this.configUrl=options.configUrl||"swagger-resources/configuration/ui";
         //文档id
         this.docId="content";
         this.title="swagger-bootstrap-ui";
@@ -69,6 +70,10 @@
         this.hasLoad=false;
         //add i18n supports by xiaoymin at 2019-4-17 20:27:34
         this.i18n=new I18n();
+        //配置属性 2019-8-28 13:19:35,目前仅支持属性supportedSubmitMethods
+        this.configuration={
+            supportedSubmitMethods:["get", "put", "post", "delete", "options", "head", "patch", "trace"]
+        }
     }
     /***
      * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
@@ -84,6 +89,33 @@
         that.windowResize();
         //加载分组接口
         that.analysisGroup();
+        //2019/08/28 13:16:50 支持configuration接口,主要是相关配置,目前支持属性supportedSubmitMethods(请求调试)
+        //接口地址:/swagger-resources/configuration/ui
+        that.configInit();
+
+    }
+
+    /**
+     * Swagger配置信息加载
+     */
+    SwaggerBootstrapUi.prototype.configInit=function () {
+        var that=this;
+        $.ajax({
+            url:that.configUrl,
+            type:"get",
+            dataType:"json"
+        }).done(function (data) {
+            if(data!=null&&data!=undefined&&data.hasOwnProperty("supportedSubmitMethods")){
+                var originalSupportSubmitMethods=data["supportedSubmitMethods"];
+                if (originalSupportSubmitMethods.length>0){
+                    var newSupports=new Array();
+                    $.each(originalSupportSubmitMethods,function (i, method) {
+                        newSupports.push(method.toLowerCase());
+                    })
+                    that.configuration.supportedSubmitMethods=newSupports;
+                }
+            }
+        })
 
     }
 
@@ -1881,6 +1913,11 @@
         else{
             that.log("created---------------------------")
             //that.createTabElement();
+            //此处判断是否禁止调试请求类型
+            var method=apiInfo.methodType.toLowerCase();
+            if($.inArray(method,that.configuration.supportedSubmitMethods)==-1){
+                apiInfo.configurationDebugSupport=false;
+            }
             //html转义
             var nApiInfo=$.extend({},apiInfo,{i18n:i18n})
             var dynaTab=template('BootstrapDynaTab',nApiInfo);
@@ -6738,6 +6775,7 @@
     var SwaggerBootstrapUiApiInfo=function () {
         this.url=null;
         this.originalUrl=null;
+        this.configurationDebugSupport=true;
         this.showUrl="";
         this.basePathFlag=false;
         //接口作者
