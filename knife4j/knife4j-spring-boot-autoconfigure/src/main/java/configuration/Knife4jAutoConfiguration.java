@@ -5,7 +5,7 @@
  * Developer Web Site: http://open.xiaominfo.com.
  */
 
-package com.github.xiaoymin.knife4j.spring.configuration;
+package configuration;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

@@ -8,22 +8,20 @@
         <version>1.9.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>knife4j-spring-boot-starter</artifactId>
-    <description>Spring Boot 项目starter,快速使用knife4j增强文档</description>
+
+    <artifactId>knife4j-spring-boot-autoconfigure</artifactId>
     <dependencies>
+        <!-- Compile dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring-boot-autoconfigure</artifactId>
+            <artifactId>knife4j-spring</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-        </dependency>
+
     </dependencies>
 
 
