@@ -861,7 +861,7 @@
                         {{ if author }}
                         <p><span class="sbu-api-title">{{i18n.doc.author}}</span> <code style="background-color: transparent;">{{author}}</code></p>
                         {{ /if }}
-                        <p><span class="sbu-api-title">{{i18n.doc.des}}</span> <code style="background-color: transparent;">{{# description}}</code></p>
+                        <p><span class="sbu-api-title">{{i18n.doc.des}}</span> <code style="background-color: transparent;">{{@ description}}</code></p>
                         {{ if requestValue }}
                         <p><strong>{{i18n.doc.requestExample}}</strong></p>
                         <div id="editorRequestSample{{id}}" style="width: auto;bottom: 10px;">{{ requestValue }}</div>
@@ -883,7 +883,7 @@
                                 {{each responseCodes}}
                                 <tr>
                                     <td>{{$value.code}}</td>
-                                    <td>{{# $value.description}}</td>
+                                    <td>{{@ $value.description}}</td>
                                     <td>{{$value.schema}}</td>
                                 </tr>
                                 {{/each}}
@@ -1048,7 +1048,7 @@
                         </tr>
                         <tr>
                             <td>{{ i18n.home.des}}</td>
-                            <td>{{# description}}</td>
+                            <td>{{@ description}}</td>
                         </tr>
                         <tr>
                             <td>{{ i18n.home.author}}</td>
