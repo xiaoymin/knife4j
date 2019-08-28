@@ -1,0 +1,12 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
+      "name": "knife4j",
+      "type": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties"
+    }
+  ],
+  "properties": [
+  ]
+}

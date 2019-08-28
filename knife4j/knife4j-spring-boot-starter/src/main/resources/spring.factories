@@ -1,0 +1,2 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.github.xiaoymin.knife4j.spring.configuration.Knife4jAutoConfiguration

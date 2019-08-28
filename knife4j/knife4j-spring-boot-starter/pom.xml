@@ -11,6 +11,15 @@
     <artifactId>knife4j-spring-boot-starter</artifactId>
     <description>Spring Boot 项目starter,快速使用knife4j增强文档</description>
     <dependencies>
+        <!-- Compile dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring</artifactId>

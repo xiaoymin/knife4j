@@ -27,7 +27,7 @@ public class MarkdownFileConfiguration {
 
     @Bean(initMethod = "init")
     public MarkdownFiles markdownFiles(){
-        MarkdownFiles markdownFiles=new MarkdownFiles(environment!=null?environment.getProperty("swagger.markdowns"):"");
+        MarkdownFiles markdownFiles=new MarkdownFiles(environment!=null?environment.getProperty("knife4j.markdowns"):"");
         return markdownFiles;
     }
 

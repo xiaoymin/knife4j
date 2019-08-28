@@ -34,7 +34,7 @@ public class SecurityConfiguration {
     public ProductionSecurityFilter productionSecurityFilter(){
         boolean prod=false;
         if (environment!=null){
-            String prodStr=environment.getProperty("swagger.production");
+            String prodStr=environment.getProperty("knife4j.production");
             if (logger.isDebugEnabled()){
                 logger.debug("swagger.production:{}",prodStr);
             }
@@ -49,12 +49,12 @@ public class SecurityConfiguration {
         boolean enableSwaggerBasicAuth=false;
         String dftUserName="admin",dftPass="123321";
         if (environment!=null){
-            String enableAuth=environment.getProperty("swagger.basic.enable");
+            String enableAuth=environment.getProperty("knife4j.basic.enable");
             enableSwaggerBasicAuth=Boolean.valueOf(enableAuth);
             if (enableSwaggerBasicAuth){
                 //如果开启basic验证,从配置文件中获取用户名和密码
-                String pUser=environment.getProperty("swagger.basic.username");
-                String pPass=environment.getProperty("swagger.basic.password");
+                String pUser=environment.getProperty("knife4j.basic.username");
+                String pPass=environment.getProperty("knife4j.basic.password");
                 if (pUser!=null&&!"".equals(pUser)){
                     dftUserName=pUser;
                 }
