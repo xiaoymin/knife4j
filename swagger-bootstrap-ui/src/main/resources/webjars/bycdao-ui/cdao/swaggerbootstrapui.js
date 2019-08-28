@@ -112,6 +112,8 @@
                         newSupports.push(method.toLowerCase());
                     })
                     that.configuration.supportedSubmitMethods=newSupports;
+                }else{
+                    that.configuration.supportedSubmitMethods=[];
                 }
             }
         })
