@@ -2480,6 +2480,27 @@
           }
         })
 
+        //针对PathVariable参数类型的参数,赋予input输入框blur事件
+        var _scriptDiv="DebugScriptBasic"+apiInfo.id;
+        var _scriptObject=$("#"+_scriptDiv);
+        var len=_scriptObject.find("input[data-in=path]").length;
+        if(len>0){
+            _scriptObject.find("input[data-in=path]").blur(function () {
+                var _urlTxt=$("#txtreqUrl"+apiInfo.id);
+                var _originalUrl=_urlTxt.attr("data-originalurl");
+                var tmpurl=_originalUrl;
+                _scriptObject.find("input[data-in=path]").each(function () {
+                    var _pathIpt=$(this);
+                    var _fieldName=_pathIpt.attr("data-name");
+                    var _pathVal=_pathIpt.val();
+                    if(_pathVal!=null&&_pathVal!=""){
+                        tmpurl =tmpurl.replace("{"+_fieldName+"}",_pathVal);
+                    }
+                })
+                _urlTxt.val(tmpurl);
+            })
+        }
+
     }
 
 
