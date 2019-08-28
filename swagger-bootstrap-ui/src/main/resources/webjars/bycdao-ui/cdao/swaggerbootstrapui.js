@@ -3287,7 +3287,8 @@
                                 var _hdvalue=headerValu[0];
                                 if(_hdvalue!=null&&_hdvalue!=undefined&&_hdvalue!=""){
                                     if(_hdvalue.toLowerCase()=="filename"){
-                                        fileName=headerValu[1];
+                                        //对filename进行decode处理,防止出现中文的情况
+                                        fileName=decodeURIComponent(headerValu[1]);
                                     }
                                 }
                             }
@@ -3542,7 +3543,7 @@
                                 var _hdvalue=headerValu[0];
                                 if(_hdvalue!=null&&_hdvalue!=undefined&&_hdvalue!=""){
                                     if(_hdvalue.toLowerCase()=="filename"){
-                                        fileName=headerValu[1];
+                                        fileName=decodeURIComponent(headerValu[1]);
                                     }
                                 }
                             }
