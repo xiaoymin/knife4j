@@ -893,60 +893,6 @@
                 }).fail(function (xhr, textStatus, errorThrown) {
                     that.analysisApiFail(xhr,textStatus,errorThrown);
                 })
-
-                /*$.ajax({
-                    //url:"v2/api-docs",
-                    url:api,
-                    dataType:"json",
-                    type:"get",
-                    async:async,
-                    success:function (data) {
-                        that.hasLoad=true;
-                        //var menu=JSON.parse(data);
-                        that.log("success")
-                        that.log(data);
-                        var t=typeof(data);
-                        var menu=null;
-                        if(t=="string"){
-                            menu=JSON.parse(data);
-                        }else{
-                            menu=data;
-                        }
-                        that.setInstanceBasicPorperties(menu);
-                        that.analysisDefinition(menu);
-                        //DApiUI.definitions(menu);
-                        that.log(menu);
-                        that.createDescriptionElement();
-                        //当前实例已加载
-                        that.currentInstance.load=true;
-                        //创建swaggerbootstrapui主菜单
-                        that.createDetailMenu();
-                        //opentab
-                        that.initOpenTable();
-                    },
-                    error:function (xhr, textStatus, errorThrown) {
-                        that.log("error...")
-                        that.log(xhr);
-                        that.log(textStatus);
-                        that.log(errorThrown);
-                        that.hasLoad=true;
-                        var txt=xhr.responseText;
-                        //替换带[]
-                        that.log("replace...")
-                        var replaceData=txt.replace(/'/g,"\"");
-                        var menu=JSON.parse(replaceData);
-                        that.setInstanceBasicPorperties(menu);
-                        that.analysisDefinition(menu);
-                        //DApiUI.definitions(menu);
-                        that.log(menu);
-                        that.createDescriptionElement();
-                        //当前实例已加载
-                        that.currentInstance.load=true;
-                        //创建swaggerbootstrapui主菜单
-                        that.createDetailMenu();
-
-                    }
-                })*/
             }
             else{
                 that.setInstanceBasicPorperties(null);
@@ -1007,10 +953,9 @@
      */
     SwaggerBootstrapUi.prototype.analysisApiFail=function (xhr, textStatus, errorThrown) {
         var that=this;
-        that.log("error...")
-        that.log(xhr);
-        that.log(textStatus);
-        that.log(errorThrown);
+        that.error(xhr);
+        that.error(textStatus);
+        that.error(errorThrown);
         that.hasLoad=true;
         var txt=xhr.responseText;
         //替换带[]
@@ -1281,7 +1226,7 @@
                 $("#btnSaveSettings").on("click",function (e) {
                     e.preventDefault();
                     var langEle=$("#SwaggerBootstrapUiSettings").find("input[name=language]:checked");
-                    var showApi=$("#SwaggerBootstrapUiSettings").find("input[name=showApi]");
+
                     var enableSbu=$("#SwaggerBootstrapUiSettings").find("input[name=enableSwaggerBootstrapUi]");
                     //tag属性说明
                     var showTagStatusElem=$("#SwaggerBootstrapUiSettings").find("input[name=showTagStatus]");
@@ -1292,17 +1237,7 @@
 
                     var enableCacheOpenApiTable=$("#SwaggerBootstrapUiSettings").find("input[name=enableCacheOpenApiTable]");
 
-                    var showApiFlag=showApi.prop("checked");
                     var enableSbuFlag=enableSbu.prop("checked");
-                    var showTagStatus=showTagStatusElem.prop("checked");
-
-                    var cacheRequest=enableRequestCache.prop("checked");
-
-                    var enableCacheOpenApi=enableCacheOpenApiTable.prop("checked");
-
-                    var enableReqFilter=enableReqFilterCache.prop("checked");
-
-                    var language=langEle.val();
 
                     var flag=true;
                     //如果开启SwawggerBootstrapUi增强,则判断当前后端是否启用注解
@@ -1314,90 +1249,45 @@
                         }
                         that.log("验证api地址："+api);
                         $.ajax({
-                            url:api,
-                            dataType:"json",
-                            type:"get",
-                            async:false,
-                            success:function (data) {
-                                that.log("验证成功...")
-                                that.log(data);
-                                if(data!=null){
-                                    if(data.hasOwnProperty("swaggerBootstrapUi")){
-                                        var sbu=data["swaggerBootstrapUi"];
-                                        that.log(sbu)
-                                        if(sbu!=null&&sbu!=undefined){
-                                            if(sbu.hasOwnProperty("errorMsg")){
-                                                //升级后1.8.9的属性
-                                                var em=sbu["errorMsg"];
-                                                if(em!=null&&em!=undefined&&em!=""){
-                                                    var errMsg=i18n.message.settings.plusError+em;
-                                                    layer.msg(errMsg);
-                                                    enableSbu.prop("checked",false);
-                                                    flag=false;
-                                                }
+                            url: api,
+                            dataType: "json",
+                            type: "get"
+                        }).done(function (data) {
+                            that.log("验证成功...")
+                            that.log(data);
+                            if(data!=null){
+                                if(data.hasOwnProperty("swaggerBootstrapUi")){
+                                    var sbu=data["swaggerBootstrapUi"];
+                                    that.log(sbu)
+                                    if(sbu!=null&&sbu!=undefined){
+                                        if(sbu.hasOwnProperty("errorMsg")){
+                                            //升级后1.8.9的属性
+                                            var em=sbu["errorMsg"];
+                                            if(em!=null&&em!=undefined&&em!=""){
+                                                var errMsg=i18n.message.settings.plusError+em;
+                                                layer.msg(errMsg);
+                                                enableSbu.prop("checked",false);
+                                                flag=false;
                                             }
                                         }
                                     }
                                 }
-                            },
-                            error:function (xhr, textStatus, errorThrown) {
-                                that.log("验证error...")
-                                that.log(xhr);
-                                //获取响应码
-                                var status=xhr.status;
-                                if(status!=200){
-                                    layer.msg(i18n.message.settings.plusFail);
-                                    enableSbu.prop("checked",false);
-                                    flag=false;
-                                }
                             }
+                            that.settingsCallback(flag);
+                        }).fail(function (xhr, textStatus, errorThrown) {
+                            that.log("验证error...")
+                            that.log(xhr);
+                            //获取响应码
+                            var status=xhr.status;
+                            if(status!=200){
+                                layer.msg(i18n.message.settings.plusFail);
+                                enableSbu.prop("checked",false);
+                                flag=false;
+                            }
+                            that.settingsCallback(flag);
                         })
                     }
-                    if (flag){
-                        that.log(showApi.prop("checked")+",enable:"+enableSbu.prop("checked"));
-                        //获取值
-                        var multipartApiMethodType="POST";
-                        if (enableReqFilter){
-                            //如果选中
-                            multipartApiMethodType=$("#SwaggerBootstrapUiSettings").find("select[name=enableFilterMultipartApiMethodType] option:selected").val();
-                        }
-
-                        if(!enableCacheOpenApi){
-                            that.clearCacheOpenApiTableApis();
-                        }
-
-
-                        var setts={
-                            showApiUrl:showApiFlag,//接口api地址不显示
-                            showTagStatus:showTagStatus,//tag显示description属性.
-                            enableSwaggerBootstrapUi:enableSbuFlag,//是否开启swaggerBootstrapUi增强
-                            enableRequestCache:cacheRequest,
-                            enableFilterMultipartApis:enableReqFilter,
-                            enableFilterMultipartApiMethodType:multipartApiMethodType,
-                            enableCacheOpenApiTable:enableCacheOpenApi,
-                            language:language
-                        }
-                        that.log(setts);
-                        that.saveSettings(setts);
-                        that.settings=setts;
-                        if (!cacheRequest){
-                            that.disableStoreRequestParams();
-                        }
-                        $("#useSettingsCopyOnUrl").val(that.getFastViewDocUrl());
-                    }
                 })
-                //初始化复制功能
-                var clipboard = new ClipboardJS('#btnCopyUserSettingsUrl',{
-                    text:function () {
-                        return $("#useSettingsCopyOnUrl").val();
-                    }
-                });
-                clipboard.on('success', function(e) {
-                    layer.msg(i18n.message.copy.success)
-                });
-                clipboard.on('error', function(e) {
-                    layer.msg(i18n.message.copy.fail)
-                });
             }else{
                 element.tabChange(that.layTabFilter,tabId);
                 that.tabRollPage("auto");
@@ -1405,6 +1295,83 @@
         },100)
 
     }
+
+
+    SwaggerBootstrapUi.prototype.settingsCallback=function (flag) {
+        var that=this;
+        var i18n=that.i18n.instance;
+        var showApi=$("#SwaggerBootstrapUiSettings").find("input[name=showApi]");
+        var langEle=$("#SwaggerBootstrapUiSettings").find("input[name=language]:checked");
+
+        var enableSbu=$("#SwaggerBootstrapUiSettings").find("input[name=enableSwaggerBootstrapUi]");
+        //tag属性说明
+        var showTagStatusElem=$("#SwaggerBootstrapUiSettings").find("input[name=showTagStatus]");
+
+        var enableRequestCache=$("#SwaggerBootstrapUiSettings").find("input[name=enableRequestCache]");
+
+        var enableReqFilterCache=$("#SwaggerBootstrapUiSettings").find("input[name=enableFilterMultipartApis]");
+
+        var enableCacheOpenApiTable=$("#SwaggerBootstrapUiSettings").find("input[name=enableCacheOpenApiTable]");
+
+        var showApiFlag=showApi.prop("checked");
+        var enableSbuFlag=enableSbu.prop("checked");
+        var showTagStatus=showTagStatusElem.prop("checked");
+
+        var cacheRequest=enableRequestCache.prop("checked");
+
+        var enableCacheOpenApi=enableCacheOpenApiTable.prop("checked");
+
+        var enableReqFilter=enableReqFilterCache.prop("checked");
+
+        var language=langEle.val();
+
+        if (flag){
+            that.log(showApi.prop("checked")+",enable:"+enableSbu.prop("checked"));
+            //获取值
+            var multipartApiMethodType="POST";
+            if (enableReqFilter){
+                //如果选中
+                multipartApiMethodType=$("#SwaggerBootstrapUiSettings").find("select[name=enableFilterMultipartApiMethodType] option:selected").val();
+            }
+
+            if(!enableCacheOpenApi){
+                that.clearCacheOpenApiTableApis();
+            }
+
+
+            var setts={
+                showApiUrl:showApiFlag,//接口api地址不显示
+                showTagStatus:showTagStatus,//tag显示description属性.
+                enableSwaggerBootstrapUi:enableSbuFlag,//是否开启swaggerBootstrapUi增强
+                enableRequestCache:cacheRequest,
+                enableFilterMultipartApis:enableReqFilter,
+                enableFilterMultipartApiMethodType:multipartApiMethodType,
+                enableCacheOpenApiTable:enableCacheOpenApi,
+                language:language
+            }
+            that.log(setts);
+            that.saveSettings(setts);
+            that.settings=setts;
+            if (!cacheRequest){
+                that.disableStoreRequestParams();
+            }
+            $("#useSettingsCopyOnUrl").val(that.getFastViewDocUrl());
+        }
+        //初始化复制功能
+        var clipboard = new ClipboardJS('#btnCopyUserSettingsUrl',{
+            text:function () {
+                return $("#useSettingsCopyOnUrl").val();
+            }
+        });
+        clipboard.on('success', function(e) {
+            layer.msg(i18n.message.copy.success)
+        });
+        clipboard.on('error', function(e) {
+            layer.msg(i18n.message.copy.fail)
+        });
+    }
+
+
 
     /***
      * 根据当前settings配置生成快速访问doc的访问地址
