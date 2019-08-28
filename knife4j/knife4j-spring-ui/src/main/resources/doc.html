@@ -1,0 +1,1338 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <!--页面不缓存-->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>swagger-bootstrap-ui</title>
+    <link rel="shortcut icon" href="webjars/bycdao-ui/images/api.ico"/>
+    <script src="webjars/bycdao-ui/ext/i18n.js"></script>
+    <script type="text/javascript" src="webjars/bycdao-ui/jquery/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="webjars/bycdao-ui/ace/bootstrap.min.js"></script>
+    <script type="text/javascript" src="webjars/bycdao-ui/ace/ace.min.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="webjars/bycdao-ui/jquery/clipboard/clipboard.min.js"></script>
+    <script type="text/javascript" src="webjars/bycdao-ui/layer3.0.3/layer.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/layer3.0.3/skin/default/layer.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/docco.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/style.css" />
+    <link rel="stylesheet" href="webjars/bycdao-ui/highlight/styles/default.css" />
+    <script src="webjars/bycdao-ui/highlight/highlight.pack.js"></script>
+    <script src="webjars/bycdao-ui/jquery/marked.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui.css?v=1.9.6" />
+    <link rel="stylesheet" type="text/css" href="webjars/bycdao-ui/iconfont/iconfont.css" />
+
+    <link rel="stylesheet" href="webjars/bycdao-ui/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="webjars/bycdao-ui/ext/sbuadmin.css" media="all">
+
+    <script src="webjars/bycdao-ui/jquery/template-web.js"></script>
+
+    <script src="webjars/bycdao-ui/jquery/axios.min.js"></script>
+    <link rel="stylesheet" href="webjars/bycdao-ui/bootstrap-tabx/css/bootstrap-tabs-x.min.css" />
+    <script src="webjars/bycdao-ui/bootstrap-tabx/js/bootstrap-tabs-x.min.js"></script>
+
+    <script src="webjars/bycdao-ui/layui/layui.js" charset="utf-8"></script>
+
+    <script src="webjars/bycdao-ui/ace-editor/ace.js" type="text/javascript"></script>
+
+    <script src="webjars/bycdao-ui/jquery/showdown.min.js"></script>
+    <script src="webjars/bycdao-ui/jquery/async.min.js"></script>
+    <script src="webjars/bycdao-ui/jquery/md5.min.js"></script>
+    <script src="webjars/bycdao-ui/jquery/json5.js"></script>
+
+    <link rel="stylesheet" href="webjars/bycdao-ui/ext/editormd.min.css" />
+
+    <link rel="stylesheet" href="webjars/bycdao-ui/cdao/swaggerbootstrapui-md.css?v=1.9.6" />
+    <style type="text/css">
+        #container {
+            width: 100%;
+            /*height: 90%;*/
+            /* Disable selection so it doesn't get annoying */
+          /*  -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: moz-none;
+            -ms-user-select: none;
+            user-select: none;*/
+        }
+        #container .left {
+            position: absolute;
+        }
+        #container .right {
+            position: fixed;
+            width: 100%;
+        }
+        #container #handle {
+            position: absolute;
+            left: 310px;
+            /* bottom: 0; */
+            width: 8px;
+            height: 90%;
+            /*background-color: #1a1a1a;*/
+            cursor: w-resize;
+        }
+        .panel-body{
+            padding: 5px;
+        }
+
+        .swbu-main p{
+            line-height: 2em;
+            margin: 1em 0;
+        }
+        .swbu-main .layui-table td{
+            border-color: #e6e6e6;
+        }
+        /*.layui-table .layui-table-cell{
+            height:auto;
+            overflow:visible;
+            text-overflow:inherit;
+            white-space:normal;
+        }*/
+        /*.layui-table-tips-main{display:none}
+        .layui-table-tips-c{display:none}*/
+    </style>
+    <script>
+        /*var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?08a0203144c393bb4372386953b1c593";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();*/
+   </script>
+</head>
+<body style="overflow: hidden;">
+<div class="sbu-header" id="sbu-header">
+    <div class="sbu-header-left sbu-header-left-wd" id="leftGroup">
+        <div class="form-group sbu-header-group">
+            <div class="col-sm-12">
+                <select  class="form-control" id="sbu-group-sel" style="margin-top: 13px;">
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="sbu-header-left" style="width: 700px;">
+        <i class="iconfont icon-zuosuojin1" style="font-size: 1.5em;margin-left: 10px;" id="leftCheck" data-display="0"></i>
+        <span><a href="https://gitee.com/xiaoym/swagger-bootstrap-ui" target="_blank" id="swaggerBootstrapHrefTitle"></a></span>
+    </div>
+    <div class="sbu-header-right">
+        <div class="form-group sbu-header-group">
+            <div class="col-sm-12" style="text-align: right;">
+                <div class="search bar8">
+                    <input type="text" id="searchTxt" placeholder="请输入搜索内容......">
+                    <span title="搜索" id="spanSearch">
+                        <i class="iconfont icon-sousuo" style="font-size: 32px;"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="container">
+    <div class="bycdao-left left" id="leftMenu" style="height: 90%;overflow-y: auto;overflow-x: hidden;margin-top:2px;">
+        <ul class="nav nav-list" id="menu">
+
+        </ul>
+        <ul class="nav nav-list" id="searchMenu" style="display: none;">
+        </ul>
+    </div>
+    <div id="handle"></div>
+    <div class="bycdao-main right" id="content"  style="height: 90%;margin-top:2px;right: 0px;/*overflow-x: hidden;overflow-y: auto;*/">
+
+        <div class="layui-layout layui-layout-admin open-tab">
+            <div class="layui-body">
+                <div class="layui-tab" lay-allowclose="true" lay-filter="admin-pagetabs">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this" lay-id="main" id="sbu-tab-home">主页</li>
+                    </ul>
+                    <div class="layui-tab-content" style="height: 150px;">
+                        <div class="layui-tab-item layui-show" id="mainTabContent">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-tabs-control iconfont icon-tab-left" ew-event="leftPage"></div>
+                <div class="admin-tabs-control iconfont icon-tab-right" ew-event="rightPage"></div>
+                <div class="admin-tabs-control iconfont icon-xiangxiazhankai">
+                    <ul class="layui-nav admin-tabs-select" lay-filter="admin-pagetabs-nav">
+                        <li class="layui-nav-item" lay-unselect="">
+                            <a href="javascript:;"><span class="layui-nav-more"></span></a>
+                            <dl class="layui-nav-child layui-anim-fadein layui-anim layui-anim-upbit">
+                                <dd id="closeThisTabs" lay-unselect=""><a href="javascript:;">关闭当前标签页</a></dd>
+                                <dd id="closeOtherTabs" lay-unselect=""><a href="javascript:;">关闭其它标签页</a></dd>
+                                <dd id="closeAllTabs" lay-unselect=""><a href="javascript:;">关闭全部标签页</a></dd>
+                            </dl>
+                        </li>
+                        <span class="layui-nav-bar" style="left: 20px; top: 35px; width: 0px; opacity: 0;"></span></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--其他markdown文档说明-->
+<script type="text/html" id="otherMarkdownFileScript">
+    <div id="otherMarkdownFile{{id}}" class="othermarkdown view-box markdown-body editormd-preview-container">
+
+    </div>
+
+</script>
+
+<!--离线文档说明-->
+<script type="text/html" id="offLinecontentScript">
+    <div  style="width:99%;margin:0px auto;margin-top: 10px;">
+        <div class="alert alert-info" role="alert">{{i18n.message.offline.note}}</div>
+        <div class="input-inline" style="margin-bottom:10px;">
+            <button class="btn btn-primary" type="button" id="btnCopy"  >{{i18n.message.offline.copy}}</button>
+        </div>
+        <div class='input-inline'>
+            <div style="width: 100%;height:100%;">
+                <div style="float: left;width: 1%;">
+                    <textarea class='form-control' style='width: 100%;height: 100%;display: none;' id="txtOffLineDoc">
+**{{title}}**
+
+**{{i18n.offline.note}}**：{{description}}
+
+**HOST**:{{host}}
+
+**{{i18n.offline.contact}}**:{{contact}}
+
+**Version**:{{version}}
+
+**{{i18n.offline.url}}**：{{location}}
+
+
+<% for( i = 0; i < tags.length; i++) { var tag=tags[i] ; %># <%= tag.name %><% for( j = 0; j < paths.length; j++) {var path=paths[j]; if(path.tags.indexOf(tag.name)>-1){ %>
+
+## <%= path.summary %>
+
+**{{i18n.doc.des}}**:<%= path.description %>
+
+**{{i18n.doc.url}}**:`<%= path.showUrl %>`
+
+
+**{{i18n.doc.method}}**：`<%= path.methodType %>`
+
+
+**consumes**:`<%= path.consumes %>`
+
+
+**produces**:`<%= path.produces %>`
+
+<%if(path.requestValue!=null && path.requestValue!=""){%>
+**{{i18n.doc.requestExample}}**：
+```json
+<%= path.requestValue %>
+```
+<%}%>
+
+**{{i18n.doc.params}}**：
+<% if(path.parameters!=null && path.parameters.length>0){ %>
+| {{i18n.doc.paramsHeader.name}}         | {{i18n.doc.paramsHeader.des}}     |     in |  {{i18n.doc.paramsHeader.require}}      |  {{i18n.doc.paramsHeader.type}}  |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+<% for( a = 0; a < path.parameters.length; a++) {var param=path.parameters[a]; %>|<%=param.name%>| <%=param.description%>  | <%=param.in%> | <%=param.require%> |<%=param.type%>  | <%=param.schemaValue%>   |
+                <%}%>
+<%}else{%>暂无<%}%><% if(path.refparameters!=null && path.refparameters.length>0){ %>
+
+**{{i18n.offline.schemaDes}}**
+<% for( a = 0; a < path.refparameters.length; a++) { var ref=path.refparameters[a];%>
+**<%=ref.name%>**
+| {{i18n.doc.paramsHeader.name}}         | {{i18n.doc.paramsHeader.des}}     |     in |  {{i18n.doc.paramsHeader.require}}      |  {{i18n.doc.paramsHeader.type}}  |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+<% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%>| <%=rp.description%>  | <%=rp.in%> | <%=rp.require%> |<%=rp.type%>  | <%=rp.schemaValue%>   |
+                <%}}}%>
+
+<% if(path.multipartResponseSchema){%>
+<% for(c = 0;c < path.responseCodes.length; c++){ var rcode=path.responseCodes[c];%>
+<% if(rcode.schema!=null){%>
+
+**<%= rcode.code %>{{i18n.doc.responseExample}}**:
+```json
+<%= rcode.responseValue %>
+```
+**<%= rcode.code %>{{i18n.doc.responseParams}}**:
+<% if(rcode.responseParameters!=null && rcode.responseParameters.length>0){ %>
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
+| ------------ | -------------------|-------|----------- |
+<% for( a = 0; a < rcode.responseParameters.length; a++) { var param=rcode.responseParameters[a];%>|<%=param.name%>| <%=param.description%>  |<%=param.type%>  | <%=param.schemaValue%>   |
+<%}}else{%>
+{{i18n.doc.nodata}}
+<%}%>
+<% if(rcode.responseRefParameters!=null && rcode.responseRefParameters.length>0){ %>
+**{{i18n.offline.schemaDes}}**
+
+<% for( a = 0; a < rcode.responseRefParameters.length; a++) { var ref=rcode.responseRefParameters[a];%>
+**<%=ref.name%>**
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
+| ------------ | ------------------|--------|----------- |
+<% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
+                <%}%>
+<%}}%>
+<%}%>
+<%}%>
+
+<%}else{%>
+**{{i18n.doc.responseExample}}**:
+```json
+<%= path.responseValue %>
+```
+**{{i18n.doc.responseParams}}**:
+<% if(path.responseParameters!=null && path.responseParameters.length>0){ %>
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
+| ------------ | -------------------|-------|----------- |
+<% for( a = 0; a < path.responseParameters.length; a++) { var param=path.responseParameters[a];%>|<%=param.name%>| <%=param.description%>  |<%=param.type%>  | <%=param.schemaValue%>   |
+<%}}else{%>
+{{i18n.doc.nodata}}
+<%}%>
+<% if(path.responseRefParameters!=null && path.responseRefParameters.length>0){ %>
+**{{i18n.offline.schemaDes}}**
+
+<% for( a = 0; a < path.responseRefParameters.length; a++) { var ref=path.responseRefParameters[a];%>
+**<%=ref.name%>**
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
+| ------------ | ------------------|--------|----------- |
+<% for( b = 0; b < ref.params.length; b++) { var rp=ref.params[b];%>|<%=rp.name%> | <%=rp.description%>   |<%=rp.type%>  | <%=rp.schemaValue%>   |
+                <%}%>
+<%}}%>
+<%}%>
+
+**{{i18n.doc.response}}**:
+<% if(path.responseCodes!=null && path.responseCodes.length>0){ %>
+| {{i18n.doc.responseHeader.code}}         | {{i18n.doc.responseHeader.des}}                            |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+<% for( a = 0; a < path.responseCodes.length; a++) { var param=path.responseCodes[a];%>| <%=param.code%> | <%=param.description%>  |<%=param.schema%>|
+                <%}%>
+<%}else{%>
+{{i18n.doc.nodata}}
+<%}%>
+        <%}%>
+    <%}%>
+<%}%>
+
+
+
+
+            </textarea>
+                </div>
+                <div style="float: left;width: 99%;">
+                    <div id="offlineMarkdownShow" class="offlineMarkdownShow"></div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</script>
+
+<!--文档说明-->
+<script type="text/html" id="contentScript">
+    <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
+        <div style="    float: left;width: 80%;font-size: 20px;">{{summary}}</div>
+        <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHref" style="cursor: pointer;text-decoration: none;
+" href="javascript:void(0);">复制文档</a></div>
+    </div>
+    <div class="swbu-main" itemprop="articleBody">
+        <div id="contentDoc"></div>
+        <!--<textarea rows="10" cols="10" id="docText">-->
+        <textarea rows="10" cols="10" id="docText" style="display: none;">
+
+**接口地址** `{{showUrl}}`
+
+
+**请求方式** `{{methodType}}`
+
+
+**consumes** `{{consumes}}`
+
+
+**produces** `{{produces}}`
+
+
+**接口描述** `{{description}}`
+
+**请求参数**
+{{ if parameters && parameters.length>0 }}
+| 参数名称         | 说明     |     参数类型 |  是否必须      |  类型   |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+{{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if refparameters && refparameters.length>0 }}
+**schema属性说明**
+  {{each refparameters}}
+**{{$value.name}}**
+
+| 参数名称         | 说明    |     参数类型 |  是否必须   |  类型  |  schema |
+| ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
+| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
+{{/each}}
+
+{{/if}}
+
+
+**响应状态**
+{{ if responseCodes}}
+| 状态码         | 说明                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
+{{/each}}
+{{else}}
+暂无
+{{/if}}
+
+
+**响应参数**
+{{ if responseParameters && responseParameters.length>0 }}
+| 参数名称         | 说明                             |    类型 |  schema |
+| ------------ | -------------------|-------|----------- |
+{{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
+            {{/each}}
+{{else}}
+暂无
+{{/if}}
+
+{{ if responseRefParameters && responseRefParameters.length>0 }}
+**schema属性说明**
+  {{each responseRefParameters}}
+**{{$value.name}}**
+
+| 属性名称         |  说明          |   类型  |  schema |
+| ------------ | ------------------|--------|----------- |
+{{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{/each}}
+
+{{/if}}
+
+**响应示例**
+
+{{ if responseBasicType }}
+```text
+{{responseText}}
+```
+{{else}}
+```json
+{{responseValue}}
+```
+{{/if}}
+
+</textarea>
+    </div>
+</script>
+
+<!--Debug调试tab-->
+<script type="text/html" id="DebugScript">
+    <div style="width: 100%;margin: 0px auto;margin-top: 10px;" id="DebugScriptBasic{{id}}">
+        <div class="input-group m-bot15">
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-info" type="button">{{methodType}}</button>
+            </span>
+            <input type="text" id="txtreqUrl{{id}}" data-originalurl="<%=originalUrl%>" class="form-control" value="<%=url%>">
+            <%if(configurationDebugSupport){%>
+            <span class="input-group-btn">
+                <button  class="btn btn-default btn-primary btnRequest" id="btnRequest{{id}}" type="button">{{i18n.debug.send}}</button>
+            </span>
+            <%}%>
+        </div>
+        <%if(methodType!="GET"){%>
+        <div class="sbu-debug-content-type" id="contentTypeRequest{{id}}">
+            <input type="hidden" id="DebugContentType{{id}}" value="{{contentType}}"/>
+            <label class="radio-inline">
+                <input type="radio" name="optionsRadiosinline{{id}}"  value="application/x-www-form-urlencoded;charset=UTF-8" <%if(contentValue=="x-www-form-urlencoded"){%> checked  <%}%> > x-www-form-urlencoded
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="optionsRadiosinline{{id}}"  value="multipart/form-data" <%if(contentValue=="form-data"){%> checked  <%}%> > form-data
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="optionsRadiosinline{{id}}"   value="raw" <%if(contentValue=="raw"){%> checked  <%}%> > raw
+            </label>
+            <label class="radio-inline">
+                <div class="dropdown" id="raw{{id}}" <%if(contentValue!="raw"){%> style="display: none;"  <%}%>  >
+                    <button type="button" class="sbu-debug-content-type-button" id="dropdownMenu{{id}}"
+                            data-toggle="dropdown">
+                        {{contentShowValue}}  <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu{{id}}">
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/plain" href="javascript:void(0);">Text</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/plain" href="javascript:void(0);">Text(text/plain)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="application/json" href="javascript:void(0);">JSON(application/json)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="application/javascript" href="javascript:void(0);">Javascript(application/javascript)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="application/xml" href="javascript:void(0);">XML(application/xml)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/xml" href="javascript:void(0);">XML(text/xml)</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" class="option" tabindex="-1" data-value="text/html" href="javascript:void(0);">HTML(text/html)</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </label>
+        </div>
+        <%}%>
+        <div style="margin-top: 15px;">
+            <div class="swbu-main">
+                <%if((parameters!=null && parameters.length>0)||(globalParameters!=null && globalParameters.length>0)){ var fileform=false;var tabIndex=0;%>
+                <% for( a = 0; a < parameters.length ; a++ ) {var param=parameters[a]; %>
+                <%  if(param.schemaValue=="MultipartFile" || param.schemaValue=="file" || param.type=="file"){ fileform=true;}%>
+                <%}%>
+
+                <%if(fileform){%>
+
+                <% if(parameterSize>5){%>
+                <div class="panel-group" id="accordionParameters{{id}}">
+                    <div class="panel panel-default panel-default">
+                        <div class="panel-heading sbu-mul-request-param-header">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordionParameters{{id}}"
+                                   href="#SwaggerAccordingParameter{{id}}">
+                                    {{i18n.debug.params}}
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="SwaggerAccordingParameter{{id}}" class="panel-collapse collapse in">
+                            <div class="panel-body">
+
+                <% } %>
+
+
+                <form id="uploadForm{{id}}"  target="uploadIframe{{id}}" action="<%=url%>" type="" enctype="multipart/form-data" method="{{methodType}}">
+                    <table class="">
+                        <thead>
+                        <tr>
+                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll" id="parameterCheckAll{{id}}">
+                                <label style="font-weight: bold;">
+                                    <input type="checkbox" checked> {{i18n.debug.tableHeader.selectAll}}
+                                </label>
+                            </div></th>
+                            <th>{{i18n.debug.tableHeader.type}}</th>
+                            <th>{{i18n.debug.tableHeader.name}}</th>
+                            <th>{{i18n.debug.tableHeader.value}}</th>
+                        </tr>
+                        </thead>
+                        <tbody id="paramBody{{id}}">
+                        <!--遍历 是否有全局参数--->
+                        <%if(globalParameters!=null && globalParameters.length>0){ %>
+                            <% for( a = 0; a < globalParameters.length ; a++ ) { tabIndex=tabIndex+1;var param=globalParameters[a]; if(param.show){ %>
+                                <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                                    <td width="5%">
+                                        <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                                    </td>
+                                    <td width="10%">
+                                        <span class="sbu-param-<%=param.in%>"><%=param.in%>(<%=param.type%>)</span>
+                                    </td>
+                                    <td width="25%">
+                                        <input class="form-control p-key" value="<%=param.name%>">
+                                    </td>
+                                    <td>
+                                        <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file" ){%>
+                                            <input name="<%=param.name%>" type="file" tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                        <%}else{%>
+                                            <%if(param.in=="body"){  %>
+                                                <textarea class="form-control p-value sbu-debug-input-<%=param.require%>" tabindex="<%=tabIndex%>" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
+                                                  name="<%=param.name%>" data-name="<%=param.name%>"
+                                                  placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                            <%}else{%>
+                                                <input class="form-control p-value sbu-debug-input-<%=param.require%>" tabindex="<%=tabIndex%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                                data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                            <%}%>
+                                        <%}%>
+                                    </td>
+                                </tr>
+                            <%}}%>
+                        <%}%>
+
+                        <% for( a = 0; a < parameters.length ; a++ ) { tabIndex=tabIndex+1;var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} if(param.show){%>
+                            <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>" data-type="<%=param.type%>"  data-emflag="<%=emflag%>" data-schemavalue="<%=param.schemaValue%>">
+                                <td width="5%">
+                                    <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                                </td>
+                                <td width="10%">
+                                    <span class="sbu-param-<%=param.in%>"><%=param.in%>(<%=param.type%>)</span>
+                                </td>
+                                <td width="25%">
+                                    <input class="form-control p-key" value="<%=param.name%>">
+                                </td>
+                                <td>
+                                    <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file"){%>
+                                    <div class="row">
+                                        <div class="col-lg-10">
+                                            <input name="<%=param.name%>" type="file" tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>" <%if(param.type=="array"){%> multiple <%}%>/>
+                                        </div>
+                                        <div class="col-lg-2">
+
+                                        </div>
+                                    </div>
+                                    <%}else{%>
+                                    <%if(param.in=="body"){  %>
+                                    <textarea class="form-control p-value sbu-debug-input-<%=param.require%>" tabindex="<%=tabIndex%>" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
+                                              name="<%=param.name%>" data-name="<%=param.name%>"
+                                              placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                    <%}else{%>
+                                        <% if(param.enum!=null){%>
+                                        <select  class="form-control p-value p-<%=param.in%> sbu-debug-input-<%=param.require%>" tabindex="<%=tabIndex%>"   name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>">
+                                            <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
+                                            <option value="<%=em%>" <%if(param.txtValue==em){%> selected <%}%> ><%=em%></option>
+                                            <%}%>
+                                        </select>
+                                        <%}else{%>
+                                        <input class="form-control p-value p-<%=param.in%> sbu-debug-input-<%=param.require%>" tabindex="<%=tabIndex%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                               data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <%}%>
+                                        <% if(param.type=="array"){%>
+                                        <div class="btn-add-div"></div>
+                                        <button class="btn btn-default btn-add-string btn-add-string{{id}}"  id="btn-add-string{{id}}">增加</button>
+                                        <%}%>
+                                    <%}%>
+                                    <%}%>
+                                </td>
+                            </tr>
+                        <%}}%>
+                        </tbody>
+                    </table>
+                </form>
+                <div id="resptab{{id}}" class="tabs-container" >
+                    <iframe name="uploadIframe{{id}}" id="uploadIframe{{id}}" style="border: none;height: 1%;display: none;"></iframe>
+                </div>
+                <% if(parameterSize>5){%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%}%>
+
+                <%}else{%>
+
+                <% if(parameterSize>5){%>
+                <div class="panel-group" id="accordionParameters{{id}}">
+                    <div class="panel panel-default panel-default">
+                        <div class="panel-heading sbu-mul-request-param-header">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordionParameters{{id}}"
+                                   href="#SwaggerAccordingParameter{{id}}">
+                                    {{i18n.debug.params}}
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="SwaggerAccordingParameter{{id}}" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                <% } %>
+                    <table class="">
+                        <thead>
+                        <tr>
+                            <th style="white-space: nowrap;"><div class="checkbox parameterCheckAll"  id="parameterCheckAll{{id}}">
+                                <label style="font-weight: bold;">
+                                    <input type="checkbox" checked> {{i18n.debug.tableHeader.selectAll}}
+                                </label>
+                            </div></th>
+                            <th>{{i18n.debug.tableHeader.type}}</th>
+                            <th>{{i18n.debug.tableHeader.name}}</th>
+                            <th>{{i18n.debug.tableHeader.value}}</th>
+                        </tr>
+                        </thead>
+                        <tbody id="paramBody{{id}}">
+                        <!--遍历 是否有全局参数--->
+                        <%if(globalParameters!=null && globalParameters.length>0){ %>
+                        <% for( a = 0; a < globalParameters.length ; a++ ) {tabIndex=tabIndex+1;var param=globalParameters[a];if(param.show){ %>
+                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-required="<%=param.require%>">
+                            <td width="5%">
+                                <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                            </td>
+                            <td width="10%">
+                                <span class="sbu-param-<%=param.in%>"><%=param.in%>(<%=param.type%>)</span>
+                            </td>
+                            <td width="25%">
+                                <input class="form-control p-key" value="<%=param.name%>">
+                            </td>
+                            <td>
+                                <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file"){%>
+                                <input name="<%=param.name%>" type="file" tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                <%}else{%>
+                                <%if(param.in=="body"){  %>
+                                <textarea class="form-control p-value sbu-debug-input-<%=param.require%>" tabindex="<%=tabIndex%>" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
+                                          name="<%=param.name%>" data-name="<%=param.name%>"
+                                          placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                <%}else{%>
+                                <input class="form-control p-value sbu-debug-input-<%=param.require%>" tabindex="<%=tabIndex%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                       data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                <%}%>
+                                <%}%>
+                            </td>
+                        </tr>
+                        <%}%>
+                        <%}%>
+                        <%}%>
+
+                        <% for( a = 0; a < parameters.length ; a++ ) {tabIndex=tabIndex+1;var param=parameters[a]; var emflag=false;if(param.enum!=null){ emflag=true;} if(param.show){ %>
+                        <tr data-name="<%=param.name%>" data-in="<%=param.in%>" data-type="<%=param.type%>" data-required="<%=param.require%>" data-emflag="<%=emflag%>">
+                            <td width="5%">
+                                <div class="checkbox"><label><input type="checkbox" value="" checked=""></label></div>
+                            </td>
+                            <td width="10%">
+                                <span class="sbu-param-<%=param.in%>"><%=param.in%>(<%=param.type%>)</span>
+                            </td>
+                            <td width="25%">
+                                <input class="form-control p-key" value="<%=param.name%>">
+                            </td>
+                            <td>
+                                <%if(param.in=="body"||param.in=="formdata"||param.in=="formData"){  %>
+                                    <%if(param.schemaValue=="MultipartFile" || param.schemaValue=="file"  || param.type=="file"){%>
+                                    <input name="<%=param.name%>" type="file"  tabindex="<%=tabIndex%>" class="form-control p-value sbu-debug-input-<%=param.require%>" data-name="<%=param.name%>" placeholder="<%=param.description%>"/>
+                                    <%}else {%>
+                                        <%if(param.in=="body"){  %>
+                                        <textarea class="form-control p-value sbu-debug-input-<%=param.require%>"  tabindex="<%=tabIndex%>" style="font-size: 16px;" rows="10" data-in="<%=param.in%>" data-apiUrl="<%=url%>"
+                                                  name="<%=param.name%>" data-name="<%=param.name%>"
+                                                  placeholder="<%=param.description%>"><%=param.txtValue%></textarea>
+                                        <%}else {%>
+                                        <input class="form-control p-value p-<%=param.in%> sbu-debug-input-<%=param.require%>"  tabindex="<%=tabIndex%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                               data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                            <% if(param.type=="array"){%>
+                                            <div class="btn-add-div"></div>
+                                            <button class="btn btn-default btn-add-string btn-add-string{{id}}"  id="btn-add-string{{id}}">增加</button>
+                                            <%}%>
+                                        <%}%>
+                                    <%}%>
+                                <%}else{%>
+                                    <% if(param.enum!=null){%>
+                                        <select  class="form-control p-value p-<%=param.in%> sbu-debug-input-<%=param.require%>"  tabindex="<%=tabIndex%>"  name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>">
+                                            <% for(c=0; c< param.enum.length; c++ ){ var em=param.enum[c];%>
+                                            <option value="<%=em%>" <%if(param.txtValue==em){%> selected <%}%> ><%=em%></option>
+                                            <%}%>
+                                        </select>
+                                    <%}else{%>
+                                <input class="form-control p-value p-<%=param.in%> sbu-debug-input-<%=param.require%>"  tabindex="<%=tabIndex%>" name="<%=param.name%>"  data-in="<%=param.in%>" data-apiurl="<%=url%>"
+                                       data-name="<%=param.name%>" placeholder="<%=param.description%>" value="<%=param.txtValue%>"/>
+                                        <% if(param.type=="array"){%>
+                                <div class="btn-add-div"></div>
+                                <button class="btn btn-default btn-add-string btn-add-string{{id}}"  id="btn-add-string{{id}}">增加</button>
+                                        <%}%>
+                                    <%}%>
+                                <%}%>
+                            </td>
+                        </tr>
+                        <%}}%>
+                        </tbody>
+                    </table>
+                    <% if(parameterSize>5){%>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%}%>
+                <%}%>
+
+                <%}%>
+            </div>
+        </div>
+    </div>
+    <div class="responsebody{{id}}" id="responsebody{{id}}" style="display: none;">
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title" style="padding: 0px;width: 98%;margin-left: 10px;">
+                <li class="layui-this">{{i18n.debug.response.content}}</li>
+                <li>Raw</li>
+                <li>Headers</li>
+                <li>Curl</li>
+            </ul>
+            <div class="layui-tab-content" id="layuiresponsecontentmain{{id}}" style="height: 100px;
+    margin-top: 0px;left: 0px;position: absolute;width: 98%;margin-left: 10px;">
+                <div class="layui-tab-item layui-show" id="respcontent{{id}}"></div>
+                <div class="layui-tab-item" id="respraw{{id}}"></div>
+                <div class="layui-tab-item" id="respheaders{{id}}"></div>
+                <div class="layui-tab-item" id="respcurl{{id}}"></div>
+            </div>
+            <div style="right: 30px;position: absolute;margin-top: 8px;z-index: 9999;" id="responsestatus{{id}}"><span class="debug-span-label">响应码:</span><span class="debug-span-value">200 OK</span>  &nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">耗时:</span><span class="debug-span-value">161 ms</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="debug-span-label">大小:</span><span class="debug-span-value">120 b</span></div>
+        </div>
+    </div>
+</script>
+<!--全局参数-->
+<script type="text/html" id="GlobalParamScript">
+    <div  style="width:99%;margin:0px auto;margin-top: 10px;">
+        <div class="alert alert-info" role="alert">{{# i18n.global.note }}</div>
+        <div class="input-inline" style="margin-bottom:10px;">
+            <button class="btn btn-primary" type="button" id="btnAddParam"  >{{i18n.global.add}}</button>
+        </div>
+        <div style="margin-top: 15px;">
+            <div class="swbu-main">
+                <table class="" id="globalTable">
+                    <thead>
+                    <tr>
+                        <th>{{i18n.global.tableHeader.name}}</th>
+                        <th>{{i18n.global.tableHeader.value}}</th>
+                        <th>{{i18n.global.tableHeader.type}}</th>
+                        <th>{{i18n.global.tableHeader.operator}}</th>
+                    </tr>
+                    </thead>
+                    <tbody id="globalTabBody">
+                    <%if(globalParameters!=null && globalParameters.length>0){ %>
+                    <% for( a = 0; a < globalParameters.length ; a++ ) {var param=globalParameters[a]; %>
+                    <tr>
+                        <td><input class="form-control p-key" value="<%=param.name%>" data-old='<%=param.name%>'></td>
+                        <td><input class="form-control p-key" value="<%=param.value%>"></td>
+                        <td><select class='form-control'><option value='header'<%if(param.in=="header"){%>  selected  <%}%> >header</option><option value='query' <%if(param.in=="query"){%>  selected  <%}%>>query</option></select></td>
+                        <td><button class="btn btn-circle btn-info btn-small btn-save" type="button">{{i18n.global.save}}</button>&nbsp;&nbsp;<button class="btn btn-circle btn-danger btn-small btn-cancel" type="button">{{i18n.global.delete}}</button></td>
+                    </tr>
+
+                    <%}}%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!--动态tab-->
+<script type="text/html" id="BootstrapDynaTab">
+    <div class='tabs-x tabs-left tabs-krajee' id="tabsContent{{id}}" >
+        <ul id="myTab-tabs-left" class="nav nav-tabs" role="tablist">
+            <li class="active"><a href="#HomeDoc{{id}}" role="tab" data-toggle="tab"><i class="iconfont icon-ic_description"></i>{{i18n.doc.title}}</a></li>
+            <li><a href="#DebugDoc{{id}}" role="tab-kv" data-toggle="tab"><i class="iconfont icon-debug"></i>{{i18n.debug.title}}</a></li>
+        </ul>
+        <div id="myTabContent-tabs-left" class="tab-content">
+            <div class="tab-pane fade in active" id="HomeDoc{{id}}" >
+                <div>
+                    <input id="copyDocHashInput{{id}}" type="hidden" value="{{hashCollections[0]}}"/>
+                </div>
+
+                <div style="padding: 10px 0;border-bottom: 1px dashed #ccc;height: 50px;vertical-align: middle;line-height: 30px;">
+                    <div style="    float: left;width: 80%;font-size: 20px;">{{summary}}</div>
+                    <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHash{{id}}" style="cursor: pointer;text-decoration: none;
+" href="javascript:void(0);">{{i18n.doc.copyHash}}</a></div>
+                    <div style="float: right;width: 10%;text-align: right;vertical-align: top;"><a id="copyDocHref{{id}}" style="cursor: pointer;text-decoration: none;
+" href="javascript:void(0);">{{i18n.doc.copy}}</a></div>
+                </div>
+                <div class="swbu-main" itemprop="articleBody">
+                    <div id="contentDoc{{id}}">
+                        <p><span class="sbu-api-title">{{i18n.doc.url}}</span> <code style="background-color: transparent;">{{showUrl}}</code></p>
+                        <p><span class="sbu-api-title">{{i18n.doc.method}}</span> <code style="background-color: transparent;">{{methodType}}</code></p>
+                        <p><span class="sbu-api-title">consumes</span> <code style="background-color: transparent;">{{consumes}}</code></p>
+                        <p><span class="sbu-api-title">produces</span> <code style="background-color: transparent;">{{produces}}</code></p>
+                        {{ if author }}
+                        <p><span class="sbu-api-title">{{i18n.doc.author}}</span> <code style="background-color: transparent;">{{author}}</code></p>
+                        {{ /if }}
+                        <p><span class="sbu-api-title">{{i18n.doc.des}}</span> <code style="background-color: transparent;">{{@ description}}</code></p>
+                        {{ if requestValue }}
+                        <p><strong>{{i18n.doc.requestExample}}</strong></p>
+                        <div id="editorRequestSample{{id}}" style="width: auto;bottom: 10px;">{{ requestValue }}</div>
+                        {{ /if }}
+                        <p><strong>{{i18n.doc.params}}</strong></p>
+                        <table id="requestParameter{{id}}" class="layui-table"  lay-filter="requestParameter{{id}}">
+                        </table>
+                        <p><strong>{{i18n.doc.response}}</strong></p>
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th>{{i18n.doc.responseHeader.code}}</th>
+                                <th>{{i18n.doc.responseHeader.des}}</th>
+                                <th>schema</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{ if responseCodes}}
+                                {{each responseCodes}}
+                                <tr>
+                                    <td>{{$value.code}}</td>
+                                    <td>{{@ $value.description}}</td>
+                                    <td>{{$value.schema}}</td>
+                                </tr>
+                                {{/each}}
+                            {{else}}
+                                <tr>
+                                    <td colspan="3" style="text-align: center;">{{i18n.doc.nodata}}</td>
+                                </tr>
+                            {{/if}}
+                            </tbody>
+                        </table>
+                        {{if multipartResponseSchema }}
+                            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                                <ul class="layui-tab-title" style="padding: 0px;margin-left: 10px;">
+                                    {{each responseCodes}}
+                                        {{if $value.schema!=null}}
+                                            <li {{if $index==0}} class="layui-this" {{/if}} >{{$value.code}}</li>
+                                        {{/if}}
+                                    {{/each}}
+                                </ul>
+                                <div class="layui-tab-content" style="height: 100%;margin-top: 0px;left: 0px;position: absolute;width: 98%;margin-left: 10px;">
+                                    {{each responseCodes}}
+                                        {{if $value.schema!=null}}
+                                            {{if $index==0 }}
+                                            <div class="layui-tab-item layui-show">
+                                            {{else}}
+                                                <div class="layui-tab-item">
+                                            {{/if}}
+                                                    <div>
+                                                        {{if $value.responseHeaderParameters }}
+                                                        <p><strong>{{$value.code}}-{{i18n.doc.responseHeaderParams}}</strong></p>
+                                                        <table id="responseHeaderParameter{{id}}-{{$value.code}}" class="layui-table"  lay-filter="responseHeaderParameter{{id}}-{{$value.code}}"></table>
+                                                        {{/if}}
+                                                        <p><strong>{{$value.code}}-{{i18n.doc.responseParams}}</strong></p>
+                                                        <table id="responseParameter{{id}}-{{$value.code}}" class="layui-table"  lay-filter="responseParameter{{id}}-{{$value.code}}">
+                                                        </table>
+                                                        <p><strong>{{$value.code}}-{{i18n.doc.responseExample}}</strong></p>
+                                                        <div id="editorSample{{id}}-{{$value.code}}" style="width: auto;bottom: 10px;">{{ if $value.responseBasicType }}{{$value.responseText}}{{else}}{{$value.responseValue}}{{/if}}</div>
+                                                    </div>
+
+                                                </div>
+                                        {{/if}}
+                                    {{/each}}
+                                </div>
+                            </div>
+                        {{else}}
+                                {{if responseHeaderParameters }}
+                                <p><strong>{{i18n.doc.responseHeaderParams}}</strong></p>
+                                <table id="responseHeaderParameter{{id}}" class="layui-table"  lay-filter="responseHeaderParameter{{id}}"></table>
+                                {{/if}}
+                                <p><strong>{{i18n.doc.responseParams}}</strong></p>
+                                <table id="responseParameter{{id}}" class="layui-table"  lay-filter="responseParameter{{id}}">
+                                </table>
+                                <p><strong>{{i18n.doc.responseExample}}</strong></p>
+                                <div id="editorSample{{id}}" style="width: auto;bottom: 10px;">{{ if responseBasicType }}{{responseText}}{{else}}{{responseValue}}{{/if}}</div>
+                        {{/if}}
+                    </div>
+                    <textarea rows="10" cols="10" id="docText{{id}}" style="display: none;">
+## {{ summary }}
+
+**{{i18n.doc.url}}** `{{showUrl}}`
+
+
+**{{i18n.doc.method}}** `{{methodType}}`
+
+
+**consumes** `{{consumes}}`
+
+
+**produces** `{{produces}}`
+
+
+**{{i18n.doc.des}}** `{{description}}`
+
+**{{i18n.doc.params}}**
+{{ if parameters && parameters.length>0 }}
+| {{i18n.doc.paramsHeader.name}}         | {{i18n.doc.paramsHeader.des}}     |     {{i18n.doc.paramsHeader.requestType}} |  {{i18n.doc.paramsHeader.require}}      |  {{i18n.doc.paramsHeader.type}}   |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |
+{{each parameters}}| {{$value.name}}         |      {{$value.description}}   |     {{$value.in}}        |       {{$value.require}}      | {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{else}}
+{{i18n.doc.nodata}}
+{{/if}}
+
+{{ if refparameters && refparameters.length>0 }}
+**{{i18n.offline.schemaDes}}**
+  {{each refparameters}}
+**{{$value.name}}**
+
+| {{i18n.doc.paramsHeader.name}}         | {{i18n.doc.paramsHeader.des}}     |     {{i18n.doc.paramsHeader.requestType}} |  {{i18n.doc.paramsHeader.require}}      |  {{i18n.doc.paramsHeader.type}}   |  schema  |
+| ------------ | -------------------------------- |-----------|--------|----|--- |{{each $value.params}}
+| {{$value.name}}  | {{$value.description}} |   {{$value.in}}    |   {{$value.require}}   |{{$value.type}}  | {{$value.schemaValue}}      |{{/each}}
+{{/each}}
+
+{{/if}}
+
+
+**{{i18n.doc.response}}**
+{{ if responseCodes}}
+| {{i18n.doc.responseHeader.code}}         | {{i18n.doc.responseHeader.des}}                             |    schema                         |
+| ------------ | -------------------------------- |---------------------- |
+{{each responseCodes}}| {{$value.code}}         | {{$value.description}}                        |{{$value.schema}}                          |
+{{/each}}
+{{else}}
+{{i18n.doc.nodata}}
+{{/if}}
+
+
+**{{i18n.doc.responseParams}}**
+{{ if responseParameters && responseParameters.length>0 }}
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
+| ------------ | -------------------|-------|----------- |
+{{each responseParameters}}| {{$value.name}}     |{{$value.description}}      |    {{$value.type}}   |   {{$value.schemaValue}}    |
+            {{/each}}
+{{else}}
+{{i18n.doc.nodata}}
+{{/if}}
+
+{{ if responseRefParameters && responseRefParameters.length>0 }}
+**{{i18n.offline.schemaDes}}**
+  {{each responseRefParameters}}
+**{{$value.name}}**
+
+| {{i18n.doc.responseParamsHeader.name}}         | {{i18n.doc.responseParamsHeader.des}}                             |    {{i18n.doc.responseParamsHeader.type}} |  schema |
+| ------------ | ------------------|--------|----------- |
+{{each $value.params}}| {{$value.name}}         |     {{$value.description}}      |  {{$value.type}}   | {{$value.schemaValue}}     |
+            {{/each}}
+{{/each}}
+
+{{/if}}
+
+**{{i18n.doc.responseExample}}**
+
+{{ if responseBasicType }}
+```text
+{{responseText}}
+```
+{{else}}
+```json
+{{responseValue}}
+```
+{{/if}}
+
+</textarea>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="DebugDoc{{id}}"><p>在线调试</p>
+
+
+            </div>
+        </div>
+    </div>
+</script>
+<!--SwaggerBootstrapUi简介-->
+<script type="text/html" id="SwaggerBootstrapUiIntroScript">
+    <div id="myTab" class="tabs-container" style="width:99%;margin:0px auto;">
+        <div style="margin-top: 15px;">
+            <div class="swbu-main" itemprop="sbuarticleBody">
+                <div id="sbuDescriptionDoc" style="width: 98%;margin: 0px auto;">
+                    <table>
+                        <tr>
+                            <td colspan="2" style="text-align: center;">{{title}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ i18n.home.des}}</td>
+                            <td>{{@ description}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ i18n.home.author}}</td>
+                            <td>{{contact}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ i18n.home.version}}</td>
+                            <td>{{version}}</td>
+                        </tr>
+                        <tr>
+                            <td>host</td>
+                            <td>{{host}}</td>
+                        </tr>
+                        <tr>
+                            <td>basePath</td>
+                            <td>{{basePath}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ i18n.home.serviceUrl}}</td>
+                            <td>{{termsOfService}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ i18n.home.groupName}}</td>
+                            <td>{{name}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ i18n.home.groupUrl}}</td>
+                            <td>{{url}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ i18n.home.groupLocation}}</td>
+                            <td>{{location}}</td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">{{ i18n.home.apiCount}}</td>
+                            <td>
+                                <table>
+                                    <%if(pathArrs!=null && pathArrs.length>0){ %>
+                                        <% for( a = 0; a < pathArrs.length ; a++ ) {var param=pathArrs[a]; %>
+                                        <tr>
+                                            <td style="width: 10%;"><%=param.method%></td>
+                                            <td><span class="label label-primary"><%=param.count%></span></td>
+                                        </tr>
+                                    <%}}%>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<!---Swagger Models 自定义说明-->
+<script type="text/html" id="SwaggerBootstrapUiModelsDescriptionTpl">
+{{d.description}}
+{{#  if(d.readOnly){ }}
+<span style="color: rgb(107, 107, 107);"> readOnly:true</span>
+{{#  } }}
+
+{{#  if(d.example!=""&&d.example!=null){ }}
+<span style="color: rgb(107, 107, 107);">example:{{d.example}}</span>
+{{#  } }}
+
+</script>
+
+<!---Swagger Models-->
+<script type="text/html" id="SwaggerBootstrapUiModelsScript">
+    <div  style="width:90%;margin:0px auto;margin-top: 30px;">
+        <div class="panel-group" id="accordion{{id}}">
+            <%if(models!=null && models.length>0){ %>
+                <% for( c = 0; c < models.length ; c++ ) { var model=models[c]; var mclass=model.modelClass(); %>
+                    <div class="panel panel-default <%=mclass %>">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion{{id}}"
+                                   href="#SwaggerAccordingModel<%=model.id%>">
+                                    <%=model.name%>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="SwaggerAccordingModel<%=model.id%>" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <table id="SwaggerModelTable<%=model.id%>" class="layui-table"  lay-filter="SwaggerModelTable<%=model.id%>"></table>
+                            </div>
+                        </div>
+                    </div>
+                <%}%>
+            <%}else{%>
+            <h3>{{i18n.swaggerModel.nodata}}</h3>
+            <%}%>
+        </div>
+    </div>
+</script>
+<!--Auth-->
+<script type="text/html" id="SwaggerBootstrapUiSecurityScript">
+    <div  style="width:99%;margin:0px auto;">
+        <div style="margin-top: 15px;">
+            <div class="swbu-main">
+                <button class="btn btn-circle btn-small btn-primary btn-reset-auth" type="button">{{i18n.auth.cancel}}</button>
+                <table class="" >
+                    <thead>
+                    <tr>
+                        <th>{{i18n.auth.tableHeader.key}}</th>
+                        <th>{{i18n.auth.tableHeader.name}}</th>
+                        <th>{{i18n.auth.tableHeader.in}}</th>
+                        <th>{{i18n.auth.tableHeader.value}}</th>
+                        <th>{{i18n.auth.tableHeader.operator}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%if(securityArrs!=null && securityArrs.length>0){ %>
+                    <% for( a = 0; a < securityArrs.length ; a++ ) {var param=securityArrs[a]; %>
+                    <tr data-key="<%=param.key%>" data-name="<%=param.name%>">
+                        <td><%=param.key%>(<%=param.type%>)</td>
+                        <td><%=param.name%></td>
+                        <td><%=param.in%></td>
+                        <td><input class="form-control p-key" value="<%=param.value%>"></td>
+                        <td><button class="btn btn-circle btn-info btn-small btn-save" type="button">{{i18n.auth.save}}</button></td>
+                    </tr>
+
+                    <%}}%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<!--settings个性化配置页-->
+<script type="text/html" id="SwaggerBootstrapUiSettingsScript">
+    <div style="margin: 0px auto;width: 80%;margin-top: 30px;">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h5>{{i18n.settings.title}}</h5></div>
+            <div class="panel-body" style="height: 310px;" id="SwaggerBootstrapUiSettings">
+                <div class="form-group">
+                    <div class="col-lg-10">
+                        <label class="radio-inline">
+                            <input type="radio" name="language" value="zh"  <%if(language=="zh"){ %> checked  <%}%> > 中文
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="language" value="en"   <%if(language=="en"){ %> checked  <%}%> > English
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="enableRequestCache" <%if(enableRequestCache){ %> checked="checked"  <%}%> />
+                                {{i18n.settings.openCache}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="showApi" <%if(showApiUrl){ %> checked="checked"  <%}%> />
+                                {{i18n.settings.showApi}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="showTagStatus" <%if(showTagStatus){ %> checked="checked"  <%}%> />
+                                {{i18n.settings.tagDes}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="enableFilterMultipartApis" <%if(enableFilterMultipartApis){ %> checked="checked"  <%}%> />
+                                {{i18n.settings.apiFilter}}
+                                <select class="form-control" name="enableFilterMultipartApiMethodType" style="display: inline;width: 25%;height: 30px;line-height: 30px;">
+                                    <option value="GET"  <%if(enableFilterMultipartApiMethodType=="GET"){ %> selected  <%}%>>GET</option>
+                                    <option value="POST" <%if(enableFilterMultipartApiMethodType=="POST"){ %> selected  <%}%>>POST</option>
+                                    <option value="PUT" <%if(enableFilterMultipartApiMethodType=="PUT"){ %> selected  <%}%>>PUT</option>
+                                    <option value="DELETE" <%if(enableFilterMultipartApiMethodType=="DELETE"){ %> selected  <%}%>>DELETE</option>
+                                    <option value="PATCH" <%if(enableFilterMultipartApiMethodType=="PATCH"){ %> selected  <%}%>>PATCH</option>
+                                    <option value="OPTIONS" <%if(enableFilterMultipartApiMethodType=="OPTIONS"){ %> selected  <%}%>>OPTIONS</option>
+                                    <option value="HEAD" <%if(enableFilterMultipartApiMethodType=="HEAD"){ %> selected  <%}%>>HEAD</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="enableCacheOpenApiTable" <%if(enableCacheOpenApiTable){ %> checked="checked"  <%}%> />
+                                {{i18n.settings.openCacheApi}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="enableSwaggerBootstrapUi"  <%if(enableSwaggerBootstrapUi){ %> checked="checked"  <%}%> />
+                                {{i18n.settings.plus}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 5px;">
+                    <div class="col-lg-10">
+                        <button class="btn btn-primary" type="button" id="btnSaveSettings">{{i18n.settings.save}}</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div style="margin: 0px auto;width: 80%;margin-top: 5px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">{{@ i18n.settings.fastTitle}}</div>
+            <div class="panel-body" style="height: 65px;" >
+                <div class="col-lg-12" style="margin-top:10px;">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for..."  id="useSettingsCopyOnUrl" readonly="readonly">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="btnCopyUserSettingsUrl">{{i18n.settings.copy}}</button>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript" src="webjars/bycdao-ui/cdao/swaggerbootstrapui.js?v=1.9.6"></script>
+<script type="text/javascript">
+    $(function () {
+        /***
+         * 拖动事件
+         * @type {boolean}
+         */
+        var isResizing = false,lastDownX = 0;
+        var container = $('#container'),left = $('.left'),right = $('.right'),handle = $('#handle'),tabc=$("#sbu-dynamic-tab");
+        //设置rightwidth
+        right.css("width",container.width()-left.width()-8);
+        tabc.css("width",container.width()-left.width()-8);
+        handle.on('mousedown',function(e) {
+            isResizing = true;
+            lastDownX = e.clientX;
+        });
+        $(document).on('mousemove',function(e) {
+            // we don't want to do anything if we aren't resizing.
+            if (!isResizing) return;
+            var offsetRight = container.width() - (e.clientX - container.offset().left-8);
+            left.css("width",e.clientX)
+            right.css('width', offsetRight-20);
+            right.css("right","1px")
+            handle.css("left",e.clientX)
+        }).on('mouseup', function (e) {
+            // stop resizing
+            isResizing = false;
+        });
+
+        //菜单点击事件
+        $("#leftCheck").on("click",function (e) {
+            e.preventDefault();
+            var that=$(this);
+            var display=that.data("display");
+            if(display=="0"){
+                that.removeClass("icon-zuosuojin1");
+                that.addClass("icon-yousuojin1");
+                //隐藏
+                that.data("display","1");
+                //分组
+                $("#leftGroup").hide("slow")
+                //菜单
+                $("#leftMenu").hide();
+                //handle
+                $("#handle").hide();
+
+                var allwidth=$('#container').width();
+                right.css("width",allwidth)
+            }else{
+                that.addClass("icon-zuosuojin1");
+                that.removeClass("icon-yousuojin1");
+                var width=container.width();
+                var leftWidth=left.width();
+                var handleWidth=handle.width();
+                var wid=width-leftWidth-handleWidth;
+                //显示
+                that.data("display","0");
+                //分组
+                $("#leftGroup").show("slow")
+                //菜单
+                $("#leftMenu").show("slow");
+                //handle
+                $("#handle").show("slow");
+                right.css("width",wid);
+                right.css("right","0");
+            }
+        })
+
+        layui.config({
+            base: 'webjars/bycdao-ui/ext/'
+        }).use([ 'sbuadmin', 'element'], function () {
+            var $ = layui.$;
+            var admin=layui.sbuadmin;
+            admin.run(ace);
+        });
+    })
+</script>
+</body>
+</html>

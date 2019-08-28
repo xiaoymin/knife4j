@@ -15,7 +15,7 @@
         <module>knife4j-core</module>
     </modules>
     <packaging>pom</packaging>
-    <description>knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案,前身是swagger-bootstrap-ui,取名kni4j是希望她能像小刀一样小巧,轻量,并且功能强悍.</description>
+    <description>knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案,前身是swagger-bootstrap-ui,取名kni4j是希望她能像一把匕首一样小巧,轻量,并且功能强悍.</description>
     <developers>
         <developer>
             <id>xiaoym</id>
@@ -24,7 +24,7 @@
             <roles>
                 <role>Java Development Engineer</role>
             </roles>
-            <timezone>2017-4-17 18:05:10</timezone>
+            <timezone>2019-8-26 16:58:07</timezone>
         </developer>
     </developers>
     <properties>
@@ -39,7 +39,6 @@
         <slf4j.version>1.7.28</slf4j.version>
         <!-- 打包跳过单元测试 -->
         <skipTests>true</skipTests>
-        <destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</destDir>
     </properties>
     <licenses>
         <license>

@@ -28,7 +28,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Documented
 @Import({SwaggerBootstrapUIConfiguration.class, SecurityConfiguration.class, MarkdownFileConfiguration.class})
-public @interface EnableKnife4jSpring {
+public @interface EnableSwaggerBootstrapUi {
 
 
 }

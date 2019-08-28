@@ -11,5 +11,11 @@
     <artifactId>knife4j-spring-ui</artifactId>
     <description>前端Swagger文档ui模块</description>
 
+    <properties>
+        <destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</destDir>
+    </properties>
+
+
+
 
 </project>
