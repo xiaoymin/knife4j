@@ -84,18 +84,7 @@
         that.windowResize();
         //加载分组接口
         that.analysisGroup();
-        //创建分组元素
-        that.createGroupElement();
-        //搜索
-        that.searchEvents();
-        //tab事件
-        that.tabCloseEventsInit();
-        //opentab
-        that.initOpenTable();
-        //hash
-        //that.hashInitEvent();
-        //init hashMethod
-        that.initCurrentHashApi();
+
     }
 
     /***
@@ -700,79 +689,19 @@
             $.ajax({
                 url:that.url,
                 type:"get",
-                dataType:"json",
-                async:false,
-                success:function (data) {
-                    that.log("请求成功");
-                    that.log(data);
-                    var t=typeof(data);
-                    var groupData=null;
-                    if(t=="string"){
-                        groupData=JSON.parse(data);
-                    }else{
-                        groupData=data;
-                    }
-                    that.log("响应分组json数据");
-                    that.log(groupData);
-                    $.each(groupData,function (i, group) {
-                        var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
-                        g.url=group.url;
-                        var newUrl="";
-                        //此处需要判断basePath路径的情况
-                        if (group.url!=null&&group.url!=undefined&&group.url!=""){
-                            newUrl=group.url;
-                        }else{
-                            newUrl=group.location;
-                        }
-                        var extBasePath="";
-                        var idx=newUrl.indexOf("/v2/api-docs");
-                        if(idx>0){
-                            //增强地址存在basePath
-                            extBasePath=newUrl.substr(0,idx);
-                        }
-                        that.log("增强basePath地址："+extBasePath);
-                        //赋值增强地址
-                        g.extUrl=extBasePath+that.extUrl+"?group="+group.name;
-                        if(that.validateExtUrl==""){
-                            that.validateExtUrl=g.extUrl;
-                        }
-                        //判断当前分组url是否存在basePath
-                        if(group.basePath!=null&&group.basePath!=undefined&&group.basePath!=""){
-                            g.baseUrl=group.basePath;
-                        }
-                        //赋值查找缓存的id
-                        if (that.cacheApis.length>0){
-                            var cainstance=null;
-                            $.each(that.cacheApis,function (x, ca) {
-                                if(ca.id==g.groupId){
-                                    cainstance=ca;
-                                }
-                            })
-                            if (cainstance!=null){
-                                g.firstLoad=false;
-                                //判断旧版本是否包含updatesApi属性
-                                if(!cainstance.hasOwnProperty("updateApis")){
-                                    cainstance["updateApis"]=new Object();
-                                }
-                                g.cacheInstance=cainstance;
-                                that.log(g);
-                                //g.groupApis=cainstance.cacheApis;
-                            }else{
-                                g.cacheInstance=new SwaggerBootstrapUiCacheApis({id:g.groupId,name:g.name})
-                            }
-                        }else{
-                            g.cacheInstance=new SwaggerBootstrapUiCacheApis({id:g.groupId,name:g.name})
-                        }
-                        g.i18n=that.i18n.instance;
-                        that.instances.push(g);
-                    })
-                },
-                error:function (xhr, textStatus, errorThrown) {
-                    that.log("error...")
-                    that.log(xhr)
-                    that.log(textStatus);
-                    that.log(errorThrown)
-                }
+                dataType:"json"
+            }).done(function (data) {
+
+                 that.analysisGroupSuccess(data);
+
+                //创建分组元素
+                that.createGroupElement();
+
+            }).fail(function (xhr, textStatus, errorThrown) {
+                that.error("fail-----------------error...")
+                that.error(xhr)
+                that.error(textStatus);
+                that.error(errorThrown)
             })
         }
         catch (err){
@@ -785,8 +714,96 @@
 
     }
 
+    /***
+     * 请求分组成功处理逻辑
+     * @param data
+     */
+    SwaggerBootstrapUi.prototype.analysisGroupSuccess=function (data) {
+        var that=this;
+        that.log("done---------------------------")
+        that.log(data);
+        that.log("请求成功");
+        that.log(data);
+        var t=typeof(data);
+        var groupData=null;
+        if(t=="string"){
+            groupData=JSON.parse(data);
+        }else{
+            groupData=data;
+        }
+        that.log("响应分组json数据");
+        that.log(groupData);
+        $.each(groupData,function (i, group) {
+            var g=new SwaggerBootstrapUiInstance(group.name,group.location,group.swaggerVersion);
+            g.url=group.url;
+            var newUrl="";
+            //此处需要判断basePath路径的情况
+            if (group.url!=null&&group.url!=undefined&&group.url!=""){
+                newUrl=group.url;
+            }else{
+                newUrl=group.location;
+            }
+            var extBasePath="";
+            var idx=newUrl.indexOf("/v2/api-docs");
+            if(idx>0){
+                //增强地址存在basePath
+                extBasePath=newUrl.substr(0,idx);
+            }
+            that.log("增强basePath地址："+extBasePath);
+            //赋值增强地址
+            g.extUrl=extBasePath+that.extUrl+"?group="+group.name;
+            if(that.validateExtUrl==""){
+                that.validateExtUrl=g.extUrl;
+            }
+            //判断当前分组url是否存在basePath
+            if(group.basePath!=null&&group.basePath!=undefined&&group.basePath!=""){
+                g.baseUrl=group.basePath;
+            }
+            //赋值查找缓存的id
+            if (that.cacheApis.length>0){
+                var cainstance=null;
+                $.each(that.cacheApis,function (x, ca) {
+                    if(ca.id==g.groupId){
+                        cainstance=ca;
+                    }
+                })
+                if (cainstance!=null){
+                    g.firstLoad=false;
+                    //判断旧版本是否包含updatesApi属性
+                    if(!cainstance.hasOwnProperty("updateApis")){
+                        cainstance["updateApis"]=new Object();
+                    }
+                    g.cacheInstance=cainstance;
+                    that.log(g);
+                    //g.groupApis=cainstance.cacheApis;
+                }else{
+                    g.cacheInstance=new SwaggerBootstrapUiCacheApis({id:g.groupId,name:g.name})
+                }
+            }else{
+                g.cacheInstance=new SwaggerBootstrapUiCacheApis({id:g.groupId,name:g.name})
+            }
+            g.i18n=that.i18n.instance;
+            that.instances.push(g);
+        })
+    }
 
-
+    /**
+     * 当swagger-api请求初始化完成后,初始化页面的相关操作
+     * 包括搜索、打开地址hash地址、tab事件等等
+     */
+    SwaggerBootstrapUi.prototype.afterApiInitSuccess=function () {
+        var that=this;
+        //搜索
+        that.searchEvents();
+        //tab事件
+        that.tabCloseEventsInit();
+        //opentab
+        that.initOpenTable();
+        //hash
+        //that.hashInitEvent();
+        //init hashMethod
+        that.initCurrentHashApi();
+    }
     /***
      * 基础实例赋值
      * @param menu
@@ -866,8 +883,18 @@
                 that.log("截取后的url:"+api);*/
                 var async=that.hasLoad;
                 that.log("是否开启异步加载："+async)
-
                 $.ajax({
+                    //url:"v2/api-docs",
+                    url: api,
+                    dataType: "json",
+                    type: "get"
+                }).done(function (data) {
+                    that.analysisApiSuccess(data);
+                }).fail(function (xhr, textStatus, errorThrown) {
+                    that.analysisApiFail(xhr,textStatus,errorThrown);
+                })
+
+                /*$.ajax({
                     //url:"v2/api-docs",
                     url:api,
                     dataType:"json",
@@ -919,7 +946,7 @@
                         that.createDetailMenu();
 
                     }
-                })
+                })*/
             }
             else{
                 that.setInstanceBasicPorperties(null);
@@ -927,6 +954,8 @@
                 that.updateCurrentInstanceSecuritys();
                 that.createDescriptionElement();
                 that.createDetailMenu();
+
+                that.afterApiInitSuccess();
             }
         }catch (err){
             that.error(err);
@@ -935,8 +964,73 @@
                 console.error(err);
             }
         }
+    }
+
+    /**
+     * 接口请求api成功时的操作
+     */
+    SwaggerBootstrapUi.prototype.analysisApiSuccess=function (data) {
+        var that=this;
+
+        that.hasLoad=true;
+        //var menu=JSON.parse(data);
+        that.log("success")
+        that.log(data);
+        var t=typeof(data);
+        var menu=null;
+        if(t=="string"){
+            menu=JSON.parse(data);
+        }else{
+            menu=data;
+        }
+        that.setInstanceBasicPorperties(menu);
+        that.analysisDefinition(menu);
+        //DApiUI.definitions(menu);
+        that.log(menu);
+        that.createDescriptionElement();
+        //当前实例已加载
+        that.currentInstance.load=true;
+        //创建swaggerbootstrapui主菜单
+        that.createDetailMenu();
+        //opentab
+        that.initOpenTable();
+
+        that.afterApiInitSuccess();
 
     }
+
+    /**
+     * 请求api接口失败时处理逻辑
+     * @param xhr
+     * @param textStatus
+     * @param errorThrown
+     */
+    SwaggerBootstrapUi.prototype.analysisApiFail=function (xhr, textStatus, errorThrown) {
+        var that=this;
+        that.log("error...")
+        that.log(xhr);
+        that.log(textStatus);
+        that.log(errorThrown);
+        that.hasLoad=true;
+        var txt=xhr.responseText;
+        //替换带[]
+        that.log("replace...")
+        var replaceData=txt.replace(/'/g,"\"");
+        var menu=JSON.parse(replaceData);
+        that.setInstanceBasicPorperties(menu);
+        that.analysisDefinition(menu);
+        //DApiUI.definitions(menu);
+        that.log(menu);
+        that.createDescriptionElement();
+        //当前实例已加载
+        that.currentInstance.load=true;
+        //创建swaggerbootstrapui主菜单
+        that.createDetailMenu();
+
+        that.afterApiInitSuccess();
+
+    }
+
     /***
      * 创建左侧菜单按钮
      * @param menu
@@ -6336,10 +6430,10 @@
      * @param msg
      */
     SwaggerBootstrapUi.prototype.log=function (msg) {
-        /*if(window.console){
+        if(window.console){
             //正式版不开启console功能
             console.log(msg);
-        }*/
+        }
     }
     /***
      * 错误异常输出
