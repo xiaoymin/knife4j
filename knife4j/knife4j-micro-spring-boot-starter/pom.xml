@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>knife4j-micro-spring-boot-starter</artifactId>
+    <name>knife4j-micro-spring-boot-starter</name>
     <description>Spring Cloud微服务架构下,子服务无需引用前端UI模块,只需引入后端的Jar包</description>
     <dependencies>
 

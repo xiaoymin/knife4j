@@ -10,6 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>knife4j-core</artifactId>
+    <name>knife4j-core</name>
+    <description>knife4j核心层</description>
 
 
 </project>

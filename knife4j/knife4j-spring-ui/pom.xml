@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>knife4j-spring-ui</artifactId>
+    <name>knife4j-spring-ui</name>
     <description>前端Swagger文档ui模块</description>
 
     <properties>

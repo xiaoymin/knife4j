@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>knife4j-spring</artifactId>
+    <name>knife4j-spring</name>
     <description>依赖Springfox框架,生成Spring的增强文档</description>
 
     <dependencies>
