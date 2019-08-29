@@ -39,7 +39,7 @@ public class DynamicParameterBuilderPlugin implements ParameterBuilderPlugin {
     public void apply(ParameterContext parameterContext) {
         ResolvedMethodParameter resolvedMethodParameter=parameterContext.resolvedMethodParameter();
         if (resolvedMethodParameter!=null&&resolvedMethodParameter.getParameterType()!=null&&resolvedMethodParameter.getParameterType().getErasedType()!=null){
-            if (Map.class.isAssignableFrom(resolvedMethodParameter.getParameterType().getErasedType())){
+            if (Map.class.isAssignableFrom(resolvedMethodParameter.getParameterType().getErasedType()) || resolvedMethodParameter.getParameterType().getErasedType().getName() == "com.google.gson.JsonObject" ){
                 //查询注解
                 Optional<ApiOperationSupport> supportOptional=parameterContext.getOperationContext().findAnnotation(ApiOperationSupport.class);
                 if (supportOptional.isPresent()){

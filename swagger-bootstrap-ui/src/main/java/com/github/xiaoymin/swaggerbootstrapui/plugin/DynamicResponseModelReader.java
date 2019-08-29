@@ -102,21 +102,11 @@ public class DynamicResponseModelReader  implements OperationBuilderPlugin {
                     name=genClassName(operationContext);
                 }
                 //追加groupController
-                name=operationContext.getGroupName().replaceAll("[_-]","")+"."+name;
+                name=operationContext.getGroupName().replaceAll("[_-]","")+"."+name+"Response";
                 String classPath=CommonUtils.basePackage+name;
                 Class<?> loadClass=CommonUtils.load(classPath);
-                /*if (loadClass==null){
-                    String genericFieldName=dynamicResponseParameters.genericFieldName();
-                    if (genericFieldName!=null&&!"".equals(genericFieldName)&&!"null".equals(genericFieldName)){
-                        ResolvedType defaultType=operationContext.alternateFor(operationContext.getReturnType());
-                        Class<?> defaultReturnClazz=defaultType.getErasedType();
-                        loadClass=CommonUtils.createDynamicModelByOriginalGenericClass(defaultReturnClazz,name,dynamicResponseParameters);
-                        if (loadClass==null){
-                            loadClass= CommonUtils.createDynamicModelClass(name,parameters);
-                        }
-                    }else{
-                        loadClass= CommonUtils.createDynamicModelClass(name,parameters);
-                    }
+               /* if (loadClass==null){
+                    loadClass= CommonUtils.createDynamicModelClass(name,parameters);
                 }*/
                 if (loadClass!=null) {
 

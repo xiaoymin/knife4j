@@ -1,0 +1,18 @@
+{
+  "hints": [],
+  "properties": [
+
+  ],
+  "groups": [
+    {
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
+      "name": "knife4j",
+      "type": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties"
+    },
+    {
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jHttpBasic",
+      "name": "knife4j.basic",
+      "type": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jHttpBasic"
+    }
+  ]
+}

@@ -84,7 +84,7 @@ public class OperationDynamicResponseModelProvider implements OperationModelsPro
             if (dynamics!=null&&dynamics.length>0){
                 cacheGenModelMaps.put(name,name);
                 //追加groupController
-                name=context.getGroupName().replaceAll("[_-]","")+"."+name;
+                name=context.getGroupName().replaceAll("[_-]","")+"."+name+"Response";
                 /*Class<?> fieldClazz=null;
                 String genericFieldName=dynamicParameters.genericFieldName();
                 if (genericFieldName!=null&&!"".equals(genericFieldName)&&!"null".equals(genericFieldName)){
