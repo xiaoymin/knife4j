@@ -1,6 +1,10 @@
 swagger-bootstrap-ui
 =========================
 
+**The project stops updating at GitHub, and the latest code is available at gitee at [https://gitee.com/xiaoym/knife4j](https://gitee.com/xiaoym/knife4j)**
+
+**Please also mention new PR and issues on [Gitee Knife4j](https://gitee.com/xiaoym/knife4j)**
+
 <!-- Badges section here. -->
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.xiaoymin/swagger-bootstrap-ui/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.xiaoymin/swagger-bootstrap-ui)
 [![Crates.io](https://img.shields.io/crates/l/rustc-serialize.svg)](https://github.com/xiaoymin/swagger-bootstrap-ui/blob/master/LICENSE)

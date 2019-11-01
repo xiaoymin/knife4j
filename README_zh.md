@@ -1,5 +1,9 @@
 # SwaggerBootstrapUi
 
+**本项目停止在GitHub更新,最新的代码访问Gitee地址：https://gitee.com/xiaoym/knife4j**
+
+**也请大家在Gitee上提新的PR、ISSUES**
+
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.xiaoymin/swagger-bootstrap-ui/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.xiaoymin/swagger-bootstrap-ui)
 
 ## 项目说明
