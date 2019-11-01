@@ -23,7 +23,7 @@ Project Demo:https://gitee.com/xiaoym/swagger-bootstrap-ui-demo
 
 Document:http://doc.xiaominfo.com/
 
-QQ communication group: 608374991
+QQ communication group: 621154782
 
 ## Core
 
