@@ -1,0 +1,17 @@
+{
+  "globals": {
+    "$": false,
+    "window": false,
+    "document": false
+  },
+  "strict": false,
+  "curly": true,
+  "eqeqeq": true,
+  "noarg": true,
+  "noempty": true,
+  "quotmark": "single",
+  "undef": true,
+  "unused": true,
+  "asi": true,
+  "esversion": 6
+}
