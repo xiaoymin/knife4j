@@ -2,6 +2,13 @@ module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   lintOnSave: false,
+  css: {
+    loaderOptions: {
+      less: {
+        javascriptEnabled: true
+      }
+    }
+  },
   devServer: {
     proxy: {
       '/breport': {

@@ -1,15 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-Vue.use(Vuex)
+import header from './module/header'
 
-export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+Vue.use(Vuex)
+const store = new Vuex.Store({
   modules: {
+    header
   }
-})
+});
+
+
+export default store;
