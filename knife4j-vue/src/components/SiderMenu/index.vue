@@ -51,6 +51,35 @@ export default {
       type: Object
     }
   },
+  mounted() {
+    const pathArr = urlToList(this.location.path);
+    if (pathArr[2] && !this.checkPath(pathArr[2])) {
+      this.openKeys = [pathArr[0]];
+      this.selectedKeys = [pathArr[1]];
+      return;
+    } else if (pathArr[2]) {
+      this.openKeys = [pathArr[0], pathArr[1]];
+    } else {
+      this.openKeys = [pathArr[0]];
+    }
+    this.selectedKeys = [this.location.path];
+  },
+  watch: {
+    collapsed: "collapsedChange",
+    $route() {
+      const pathArr = urlToList(this.location.path);
+      if (pathArr[2] && !this.checkPath(pathArr[2])) {
+        this.openKeys = [pathArr[0]];
+        this.selectedKeys = [pathArr[1]];
+        return;
+      } else if (pathArr[2]) {
+        this.openKeys = [pathArr[0], pathArr[1]];
+      } else {
+        this.openKeys = [pathArr[0]];
+      }
+      this.selectedKeys = [this.location.path];
+    }
+  },
   data() {
     return {
       openKeys: [],
