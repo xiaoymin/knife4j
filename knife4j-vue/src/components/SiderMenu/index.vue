@@ -16,10 +16,12 @@
         <img :src="logo" alt="logo" />
       </a>
     </div>
+    <div class="knife4j-menu">
+      <a-menu key="Menu" theme="dark" mode="inline" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 16px 0; width: 100%">
+        <ThreeMenu :menuData="menuData" />
+      </a-menu>
+    </div>
 
-    <a-menu key="Menu" theme="dark" mode="inline" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 16px 0; width: 100%">
-      <ThreeMenu :menuData="menuData" />
-    </a-menu>
   </a-layout-sider>
 </template>
 <script>

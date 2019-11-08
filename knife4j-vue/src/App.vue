@@ -20,6 +20,9 @@ export default {
   }
 };
 </script>
+<style lang="less">
+@import url("style/knife4j.less");
+</style>
 
 <style>
 body {

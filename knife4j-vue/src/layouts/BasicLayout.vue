@@ -3,11 +3,11 @@
     <a-layout class="ant-layout-has-sider">
       <SiderMenu :logo="logo" :menuData="MenuData" :collapsed="collapsed" :location="$route" :onCollapse="handleMenuCollapse" :menuWidth="menuWidth" />
       <a-layout>
-        <a-layout-header style="padding: 0;    background: #fff;">
+        <a-layout-header style="padding: 0;background: #fff;">
           <GlobalHeader :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="(item)=>handleMenuClick(item)" />
         </a-layout-header>
         <a-layout-content class="knife4j-body-content">
-          <router-view></router-view>
+          <router-view class="knife4j-router-view"></router-view>
           <a-layout-footer style="padding: 0">
             <GlobalFooter :links="links" />
           </a-layout-footer>
@@ -31,7 +31,7 @@ export default {
     return {
       logo: logo,
       menuWidth: 280,
-      headerClass: "header-width",
+      headerClass: "knife4j-header-width",
       MenuData: [],
       collapsed: false,
       links: [
@@ -75,10 +75,10 @@ export default {
       this.collapsed = !this.collapsed;
       setTimeout(() => {
         if (tmpColl) {
-          this.headerClass = "header-width";
+          this.headerClass = "knife4j-header-width";
           this.menuWidth = 280;
         } else {
-          this.headerClass = "header-width-collapsed";
+          this.headerClass = "knife4j-header-width-collapsed";
           this.menuWidth = 80;
         }
       }, 10);
@@ -88,28 +88,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@headerDefaultWidth: calc(100% - 280px);
-@headerCollapsedWidth: calc(100% - 80px);
-@contentHeight: calc(100vh - 64px);
-
-.header-default {
-  position: fixed;
-  z-index: 999;
-}
-
-.header-width {
-  width: @headerDefaultWidth;
-  max-width: @headerDefaultWidth;
-}
-.header-width-collapsed {
-  width: @headerCollapsedWidth;
-  max-width: @headerCollapsedWidth;
-}
-
-.knife4j-body-content {
-  /* overflow: auto; */
-  overflow-y: scroll;
-  /*  margin: 24px 24px 0; */
-  height: @contentHeight;
-}
 </style>
