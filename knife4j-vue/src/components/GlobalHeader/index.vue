@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header header-default " :class="headerClass">
     <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="toggle" />
     <span class="header-title">knife4j增强文档系统</span>
     <div class="right">
@@ -39,6 +39,9 @@ export default {
     HeaderSearch
   },
   props: {
+    headerClass: {
+      type: String
+    },
     currentUser: {
       type: Object
     },

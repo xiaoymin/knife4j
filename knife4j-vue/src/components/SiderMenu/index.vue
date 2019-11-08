@@ -1,8 +1,8 @@
 <template>
-  <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="onCollapse" width="256" class="sider">
+  <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="onCollapse" :width="menuWidth" class="sider">
     <div class="logo-data" key="logo" v-if="!collapsed">
       <a to="/" style="float:left;">
-        <a-select defaultValue="lucy" style="width: 220px">
+        <a-select defaultValue="lucy" style="width: 250px">
           <a-select-option value="lucy">用户服务</a-select-option>
           <a-select-option value="lucy1">订单服务</a-select-option>
           <a-select-option value="lucy2">产品服务</a-select-option>
@@ -32,6 +32,9 @@ export default {
     ThreeMenu
   },
   props: {
+    menuWidth: {
+      type: Number
+    },
     logo: {
       type: String
     },
@@ -114,6 +117,12 @@ export default {
 </style>
 <style lang="less">
 @import "~ant-design-vue/lib/style/themes/default.less";
+
+.left-menu {
+  position: fixed;
+  transition-property: width 2s;
+}
+
 .drawer .drawer-content {
   background: #001529;
 }
