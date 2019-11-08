@@ -1,7 +1,7 @@
 @contentHeight: calc(100vh - 64px);
 @headerDefaultWidth: calc(100vw - 280px);
 @headerCollapsedWidth: calc(100vw - 80px);
-
+@contentTabHeight: calc(100vh - 152px);
 
 .knife4j {
   padding: 0px;
@@ -40,9 +40,6 @@
 }
 
 
-
-
-
 /**
 * -----------------------------
 * 顶部Header部分样式
@@ -69,6 +66,24 @@
   max-width: @headerCollapsedWidth;
 }
 
+
+/**
+* -----------------------------
+* tab选项卡部分样式
+* ------------------------------
+*/
+
+.knife4j-tab {
+  padding: 5px 5px 0;
+  left: 4px;
+  top: 5px;
+}
+
+
+.knife4j-tab .ant-tabs-bar {
+  margin: 0 0 3px 0
+}
+
 /**
 * -----------------------------
 * 内容部分样式
@@ -76,10 +91,9 @@
 */
 
 .knife4j-body-content {
-  /* overflow: auto; */
   overflow-y: auto;
-  /*  margin: 24px 24px 0; */
-  height: @contentHeight;
+  height: @contentTabHeight;
+  min-height: 400px;
 }
 
 /*

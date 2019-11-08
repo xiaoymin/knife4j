@@ -1,17 +1,20 @@
 <template>
   <div class="BasicLayout">
     <a-layout class="ant-layout-has-sider">
-      <SiderMenu :logo="logo" :menuData="MenuData" :collapsed="collapsed" :location="$route" :onCollapse="handleMenuCollapse" :menuWidth="menuWidth" />
+      <SiderMenu @menuClick='menuClick' :logo="logo" :menuData="MenuData" :collapsed="collapsed" :location="$route" :onCollapse="handleMenuCollapse" :menuWidth="menuWidth" />
       <a-layout>
         <a-layout-header style="padding: 0;background: #fff;">
           <GlobalHeader :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="(item)=>handleMenuClick(item)" />
         </a-layout-header>
-        <a-layout-content class="knife4j-body-content">
-          <router-view class="knife4j-router-view"></router-view>
-          <a-layout-footer style="padding: 0">
-            <GlobalFooter :links="links" />
-          </a-layout-footer>
-        </a-layout-content>
+
+        <a-tabs v-model="activeKey" type="editable-card" class="knife4j-tab">
+          <a-tab-pane v-for="pane in panels" :tab="pane.title" :key="pane.key" :closable="pane.closable">
+            <component :is="pane.content"></component>
+          </a-tab-pane>
+        </a-tabs>
+        <a-layout-footer style="padding: 0">
+          <GlobalFooter />
+        </a-layout-footer>
 
       </a-layout>
     </a-layout>
@@ -22,39 +25,28 @@ import logo from "@/assets/logo.png";
 import SiderMenu from "@/components/SiderMenu";
 import GlobalHeader from "@/components/GlobalHeader";
 import GlobalFooter from "@/components/GlobalFooter";
+import GlobalHeaderTab from "@/components/GlobalHeaderTab";
 import { getMenuData } from "./menu";
 
 export default {
   name: "BasicLayout",
-  components: { SiderMenu, GlobalHeader, GlobalFooter },
+  components: { SiderMenu, GlobalHeader, GlobalFooter, GlobalHeaderTab },
   data() {
+    const panes = [
+      { title: "主页", content: "Main", key: "3", closable: false },
+      { title: "Tab 2", content: "Hello2", key: "2" },
+      { title: "Tab 3", content: "Hello2", key: "4" }
+    ];
+
     return {
       logo: logo,
       menuWidth: 280,
       headerClass: "knife4j-header-width",
       MenuData: [],
       collapsed: false,
-      links: [
-        {
-          key: "Pro 首页",
-          title: "Pro 首页",
-          href: "https://github.com/Jackyzm/ant-design-vue-pro",
-          blankTarget: true
-        },
-        {
-          key: "github",
-          title: "github",
-          href: "https://github.com/Jackyzm/ant-design-vue-pro",
-          blankTarget: true
-        },
-        {
-          key: "Ant Design Vue",
-          title: "Ant Design Vue",
-          href:
-            "https://vuecomponent.github.io/ant-design-vue/docs/vue/introduce/",
-          blankTarget: true
-        }
-      ]
+      panels: panes,
+      activeKey: panes[0].key,
+      newTabIndex: 0
     };
   },
   created() {
@@ -70,6 +62,19 @@ export default {
     }
   },
   methods: {
+    menuClick(url) {
+      console.log("来自于子组件的传递方法,url:" + url);
+      const panes = this.panels;
+      const activeKey = `newTab${this.newTabIndex++}`;
+      panes.push({
+        title: "New Tab",
+        content: "Hello2",
+        key: activeKey
+      });
+      this.panels = panes;
+      console.log(this.panels);
+      this.activeKey = activeKey;
+    },
     handleMenuCollapse(collapsed) {
       const tmpColl = this.collapsed;
       this.collapsed = !this.collapsed;
