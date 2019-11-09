@@ -62,6 +62,7 @@ export default {
       return this.$store.state.header.userCurrent;
     }
   },
+  watch: {},
   methods: {
     menuClick(url) {
       const panes = this.panels;
@@ -94,7 +95,7 @@ export default {
         var path = menu.path;
         this.$router.push({ path: path });
       } else {
-        this.$router.push({ path: "/home" });
+        this.$router.push({ path: "/" });
       }
     },
     remove(targetKey) {
@@ -115,6 +116,7 @@ export default {
       }
       this.panels = panes;
       this.activeKey = activeKey;
+      this.tabChange(activeKey);
     },
     handleMenuCollapse(collapsed) {
       const tmpColl = this.collapsed;
