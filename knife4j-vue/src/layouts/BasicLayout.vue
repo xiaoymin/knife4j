@@ -7,7 +7,7 @@
           <GlobalHeader :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="(item)=>handleMenuClick(item)" />
         </a-layout-header>
 
-        <a-tabs hideAdd v-model="activeKey" type="editable-card" @edit="tabEditCallback" class="knife4j-tab">
+        <a-tabs hideAdd v-model="activeKey" type="editable-card" @change="tabChange" @edit="tabEditCallback" class="knife4j-tab">
           <a-tab-pane v-for="pane in panels" :tab="pane.title" :key="pane.key" :closable="pane.closable">
             <component :is="pane.content"></component>
           </a-tab-pane>
@@ -27,7 +27,10 @@ import GlobalHeader from "@/components/GlobalHeader";
 import GlobalFooter from "@/components/GlobalFooter";
 import GlobalHeaderTab from "@/components/GlobalHeaderTab";
 import { getMenuData } from "./menu";
-import { findComponentsByPath } from "@/components/utils/Knife4jUtils";
+import {
+  findComponentsByPath,
+  findMenuByKey
+} from "@/components/utils/Knife4jUtils";
 
 export default {
   name: "BasicLayout",
@@ -84,6 +87,15 @@ export default {
     },
     tabEditCallback(targetKey, action) {
       this[action](targetKey);
+    },
+    tabChange(targetKey) {
+      var menu = findMenuByKey(targetKey, this.MenuData);
+      if (menu != null) {
+        var path = menu.path;
+        this.$router.push({ path: path });
+      } else {
+        this.$router.push({ path: "/home" });
+      }
     },
     remove(targetKey) {
       let activeKey = this.activeKey;

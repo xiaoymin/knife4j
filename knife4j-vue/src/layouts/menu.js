@@ -7,6 +7,7 @@ function isUrl(path) {
 
 
 const menuData = [{
+    key: 'dashboard',
     name: 'dashboard',
     icon: 'dashboard',
     path: 'dashboard',
@@ -33,6 +34,7 @@ const menuData = [{
     ]
   },
   {
+    key: 'form',
     name: '表单页',
     icon: 'form',
     path: 'form',
