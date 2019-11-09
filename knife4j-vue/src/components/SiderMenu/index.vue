@@ -65,22 +65,19 @@ export default {
       this.openKeys = [pathArr[0]];
     }
     this.selectedKeys = [this.location.path];
+    this.openTab();
   },
   watch: {
     collapsed: "collapsedChange",
     $route() {
       const pathArr = urlToList(this.location.path);
-      console.log("watch-:");
-      console.log(pathArr);
       if (pathArr[2] && !this.checkPath(pathArr[2])) {
         this.openKeys = [pathArr[0]];
         this.selectedKeys = [pathArr[1]];
-        console.log("hhhh");
         return;
       } else if (pathArr[2]) {
         this.openKeys = [pathArr[0], pathArr[1]];
       } else {
-        console.log("hhhh---0");
         this.openKeys = [pathArr[0]];
       }
       this.selectedKeys = [this.location.path];
@@ -96,8 +93,6 @@ export default {
   },
   methods: {
     openTab() {
-      console.log("打开tab窗口");
-      console.log("当前选择 的key:" + this.selectedKeys);
       this.$emit("menuClick", this.selectedKeys);
     },
     checkPath(url) {

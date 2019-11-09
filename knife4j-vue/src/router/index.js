@@ -9,32 +9,37 @@ const routes = [{
     path: '/',
     name: 'home',
     component: BasicLayout,
-    redirect: '/dashboard/hello',
+    redirect: '/home',
     children: [{
-      path: '/dashboard/hello',
-      component: () => import('@/views/Hello')
-    }, {
-      path: '/dashboard/hello1',
-      component: () => import('@/views/Hello')
-    }, {
-      path: '/dashboard/hello2',
-      component: () => import('@/views/Hello2')
-    }, {
-      path: '/form/hello3',
-      component: () => import('@/views/Hello3')
-    }, {
-      path: '/form/hello4',
-      component: () => import('@/views/Hello4')
-    }, {
-      path: '/form/hello5',
-      component: () => import('@/views/Hello5')
-    }, {
-      path: '/hello6',
-      component: () => import('@/views/Hello6')
-    }, {
-      path: '/hello7',
-      component: () => import('@/views/Hello7')
-    }]
+        path: '/home',
+        component: () => import('@/views/index/Main')
+      },
+      {
+        path: '/dashboard/hello',
+        component: () => import('@/views/Hello')
+      }, {
+        path: '/dashboard/hello1',
+        component: () => import('@/views/Hello')
+      }, {
+        path: '/dashboard/hello2',
+        component: () => import('@/views/Hello2')
+      }, {
+        path: '/form/hello3',
+        component: () => import('@/views/Hello3')
+      }, {
+        path: '/form/hello4',
+        component: () => import('@/views/Hello4')
+      }, {
+        path: '/form/hello5',
+        component: () => import('@/views/Hello5')
+      }, {
+        path: '/hello6',
+        component: () => import('@/views/Hello6')
+      }, {
+        path: '/hello7',
+        component: () => import('@/views/Hello7')
+      }
+    ]
   },
   {
     path: '/about',

@@ -11,15 +11,21 @@ const menuData = [{
     icon: 'dashboard',
     path: 'dashboard',
     children: [{
+        key: 'anlaysisPage',
         name: '分析页',
+        component: 'Hello2',
         path: 'hello'
       },
       {
+        key: 'monitorPage',
         name: '监控页',
+        component: 'Hello2',
         path: 'hello1'
       },
       {
+        key: 'workspacePage',
         name: '工作台',
+        component: 'Hello2',
         path: 'hello2'
         // hideInBreadcrumb: true,
         // hideInMenu: true,
@@ -31,16 +37,22 @@ const menuData = [{
     icon: 'form',
     path: 'form',
     children: [{
+        key: 'basicForm',
         name: '基础表单',
+        component: 'Hello2',
         path: 'hello3'
       },
       {
+        key: 'setupForm',
         name: '分步表单',
+        component: 'Hello2',
         path: 'hello5'
       },
       {
+        key: 'advanceForm',
         name: '高级表单',
         authority: 'admin',
+        component: 'Hello2',
         path: 'hello4'
       }
     ]

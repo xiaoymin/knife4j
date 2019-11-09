@@ -7,7 +7,7 @@
           <GlobalHeader :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="(item)=>handleMenuClick(item)" />
         </a-layout-header>
 
-        <a-tabs v-model="activeKey" type="editable-card" class="knife4j-tab">
+        <a-tabs hideAdd v-model="activeKey" type="editable-card" @edit="tabEditCallback" class="knife4j-tab">
           <a-tab-pane v-for="pane in panels" :tab="pane.title" :key="pane.key" :closable="pane.closable">
             <component :is="pane.content"></component>
           </a-tab-pane>
@@ -27,17 +27,15 @@ import GlobalHeader from "@/components/GlobalHeader";
 import GlobalFooter from "@/components/GlobalFooter";
 import GlobalHeaderTab from "@/components/GlobalHeaderTab";
 import { getMenuData } from "./menu";
+import { findComponentsByPath } from "@/components/utils/Knife4jUtils";
 
 export default {
   name: "BasicLayout",
   components: { SiderMenu, GlobalHeader, GlobalFooter, GlobalHeaderTab },
   data() {
     const panes = [
-      { title: "主页", content: "Main", key: "3", closable: false },
-      { title: "Tab 2", content: "Hello2", key: "2" },
-      { title: "Tab 3", content: "Hello2", key: "4" }
+      { title: "主页", content: "Main", key: "kmain", closable: false }
     ];
-
     return {
       logo: logo,
       menuWidth: 280,
@@ -63,16 +61,47 @@ export default {
   },
   methods: {
     menuClick(url) {
-      console.log("来自于子组件的传递方法,url:" + url);
       const panes = this.panels;
-      const activeKey = `newTab${this.newTabIndex++}`;
-      panes.push({
-        title: "New Tab",
-        content: "Hello2",
-        key: activeKey
+      const tabKeys = this.panels.map(tab => tab.key);
+      var menu = findComponentsByPath(url, this.MenuData);
+      if (menu != null) {
+        //判断tab是否已加载
+        if (tabKeys.indexOf(menu.key) == -1) {
+          //不存在,添加，否则直接选中tab即可
+          panes.push({
+            title: menu.name,
+            content: menu.component,
+            key: menu.key,
+            closable: true
+          });
+          this.panels = panes;
+        }
+        this.activeKey = menu.key;
+      } else {
+        //主页
+        this.activeKey = "kmain";
+      }
+    },
+    tabEditCallback(targetKey, action) {
+      this[action](targetKey);
+    },
+    remove(targetKey) {
+      let activeKey = this.activeKey;
+      let lastIndex;
+      this.panels.forEach((pane, i) => {
+        if (pane.key === targetKey) {
+          lastIndex = i - 1;
+        }
       });
+      const panes = this.panels.filter(pane => pane.key !== targetKey);
+      if (panes.length && activeKey === targetKey) {
+        if (lastIndex >= 0) {
+          activeKey = panes[lastIndex].key;
+        } else {
+          activeKey = panes[0].key;
+        }
+      }
       this.panels = panes;
-      console.log(this.panels);
       this.activeKey = activeKey;
     },
     handleMenuCollapse(collapsed) {
