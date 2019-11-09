@@ -100,6 +100,7 @@ export default {
     },
     remove(targetKey) {
       let activeKey = this.activeKey;
+      const flag = targetKey == activeKey;
       let lastIndex;
       this.panels.forEach((pane, i) => {
         if (pane.key === targetKey) {
@@ -116,7 +117,10 @@ export default {
       }
       this.panels = panes;
       this.activeKey = activeKey;
-      this.tabChange(activeKey);
+      //判断是否是当前页
+      if (flag) {
+        this.tabChange(activeKey);
+      }
     },
     handleMenuCollapse(collapsed) {
       const tmpColl = this.collapsed;
