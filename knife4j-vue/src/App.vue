@@ -24,7 +24,7 @@ export default {
 @import url("style/knife4j.less");
 </style>
 
-<style>
+<style lang="less">
 body {
   overflow: hidden;
 }

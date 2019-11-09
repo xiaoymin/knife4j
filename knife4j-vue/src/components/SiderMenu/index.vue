@@ -1,6 +1,6 @@
 <template>
   <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="onCollapse" :width="menuWidth" class="sider">
-    <div class="logo-data" key="logo" v-if="!collapsed">
+    <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
       <a to="/" style="float:left;">
         <a-select defaultValue="lucy" style="width: 250px">
           <a-select-option value="lucy">用户服务</a-select-option>
@@ -11,7 +11,7 @@
       </a>
 
     </div>
-    <div class="logo" key="logo" v-if="collapsed">
+    <div class="knife4j-logo" key="logo" v-if="collapsed">
       <a to="/" style="float:left;" v-if="collapsed">
         <img :src="logo" alt="logo" />
       </a>
