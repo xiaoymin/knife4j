@@ -33,6 +33,8 @@ import {
   findMenuByKey
 } from "@/components/utils/Knife4jUtils";
 
+const constMenuWidth = 310;
+
 export default {
   name: "BasicLayout",
   components: { SiderMenu, GlobalHeader, GlobalFooter, GlobalHeaderTab },
@@ -42,7 +44,7 @@ export default {
     ];
     return {
       logo: logo,
-      menuWidth: 280,
+      menuWidth: constMenuWidth,
       headerClass: "knife4j-header-width",
       swagger: null,
       swaggerCurrentInstance: {},
@@ -67,7 +69,7 @@ export default {
     }
     //初始化相关操作
     //初始化菜单数据
-    this.MenuData = getMenuData();
+    //this.MenuData = getMenuData();
     //数据赋值
     this.$store.dispatch("header/getCurrentUser");
   },
@@ -142,7 +144,7 @@ export default {
       setTimeout(() => {
         if (tmpColl) {
           this.headerClass = "knife4j-header-width";
-          this.menuWidth = 280;
+          this.menuWidth = constMenuWidth;
         } else {
           this.headerClass = "knife4j-header-width-collapsed";
           this.menuWidth = 80;
