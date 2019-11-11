@@ -2,11 +2,7 @@
   <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="onCollapse" :width="menuWidth" class="sider">
     <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
       <a to="/" style="float:left;">
-        <a-select defaultValue="lucy" style="width: 250px">
-          <a-select-option value="lucy">用户服务</a-select-option>
-          <a-select-option value="lucy1">订单服务</a-select-option>
-          <a-select-option value="lucy2">产品服务</a-select-option>
-          <a-select-option value="lucy3">测试服务</a-select-option>
+        <a-select :value="defaultOption" style="width: 250px" :options="serviceOptions">
         </a-select>
       </a>
 
@@ -51,6 +47,12 @@ export default {
     },
     location: {
       type: Object
+    },
+    serviceOptions: {
+      type: Array
+    },
+    defaultOption: {
+      type: String
     }
   },
   mounted() {
@@ -91,6 +93,7 @@ export default {
       status: false
     };
   },
+  created() {},
   methods: {
     openTab() {
       this.$emit("menuClick", this.selectedKeys);

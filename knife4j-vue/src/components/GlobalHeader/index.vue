@@ -1,7 +1,7 @@
 <template>
   <div class="header knife4j-header-default" :class="headerClass">
     <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="toggle" />
-    <span class="knife4j-header-title">knife4j增强文档系统</span>
+    <span class="knife4j-header-title">swagger-bootstrap-ui很棒~~~！！！</span>
     <div class="right">
       <HeaderSearch class='action search' placeholder="站内搜索" :dataSource="['搜索提示一', '搜索提示二', '搜索提示三']" :onSearch="(value) => onSearch(value)" :onPressEnter="(value) => onPressEnter(value)" />
       <a-tooltip title="使用文档">

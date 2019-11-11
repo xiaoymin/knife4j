@@ -1,7 +1,7 @@
 <template>
   <div class="BasicLayout">
     <a-layout class="ant-layout-has-sider">
-      <SiderMenu @menuClick='menuClick' :logo="logo" :menuData="MenuData" :collapsed="collapsed" :location="$route" :onCollapse="handleMenuCollapse" :menuWidth="menuWidth" />
+      <SiderMenu :defaultOption="defaultServiceOption" :serviceOptions="serviceOptions" @menuClick='menuClick' :logo="logo" :menuData="MenuData" :collapsed="collapsed" :location="$route" :onCollapse="handleMenuCollapse" :menuWidth="menuWidth" />
       <a-layout>
         <a-layout-header style="padding: 0;background: #fff;">
           <GlobalHeader :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="(item)=>handleMenuClick(item)" />
@@ -27,6 +27,7 @@ import GlobalHeader from "@/components/GlobalHeader";
 import GlobalFooter from "@/components/GlobalFooter";
 import GlobalHeaderTab from "@/components/GlobalHeaderTab";
 import { getMenuData } from "./menu";
+import SwaggerBootstrapUi from "@/core/Knife4j.js";
 import {
   findComponentsByPath,
   findMenuByKey
@@ -43,6 +44,10 @@ export default {
       logo: logo,
       menuWidth: 280,
       headerClass: "knife4j-header-width",
+      swagger: null,
+      swaggerCurrentInstance: {},
+      defaultServiceOption: "",
+      serviceOptions: [],
       MenuData: [],
       collapsed: false,
       panels: panes,
@@ -50,7 +55,16 @@ export default {
       newTabIndex: 0
     };
   },
+  beforeCreate() {},
   created() {
+    console.log("创建页面之前,请求数据");
+    var that = this;
+    this.swagger = new SwaggerBootstrapUi({ Vue: that });
+    try {
+      this.swagger.main();
+    } catch (e) {
+      console.error(e);
+    }
     //初始化相关操作
     //初始化菜单数据
     this.MenuData = getMenuData();

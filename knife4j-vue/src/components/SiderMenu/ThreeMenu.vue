@@ -14,11 +14,10 @@ export default {
   render(h, context) {
     const { menuData } = context.props;
     const vnodes = [];
-
     const getMenuItemPath = item => {
       return (
         <router-link to={item.path}>
-          {item.icon ? <a-icon type={item.icon} /> : ""}
+          {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
           <span>{item.name}</span>
         </router-link>
       );
@@ -35,7 +34,7 @@ export default {
               title={
                 item.icon ? (
                   <span>
-                    <a-icon type={item.icon} />
+                    <my-icon type={item.icon}></my-icon>
                     <span>{item.name}</span>
                   </span>
                 ) : (

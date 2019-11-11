@@ -11,8 +11,8 @@ module.exports = {
   },
   devServer: {
     proxy: {
-      '/breport': {
-        target: 'http://localhost:18887/',
+      '/': {
+        target: 'http://swagger-bootstrap-ui.xiaominfo.com/',
         ws: true,
         changeOrigin: true
       }
