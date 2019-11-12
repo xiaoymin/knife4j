@@ -1295,13 +1295,14 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
   menuArr.push({
     key: 'kmain',
     name: '主页',
+    component: 'Main',
     icon: 'icon-home',
     path: 'home',
   })
   //是否有全局参数
   if (that.currentInstance.securityArrs != null && that.currentInstance.securityArrs.length > 0) {
     menuArr.push({
-      key: 'Authorize1',
+      key: 'Authorize',
       name: 'Authorize',
       icon: 'icon-authenticationsystem',
       path: 'home1',
@@ -1404,7 +1405,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
         //})
         //$.each(tag.childrens, function (i, children) {
         var tabSubMenu = {
-          key: md5(children.summary),
+          key: md5(children.summary + children.operationId),
           name: children.summary,
           path: children.operationId,
           component: 'ApiInfo',
@@ -1423,6 +1424,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
   //console.log(JSON.stringify(mdata))
   //双向绑定
   that.$Vue.MenuData = mdata;
+  that.$Vue.swaggerCurrentInstance = that.currentInstance;
   //设置菜单选中
   that.selectDefaultMenu(mdata);
   that.log("菜单初始化完成...")

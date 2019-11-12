@@ -26,7 +26,7 @@
         </a-layout-header>
         <a-tabs hideAdd v-model="activeKey" type="editable-card" @change="tabChange" @edit="tabEditCallback" class="knife4j-tab">
           <a-tab-pane v-for="pane in panels" :tab="pane.title" :key="pane.key" :closable="pane.closable">
-            <component :is="pane.content"></component>
+            <component :is="pane.content" :data='pane'></component>
           </a-tab-pane>
         </a-tabs>
         <a-layout-footer style="padding: 0">
@@ -64,9 +64,9 @@ export default {
     ThreeMenu
   },
   data() {
-    const panes = [
+    /* const panes = [
       { title: "主页", content: "Main", key: "kmain", closable: false }
-    ];
+    ]; */
     return {
       logo: logo,
       menuWidth: constMenuWidth,
@@ -77,8 +77,8 @@ export default {
       serviceOptions: [],
       MenuData: [],
       collapsed: false,
-      panels: panes,
-      activeKey: panes[0].key,
+      panels: [],
+      activeKey: "",
       newTabIndex: 0,
       openKeys: [],
       selectedKeys: [],
@@ -129,12 +129,14 @@ export default {
         //判断tab是否已加载
         if (tabKeys.indexOf(menu.key) == -1) {
           console.log(menu);
+          console.log(this.swaggerCurrentInstance);
           //不存在,添加，否则直接选中tab即可
           panes.push({
             title: menu.name,
             content: menu.component,
             key: menu.key,
-            closable: true
+            instance: this.swaggerCurrentInstance,
+            closable: menu.key != "kmain"
           });
           this.panels = panes;
         }
