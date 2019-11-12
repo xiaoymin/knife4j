@@ -120,6 +120,7 @@ export default {
   methods: {
     openDefaultTabByPath() {
       //根据地址栏打开Tab选项卡
+      console.log("根据地址栏打开Tab选项卡");
       const panes = this.panels;
       const tabKeys = this.panels.map(tab => tab.key);
       var url = this.$route.path;
@@ -127,6 +128,7 @@ export default {
       if (menu != null) {
         //判断tab是否已加载
         if (tabKeys.indexOf(menu.key) == -1) {
+          console.log(menu);
           //不存在,添加，否则直接选中tab即可
           panes.push({
             title: menu.name,
@@ -141,23 +143,36 @@ export default {
         //主页
         this.activeKey = "kmain";
       }
+      //this.watchPathMenuSelect();
     },
     watchPathMenuSelect() {
       var url = this.$route.path;
+      const tmpcol = this.collapsed;
       console.log("watch-------------------------");
       const pathArr = urlToList(url);
+      console.log(pathArr);
       var m = findComponentsByPath(url, this.MenuData);
-      if (pathArr.length == 2) {
-        //二级子菜单
-        var parentM = findComponentsByPath(pathArr[0], this.MenuData);
-        if (parentM != null) {
-          this.openKeys = [parentM.key];
-        }
-      } else {
-        if (m != null) {
-          this.openKeys = [m.key];
+      //如果菜单面板已折叠,则不用打开openKeys
+      if (!tmpcol) {
+        if (pathArr.length == 2) {
+          //二级子菜单
+          var parentM = findComponentsByPath(pathArr[0], this.MenuData);
+          if (parentM != null) {
+            this.openKeys = [parentM.key];
+          }
+        } else if (pathArr.length == 3) {
+          //三级子菜单
+          var parentM = findComponentsByPath(pathArr[1], this.MenuData);
+          if (parentM != null) {
+            this.openKeys = [parentM.key];
+          }
+        } else {
+          if (m != null) {
+            this.openKeys = [m.key];
+          }
         }
       }
+
       //this.selectedKeys = [this.location.path];
       if (m != null) {
         this.selectedKeys = [m.key];
@@ -255,7 +270,7 @@ export default {
         } else {
           this.headerClass = "knife4j-header-width-collapsed";
           this.menuWidth = 80;
-          this.openKeys = [""];
+          //this.openKeys = [""];
         }
       }, 10);
     },

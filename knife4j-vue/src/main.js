@@ -31,6 +31,12 @@ Vue.component('my-icon', myicon)
  */
 import MethodType from '@/components/common/MethodApi'
 Vue.component('MethodType', MethodType)
+/***
+ * api详情展示组件
+ */
+import ApiInfo from '@/views/api/index'
+Vue.component('ApiInfo', ApiInfo);
+
 
 Vue.config.productionTip = false
 // 响应数据拦截器

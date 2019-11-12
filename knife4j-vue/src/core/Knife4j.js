@@ -1366,6 +1366,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
       })
     }
   }
+  that.log(that.currentInstance)
+  var groupName = that.currentInstance.name;
   //接口文档
   that.currentInstance.tags.forEach(function (tag) {
     //})
@@ -1382,7 +1384,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
         key: md5(_lititle),
         name: _lititle,
         icon: 'icon-APIwendang',
-        path: 'swaggermodels'
+        path: groupName + "/" + tag.name
       })
     } else {
       if (that.settings.showTagStatus) {
@@ -1394,7 +1396,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
         key: md5(_lititle),
         name: _lititle,
         icon: 'icon-APIwendang',
-        path: md5(_lititle),
+        path: groupName + "/" + tag.name,
         hasNew: tag.hasNew || tag.hasChanged,
         children: []
       }
@@ -1404,7 +1406,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
         var tabSubMenu = {
           key: md5(children.summary),
           name: children.summary,
-          path: md5(children.summary),
+          path: children.operationId,
+          component: 'ApiInfo',
           hasNew: tag.hasNew || tag.hasChanged,
           deprecated: children.deprecated
         }
@@ -1421,12 +1424,28 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
   //双向绑定
   that.$Vue.MenuData = mdata;
   //设置菜单选中
+  that.selectDefaultMenu(mdata);
+  that.log("菜单初始化完成...")
+}
+
+
+/***
+ * 初始化菜单后,如果当前选择有根据地址打开api地址，则默认选中当前菜单
+ */
+SwaggerBootstrapUi.prototype.selectDefaultMenu = function (mdata) {
+  var that = this;
   var url = that.$Vue.$route.path;
   const pathArr = urlToList(url);
   var m = findComponentsByPath(url, mdata);
   if (pathArr.length == 2) {
     //二级子菜单
     var parentM = findComponentsByPath(pathArr[0], mdata);
+    if (parentM != null) {
+      that.$Vue.openKeys = [parentM.key];
+    }
+  } else if (pathArr.length == 3) {
+    //三级子菜单
+    var parentM = findComponentsByPath(pathArr[1], mdata);
     if (parentM != null) {
       that.$Vue.openKeys = [parentM.key];
     }
@@ -1439,8 +1458,9 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
   if (m != null) {
     that.$Vue.selectedKeys = [m.key];
   }
-  that.log("菜单初始化完成...")
+
 }
+
 
 /***
  * 判断属性是否已经存在
@@ -3142,7 +3162,7 @@ function checkFiledExistsAndEqStr(object, filed, eq) {
 SwaggerBootstrapUi.prototype.log = function (msg) {
   if (window.console) {
     //正式版不开启console功能
-    //window.console.log(msg)
+    window.console.log(msg)
   }
 }
 
