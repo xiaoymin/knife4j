@@ -5,7 +5,9 @@
 @headerDefaultWidth: calc(100vw - 310px);
 @headerCollapsedWidth: calc(100vw - 80px);
 @contentTabHeight: calc(100vh - 152px);
-@GlobalBackgroundColor: #252728;
+/* @GlobalBackgroundColor: #252728; */
+@GlobalBackgroundColor: #1e282c;
+@GlobalSubMenuBackgroundColor: #2c3b41;
 
 .knife4j {
   padding: 0px;
@@ -21,15 +23,25 @@
 .knife4j-menu {
   height: @contentHeight;
   overflow: auto;
-  background: #161718;
+  /* background: #161718; */
+  background: @GlobalBackgroundColor;
 
-  ul,
-  li {
+  ul {
     background: @GlobalBackgroundColor;
   }
 
-  .ant-menu-dark .ant-menu-inline.ant-menu-sub {
+  li {
     background: @GlobalBackgroundColor;
+    /* background: @GlobalSubMenuBackgroundColor; */
+  }
+
+  .ant-menu-dark .ant-menu-inline.ant-menu-sub {
+    /* background: @GlobalBackgroundColor; */
+    background: @GlobalSubMenuBackgroundColor;
+
+    li {
+      background: @GlobalSubMenuBackgroundColor;
+    }
   }
 
 

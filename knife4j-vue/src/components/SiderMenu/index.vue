@@ -2,7 +2,7 @@
   <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="onCollapse" :width="menuWidth" class="sider">
     <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
       <a to="/" style="float:left;">
-        <a-select :value="defaultOption" style="width: 250px" :options="serviceOptions">
+        <a-select :value="defaultOption" style="width: 280px" :options="serviceOptions">
         </a-select>
       </a>
 
