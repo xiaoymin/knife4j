@@ -30,7 +30,7 @@ export default {
         if (childrenItems && childrenItems.length > 0) {
           return (
             <a-sub-menu
-              key={item.path}
+              key={item.key}
               title={
                 item.icon ? (
                   <span>
@@ -49,7 +49,7 @@ export default {
         return null;
       } else {
         return (
-          <a-menu-item key={item.path}>{getMenuItemPath(item)}</a-menu-item>
+          <a-menu-item key={item.key}>{getMenuItemPath(item)}</a-menu-item>
         );
       }
     };
@@ -64,7 +64,6 @@ export default {
     };
 
     const DOM = getNavMenuItems(menuData);
-
     vnodes.push(DOM);
     return vnodes;
   }

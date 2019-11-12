@@ -27,10 +27,16 @@ import {
   message
 } from 'ant-design-vue'
 import md5 from 'js-md5'
-
+import {
+  urlToList
+} from '@/components/utils/pathTools'
 import KUtils from './utils'
 import marked from 'marked'
 import async from 'async'
+import {
+  findComponentsByPath,
+  findMenuByKey
+} from '@/components/utils/Knife4jUtils'
 
 marked.setOptions({
   gfm: true,
@@ -43,8 +49,6 @@ marked.setOptions({
 })
 
 function SwaggerBootstrapUi(options) {
-  console.log('init------------------sbui--------')
-  console.log(options)
   //swagger请求api地址
   this.url = options.url || 'swagger-resources'
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
@@ -1411,11 +1415,33 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
 
     }
   })
-  console.log(menuArr)
+  //console.log(menuArr)
+  var mdata = KUtils.formatter(menuArr);
+  //console.log(JSON.stringify(mdata))
   //双向绑定
-  that.$Vue.MenuData = KUtils.formatter(menuArr);
+  that.$Vue.MenuData = mdata;
+  //设置菜单选中
+  var url = that.$Vue.$route.path;
+  const pathArr = urlToList(url);
+  var m = findComponentsByPath(url, mdata);
+  if (pathArr.length == 2) {
+    //二级子菜单
+    var parentM = findComponentsByPath(pathArr[0], mdata);
+    if (parentM != null) {
+      that.$Vue.openKeys = [parentM.key];
+    }
+  } else {
+    if (m != null) {
+      that.$Vue.openKeys = [m.key];
+    }
+  }
+  //this.selectedKeys = [this.location.path];
+  if (m != null) {
+    that.$Vue.selectedKeys = [m.key];
+  }
   that.log("菜单初始化完成...")
 }
+
 /***
  * 判断属性是否已经存在
  * @param properties
@@ -2136,7 +2162,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     var _uptObject = new SwaggerBootstrapUiCacheUptApi(swpinfo.versionId);
     _uptObject.url = swpinfo.url;
     that.currentInstance.cacheInstance.updateApis[swpinfo.id] = _uptObject;
-    that.log(that.currentInstance)
+    //that.log(that.currentInstance)
   } else {
     //判断当前是否接口信息有变更,兼容赏上个版本的缓存
     var _cacheUa = that.currentInstance.cacheInstance.updateApis;
@@ -3116,7 +3142,7 @@ function checkFiledExistsAndEqStr(object, filed, eq) {
 SwaggerBootstrapUi.prototype.log = function (msg) {
   if (window.console) {
     //正式版不开启console功能
-    window.console.log(msg)
+    //window.console.log(msg)
   }
 }
 

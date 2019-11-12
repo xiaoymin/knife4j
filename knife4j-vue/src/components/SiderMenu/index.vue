@@ -23,6 +23,10 @@
 <script>
 import { urlToList } from "../utils/pathTools";
 import ThreeMenu from "./ThreeMenu";
+import {
+  findComponentsByPath,
+  findMenuByKey
+} from "@/components/utils/Knife4jUtils";
 
 export default {
   name: "SiderMenu",
@@ -56,7 +60,10 @@ export default {
     }
   },
   mounted() {
+    console.log("men5u-mounted------------------");
+    console.log(this.location.path);
     const pathArr = urlToList(this.location.path);
+    console.log(pathArr);
     if (pathArr[2] && !this.checkPath(pathArr[2])) {
       this.openKeys = [pathArr[0]];
       this.selectedKeys = [pathArr[1]];
@@ -66,24 +73,58 @@ export default {
     } else {
       this.openKeys = [pathArr[0]];
     }
-    this.selectedKeys = [this.location.path];
+    console.log(this.menuData);
+    console.log(this.openKeys);
+    if (this.menuData.length > 0) {
+      console.log("菜单>0");
+      var m = findComponentsByPath(this.location.path, this.menuData);
+      console.log(m);
+      //this.selectedKeys = [this.location.path];
+      this.selectedKeys = [m.key];
+    } else {
+      this.selectedKeys = ["kmain"];
+    }
+    console.log(this.selectedKeys);
+    console.log("传递父级参数---");
     this.openTab();
   },
   watch: {
     collapsed: "collapsedChange",
     $route() {
+      console.log("menu -watch-------------");
       const pathArr = urlToList(this.location.path);
-      if (pathArr[2] && !this.checkPath(pathArr[2])) {
+      console.log(pathArr);
+      console.log(this.menuData);
+      /* if (pathArr[2] && !this.checkPath(pathArr[2])) {
         this.openKeys = [pathArr[0]];
         this.selectedKeys = [pathArr[1]];
         return;
       } else if (pathArr[2]) {
         this.openKeys = [pathArr[0], pathArr[1]];
       } else {
-        this.openKeys = [pathArr[0]];
-      }
-      this.selectedKeys = [this.location.path];
-      this.openTab();
+        console.log("设置openKeys");
+        var m = findComponentsByPath(pathArr[0], this.menuData);
+        console.log(m);
+        this.openKeys = [m.key];
+        console.log()
+      } */
+      //只有一个菜单
+      setTimeout(() => {
+        var m = findComponentsByPath(this.location.path, this.menuData);
+        if (pathArr.length == 2) {
+          //二级子菜单
+          var parentM = findComponentsByPath(pathArr[0], this.menuData);
+          this.openKeys = [parentM.key];
+          console.log("openkeys----");
+          console.log(this.openKeys);
+        } else {
+          this.openKeys = [m.key];
+        }
+        //this.selectedKeys = [this.location.path];
+        this.selectedKeys = [m.key];
+        console.log(this.selectedKeys);
+        this.openTab();
+      }, 2000);
     }
   },
   data() {
@@ -96,7 +137,10 @@ export default {
   created() {},
   methods: {
     openTab() {
-      this.$emit("menuClick", this.selectedKeys);
+      //因为菜单是动态的,所以此处应该有延迟
+      setTimeout(() => {
+        this.$emit("menuClick", this.selectedKeys);
+      }, 1000);
     },
     checkPath(url) {
       let status = false;
@@ -143,7 +187,9 @@ export default {
         if (pathArr[2]) {
           this.openKeys = [pathArr[0], pathArr[1]];
         } else {
-          this.openKeys = [pathArr[0]];
+          var m = findComponentsByPath(pathArr[0], this.menuData);
+          //this.openKeys = [pathArr[0]];
+          this.openKeys = [m.key];
         }
       }
     }

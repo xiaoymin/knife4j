@@ -15,7 +15,7 @@ const routes = [{
         component: () => import('@/views/index/Main')
       },
       {
-        path: '/dashboard/hello',
+        path: '/documentManager/hello',
         component: () => import('@/views/Hello')
       }, {
         path: '/dashboard/hello1',

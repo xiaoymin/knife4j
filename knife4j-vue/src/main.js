@@ -16,17 +16,22 @@ import {
  */
 import Main from '@/views/index/Main'
 import Hello2 from '@/views/Hello2'
-
+Vue.component('Main', Main)
+Vue.component('Hello2', Hello2)
+/***
+ * 自定义图标
+ */
 import iconFront from './assets/iconfonts/iconfont.js'
-
 const myicon = Icon.createFromIconfontCN({
   scriptUrl: iconFront
 })
-
-
-Vue.component('Main', Main)
-Vue.component('Hello2', Hello2)
 Vue.component('my-icon', myicon)
+/***
+ * 请求方法
+ */
+import MethodType from '@/components/common/MethodApi'
+Vue.component('MethodType', MethodType)
+
 Vue.config.productionTip = false
 // 响应数据拦截器
 axios.interceptors.response.use(function (response) {
