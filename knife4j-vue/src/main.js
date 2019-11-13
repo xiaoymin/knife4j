@@ -35,9 +35,16 @@ Vue.component('MethodType', MethodType)
 import ApiInfo from '@/views/api/index'
 import Authorize from '@/views/settings/Authorize'
 import SwaggerModels from '@/views/settings/SwaggerModels';
+import GlobalParameters from '@/views/settings/GlobalParameters';
+import Settings from '@/views/settings/Settings';
+import OfficelineDocument from '@/views/settings/OfficelineDocument';
+
 Vue.component('ApiInfo', ApiInfo);
 Vue.component('Authorize', Authorize);
 Vue.component('SwaggerModels', SwaggerModels);
+Vue.component('GlobalParameters', GlobalParameters);
+Vue.component('Settings', Settings);
+Vue.component('OfficelineDocument', OfficelineDocument);
 
 
 Vue.config.productionTip = false

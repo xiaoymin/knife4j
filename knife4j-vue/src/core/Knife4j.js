@@ -1456,22 +1456,22 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
     icon: 'icon-zdlxb',
     path: 'documentManager',
     children: [{
-        key: 'anlaysisPage',
+        key: 'globalParameters',
         name: '全局参数设置',
-        component: 'Hello2',
-        path: 'hello'
+        component: 'GlobalParameters',
+        path: 'GlobalParameters'
       },
       {
-        key: 'monitorPage',
+        key: 'OfficelineDocument',
         name: '离线文档(Md)',
-        component: 'Hello2',
-        path: 'hello1'
+        component: 'OfficelineDocument',
+        path: 'OfficelineDocument'
       },
       {
-        key: 'workspacePage',
+        key: 'Settings',
         name: '个性化设置',
-        component: 'Hello2',
-        path: 'hello2'
+        component: 'Settings',
+        path: 'Settings'
         // hideInBreadcrumb: true,
         // hideInMenu: true,
       }

@@ -23,6 +23,15 @@ const routes = [{
     }, {
       path: '/SwaggerModels',
       component: () => import('@/views/settings/SwaggerModels')
+    }, {
+      path: '/documentManager/GlobalParameters',
+      component: () => import('@/views/settings/GlobalParameters')
+    }, {
+      path: '/documentManager/OfficelineDocument',
+      component: () => import('@/views/settings/OfficelineDocument')
+    }, {
+      path: '/documentManager/Settings',
+      component: () => import('@/views/settings/Settings')
     }
   ]
 }]
