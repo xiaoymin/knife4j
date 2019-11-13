@@ -16,6 +16,13 @@ const routes = [{
     {
       path: '/Authorize',
       component: () => import('@/views/settings/Authorize')
+    },
+    {
+      path: '/:groupName/:controller/:summary',
+      component: () => import('@/views/api/index')
+    }, {
+      path: '/SwaggerModels',
+      component: () => import('@/views/settings/SwaggerModels')
     }
   ]
 }]

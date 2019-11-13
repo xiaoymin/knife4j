@@ -74,6 +74,6 @@ export default {
 <style scoped>
 .authorize {
   margin: 30px auto;
-  width: 95%;
+  width: 98%;
 }
 </style>

@@ -33,9 +33,12 @@ Vue.component('MethodType', MethodType)
  * api详情展示组件
  */
 import ApiInfo from '@/views/api/index'
-Vue.component('ApiInfo', ApiInfo);
 import Authorize from '@/views/settings/Authorize'
+import SwaggerModels from '@/views/settings/SwaggerModels';
+Vue.component('ApiInfo', ApiInfo);
 Vue.component('Authorize', Authorize);
+Vue.component('SwaggerModels', SwaggerModels);
+
 
 Vue.config.productionTip = false
 // 响应数据拦截器

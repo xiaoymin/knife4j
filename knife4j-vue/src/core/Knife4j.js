@@ -1341,7 +1341,33 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
         return 0;
       }
     })
+
+    //新版改用Antd的树形表格,需要增加一个属性
+    that.currentInstance.models.forEach(function (model) {
+      const modelA = {
+        ...model
+      };
+      const modelData = [].concat(model.data);
+      modelA.data = [];
+      //递归查找data
+      if (modelData != null && modelData != undefined && modelData.length > 0) {
+        //找出第一基本的父级结构
+        modelData.forEach(function (md) {
+          if (md.pid == '-1') {
+            md.children = []
+            findModelChildren(md, modelData)
+            //查找后如果没有,则将children置空
+            if (md.children.length == 0) {
+              md.children = null;
+            }
+            modelA.data.push(md)
+          }
+        })
+      }
+      that.currentInstance.modelArrs.push(modelA);
+    })
   }
+
   //自定义文档
   if (that.settings.enableSwaggerBootstrapUi) {
     var sbu = menu["swaggerBootstrapUi"]
@@ -1350,6 +1376,22 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   that.log("解析refTreetableparameters结束,耗时：" + (new Date().getTime() - pathStartTime));
   that.log(new Date().toTimeString());
 
+}
+
+function findModelChildren(md, modelData) {
+  if (modelData != null && modelData != undefined && modelData.length > 0) {
+    modelData.forEach(function (nmd) {
+      if (nmd.pid == md.id) {
+        nmd.children = [];
+        findModelChildren(nmd, modelData);
+        //查找后如果没有,则将children置空
+        if (nmd.children.length == 0) {
+          nmd.children = null;
+        }
+        md.children.push(nmd);
+      }
+    })
+  }
 }
 
 /***
@@ -1402,9 +1444,10 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
   menuArr.push({
     key: 'swaggerModel',
     name: 'Swagger Models',
+    component: 'SwaggerModels',
     tabName: 'Swagger Models(' + groupName + ')',
     icon: 'icon-modeling',
-    path: 'swaggermodels',
+    path: 'SwaggerModels',
   })
   //文档管理
   menuArr.push({
@@ -3222,6 +3265,8 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   //Models
   this.models = []
   this.modelNames = []
+  //新版本的models 适配antd的属性表格
+  this.modelArrs = []
 
   //SwaggerBootstrapCacheGroupApis 对象的集合
   //add by xiaoyumin 2018-12-12 18:49:22
