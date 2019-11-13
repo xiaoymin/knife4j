@@ -481,9 +481,6 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       }).then(function (data) {
         that.analysisApiSuccess(data);
       })
-      /* .fail(function (xhr, textStatus, errorThrown) {
-        that.analysisApiFail(xhr, textStatus, errorThrown);
-      }) */
     } else {
       that.setInstanceBasicPorperties(null);
       //更新当前缓存security
@@ -496,6 +493,53 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
     that.error(err);
     if (window.console) {
       console.error(err);
+    }
+  }
+}
+
+/**
+ * 当swagger-api请求初始化完成后,初始化页面的相关操作
+ * 包括搜索、打开地址hash地址、tab事件等等
+ */
+SwaggerBootstrapUi.prototype.afterApiInitSuccess = function () {
+  var that = this;
+  //搜索
+  that.searchEvents();
+  //tab事件,新版本无此属性
+  //that.tabCloseEventsInit();
+  //opentab
+  that.initOpenTable();
+  //hash
+  //that.hashInitEvent();
+  //init hashMethod
+  //地址栏打开api地址
+  //新版本默认已实现
+  //that.initCurrentHashApi();
+}
+
+/***
+ * 已经打开的api缓存,下一次刷新时打开
+ * 新版本需要通过tabs实现
+ */
+SwaggerBootstrapUi.prototype.initOpenTable = function () {
+  var that = this;
+  if (!that.settings.enableCacheOpenApiTable) {
+    return
+  }
+  if (window.localStorage) {
+    var store = window.localStorage;
+    var cacheApis = store["SwaggerBootstrapUiCacheOpenApiTableApis"] || "{}";
+    var settings = JSON.parse(cacheApis);
+    var insid = that.currentInstance.groupId;
+    var cacheApis = settings[insid] || [];
+
+    if (cacheApis.length > 0) {
+      for (var i = 0; i < cacheApis.length; i++) {
+        var cacheApi = cacheApis[i];
+        that.log(cacheApi)
+        //var xx=that.getMenu().find(".menuLi[lay-id='"+cacheApi.tabId+"']");
+        //xx.trigger("click");
+      }
     }
   }
 }
@@ -528,6 +572,48 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
 
   //that.afterApiInitSuccess();
 
+}
+
+/***
+ * 更新当前实例的security对象
+ */
+SwaggerBootstrapUi.prototype.updateCurrentInstanceSecuritys = function () {
+  var that = this;
+  if (that.currentInstance.securityArrs != null && that.currentInstance.securityArrs.length > 0) {
+    //判断是否有缓存cache值
+    //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+    var cacheSecurityData = that.getSecurityStores();
+    if (cacheSecurityData != null && cacheSecurityData != undefined) {
+      cacheSecurityData.forEach(function (ca) {
+        //})
+        //$.each(cacheSecurityData,function (i, ca) {
+        that.currentInstance.securityArrs.forEach(function (sa) {
+          //})
+          //$.each(that.currentInstance.securityArrs,function (j, sa) {
+          if (ca.key == sa.key && ca.name == sa.name) {
+            sa.value = ca.value;
+          }
+        })
+      })
+
+    }
+  }
+}
+
+/***
+ * 从localStorage对象中获取
+ */
+SwaggerBootstrapUi.prototype.getSecurityStores = function () {
+  var csys = null;
+  if (window.localStorage) {
+    var store = window.localStorage;
+    var cacheSecuritys = store["SwaggerBootstrapUiCacheSecuritys"];
+    if (cacheSecuritys != undefined && cacheSecuritys != null && cacheSecuritys != "") {
+      var settings = JSON.parse(cacheApis);
+      csys = settings;
+    }
+  }
+  return csys;
 }
 
 /***
@@ -1291,6 +1377,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
   var that = this;
   //创建菜单数据
   var menuArr = [];
+  that.log(that.currentInstance)
+  var groupName = that.currentInstance.name;
   //主页
   menuArr.push({
     key: 'kmain',
@@ -1304,14 +1392,17 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
     menuArr.push({
       key: 'Authorize',
       name: 'Authorize',
+      tabName: 'Authorize(' + groupName + ')',
+      component: 'Authorize',
       icon: 'icon-authenticationsystem',
-      path: 'home1',
+      path: 'Authorize',
     })
   }
   //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
   menuArr.push({
     key: 'swaggerModel',
     name: 'Swagger Models',
+    tabName: 'Swagger Models(' + groupName + ')',
     icon: 'icon-modeling',
     path: 'swaggermodels',
   })
@@ -1367,8 +1458,6 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
       })
     }
   }
-  that.log(that.currentInstance)
-  var groupName = that.currentInstance.name;
   //接口文档
   that.currentInstance.tags.forEach(function (tag) {
     //})

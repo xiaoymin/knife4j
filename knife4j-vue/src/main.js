@@ -15,9 +15,7 @@ import {
  * 注册全局组件
  */
 import Main from '@/views/index/Main'
-import Hello2 from '@/views/Hello2'
 Vue.component('Main', Main)
-Vue.component('Hello2', Hello2)
 /***
  * 自定义图标
  */
@@ -36,7 +34,8 @@ Vue.component('MethodType', MethodType)
  */
 import ApiInfo from '@/views/api/index'
 Vue.component('ApiInfo', ApiInfo);
-
+import Authorize from '@/views/settings/Authorize'
+Vue.component('Authorize', Authorize);
 
 Vue.config.productionTip = false
 // 响应数据拦截器

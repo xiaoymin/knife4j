@@ -65,7 +65,13 @@ export default {
   },
   data() {
     /* const panes = [
-      { title: "主页", content: "Main", key: "kmain", closable: false }
+      {
+        title: "主页",
+        component: "Main",
+        content: "Main",
+        key: "kmain",
+        closable: false
+      }
     ]; */
     return {
       logo: logo,
@@ -132,7 +138,7 @@ export default {
           console.log(this.swaggerCurrentInstance);
           //不存在,添加，否则直接选中tab即可
           panes.push({
-            title: menu.name,
+            title: menu.tabName ? menu.tabName : menu.name,
             content: menu.component,
             key: menu.key,
             instance: this.swaggerCurrentInstance,
