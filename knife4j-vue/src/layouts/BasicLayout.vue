@@ -84,6 +84,7 @@ export default {
       MenuData: [],
       collapsed: false,
       panels: [],
+      panelIndex: 0,
       activeKey: "",
       newTabIndex: 0,
       openKeys: [],
@@ -125,24 +126,32 @@ export default {
   },
   methods: {
     childrenEmitMethod(type, data) {
-      console.log("父级收到子类方法");
-      console.log("类型：" + type);
-      console.log(data);
       this[type](data);
     },
     addGlobalParameters(data) {
-      console.log("执行方法");
-      console.log(data);
       this.swaggerCurrentInstance.globalParameters.push(data);
     },
     openDefaultTabByPath() {
       //根据地址栏打开Tab选项卡
       console.log("根据地址栏打开Tab选项卡");
       const panes = this.panels;
-      const tabKeys = this.panels.map(tab => tab.key);
       var url = this.$route.path;
       var menu = findComponentsByPath(url, this.MenuData);
       if (menu != null) {
+        //判断是否已经默认打开了主页面板
+        const indexSize = this.panels.filter(tab => tab.key == "kmain");
+        if (indexSize == 0) {
+          panes.push({
+            title: "主页",
+            component: "Main",
+            content: "Main",
+            key: "kmain",
+            instance: this.swaggerCurrentInstance,
+            closable: false
+          });
+        }
+        const tabKeys = panes.map(tab => tab.key);
+
         //判断tab是否已加载
         if (tabKeys.indexOf(menu.key) == -1) {
           console.log(menu);
