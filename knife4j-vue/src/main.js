@@ -65,7 +65,7 @@ Vue.prototype.$axios = axios
 import localStore from './store/local'
 Vue.prototype.$localStore = localStore;
 
-
+//Vue.use(localStore)
 Vue.use(Antd)
 new Vue({
   router,

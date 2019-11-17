@@ -3216,7 +3216,8 @@ function SwaggerBootstrapUiParameterLevel() {
  * @constructor
  */
 function SwaggerBootstrapUiInstance(name, location, version) {
-  this.id = 'SwaggerBootstrapUiInstance' + Math.round(Math.random() * 1000000)
+  //this.id = 'SwaggerBootstrapUiInstance' + Math.round(Math.random() * 1000000)
+  this.id = 'SwaggerBootstrapUiInstance' + md5(name + location + version)
   //默认未加载
   this.load = false
   //分组名称
