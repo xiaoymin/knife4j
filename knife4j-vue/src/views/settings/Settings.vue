@@ -47,17 +47,6 @@
 import Constants from "@/store/constants";
 let localStore = null;
 let instance = null;
-let settings = {
-  showApiUrl: false, //接口api地址不显示
-  showTagStatus: false, //分组tag显示description属性,针对@Api注解没有tags属性值的情况
-  enableSwaggerBootstrapUi: false, //是否开启swaggerBootstrapUi增强
-  treeExplain: true,
-  enableFilterMultipartApis: false, //针对RequestMapping的接口请求类型,在不指定参数类型的情况下,如果不过滤,默认会显示7个类型的接口地址参数,如果开启此配置,默认展示一个Post类型的接口地址
-  enableFilterMultipartApiMethodType: "POST", //默认保存类型
-  enableRequestCache: true, //是否开启请求参数缓存
-  enableCacheOpenApiTable: false, //是否开启缓存已打开的api文档
-  language: "zh" //默认语言版本
-};
 
 export default {
   props: {
@@ -67,7 +56,7 @@ export default {
   },
   data() {
     return {
-      settings: settings,
+      settings: Constants.defaultSettings,
       labelCol: {
         xs: { span: 21 },
         sm: { span: 8 }
@@ -87,11 +76,11 @@ export default {
   },
   created() {
     //读取本地缓存信息,判断是否存在,如果存在即初始化赋值
-    localStore.getItem(Constants.globalSettings).then(function(val) {
+    localStore.getItem(Constants.globalSettingsKey).then(function(val) {
       if (val != null) {
         instance.settings = val;
       } else {
-        localStore.setItem(Constants.globalSettings, instance.settings);
+        localStore.setItem(Constants.globalSettingsKey, instance.settings);
       }
     });
   },
@@ -103,6 +92,8 @@ export default {
       if (field == "enableSwaggerBootstrapUi") {
         if (this.settings.enableSwaggerBootstrapUi) {
           this.validateKnife4j();
+        } else {
+          this.saveSettingForLocal();
         }
       } else {
         this.saveSettingForLocal();
@@ -113,7 +104,7 @@ export default {
       this.saveSettingForLocal();
     },
     saveSettingForLocal() {
-      localStore.setItem(Constants.globalSettings, instance.settings);
+      localStore.setItem(Constants.globalSettingsKey, instance.settings);
     },
     validateKnife4j() {
       //如果开启增强,请求验证
@@ -217,8 +208,8 @@ export default {
 
 <style scoped>
 .settingConfig {
-  width: 60%;
-  margin: 60px auto;
+  width: 80%;
+  margin: 40px auto;
 }
 .content-line {
   height: 50px;
