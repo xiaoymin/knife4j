@@ -2,19 +2,8 @@
   <a-layout-content class="knife4j-body-content">
     <div class="swaggermododel">
       <a-collapse defaultActiveKey="1">
-        <a-collapse-panel
-          v-for="model in data.instance.modelArrs"
-          :header="model.name"
-          :key="model.id"
-          :class="model.modelClass()"
-        >
-          <a-table
-            :columns="columns"
-            :dataSource="model.data"
-            rowKey="id"
-            size="middle"
-            :pagination="page"
-          />
+        <a-collapse-panel v-for="model in data.instance.modelArrs" :header="model.name" :key="model.id" :class="model.modelClass()">
+          <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="model.data" rowKey="id" size="middle" :pagination="page" />
         </a-collapse-panel>
       </a-collapse>
     </div>
@@ -23,25 +12,25 @@
 <script>
 const columns = [
   {
-    title: '名称',
-    dataIndex: 'name',
-    width: '30%'
+    title: "名称",
+    dataIndex: "name",
+    width: "30%"
   },
   {
-    title: '类型',
-    dataIndex: 'type',
-    width: '15%'
+    title: "类型",
+    dataIndex: "type",
+    width: "15%"
   },
   {
-    title: '说明',
-    dataIndex: 'description'
+    title: "说明",
+    dataIndex: "description"
   },
   {
-    title: 'schema',
-    dataIndex: 'schemaValue',
-    width: '15%'
+    title: "schema",
+    dataIndex: "schemaValue",
+    width: "15%"
   }
-]
+];
 export default {
   props: {
     data: {
@@ -51,10 +40,12 @@ export default {
   data() {
     return {
       columns: columns,
+      expanRows: false,
       page: false
-    }
-  }
-}
+    };
+  },
+  methods: {}
+};
 </script>
 <style lang="less" scoped>
 @ColHeaderSize: 16px;

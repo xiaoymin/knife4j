@@ -11,6 +11,8 @@ import {
   Icon
 } from 'ant-design-vue'
 
+
+
 /***
  * 注册全局组件
  */
@@ -57,6 +59,11 @@ axios.interceptors.response.use(function (response) {
 })
 
 Vue.prototype.$axios = axios
+/***
+ * 本地存储解决方案
+ */
+import localStore from './store/local'
+Vue.prototype.$localStore = localStore;
 
 
 Vue.use(Antd)

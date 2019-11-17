@@ -17,6 +17,7 @@
     "js-md5": "^0.7.3",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
+    "localforage": "^1.7.3",
     "markdown-loader": "^5.1.0",
     "marked": "^0.7.0",
     "register-service-worker": "^1.6.2",

@@ -26,7 +26,7 @@
         </a-layout-header>
         <a-tabs hideAdd v-model="activeKey" type="editable-card" @change="tabChange" @edit="tabEditCallback" class="knife4j-tab">
           <a-tab-pane v-for="pane in panels" :tab="pane.title" :key="pane.key" :closable="pane.closable">
-            <component :is="pane.content" :data='pane'></component>
+            <component :is="pane.content" :data='pane' @childrenMethods="childrenEmitMethod"></component>
           </a-tab-pane>
         </a-tabs>
         <a-layout-footer style="padding: 0">
@@ -124,6 +124,17 @@ export default {
     }
   },
   methods: {
+    childrenEmitMethod(type, data) {
+      console.log("父级收到子类方法");
+      console.log("类型：" + type);
+      console.log(data);
+      this[type](data);
+    },
+    addGlobalParameters(data) {
+      console.log("执行方法");
+      console.log(data);
+      this.swaggerCurrentInstance.globalParameters.push(data);
+    },
     openDefaultTabByPath() {
       //根据地址栏打开Tab选项卡
       console.log("根据地址栏打开Tab选项卡");
