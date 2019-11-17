@@ -72,11 +72,11 @@ export default {
       globalParameters: [],
       labelCol: {
         xs: { span: 21 },
-        sm: { span: 8 }
+        sm: { span: 6 }
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 12 }
+        xs: { span: 27 },
+        sm: { span: 15 }
       }
     };
   },
