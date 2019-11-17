@@ -13,7 +13,10 @@
       <a-dropdown v-if="currentUser.name">
         <a-menu slot="overlay" class="menu" @click="onMenuClick">
           <a-menu-item>
-            <a-icon type="setting" />个性化配置
+            <a-icon type="setting" /> 个性化配置
+          </a-menu-item>
+          <a-menu-item>
+            <a-icon type="delete" /> 清除缓存
           </a-menu-item>
           <a-menu-divider />
           <a-menu-item key="logout">

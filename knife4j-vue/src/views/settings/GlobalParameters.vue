@@ -10,77 +10,39 @@
       </a-row>
     </a-row>
     <a-row class="globalparameters">
-      <a-button type="primary" @click="addGlobalParameters"
-        ><a-icon type="plus" /> 添加参数</a-button
-      >
+      <a-button type="primary" @click="addGlobalParameters">
+        <a-icon type="plus" /> 添加参数</a-button>
     </a-row>
     <a-row class="globalparameters">
-      <a-table
-        :columns="columns"
-        rowKey="name"
-        size="small"
-        :dataSource="globalParameters"
-        :pagination="pagination"
-        bordered
-      >
-        <template slot="operation">
-          <a-button><a-icon type="edit" /> 编辑</a-button>
-          <a-button type="danger" style="margin-left:10px;"
-            ><a-icon type="delete" /> 删除</a-button
-          >
-        </template>
+      <a-table :columns="columns" rowKey="pkid" size="small" :dataSource="globalParameters" :pagination="pagination" bordered>
+        <a-row slot="operation" slot-scope="text, record">
+          <a-button icon="delete" type="danger" @click="deleteParam(record)" style="margin-left:10px;">删除</a-button>
+        </a-row>
       </a-table>
     </a-row>
     <!--参数编辑及新增-->
-    <a-modal
-      :title="modelTitle"
-      cancelText="取消"
-      okText="确定"
-      :visible="visible"
-      @ok="handleOk"
-      @cancel="handleCancel"
-    >
+    <a-modal :title="modelTitle" cancelText="取消" okText="确定" :visible="visible" @ok="handleOk" @cancel="handleCancel">
       <a-form :form="form">
-        <a-form-item
-          :label-col="labelCol"
-          :wrapper-col="wrapperCol"
-          label="参数名称"
-        >
-          <a-input
-            v-decorator="[
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="参数名称">
+          <a-input v-decorator="[
               'name',
               { rules: [{ required: true, message: '请输入参数名称' }] }
-            ]"
-            placeholder="请输入参数名称"
-          />
+            ]" placeholder="请输入参数名称" />
         </a-form-item>
-        <a-form-item
-          :label-col="labelCol"
-          :wrapper-col="wrapperCol"
-          label="参数值"
-        >
-          <a-input
-            v-decorator="[
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="参数值">
+          <a-input v-decorator="[
               'value',
               { rules: [{ required: true, message: '请输入参数值' }] }
-            ]"
-            placeholder="请输入参数值"
-          />
+            ]" placeholder="请输入参数值" />
         </a-form-item>
-        <a-form-item
-          :label-col="labelCol"
-          :wrapper-col="wrapperCol"
-          label="参数类型"
-        >
-          <a-select
-            v-decorator="[
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="参数类型">
+          <a-select v-decorator="[
               'in',
               {
                 rules: [{ required: true, message: '请选择参数类型' }],
                 initialValue: 'header'
               }
-            ]"
-          >
+            ]">
             <a-select-option value="header">header</a-select-option>
             <a-select-option value="query">query</a-select-option>
           </a-select>
@@ -90,36 +52,9 @@
   </a-layout-content>
 </template>
 <script>
-import Constants from '@/store/constants'
-
-const columns = [
-  {
-    title: '参数名称',
-    dataIndex: 'name',
-    width: '20%'
-  },
-  {
-    title: '参数值',
-    className: 'column-money',
-    dataIndex: 'value',
-    width: '40%'
-  },
-  {
-    title: '参数类型',
-    dataIndex: 'in',
-    width: '20%'
-  },
-  {
-    title: '操作',
-    dataIndex: 'operator',
-    scopedSlots: {
-      customRender: 'operation'
-    }
-  }
-]
-
-let localStore = null
-let gpInstance = null
+import Constants from "@/store/constants";
+let localStore = null;
+let gpInstance = null;
 
 export default {
   props: {
@@ -129,11 +64,11 @@ export default {
   },
   data() {
     return {
-      modelTitle: '新增参数',
-      columns: columns,
+      modelTitle: "新增参数",
+      columns: Constants.globalParameterTableColumns,
       visible: false,
       pagination: false,
-      groupId: '',
+      groupId: "",
       globalParameters: [],
       labelCol: {
         xs: { span: 21 },
@@ -143,71 +78,80 @@ export default {
         xs: { span: 24 },
         sm: { span: 12 }
       }
-    }
+    };
   },
   beforeCreate() {
-    gpInstance = this
-    this.form = this.$form.createForm(this, { name: 'register' })
-    localStore = this.$localStore
+    gpInstance = this;
+    this.form = this.$form.createForm(this, { name: "gparameters" });
+    localStore = this.$localStore;
   },
   created() {
-    this.groupId = this.data.instance.id
-    const key = this.groupId
-
-    console.log(this.$localStore)
-    console.log(Constants.globalParameter)
+    this.groupId = this.data.instance.id;
+    const key = this.groupId;
     // this.$localStore.setItem(Constants.globalParameter, 'test')
     localStore.getItem(Constants.globalParameter).then(function(val) {
-      console.log('val-----------')
-      console.log(val)
       if (val != null) {
-        console.log('fuzhi')
-        console.log(key)
         if (val[key] != undefined && val[key] != null) {
-          console.log(val[key])
-          gpInstance.globalParameters = val[key]
-          console.log(gpInstance)
+          gpInstance.globalParameters = val[key];
         }
       } else {
-        var obj = {}
-        obj[key] = []
-        localStore.setItem(Constants.globalParameter, obj)
+        var obj = {};
+        obj[key] = [];
+        localStore.setItem(Constants.globalParameter, obj);
       }
-    })
+    });
   },
   methods: {
+    deleteParam(record) {
+      var np = [];
+      this.globalParameters.forEach(function(gp) {
+        if (!(gp.name == record.name && gp.in == record.in)) {
+          np.push(gp);
+        }
+      });
+      this.globalParameters = np;
+      localStore.getItem(Constants.globalParameter).then(function(val) {
+        const dfv = val;
+        dfv[gpInstance.groupId] = gpInstance.globalParameters;
+        localStore.setItem(Constants.globalParameter, dfv);
+      });
+    },
     handleOk(e) {
-      e.preventDefault()
-      const key = this.groupId
+      e.preventDefault();
+      const key = this.groupId;
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          gpInstance.globalParameters.push(values)
-          localStore.getItem(Constants.globalParameter).then(function(val) {
-            const dfv = val
-            dfv[key] = gpInstance.globalParameters
-            localStore.setItem(Constants.globalParameter, dfv)
-          })
-          //this.$emit('childrenMethods', 'addGlobalParameters', values)
-          this.visible = false
+          //判断是否存在参数
+          var fl = gpInstance.globalParameters.filter(
+            gp => gp.name == values.name && gp.in == values.in
+          ).length;
+          if (fl == 0) {
+            var pkid = values.name + values.in;
+            var nvl = { ...values, pkid: pkid };
+            gpInstance.globalParameters.push(nvl);
+            localStore.getItem(Constants.globalParameter).then(function(val) {
+              const dfv = val;
+              dfv[key] = gpInstance.globalParameters;
+              localStore.setItem(Constants.globalParameter, dfv);
+            });
+            this.visible = false;
+          } else {
+            gpInstance.$message.info("参数已存在,不可重复添加");
+          }
         }
-      })
+      });
     },
     handleCancel(e) {
-      console.log('Clicked cancel button')
-      this.visible = false
+      console.log("Clicked cancel button");
+      this.visible = false;
     },
     addGlobalParameters() {
-      var data = {
-        name: 'test',
-        value: '测试',
-        in: 'header'
-      }
-      this.form.resetFields()
-      this.visible = true
+      this.form.resetFields();
+      this.visible = true;
       // this.$emit("childrenMethods", "addGlobalParameters", data);
     }
   }
-}
+};
 </script>
 
 <style scoped>
