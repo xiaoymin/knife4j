@@ -11,9 +11,10 @@
       </a-tooltip>
 
       <a-dropdown v-if="currentUser.name">
-        <a-menu slot="overlay" class="menu" @click="onMenuClick">
+        <a-menu slot="overlay" class="menu">
           <a-menu-item>
-            <a-icon type="setting" /> 个性化配置
+            <router-link to="/documentManager/Settings">
+              <a-icon type="setting" /> 个性化配置</router-link>
           </a-menu-item>
           <a-menu-item>
             <a-icon type="delete" /> 清除缓存
@@ -75,6 +76,12 @@ export default {
     return {};
   },
   methods: {
+    handleMenuClick() {
+      console.log("handleMenuClick");
+    },
+    jumpSettings() {
+      this.$router.push({ path: "/documentManager/Settings" });
+    },
     toggle() {
       this.onCollapse(!this.collapsed);
     },
