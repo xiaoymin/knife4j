@@ -39,7 +39,7 @@
       <div class="api-title">
         请求示例
       </div>
-      <editor v-model="api.requestValue" @init="editorInit" lang="json" theme="chmoe" width="100%" height="200"></editor>
+      <editor v-model="api.requestValue" @init="editorRequestInit" lang="json" theme="eclipse" width="100%" :height="editorRequestHeight"></editor>
     </div>
     <div class="api-title">
       请求参数
@@ -53,25 +53,61 @@
     <div class="api-title">
       响应状态
     </div>
-    <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes" rowKey="id" size="small" :pagination="page">
+    <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes" rowKey="code" size="small" :pagination="page">
       <template slot="descriptionTemplate" slot-scope="text">
         <div v-html="text"></div>
       </template>
     </a-table>
+    <!--响应参数需要判断是否存在多个code-schema的情况-->
+    <div v-if="api.multipartResponseSchema">
+      <a-tabs>
+        <a-tab-pane v-for="resp in multipCodeDatas" :key="resp.code" :tab="resp.code">
+          <!--判断响应头-->
+          <div v-if="resp.responseHeaderParameters">
+            <div class="api-title">
+              响应Header
+            </div>
+            <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="resp.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
+            </a-table>
+          </div>
+          <!--响应参数-->
+          <div class="api-title">
+            响应参数
+          </div>
+          <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data" rowKey="id" size="small" :pagination="page">
+          </a-table>
+          <div class="api-title">
+            响应示例
+          </div>
+          <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor>
+        </a-tab-pane>
+      </a-tabs>
+    </div>
+    <div v-else>
+      <!--判断响应头-->
+      <div v-if="api.responseHeaderParameters">
+        <div class="api-title">
+          响应Header
+        </div>
+        <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="api.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
+        </a-table>
+      </div>
+      <!--响应参数-->
+      <div class="api-title">
+        响应参数
+      </div>
+      <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data" rowKey="id" size="small" :pagination="page">
+      </a-table>
+      <div class="api-title">
+        响应示例
+      </div>
+      <editor :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue" @init="singleResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorSingleHeight"></editor>
+    </div>
 
-    <div class="api-title">
-      响应参数
-    </div>
-    <div class="api-body-desc">
-      我是说明少时诵诗书所所所所所所所所,knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案,knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案,knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案,knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案,knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案
-    </div>
-    <div class="api-title">
-      响应示例
-    </div>
-    <editor v-model="content" @init="editorInit" lang="html" theme="chrome" width="100%" height="200"></editor>
   </div>
 </template>
 <script>
+//请求参数table-header
 const requestcolumns = [
   {
     title: "参数名称",
@@ -102,7 +138,7 @@ const requestcolumns = [
     width: "15%"
   }
 ];
-
+//响应状态table-header
 const responseStatuscolumns = [
   {
     title: "状态码",
@@ -120,6 +156,44 @@ const responseStatuscolumns = [
     dataIndex: "schema"
   }
 ];
+//响应头-header
+const responseHeaderColumns = [
+  {
+    title: "参数名称",
+    dataIndex: "name",
+    width: "30%"
+  },
+  {
+    title: "参数说明",
+    dataIndex: "description",
+    width: "55%"
+  },
+  {
+    title: "数据类型",
+    dataIndex: "type"
+  }
+];
+const responseParametersColumns = [
+  {
+    title: "参数名称",
+    dataIndex: "name",
+    width: "30%"
+  },
+  {
+    title: "参数说明",
+    dataIndex: "description",
+    width: "15%"
+  },
+  {
+    title: "类型",
+    dataIndex: "type"
+  },
+  {
+    title: "schema",
+    dataIndex: "schemaValue",
+    width: "15%"
+  }
+];
 export default {
   name: "Document",
   components: { editor: require("vue2-ace-editor") },
@@ -133,14 +207,26 @@ export default {
     return {
       content: "<span>Hello</span>",
       columns: requestcolumns,
+      responseHeaderColumns: responseHeaderColumns,
       responseStatuscolumns: responseStatuscolumns,
+      responseParametersColumns: responseParametersColumns,
       expanRows: true,
+      //接收一个响应信息对象,遍历得到树形结构的值
+      multipCode: false,
+      multipCodeDatas: [],
+      //请求示例初始化高度
+      editorRequestHeight: 200,
+      //单code请求示例初始化高度
+      editorSingleHeight: 200,
+      editorMultiHeight: 400,
+      multipData: {},
       page: false,
       reqParameters: []
     };
   },
   created() {
     this.initRequestParams();
+    this.initResponseCodeParams();
   },
   methods: {
     initRequestParams() {
@@ -197,13 +283,100 @@ export default {
         });
       }
     },
-    editorInit: function() {
+    initResponseCodeParams() {
+      //响应体参数
+      var that = this;
+      that.multipCode = that.api.multipartResponseSchema;
+      let rcodes = that.api.responseCodes;
+      if (rcodes != null && rcodes != undefined) {
+        rcodes.forEach(function(rc) {
+          //遍历
+          if (rc.schema != undefined && rc.schema != null) {
+            var respdata = [];
+            if (
+              rc.responseParameters != null &&
+              rc.responseParameters.length > 0
+            ) {
+              respdata = respdata.concat(rc.responseParameters);
+            }
+            if (
+              rc.responseTreetableRefParameters != null &&
+              rc.responseTreetableRefParameters.length > 0
+            ) {
+              rc.responseTreetableRefParameters.forEach(function(ref) {
+                respdata = respdata.concat(ref.params);
+              });
+            }
+            let nrecodedatas = [];
+            //遍历得到新的符合antd的树形结构
+            if (respdata != null && respdata.length > 0) {
+              respdata.forEach(function(md) {
+                if (md.pid == "-1") {
+                  md.children = [];
+                  that.findModelChildren(md, respdata);
+                  //查找后如果没有,则将children置空
+                  if (md.children.length == 0) {
+                    md.children = null;
+                  }
+                  nrecodedatas.push(md);
+                }
+              });
+            }
+            var nresobj = { ...rc, data: nrecodedatas };
+            if (!that.multipCode) {
+              that.multipData = nresobj;
+            }
+            that.multipCodeDatas.push(nresobj);
+          }
+        });
+      }
+      console.log("响应头");
+      console.log(that.multipCodeDatas);
+      console.log(that.multipData);
+    },
+    editorCommonRequire() {
       require("brace/ext/language_tools"); //language extension prerequsite...
       require("brace/mode/json");
+      require("brace/theme/eclipse");
+    },
+    editorInit: function(editor) {
+      require("brace/ext/language_tools"); //language extension prerequsite...
+      require("brace/mode/json");
+      require("brace/theme/eclipse");
       /*  require("brace/mode/javascript"); //language
       require("brace/mode/less");
       require("brace/theme/chrome");
       require("brace/snippets/javascript"); //snippet */
+      console.log("初始化editor");
+      console.log(editor);
+    },
+    editorRequestInit(editor) {
+      //请求示例
+      var that = this;
+      this.editorCommonRequire();
+      //重设高度
+      setTimeout(() => {
+        var length_editor = editor.session.getLength();
+        var rows_editor = length_editor * 16;
+        that.editorRequestHeight = rows_editor;
+      }, 400);
+    },
+    singleResponseSampleEditorInit(editor) {
+      //单示例editor初始化
+      var that = this;
+      this.editorCommonRequire();
+      console.log("单示例editor初始化");
+      //重设高度
+      setTimeout(() => {
+        var length_editor = editor.session.getLength();
+        var rows_editor = length_editor * 16;
+        that.editorSingleHeight = rows_editor;
+      }, 400);
+    },
+    multiResponseSampleEditorInit(editor) {
+      //单示例editor初始化
+      var that = this;
+      this.editorCommonRequire();
     }
   }
 };
