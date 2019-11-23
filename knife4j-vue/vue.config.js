@@ -2,6 +2,8 @@ module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   lintOnSave: false,
+  productionSourceMap: false,
+  indexPath: 'doc.html',
   css: {
     loaderOptions: {
       less: {
