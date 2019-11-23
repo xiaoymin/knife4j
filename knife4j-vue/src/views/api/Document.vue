@@ -39,7 +39,7 @@
       <div class="api-title">
         请求示例
       </div>
-      <editor v-model="api.requestValue" @init="editorRequestInit" lang="json" theme="eclipse" width="100%" :height="editorRequestHeight"></editor>
+      <editor-show :value="api.requestValue"></editor-show>
     </div>
     <div class="api-title">
       请求参数
@@ -49,6 +49,15 @@
         <span v-if="text" style="color:red">{{text.toLocaleString()}}</span>
         <span v-else>{{text.toLocaleString()}}</span>
       </template>
+
+      <template slot="typeTemplate" slot-scope="text">
+        <span :class="'knife4j-request-'+text">{{text}}</span>
+      </template>
+
+      <template slot="datatypeTemplate" slot-scope="text,record">
+        <data-type :text="text" :record="record"></data-type>
+      </template>
+
     </a-table>
     <div class="api-title">
       响应状态
@@ -79,7 +88,8 @@
           <div class="api-title">
             响应示例
           </div>
-          <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor>
+          <editor-show :value="resp.responseBasicType ? resp.responseText : resp.responseValue"></editor-show>
+          <!-- <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor> -->
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -101,12 +111,15 @@
       <div class="api-title">
         响应示例
       </div>
-      <editor :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue" @init="singleResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorSingleHeight"></editor>
+      <editor-show :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue"></editor-show>
+      <!-- <editor :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue" @init="singleResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorSingleHeight"></editor> -->
     </div>
 
   </div>
 </template>
 <script>
+import DataType from "./DataType";
+import EditorShow from "./EditorShow";
 //请求参数table-header
 const requestcolumns = [
   {
@@ -117,11 +130,12 @@ const requestcolumns = [
   {
     title: "参数说明",
     dataIndex: "description",
-    width: "15%"
+    width: "20%"
   },
   {
     title: "请求类型",
-    dataIndex: "in"
+    dataIndex: "in",
+    scopedSlots: { customRender: "typeTemplate" }
   },
   {
     title: "是否必须",
@@ -130,7 +144,8 @@ const requestcolumns = [
   },
   {
     title: "数据类型",
-    dataIndex: "type"
+    dataIndex: "type",
+    scopedSlots: { customRender: "datatypeTemplate" }
   },
   {
     title: "schema",
@@ -196,7 +211,7 @@ const responseParametersColumns = [
 ];
 export default {
   name: "Document",
-  components: { editor: require("vue2-ace-editor") },
+  components: { editor: require("vue2-ace-editor"), DataType, EditorShow },
   props: {
     api: {
       type: Object,
@@ -214,11 +229,6 @@ export default {
       //接收一个响应信息对象,遍历得到树形结构的值
       multipCode: false,
       multipCodeDatas: [],
-      //请求示例初始化高度
-      editorRequestHeight: 200,
-      //单code请求示例初始化高度
-      editorSingleHeight: 200,
-      editorMultiHeight: 400,
       multipData: {},
       page: false,
       reqParameters: []
@@ -333,50 +343,6 @@ export default {
       console.log("响应头");
       console.log(that.multipCodeDatas);
       console.log(that.multipData);
-    },
-    editorCommonRequire() {
-      require("brace/ext/language_tools"); //language extension prerequsite...
-      require("brace/mode/json");
-      require("brace/theme/eclipse");
-    },
-    editorInit: function(editor) {
-      require("brace/ext/language_tools"); //language extension prerequsite...
-      require("brace/mode/json");
-      require("brace/theme/eclipse");
-      /*  require("brace/mode/javascript"); //language
-      require("brace/mode/less");
-      require("brace/theme/chrome");
-      require("brace/snippets/javascript"); //snippet */
-      console.log("初始化editor");
-      console.log(editor);
-    },
-    editorRequestInit(editor) {
-      //请求示例
-      var that = this;
-      this.editorCommonRequire();
-      //重设高度
-      setTimeout(() => {
-        var length_editor = editor.session.getLength();
-        var rows_editor = length_editor * 16;
-        that.editorRequestHeight = rows_editor;
-      }, 400);
-    },
-    singleResponseSampleEditorInit(editor) {
-      //单示例editor初始化
-      var that = this;
-      this.editorCommonRequire();
-      console.log("单示例editor初始化");
-      //重设高度
-      setTimeout(() => {
-        var length_editor = editor.session.getLength();
-        var rows_editor = length_editor * 16;
-        that.editorSingleHeight = rows_editor;
-      }, 400);
-    },
-    multiResponseSampleEditorInit(editor) {
-      //单示例editor初始化
-      var that = this;
-      this.editorCommonRequire();
     }
   }
 };
