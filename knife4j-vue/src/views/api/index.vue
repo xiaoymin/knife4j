@@ -6,7 +6,7 @@
           <a-icon type="pay-circle" />
           文档
         </span>
-        <Document />
+        <Document :api="api" />
       </a-tab-pane>
       <a-tab-pane key="2">
         <span slot="tab">
@@ -28,8 +28,30 @@ export default {
       type: Object
     }
   },
+  data() {
+    return {
+      api: null
+    };
+  },
   mounted() {
     console.log(":api----------");
+  },
+  created() {
+    console.log("created..");
+    //根据地址栏得到api详情
+    let params = this.$route.params;
+    console.log(params);
+    console.log(this.data);
+    //根据当前的分组id、接口id找出apiInfo信息
+    let instance = this.data.instance;
+    let apiInfo = null;
+    instance.paths.forEach(function(path) {
+      if (path.operationId == params.summary) {
+        apiInfo = path;
+      }
+    });
+    console.log(apiInfo);
+    this.api = apiInfo;
   },
   data() {
     return {};
