@@ -122,6 +122,13 @@ export default {
   watch: {
     $route() {
       this.watchPathMenuSelect();
+    },
+    swaggerCurrentInstance() {
+      var title = this.swaggerCurrentInstance.title;
+      if (!title) {
+        title = "Knife4j 接口文档";
+      }
+      window.document.title = title;
     }
   },
   methods: {

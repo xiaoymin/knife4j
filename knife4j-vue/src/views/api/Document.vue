@@ -130,7 +130,7 @@ const requestcolumns = [
   {
     title: "参数说明",
     dataIndex: "description",
-    width: "20%"
+    width: "25%"
   },
   {
     title: "请求类型",
@@ -192,12 +192,12 @@ const responseParametersColumns = [
   {
     title: "参数名称",
     dataIndex: "name",
-    width: "30%"
+    width: "35%"
   },
   {
     title: "参数说明",
     dataIndex: "description",
-    width: "15%"
+    width: "40%"
   },
   {
     title: "类型",
