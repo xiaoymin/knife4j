@@ -41,6 +41,20 @@
       "unicode_decimal": 58984
     },
     {
+      "icon_id": "2040851",
+      "name": "文档",
+      "font_class": "wendang",
+      "unicode": "e6f5",
+      "unicode_decimal": 59125
+    },
+    {
+      "icon_id": "4427415",
+      "name": "文档",
+      "font_class": "tubiaozhizuomobanyihuifu-",
+      "unicode": "e6a4",
+      "unicode_decimal": 59044
+    },
+    {
       "icon_id": "4512932",
       "name": "终端参数管理",
       "font_class": "zdlxb",
@@ -53,6 +67,13 @@
       "font_class": "APIwendang1",
       "unicode": "e652",
       "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "6828169",
+      "name": "debug",
+      "font_class": "debug",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
     }
   ]
 }

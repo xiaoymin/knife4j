@@ -99,7 +99,9 @@
             </div>
           </a-col>
         </a-row>
-
+        <a-row v-for="api in apis" :key="api.id">
+          <Document :api="api" />
+        </a-row>
       </div>
     </a-row>
   </a-layout-content>
@@ -109,6 +111,9 @@ import "@/assets/css/editormd.css";
 import VueMarkdown from "vue-markdown";
 import html2canvas from "html2canvas";
 import { resumecss } from "./antd";
+import getDocumentTemplates from "@/components/officeDocument/officeDocTemplate";
+import Document from "@/views/api/Document";
+
 const columns = [
   {
     title: "名称",
@@ -137,16 +142,21 @@ export default {
     }
   },
   components: {
-    VueMarkdown
+    VueMarkdown,
+    Document
   },
   data() {
     return {
       columns: columns,
+      apis: [],
       expanRows: true,
       page: false,
       description:
         "> `Knife4j`提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf."
     };
+  },
+  created() {
+    this.apis = this.data.instance.paths;
   },
   methods: {
     downloadHtml() {
@@ -201,13 +211,16 @@ export default {
                     </div>
                 </body>
                 </html>`;
-      return html;
+      return getDocumentTemplates(resumecss, template);
     }
   }
 };
 </script>
 
 <style scoped>
+.htmledit_views {
+  display: none;
+}
 .markdown-row {
   width: 95%;
   margin: 10px auto;

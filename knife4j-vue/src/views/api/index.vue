@@ -3,26 +3,24 @@
     <a-tabs defaultActiveKey="1" tabPosition="left" class="api-tab">
       <a-tab-pane key="1">
         <span slot="tab">
-          <a-icon type="pay-circle" />
-          文档
-        </span>
+          <my-icon type="icon-wendang" />文档</span>
         <Document :api="api" />
       </a-tab-pane>
       <a-tab-pane key="2">
         <span slot="tab">
-          <a-icon type="bell" />
-          调试
-        </span>
-        Content of Tab Pane 2</a-tab-pane>
+          <my-icon type="icon-debug" />调试</span>
+        <Debug :api="api" />
+      </a-tab-pane>
     </a-tabs>
   </a-layout-content>
 
 </template>
 <script>
 import Document from "./Document";
+import Debug from "./Debug";
 export default {
   name: "APIDoc",
-  components: { Document },
+  components: { Document, Debug },
   props: {
     data: {
       type: Object

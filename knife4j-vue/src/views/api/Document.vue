@@ -386,8 +386,8 @@ export default {
   margin-bottom: 5px;
   font-size: 16px;
   font-weight: 600;
-  height: 32px;
-  line-height: 32px;
+  height: 30px;
+  line-height: 30px;
   border-left: 4px solid #00ab6d;
   text-indent: 8px;
 }
