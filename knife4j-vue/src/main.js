@@ -11,7 +11,9 @@ import {
   Icon
 } from 'ant-design-vue'
 
+import kloading from '@/components/loading'
 
+Vue.use(kloading)
 
 /***
  * 注册全局组件

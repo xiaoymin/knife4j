@@ -4,10 +4,15 @@
       <a-row class="markdown-body editormd-preview-container">
         <vue-markdown :source="description"></vue-markdown>
       </a-row>
+
       <a-row>
-        <a-button type="primary" @click="downloadHtml">下载Html</a-button>
+        <a-button type="primary" @click="triggerDownload">
+          下载Html</a-button>
         <a-button style="margin-left:10px;" type="primary" @click="downloadHtml">下载PDF</a-button>
       </a-row>
+      <!--  <a-modal v-model="downloadHtmlFlag" :footer="null" :maskClosable="false" :keyboard="false" :closable="false">
+        <p>正在下载中...</p>
+      </a-modal> -->
       <div class="htmledit_views" id="content_views">
         <!--基础信息-->
         <a-row>
@@ -113,6 +118,7 @@ import html2canvas from "html2canvas";
 import { resumecss } from "./antd";
 import getDocumentTemplates from "@/components/officeDocument/officeDocTemplate";
 import Document from "@/views/api/Document";
+import { Modal } from "ant-design-vue";
 
 const columns = [
   {
@@ -150,15 +156,51 @@ export default {
       columns: columns,
       apis: [],
       expanRows: true,
+      downloadHtmlFlag: false,
+      downloadPDF: false,
+      modal: null,
       page: false,
       description:
         "> `Knife4j`提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf."
     };
   },
-  created() {
-    this.apis = this.data.instance.paths;
+  updated() {
+    console.log("dom重新被渲染");
+    if (this.downloadHtmlFlag) {
+      //下载html
+      this.downloadHtml();
+      //关闭
+      this.$kloading.destroy();
+    }
   },
+  created() {},
   methods: {
+    triggerDownload() {
+      console.log("trigger---");
+      let that = this;
+      console.log(this.$refs);
+      that.$kloading.show({
+        text: "正在下载中...",
+        el: this.$refs.box
+      });
+
+      if (!this.downloadHtmlFlag) {
+        this.downloadHtmlFlag = true;
+        //赋值Html重新渲染dom
+        setTimeout(() => {
+          that.apis = that.data.instance.paths;
+          //that.$kloading.destroy();
+        }, 600);
+      } else {
+        setTimeout(() => {
+          //that.apis = that.data.instance.paths;
+          that.$kloading.destroy();
+          that.downloadHtml();
+        }, 1000);
+      }
+
+      //
+    },
     downloadHtml() {
       console.log("downloadHtml");
       var a = document.createElement("a");
@@ -217,7 +259,18 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.download-loading {
+  color: white;
+  i {
+    background-color: #e6f7ff;
+  }
+}
+.spin-content {
+  border: 1px solid #91d5ff;
+  background-color: #e6f7ff;
+  padding: 30px;
+}
 .htmledit_views {
   display: none;
 }
