@@ -152,7 +152,8 @@ export default {
       console.log("根据地址栏打开Tab选项卡");
       const panes = this.panels;
       var url = this.$route.path;
-      var menu = findComponentsByPath(url, this.MenuData);
+      //var menu = findComponentsByPath(url, this.MenuData);
+      var menu = findComponentsByPath(url, this.swagger.globalMenuDatas);
       if (menu != null) {
         //判断是否已经默认打开了主页面板
         const indexSize = this.panels.filter(tab => tab.key == "kmain");
@@ -269,7 +270,8 @@ export default {
     tabChange(targetKey) {
       console.log("tabchange------------");
       console.log(targetKey);
-      var menu = findMenuByKey(targetKey, this.MenuData);
+      //var menu = findMenuByKey(targetKey, this.MenuData);
+      var menu = findMenuByKey(targetKey, this.swagger.globalMenuDatas);
       console.log(menu);
       if (menu != null) {
         var path = menu.path;

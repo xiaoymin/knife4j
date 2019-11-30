@@ -13,11 +13,13 @@
  *
  * Licensed under Apache License 2.0
  * https://github.com/xiaoymin/swagger-bootstrap-ui/blob/master/LICENSE
- *
+ * 
+ * v1.7.5 
  * create by xiaoymin on 2018-7-4 15:32:07
  *
  * 重构swagger-bootstrap-ui组件,为以后动态扩展更高效,扩展接口打下基础
  *
+ * v1.9.7
  * modified by xiaoymin on 2019-11-11 16:42:43
  *
  * 基于Vue + Ant Design Vue重构Ui组件
@@ -69,6 +71,9 @@ function SwaggerBootstrapUi(options) {
   this.instances = []
   //当前分组实例
   this.currentInstance = null
+  //全局菜单 add by xiaoymin at 2019-11-30 13:51:39
+  //菜单初始化时添加,后期tab切换时用来查找
+  this.globalMenuDatas = []
   //动态tab
   this.globalTabId = 'sbu-dynamic-tab'
   this.globalTabs = []
@@ -482,11 +487,11 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         that.analysisApiSuccess(data);
       })
     } else {
-      that.setInstanceBasicPorperties(null);
+      //that.setInstanceBasicPorperties(null);
       //更新当前缓存security
       that.updateCurrentInstanceSecuritys();
       that.createDescriptionElement();
-      that.createDetailMenu();
+      that.createDetailMenu(false);
       that.afterApiInitSuccess();
     }
   } catch (err) {
@@ -566,7 +571,7 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
   //当前实例已加载
   that.currentInstance.load = true;
   //创建swaggerbootstrapui主菜单
-  that.createDetailMenu();
+  that.createDetailMenu(true);
   //opentab
   //that.initOpenTable();
 
@@ -1432,14 +1437,17 @@ SwaggerBootstrapUi.prototype.selectInstanceByGroupId = function (id) {
  * 创建左侧菜单按钮
  * @param menu
  */
-SwaggerBootstrapUi.prototype.createDetailMenu = function () {
+SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   var that = this;
   //创建菜单数据
   var menuArr = [];
   that.log(that.currentInstance)
   var groupName = that.currentInstance.name;
+  var groupId = that.currentInstance.id;
   //主页
   menuArr.push({
+    groupName: groupName,
+    groupId: groupId,
     key: 'kmain',
     name: '主页',
     component: 'Main',
@@ -1449,6 +1457,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
   //是否有全局参数
   if (that.currentInstance.securityArrs != null && that.currentInstance.securityArrs.length > 0) {
     menuArr.push({
+      groupName: groupName,
+      groupId: groupId,
       key: 'Authorize',
       name: 'Authorize',
       tabName: 'Authorize(' + groupName + ')',
@@ -1459,6 +1469,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
   }
   //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
   menuArr.push({
+    groupName: groupName,
+    groupId: groupId,
     key: 'swaggerModel',
     name: 'Swagger Models',
     component: 'SwaggerModels',
@@ -1468,23 +1480,31 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
   })
   //文档管理
   menuArr.push({
+    groupName: groupName,
+    groupId: groupId,
     key: 'documentManager',
     name: '文档管理',
     icon: 'icon-zdlxb',
     path: 'documentManager',
     children: [{
+        groupName: groupName,
+        groupId: groupId,
         key: 'globalParameters',
         name: '全局参数设置',
         component: 'GlobalParameters',
         path: 'GlobalParameters'
       },
       {
+        groupName: groupName,
+        groupId: groupId,
         key: 'OfficelineDocument',
         name: '离线文档',
         component: 'OfficelineDocument',
         path: 'OfficelineDocument'
       },
       {
+        groupName: groupName,
+        groupId: groupId,
         key: 'Settings',
         name: '个性化设置',
         component: 'Settings',
@@ -1502,6 +1522,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
       var mdlength = that.currentInstance.markdownFiles.length;
       //存在自定义文档
       var otherMarkdowns = {
+        groupName: groupName,
+        groupId: groupId,
         key: 'otherMarkdowns',
         name: '其他文档',
         icon: 'icon-modeling',
@@ -1510,6 +1532,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
       }
       that.currentInstance.markdownFiles.forEach(function (md) {
         otherMarkdowns.children.push({
+          groupName: groupName,
+          groupId: groupId,
           key: md5(md.title),
           name: md.title,
           icon: 'icon-modeling',
@@ -1531,6 +1555,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
         _lititle = tag.name;
       }
       menuArr.push({
+        groupName: groupName,
+        groupId: groupId,
         key: md5(_lititle),
         name: _lititle,
         icon: 'icon-APIwendang',
@@ -1543,6 +1569,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
         _lititle = tag.name;
       }
       var tagMenu = {
+        groupName: groupName,
+        groupId: groupId,
         key: md5(_lititle),
         name: _lititle,
         icon: 'icon-APIwendang',
@@ -1554,7 +1582,9 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
         //})
         //$.each(tag.childrens, function (i, children) {
         var tabSubMenu = {
-          key: md5(children.summary + children.operationId),
+          groupName: groupName,
+          groupId: groupId,
+          key: md5(groupName + children.summary + children.operationId),
           name: children.summary,
           path: children.operationId,
           component: 'ApiInfo',
@@ -1570,6 +1600,13 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
   })
   //console.log(menuArr)
   var mdata = KUtils.formatter(menuArr);
+  console.log("菜单--------------")
+  console.log(mdata)
+  //添加全局参数
+  if (addFlag) {
+    that.globalMenuDatas = that.globalMenuDatas.concat(mdata);
+  }
+  console.log(that)
   //console.log(JSON.stringify(mdata))
   //双向绑定
   that.$Vue.MenuData = mdata;
