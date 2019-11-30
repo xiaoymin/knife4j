@@ -1463,7 +1463,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function () {
       },
       {
         key: 'OfficelineDocument',
-        name: '离线文档(Md)',
+        name: '离线文档',
         component: 'OfficelineDocument',
         path: 'OfficelineDocument'
       },

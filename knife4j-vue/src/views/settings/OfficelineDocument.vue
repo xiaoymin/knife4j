@@ -1,112 +1,26 @@
 <template>
   <a-layout-content class="knife4j-body-content">
     <a-row class="markdown-row">
-      <a-row class="markdown-body editormd-preview-container">
-        <vue-markdown :source="description"></vue-markdown>
+      <a-row class="globalparameters">
+        <a-row class="gptips">
+          Knife4j提供导出4种格式的离线文档(Html\Markdown\Word\Pdf)
+        </a-row>
       </a-row>
-
-      <a-row>
-        <a-button type="primary" @click="triggerDownload">
-          下载Html</a-button>
-        <a-button style="margin-left:10px;" type="primary" @click="downloadHtml">下载PDF</a-button>
+      <a-row class="knife4j-download-button">
+        <a-button @click="triggerDownloadMarkdown">
+          <a-icon type="file-markdown" />下载Markdown</a-button>
+        <a-button type="default" @click="triggerDownload">
+          <a-icon type="file-text" />下载Html</a-button>
+        <a-button type="default" @click="triggerDownloadWord">
+          <a-icon type="file-word" />下载Word</a-button>
+        <a-button type="default" @click="downloadHtml">
+          <a-icon type="file-pdf" />下载PDF</a-button>
       </a-row>
       <!--  <a-modal v-model="downloadHtmlFlag" :footer="null" :maskClosable="false" :keyboard="false" :closable="false">
         <p>正在下载中...</p>
       </a-modal> -->
       <div class="htmledit_views" id="content_views">
-        <!--基础信息-->
-        <a-row>
-          <a-col :span="24">
-            <div class="title">
-              <h2>{{data.instance.title}}</h2>
-            </div>
-            <div class="description">
-              <a-row class="content-line">
-                <a-col :span="5">
-                  <h3>简介</h3>
-                </a-col>
-                <a-col :span="19"><span v-html="data.instance.description" /></a-col>
-              </a-row>
-              <a-divider class="divider" />
-              <a-row class="content-line">
-                <a-col :span="5">
-                  <h3>作者</h3>
-                </a-col>
-                <a-col :span="19"><span v-html="data.instance.contact" /></a-col>
-              </a-row>
-              <a-divider class="divider" />
-              <a-row class="content-line">
-                <a-col :span="5">
-                  <h3>版本</h3>
-                </a-col>
-                <a-col :span="19"><span v-html="data.instance.version" /></a-col>
-              </a-row>
-              <a-divider class="divider" />
-              <a-row class="content-line">
-                <a-col :span="5">
-                  <h3>host</h3>
-                </a-col>
-                <a-col :span="19"><span v-html="data.instance.host" /></a-col>
-              </a-row>
-              <a-divider class="divider" />
-              <a-row class="content-line">
-                <a-col :span="5">
-                  <h3>basePath</h3>
-                </a-col>
-                <a-col :span="19"><span v-html="data.instance.basePath" /></a-col>
-              </a-row>
-              <a-divider class="divider" />
-              <a-row class="content-line">
-                <a-col :span="5">
-                  <h3>服务Url</h3>
-                </a-col>
-                <a-col :span="19"><span v-html="data.instance.termsOfService" /></a-col>
-              </a-row>
-              <a-divider class="divider" />
-              <a-row class="content-line">
-                <a-col :span="5">
-                  <h3>分组名称</h3>
-                </a-col>
-                <a-col :span="19"><span v-html="data.instance.name" /></a-col>
-              </a-row>
-              <a-divider class="divider" />
-              <a-row class="content-line">
-                <a-col :span="5">
-                  <h3>分组url</h3>
-                </a-col>
-                <a-col :span="19"><span v-html="data.instance.url" /></a-col>
-              </a-row>
-              <a-divider class="divider" />
-              <a-row class="content-line">
-                <a-col :span="5">
-                  <h3>分组location</h3>
-                </a-col>
-                <a-col :span="19"><span v-html="data.instance.location" /></a-col>
-              </a-row>
-              <a-divider class="divider" />
-              <a-row class="content-line">
-                <a-col :span="5">
-                  <h3>接口统计信息</h3>
-                </a-col>
-                <a-col :span="19">
-                  <a-row class="content-line-count" v-for="param in data.instance.pathArrs" :key="param.method">
-                    <a-col :span="3">
-                      {{param.method}}
-                    </a-col>
-                    <a-col :span="2">
-                      <a-tag color="#108ee9">{{param.count}}</a-tag>
-                    </a-col>
-                    <a-divider class="divider-count" />
-                  </a-row>
-                </a-col>
-              </a-row>
-
-            </div>
-          </a-col>
-        </a-row>
-        <a-row v-for="api in apis" :key="api.id">
-          <Document :api="api" />
-        </a-row>
+        <component :is="downloadType" :instance="data.instance" :tags="tags" />
       </div>
     </a-row>
   </a-layout-content>
@@ -115,10 +29,11 @@
 import "@/assets/css/editormd.css";
 import VueMarkdown from "vue-markdown";
 import html2canvas from "html2canvas";
-import { resumecss } from "./antd";
+import { resumecss } from "./OfficelineCss";
 import getDocumentTemplates from "@/components/officeDocument/officeDocTemplate";
-import Document from "@/views/api/Document";
+import OnlineDocument from "@/views/api/OnlineDocument";
 import { Modal } from "ant-design-vue";
+import DownloadHtml from "./DownloadHtml";
 
 const columns = [
   {
@@ -149,48 +64,54 @@ export default {
   },
   components: {
     VueMarkdown,
-    Document
+    OnlineDocument,
+    DownloadHtml
   },
   data() {
     return {
       columns: columns,
-      apis: [],
+      tags: [],
+      downloadType: "DownloadHtml",
       expanRows: true,
       downloadHtmlFlag: false,
       downloadPDF: false,
       modal: null,
-      page: false,
-      description:
-        "> `Knife4j`提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf."
+      page: false
     };
   },
   updated() {
     console.log("dom重新被渲染");
+    var that = this;
     if (this.downloadHtmlFlag) {
-      //下载html
-      this.downloadHtml();
-      //关闭
-      this.$kloading.destroy();
+      //等待ace-editor渲染,给与充足时间
+      setTimeout(() => {
+        //下载html
+        that.downloadHtml();
+        //关闭
+        that.$kloading.destroy();
+      }, 1000);
     }
   },
   created() {},
   methods: {
+    triggerDownloadWord() {},
+    triggerDownloadMarkdown() {},
     triggerDownload() {
       console.log("trigger---");
       let that = this;
-      console.log(this.$refs);
+      //html
+      that.downloadType = "DownloadHtml";
       that.$kloading.show({
-        text: "正在下载中...",
-        el: this.$refs.box
+        text: "正在下载中..."
       });
 
       if (!this.downloadHtmlFlag) {
         this.downloadHtmlFlag = true;
         //赋值Html重新渲染dom
         setTimeout(() => {
-          that.apis = that.data.instance.paths;
+          that.tags = that.data.instance.tags;
           //that.$kloading.destroy();
-        }, 600);
+        }, 300);
       } else {
         setTimeout(() => {
           //that.apis = that.data.instance.paths;
@@ -260,6 +181,27 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.knife4j-download-button {
+  margin: 40px auto;
+  text-align: center;
+  button {
+    width: 150px;
+    margin: 20px;
+  }
+}
+.globalparameters {
+  width: 73%;
+  margin: 40px auto;
+}
+.gptips {
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
 .download-loading {
   color: white;
   i {
