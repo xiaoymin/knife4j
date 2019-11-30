@@ -39,6 +39,7 @@ import {
   findComponentsByPath,
   findMenuByKey
 } from '@/components/utils/Knife4jUtils'
+import Constants from '@/store/constants'
 
 marked.setOptions({
   gfm: true,
@@ -126,8 +127,8 @@ SwaggerBootstrapUi.prototype.main = function () {
   var that = this
   //that.welcome();
   that.initRequestParameters()
-  /* that.initSettings();
-  that.initUnTemplatePageI18n();
+  that.initSettings();
+  /* that.initUnTemplatePageI18n();
   that.initWindowWidthAndHeight();
   that.initApis();
   that.windowResize(); */
@@ -170,10 +171,28 @@ SwaggerBootstrapUi.prototype.initRequestParameters = function () {
 
 /***
  * 读取个性化配置信息
+ * modified by xiaoymin at 2019-11-30 20:49:59
+ * 个性化配置功能在v1.9.7版本中更新,去掉原来一些复杂无用的配置,通过单页面Settings.vue单组件来对个性化配置进行操作
+ * 此处仅作为一个读取初始化的作用
  */
 SwaggerBootstrapUi.prototype.initSettings = function () {
   var that = this
-  if (window.localStorage) {
+  that.log("本地Settings初始化")
+  var defaultSettings = Constants.defaultSettings;
+  //读取本地变量
+  that.$Vue.$localStore.getItem(Constants.globalSettingsKey).then(function (val) {
+    if (val != undefined && val != null && val != '') {
+      that.settings = val;
+    } else {
+      that.settings = defaultSettings;
+    }
+    //本地缓存
+    that.$Vue.$localStore.setItem(Constants.globalSettingsKey, that.settings);
+  });
+
+
+
+  /* if (window.localStorage) {
     var store = window.localStorage
     var globalSettings = store['SwaggerBootstrapUiSettings']
     if (
@@ -269,7 +288,7 @@ SwaggerBootstrapUi.prototype.initSettings = function () {
   ) {
     //初始化切换
     that.i18n.instance = that.i18n.getSupportLanguage(that.settings.language)
-  }
+  } */
 }
 
 SwaggerBootstrapUi.prototype.initApis = function () {
@@ -3040,6 +3059,36 @@ var SwaggerBootstrapUiResponseCode = function () {
     }
     return '';
   }
+}
+
+
+/**
+ * 过滤多余POST功能 
+ */
+var SwaggerBootstrapUiApiFilter = function () {
+  this.api = function (methodType) {
+    var apis = new Array();
+    //判断当前methods类型,如果methods只有1条则返回
+    if (this.methods.length == 7) {
+      //如果是7个则 开启过滤
+      var mpt = null;
+      //如果接口梳理是7个
+      for (var c = 0; c < this.methods.length; c++) {
+        if (this.methods[c].methodType == methodType) {
+          mpt = this.methods[c];
+        }
+      }
+      if (mpt == null) {
+        mpt = this.methods[0];
+      }
+      apis.push(mpt);
+    } else {
+      apis = apis.concat(this.methods);
+    }
+    return apis;
+
+  };
+  this.methods = new Array();
 }
 
 /***
