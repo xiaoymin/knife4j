@@ -1531,16 +1531,18 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         groupId: groupId,
         key: 'globalParameters' + md5(groupName),
         name: '全局参数设置',
+        tabName: '全局参数设置(' + groupName + ')',
         component: 'GlobalParameters',
-        path: 'GlobalParameters'
+        path: 'GlobalParameters/' + groupName
       },
       {
         groupName: groupName,
         groupId: groupId,
         key: 'OfficelineDocument' + md5(groupName),
         name: '离线文档',
+        tabName: '离线文档(' + groupName + ')',
         component: 'OfficelineDocument',
-        path: 'OfficelineDocument'
+        path: 'OfficelineDocument/' + groupName
       },
       {
         groupName: groupName,
