@@ -4,7 +4,7 @@
       <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider">
         <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
           <a to="/" style="float:left;">
-            <a-select :value="defaultServiceOption" style="width: 280px" :options="serviceOptions">
+            <a-select :value="defaultServiceOption" style="width: 280px" :options="serviceOptions" @change="serviceChange">
             </a-select>
           </a>
         </div>
@@ -132,6 +132,15 @@ export default {
     }
   },
   methods: {
+    serviceChange(value, option) {
+      console.log("菜单下拉选择");
+      //id
+      let swaggerIns = this.swagger.selectInstanceByGroupId(value);
+      this.swagger.analysisApi(swaggerIns);
+      this.defaultServiceOption = value;
+      console.log(value);
+      console.log(option);
+    },
     childrenEmitMethod(type, data) {
       this[type](data);
     },

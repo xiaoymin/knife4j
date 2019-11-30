@@ -504,7 +504,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
 SwaggerBootstrapUi.prototype.afterApiInitSuccess = function () {
   var that = this;
   //搜索
-  that.searchEvents();
+  //that.searchEvents();
   //tab事件,新版本无此属性
   //that.tabCloseEventsInit();
   //opentab
@@ -1412,6 +1412,23 @@ SwaggerBootstrapUi.prototype.createDescriptionElement = function () {
 }
 
 /***
+ * 根据分组id查找实例
+ */
+SwaggerBootstrapUi.prototype.selectInstanceByGroupId = function (id) {
+  var that = this;
+  var instance = null;
+  console.log(that.instances)
+  that.instances.forEach(function (group) {
+    //})
+    //$.each(that.instances, function (i, id) {
+    if (group.id == id) {
+      instance = group;
+      return;
+    }
+  })
+  return instance;
+}
+/***
  * 创建左侧菜单按钮
  * @param menu
  */
@@ -2114,11 +2131,18 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
           var _headers = rescrobj["headers"];
           swaggerResp.responseHeaderParameters = new Array();
           for (var _headerN in _headers) {
+            var _hv = {
+              ..._headers[_headerN],
+              name: _headerN,
+              id: md5(_headerN),
+              pid: "-1"
+            }
+            /* 
             var _hv = $.extend({}, _headers[_headerN], {
               name: _headerN,
               id: md5(_headerN),
               pid: "-1"
-            });
+            }); */
             swaggerResp.responseHeaderParameters.push(_hv);
           }
           if (status == "200") {
