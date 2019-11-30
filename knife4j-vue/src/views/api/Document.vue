@@ -1,28 +1,27 @@
 <template>
   <div class="document">
     <a-row>
-      <div class="api-title">
-        基本信息
-      </div>
-      <a-row class="api-basic">
-        <a-col class="api-basic-title" :span="3">接口名称</a-col>
-        <a-col class="api-basic-body" :span="21">{{api.summary}}</a-col>
+      <a-row class="knife4j-api-title">
+        {{api.summary}}
       </a-row>
-      <a-row class="api-basic">
-        <a-col class="api-basic-title" :span="3">接口地址</a-col>
-        <a-col class="api-basic-body" :span="21">{{api.showUrl}}</a-col>
+      <a-row :class="'knife4j-api-'+api.methodType.toLowerCase()">
+        <div class="knife4j-api-summary">
+          <span class="knife4j-api-summary-method">{{api.methodType}}</span>
+          <span class="knife4j-api-summary-path">{{api.showUrl}}</span>
+        </div>
       </a-row>
-      <a-row class="api-basic">
-        <a-col class="api-basic-title" :span="3">请求方式</a-col>
-        <a-col class="api-basic-body" :span="21">{{api.methodType}}</a-col>
-      </a-row>
-      <a-row class="api-basic">
-        <a-col class="api-basic-title" :span="3">consumes</a-col>
-        <a-col class="api-basic-body" :span="21">{{api.consumes}}</a-col>
-      </a-row>
-      <a-row class="api-basic">
-        <a-col class="api-basic-title" :span="3">produces</a-col>
-        <a-col class="api-basic-body" :span="21">{{api.produces}}</a-col>
+      <a-row class="knife4j-api-row">
+        <a-col :span="12">
+          <a-row>
+            <a-col class="api-basic-title" :span="6">请求数据类型</a-col>
+            {{api.consumes}}
+          </a-row>
+        </a-col>
+        <a-col :span="12">
+          <a-row>
+            <a-col class="api-basic-title" :span="6">响应数据类型</a-col> {{api.produces}}
+          </a-row>
+        </a-col>
       </a-row>
     </a-row>
     <!-- <a-divider class="divider" /> -->
@@ -356,6 +355,105 @@ export default {
     line-height: 32px;
   }
 }
+.knife4j-api-title {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #616368;
+  height: 35px;
+  line-height: 35px;
+}
+.knife4j-api-row {
+  height: 45px;
+  line-height: 45px;
+}
+
+.knife4j-api-summary {
+  border-color: #49cc90;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px;
+  cursor: pointer;
+}
+.knife4j-api-summary-method {
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 80px;
+  padding: 6px 15px;
+  text-align: center;
+  border-radius: 3px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  font-family: Titillium Web, sans-serif;
+  color: #fff;
+}
+.knife4j-api-summary-path {
+  font-size: 14px;
+  display: flex;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 3 auto;
+  flex: 0 3 auto;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  word-break: break-all;
+  padding: 0 32px;
+}
+
+.knife4j-api-post {
+  border-color: #49cc90;
+  background: rgba(73, 204, 144, 0.1);
+  .knife4j-api-summary-method {
+    background: #49cc90;
+  }
+}
+.knife4j-api-get {
+  border-color: #61affe;
+  background: rgba(97, 175, 254, 0.1);
+  .knife4j-api-summary-method {
+    background: #61affe;
+  }
+}
+.knife4j-api-head {
+  border-color: #9012fe;
+  background: rgba(144, 18, 254, 0.1);
+  .knife4j-api-summary-method {
+    background: #9012fe;
+  }
+}
+.knife4j-api-put {
+  border-color: #fca130;
+  background: rgba(252, 161, 48, 0.1);
+  .knife4j-api-summary-method {
+    background: #fca130;
+  }
+}
+.knife4j-api-delete {
+  border-color: #f93e3e;
+  background: rgba(249, 62, 62, 0.1);
+  .knife4j-api-summary-method {
+    background: #f93e3e;
+  }
+}
+.knife4j-api-options {
+  border-color: #0d5aa7;
+  background: rgba(13, 90, 167, 0.1);
+  .knife4j-api-summary-method {
+    background: #0d5aa7;
+  }
+}
+.knife4j-api-patch {
+  border-color: #50e3c2;
+  background: rgba(80, 227, 194, 0.1);
+  .knife4j-api-summary-method {
+    background: #50e3c2;
+  }
+}
+
 .api-basic {
   padding: 11px;
 }
