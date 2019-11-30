@@ -446,13 +446,53 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
 SwaggerBootstrapUi.prototype.createGroupElement = function () {
   var that = this;
   //创建分组flag 
-  that.log("分组---")
-  that.log(that.instances)
+  that.log("分组-------------------------------")
+  //that.log(that.instances)
+  that.log(that.$Vue.$route.params)
   //此处需要根据当前访问hash地址动态设置访问的下拉组
-  //待写
+  //待写,是否包含分组名称
+  var urlParams = that.$Vue.$route.params;
+  if (KUtils.checkUndefined(urlParams)) {
+    if (urlParams.hasOwnProperty('groupName')) {
+      //是否不为空
+      var gpName = urlParams.groupName;
+      if (KUtils.checkUndefined(gpName) && gpName != '') {
+        let selectInstance = that.selectInstanceByGroupName(gpName);
+        //双向绑定下拉框的服务选项
+        that.$Vue.defaultServiceOption = selectInstance.id;
+        that.analysisApi(selectInstance);
+      } else {
+        //默认加载第一个url
+        that.analysisApi(that.instances[0]);
+      }
+    } else {
+      //默认加载第一个url
+      that.analysisApi(that.instances[0]);
+    }
+  } else {
+    //默认加载第一个url
+    that.analysisApi(that.instances[0]);
+  }
 
-  //默认加载第一个url
-  that.analysisApi(that.instances[0]);
+}
+
+/***
+ * 获取当前分组实例
+ * @param name
+ * @returns {*}
+ */
+SwaggerBootstrapUi.prototype.selectInstanceByGroupName = function (name) {
+  var that = this;
+  var instance = null;
+  that.instances.forEach(function (group) {
+    //})
+    //$.each(that.instances,function (i, group) {
+    if (group.name == name) {
+      instance = group;
+      return;
+    }
+  })
+  return instance;
 }
 
 /***

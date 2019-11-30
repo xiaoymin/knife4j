@@ -152,6 +152,7 @@ export default {
       console.log("根据地址栏打开Tab选项卡");
       const panes = this.panels;
       var url = this.$route.path;
+      console.log(url);
       //var menu = findComponentsByPath(url, this.MenuData);
       var menu = findComponentsByPath(url, this.swagger.globalMenuDatas);
       if (menu != null) {

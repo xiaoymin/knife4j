@@ -151,7 +151,7 @@ const utils = {
   },
   checkUndefined: function (obj) {
     var flag = false;
-    if (obj != null && typeof (obj) != "undefined") {
+    if (obj != undefined && obj != null && typeof (obj) != "undefined") {
       flag = true;
     }
     return flag;
