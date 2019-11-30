@@ -477,6 +477,8 @@ SwaggerBootstrapUi.prototype.createGroupElement = function () {
       var gpName = urlParams.groupName;
       if (KUtils.checkUndefined(gpName) && gpName != '') {
         let selectInstance = that.selectInstanceByGroupName(gpName);
+        that.log("包含分组名称")
+        that.log(selectInstance)
         //双向绑定下拉框的服务选项
         that.$Vue.defaultServiceOption = selectInstance.id;
         that.analysisApi(selectInstance);
@@ -1561,7 +1563,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         name: '全局参数设置',
         tabName: '全局参数设置(' + groupName + ')',
         component: 'GlobalParameters',
-        path: 'GlobalParameters/' + groupName
+        path: 'GlobalParameters-' + groupName
       },
       {
         groupName: groupName,
@@ -1570,7 +1572,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         name: '离线文档',
         tabName: '离线文档(' + groupName + ')',
         component: 'OfficelineDocument',
-        path: 'OfficelineDocument/' + groupName
+        path: 'OfficelineDocument-' + groupName
       },
       {
         groupName: groupName,

@@ -1,25 +1,28 @@
 <template>
   <div class="knife4j-document">
-    <h2 :id="api.operationId">{{api.summary}}</h2>
+    <!-- <h2 :id="api.operationId">{{api.summary}}</h2> -->
     <a-row>
-      <div class="api-title">
-        基本信息
-      </div>
-      <a-row class="api-basic">
-        <a-col class="api-basic-title" :span="3">接口地址</a-col>
-        <a-col class="api-basic-body" :span="21">{{api.showUrl}}</a-col>
+      <a-row :id="api.operationId" class="knife4j-api-title">
+        {{api.summary}}
       </a-row>
-      <a-row class="api-basic">
-        <a-col class="api-basic-title" :span="3">请求方式</a-col>
-        <a-col class="api-basic-body" :span="21">{{api.methodType}}</a-col>
+      <a-row :class="'knife4j-api-'+api.methodType.toLowerCase()">
+        <div class="knife4j-api-summary">
+          <span class="knife4j-api-summary-method">{{api.methodType}}</span>
+          <span class="knife4j-api-summary-path">{{api.showUrl}}</span>
+        </div>
       </a-row>
-      <a-row class="api-basic">
-        <a-col class="api-basic-title" :span="3">consumes</a-col>
-        <a-col class="api-basic-body" :span="21">{{api.consumes}}</a-col>
-      </a-row>
-      <a-row class="api-basic">
-        <a-col class="api-basic-title" :span="3">produces</a-col>
-        <a-col class="api-basic-body" :span="21">{{api.produces}}</a-col>
+      <a-row class="knife4j-api-row">
+        <a-col :span="12">
+          <a-row>
+            <a-col class="api-basic-title" :span="6">请求数据类型</a-col>
+            {{api.consumes}}
+          </a-row>
+        </a-col>
+        <a-col :span="12">
+          <a-row>
+            <a-col class="api-basic-title" :span="6">响应数据类型</a-col> {{api.produces}}
+          </a-row>
+        </a-col>
       </a-row>
     </a-row>
     <!-- <a-divider class="divider" /> -->
