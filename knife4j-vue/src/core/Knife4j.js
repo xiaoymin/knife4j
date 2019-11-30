@@ -1587,7 +1587,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         groupId: groupId,
         key: 'otherMarkdowns',
         name: '其他文档',
-        icon: 'icon-modeling',
+        icon: 'icon-APIwendang',
         path: 'otherMarkdowns',
         children: []
       }
@@ -1597,10 +1597,10 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
           groupId: groupId,
           key: md5(md.title),
           name: md.title,
-          icon: 'icon-modeling',
           path: 'otherMarkdowns'
         })
       })
+      menuArr.push(otherMarkdowns);
     }
   }
   //接口文档
