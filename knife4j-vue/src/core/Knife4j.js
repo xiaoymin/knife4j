@@ -1499,37 +1499,37 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
     menuArr.push({
       groupName: groupName,
       groupId: groupId,
-      key: 'Authorize',
+      key: 'Authorize' + md5(groupName),
       name: 'Authorize',
       tabName: 'Authorize(' + groupName + ')',
       component: 'Authorize',
       icon: 'icon-authenticationsystem',
-      path: 'Authorize',
+      path: 'Authorize/' + groupName,
     })
   }
   //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
   menuArr.push({
     groupName: groupName,
     groupId: groupId,
-    key: 'swaggerModel',
+    key: 'swaggerModel' + md5(groupName),
     name: 'Swagger Models',
     component: 'SwaggerModels',
     tabName: 'Swagger Models(' + groupName + ')',
     icon: 'icon-modeling',
-    path: 'SwaggerModels',
+    path: 'SwaggerModels/' + groupName,
   })
   //文档管理
   menuArr.push({
     groupName: groupName,
     groupId: groupId,
-    key: 'documentManager',
+    key: 'documentManager' + md5(groupName),
     name: '文档管理',
     icon: 'icon-zdlxb',
     path: 'documentManager',
     children: [{
         groupName: groupName,
         groupId: groupId,
-        key: 'globalParameters',
+        key: 'globalParameters' + md5(groupName),
         name: '全局参数设置',
         component: 'GlobalParameters',
         path: 'GlobalParameters'
@@ -1537,7 +1537,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
       {
         groupName: groupName,
         groupId: groupId,
-        key: 'OfficelineDocument',
+        key: 'OfficelineDocument' + md5(groupName),
         name: '离线文档',
         component: 'OfficelineDocument',
         path: 'OfficelineDocument'
@@ -1545,7 +1545,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
       {
         groupName: groupName,
         groupId: groupId,
-        key: 'Settings',
+        key: 'Settings' + md5(groupName),
         name: '个性化设置',
         component: 'Settings',
         path: 'Settings'

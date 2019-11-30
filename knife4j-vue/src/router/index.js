@@ -14,14 +14,14 @@ const routes = [{
       component: () => import('@/views/index/Main')
     },
     {
-      path: '/Authorize',
+      path: '/Authorize/:groupName',
       component: () => import('@/views/settings/Authorize')
     },
     {
       path: '/:groupName/:controller/:summary',
       component: () => import('@/views/api/index')
     }, {
-      path: '/SwaggerModels',
+      path: '/SwaggerModels/:groupName',
       component: () => import('@/views/settings/SwaggerModels')
     }, {
       path: '/documentManager/GlobalParameters',
