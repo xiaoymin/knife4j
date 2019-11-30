@@ -32,6 +32,9 @@ const routes = [{
     }, {
       path: '/documentManager/Settings',
       component: () => import('@/views/settings/Settings')
+    }, {
+      path: '/otherMarkdowns/:id',
+      component: () => import('@/views/othermarkdown/index')
     }
   ]
 }]

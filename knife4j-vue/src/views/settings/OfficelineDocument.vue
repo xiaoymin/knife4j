@@ -26,7 +26,6 @@
   </a-layout-content>
 </template>
 <script>
-import "@/assets/css/editormd.css";
 import VueMarkdown from "vue-markdown";
 import html2canvas from "html2canvas";
 import { resumecss } from "./OfficelineCss";

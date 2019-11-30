@@ -42,6 +42,7 @@ import SwaggerModels from '@/views/settings/SwaggerModels';
 import GlobalParameters from '@/views/settings/GlobalParameters';
 import Settings from '@/views/settings/Settings';
 import OfficelineDocument from '@/views/settings/OfficelineDocument';
+import OtherMarkdown from '@/views/othermarkdown/index'
 
 Vue.component('ApiInfo', ApiInfo);
 Vue.component('Authorize', Authorize);
@@ -49,7 +50,7 @@ Vue.component('SwaggerModels', SwaggerModels);
 Vue.component('GlobalParameters', GlobalParameters);
 Vue.component('Settings', Settings);
 Vue.component('OfficelineDocument', OfficelineDocument);
-
+Vue.component('OtherMarkdown', OtherMarkdown);
 
 Vue.config.productionTip = false
 // 响应数据拦截器

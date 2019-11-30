@@ -1435,7 +1435,16 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   //自定义文档
   if (that.settings.enableSwaggerBootstrapUi) {
     var sbu = menu["swaggerBootstrapUi"]
-    that.currentInstance.markdownFiles = sbu.markdownFiles;
+    if (KUtils.checkUndefined(sbu.markdownFiles)) {
+      sbu.markdownFiles.forEach(function (md) {
+        let key = md5(md.title)
+        that.currentInstance.markdownFiles.push({
+          ...md,
+          id: key
+        })
+      })
+    }
+    //that.currentInstance.markdownFiles = sbu.markdownFiles;
   }
   that.log("解析refTreetableparameters结束,耗时：" + (new Date().getTime() - pathStartTime));
   that.log(new Date().toTimeString());
@@ -1592,12 +1601,14 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         children: []
       }
       that.currentInstance.markdownFiles.forEach(function (md) {
+        var unmdkey = md5(md.title);
         otherMarkdowns.children.push({
           groupName: groupName,
           groupId: groupId,
-          key: md5(md.title),
+          key: unmdkey,
+          component: 'OtherMarkdown',
           name: md.title,
-          path: 'otherMarkdowns'
+          path: unmdkey
         })
       })
       menuArr.push(otherMarkdowns);
@@ -3430,7 +3441,7 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   //this.cacheInstance=new SwaggerBootstrapUiCacheApis({id:this.groupId,name:this.name});
   this.cacheInstance = null
   //自定义文档
-  this.markdownFiles = null
+  this.markdownFiles = []
 
   this.i18n = null
 }
