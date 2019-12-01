@@ -2,24 +2,28 @@
   <div class="document">
     <a-row>
       <a-row class="knife4j-api-title">
-        {{api.summary}}
+        <a-col :span="22">{{ api.summary }}</a-col>
+        <a-col :span="2" id="btnCopyAddress" class="knife4j-api-copy-address"
+          >复制地址</a-col
+        >
       </a-row>
-      <a-row :class="'knife4j-api-'+api.methodType.toLowerCase()">
+      <a-row :class="'knife4j-api-' + api.methodType.toLowerCase()">
         <div class="knife4j-api-summary">
-          <span class="knife4j-api-summary-method">{{api.methodType}}</span>
-          <span class="knife4j-api-summary-path">{{api.showUrl}}</span>
+          <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
+          <span class="knife4j-api-summary-path">{{ api.showUrl }}</span>
         </div>
       </a-row>
       <a-row class="knife4j-api-row">
         <a-col :span="12">
           <a-row>
             <a-col class="api-basic-title" :span="6">请求数据类型</a-col>
-            {{api.consumes}}
+            {{ api.consumes }}
           </a-row>
         </a-col>
         <a-col :span="12">
           <a-row>
-            <a-col class="api-basic-title" :span="6">响应数据类型</a-col> {{api.produces}}
+            <a-col class="api-basic-title" :span="6">响应数据类型</a-col>
+            {{ api.produces }}
           </a-row>
         </a-col>
       </a-row>
@@ -30,8 +34,11 @@
       <div class="api-title">
         接口描述
       </div>
-      <div v-if="api.description" v-html="api.description" class="api-body-desc">
-      </div>
+      <div
+        v-if="api.description"
+        v-html="api.description"
+        class="api-body-desc"
+      ></div>
     </div>
     <!--请求示例-->
     <div v-if="api.requestValue">
@@ -43,25 +50,38 @@
     <div class="api-title">
       请求参数
     </div>
-    <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small" :pagination="page">
+    <a-table
+      :defaultExpandAllRows="expanRows"
+      :columns="columns"
+      :dataSource="reqParameters"
+      rowKey="id"
+      size="small"
+      :pagination="page"
+    >
       <template slot="requireTemplate" slot-scope="text">
-        <span v-if="text" style="color:red">{{text.toLocaleString()}}</span>
-        <span v-else>{{text.toLocaleString()}}</span>
+        <span v-if="text" style="color:red">{{ text.toLocaleString() }}</span>
+        <span v-else>{{ text.toLocaleString() }}</span>
       </template>
 
       <template slot="typeTemplate" slot-scope="text">
-        <span :class="'knife4j-request-'+text">{{text}}</span>
+        <span :class="'knife4j-request-' + text">{{ text }}</span>
       </template>
 
-      <template slot="datatypeTemplate" slot-scope="text,record">
+      <template slot="datatypeTemplate" slot-scope="text, record">
         <data-type :text="text" :record="record"></data-type>
       </template>
-
     </a-table>
     <div class="api-title">
       响应状态
     </div>
-    <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes" rowKey="code" size="small" :pagination="page">
+    <a-table
+      :defaultExpandAllRows="expanRows"
+      :columns="responseStatuscolumns"
+      :dataSource="api.responseCodes"
+      rowKey="code"
+      size="small"
+      :pagination="page"
+    >
       <template slot="descriptionTemplate" slot-scope="text">
         <div v-html="text"></div>
       </template>
@@ -69,25 +89,47 @@
     <!--响应参数需要判断是否存在多个code-schema的情况-->
     <div v-if="api.multipartResponseSchema">
       <a-tabs>
-        <a-tab-pane v-for="resp in multipCodeDatas" :key="resp.code" :tab="resp.code">
+        <a-tab-pane
+          v-for="resp in multipCodeDatas"
+          :key="resp.code"
+          :tab="resp.code"
+        >
           <!--判断响应头-->
           <div v-if="resp.responseHeaderParameters">
             <div class="api-title">
               响应Header
             </div>
-            <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="resp.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
+            <a-table
+              :defaultExpandAllRows="expanRows"
+              :columns="responseHeaderColumns"
+              :dataSource="resp.responseHeaderParameters"
+              rowKey="id"
+              size="small"
+              :pagination="page"
+            >
             </a-table>
           </div>
           <!--响应参数-->
           <div class="api-title">
             响应参数
           </div>
-          <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data" rowKey="id" size="small" :pagination="page">
+          <a-table
+            :defaultExpandAllRows="expanRows"
+            :columns="responseParametersColumns"
+            :dataSource="resp.data"
+            rowKey="id"
+            size="small"
+            :pagination="page"
+          >
           </a-table>
           <div class="api-title">
             响应示例
           </div>
-          <editor-show :value="resp.responseBasicType ? resp.responseText : resp.responseValue"></editor-show>
+          <editor-show
+            :value="
+              resp.responseBasicType ? resp.responseText : resp.responseValue
+            "
+          ></editor-show>
           <!-- <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor> -->
         </a-tab-pane>
       </a-tabs>
@@ -98,27 +140,47 @@
         <div class="api-title">
           响应Header
         </div>
-        <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="api.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
+        <a-table
+          :defaultExpandAllRows="expanRows"
+          :columns="responseHeaderColumns"
+          :dataSource="api.responseHeaderParameters"
+          rowKey="id"
+          size="small"
+          :pagination="page"
+        >
         </a-table>
       </div>
       <!--响应参数-->
       <div class="api-title">
         响应参数
       </div>
-      <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data" rowKey="id" size="small" :pagination="page">
+      <a-table
+        :defaultExpandAllRows="expanRows"
+        :columns="responseParametersColumns"
+        :dataSource="multipData.data"
+        rowKey="id"
+        size="small"
+        :pagination="page"
+      >
       </a-table>
       <div class="api-title">
         响应示例
       </div>
-      <editor-show :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue"></editor-show>
+      <editor-show
+        :value="
+          multipData.responseBasicType
+            ? multipData.responseText
+            : multipData.responseValue
+        "
+      ></editor-show>
       <!-- <editor :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue" @init="singleResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorSingleHeight"></editor> -->
     </div>
-
   </div>
 </template>
 <script>
 import DataType from "./DataType";
 import EditorShow from "./EditorShow";
+import ClipboardJS from "clipboard";
 //请求参数table-header
 const requestcolumns = [
   {
@@ -234,10 +296,26 @@ export default {
     };
   },
   created() {
+    this.copyApiAddress();
     this.initRequestParams();
     this.initResponseCodeParams();
   },
   methods: {
+    copyApiAddress() {
+      var that = this;
+      var clipboard = new ClipboardJS("#btnCopyAddress", {
+        text() {
+          return window.location.href;
+        }
+      });
+      clipboard.on("success", function(e) {
+        that.$message.info("复制成功");
+      });
+      clipboard.on("error", function(e) {
+        that.$message.info("复制失败");
+      });
+      console.log(window.location);
+    },
     initRequestParams() {
       var data = [];
       var that = this;
@@ -354,6 +432,13 @@ export default {
     height: 32px;
     line-height: 32px;
   }
+}
+.knife4j-api-copy-address {
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 100;
+  color: #0b0a0a;
 }
 .knife4j-api-title {
   margin-top: 10px;
