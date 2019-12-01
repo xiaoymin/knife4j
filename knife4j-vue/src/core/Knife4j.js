@@ -961,7 +961,11 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
     //判断是否开启增强配置
     if (that.settings.enableSwaggerBootstrapUi) {
       var sbu = menu["swaggerBootstrapUi"]
-      tags = sbu["tagSortLists"];
+      if (KUtils.checkUndefined(sbu)) {
+        if (KUtils.checkUndefined(sbu.tagSortLists)) {
+          tags = sbu["tagSortLists"];
+        }
+      }
     }
     tags.forEach(function (tag) {
       var swuTag = new SwaggerBootstrapUiTag(tag.name, tag.description);
@@ -1437,14 +1441,16 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   //自定义文档
   if (that.settings.enableSwaggerBootstrapUi) {
     var sbu = menu["swaggerBootstrapUi"]
-    if (KUtils.checkUndefined(sbu.markdownFiles)) {
-      sbu.markdownFiles.forEach(function (md) {
-        let key = md5(md.title)
-        that.currentInstance.markdownFiles.push({
-          ...md,
-          id: key
+    if (KUtils.checkUndefined(sbu)) {
+      if (KUtils.checkUndefined(sbu.markdownFiles)) {
+        sbu.markdownFiles.forEach(function (md) {
+          let key = md5(md.title)
+          that.currentInstance.markdownFiles.push({
+            ...md,
+            id: key
+          })
         })
-      })
+      }
     }
     //that.currentInstance.markdownFiles = sbu.markdownFiles;
   }

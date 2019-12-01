@@ -214,7 +214,14 @@ const utils = {
   },
   getStringValue: function (obj) {
     var str = "";
-    if (typeof (obj) != 'undefined' && obj != null) {
+    if (obj != undefined && typeof (obj) != 'undefined' && obj != null) {
+      str = obj.toString();
+    }
+    return str;
+  },
+  toString(obj, defutStr) {
+    var str = defutStr;
+    if (obj != undefined && typeof (obj) != 'undefined' && obj != null) {
       str = obj.toString();
     }
     return str;

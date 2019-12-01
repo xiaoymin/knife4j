@@ -30,6 +30,7 @@ import VueMarkdown from "vue-markdown";
 import html2canvas from "html2canvas";
 import { resumecss } from "./OfficelineCss";
 import getDocumentTemplates from "@/components/officeDocument/officeDocTemplate";
+import markdownText from "@/components/officeDocument/markdownTransform";
 import OnlineDocument from "@/views/api/OnlineDocument";
 import { Modal } from "ant-design-vue";
 import DownloadHtml from "./DownloadHtml";
@@ -71,6 +72,7 @@ export default {
       columns: columns,
       tags: [],
       downloadType: "DownloadHtml",
+      markdownText: "",
       expanRows: true,
       downloadHtmlFlag: false,
       downloadPDF: false,
@@ -81,20 +83,41 @@ export default {
   updated() {
     console.log("dom重新被渲染");
     var that = this;
-    if (this.downloadHtmlFlag) {
-      //等待ace-editor渲染,给与充足时间
-      setTimeout(() => {
-        //下载html
-        that.downloadHtml();
-        //关闭
-        that.$kloading.destroy();
-      }, 1000);
+    if (that.downloadType == "DownloadHtml") {
+      //html
+      if (this.downloadHtmlFlag) {
+        //等待ace-editor渲染,给与充足时间
+        setTimeout(() => {
+          //下载html
+          that.downloadHtml();
+          //关闭
+          that.$kloading.destroy();
+        }, 1000);
+      }
     }
   },
   created() {},
   methods: {
     triggerDownloadWord() {},
-    triggerDownloadMarkdown() {},
+    triggerDownloadMarkdown() {
+      //下载markdown
+      var that = this;
+      that.$kloading.show({
+        text: "正在下载Markdown文件中..."
+      });
+      //遍历得到markdown语法
+      if (this.markdownText == null || this.markdownText == "") {
+        //遍历得到markdown文本
+        this.markdownText = markdownText(this.data.instance);
+      }
+      //等待ace-editor渲染,给与充足时间
+      setTimeout(() => {
+        //下载html
+        that.downloadMarkdown(that.markdownText);
+        //关闭
+        that.$kloading.destroy();
+      }, 1000);
+    },
     triggerDownload() {
       console.log("trigger---");
       let that = this;
@@ -120,6 +143,25 @@ export default {
       }
 
       //
+    },
+    downloadMarkdown(content) {
+      console.log("downloadMarkdown");
+      var a = document.createElement("a");
+      //var content = this.getHtmlContent(this.data.instance.title);
+      var option = {};
+      var fileName = this.data.instance.name + ".md";
+      var url = window.URL.createObjectURL(
+        new Blob([content], {
+          type:
+            (option.type || "text/plain") +
+            ";charset=" +
+            (option.encoding || "utf-8")
+        })
+      );
+      a.href = url;
+      a.download = fileName || "file";
+      a.click();
+      window.URL.revokeObjectURL(url);
     },
     downloadHtml() {
       console.log("downloadHtml");
