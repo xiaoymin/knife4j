@@ -19,7 +19,7 @@
       <!--  <a-modal v-model="downloadHtmlFlag" :footer="null" :maskClosable="false" :keyboard="false" :closable="false">
         <p>正在下载中...</p>
       </a-modal> -->
-      <div class="htmledit_views" id="content_views">
+      <div class="htmledit_views" :id="'content_views'+data.instance.id">
         <component :is="downloadType" :instance="data.instance" :tags="tags" />
       </div>
     </a-row>
@@ -155,7 +155,9 @@ export default {
     },
     getHtmlContent() {
       //获取html另外一种方式：this.$el.outerHTML
-      const template = document.getElementById("content_views").innerHTML;
+      var domId = "content_views" + this.data.instance.id;
+      const template = document.getElementById(domId).innerHTML;
+      //const template = document.getElementById("content_views").innerHTML;
       let html = `<!DOCTYPE html>
                 <html>
                 <head>
