@@ -1,19 +1,16 @@
 <template>
   <a-layout-content class="knife4j-body-content">
-    <a-tabs defaultActiveKey="1" tabPosition="left" class="api-tab">
+    <a-tabs defaultActiveKey="2" tabPosition="left" class="api-tab">
       <a-tab-pane key="1">
-        <span slot="tab">
-          <my-icon type="icon-wendang" />文档</span>
+        <span slot="tab"> <my-icon type="icon-wendang" />文档</span>
         <Document :api="api" />
       </a-tab-pane>
       <a-tab-pane key="2">
-        <span slot="tab">
-          <my-icon type="icon-debug" />调试</span>
+        <span slot="tab"> <my-icon type="icon-debug" />调试</span>
         <Debug :api="api" />
       </a-tab-pane>
     </a-tabs>
   </a-layout-content>
-
 </template>
 <script>
 import Document from "./Document";
@@ -62,5 +59,4 @@ export default {
   }
 };
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>
