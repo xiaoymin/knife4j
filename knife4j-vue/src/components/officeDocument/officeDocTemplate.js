@@ -1,17 +1,17 @@
-export default function getDocumentTemplates(resumecss, template) {
+export default function getDocumentTemplates(title, resumecss, template) {
   return `<!DOCTYPE html>
   <html>
   <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1.0">
-      <title>knife4j-Vue文档</title>
+      <title>${title}</title>
       <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@1.4.4/dist/antd.min.css" />
       <style>
       ${resumecss}
       </style>
   </head>
   <body>
-      <div id="knife4jDocument" class="resume_preview_page" style="margin:10px auto;width:90%">
+      <div id="knife4jDocument" class="resume_preview_page" style="margin:10px auto;width:88%">
       ${template}
       </div>
       <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.js"></script>
@@ -28,10 +28,14 @@ export default function getDocumentTemplates(resumecss, template) {
             var docGlobal=document.getElementById("knife4j-doc-m");
             if(doc.style.display=="none"){
               doc.style.display="";
+              document.getElementById("btnHide").innerHTML="隐 藏";
+              docGlobal.style.width="400px";
               docGlobal.style.height="500px";
             }else{
               doc.style.display="none";
-              docGlobal.style.height="45px";
+              document.getElementById("btnHide").innerHTML="目 录";
+              docGlobal.style.width="52px";
+              docGlobal.style.height="35px";
             }
           })
         },

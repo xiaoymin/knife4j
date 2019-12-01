@@ -124,9 +124,9 @@ export default {
     downloadHtml() {
       console.log("downloadHtml");
       var a = document.createElement("a");
-      var content = this.getHtmlContent();
+      var content = this.getHtmlContent(this.data.instance.title);
       var option = {};
-      var fileName = "test.html";
+      var fileName = this.data.instance.name + ".html";
       var url = window.URL.createObjectURL(
         new Blob([content], {
           type:
@@ -153,29 +153,15 @@ export default {
         a.click()
       }) */
     },
-    getHtmlContent() {
+    getHtmlContent(title) {
       //获取html另外一种方式：this.$el.outerHTML
       var domId = "content_views" + this.data.instance.id;
+      if (title == undefined || title == null || title == "") {
+        title = "Knife4j-API接口文档";
+      }
       const template = document.getElementById(domId).innerHTML;
       //const template = document.getElementById("content_views").innerHTML;
-      let html = `<!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-                    <title>X-Find迅聘选才</title>
-                    <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@1.4.4/dist/antd.min.css" />
-                    <style>
-                    ${resumecss}
-                    </style>
-                </head>
-                <body>
-                    <div class="resume_preview_page" style="margin:0 auto;width:1200px">
-                    ${template}
-                    </div>
-                </body>
-                </html>`;
-      return getDocumentTemplates(resumecss, template);
+      return getDocumentTemplates(title, resumecss, template);
     }
   }
 };

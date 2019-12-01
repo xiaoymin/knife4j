@@ -93,10 +93,8 @@
 
     <!--目录-->
     <a-row id="knife4j-doc-m" class="knife4j-doc-m">
-      <a-row>
-        <a-col :span="3">
-          <a-button type="link" id="btnHide" v-on:click="hideShow=!hideShow">隐藏</a-button>
-        </a-col>
+      <a-row style="float: right;width: 57px;z-index: 10000;overflow: hidden;">
+        <a-button type="link" id="btnHide">隐藏</a-button>
       </a-row>
       <a-row v-if="hideShow" id="knife4jDoc">
         <ul>
