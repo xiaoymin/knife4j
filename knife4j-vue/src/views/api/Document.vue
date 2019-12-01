@@ -2,8 +2,17 @@
   <div class="document">
     <a-row>
       <a-row class="knife4j-api-title">
-        <a-col :span="22">{{ api.summary }}</a-col>
-        <a-col :span="2" id="btnCopyAddress" class="knife4j-api-copy-address"
+        <a-col :span="20">{{ api.summary }}</a-col>
+        <a-col
+          :span="2"
+          :id="'btnCopyMarkdown' + api.id"
+          class="knife4j-api-copy-address"
+          >复制文档</a-col
+        >
+        <a-col
+          :span="2"
+          :id="'btnCopyAddress' + api.id"
+          class="knife4j-api-copy-address"
           >复制地址</a-col
         >
       </a-row>
@@ -179,6 +188,7 @@
 </template>
 <script>
 import DataType from "./DataType";
+import markdownSingleText from "@/components/officeDocument/markdownSingleTransform";
 import EditorShow from "./EditorShow";
 import ClipboardJS from "clipboard";
 //请求参数table-header
@@ -297,24 +307,40 @@ export default {
   },
   created() {
     this.copyApiAddress();
+    this.copyApiMarkdown();
     this.initRequestParams();
     this.initResponseCodeParams();
   },
   methods: {
     copyApiAddress() {
       var that = this;
-      var clipboard = new ClipboardJS("#btnCopyAddress", {
+      var btnId = "btnCopyAddress" + this.api.id;
+      var clipboard = new ClipboardJS("#" + btnId, {
         text() {
           return window.location.href;
         }
       });
       clipboard.on("success", function(e) {
-        that.$message.info("复制成功");
+        that.$message.info("复制地址成功");
       });
       clipboard.on("error", function(e) {
-        that.$message.info("复制失败");
+        that.$message.info("复制地址失败");
       });
-      console.log(window.location);
+    },
+    copyApiMarkdown() {
+      var that = this;
+      var btnId = "btnCopyMarkdown" + this.api.id;
+      var clipboard = new ClipboardJS("#" + btnId, {
+        text() {
+          return markdownSingleText(that.api);
+        }
+      });
+      clipboard.on("success", function(e) {
+        that.$message.info("复制文档成功");
+      });
+      clipboard.on("error", function(e) {
+        that.$message.info("复制文档失败");
+      });
     },
     initRequestParams() {
       var data = [];
