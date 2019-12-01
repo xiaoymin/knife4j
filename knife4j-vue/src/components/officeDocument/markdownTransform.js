@@ -9,6 +9,8 @@ export default function markdownText(instance) {
   if (instance != null && instance != undefined) {
     createBasicInfo(instance, markdownCollections);
     createTagsInfo(instance, markdownCollections);
+    //增强文档
+    createPlusInfo(instance, markdownCollections);
   }
   return markdownCollections.join('\n');
 }
@@ -42,6 +44,26 @@ function createBasicInfo(instance, markdownCollections) {
   //第三方md软件Typora目录格式
   markdownCollections.push('[TOC]');
   markdownLines(markdownCollections);
+}
+
+/**
+ * 增加增强文档
+ * @param {*} instance 
+ * @param {*} markdownCollections 
+ */
+function createPlusInfo(instance, markdownCollections) {
+  if (KUtils.checkUndefined(instance.markdownFiles)) {
+    if (instance.markdownFiles.length > 0) {
+      markdownLines(markdownCollections);
+      markdownCollections.push('# 附录');
+      instance.markdownFiles.forEach(function (md) {
+        markdownLines(markdownCollections);
+        markdownCollections.push('## ' + md.title);
+        markdownCollections.push(md.content);
+      })
+    }
+  }
+
 }
 
 /**
