@@ -155,6 +155,11 @@ export const resumecss = `
   word-wrap: break-word;
   color: #444;
 }
+.api-editor-show .string { color: green; }        /*字符串的样式*/
+.api-editor-show .number { color: darkorange; }    /*数字的样式*/
+.api-editor-show .boolean { color: blue; }        /*布尔型数据的样式*/
+.api-editor-show .null { color: magenta; }        /*null值的样式*/
+.api-editor-show .key { color: red; }            /*key值的样式*/
 .api-description {
   border-left: 4px solid #ddd;
   line-height: 30px;
