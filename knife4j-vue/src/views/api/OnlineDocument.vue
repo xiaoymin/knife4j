@@ -70,8 +70,9 @@
     </a-table>
     <!--响应参数需要判断是否存在多个code-schema的情况-->
     <div v-if="api.multipartResponseSchema">
-      <a-tabs>
-        <a-tab-pane v-for="resp in multipCodeDatas" :key="resp.code" :tab="resp.code">
+      <!--多个响应编码code的情况在离线文档中需要单独遍历分开-->
+      <a-tabs v-for="resp in multipCodeDatas" :key="resp.code">
+        <a-tab-pane :tab="resp.code">
           <!--判断响应头-->
           <div v-if="resp.responseHeaderParameters">
             <div class="api-title">
