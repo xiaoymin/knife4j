@@ -134,9 +134,6 @@ SwaggerBootstrapUi.prototype.main = function () {
   that.windowResize(); */
   //2019/08/28 13:16:50 支持configuration接口,主要是相关配置,目前支持属性supportedSubmitMethods(请求调试)
   //接口地址:/swagger-resources/configuration/ui
-  that.configInit()
-  //加载分组接口
-  that.analysisGroup()
 }
 
 /***
@@ -186,8 +183,13 @@ SwaggerBootstrapUi.prototype.initSettings = function () {
     } else {
       that.settings = defaultSettings;
     }
+    that.log("Setings------------------------------")
+    that.log(that.settings)
     //本地缓存
     that.$Vue.$localStore.setItem(Constants.globalSettingsKey, that.settings);
+    that.configInit()
+    //加载分组接口
+    that.analysisGroup()
   });
 
 
