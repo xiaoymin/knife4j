@@ -24,9 +24,12 @@
         <a-layout-header style="padding: 0;background: #fff;">
           <GlobalHeader :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="(item)=>handleMenuClick(item)" />
         </a-layout-header>
-        <a-tabs hideAdd v-model="activeKey" type="editable-card" @change="tabChange" @edit="tabEditCallback" class="knife4j-tab">
-          <a-tab-pane v-for="pane in panels" :tab="pane.title" :key="pane.key" :closable="pane.closable">
-            <component :is="pane.content" :data='pane' @childrenMethods="childrenEmitMethod"></component>
+        <context-menu :itemList="menuItemList" :visible.sync="menuVisible" @select="onMenuSelect" />
+        <a-tabs hideAdd v-model="activeKey" @contextmenu.native="e => onContextmenu(e)" type="editable-card" @change="tabChange" @edit="tabEditCallback" class="knife4j-tab">
+          <a-tab-pane v-for="pane in panels" :key="pane.key" :closable="pane.closable">
+            <span slot="tab" :pagekey="pane.key">{{pane.title}}</span>
+            <component :is="pane.content" :data='pane' @childrenMethods="childrenEmitMethod">
+            </component>
           </a-tab-pane>
         </a-tabs>
         <a-layout-footer style="padding: 0">
@@ -51,6 +54,8 @@ import {
 } from "@/components/utils/Knife4jUtils";
 import { urlToList } from "@/components/utils/pathTools";
 import ThreeMenu from "@/components/SiderMenu/ThreeMenu";
+//右键菜单
+import ContextMenu from "@/components/common/ContextMenu";
 
 const constMenuWidth = 310;
 
@@ -61,6 +66,7 @@ export default {
     GlobalHeader,
     GlobalFooter,
     GlobalHeaderTab,
+    ContextMenu,
     ThreeMenu
   },
   data() {
@@ -89,7 +95,13 @@ export default {
       newTabIndex: 0,
       openKeys: [],
       selectedKeys: [],
-      status: false
+      status: false,
+      menuVisible: false,
+      menuItemList: [
+        { key: "1", icon: "caret-left", text: "关闭左侧" },
+        { key: "2", icon: "caret-right", text: "关闭右侧" },
+        { key: "3", icon: "close-circle", text: "关闭其它" }
+      ]
     };
   },
   beforeCreate() {},
@@ -140,6 +152,72 @@ export default {
       this.defaultServiceOption = value;
       console.log(value);
       console.log(option);
+    },
+    onMenuSelect(key, target) {
+      let pageKey = this.getPageKey(target);
+      switch (key) {
+        case "1":
+          this.closeLeft(pageKey);
+          break;
+        case "2":
+          this.closeRight(pageKey);
+          break;
+        case "3":
+          this.closeOthers(pageKey);
+          break;
+        default:
+          break;
+      }
+    },
+    onContextmenu(e) {
+      console.log("右键=-");
+      console.log(e.target);
+      const pagekey = this.getPageKey(e.target);
+      console.log("pageKey:" + pagekey);
+      if (pagekey !== null) {
+        e.preventDefault();
+        this.menuVisible = true;
+      }
+    },
+    getPageKey(target, depth) {
+      depth = depth || 0;
+      if (depth > 2) {
+        return null;
+      }
+      let pageKey = target.getAttribute("pagekey");
+      pageKey =
+        pageKey ||
+        (target.previousElementSibling
+          ? target.previousElementSibling.getAttribute("pagekey")
+          : null);
+      return (
+        pageKey ||
+        (target.firstElementChild
+          ? this.getPageKey(target.firstElementChild, ++depth)
+          : null)
+      );
+    },
+    closeOthers(pageKey) {
+      let index = this.linkList.indexOf(pageKey);
+      this.linkList = this.linkList.slice(index, index + 1);
+      this.pageList = this.pageList.slice(index, index + 1);
+      this.activePage = this.linkList[0];
+    },
+    closeLeft(pageKey) {
+      let index = this.linkList.indexOf(pageKey);
+      this.linkList = this.linkList.slice(index);
+      this.pageList = this.pageList.slice(index);
+      if (this.linkList.indexOf(this.activePage) < 0) {
+        this.activePage = this.linkList[0];
+      }
+    },
+    closeRight(pageKey) {
+      let index = this.linkList.indexOf(pageKey);
+      this.linkList = this.linkList.slice(0, index + 1);
+      this.pageList = this.pageList.slice(0, index + 1);
+      if (this.linkList.indexOf(this.activePage < 0)) {
+        this.activePage = this.linkList[this.linkList.length - 1];
+      }
     },
     childrenEmitMethod(type, data) {
       this[type](data);

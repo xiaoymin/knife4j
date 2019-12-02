@@ -12,26 +12,13 @@
     <a-row class="knife4j-debug-tabs">
       <a-tabs defaultActiveKey="1">
         <a-tab-pane tab="请求头部" key="1">
-          <a-table
-            :size="small"
-            :rowSelection="{
-              selectedRowKeys: selectedRowKeys,
-              onChange: onSelectChange
-            }"
-            :columns="headerColumn"
-            :pagination="pagination"
-            :dataSource="headerData"
-          >
+          <a-table size="small" :columns="headerColumn" :pagination="pagination" :dataSource="headerData" rowKey="id">
             <a-row slot="operation">
-              <a-button icon="delete" type="danger" style="margin-left:10px;"
-                >删除</a-button
-              >
+              <a-button icon="delete" type="danger" style="margin-left:10px;">删除</a-button>
             </a-row>
           </a-table>
         </a-tab-pane>
-        <a-tab-pane tab="请求体" key="2" forceRender
-          >Content of Tab Pane 2</a-tab-pane
-        >
+        <a-tab-pane tab="请求体" key="2" forceRender>Content of Tab Pane 2</a-tab-pane>
       </a-tabs>
     </a-row>
   </div>
