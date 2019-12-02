@@ -89,6 +89,7 @@ export default {
       serviceOptions: [],
       MenuData: [],
       collapsed: false,
+      linkList: [],
       panels: [],
       panelIndex: 0,
       activeKey: "",
@@ -170,10 +171,7 @@ export default {
       }
     },
     onContextmenu(e) {
-      console.log("右键=-");
-      console.log(e.target);
       const pagekey = this.getPageKey(e.target);
-      console.log("pageKey:" + pagekey);
       if (pagekey !== null) {
         e.preventDefault();
         this.menuVisible = true;
@@ -198,26 +196,45 @@ export default {
       );
     },
     closeOthers(pageKey) {
-      let index = this.linkList.indexOf(pageKey);
-      this.linkList = this.linkList.slice(index, index + 1);
-      this.pageList = this.pageList.slice(index, index + 1);
-      this.activePage = this.linkList[0];
+      //关闭其它则只保留当前key以及kmain
+      this.linkList = ["kmain", pageKey];
+      let tabs = [];
+      this.panels.forEach(function(panel) {
+        if (panel.key == "kmain" || panel.key == pageKey) {
+          tabs.push(panel);
+        }
+      });
+      this.panels = tabs;
+      this.activeKey = pageKey;
     },
     closeLeft(pageKey) {
-      let index = this.linkList.indexOf(pageKey);
-      this.linkList = this.linkList.slice(index);
-      this.pageList = this.pageList.slice(index);
-      if (this.linkList.indexOf(this.activePage) < 0) {
-        this.activePage = this.linkList[0];
+      //关闭左侧,第一个主页不能close
+      if (this.linkList.length > 2) {
+        let index = this.linkList.indexOf(pageKey);
+        let sliceArr = this.linkList.slice(index);
+        let nLinks = ["kmain"].concat(sliceArr);
+        this.linkList = nLinks;
+        let kmainComp = this.panels[0];
+        let tabs = [];
+        tabs.push(kmainComp);
+        let splicTabs = this.panels.slice(index);
+        this.panels = tabs.concat(splicTabs);
+        this.activeKey = pageKey;
       }
     },
     closeRight(pageKey) {
+      this.activeKey = pageKey;
       let index = this.linkList.indexOf(pageKey);
-      this.linkList = this.linkList.slice(0, index + 1);
-      this.pageList = this.pageList.slice(0, index + 1);
-      if (this.linkList.indexOf(this.activePage < 0)) {
-        this.activePage = this.linkList[this.linkList.length - 1];
+      let tmpLinks = [];
+      let tmpTabs = [];
+      const tpLinks = this.linkList;
+      const tpPanels = this.panels;
+      for (var i = 0; i <= index; i++) {
+        tmpLinks.push(tpLinks[i]);
+        tmpTabs.push(tpPanels[i]);
       }
+      this.linkList = tmpLinks;
+      this.panels = tmpTabs;
     },
     childrenEmitMethod(type, data) {
       this[type](data);
@@ -245,6 +262,7 @@ export default {
             instance: this.swaggerCurrentInstance,
             closable: false
           });
+          this.linkList.push("kmain");
         }
         const tabKeys = panes.map(tab => tab.key);
 
@@ -260,6 +278,7 @@ export default {
             instance: this.swaggerCurrentInstance,
             closable: menu.key != "kmain"
           });
+          this.linkList.push(menu.key);
           this.panels = panes;
         }
         this.activeKey = menu.key;
@@ -335,6 +354,7 @@ export default {
             key: menu.key,
             closable: true
           });
+          this.linkList.push(menu.key);
           this.panels = panes;
         }
         this.activeKey = menu.key;
