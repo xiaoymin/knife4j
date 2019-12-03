@@ -12,22 +12,34 @@
     <a-row class="knife4j-debug-tabs">
       <a-tabs defaultActiveKey="1">
         <a-tab-pane tab="请求头部" key="1">
-          <a-table size="small" :rowSelection="rowSelection" :columns="headerColumn" :pagination="pagination" :dataSource="headerData" rowKey="id">
+          <a-table bordered size="small" :rowSelection="rowSelection" :columns="headerColumn" :pagination="pagination" :dataSource="headerData" rowKey="id">
             <!--请求头下拉框-->
             <template slot="headerName" slot-scope="text,record">
               <!-- <a-select showSearch :options="headerOptions" placeholder="输入请求头" optionFilterProp="children" style="width: 100%">
               </a-select> -->
               <a-auto-complete @select="headerSelect" @search="headerSearch" @change="headerNameChange(record)" :value="text" :filterOption="headerNameFilterOption" :allowClear="allowClear" :dataSource="headerAutoOptions" style="width: 100%" placeholder="请求头名称" />
             </template>
-            <template slot="headerValue" slot-scope="text">
-              <a-input placeholder="请求头内容" :value="text" />
+            <template slot="headerValue" slot-scope="text,record">
+              <a-input placeholder="请求头内容" :data-key="record.id" :defaultValue="text" @change="headerContentChnage" />
             </template>
             <a-row slot="operation" slot-scope="text,record">
               <a-button type="link" v-if="!record.new" @click="headerDelete(record)">删除</a-button>
             </a-row>
           </a-table>
         </a-tab-pane>
-        <a-tab-pane tab="请求体" key="2" forceRender>Content of Tab Pane 2</a-tab-pane>
+        <a-tab-pane tab="请求参数" key="2" forceRender>
+          <a-row class="knife4j-debug-request-type">
+            <a-col :span="5">
+              <a-radio size="large">x-www-form-urlencoded</a-radio>
+            </a-col>
+            <a-col :span="3">
+              <a-radio size="large">form-data</a-radio>
+            </a-col>
+            <a-col :span="5">
+              <a-radio size="large">raw</a-radio>
+            </a-col>
+          </a-row>
+        </a-tab-pane>
       </a-tabs>
     </a-row>
   </div>
@@ -38,7 +50,7 @@ const headerColumn = [
   {
     title: "请求头",
     dataIndex: "name",
-    width: "16%",
+    width: "20%",
     scopedSlots: {
       customRender: "headerName"
     }
@@ -173,6 +185,34 @@ export default {
       this.headerData.forEach(function(header) {
         instance.rowSelection.selectedRowKeys.push(header.id);
       });
+    },
+    headerContentChnage(e) {
+      var headerValue = e.target.value;
+      var headerId = e.target.getAttribute("data-key");
+      var record = this.headerData.filter(header => header.id == headerId)[0];
+      if (record.new) {
+        this.headerData.forEach(function(header) {
+          if (header.id == record.id) {
+            header.content = headerValue;
+            header.new = false;
+          }
+        });
+        //插入一行
+        this.headerData.push({
+          id: md5(new Date().getTime().toString()),
+          name: "",
+          content: "",
+          new: true
+        });
+      } else {
+        this.headerData.forEach(function(header) {
+          if (header.id == record.id) {
+            header.content = headerValue;
+            header.new = false;
+          }
+        });
+      }
+      this.initSelectionHeaders();
     },
     /**
      * 请求头筛选事件
