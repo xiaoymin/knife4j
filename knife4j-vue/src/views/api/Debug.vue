@@ -1,9 +1,9 @@
 <template>
   <div class="knife4j-debug">
     <a-row>
-      <a-col :span="24">
+      <a-col :class="'knife4j-debug-api-' + api.methodType.toLowerCase()" :span="24">
         <a-input-group compact>
-          <a-button class="knife4j-api-post">OPTIONS</a-button>
+          <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
           <a-input style="width: 80%" defaultValue="/api/tes/showApi" />
           <a-button class="knife4j-api-send" type="primary">发 送</a-button>
         </a-input-group>
@@ -29,15 +29,34 @@
         </a-tab-pane>
         <a-tab-pane tab="请求参数" key="2" forceRender>
           <a-row class="knife4j-debug-request-type">
-            <a-col :span="5">
-              <a-radio size="large">x-www-form-urlencoded</a-radio>
-            </a-col>
-            <a-col :span="3">
-              <a-radio size="large">form-data</a-radio>
-            </a-col>
-            <a-col :span="5">
-              <a-radio size="large">raw</a-radio>
-            </a-col>
+            <div class="knife4j-debug-request-content-type-float">
+              <a-radio-group @change="requestContentTypeChange" class="knife4j-debug-request-content-type" v-model="requestContentType">
+                <a-radio value="x-www-form-urlencoded">x-www-form-urlencoded</a-radio>
+                <a-radio value="form-data">form-data</a-radio>
+                <a-radio value="raw">raw</a-radio>
+              </a-radio-group>
+            </div>
+            <div class="knife4j-debug-request-content-type-float">
+              <div class="knife4j-debug-request-content-type-raw">
+                <a-dropdown :trigger="['click']">
+                  <span class="knife4j-debug-raw-span"> <span>{{rawDefaultText}}</span>
+                    <a-icon type="down" /> </span>
+                  <a-menu slot="overlay" @click="rawMenuClick">
+                    <a-menu-item key="Auto">Auto</a-menu-item>
+                    <a-menu-divider />
+                    <a-menu-item key="Text(text/plain)">Text(text/plain)</a-menu-item>
+                    <a-menu-divider />
+                    <a-menu-item key="JSON(application/json)">JSON(application/json)</a-menu-item>
+                    <a-menu-item key="Javascript(application/Javascript)">Javascript(application/Javascript)</a-menu-item>
+                    <a-menu-divider />
+                    <a-menu-item key="XML(application/xml)">XML(application/xml)</a-menu-item>
+                    <a-menu-item key="XML(text/xml)">XML(text/xml)</a-menu-item>
+                    <a-menu-item key="HTML(text/html)">HTML(text/html)</a-menu-item>
+                    <a-menu-divider />
+                  </a-menu>
+                </a-dropdown>
+              </div>
+            </div>
           </a-row>
         </a-tab-pane>
       </a-tabs>
@@ -46,108 +65,9 @@
 </template>
 <script>
 import md5 from "js-md5";
-const headerColumn = [
-  {
-    title: "请求头",
-    dataIndex: "name",
-    width: "20%",
-    scopedSlots: {
-      customRender: "headerName"
-    }
-  },
-  {
-    title: "内容",
-    dataIndex: "content",
-    scopedSlots: {
-      customRender: "headerValue"
-    }
-  },
-  {
-    title: "操作",
-    dataIndex: "operation",
-    width: "10%",
-    scopedSlots: {
-      customRender: "operation"
-    }
-  }
-];
-const headerAutoOptions = [
-  "Accept",
-  "Accept-Charset",
-  "Accept-Encoding",
-  "Accept-Language",
-  "Accept-Ranges",
-  "Authorization",
-  "Cache-Control",
-  "Connection",
-  "Cookie",
-  "Content-Length",
-  "Content-Type",
-  "Content-MD5",
-  "Date",
-  "Expect",
-  "From",
-  "Host",
-  "If-Match",
-  "If-Modified-Since",
-  "If-None-Match",
-  "If-Range",
-  "If-Unmodified-Since",
-  "Max-Forwards",
-  "Origin",
-  "Pragma",
-  "Proxy-Authorization",
-  "Range",
-  "Referer",
-  "TE",
-  "Upgrade",
-  "User-Agent",
-  "Via",
-  "Warning"
-];
-const headerOptions = [
-  { value: "Accept", label: "Accept" },
-  { value: "Accept-Charset", label: "Accept-Charset" },
-  { value: "Accept-Encoding", label: "Accept-Encoding" },
-  { value: "Accept-Language", label: "Accept-Language" },
-  { value: "Accept-Ranges", label: "Accept-Ranges" },
-  { value: "Authorization", label: "Authorization" },
-  { value: "Cache-Control", label: "Cache-Control" },
-  { value: "Connection", label: "Connection" },
-  { value: "Cookie", label: "Cookie" },
-  { value: "Content-Length", label: "Content-Length" },
-  { value: "Content-Type", label: "Content-Type" },
-  { value: "Content-MD5", label: "Content-MD5" },
-  { value: "Date", label: "Date" },
-  { value: "Expect", label: "Expect" },
-  { value: "From", label: "From" },
-  { value: "Host", label: "Host" },
-  { value: "If-Match", label: "If-Match" },
-  { value: "If-Modified-Since", label: "If-Modified-Since" },
-  { value: "If-None-Match", label: "If-None-Match" },
-  { value: "If-Range", label: "If-Range" },
-  { value: "If-Unmodified-Since", label: "If-Unmodified-Since" },
-  { value: "Max-Forwards", label: "Max-Forwards" },
-  { value: "Origin", label: "Origin" },
-  { value: "Pragma", label: "Pragma" },
-  { value: "Proxy-Authorization", label: "Proxy-Authorization" },
-  { value: "Range", label: "Range" },
-  { value: "Referer", label: "Referer" },
-  { value: "TE", label: "TE" },
-  { value: "Upgrade", label: "Upgrade" },
-  { value: "User-Agent", label: "User-Agent" },
-  { value: "Via", label: "Via" },
-  { value: "Warning", label: "Warning" }
-];
-let newHeader = {
-  id: md5(new Date().getTime().toString()),
-  name: "",
-  content: "",
-  new: true
-};
-let tmpHeaderData = [];
+import constant from "@/store/constants";
+
 var instance;
-tmpHeaderData.push(newHeader);
 export default {
   name: "Debug",
   props: {
@@ -161,11 +81,11 @@ export default {
   },
   data() {
     return {
-      headerColumn,
+      headerColumn: constant.debugRequestHeaderColumn,
       allowClear: true,
       pagination: false,
-      headerAutoOptions: headerAutoOptions,
-      headerOptions: headerOptions,
+      headerAutoOptions: constant.debugRequestHeaders,
+      headerOptions: constant.debugRequestHeaderOptions,
       headerSelectName: "",
       selectedRowKeys: [],
       rowSelection: {
@@ -174,13 +94,25 @@ export default {
           instance.rowSelection.selectedRowKeys = selectrowkey;
         }
       },
-      headerData: tmpHeaderData
+      headerData: [],
+      rawDefaultText: "Auto",
+      requestContentType: "x-www-form-urlencoded"
     };
   },
   created() {
+    this.initFirstHeader();
     this.initSelectionHeaders();
   },
   methods: {
+    initFirstHeader() {
+      var newHeader = {
+        id: md5(new Date().getTime().toString()),
+        name: "",
+        content: "",
+        new: true
+      };
+      this.headerData.push(newHeader);
+    },
     initSelectionHeaders() {
       this.headerData.forEach(function(header) {
         instance.rowSelection.selectedRowKeys.push(header.id);
@@ -264,6 +196,12 @@ export default {
         }
       });
       this.headerData = nheader;
+    },
+    requestContentTypeChange(e) {
+      console.log("radio checked", e.target.value);
+    },
+    rawMenuClick({ item, key, keyPath }) {
+      this.rawDefaultText = key;
     }
   }
 };
@@ -274,13 +212,6 @@ export default {
   margin: 20px auto;
   width: 100%;
 }
-.knife4j-api-post {
-  width: 10%;
-  span {
-    text-align: center;
-  }
-}
-
 .knife4j-api-send {
   width: 10%;
 }

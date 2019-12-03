@@ -3,18 +3,8 @@
     <a-row>
       <a-row class="knife4j-api-title">
         <a-col :span="20">{{ api.summary }}</a-col>
-        <a-col
-          :span="2"
-          :id="'btnCopyMarkdown' + api.id"
-          class="knife4j-api-copy-address"
-          >复制文档</a-col
-        >
-        <a-col
-          :span="2"
-          :id="'btnCopyAddress' + api.id"
-          class="knife4j-api-copy-address"
-          >复制地址</a-col
-        >
+        <a-col :span="2" :id="'btnCopyMarkdown' + api.id" class="knife4j-api-copy-address">复制文档</a-col>
+        <a-col :span="2" :id="'btnCopyAddress' + api.id" class="knife4j-api-copy-address">复制地址</a-col>
       </a-row>
       <a-row :class="'knife4j-api-' + api.methodType.toLowerCase()">
         <div class="knife4j-api-summary">
@@ -43,11 +33,7 @@
       <div class="api-title">
         接口描述
       </div>
-      <div
-        v-if="api.description"
-        v-html="api.description"
-        class="api-body-desc"
-      ></div>
+      <div v-if="api.description" v-html="api.description" class="api-body-desc"></div>
     </div>
     <!--请求示例-->
     <div v-if="api.requestValue">
@@ -59,14 +45,7 @@
     <div class="api-title">
       请求参数
     </div>
-    <a-table
-      :defaultExpandAllRows="expanRows"
-      :columns="columns"
-      :dataSource="reqParameters"
-      rowKey="id"
-      size="small"
-      :pagination="page"
-    >
+    <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small" :pagination="page">
       <template slot="requireTemplate" slot-scope="text">
         <span v-if="text" style="color:red">{{ text.toLocaleString() }}</span>
         <span v-else>{{ text.toLocaleString() }}</span>
@@ -83,14 +62,7 @@
     <div class="api-title">
       响应状态
     </div>
-    <a-table
-      :defaultExpandAllRows="expanRows"
-      :columns="responseStatuscolumns"
-      :dataSource="api.responseCodes"
-      rowKey="code"
-      size="small"
-      :pagination="page"
-    >
+    <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes" rowKey="code" size="small" :pagination="page">
       <template slot="descriptionTemplate" slot-scope="text">
         <div v-html="text"></div>
       </template>
@@ -98,47 +70,27 @@
     <!--响应参数需要判断是否存在多个code-schema的情况-->
     <div v-if="api.multipartResponseSchema">
       <a-tabs>
-        <a-tab-pane
-          v-for="resp in multipCodeDatas"
-          :key="resp.code"
-          :tab="resp.code"
-        >
+        <a-tab-pane v-for="resp in multipCodeDatas" :key="resp.code" :tab="resp.code">
           <!--判断响应头-->
           <div v-if="resp.responseHeaderParameters">
             <div class="api-title">
               响应Header
             </div>
-            <a-table
-              :defaultExpandAllRows="expanRows"
-              :columns="responseHeaderColumns"
-              :dataSource="resp.responseHeaderParameters"
-              rowKey="id"
-              size="small"
-              :pagination="page"
-            >
+            <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="resp.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
             </a-table>
           </div>
           <!--响应参数-->
           <div class="api-title">
             响应参数
           </div>
-          <a-table
-            :defaultExpandAllRows="expanRows"
-            :columns="responseParametersColumns"
-            :dataSource="resp.data"
-            rowKey="id"
-            size="small"
-            :pagination="page"
-          >
+          <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data" rowKey="id" size="small" :pagination="page">
           </a-table>
           <div class="api-title">
             响应示例
           </div>
-          <editor-show
-            :value="
+          <editor-show :value="
               resp.responseBasicType ? resp.responseText : resp.responseValue
-            "
-          ></editor-show>
+            "></editor-show>
           <!-- <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor> -->
         </a-tab-pane>
       </a-tabs>
@@ -149,39 +101,23 @@
         <div class="api-title">
           响应Header
         </div>
-        <a-table
-          :defaultExpandAllRows="expanRows"
-          :columns="responseHeaderColumns"
-          :dataSource="api.responseHeaderParameters"
-          rowKey="id"
-          size="small"
-          :pagination="page"
-        >
+        <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="api.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
         </a-table>
       </div>
       <!--响应参数-->
       <div class="api-title">
         响应参数
       </div>
-      <a-table
-        :defaultExpandAllRows="expanRows"
-        :columns="responseParametersColumns"
-        :dataSource="multipData.data"
-        rowKey="id"
-        size="small"
-        :pagination="page"
-      >
+      <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data" rowKey="id" size="small" :pagination="page">
       </a-table>
       <div class="api-title">
         响应示例
       </div>
-      <editor-show
-        :value="
+      <editor-show :value="
           multipData.responseBasicType
             ? multipData.responseText
             : multipData.responseValue
-        "
-      ></editor-show>
+        "></editor-show>
       <!-- <editor :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue" @init="singleResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorSingleHeight"></editor> -->
     </div>
   </div>
@@ -457,111 +393,6 @@ export default {
   .ant-tag {
     height: 32px;
     line-height: 32px;
-  }
-}
-.knife4j-api-copy-address {
-  font-size: 12px;
-  cursor: pointer;
-  text-align: center;
-  font-weight: 100;
-  color: #0b0a0a;
-}
-.knife4j-api-title {
-  margin-top: 10px;
-  margin-bottom: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #616368;
-  height: 35px;
-  line-height: 35px;
-}
-.knife4j-api-row {
-  height: 45px;
-  line-height: 45px;
-}
-
-.knife4j-api-summary {
-  border-color: #49cc90;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 2px;
-  cursor: pointer;
-}
-.knife4j-api-summary-method {
-  font-size: 14px;
-  font-weight: 700;
-  min-width: 80px;
-  padding: 6px 15px;
-  text-align: center;
-  border-radius: 3px;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-  font-family: Titillium Web, sans-serif;
-  color: #fff;
-}
-.knife4j-api-summary-path {
-  font-size: 14px;
-  display: flex;
-  -webkit-box-flex: 0;
-  -ms-flex: 0 3 auto;
-  flex: 0 3 auto;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  word-break: break-all;
-  padding: 0 32px;
-}
-
-.knife4j-api-post {
-  border-color: #49cc90;
-  background: rgba(73, 204, 144, 0.1);
-  .knife4j-api-summary-method {
-    background: #49cc90;
-  }
-}
-.knife4j-api-get {
-  border-color: #61affe;
-  background: rgba(97, 175, 254, 0.1);
-  .knife4j-api-summary-method {
-    background: #61affe;
-  }
-}
-.knife4j-api-head {
-  border-color: #9012fe;
-  background: rgba(144, 18, 254, 0.1);
-  .knife4j-api-summary-method {
-    background: #9012fe;
-  }
-}
-.knife4j-api-put {
-  border-color: #fca130;
-  background: rgba(252, 161, 48, 0.1);
-  .knife4j-api-summary-method {
-    background: #fca130;
-  }
-}
-.knife4j-api-delete {
-  border-color: #f93e3e;
-  background: rgba(249, 62, 62, 0.1);
-  .knife4j-api-summary-method {
-    background: #f93e3e;
-  }
-}
-.knife4j-api-options {
-  border-color: #0d5aa7;
-  background: rgba(13, 90, 167, 0.1);
-  .knife4j-api-summary-method {
-    background: #0d5aa7;
-  }
-}
-.knife4j-api-patch {
-  border-color: #50e3c2;
-  background: rgba(80, 227, 194, 0.1);
-  .knife4j-api-summary-method {
-    background: #50e3c2;
   }
 }
 

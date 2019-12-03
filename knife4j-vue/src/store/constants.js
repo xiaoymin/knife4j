@@ -45,6 +45,192 @@ const constants = {
     enableCacheOpenApiTable: false, //是否开启缓存已打开的api文档
     language: "zh" //默认语言版本
   },
+  debugRequestHeaders: ["Accept",
+    "Accept-Charset",
+    "Accept-Encoding",
+    "Accept-Language",
+    "Accept-Ranges",
+    "Authorization",
+    "Cache-Control",
+    "Connection",
+    "Cookie",
+    "Content-Length",
+    "Content-Type",
+    "Content-MD5",
+    "Date",
+    "Expect",
+    "From",
+    "Host",
+    "If-Match",
+    "If-Modified-Since",
+    "If-None-Match",
+    "If-Range",
+    "If-Unmodified-Since",
+    "Max-Forwards",
+    "Origin",
+    "Pragma",
+    "Proxy-Authorization",
+    "Range",
+    "Referer",
+    "TE",
+    "Upgrade",
+    "User-Agent",
+    "Via",
+    "Warning"
+  ],
+  debugRequestHeaderOptions: [{
+      value: "Accept",
+      label: "Accept"
+    },
+    {
+      value: "Accept-Charset",
+      label: "Accept-Charset"
+    },
+    {
+      value: "Accept-Encoding",
+      label: "Accept-Encoding"
+    },
+    {
+      value: "Accept-Language",
+      label: "Accept-Language"
+    },
+    {
+      value: "Accept-Ranges",
+      label: "Accept-Ranges"
+    },
+    {
+      value: "Authorization",
+      label: "Authorization"
+    },
+    {
+      value: "Cache-Control",
+      label: "Cache-Control"
+    },
+    {
+      value: "Connection",
+      label: "Connection"
+    },
+    {
+      value: "Cookie",
+      label: "Cookie"
+    },
+    {
+      value: "Content-Length",
+      label: "Content-Length"
+    },
+    {
+      value: "Content-Type",
+      label: "Content-Type"
+    },
+    {
+      value: "Content-MD5",
+      label: "Content-MD5"
+    },
+    {
+      value: "Date",
+      label: "Date"
+    },
+    {
+      value: "Expect",
+      label: "Expect"
+    },
+    {
+      value: "From",
+      label: "From"
+    },
+    {
+      value: "Host",
+      label: "Host"
+    },
+    {
+      value: "If-Match",
+      label: "If-Match"
+    },
+    {
+      value: "If-Modified-Since",
+      label: "If-Modified-Since"
+    },
+    {
+      value: "If-None-Match",
+      label: "If-None-Match"
+    },
+    {
+      value: "If-Range",
+      label: "If-Range"
+    },
+    {
+      value: "If-Unmodified-Since",
+      label: "If-Unmodified-Since"
+    },
+    {
+      value: "Max-Forwards",
+      label: "Max-Forwards"
+    },
+    {
+      value: "Origin",
+      label: "Origin"
+    },
+    {
+      value: "Pragma",
+      label: "Pragma"
+    },
+    {
+      value: "Proxy-Authorization",
+      label: "Proxy-Authorization"
+    },
+    {
+      value: "Range",
+      label: "Range"
+    },
+    {
+      value: "Referer",
+      label: "Referer"
+    },
+    {
+      value: "TE",
+      label: "TE"
+    },
+    {
+      value: "Upgrade",
+      label: "Upgrade"
+    },
+    {
+      value: "User-Agent",
+      label: "User-Agent"
+    },
+    {
+      value: "Via",
+      label: "Via"
+    },
+    {
+      value: "Warning",
+      label: "Warning"
+    }
+  ],
+  debugRequestHeaderColumn: [{
+      title: "请求头",
+      dataIndex: "name",
+      width: "20%",
+      scopedSlots: {
+        customRender: "headerName"
+      }
+    },
+    {
+      title: "内容",
+      dataIndex: "content",
+      scopedSlots: {
+        customRender: "headerValue"
+      }
+    },
+    {
+      title: "操作",
+      dataIndex: "operation",
+      width: "10%",
+      scopedSlots: {
+        customRender: "operation"
+      }
+    }
+  ],
   i18n: {
     zh: {
       title: "swagger-bootstrap-ui-前后端api接口文档",
