@@ -159,8 +159,7 @@ export default {
       rowSelection: {
         selectedRowKeys: [],
         onChange(selectrowkey, selectrows) {
-          console.log("selec-------------");
-          instance.selectedRowKeys = selectrowkey;
+          instance.rowSelection.selectedRowKeys = selectrowkey;
         }
       },
       headerData: tmpHeaderData
