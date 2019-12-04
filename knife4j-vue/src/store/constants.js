@@ -234,15 +234,49 @@ const constants = {
   debugFormRequestHeader: [{
       title: "参数名称",
       dataIndex: "name",
-      width: "20%"
+      width: "20%",
+      scopedSlots: {
+        customRender: "formName"
+      }
     },
     {
       title: "类型",
-      dataIndex: "type"
+      dataIndex: "type",
+      width: "12%",
+      scopedSlots: {
+        customRender: "formType"
+      }
     },
     {
       title: "参数值",
-      dataIndex: "value"
+      dataIndex: "content",
+      scopedSlots: {
+        customRender: "formValue"
+      }
+    },
+    {
+      title: "操作",
+      dataIndex: "operation",
+      width: "10%",
+      scopedSlots: {
+        customRender: "operation"
+      }
+    }
+  ],
+  debugUrlFormRequestHeader: [{
+      title: "参数名称",
+      dataIndex: "name",
+      width: "20%",
+      scopedSlots: {
+        customRender: "urlFormName"
+      }
+    },
+    {
+      title: "参数值",
+      dataIndex: "content",
+      scopedSlots: {
+        customRender: "urlFormValue"
+      }
     },
     {
       title: "操作",

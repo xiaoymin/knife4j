@@ -1,6 +1,6 @@
 <template>
   <a-layout-content class="knife4j-body-content">
-    <a-tabs defaultActiveKey="1" tabPosition="left" class="api-tab">
+    <a-tabs defaultActiveKey="2" tabPosition="left" class="api-tab">
       <a-tab-pane key="1">
         <span slot="tab">
           <my-icon type="icon-wendang" />文档</span>

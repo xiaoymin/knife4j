@@ -10,7 +10,7 @@
       </a-col>
     </a-row>
     <a-row class="knife4j-debug-tabs">
-      <a-tabs defaultActiveKey="1">
+      <a-tabs defaultActiveKey="2">
         <a-tab-pane tab="请求头部" key="1">
           <a-table bordered size="small" :rowSelection="rowSelection" :columns="headerColumn" :pagination="pagination" :dataSource="headerData" rowKey="id">
             <!--请求头下拉框-->
@@ -42,30 +42,75 @@
                   <span class="knife4j-debug-raw-span"> <span>{{rawDefaultText}}</span>
                     <a-icon type="down" /> </span>
                   <a-menu slot="overlay" @click="rawMenuClick">
-                    <a-menu-item key="Auto">Auto</a-menu-item>
-                    <a-menu-item key="Text(text/plain)">Text(text/plain)</a-menu-item>
-                    <a-menu-item key="JSON(application/json)">JSON(application/json)</a-menu-item>
-                    <a-menu-item key="Javascript(application/Javascript)">Javascript(application/Javascript)</a-menu-item>
-                    <a-menu-item key="XML(application/xml)">XML(application/xml)</a-menu-item>
-                    <a-menu-item key="XML(text/xml)">XML(text/xml)</a-menu-item>
-                    <a-menu-item key="HTML(text/html)">HTML(text/html)</a-menu-item>
+                    <a-menu-item data-mode="text" key="Auto">Auto</a-menu-item>
+                    <a-menu-item data-mode="text" key="Text(text/plain)">Text(text/plain)</a-menu-item>
+                    <a-menu-item data-mode="json" key="JSON(application/json)">JSON(application/json)</a-menu-item>
+                    <a-menu-item data-mode="javascript" key="Javascript(application/Javascript)">Javascript(application/Javascript)</a-menu-item>
+                    <a-menu-item data-mode="xml" key="XML(application/xml)">XML(application/xml)</a-menu-item>
+                    <a-menu-item data-mode="xml" key="XML(text/xml)">XML(text/xml)</a-menu-item>
+                    <a-menu-item data-mode="html" key="HTML(text/html)">HTML(text/html)</a-menu-item>
                   </a-menu>
                 </a-dropdown>
               </div>
             </div>
           </a-row>
           <a-row v-if="formFlag">
-            form-data表单
             <a-table bordered size="small" :rowSelection="rowFormSelection" :columns="formColumn" :pagination="pagination" :dataSource="formData" rowKey="id">
+              <!--参数名称-->
+              <template slot="formName" slot-scope="text,record">
+                <a-input placeholder="参数名称" :data-key="record.id" :defaultValue="text" @change="formNameChange" />
+              </template>
+              <!--参数下拉框-->
+              <template slot="formType" slot-scope="text,record">
+                <a-select :defaultValue="text+'-'+record.id" @change="formTypeChange" style="width: 100%;">
+                  <a-select-option :value="'text-'+record.id">文本</a-select-option>
+                  <a-select-option :value="'file-'+record.id">文件</a-select-option>
+                </a-select>
+              </template>
+              <!--参数名称-->
+              <template slot="formValue" slot-scope="text,record">
+                <div v-if="record.type=='text'">
+                  <a-input placeholder="参数值" :data-key="record.id" :defaultValue="text" @change="formContentChange" />
+                </div>
+                <div v-else>
+                  <input type="file" :data-key="record.id" @change="formFileChange" />
+                </div>
+              </template>
+              <a-row slot="operation" slot-scope="text,record">
+                <a-button type="link" v-if="!record.new" @click="formDelete(record)">删除</a-button>
+              </a-row>
             </a-table>
           </a-row>
           <a-row v-if="urlFormFlag">
-            url-form-data表单
-            <a-table bordered size="small" :rowSelection="rowUrlFormSelection" :columns="formColumn" :pagination="pagination" :dataSource="urlFormData" rowKey="id">
+            <a-table bordered size="small" :rowSelection="rowUrlFormSelection" :columns="urlFormColumn" :pagination="pagination" :dataSource="urlFormData" rowKey="id">
+              <!--参数名称-->
+              <template slot="urlFormName" slot-scope="text,record">
+                <a-input placeholder="参数名称" :data-key="record.id" :defaultValue="text" @change="urlFormNameChange" />
+              </template>
+              <!--参数下拉框-->
+              <template slot="urlFormType" slot-scope="text,record">
+                <a-select :defaultValue="text+'-'+record.id" @change="urlFormTypeChange" style="width: 100%;">
+                  <a-select-option :value="'text-'+record.id">文本</a-select-option>
+                  <a-select-option :value="'file-'+record.id">文件</a-select-option>
+                </a-select>
+              </template>
+              <!--参数名称-->
+              <template slot="urlFormValue" slot-scope="text,record">
+                <div v-if="record.type=='text'">
+                  <a-input placeholder="参数值" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
+                </div>
+                <div v-else>
+                  <input type="file" :data-key="record.id" :value="text" @change="urlFormFileChange" />
+                </div>
+
+              </template>
+              <a-row slot="operation" slot-scope="text,record">
+                <a-button type="link" v-if="!record.new" @click="urlFormDelete(record)">删除</a-button>
+              </a-row>
             </a-table>
           </a-row>
           <a-row v-if="rawFlag">
-            raw-请求参数
+            <editor-debug-show :value="rawText" :mode="rawMode" @change="rawChange"></editor-debug-show>
           </a-row>
         </a-tab-pane>
       </a-tabs>
@@ -75,10 +120,11 @@
 <script>
 import md5 from "js-md5";
 import constant from "@/store/constants";
-
+import EditorDebugShow from "./EditorDebugShow";
 var instance;
 export default {
   name: "Debug",
+  components: { EditorDebugShow },
   props: {
     api: {
       type: Object,
@@ -92,6 +138,7 @@ export default {
     return {
       headerColumn: constant.debugRequestHeaderColumn,
       formColumn: constant.debugFormRequestHeader,
+      urlFormColumn: constant.debugUrlFormRequestHeader,
       allowClear: true,
       pagination: false,
       headerAutoOptions: constant.debugRequestHeaders,
@@ -125,6 +172,8 @@ export default {
       rawDefaultText: "Auto",
       rawFlag: false,
       rawTypeFlag: false,
+      rawText: "",
+      rawMode: "text",
       requestContentType: "x-www-form-urlencoded"
     };
   },
@@ -141,7 +190,10 @@ export default {
   methods: {
     initFirstHeader() {
       var newHeader = {
-        id: md5(new Date().getTime().toString()),
+        id: md5(
+          new Date().getTime().toString() +
+            Math.floor(Math.random() * 10000).toString()
+        ),
         name: "",
         content: "",
         new: true
@@ -150,30 +202,53 @@ export default {
     },
     initFirstFormValue() {
       //添加一行初始form的值
-      var newFormHeader = {
-        id: md5(new Date().getTime().toString()),
-        name: "",
-        type: "text",
-        content: "",
-        new: true
-      };
-      this.formData.push(newFormHeader);
+      this.addNewLineFormValue();
+      this.initFormSelections();
+    },
+    initFormSelections() {
       this.formData.forEach(function(form) {
         instance.rowFormSelection.selectedRowKeys.push(form.id);
       });
     },
-    initUrlFormValue() {
+    initUrlFormSelections() {
+      this.urlFormData.forEach(function(form) {
+        instance.rowUrlFormSelection.selectedRowKeys.push(form.id);
+      });
+    },
+    addNewLineFormValue() {
+      //添加新行form表单值
       var newFormHeader = {
-        id: md5(new Date().getTime().toString()),
+        id: md5(
+          new Date().getTime().toString() +
+            Math.floor(Math.random() * 10000).toString()
+        ),
         name: "",
         type: "text",
+        //文件表单域的target
+        target: null,
+        content: "",
+        new: true
+      };
+      this.formData.push(newFormHeader);
+    },
+    addNewLineUrlFormValue() {
+      var newFormHeader = {
+        id: md5(
+          new Date().getTime().toString() +
+            Math.floor(Math.random() * 10000).toString()
+        ),
+        name: "",
+        type: "text",
+        //文件表单域的target
+        target: null,
         content: "",
         new: true
       };
       this.urlFormData.push(newFormHeader);
-      this.urlFormData.forEach(function(form) {
-        instance.rowUrlFormSelection.selectedRowKeys.push(form.id);
-      });
+    },
+    initUrlFormValue() {
+      this.addNewLineUrlFormValue();
+      this.initUrlFormSelections();
     },
     initShowFormTable() {
       if (this.requestContentType == "x-www-form-urlencoded") {
@@ -282,8 +357,197 @@ export default {
       this.requestContentType = e.target.value;
       this.initShowFormTable();
     },
+    formDelete(record) {
+      var nforms = [];
+      this.formData.forEach(function(form) {
+        if (form.id != record.id) {
+          nforms.push(form);
+        }
+      });
+      this.formData = nforms;
+    },
+    formNameChange(e) {
+      var formValue = e.target.value;
+      var formId = e.target.getAttribute("data-key");
+      var record = this.formData.filter(form => form.id == formId)[0];
+      if (record.new) {
+        this.formData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.name = formValue;
+            form.new = false;
+          }
+        });
+        this.addNewLineFormValue();
+      } else {
+        this.formData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.name = formValue;
+            form.new = false;
+          }
+        });
+      }
+      this.initFormSelections();
+    },
+    formTypeChange(value, option) {
+      var arr = value.split("-");
+      var formType = arr[0];
+      var formId = arr[1];
+      this.formData.forEach(function(form) {
+        if (form.id == formId) {
+          form.type = formType;
+          //判断是否是文件类型，如果是文件类型，给定一个目标input-file域的target属性
+        }
+      });
+    },
+    formFileChange(e) {
+      console.log("文件发生变化了");
+      console.log(e);
+      console.log(e.target.files);
+      var target = e.target;
+      var formId = target.getAttribute("data-key");
+      var record = this.formData.filter(form => form.id == formId)[0];
+      if (record.new) {
+        this.urlFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.content = target.value;
+            form.target = target;
+            form.new = false;
+          }
+        });
+        this.addNewLineFormValue();
+      } else {
+        this.formData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.content = target.value;
+            form.target = target;
+            form.new = false;
+          }
+        });
+      }
+      this.initFormSelections();
+      console.log(formId);
+    },
+    formContentChange(e) {
+      var formValue = e.target.value;
+      console.log("formcontent-value:" + formValue);
+      var formId = e.target.getAttribute("data-key");
+      var record = this.formData.filter(form => form.id == formId)[0];
+      if (record.new) {
+        this.formData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.content = formValue;
+            form.new = false;
+          }
+        });
+        this.addNewLineFormValue();
+      } else {
+        this.formData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.content = formValue;
+            form.new = false;
+          }
+        });
+      }
+      this.initFormSelections();
+    },
+    urlFormDelete(record) {
+      var nforms = [];
+      this.urlFormData.forEach(function(form) {
+        if (form.id != record.id) {
+          nforms.push(form);
+        }
+      });
+      this.urlFormData = nforms;
+    },
+    urlFormTypeChange(value, option) {
+      var arr = value.split("-");
+      var formType = arr[0];
+      var formId = arr[1];
+      this.urlFormData.forEach(function(form) {
+        if (form.id == formId) {
+          form.type = formType;
+          //判断是否是文件类型，如果是文件类型，给定一个目标input-file域的target属性
+        }
+      });
+    },
+    urlFormFileChange(e) {
+      console.log("文件发生变化了");
+      console.log(e);
+      console.log(e.target.files);
+      var target = e.target;
+      var formId = target.getAttribute("data-key");
+      var record = this.urlFormData.filter(form => form.id == formId)[0];
+      if (record.new) {
+        this.urlFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.content = target.value;
+            form.target = target;
+            form.new = false;
+          }
+        });
+        this.addNewLineUrlFormValue();
+      } else {
+        this.urlFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.content = target.value;
+            form.target = target;
+            form.new = false;
+          }
+        });
+      }
+      this.initUrlFormSelections();
+      console.log(formId);
+    },
+    urlFormNameChange(e) {
+      var formValue = e.target.value;
+      var formId = e.target.getAttribute("data-key");
+      var record = this.urlFormData.filter(form => form.id == formId)[0];
+      if (record.new) {
+        this.urlFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.name = formValue;
+            form.new = false;
+          }
+        });
+        this.addNewLineUrlFormValue();
+      } else {
+        this.urlFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.name = formValue;
+            form.new = false;
+          }
+        });
+      }
+      this.initUrlFormSelections();
+    },
+    urlFormContentChange(e) {
+      var formValue = e.target.value;
+      var formId = e.target.getAttribute("data-key");
+      var record = this.urlFormData.filter(form => form.id == formId)[0];
+      if (record.new) {
+        this.urlFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.content = formValue;
+            form.new = false;
+          }
+        });
+        this.addNewLineUrlFormValue();
+      } else {
+        this.urlFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.content = formValue;
+            form.new = false;
+          }
+        });
+      }
+      this.initUrlFormSelections();
+    },
     rawMenuClick({ item, key, keyPath }) {
+      this.rawMode = item.$el.getAttribute("data-mode");
       this.rawDefaultText = key;
+    },
+    rawChange(value) {
+      this.rawText = value;
     }
   }
 };
