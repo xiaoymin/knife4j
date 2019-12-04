@@ -231,6 +231,28 @@ const constants = {
       }
     }
   ],
+  debugFormRequestHeader: [{
+      title: "参数名称",
+      dataIndex: "name",
+      width: "20%"
+    },
+    {
+      title: "类型",
+      dataIndex: "type"
+    },
+    {
+      title: "参数值",
+      dataIndex: "value"
+    },
+    {
+      title: "操作",
+      dataIndex: "operation",
+      width: "10%",
+      scopedSlots: {
+        customRender: "operation"
+      }
+    }
+  ],
   i18n: {
     zh: {
       title: "swagger-bootstrap-ui-前后端api接口文档",

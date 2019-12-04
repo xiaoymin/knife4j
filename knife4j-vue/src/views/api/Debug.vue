@@ -38,25 +38,34 @@
             </div>
             <div class="knife4j-debug-request-content-type-float">
               <div class="knife4j-debug-request-content-type-raw">
-                <a-dropdown :trigger="['click']">
+                <a-dropdown v-if="rawTypeFlag" :trigger="['click']">
                   <span class="knife4j-debug-raw-span"> <span>{{rawDefaultText}}</span>
                     <a-icon type="down" /> </span>
                   <a-menu slot="overlay" @click="rawMenuClick">
                     <a-menu-item key="Auto">Auto</a-menu-item>
-                    <a-menu-divider />
                     <a-menu-item key="Text(text/plain)">Text(text/plain)</a-menu-item>
-                    <a-menu-divider />
                     <a-menu-item key="JSON(application/json)">JSON(application/json)</a-menu-item>
                     <a-menu-item key="Javascript(application/Javascript)">Javascript(application/Javascript)</a-menu-item>
-                    <a-menu-divider />
                     <a-menu-item key="XML(application/xml)">XML(application/xml)</a-menu-item>
                     <a-menu-item key="XML(text/xml)">XML(text/xml)</a-menu-item>
                     <a-menu-item key="HTML(text/html)">HTML(text/html)</a-menu-item>
-                    <a-menu-divider />
                   </a-menu>
                 </a-dropdown>
               </div>
             </div>
+          </a-row>
+          <a-row v-if="formFlag">
+            form-data表单
+            <a-table bordered size="small" :rowSelection="rowFormSelection" :columns="formColumn" :pagination="pagination" :dataSource="formData" rowKey="id">
+            </a-table>
+          </a-row>
+          <a-row v-if="urlFormFlag">
+            url-form-data表单
+            <a-table bordered size="small" :rowSelection="rowUrlFormSelection" :columns="formColumn" :pagination="pagination" :dataSource="urlFormData" rowKey="id">
+            </a-table>
+          </a-row>
+          <a-row v-if="rawFlag">
+            raw-请求参数
           </a-row>
         </a-tab-pane>
       </a-tabs>
@@ -82,6 +91,7 @@ export default {
   data() {
     return {
       headerColumn: constant.debugRequestHeaderColumn,
+      formColumn: constant.debugFormRequestHeader,
       allowClear: true,
       pagination: false,
       headerAutoOptions: constant.debugRequestHeaders,
@@ -94,14 +104,39 @@ export default {
           instance.rowSelection.selectedRowKeys = selectrowkey;
         }
       },
+      rowFormSelection: {
+        selectedRowKeys: [],
+        onChange(selectrowkey, selectrows) {
+          instance.rowFormSelection.selectedRowKeys = selectrowkey;
+        }
+      },
+      rowUrlFormSelection: {
+        selectedRowKeys: [],
+        onChange(selectrowkey, selectrows) {
+          instance.rowFormSelection.selectedRowKeys = selectrowkey;
+        }
+      },
       headerData: [],
+      //form参数值对象
+      formData: [],
+      formFlag: false,
+      urlFormData: [],
+      urlFormFlag: false,
       rawDefaultText: "Auto",
+      rawFlag: false,
+      rawTypeFlag: false,
       requestContentType: "x-www-form-urlencoded"
     };
   },
   created() {
     this.initFirstHeader();
+    //form-data表单
+    this.initFirstFormValue();
     this.initSelectionHeaders();
+    //url-form-data表单
+    this.initUrlFormValue();
+    //显示表单参数
+    this.initShowFormTable();
   },
   methods: {
     initFirstHeader() {
@@ -112,6 +147,51 @@ export default {
         new: true
       };
       this.headerData.push(newHeader);
+    },
+    initFirstFormValue() {
+      //添加一行初始form的值
+      var newFormHeader = {
+        id: md5(new Date().getTime().toString()),
+        name: "",
+        type: "text",
+        content: "",
+        new: true
+      };
+      this.formData.push(newFormHeader);
+      this.formData.forEach(function(form) {
+        instance.rowFormSelection.selectedRowKeys.push(form.id);
+      });
+    },
+    initUrlFormValue() {
+      var newFormHeader = {
+        id: md5(new Date().getTime().toString()),
+        name: "",
+        type: "text",
+        content: "",
+        new: true
+      };
+      this.urlFormData.push(newFormHeader);
+      this.urlFormData.forEach(function(form) {
+        instance.rowUrlFormSelection.selectedRowKeys.push(form.id);
+      });
+    },
+    initShowFormTable() {
+      if (this.requestContentType == "x-www-form-urlencoded") {
+        this.urlFormFlag = true;
+        this.formFlag = false;
+        this.rawFlag = false;
+        this.rawTypeFlag = false;
+      } else if (this.requestContentType == "form-data") {
+        this.formFlag = true;
+        this.urlFormFlag = false;
+        this.rawFlag = false;
+        this.rawTypeFlag = false;
+      } else if (this.requestContentType == "raw") {
+        this.rawFlag = true;
+        this.rawTypeFlag = true;
+        this.urlFormFlag = false;
+        this.formFlag = false;
+      }
     },
     initSelectionHeaders() {
       this.headerData.forEach(function(header) {
@@ -199,6 +279,8 @@ export default {
     },
     requestContentTypeChange(e) {
       console.log("radio checked", e.target.value);
+      this.requestContentType = e.target.value;
+      this.initShowFormTable();
     },
     rawMenuClick({ item, key, keyPath }) {
       this.rawDefaultText = key;
