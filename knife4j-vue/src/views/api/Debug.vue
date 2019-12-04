@@ -5,7 +5,7 @@
         <a-input-group compact>
           <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
           <a-input style="width: 80%" defaultValue="/api/tes/showApi" />
-          <a-button class="knife4j-api-send" type="primary">发 送</a-button>
+          <a-button class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送</a-button>
         </a-input-group>
       </a-col>
     </a-row>
@@ -73,7 +73,14 @@
                   <a-input placeholder="参数值" :data-key="record.id" :defaultValue="text" @change="formContentChange" />
                 </div>
                 <div v-else>
-                  <input type="file" :data-key="record.id" @change="formFileChange" />
+                  <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
+                  <div>
+                    <input :id="'file'+record.id" style="display:none;" type="file" :data-key="record.id" @change="formFileChange" />
+                    <a-input-group compact>
+                      <a-input style="width: 82%" :value="record.content" disabled />
+                      <a-button @click="formFileUploadClick(record)" class="knife4j-api-send" style="width:80px;" type="primary">选择文件</a-button>
+                    </a-input-group>
+                  </div>
                 </div>
               </template>
               <a-row slot="operation" slot-scope="text,record">
@@ -87,22 +94,10 @@
               <template slot="urlFormName" slot-scope="text,record">
                 <a-input placeholder="参数名称" :data-key="record.id" :defaultValue="text" @change="urlFormNameChange" />
               </template>
-              <!--参数下拉框-->
-              <template slot="urlFormType" slot-scope="text,record">
-                <a-select :defaultValue="text+'-'+record.id" @change="urlFormTypeChange" style="width: 100%;">
-                  <a-select-option :value="'text-'+record.id">文本</a-select-option>
-                  <a-select-option :value="'file-'+record.id">文件</a-select-option>
-                </a-select>
-              </template>
+
               <!--参数名称-->
               <template slot="urlFormValue" slot-scope="text,record">
-                <div v-if="record.type=='text'">
-                  <a-input placeholder="参数值" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
-                </div>
-                <div v-else>
-                  <input type="file" :data-key="record.id" :value="text" @change="urlFormFileChange" />
-                </div>
-
+                <a-input placeholder="参数值" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
               </template>
               <a-row slot="operation" slot-scope="text,record">
                 <a-button type="link" v-if="!record.new" @click="urlFormDelete(record)">删除</a-button>
@@ -366,6 +361,10 @@ export default {
       });
       this.formData = nforms;
     },
+    formFileUploadClick(record) {
+      //触发file隐藏表单域的click事件
+      document.getElementById("file" + record.id).click();
+    },
     formNameChange(e) {
       var formValue = e.target.value;
       var formId = e.target.getAttribute("data-key");
@@ -394,6 +393,8 @@ export default {
       var formId = arr[1];
       this.formData.forEach(function(form) {
         if (form.id == formId) {
+          //选择表单类型后,表单值置空
+          form.content = "";
           form.type = formType;
           //判断是否是文件类型，如果是文件类型，给定一个目标input-file域的target属性
         }
@@ -407,13 +408,14 @@ export default {
       var formId = target.getAttribute("data-key");
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.urlFormData.forEach(function(form) {
+        this.formData.forEach(function(form) {
           if (form.id == record.id) {
             form.content = target.value;
             form.target = target;
             form.new = false;
           }
         });
+        console.log(this.formData);
         this.addNewLineFormValue();
       } else {
         this.formData.forEach(function(form) {
@@ -425,7 +427,6 @@ export default {
         });
       }
       this.initFormSelections();
-      console.log(formId);
     },
     formContentChange(e) {
       var formValue = e.target.value;
@@ -458,45 +459,6 @@ export default {
         }
       });
       this.urlFormData = nforms;
-    },
-    urlFormTypeChange(value, option) {
-      var arr = value.split("-");
-      var formType = arr[0];
-      var formId = arr[1];
-      this.urlFormData.forEach(function(form) {
-        if (form.id == formId) {
-          form.type = formType;
-          //判断是否是文件类型，如果是文件类型，给定一个目标input-file域的target属性
-        }
-      });
-    },
-    urlFormFileChange(e) {
-      console.log("文件发生变化了");
-      console.log(e);
-      console.log(e.target.files);
-      var target = e.target;
-      var formId = target.getAttribute("data-key");
-      var record = this.urlFormData.filter(form => form.id == formId)[0];
-      if (record.new) {
-        this.urlFormData.forEach(function(form) {
-          if (form.id == record.id) {
-            form.content = target.value;
-            form.target = target;
-            form.new = false;
-          }
-        });
-        this.addNewLineUrlFormValue();
-      } else {
-        this.urlFormData.forEach(function(form) {
-          if (form.id == record.id) {
-            form.content = target.value;
-            form.target = target;
-            form.new = false;
-          }
-        });
-      }
-      this.initUrlFormSelections();
-      console.log(formId);
     },
     urlFormNameChange(e) {
       var formValue = e.target.value;
@@ -548,6 +510,18 @@ export default {
     },
     rawChange(value) {
       this.rawText = value;
+    },
+    sendRestfulApi(e) {
+      e.preventDefault();
+      console.log("发送接口");
+      this.formData.forEach(function(form) {
+        if (!form.new) {
+          console.log(form);
+          if (form.type == "file") {
+            console.log(form.target.files);
+          }
+        }
+      });
     }
   }
 };
