@@ -1790,6 +1790,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   var startApiTime = new Date().getTime();
   swpinfo.showUrl = newurl;
   //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
+  swpinfo.instanceId = that.currentInstance.id;
 
   swpinfo.url = newurl;
   swpinfo.originalUrl = newurl;
@@ -2385,6 +2386,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
         swpinfo.contentType = ctp;
         swpinfo.contentValue = "raw";
         swpinfo.contentShowValue = "Text(text/plain)";
+        swpinfo.contentMode = "text";
       } else {
         //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
         var defaultType = "application/x-www-form-urlencoded;charset=UTF-8";
@@ -2399,6 +2401,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
             } else {
               defaultValue = "raw";
               defaultType = "application/json";
+              swpinfo.contentMode = "json";
               break;
             }
           } else {
@@ -2427,6 +2430,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
           } else {
             defaultValue = "raw";
             defaultType = "application/json";
+            swpinfo.contentMode = "json";
             break;
           }
         } else {
@@ -3246,6 +3250,8 @@ var SwaggerBootstrapUiApiInfo = function () {
   //默认请求contentType
   this.contentType = "application/json";
   this.contentShowValue = "JSON(application/json)";
+  //请求如果是raw类型,给定mode类型
+  this.contentMode = "Text";
   //显示参数
   //存储请求类型，form|row|urlencode
   this.contentValue = "raw";
@@ -3315,6 +3321,8 @@ var SwaggerBootstrapUiApiInfo = function () {
   this.hashCollections = [];
   //ignoreParameters add 2019-7-30 16:10:08
   this.ignoreParameters = null;
+  //当前接口用户实例id add 2019-12-5 10:49:40
+  this.instanceId = null;
 }
 
 var SwaggerBootstrapUiRefParameter = function () {

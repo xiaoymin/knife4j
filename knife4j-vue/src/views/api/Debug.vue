@@ -119,6 +119,7 @@
 </template>
 <script>
 import md5 from "js-md5";
+import KUtils from "@/core/utils";
 import constant from "@/store/constants";
 import EditorDebugShow from "./EditorDebugShow";
 var instance;
@@ -147,6 +148,8 @@ export default {
       headerCountFlag: false,
       headerSelectName: "",
       selectedRowKeys: [],
+      //是否允许有请求参数,一般get情况下直接屏蔽
+      requestParameterAllow: true,
       rowSelection: {
         selectedRowKeys: [],
         onChange(selectrowkey, selectrows) {
@@ -166,6 +169,8 @@ export default {
         }
       },
       headerData: [],
+      //本地缓存全局参数
+      globalParameters: [],
       //调试接口
       debugUrl: "",
       //form参数值对象
@@ -182,22 +187,196 @@ export default {
     };
   },
   created() {
+    //初始化读取本地缓存全局参数
+    this.initLocalGlobalParameters();
     this.initDebugUrl();
-    this.readApiHeader();
-    this.initFirstHeader();
     //form-data表单
     this.initFirstFormValue();
     this.initSelectionHeaders();
-    //url-form-data表单
-    this.initUrlFormValue();
     //显示表单参数
     this.initShowFormTable();
-    //计算heaer数量
-    this.headerResetCalc();
   },
   methods: {
     initDebugUrl() {
       this.debugUrl = this.api.url;
+    },
+    initLocalGlobalParameters() {
+      const key = this.api.instanceId;
+      //初始化读取本地缓存全局参数
+      this.$localStore.getItem(constant.globalParameter).then(function(val) {
+        if (val != null) {
+          if (val[key] != undefined && val[key] != null) {
+            instance.globalParameters = val[key];
+          }
+        }
+        //开始同步执行其他方法-初始化请求头参数
+        instance.initHeaderParameter();
+        //请求体参数初始化
+        instance.initBodyParameter();
+      });
+    },
+    initHeaderParameter() {
+      //本都缓存读取到参数，初始化header参数
+      instance.globalParameters.forEach(function(param) {
+        if (param.in == "header") {
+          var newHeader = {
+            id: md5(
+              new Date().getTime().toString() +
+                Math.floor(Math.random() * 10000).toString()
+            ),
+            name: param.name,
+            content: param.value,
+            new: false
+          };
+          instance.headerData.push(newHeader);
+        }
+      });
+      this.readApiHeader();
+      this.initFirstHeader();
+      //计算heaer数量
+      this.headerResetCalc();
+    },
+    initBodyParameter() {
+      //this.initBodyType();
+      //初始化请求体参数
+      //得到body类型的请求参数
+      var bodyParameters = instance.globalParameters.filter(
+        param => param.in != "header"
+      );
+      var bodyData = [];
+      //接口本身的参数对象
+      var tmpApiParameters = this.api.parameters;
+      //本身全局参数显示集合
+      var showGlobalParameters = [];
+      //本身接口api参数显示集合
+      var showApiParameters = [];
+      //是否存在全局参数
+      if (bodyParameters.length > 0) {
+        //存在，判断全局参数中和parameter对比，是否存在相同参数，如果存在，判断是否parameters参数有值，如果后端有值,则globalParams中的参数值不显示
+        bodyParameters.forEach(function(global) {
+          if (KUtils.arrNotEmpty(tmpApiParameters)) {
+            var show = true;
+            tmpApiParameters.forEach(function(param) {
+              if (global.name == param.name && global.in == param.in) {
+                //在全局参数中存在相同的参数
+                //判断txtValue是否有值
+                if (KUtils.strNotBlank(param.txtValue)) {
+                  show = false;
+                }
+              }
+            });
+            //如果show=true，则显示该参数
+            if (show) {
+              showGlobalParameters.push(global);
+            }
+          }
+        });
+      }
+      if (KUtils.arrNotEmpty(tmpApiParameters)) {
+        tmpApiParameters.forEach(function(param) {
+          if (KUtils.arrNotEmpty(bodyParameters)) {
+            var show = true;
+            bodyParameters.forEach(function(global) {
+              if (global.name == param.name && global.in == param.in) {
+                if (!KUtils.strNotBlank(param.txtValue)) {
+                  show = false;
+                }
+              }
+            });
+            if (show) {
+              showApiParameters.push(param);
+            }
+          } else {
+            showApiParameters.push(param);
+          }
+        });
+      }
+      //根据参数列表、参数类型,开始自动判断接口的请求类型
+      //如果是单个@RequestBody类型,则参数只有一个,且只有一个，类型必须是body类型
+      var paramSize = showGlobalParameters.length + showApiParameters.length;
+      if (paramSize <= 1) {
+        if (showGlobalParameters.length == 1) {
+          //url-form类型
+          this.showTabUrlForm();
+          instance.addGlobalParameterToUrlForm(showGlobalParameters);
+          //url-form-data表单
+          instance.initUrlFormValue();
+        } else if (showApiParameters.length == 1) {
+          //判断参数是否为body类型
+          var bodySize = showApiParameters.filter(param => param.in == "body")
+            .length;
+          if (bodySize == 1) {
+            //raw类型
+            this.showTabRaw();
+          } else {
+            //判断是否包含文件
+            var fileSize = showApiParameters.filter(
+              param =>
+                param.schemaValue == "MultipartFile" ||
+                param.schemaValue == "file" ||
+                param.type == "file"
+            ).length;
+            if (fileSize > 0) {
+              //form-data
+              this.showTabForm();
+            } else {
+              //url-form
+              this.showTabUrlForm();
+              instance.addApiParameterToUrlForm(showApiParameters);
+              //url-form-data表单
+              instance.initUrlFormValue();
+            }
+          }
+        } else {
+          //参数为0的情况
+          console.log("参数为0的情况");
+          //url-form-data表单
+          instance.initUrlFormValue();
+        }
+      } else {
+        //判断是否包含文件类型,如果是文件类型、则为form-data，否则为url-form
+        var fileSize = showApiParameters.filter(
+          param =>
+            param.schemaValue == "MultipartFile" ||
+            param.schemaValue == "file" ||
+            param.type == "file"
+        ).length;
+        if (fileSize > 0) {
+          //form-data
+          this.showTabForm();
+        } else {
+          //url-form
+          this.showTabUrlForm();
+          instance.addApiParameterToUrlForm(showApiParameters);
+          //url-form-data表单
+          instance.initUrlFormValue();
+        }
+      }
+    },
+    initBodyType() {
+      //请求参数类型
+      var contentValue = this.api.contentValue;
+      this.requestContentType = contentValue;
+      if (contentValue == "form-data") {
+        this.formFlag = true;
+        this.rawFlag = false;
+        this.rawTypeFlag = false;
+        this.urlFormFlag = false;
+      } else if (contentValue == "x-www-form-urlencoded") {
+        this.urlFormFlag = true;
+        this.rawFlag = false;
+        this.rawTypeFlag = false;
+        this.formFlag = false;
+      } else if (contentValue == "raw") {
+        this.rawFlag = true;
+        this.rawMode = this.api.contentMode;
+        this.rawDefaultText = this.api.contentShowValue;
+        this.rawTypeFlag = true;
+        this.formFlag = false;
+        this.urlFormFlag = false;
+        //如果是raw类型，则赋值
+        this.rawText = this.api.requestValue;
+      }
     },
     readApiHeader() {
       //读取接口的请求头参数
@@ -268,6 +447,28 @@ export default {
         instance.rowUrlFormSelection.selectedRowKeys.push(form.id);
       });
     },
+    showTabForm() {
+      this.formFlag = true;
+      this.rawFlag = false;
+      this.rawTypeFlag = false;
+      this.urlFormFlag = false;
+    },
+    showTabUrlForm() {
+      this.urlFormFlag = true;
+      this.rawFlag = false;
+      this.rawTypeFlag = false;
+      this.formFlag = false;
+    },
+    showTabRaw() {
+      this.rawFlag = true;
+      this.rawMode = this.api.contentMode;
+      this.rawDefaultText = this.api.contentShowValue;
+      this.rawTypeFlag = true;
+      this.formFlag = false;
+      this.urlFormFlag = false;
+      //如果是raw类型，则赋值
+      this.rawText = this.api.requestValue;
+    },
     addNewLineFormValue() {
       //添加新行form表单值
       var newFormHeader = {
@@ -283,6 +484,44 @@ export default {
         new: true
       };
       this.formData.push(newFormHeader);
+    },
+    addGlobalParameterToUrlForm(globalParameters) {
+      if (KUtils.arrNotEmpty(globalParameters)) {
+        globalParameters.forEach(function(global) {
+          var newFormHeader = {
+            id: md5(
+              new Date().getTime().toString() +
+                Math.floor(Math.random() * 10000).toString()
+            ),
+            name: global.name,
+            type: "text",
+            //文件表单域的target
+            target: null,
+            content: global.value,
+            new: false
+          };
+          instance.urlFormData.push(newFormHeader);
+        });
+      }
+    },
+    addApiParameterToUrlForm(apiParameters) {
+      if (KUtils.arrNotEmpty(apiParameters)) {
+        apiParameters.forEach(function(param) {
+          var newFormHeader = {
+            id: md5(
+              new Date().getTime().toString() +
+                Math.floor(Math.random() * 10000).toString()
+            ),
+            name: param.name,
+            type: "text",
+            //文件表单域的target
+            target: null,
+            content: param.txtValue,
+            new: false
+          };
+          instance.urlFormData.push(newFormHeader);
+        });
+      }
     },
     addNewLineUrlFormValue() {
       var newFormHeader = {

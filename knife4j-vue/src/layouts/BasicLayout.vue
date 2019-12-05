@@ -21,7 +21,7 @@
       </a-layout-sider>
       <!-- <SiderMenu :defaultOption="defaultServiceOption" :serviceOptions="serviceOptions" @menuClick='menuClick' :logo="logo" :menuData="MenuData" :collapsed="collapsed" :location="$route" :onCollapse="handleMenuCollapse" :menuWidth="menuWidth" /> -->
       <a-layout>
-        <a-layout-header style="padding: 0;background: #fff;">
+        <a-layout-header style="padding: 0;background: #fff;    height: 56px; line-height: 56px;">
           <GlobalHeader :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="(item)=>handleMenuClick(item)" />
         </a-layout-header>
         <context-menu :itemList="menuItemList" :visible.sync="menuVisible" @select="onMenuSelect" />

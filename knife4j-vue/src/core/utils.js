@@ -156,6 +156,25 @@ const utils = {
     }
     return flag;
   },
+  arrNotEmpty(arr) {
+    //集合非空
+    var flag = false;
+    if (arr != undefined && arr != null && arr.length > 0) {
+      flag = true;
+    }
+    return flag;
+  },
+  strNotBlank(str) {
+    var flag = false;
+    if (
+      str != undefined &&
+      str != null &&
+      str != ""
+    ) {
+      flag = true;
+    }
+    return flag;
+  },
   propValue: function (key, obj, defaultValue) {
     var t = defaultValue;
     if (obj.hasOwnProperty(key)) {
