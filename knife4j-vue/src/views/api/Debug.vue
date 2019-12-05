@@ -194,7 +194,7 @@ export default {
     this.initFirstFormValue();
     this.initSelectionHeaders();
     //显示表单参数
-    this.initShowFormTable();
+    //this.initShowFormTable();
   },
   methods: {
     initDebugUrl() {
@@ -294,63 +294,41 @@ export default {
       //根据参数列表、参数类型,开始自动判断接口的请求类型
       //如果是单个@RequestBody类型,则参数只有一个,且只有一个，类型必须是body类型
       var paramSize = showGlobalParameters.length + showApiParameters.length;
-      if (paramSize <= 1) {
-        if (showGlobalParameters.length == 1) {
-          //url-form类型
-          this.showTabUrlForm();
-          instance.addGlobalParameterToUrlForm(showGlobalParameters);
-          //url-form-data表单
-          instance.initUrlFormValue();
-        } else if (showApiParameters.length == 1) {
-          //判断参数是否为body类型
-          var bodySize = showApiParameters.filter(param => param.in == "body")
-            .length;
-          if (bodySize == 1) {
-            //raw类型
-            this.showTabRaw();
-          } else {
-            //判断是否包含文件
-            var fileSize = showApiParameters.filter(
-              param =>
-                param.schemaValue == "MultipartFile" ||
-                param.schemaValue == "file" ||
-                param.type == "file"
-            ).length;
-            if (fileSize > 0) {
-              //form-data
-              this.showTabForm();
-            } else {
-              //url-form
-              this.showTabUrlForm();
-              instance.addApiParameterToUrlForm(showApiParameters);
-              //url-form-data表单
-              instance.initUrlFormValue();
-            }
-          }
+      console.log("参数大小:" + paramSize);
+      if (KUtils.arrNotEmpty(showApiParameters)) {
+        //判断参数是否为body类型
+        var bodySize = showApiParameters.filter(param => param.in == "body")
+          .length;
+        if (bodySize == 1) {
+          console.log("显示raw类型");
+          //raw类型
+          this.showTabRaw();
         } else {
-          //参数为0的情况
-          console.log("参数为0的情况");
-          //url-form-data表单
-          instance.initUrlFormValue();
+          //判断是否包含文件
+          var fileSize = showApiParameters.filter(
+            param =>
+              param.schemaValue == "MultipartFile" ||
+              param.schemaValue == "file" ||
+              param.type == "file"
+          ).length;
+          if (fileSize > 0) {
+            //form-data
+            this.showTabForm();
+          } else {
+            //url-form
+            this.showTabUrlForm();
+            instance.addApiParameterToUrlForm(showApiParameters);
+            //url-form-data表单
+            instance.initUrlFormValue();
+          }
         }
       } else {
-        //判断是否包含文件类型,如果是文件类型、则为form-data，否则为url-form
-        var fileSize = showApiParameters.filter(
-          param =>
-            param.schemaValue == "MultipartFile" ||
-            param.schemaValue == "file" ||
-            param.type == "file"
-        ).length;
-        if (fileSize > 0) {
-          //form-data
-          this.showTabForm();
-        } else {
-          //url-form
-          this.showTabUrlForm();
-          instance.addApiParameterToUrlForm(showApiParameters);
-          //url-form-data表单
-          instance.initUrlFormValue();
-        }
+        //url-form类型
+        this.showTabUrlForm();
+        instance.addGlobalParameterToUrlForm(showGlobalParameters);
+        instance.addApiParameterToUrlForm(showApiParameters);
+        //url-form-data表单
+        instance.initUrlFormValue();
       }
     },
     initBodyType() {
@@ -468,6 +446,7 @@ export default {
       this.urlFormFlag = false;
       //如果是raw类型，则赋值
       this.rawText = this.api.requestValue;
+      this.requestContentType = "raw";
     },
     addNewLineFormValue() {
       //添加新行form表单值
