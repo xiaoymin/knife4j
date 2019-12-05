@@ -4,14 +4,19 @@
       <a-col :class="'knife4j-debug-api-' + api.methodType.toLowerCase()" :span="24">
         <a-input-group compact>
           <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
-          <a-input style="width: 80%" defaultValue="/api/tes/showApi" />
+          <a-input style="width: 80%" :value="debugUrl" />
           <a-button class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送</a-button>
         </a-input-group>
       </a-col>
     </a-row>
     <a-row class="knife4j-debug-tabs">
       <a-tabs defaultActiveKey="2">
-        <a-tab-pane tab="请求头部" key="1">
+        <a-tab-pane key="1">
+          <template slot="tab">
+            <span>
+              <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{headerCount}}</a-tag>请求头部
+            </span>
+          </template>
           <a-table bordered size="small" :rowSelection="rowSelection" :columns="headerColumn" :pagination="pagination" :dataSource="headerData" rowKey="id">
             <!--请求头下拉框-->
             <template slot="headerName" slot-scope="text,record">
@@ -138,6 +143,8 @@ export default {
       pagination: false,
       headerAutoOptions: constant.debugRequestHeaders,
       headerOptions: constant.debugRequestHeaderOptions,
+      headerCount: 0,
+      headerCountFlag: false,
       headerSelectName: "",
       selectedRowKeys: [],
       rowSelection: {
@@ -159,6 +166,8 @@ export default {
         }
       },
       headerData: [],
+      //调试接口
+      debugUrl: "",
       //form参数值对象
       formData: [],
       formFlag: false,
@@ -173,6 +182,7 @@ export default {
     };
   },
   created() {
+    this.initDebugUrl();
     this.readApiHeader();
     this.initFirstHeader();
     //form-data表单
@@ -182,8 +192,13 @@ export default {
     this.initUrlFormValue();
     //显示表单参数
     this.initShowFormTable();
+    //计算heaer数量
+    this.headerResetCalc();
   },
   methods: {
+    initDebugUrl() {
+      this.debugUrl = this.api.url;
+    },
     readApiHeader() {
       //读取接口的请求头参数
       console.log("readheader--");
@@ -338,6 +353,7 @@ export default {
         });
       }
       this.initSelectionHeaders();
+      this.headerResetCalc();
     },
     /**
      * 请求头筛选事件
@@ -380,6 +396,7 @@ export default {
         });
       }
       this.initSelectionHeaders();
+      this.headerResetCalc();
     },
     headerDelete(record) {
       var nheader = [];
@@ -389,6 +406,20 @@ export default {
         }
       });
       this.headerData = nheader;
+      this.headerResetCalc();
+    },
+    headerResetCalc() {
+      //重新计算header请求头数量
+      var noNewHeaderArrs = this.headerData.filter(
+        header => header.new == false
+      );
+      if (noNewHeaderArrs.length > 0) {
+        this.headerCountFlag = true;
+        this.headerCount = noNewHeaderArrs.length;
+      } else {
+        this.headerCountFlag = false;
+        this.headerCount = 0;
+      }
     },
     requestContentTypeChange(e) {
       console.log("radio checked", e.target.value);
