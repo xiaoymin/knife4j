@@ -14,10 +14,9 @@
         </a-tab-pane>
       </a-tabs>
     </a-row>
-    <a-row v-else>
+    <a-row class="knife4j-api-readonly" v-else>
       <Document :api="api" />
     </a-row>
-
   </a-layout-content>
 </template>
 <script>
@@ -34,7 +33,7 @@ export default {
   data() {
     return {
       api: null,
-      debugSupport: true
+      debugSupport: false
     };
   },
   mounted() {},
@@ -53,9 +52,6 @@ export default {
     });
     this.api = apiInfo;
     this.debugSupport = this.api.configurationDebugSupport;
-  },
-  data() {
-    return {};
   },
   methods: {
     onTabChange(key, type) {
