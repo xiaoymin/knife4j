@@ -1,17 +1,23 @@
 <template>
   <a-layout-content class="knife4j-body-content">
-    <a-tabs defaultActiveKey="2" tabPosition="left" class="api-tab">
-      <a-tab-pane key="1">
-        <span slot="tab">
-          <my-icon type="icon-wendang" />文档</span>
-        <Document :api="api" />
-      </a-tab-pane>
-      <a-tab-pane key="2">
-        <span slot="tab">
-          <my-icon type="icon-debug" />调试</span>
-        <Debug :api="api" />
-      </a-tab-pane>
-    </a-tabs>
+    <a-row v-if="debugSupport">
+      <a-tabs defaultActiveKey="2" tabPosition="left" class="api-tab">
+        <a-tab-pane key="1">
+          <span slot="tab">
+            <my-icon type="icon-wendang" />文档</span>
+          <Document :api="api" />
+        </a-tab-pane>
+        <a-tab-pane key="2">
+          <span slot="tab">
+            <my-icon type="icon-debug" />调试</span>
+          <Debug :api="api" />
+        </a-tab-pane>
+      </a-tabs>
+    </a-row>
+    <a-row v-else>
+      <Document :api="api" />
+    </a-row>
+
   </a-layout-content>
 </template>
 <script>
@@ -27,14 +33,12 @@ export default {
   },
   data() {
     return {
-      api: null
+      api: null,
+      debugSupport: true
     };
   },
-  mounted() {
-    console.log(":api----------");
-  },
+  mounted() {},
   created() {
-    console.log("created..");
     //根据地址栏得到api详情
     let params = this.$route.params;
     console.log(params);
@@ -47,8 +51,8 @@ export default {
         apiInfo = path;
       }
     });
-    console.log(apiInfo);
     this.api = apiInfo;
+    this.debugSupport = this.api.configurationDebugSupport;
   },
   data() {
     return {};

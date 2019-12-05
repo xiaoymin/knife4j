@@ -173,6 +173,7 @@ export default {
     };
   },
   created() {
+    this.readApiHeader();
     this.initFirstHeader();
     //form-data表单
     this.initFirstFormValue();
@@ -183,6 +184,48 @@ export default {
     this.initShowFormTable();
   },
   methods: {
+    readApiHeader() {
+      //读取接口的请求头参数
+      console.log("readheader--");
+      console.log(this.api);
+      //请求-请求头
+      this.readConsumesHeader();
+
+      //响应请求头
+      var produces = this.api.produces;
+      var produceHeader = "*/*";
+      if (produces != undefined && produces != null && produces.length > 0) {
+        produceHeader = produces[0];
+      }
+      var newHeader = {
+        id: md5(
+          new Date().getTime().toString() +
+            Math.floor(Math.random() * 10000).toString()
+        ),
+        name: "Accept",
+        content: produceHeader,
+        new: false
+      };
+      this.headerData.push(newHeader);
+    },
+    readConsumesHeader() {
+      //根据参数的请求方式自动确定请求头
+      var consumes = this.api.consumes;
+      var consumeHeader = "";
+      if (consumes != undefined && consumes != null && consumes.length > 0) {
+        consumeHeader = consumes[0];
+      }
+      var newHeader = {
+        id: md5(
+          new Date().getTime().toString() +
+            Math.floor(Math.random() * 10000).toString()
+        ),
+        name: "Content-Type",
+        content: consumeHeader,
+        new: false
+      };
+      this.headerData.push(newHeader);
+    },
     initFirstHeader() {
       var newHeader = {
         id: md5(
@@ -526,17 +569,4 @@ export default {
   }
 };
 </script>
-
-<style lang="less" scoped>
-.knife4j-debug {
-  margin: 20px auto;
-  width: 100%;
-}
-.knife4j-api-send {
-  width: 10%;
-}
-
-.knife4j-debug-tabs {
-  margin: 10px auto;
-}
-</style>
+ 
