@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="debugResponse">
-      <editor class="knife4j-debug-ace-editor" :value="value" @init="editorInit" @input="change" :lang="mode" theme="eclipse" width="100%" :height="editorHeight"></editor>
+      <editor class="knife4j-debug-ace-editor" @input="change" :options="debugOptions" :value="value" @init="editorInit" :lang="mode" theme="eclipse" width="100%" :height="editorHeight"></editor>
     </div>
     <div v-else>
       <editor :value="value" @init="editorInit" @input="change" :lang="mode" theme="eclipse" width="100%" :height="editorHeight"></editor>
@@ -30,10 +30,18 @@ export default {
       default: false
     }
   },
+  watch: {
+    value: function(val, oldVal) {
+      console.log("new: %s, old: %s", val, oldVal);
+    }
+  },
   data() {
     return {
       editor: null,
-      editorHeight: 200
+      editorHeight: 200,
+      debugOptions: {
+        readOnly: false
+      }
     };
   },
   methods: {
@@ -62,12 +70,16 @@ export default {
       }, 10);
     },
     change(value) {
+      this.value = value;
       //重设高度
-      this.resetEditorHeight();
-      this.$emit("change", value);
+      if (!this.debugResponse) {
+        this.resetEditorHeight();
+        this.$emit("change", value);
+      }
     },
     editorInit(editor) {
       var that = this;
+      console.log("aaa");
       this.editor = editor;
       require("brace/ext/language_tools"); //language extension prerequsite...
       require("brace/theme/eclipse");
@@ -83,6 +95,7 @@ export default {
       } else if (this.mode == "javascript") {
       } */
       this.editor.gotoLine(1);
+      this.editor.setOptions(this.debugOptions);
       //重设高度
       this.resetEditorHeight();
     }
