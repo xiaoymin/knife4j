@@ -1,6 +1,6 @@
 /* eslint no-useless-escape:0 */
 import md5 from 'js-md5'
-
+import JSON5 from './json5'
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
 
@@ -75,6 +75,7 @@ const utils = {
     try {
       ret = JSON5.stringify(rtext, null, 2);
     } catch (err) {
+      console.log(err)
       ret = JSON.stringify(rtext, null, 2);
     }
     return ret;
@@ -84,6 +85,7 @@ const utils = {
     try {
       ret = JSON5.parse(rtext)
     } catch (err) {
+      console.log(err)
       ret = JSON.parse(rtext);
     }
     return ret;

@@ -1791,6 +1791,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   swpinfo.showUrl = newurl;
   //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
   swpinfo.instanceId = that.currentInstance.id;
+  swpinfo.host = that.currentInstance.host;
 
   swpinfo.url = newurl;
   swpinfo.originalUrl = newurl;
@@ -3323,6 +3324,8 @@ var SwaggerBootstrapUiApiInfo = function () {
   this.ignoreParameters = null;
   //当前接口用户实例id add 2019-12-5 10:49:40
   this.instanceId = null;
+  // 用于请求后构建curl
+  this.host = null;
 }
 
 var SwaggerBootstrapUiRefParameter = function () {

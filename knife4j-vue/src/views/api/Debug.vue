@@ -116,7 +116,7 @@
       </a-tabs>
     </a-row>
     <a-row>
-      <DebugResponse :api="api" :debugSend="debugSend" :responseRawText="responseRawText" :responseHeaders="responseHeaders" />
+      <DebugResponse :api="api" :debugSend="debugSend" :responseContent="responseContent" :responseCurlText="responseCurlText" :responseStatus="responseStatus" :responseRawText="responseRawText" :responseHeaders="responseHeaders" />
     </a-row>
   </div>
 </template>
@@ -126,7 +126,7 @@ import KUtils from "@/core/utils";
 import constant from "@/store/constants";
 import EditorDebugShow from "./EditorDebugShow";
 import DebugResponse from "./DebugResponse";
-import debugAxios from "axios";
+import DebugAxios from "axios";
 
 var instance;
 export default {
@@ -194,7 +194,10 @@ export default {
       rawRequestType: "application/json",
       requestContentType: "x-www-form-urlencoded",
       responseHeaders: [],
-      responseRawText: ""
+      responseRawText: "",
+      responseCurlText: "",
+      responseStatus: null,
+      responseContent: null
     };
   },
   created() {
@@ -832,19 +835,117 @@ export default {
           }
         }
       });
-      //追加1个Knife4j的默认参数
+      //追加1个Knife4j的默认请求头参数
       headers["Request-Origion"] = "Knife4j";
       //判断是否包含请求Content-Type类型，如果不包含，则添加
       if (!KUtils.checkUndefined(headers["Content-Type"])) {
-        headers["Content-Type"] = this.rawRequestType;
+        if (this.rawFlag) {
+          headers["Content-Type"] = this.rawRequestType;
+        } else if (this.urlFormFlag) {
+          headers["Content-Type"] = "application/x-www-form-urlencoded";
+        } else if (this.formFlag) {
+          headers["Content-Type"] = "form-data";
+        }
       }
       return headers;
     },
+    debugUrlFormParams() {
+      //获取url-form类型的参数
+      var params = {};
+      this.urlFormData.forEach(function(form) {
+        if (!form.new) {
+          //判断header是否选中
+          var tmphArrs = instance.rowUrlFormSelection.selectedRowKeys.filter(
+            rs => rs == form.id
+          );
+          if (tmphArrs.length > 0) {
+            //必须选中
+            if (KUtils.strNotBlank(form.name)) {
+              params[form.name] = form.content;
+            }
+          }
+        }
+      });
+      return params;
+    },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
+      console.log("发送url-form接口");
+      var startTime = new Date();
+      //raw类型的请求需要判断是何种类型
+      var headers = this.debugHeaders();
+      var url = this.debugUrl;
+      var methodType = this.api.methodType.toLowerCase();
+      var formParams = this.debugUrlFormParams();
+      console.log(headers);
+      console.log(formParams);
+      DebugAxios.create()
+        .request({
+          url: url,
+          method: methodType,
+          headers: headers,
+          params: formParams,
+          timeout: 0
+        })
+        .then(function(res) {
+          console.log(res);
+          instance.handleDebugSuccess(startTime, res);
+        })
+        .catch(function(err) {
+          if (err.response) {
+            instance.handleDebugError(startTime, err.response);
+          } else {
+            console.log(err.message);
+          }
+        });
     },
     debugSendFormRequest() {
       //发送form类型的请求
+    },
+    debugSendRawRequest() {
+      //发送raw类型的请求
+      console.log("发送raw接口");
+      var startTime = new Date();
+      //raw类型的请求需要判断是何种类型
+      var headers = this.debugHeaders();
+      var url = this.debugUrl;
+      var methodType = this.api.methodType.toLowerCase();
+      var data = this.rawText;
+      console.log(headers);
+      console.log(this.rawText);
+      DebugAxios.create()
+        .request({
+          url: url,
+          method: methodType,
+          headers: headers,
+          data: data,
+          timeout: 0
+        })
+        .then(function(res) {
+          instance.handleDebugSuccess(startTime, res);
+        })
+        .catch(function(err) {
+          if (err.response) {
+            instance.handleDebugError(startTime, err.response);
+          } else {
+          }
+        });
+    },
+    handleDebugSuccess(startTime, res) {
+      //成功的情况
+      instance.setResponseBody(res.request);
+      instance.setResponseHeaders(res.headers);
+      instance.setResponseRaw(res.request);
+      instance.setResponseStatus(startTime, res.request);
+      instance.setResponseCurl(res.request);
+    },
+    handleDebugError(startTime, resp) {
+      //失败的情况
+      instance.setResponseBody(resp.request);
+      instance.setResponseHeaders(resp.headers);
+      instance.setResponseRaw(resp.request);
+      instance.setResponseStatus(startTime, resp.request);
+      instance.setResponseCurl(resp.request);
     },
     setResponseHeaders(respHeaders) {
       //给相应请求头表格赋值
@@ -868,40 +969,102 @@ export default {
         this.responseRawText = _tmpRawText;
       }
     },
-    debugSendRawRequest() {
-      //发送raw类型的请求
-      console.log("发送raw接口");
-      //raw类型的请求需要判断是何种类型
-      var headers = this.debugHeaders();
+    setResponseStatus(startTime, resp) {
+      //响应状态
+      if (KUtils.checkUndefined(resp)) {
+        var endTime = new Date();
+        var costStr = "";
+        var cost = endTime.getTime() - startTime.getTime();
+        var code = resp.status;
+        if (cost > 1000) {
+          //超过1秒钟
+          var sec = Math.floor(cost / 1000).toFixed(1);
+          costStr = sec + "s";
+        } else {
+          //接口响应毫秒级别
+          costStr = cost + "ms";
+        }
+        //判断是否包含text
+        var size = 0;
+        if (KUtils.checkUndefined(resp.responseText)) {
+          size = resp.responseText.gblen();
+        }
+        //赋值
+        this.responseStatus = {
+          code: code,
+          cost: costStr,
+          size: size
+        };
+      }
+    },
+    setResponseCurl(resp) {
       var url = this.debugUrl;
-      var methodType = this.api.methodType.toLowerCase();
-      var data = this.rawText;
-      console.log(headers);
-      console.log(this.rawText);
-      debugAxios
-        .create()
-        .request({
-          url: url,
-          method: methodType,
-          headers: headers,
-          data: data,
-          timeout: 0
-        })
-        .then(function(res) {
-          console.log(res);
-          instance.setResponseHeaders(res.headers);
-          instance.setResponseRaw(res.request);
-        })
-        .catch(function(err) {
-          if (err.response) {
-            var resp = err.response;
-            instance.setResponseHeaders(resp.headers);
-            instance.setResponseRaw(resp.request);
-            console.log(err.response);
-          } else {
-            console.log(err.message);
+      //构建请求响应CURL
+      var curlified = new Array();
+      var protocol = "http";
+      //获取location
+      var href = window.location.href;
+      //判断是否是https
+      var proRegex = new RegExp("^https.*", "ig");
+      if (proRegex.test(href)) {
+        protocol = "https";
+      }
+      var fullurl = protocol + "://" + this.api.host;
+      //判断url是否是以/开头
+      if (!url.startWith("/")) {
+        fullurl += "/";
+      }
+      fullurl += url;
+      //判断是否是GET请求
+      if (this.api.methodType.toLowerCase() == "get") {
+        /* if (paramBodyType == "form") {
+          if (
+            formCurlParams == null ||
+            formCurlParams == undefined ||
+            !formCurlParams
+          ) {
+            if (reqdata != null && reqdata != undefined) {
+              var urlAppend = new Array();
+              //判断是否包含参数
+              var paramExists = false;
+              for (var d in reqdata) {
+                urlAppend.push(d + "=" + reqdata[d]);
+                if (fullurl.indexOf(d + "=") != -1) {
+                  paramExists = true;
+                }
+              }
+              if (!paramExists) {
+                if (urlAppend.length > 0) {
+                  var _appendStr = urlAppend.join("&");
+                  if (fullurl.indexOf("?") == -1) {
+                    fullurl = fullurl + "?" + _appendStr;
+                  } else {
+                    fullurl = fullurl + "&" + _appendStr;
+                  }
+                }
+              }
+            }
           }
-        });
+        } */
+      }
+
+      curlified.push("curl");
+      curlified.push("-X", this.api.methodType.toUpperCase());
+      //此处url需要encoding
+      curlified.push('"' + encodeURI(fullurl) + '"');
+
+      this.responseCurlText = curlified.join(" ");
+    },
+    setResponseBody(resp) {
+      if (KUtils.checkUndefined(resp)) {
+        var tmpJson = KUtils.json5stringify(
+          KUtils.json5parse(resp.responseText)
+        );
+        this.responseContent = {
+          text: tmpJson,
+          mode: "json"
+        };
+      }
     }
   }
 };

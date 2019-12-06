@@ -68,6 +68,22 @@ Vue.prototype.$axios = axios
 import localStore from './store/local'
 Vue.prototype.$localStore = localStore;
 
+String.prototype.gblen = function () {
+  var len = 0;
+  for (var i = 0; i < this.length; i++) {
+    if (this.charCodeAt(i) > 127 || this.charCodeAt(i) == 94) {
+      len += 2;
+    } else {
+      len++;
+    }
+  }
+  return len;
+}
+
+String.prototype.startWith = function (str) {
+  var reg = new RegExp("^" + str);
+  return reg.test(this);
+}
 //Vue.use(localStore)
 Vue.use(Antd)
 new Vue({

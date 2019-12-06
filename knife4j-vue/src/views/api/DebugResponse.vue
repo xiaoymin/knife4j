@@ -3,11 +3,18 @@
     <a-row v-if="debugSend">
       <a-tabs defaultActiveKey="debugResponse">
         <template slot="tabBarExtraContent">
-          <a-row class="knife4j-debug-status">
-            右上角状态情况
+          <a-row v-if="responseStatus" class="knife4j-debug-status">
+            <span class="key">响应码:</span>
+            <span class="value">{{responseStatus.code}}</span>
+            <span class="key">耗时:</span>
+            <span class="value">{{responseStatus.cost}}</span>
+            <span class="key">大小:</span>
+            <span class="value">{{responseStatus.size}} b</span>
           </a-row>
         </template>
-        <a-tab-pane tab="响应内容" key="debugResponse">Content of Tab Pane 1</a-tab-pane>
+        <a-tab-pane tab="响应内容" key="debugResponse">
+          <editor-debug-show v-if="responseContent" :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
+        </a-tab-pane>
         <a-tab-pane tab="Raw" key="debugRaw" forceRender>
           <a-row class="knife4j-debug-response-mt">
             <a-button :id="'btnDebugCopyRaw'+api.id" type="primary">
@@ -35,12 +42,14 @@
       </a-tabs>
     </a-row>
     <a-row v-else>
-      发送消息查看接口信息
+
     </a-row>
   </a-row>
 </template>
 <script>
+import KUtils from "@/core/utils";
 import ClipboardJS from "clipboard";
+import EditorDebugShow from "./EditorDebugShow";
 
 export default {
   props: {
@@ -61,8 +70,15 @@ export default {
     responseCurlText: {
       type: String,
       default: ""
+    },
+    responseStatus: {
+      type: Object
+    },
+    responseContent: {
+      type: Object
     }
   },
+  components: { EditorDebugShow },
   data() {
     return {
       pagination: false,
@@ -80,6 +96,7 @@ export default {
     };
   },
   created() {
+    //this.resetResponseContent();
     this.copyRawText();
     this.copyCurlText();
   },
@@ -115,6 +132,19 @@ export default {
       clipboard.on("error", function(e) {
         that.$message.info("复制Curl失败");
       });
+    },
+    resetResponseContent() {
+      if (this.responseContent != null) {
+        if (this.responseContent.mode == "json") {
+          //json格式特别处理
+          const tmpJson = this.responseContent.text;
+          console.log("特殊处理json");
+          console.log(tmpJson);
+          this.responseContent.text = KUtils.json5stringify(
+            KUtils.json5parse(tmpJson)
+          );
+        }
+      }
     }
   }
 };
