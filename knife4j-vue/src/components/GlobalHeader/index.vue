@@ -19,13 +19,13 @@
           <a-menu-item>
             <a-icon type="delete" /> 清除缓存
           </a-menu-item>
-          <a-menu-divider />
+          <!-- <a-menu-divider />
           <a-menu-item key="logout">
             <a-icon type="logout" />简体中文
           </a-menu-item>
           <a-menu-item key="triggerError">
             <a-icon type="close-circle" />English
-          </a-menu-item>
+          </a-menu-item> -->
         </a-menu>
         <span class='action account'>
           <span class="name">中</span>

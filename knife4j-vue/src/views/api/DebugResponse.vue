@@ -18,7 +18,7 @@
               <a-button type="link" :href="responseContent.blobUrl" :download="responseContent.blobFileName">下载文件</a-button>
             </a-row>
             <a-row v-else>
-              <editor-debug-show :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
+              <editor-debug-show :debugResponse="debugResponse" :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
             </a-row>
           </a-row>
         </a-tab-pane>
@@ -89,6 +89,7 @@ export default {
   data() {
     return {
       pagination: false,
+      debugResponse: true,
       responseHeaderColumn: [
         {
           title: "响应头",

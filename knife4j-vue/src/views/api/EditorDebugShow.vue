@@ -1,6 +1,12 @@
 <template>
   <div>
-    <editor :value="value" @init="editorInit" @input="change" :lang="mode" theme="eclipse" width="100%" :height="editorHeight"></editor>
+    <div v-if="debugResponse">
+      <editor class="knife4j-debug-ace-editor" :value="value" @init="editorInit" @input="change" :lang="mode" theme="eclipse" width="100%" :height="editorHeight"></editor>
+    </div>
+    <div v-else>
+      <editor :value="value" @init="editorInit" @input="change" :lang="mode" theme="eclipse" width="100%" :height="editorHeight"></editor>
+    </div>
+
   </div>
 </template>
 
@@ -18,6 +24,10 @@ export default {
       type: String,
       required: true,
       default: "json"
+    },
+    debugResponse: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -36,13 +46,18 @@ export default {
           length_editor = 15;
         }
         if (length_editor < 15) {
-          length_editor = 15;
+          if (that.debugResponse) {
+            length_editor = 30;
+          } else {
+            length_editor = 15;
+          }
         }
-        /* if (length_editor > 20) {
-          length_editor = 20;
-        } */
+        if (length_editor > 20) {
+          if (!that.debugResponse) {
+            length_editor = 20;
+          }
+        }
         var rows_editor = length_editor * 16;
-        console.log("高度--" + rows_editor);
         that.editorHeight = rows_editor;
       }, 10);
     },
