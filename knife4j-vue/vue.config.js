@@ -23,8 +23,8 @@ module.exports = {
   devServer: {
     proxy: {
       "/": {
-        target: "http://swagger-bootstrap-ui.xiaominfo.com/",
-        /* target: 'http://192.168.0.152:8999/', */
+        /* target: "http://swagger-bootstrap-ui.xiaominfo.com/",*/
+        target: 'http://192.168.0.152:8999/',
         ws: true,
         changeOrigin: true
       }

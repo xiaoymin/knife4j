@@ -13,7 +13,14 @@
           </a-row>
         </template>
         <a-tab-pane tab="响应内容" key="debugResponse">
-          <editor-debug-show v-if="responseContent" :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
+          <a-row v-if="responseContent">
+            <a-row v-if="responseContent.blobFlag">
+              <a-button type="link" :href="responseContent.blobUrl" :download="responseContent.blobFileName">下载文件</a-button>
+            </a-row>
+            <a-row v-else>
+              <editor-debug-show :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
+            </a-row>
+          </a-row>
         </a-tab-pane>
         <a-tab-pane tab="Raw" key="debugRaw" forceRender>
           <a-row class="knife4j-debug-response-mt">

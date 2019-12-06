@@ -2,6 +2,7 @@
 //@import "~ant-design-vue/lib/style/themes/default.less";
 
 @contentHeight: calc(100vh - 64px);
+@DebugContentBodyHeight: calc(100vh - 395px);
 @headerDefaultWidth: calc(100vw - 310px);
 @headerCollapsedWidth: calc(100vw - 80px);
 @contentTabHeight: calc(100vh - 152px);
@@ -521,7 +522,7 @@
 
 
 .knife4j-debug-response {
-  min-height: 400px;
+  min-height: @DebugContentBodyHeight;
 }
 
 .knife4j-debug-response-mt {

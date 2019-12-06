@@ -3,12 +3,178 @@ import md5 from 'js-md5'
 import JSON5 from './json5'
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
+const binaryContentType = {
+  "application/octet-stream": true,
+  "application/x-001": true,
+  "text/h323": true,
+  "drawing/907": true,
+  "audio/x-mei-aac": true,
+  "audio/aiff": true,
+  "text/asa": true,
+  "text/asp": true,
+  "audio/basic": true,
+  "application/vnd.adobe.workflow": true,
+  "application/x-bmp": true,
+  "application/x-c4t": true,
+  "application/x-cals": true,
+  "application/x-netcdf": true,
+  "application/x-cel": true,
+  "application/x-g4": true,
+  "application/x-cit": true,
+  "text/xml": true,
+  "application/x-cmx": true,
+  "application/pkix-crl": true,
+  "application/x-csi": true,
+  "application/x-cut": true,
+  "application/x-dbm": true,
+  "application/x-x509-ca-cert": true,
+  "application/x-dib": true,
+  "application/msword": true,
+  "application/x-drw": true,
+  "Model/vnd.dwf": true,
+  "application/x-dwg": true,
+  "application/x-dxf": true,
+  "application/x-emf": true,
+  "application/x-ps": true,
+  "application/x-ebx": true,
+  "image/fax": true,
+  "application/fractals": true,
+  "application/x-frm": true,
+  "application/x-gbr": true,
+  "image/gif": true,
+  "application/x-gp4": true,
+  "application/x-hmr": true,
+  "application/x-hpl": true,
+  "application/x-hrf": true,
+  "text/x-component": true,
+  "text/html": true,
+  "image/x-icon": true,
+  "application/x-iff": true,
+  "application/x-igs": true,
+  "application/x-img": true,
+  "application/x-internet-signup": true,
+  "java/*": true,
+  "image/jpeg": true,
+  "application/x-jpg": true,
+  "application/x-laplayer-reg": true,
+  "audio/x-liquid-secure": true,
+  "audio/x-la-lms": true,
+  "application/x-ltr": true,
+  "video/x-mpeg": true,
+  "video/mpeg4": true,
+  "application/x-troff-man": true,
+  "application/msaccess": true,
+  "application/x-shockwave-flash": true,
+  "message/rfc822": true,
+  "audio/mid": true,
+  "application/x-mil": true,
+  "audio/x-musicnet-download": true,
+  "application/x-javascript": true,
+  "audio/mp1": true,
+  "video/mpeg": true,
+  "application/vnd.ms-project": true,
+  "video/mpg": true,
+  "audio/rn-mpeg": true,
+  "image/pnetvue": true,
+  "application/x-out": true,
+  "application/x-pkcs12": true,
+  "application/pkcs7-mime": true,
+  "application/x-pkcs7-certreqresp": true,
+  "application/x-pc5": true,
+  "application/x-pcl": true,
+  "application/pdf": true,
+  "application/vnd.adobe.pdx": true,
+  "application/x-pgl": true,
+  "application/vnd.ms-pki.pko": true,
+  "application/x-plt": true,
+  "application/x-png": true,
+  "application/vnd.ms-powerpoint": true,
+  "application/x-ppt": true,
+  "application/pics-rules": true,
+  "application/x-prt": true,
+  "application/postscript": true,
+  "audio/vnd.rn-realaudio": true,
+  "application/x-ras": true,
+  "application/x-red": true,
+  "application/vnd.rn-realsystem-rjs": true,
+  "application/x-rlc": true,
+  "application/vnd.rn-realmedia": true,
+  "audio/x-pn-realaudio": true,
+  "application/vnd.rn-realmedia-secure": true,
+  "application/vnd.rn-realsystem-rmx": true,
+  "image/vnd.rn-realpix": true,
+  "application/vnd.rn-rsml": true,
+  "video/vnd.rn-realvideo": true,
+  "application/x-sat": true,
+  "application/x-sdw": true,
+  "application/x-slb": true,
+  "drawing/x-slk": true,
+  "application/smil": true,
+  "text/plain": true,
+  "application/futuresplash": true,
+  "application/streamingmedia": true,
+  "application/vnd.ms-pki.stl": true,
+  "application/x-sty": true,
+  "application/x-tg4": true,
+  "image/tiff": true,
+  "image/png": true,
+  "drawing/x-top": true,
+  "application/x-icq": true,
+  "text/x-vcard": true,
+  "application/vnd.visio": true,
+  "application/x-vpeg005": true,
+  "application/x-vsd": true,
+  "audio/wav": true,
+  "application/x-wb1": true,
+  "application/x-wb3": true,
+  "application/x-wk4": true,
+  "application/x-wks": true,
+  "audio/x-ms-wma": true,
+  "application/x-wmf": true,
+  "video/x-ms-wmv": true,
+  "application/x-ms-wmz": true,
+  "application/x-wpd": true,
+  "application/vnd.ms-wpl": true,
+  "application/x-wr1": true,
+  "application/x-wrk": true,
+  "application/x-ws": true,
+  "application/vnd.adobe.xdp": true,
+  "application/vnd.adobe.xfd": true,
+  "application/x-xls": true,
+  "application/x-xwd": true,
+  "application/vnd.symbian.install": true,
+  "application/x-x_t": true,
+  "application/vnd.android.package-archive": true
+}
 
 function isUrl(path) {
   return reg.test(path);
 }
 
 const utils = {
+  binaryContentType(produces, contentType) {
+    var binary = false;
+    var binaryType = "";
+    if (produces != null && produces != undefined) {
+      produces.forEach(function (p) {
+        if (binaryContentType[p]) {
+          binaryType = p;
+          binary = true;
+        }
+      })
+    }
+    if (contentType != null) {
+      if (!binary && binaryContentType[contentType]) {
+        binary = true;
+        binaryType = contentType;
+      }
+    }
+    var bobj = {
+      binary: binary,
+      binaryType: binaryType
+    };
+    return bobj;
+  },
   randomMd5() {
     //生成一个随机MD5码
     return md5(new Date().getTime().toString() +

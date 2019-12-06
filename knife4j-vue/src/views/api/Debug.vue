@@ -814,6 +814,16 @@ export default {
     debugHeaders() {
       //获取发送请求的自定义等等请求头参数
       var headers = {};
+      //判断accept
+      var apiInfo = this.api;
+      if (
+        apiInfo.produces != undefined &&
+        apiInfo.produces != null &&
+        apiInfo.produces.length > 0
+      ) {
+        var first = apiInfo.produces[0];
+        headers["Accept"] = first;
+      }
       this.headerData.forEach(function(header) {
         if (!header.new) {
           //不是新行
@@ -835,6 +845,7 @@ export default {
           }
         }
       });
+
       //追加1个Knife4j的默认请求头参数
       headers["Request-Origion"] = "Knife4j";
       //判断是否包含请求Content-Type类型，如果不包含，则添加
@@ -868,6 +879,20 @@ export default {
       });
       return params;
     },
+    debugStreamFlag() {
+      var streamFlag = false;
+      var apiInfo = this.api;
+      if (
+        apiInfo.produces != undefined &&
+        apiInfo.produces != null &&
+        apiInfo.produces.length > 0
+      ) {
+        var first = apiInfo.produces[0];
+        var binaryObject = KUtils.binaryContentType(apiInfo.produces, null);
+        streamFlag = binaryObject.binary;
+      }
+      return streamFlag;
+    },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
       console.log("发送url-form接口");
@@ -877,25 +902,33 @@ export default {
       var url = this.debugUrl;
       var methodType = this.api.methodType.toLowerCase();
       var formParams = this.debugUrlFormParams();
+      var requestConfig = {
+        url: url,
+        method: methodType,
+        headers: headers,
+        params: formParams,
+        timeout: 0
+      };
+      //需要判断是否是下载请求
+      if (this.debugStreamFlag()) {
+        //流请求
+        requestConfig = { ...requestConfig, responseType: "blob" };
+      }
       console.log(headers);
-      console.log(formParams);
+      console.log(requestConfig);
       DebugAxios.create()
-        .request({
-          url: url,
-          method: methodType,
-          headers: headers,
-          params: formParams,
-          timeout: 0
-        })
+        .request(requestConfig)
         .then(function(res) {
+          console.log("url-form-success");
           console.log(res);
           instance.handleDebugSuccess(startTime, res);
         })
         .catch(function(err) {
+          console.log("触发url-form-error");
           if (err.response) {
             instance.handleDebugError(startTime, err.response);
           } else {
-            console.log(err.message);
+            //console.log(err.message);
           }
         });
     },
@@ -933,18 +966,19 @@ export default {
     },
     handleDebugSuccess(startTime, res) {
       //成功的情况
-      instance.setResponseBody(res.request);
+      instance.setResponseBody(res);
       instance.setResponseHeaders(res.headers);
-      instance.setResponseRaw(res.request);
-      instance.setResponseStatus(startTime, res.request);
+      instance.setResponseRaw(res);
+      console.log("开始执行status--");
+      instance.setResponseStatus(startTime, res);
       instance.setResponseCurl(res.request);
     },
     handleDebugError(startTime, resp) {
       //失败的情况
       instance.setResponseBody(resp.request);
       instance.setResponseHeaders(resp.headers);
-      instance.setResponseRaw(resp.request);
-      instance.setResponseStatus(startTime, resp.request);
+      instance.setResponseRaw(resp);
+      instance.setResponseStatus(startTime, resp);
       instance.setResponseCurl(resp.request);
     },
     setResponseHeaders(respHeaders) {
@@ -962,39 +996,56 @@ export default {
       }
       instance.responseHeaders = tmpRespHeaderArrs;
     },
-    setResponseRaw(resp) {
-      //给响应raw赋值
-      if (KUtils.checkUndefined(resp)) {
-        var _tmpRawText = KUtils.toString(resp.responseText, "");
-        this.responseRawText = _tmpRawText;
+    setResponseRaw(res) {
+      if (KUtils.checkUndefined(res)) {
+        var resp = res.request;
+        var headers = res.headers;
+        if (KUtils.checkUndefined(resp)) {
+          //判断是否是blob类型
+          if (resp.responseType != "blob") {
+            var _tmpRawText = KUtils.toString(resp.responseText, "");
+            this.responseRawText = _tmpRawText;
+          }
+        }
       }
     },
-    setResponseStatus(startTime, resp) {
-      //响应状态
-      if (KUtils.checkUndefined(resp)) {
-        var endTime = new Date();
-        var costStr = "";
-        var cost = endTime.getTime() - startTime.getTime();
-        var code = resp.status;
-        if (cost > 1000) {
-          //超过1秒钟
-          var sec = Math.floor(cost / 1000).toFixed(1);
-          costStr = sec + "s";
-        } else {
-          //接口响应毫秒级别
-          costStr = cost + "ms";
+    setResponseStatus(startTime, res) {
+      console.log("响应状态------------");
+      if (KUtils.checkUndefined(res)) {
+        var resp = res.request;
+        //响应状态
+        if (KUtils.checkUndefined(resp)) {
+          var endTime = new Date();
+          var costStr = "";
+          var cost = endTime.getTime() - startTime.getTime();
+          var code = resp.status;
+          if (cost > 1000) {
+            //超过1秒钟
+            var sec = Math.floor(cost / 1000).toFixed(1);
+            costStr = sec + "s";
+          } else {
+            //接口响应毫秒级别
+            costStr = cost + "ms";
+          }
+          //判断是否包含text
+          var size = 0;
+          //判断是否是blob类型
+          if (resp.responseType == "blob") {
+            //blob类型
+            size = resp.response.size;
+          } else {
+            if (KUtils.checkUndefined(resp.responseText)) {
+              size = resp.responseText.gblen();
+            }
+          }
+          //赋值
+          this.responseStatus = {
+            code: code,
+            cost: costStr,
+            size: size
+          };
+          console.log(this.responseStatus);
         }
-        //判断是否包含text
-        var size = 0;
-        if (KUtils.checkUndefined(resp.responseText)) {
-          size = resp.responseText.gblen();
-        }
-        //赋值
-        this.responseStatus = {
-          code: code,
-          cost: costStr,
-          size: size
-        };
       }
     },
     setResponseCurl(resp) {
@@ -1055,16 +1106,98 @@ export default {
 
       this.responseCurlText = curlified.join(" ");
     },
-    setResponseBody(resp) {
-      if (KUtils.checkUndefined(resp)) {
-        var tmpJson = KUtils.json5stringify(
-          KUtils.json5parse(resp.responseText)
-        );
-        this.responseContent = {
-          text: tmpJson,
-          mode: "json"
-        };
+    setResponseBody(res) {
+      if (KUtils.checkUndefined(res)) {
+        var resp = res.request;
+        var headers = res.headers;
+        if (KUtils.checkUndefined(resp)) {
+          //判断是否是blob类型
+          if (resp.responseType == "blob") {
+            //从响应头中得到文件名称
+            var fileName = "Knife4j.txt";
+            var contentDisposition = KUtils.propValue(
+              "Content-Disposition",
+              headers,
+              ""
+            );
+            if (!KUtils.strNotBlank(contentDisposition)) {
+              //如果是空,获取小写的请求头
+              contentDisposition = KUtils.propValue(
+                "content-disposition",
+                headers,
+                ""
+              );
+            }
+            if (KUtils.strNotBlank(contentDisposition)) {
+              var respcds = contentDisposition.split(";");
+              for (var i = 0; i < respcds.length; i++) {
+                var header = respcds[i];
+                if (header != null && header != "") {
+                  var headerValu = header.split("=");
+                  if (headerValu != null && headerValu.length > 0) {
+                    var _hdvalue = headerValu[0];
+                    if (
+                      _hdvalue != null &&
+                      _hdvalue != undefined &&
+                      _hdvalue != ""
+                    ) {
+                      if (_hdvalue.toLowerCase() == "filename") {
+                        //对filename进行decode处理,防止出现中文的情况
+                        fileName = decodeURIComponent(headerValu[1]);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            var downloadurl = window.URL.createObjectURL(res.data);
+            this.responseContent = {
+              text: "",
+              mode: "blob",
+              blobFlag: true,
+              blobFileName: fileName,
+              blobUrl: downloadurl
+            };
+          } else {
+            //判断响应的类型
+            var _text = resp.responseText;
+            var mode = this.getContentTypeByHeaders(headers);
+            console.log("动态mode-----" + mode);
+            if (mode == "json") {
+              _text = KUtils.json5stringify(KUtils.json5parse(_text));
+            }
+            this.responseContent = {
+              text: _text,
+              mode: mode,
+              blobFlag: false,
+              blobFileName: "",
+              blobUrl: ""
+            };
+          }
+        }
       }
+    },
+    getContentTypeByHeaders(headers) {
+      //根据响应请求头判断响应的数据类型,默认JSON
+      var mode = "json";
+      var contentType = KUtils.propValue("Content-Type", headers, "");
+      if (!KUtils.strNotBlank(contentType)) {
+        contentType = KUtils.propValue("content-type", headers, "");
+      }
+      console.log("contentType:" + contentType);
+      if (KUtils.strNotBlank(contentType)) {
+        //不为空
+        if (contentType.indexOf("json") >= 0) {
+          mode = "json";
+        } else if (contentType.indexOf("xml") >= 0) {
+          mode = "xml";
+        } else if (contentType.indexOf("text/html") >= 0) {
+          mode = "html";
+        } else {
+          mode = "text";
+        }
+      }
+      return mode;
     }
   }
 };

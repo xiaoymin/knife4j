@@ -38,12 +38,13 @@ export default {
         if (length_editor < 15) {
           length_editor = 15;
         }
-        if (length_editor > 20) {
+        /* if (length_editor > 20) {
           length_editor = 20;
-        }
+        } */
         var rows_editor = length_editor * 16;
+        console.log("高度--" + rows_editor);
         that.editorHeight = rows_editor;
-      }, 200);
+      }, 10);
     },
     change(value) {
       //重设高度
@@ -60,12 +61,13 @@ export default {
       require("brace/mode/html");
       require("brace/mode/xml");
       require("brace/mode/javascript");
-      if (this.mode == "json") {
+      /*  if (this.mode == "json") {
       } else if (this.mode == "html") {
       } else if (this.mode == "text") {
       } else if (this.mode == "xml") {
       } else if (this.mode == "javascript") {
-      }
+      } */
+      this.editor.gotoLine(1);
       //重设高度
       this.resetEditorHeight();
     }
