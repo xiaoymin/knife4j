@@ -25,7 +25,7 @@
               <a-auto-complete @select="headerSelect" @search="headerSearch" @change="headerNameChange(record)" :value="text" :filterOption="headerNameFilterOption" :allowClear="allowClear" :dataSource="headerAutoOptions" style="width: 100%" placeholder="请求头名称" />
             </template>
             <template slot="headerValue" slot-scope="text,record">
-              <a-input placeholder="请求头内容" :data-key="record.id" :defaultValue="text" @change="headerContentChnage" />
+              <a-input placeholder="请求头内容" :allowClear="allowClear" :data-key="record.id" :defaultValue="text" @change="headerContentChnage" />
             </template>
             <a-row slot="operation" slot-scope="text,record">
               <a-button type="link" v-if="!record.new" @click="headerDelete(record)">删除</a-button>
@@ -102,7 +102,7 @@
 
               <!--参数名称-->
               <template slot="urlFormValue" slot-scope="text,record">
-                <a-input placeholder="参数值" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
+                <a-input placeholder="参数值" :allowClear="allowClear" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
               </template>
               <a-row slot="operation" slot-scope="text,record">
                 <a-button type="link" v-if="!record.new" @click="urlFormDelete(record)">删除</a-button>
@@ -460,6 +460,7 @@ export default {
         id: KUtils.randomMd5(),
         name: "",
         type: "text",
+        require: false,
         //文件表单域的target
         target: null,
         content: "",
@@ -474,6 +475,7 @@ export default {
             id: KUtils.randomMd5(),
             name: global.name,
             type: "text",
+            require: false,
             //文件表单域的target
             target: null,
             content: global.value,
@@ -490,6 +492,8 @@ export default {
             id: KUtils.randomMd5(),
             name: param.name,
             type: "text",
+            //是否必须
+            require: param.require,
             //文件表单域的target
             target: null,
             content: param.txtValue,
@@ -504,6 +508,8 @@ export default {
         id: KUtils.randomMd5(),
         name: "",
         type: "text",
+        //是否必须
+        require: false,
         //文件表单域的target
         target: null,
         content: "",
@@ -800,8 +806,6 @@ export default {
     },
     sendRestfulApi(e) {
       e.preventDefault();
-      //发送状态置为已发送请求
-      this.debugSend = true;
       //根据不同的请求类型,发送不同的请求
       if (this.rawFlag) {
         this.debugSendRawRequest();
@@ -893,44 +897,76 @@ export default {
       }
       return streamFlag;
     },
+    validateUrlForm() {
+      var validate = true;
+      var message = "";
+      this.urlFormData.forEach(function(form) {
+        if (!form.new) {
+          //判断header是否选中
+          var tmphArrs = instance.rowUrlFormSelection.selectedRowKeys.filter(
+            rs => rs == form.id
+          );
+          if (tmphArrs.length > 0) {
+            //必须选中
+            if (KUtils.strNotBlank(form.name)) {
+              if (form.require) {
+                if (!KUtils.strNotBlank(form.content)) {
+                  validate = false;
+                  message = form.name + "不能为空";
+                }
+              }
+            }
+          }
+        }
+      });
+      return { validate: validate, message: message };
+    },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
       console.log("发送url-form接口");
-      var startTime = new Date();
-      //raw类型的请求需要判断是何种类型
-      var headers = this.debugHeaders();
-      var url = this.debugUrl;
-      var methodType = this.api.methodType.toLowerCase();
-      var formParams = this.debugUrlFormParams();
-      var requestConfig = {
-        url: url,
-        method: methodType,
-        headers: headers,
-        params: formParams,
-        timeout: 0
-      };
-      //需要判断是否是下载请求
-      if (this.debugStreamFlag()) {
-        //流请求
-        requestConfig = { ...requestConfig, responseType: "blob" };
+      var validateForm = this.validateUrlForm();
+      console.log(validateForm);
+      if (validateForm.validate) {
+        //发送状态置为已发送请求
+        this.debugSend = true;
+        var startTime = new Date();
+        //raw类型的请求需要判断是何种类型
+        var headers = this.debugHeaders();
+        var url = this.debugUrl;
+        var methodType = this.api.methodType.toLowerCase();
+        var formParams = this.debugUrlFormParams();
+        var requestConfig = {
+          url: url,
+          method: methodType,
+          headers: headers,
+          params: formParams,
+          timeout: 0
+        };
+        //需要判断是否是下载请求
+        if (this.debugStreamFlag()) {
+          //流请求
+          requestConfig = { ...requestConfig, responseType: "blob" };
+        }
+        console.log(headers);
+        console.log(requestConfig);
+        DebugAxios.create()
+          .request(requestConfig)
+          .then(function(res) {
+            console.log("url-form-success");
+            console.log(res);
+            instance.handleDebugSuccess(startTime, res);
+          })
+          .catch(function(err) {
+            console.log("触发url-form-error");
+            if (err.response) {
+              instance.handleDebugError(startTime, err.response);
+            } else {
+              //console.log(err.message);
+            }
+          });
+      } else {
+        instance.$message.info(validateForm.message);
       }
-      console.log(headers);
-      console.log(requestConfig);
-      DebugAxios.create()
-        .request(requestConfig)
-        .then(function(res) {
-          console.log("url-form-success");
-          console.log(res);
-          instance.handleDebugSuccess(startTime, res);
-        })
-        .catch(function(err) {
-          console.log("触发url-form-error");
-          if (err.response) {
-            instance.handleDebugError(startTime, err.response);
-          } else {
-            //console.log(err.message);
-          }
-        });
     },
     debugSendFormRequest() {
       //发送form类型的请求
@@ -938,6 +974,8 @@ export default {
     debugSendRawRequest() {
       //发送raw类型的请求
       console.log("发送raw接口");
+      //发送状态置为已发送请求
+      this.debugSend = true;
       var startTime = new Date();
       //raw类型的请求需要判断是何种类型
       var headers = this.debugHeaders();
@@ -974,8 +1012,10 @@ export default {
       instance.setResponseCurl(res.request);
     },
     handleDebugError(startTime, resp) {
+      console.log("失败情况---");
+      console.log(resp);
       //失败的情况
-      instance.setResponseBody(resp.request);
+      instance.setResponseBody(resp);
       instance.setResponseHeaders(resp.headers);
       instance.setResponseRaw(resp);
       instance.setResponseStatus(startTime, resp);

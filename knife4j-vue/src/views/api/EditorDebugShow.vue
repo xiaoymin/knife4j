@@ -30,11 +30,6 @@ export default {
       default: false
     }
   },
-  watch: {
-    value: function(val, oldVal) {
-      console.log("new: %s, old: %s", val, oldVal);
-    }
-  },
   data() {
     return {
       editor: null,
