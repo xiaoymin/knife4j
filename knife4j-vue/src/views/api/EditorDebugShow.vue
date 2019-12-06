@@ -35,6 +35,9 @@ export default {
         if (length_editor == 1) {
           length_editor = 15;
         }
+        if (length_editor < 15) {
+          length_editor = 15;
+        }
         if (length_editor > 20) {
           length_editor = 20;
         }

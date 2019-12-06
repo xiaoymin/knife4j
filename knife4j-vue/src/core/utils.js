@@ -9,6 +9,11 @@ function isUrl(path) {
 }
 
 const utils = {
+  randomMd5() {
+    //生成一个随机MD5码
+    return md5(new Date().getTime().toString() +
+      Math.floor(Math.random() * 10000).toString());
+  },
   formatter: function (data, parentPath = "/", parentAuthority) {
     return data.map(item => {
       let {

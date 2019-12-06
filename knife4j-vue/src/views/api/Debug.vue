@@ -47,13 +47,13 @@
                   <span class="knife4j-debug-raw-span"> <span>{{rawDefaultText}}</span>
                     <a-icon type="down" /> </span>
                   <a-menu slot="overlay" @click="rawMenuClick">
-                    <a-menu-item data-mode="text" key="Auto">Auto</a-menu-item>
-                    <a-menu-item data-mode="text" key="Text(text/plain)">Text(text/plain)</a-menu-item>
-                    <a-menu-item data-mode="json" key="JSON(application/json)">JSON(application/json)</a-menu-item>
-                    <a-menu-item data-mode="javascript" key="Javascript(application/Javascript)">Javascript(application/Javascript)</a-menu-item>
-                    <a-menu-item data-mode="xml" key="XML(application/xml)">XML(application/xml)</a-menu-item>
-                    <a-menu-item data-mode="xml" key="XML(text/xml)">XML(text/xml)</a-menu-item>
-                    <a-menu-item data-mode="html" key="HTML(text/html)">HTML(text/html)</a-menu-item>
+                    <a-menu-item data-mode-type="application/json" data-mode="text" key="Auto">Auto</a-menu-item>
+                    <a-menu-item data-mode-type="text/plain" data-mode="text" key="Text(text/plain)">Text(text/plain)</a-menu-item>
+                    <a-menu-item data-mode-type="application/json" data-mode="json" key="JSON(application/json)">JSON(application/json)</a-menu-item>
+                    <a-menu-item data-mode-type="application/javascript" data-mode="javascript" key="Javascript(application/Javascript)">Javascript(application/Javascript)</a-menu-item>
+                    <a-menu-item data-mode-type="application/xml" data-mode="xml" key="XML(application/xml)">XML(application/xml)</a-menu-item>
+                    <a-menu-item data-mode-type="text/xml" data-mode="xml" key="XML(text/xml)">XML(text/xml)</a-menu-item>
+                    <a-menu-item data-mode-type="text/html" data-mode="html" key="HTML(text/html)">HTML(text/html)</a-menu-item>
                   </a-menu>
                 </a-dropdown>
               </div>
@@ -115,6 +115,9 @@
         </a-tab-pane>
       </a-tabs>
     </a-row>
+    <a-row>
+      <DebugResponse :api="api" :debugSend="debugSend" :responseRawText="responseRawText" :responseHeaders="responseHeaders" />
+    </a-row>
   </div>
 </template>
 <script>
@@ -122,10 +125,13 @@ import md5 from "js-md5";
 import KUtils from "@/core/utils";
 import constant from "@/store/constants";
 import EditorDebugShow from "./EditorDebugShow";
+import DebugResponse from "./DebugResponse";
+import debugAxios from "axios";
+
 var instance;
 export default {
   name: "Debug",
-  components: { EditorDebugShow },
+  components: { EditorDebugShow, DebugResponse },
   props: {
     api: {
       type: Object,
@@ -150,6 +156,7 @@ export default {
       selectedRowKeys: [],
       //是否允许有请求参数,一般get情况下直接屏蔽
       requestParameterAllow: true,
+      //请求头的选中框
       rowSelection: {
         selectedRowKeys: [],
         onChange(selectrowkey, selectrows) {
@@ -173,6 +180,7 @@ export default {
       globalParameters: [],
       //调试接口
       debugUrl: "",
+      debugSend: false,
       //form参数值对象
       formData: [],
       formFlag: false,
@@ -183,7 +191,10 @@ export default {
       rawTypeFlag: false,
       rawText: "",
       rawMode: "text",
-      requestContentType: "x-www-form-urlencoded"
+      rawRequestType: "application/json",
+      requestContentType: "x-www-form-urlencoded",
+      responseHeaders: [],
+      responseRawText: ""
     };
   },
   created() {
@@ -192,7 +203,6 @@ export default {
     this.initDebugUrl();
     //form-data表单
     this.initFirstFormValue();
-    this.initSelectionHeaders();
     //显示表单参数
     //this.initShowFormTable();
   },
@@ -231,8 +241,10 @@ export default {
           instance.headerData.push(newHeader);
         }
       });
-      this.readApiHeader();
+      //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
+      //this.readApiHeader();
       this.initFirstHeader();
+      this.initSelectionHeaders();
       //计算heaer数量
       this.headerResetCalc();
     },
@@ -359,7 +371,7 @@ export default {
     readApiHeader() {
       //读取接口的请求头参数
       console.log("readheader--");
-      console.log(this.api);
+      //console.log(this.api);
       //请求-请求头
       this.readConsumesHeader();
 
@@ -370,10 +382,7 @@ export default {
         produceHeader = produces[0];
       }
       var newHeader = {
-        id: md5(
-          new Date().getTime().toString() +
-            Math.floor(Math.random() * 10000).toString()
-        ),
+        id: KUtils.randomMd5(),
         name: "Accept",
         content: produceHeader,
         new: false
@@ -388,10 +397,7 @@ export default {
         consumeHeader = consumes[0];
       }
       var newHeader = {
-        id: md5(
-          new Date().getTime().toString() +
-            Math.floor(Math.random() * 10000).toString()
-        ),
+        id: KUtils.randomMd5(),
         name: "Content-Type",
         content: consumeHeader,
         new: false
@@ -400,10 +406,7 @@ export default {
     },
     initFirstHeader() {
       var newHeader = {
-        id: md5(
-          new Date().getTime().toString() +
-            Math.floor(Math.random() * 10000).toString()
-        ),
+        id: KUtils.randomMd5(),
         name: "",
         content: "",
         new: true
@@ -451,10 +454,7 @@ export default {
     addNewLineFormValue() {
       //添加新行form表单值
       var newFormHeader = {
-        id: md5(
-          new Date().getTime().toString() +
-            Math.floor(Math.random() * 10000).toString()
-        ),
+        id: KUtils.randomMd5(),
         name: "",
         type: "text",
         //文件表单域的target
@@ -468,10 +468,7 @@ export default {
       if (KUtils.arrNotEmpty(globalParameters)) {
         globalParameters.forEach(function(global) {
           var newFormHeader = {
-            id: md5(
-              new Date().getTime().toString() +
-                Math.floor(Math.random() * 10000).toString()
-            ),
+            id: KUtils.randomMd5(),
             name: global.name,
             type: "text",
             //文件表单域的target
@@ -487,10 +484,7 @@ export default {
       if (KUtils.arrNotEmpty(apiParameters)) {
         apiParameters.forEach(function(param) {
           var newFormHeader = {
-            id: md5(
-              new Date().getTime().toString() +
-                Math.floor(Math.random() * 10000).toString()
-            ),
+            id: KUtils.randomMd5(),
             name: param.name,
             type: "text",
             //文件表单域的target
@@ -504,10 +498,7 @@ export default {
     },
     addNewLineUrlFormValue() {
       var newFormHeader = {
-        id: md5(
-          new Date().getTime().toString() +
-            Math.floor(Math.random() * 10000).toString()
-        ),
+        id: KUtils.randomMd5(),
         name: "",
         type: "text",
         //文件表单域的target
@@ -557,7 +548,7 @@ export default {
         });
         //插入一行
         this.headerData.push({
-          id: md5(new Date().getTime().toString()),
+          id: KUtils.randomMd5(),
           name: "",
           content: "",
           new: true
@@ -600,7 +591,7 @@ export default {
         });
         //插入一行
         this.headerData.push({
-          id: md5(new Date().getTime().toString()),
+          id: KUtils.randomMd5(),
           name: "",
           content: "",
           new: true
@@ -798,6 +789,7 @@ export default {
     },
     rawMenuClick({ item, key, keyPath }) {
       this.rawMode = item.$el.getAttribute("data-mode");
+      this.rawRequestType = item.$el.getAttribute("data-mode-type");
       this.rawDefaultText = key;
     },
     rawChange(value) {
@@ -805,15 +797,111 @@ export default {
     },
     sendRestfulApi(e) {
       e.preventDefault();
-      console.log("发送接口");
-      this.formData.forEach(function(form) {
-        if (!form.new) {
-          console.log(form);
-          if (form.type == "file") {
-            console.log(form.target.files);
+      //发送状态置为已发送请求
+      this.debugSend = true;
+      //根据不同的请求类型,发送不同的请求
+      if (this.rawFlag) {
+        this.debugSendRawRequest();
+      } else if (this.formFlag) {
+        this.debugSendFormRequest();
+      } else if (this.urlFormFlag) {
+        this.debugSendUrlFormRequest();
+      }
+    },
+    debugHeaders() {
+      //获取发送请求的自定义等等请求头参数
+      var headers = {};
+      this.headerData.forEach(function(header) {
+        if (!header.new) {
+          //不是新行
+          //判断header是否选中
+          var tmphArrs = instance.rowSelection.selectedRowKeys.filter(
+            rs => rs == header.id
+          );
+          if (tmphArrs.length > 0) {
+            //获取选中的headers才能发送
+            if (KUtils.strNotBlank(header.name)) {
+              //需要判断请求头是否为中文,如果是中文,对其进行encode处理
+              if (KUtils.isChinese(header.content)) {
+                headers[header.name] = encodeURIComponent(header.content);
+              } else {
+                //header名称不等于空
+                headers[header.name] = header.content;
+              }
+            }
           }
         }
       });
+      //追加1个Knife4j的默认参数
+      headers["Request-Origion"] = "Knife4j";
+      //判断是否包含请求Content-Type类型，如果不包含，则添加
+      if (!KUtils.checkUndefined(headers["Content-Type"])) {
+        headers["Content-Type"] = this.rawRequestType;
+      }
+      return headers;
+    },
+    debugSendUrlFormRequest() {
+      //发送url-form类型的请求
+    },
+    debugSendFormRequest() {
+      //发送form类型的请求
+    },
+    setResponseHeaders(respHeaders) {
+      //给相应请求头表格赋值
+      var tmpRespHeaderArrs = [];
+      if (KUtils.checkUndefined(respHeaders)) {
+        for (var k in respHeaders) {
+          var tmpH = {
+            id: KUtils.randomMd5(),
+            name: k,
+            value: respHeaders[k]
+          };
+          tmpRespHeaderArrs.push(tmpH);
+        }
+      }
+      instance.responseHeaders = tmpRespHeaderArrs;
+    },
+    setResponseRaw(resp) {
+      //给响应raw赋值
+      if (KUtils.checkUndefined(resp)) {
+        var _tmpRawText = KUtils.toString(resp.responseText, "");
+        this.responseRawText = _tmpRawText;
+      }
+    },
+    debugSendRawRequest() {
+      //发送raw类型的请求
+      console.log("发送raw接口");
+      //raw类型的请求需要判断是何种类型
+      var headers = this.debugHeaders();
+      var url = this.debugUrl;
+      var methodType = this.api.methodType.toLowerCase();
+      var data = this.rawText;
+      console.log(headers);
+      console.log(this.rawText);
+      debugAxios
+        .create()
+        .request({
+          url: url,
+          method: methodType,
+          headers: headers,
+          data: data,
+          timeout: 0
+        })
+        .then(function(res) {
+          console.log(res);
+          instance.setResponseHeaders(res.headers);
+          instance.setResponseRaw(res.request);
+        })
+        .catch(function(err) {
+          if (err.response) {
+            var resp = err.response;
+            instance.setResponseHeaders(resp.headers);
+            instance.setResponseRaw(resp.request);
+            console.log(err.response);
+          } else {
+            console.log(err.message);
+          }
+        });
     }
   }
 };
