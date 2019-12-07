@@ -116,7 +116,7 @@
       </a-tabs>
     </a-row>
     <a-row>
-      <DebugResponse :api="api" :debugSend="debugSend" :responseContent="responseContent" :responseCurlText="responseCurlText" :responseStatus="responseStatus" :responseRawText="responseRawText" :responseHeaders="responseHeaders" />
+      <DebugResponse :api="api" @debugEditorChange="debugEditorChange" :debugSend="debugSend" :responseContent="responseContent" :responseCurlText="responseCurlText" :responseStatus="responseStatus" :responseRawText="responseRawText" :responseHeaders="responseHeaders" />
     </a-row>
   </div>
 </template>
@@ -1200,11 +1200,16 @@ export default {
             };
           } else {
             //判断响应的类型
-            var _text = resp.responseText;
+            //var _text = resp.responseText;
+            var _text = "";
             var mode = this.getContentTypeByHeaders(headers);
             console.log("动态mode-----" + mode);
+            console.log(res);
             if (mode == "json") {
-              _text = KUtils.json5stringify(KUtils.json5parse(_text));
+              //_text = KUtils.json5stringify(KUtils.json5parse(_text));
+              _text = KUtils.json5stringify(res.data);
+            } else {
+              _text = resp.responseText;
             }
             this.responseContent = {
               text: _text,
@@ -1215,6 +1220,12 @@ export default {
             };
           }
         }
+      }
+    },
+    debugEditorChange(value) {
+      //针对Debug调试框inputchange时间做的处理
+      if (KUtils.checkUndefined(this.responseContent)) {
+        this.responseContent.text = value;
       }
     },
     getContentTypeByHeaders(headers) {

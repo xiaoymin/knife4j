@@ -18,7 +18,7 @@
               <a-button type="link" :href="responseContent.blobUrl" :download="responseContent.blobFileName">下载文件</a-button>
             </a-row>
             <a-row v-else>
-              <editor-debug-show :debugResponse="debugResponse" :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
+              <editor-debug-show @debugEditorChange="debugEditorChange" :debugResponse="debugResponse" :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
             </a-row>
           </a-row>
         </a-tab-pane>
@@ -153,6 +153,9 @@ export default {
           );
         }
       }
+    },
+    debugEditorChange(value) {
+      this.$emit("debugEditorChange", value);
     }
   }
 };

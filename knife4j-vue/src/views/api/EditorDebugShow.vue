@@ -65,11 +65,13 @@ export default {
       }, 10);
     },
     change(value) {
-      this.value = value;
+      //this.value = value;
       //重设高度
       if (!this.debugResponse) {
         this.resetEditorHeight();
         this.$emit("change", value);
+      } else {
+        this.$emit("debugEditorChange", value);
       }
     },
     editorInit(editor) {
