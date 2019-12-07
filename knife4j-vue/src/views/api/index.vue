@@ -1,13 +1,13 @@
 <template>
   <a-layout-content class="knife4j-body-content">
     <a-row v-if="debugSupport">
-      <a-tabs defaultActiveKey="2" tabPosition="left" class="api-tab">
-        <a-tab-pane key="1">
+      <a-tabs defaultActiveKey="doc" tabPosition="left" class="api-tab">
+        <a-tab-pane key="doc">
           <span slot="tab">
             <my-icon type="icon-wendang" />文档</span>
           <Document :api="api" :swaggerInstance="swaggerInstance" />
         </a-tab-pane>
-        <a-tab-pane key="2">
+        <a-tab-pane key="debug">
           <span slot="tab">
             <my-icon type="icon-debug" />调试</span>
           <Debug :api="api" :swaggerInstance="swaggerInstance" />

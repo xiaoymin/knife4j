@@ -1393,6 +1393,22 @@ export default {
 
       if (this.rawFlag) {
         //headers["Content-Type"] = this.rawRequestType;
+        console.log("raw------------------curl");
+        if (KUtils.strNotBlank(this.rawText)) {
+          try {
+            var jobj = JSON.parse(this.rawText);
+            var objstr = JSON.stringify(jobj)
+              .replace(/\\n/g, "")
+              .replace(/"/g, '\\"');
+            console.log(objstr);
+            curlified.push("-d");
+            curlified.push('"' + objstr + '"');
+          } catch (error) {
+            var objstr = this.rawText.replace(/\\n/g, "").replace(/"/g, '\\"');
+            curlified.push("-d");
+            curlified.push('"' + objstr + '"');
+          }
+        }
       } else if (this.urlFormFlag) {
         //判断请求类型是否为get或者delete
         var urlFormParams = this.debugUrlFormParams();
