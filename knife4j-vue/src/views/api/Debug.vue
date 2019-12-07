@@ -25,7 +25,7 @@
               <a-auto-complete @select="headerSelect" @search="headerSearch" @change="headerNameChange(record)" :value="text" :filterOption="headerNameFilterOption" :allowClear="allowClear" :dataSource="headerAutoOptions" style="width: 100%" placeholder="请求头名称" />
             </template>
             <template slot="headerValue" slot-scope="text,record">
-              <a-input placeholder="请求头内容" :allowClear="allowClear" :data-key="record.id" :defaultValue="text" @change="headerContentChnage" />
+              <a-input placeholder="请求头内容" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="headerContentChnage" />
             </template>
             <a-row slot="operation" slot-scope="text,record">
               <a-button type="link" v-if="!record.new" @click="headerDelete(record)">删除</a-button>
@@ -230,7 +230,7 @@ export default {
         //请求体参数初始化
         instance.initBodyParameter();
 
-        instance.initFirstHeader();
+        instance.addNewLineHeader();
         instance.initSelectionHeaders();
         //计算heaer数量
         instance.headerResetCalc();
@@ -244,13 +244,13 @@ export default {
             id: KUtils.randomMd5(),
             name: param.name,
             content: param.value,
+            require: false,
             new: false
           };
           instance.headerData.push(newHeader);
         }
       });
       //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
-      //this.readApiHeader();
     },
     initBodyParameter() {
       //this.initBodyType();
@@ -358,47 +358,12 @@ export default {
         instance.initUrlFormValue();
       }
     },
-    readApiHeader() {
-      //读取接口的请求头参数
-      console.log("readheader--");
-      //console.log(this.api);
-      //请求-请求头
-      this.readConsumesHeader();
-
-      //响应请求头
-      var produces = this.api.produces;
-      var produceHeader = "*/*";
-      if (produces != undefined && produces != null && produces.length > 0) {
-        produceHeader = produces[0];
-      }
-      var newHeader = {
-        id: KUtils.randomMd5(),
-        name: "Accept",
-        content: produceHeader,
-        new: false
-      };
-      this.headerData.push(newHeader);
-    },
-    readConsumesHeader() {
-      //根据参数的请求方式自动确定请求头
-      var consumes = this.api.consumes;
-      var consumeHeader = "";
-      if (consumes != undefined && consumes != null && consumes.length > 0) {
-        consumeHeader = consumes[0];
-      }
-      var newHeader = {
-        id: KUtils.randomMd5(),
-        name: "Content-Type",
-        content: consumeHeader,
-        new: false
-      };
-      this.headerData.push(newHeader);
-    },
-    initFirstHeader() {
+    addNewLineHeader() {
       var newHeader = {
         id: KUtils.randomMd5(),
         name: "",
         content: "",
+        require: false,
         new: true
       };
       this.headerData.push(newHeader);
@@ -483,9 +448,11 @@ export default {
         var headers = apiParameters.filter(param => param.in == "header");
         if (headers.length > 0) {
           headers.forEach(function(param) {
+            console.log(param);
             var newHeader = {
               id: KUtils.randomMd5(),
               name: param.name,
+              require: param.require,
               content: param.txtValue,
               new: false
             };
@@ -502,6 +469,7 @@ export default {
             var newHeader = {
               id: KUtils.randomMd5(),
               name: param.name,
+              require: param.require,
               content: param.txtValue,
               new: false
             };
@@ -563,6 +531,7 @@ export default {
             var newHeader = {
               id: KUtils.randomMd5(),
               name: param.name,
+              require: param.require,
               content: param.txtValue,
               new: false
             };
@@ -637,12 +606,7 @@ export default {
           }
         });
         //插入一行
-        this.headerData.push({
-          id: KUtils.randomMd5(),
-          name: "",
-          content: "",
-          new: true
-        });
+        instance.addNewLineHeader();
       } else {
         this.headerData.forEach(function(header) {
           if (header.id == record.id) {
@@ -680,12 +644,7 @@ export default {
           }
         });
         //插入一行
-        this.headerData.push({
-          id: KUtils.randomMd5(),
-          name: "",
-          content: "",
-          new: true
-        });
+        instance.addNewLineHeader();
       } else {
         this.headerData.forEach(function(header) {
           if (header.id == record.id) {
@@ -893,13 +852,21 @@ export default {
     },
     sendRestfulApi(e) {
       e.preventDefault();
-      //根据不同的请求类型,发送不同的请求
-      if (this.rawFlag) {
-        this.debugSendRawRequest();
-      } else if (this.formFlag) {
-        this.debugSendFormRequest();
-      } else if (this.urlFormFlag) {
-        this.debugSendUrlFormRequest();
+      //验证公共请求头
+      var validateHeader = this.validateCommonHeaders();
+      console.log("公共请求头验证");
+      console.log(validateHeader);
+      if (validateHeader.validate) {
+        //根据不同的请求类型,发送不同的请求
+        if (this.rawFlag) {
+          this.debugSendRawRequest();
+        } else if (this.formFlag) {
+          this.debugSendFormRequest();
+        } else if (this.urlFormFlag) {
+          this.debugSendUrlFormRequest();
+        }
+      } else {
+        instance.$message.info(validateHeader.message);
       }
     },
     debugHeaders() {
@@ -1040,6 +1007,33 @@ export default {
         streamFlag = binaryObject.binary;
       }
       return streamFlag;
+    },
+    validateCommonHeaders() {
+      //验证公共请求头
+      var validate = true;
+      var message = "";
+      for (var i = 0; i < this.headerData.length; i++) {
+        var header = this.headerData[i];
+        if (!header.new) {
+          //判断header是否选中
+          var tmphArrs = instance.rowSelection.selectedRowKeys.filter(
+            rs => rs == header.id
+          );
+          if (tmphArrs.length > 0) {
+            //必须选中
+            if (KUtils.strNotBlank(header.name)) {
+              if (header.require) {
+                if (!KUtils.strNotBlank(header.content)) {
+                  validate = false;
+                  message = "请求头" + header.name + "不能为空";
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+      return { validate: validate, message: message };
     },
     validateFormData() {
       //验证form-data的参数
