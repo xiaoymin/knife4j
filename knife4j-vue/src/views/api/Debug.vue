@@ -75,7 +75,7 @@
               <!--参数名称-->
               <template slot="formValue" slot-scope="text,record">
                 <div v-if="record.type=='text'">
-                  <a-input placeholder="参数值" :data-key="record.id" :defaultValue="text" @change="formContentChange" />
+                  <a-input placeholder="参数值" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="formContentChange" />
                 </div>
                 <div v-else>
                   <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
@@ -87,7 +87,7 @@
                       <input :id="'file'+record.id" style="display:none;" type="file" :data-key="record.id" @change="formFileChange" />
                     </div>
                     <a-input-group compact>
-                      <a-input style="width: 82%" :value="record.content" disabled />
+                      <a-input style="width: 82%" :class="'knife4j-debug-param-require'+record.require" :value="record.content" disabled />
                       <a-button @click="formFileUploadClick(record)" class="knife4j-api-send" style="width:80px;" type="primary">选择文件</a-button>
                     </a-input-group>
                   </div>
@@ -107,7 +107,7 @@
 
               <!--参数名称-->
               <template slot="urlFormValue" slot-scope="text,record">
-                <a-input placeholder="参数值" :allowClear="allowClear" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
+                <a-input placeholder="参数值" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
               </template>
               <a-row slot="operation" slot-scope="text,record">
                 <a-button type="link" v-if="!record.new" @click="urlFormDelete(record)">删除</a-button>
@@ -943,7 +943,11 @@ export default {
       }
       return streamFlag;
     },
+    validateFormData() {
+      //验证form-data的参数
+    },
     validateUrlForm() {
+      //验证url-form的参数
       var validate = true;
       var message = "";
       for (var i = 0; i < this.urlFormData.length; i++) {
