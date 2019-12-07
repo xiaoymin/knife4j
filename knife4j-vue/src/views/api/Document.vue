@@ -88,9 +88,12 @@
           <div class="api-title">
             响应示例
           </div>
-          <editor-show :value="
+          <a-row :id="'knife4jDocumentShowEditor'+api.id+resp.code">
+            <editor-show :value="
               resp.responseBasicType ? resp.responseText : resp.responseValue
             "></editor-show>
+          </a-row>
+
           <!-- <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor> -->
         </a-tab-pane>
       </a-tabs>
@@ -113,16 +116,18 @@
       <div class="api-title">
         响应示例
       </div>
-      <editor-show :value="
+      <a-row :id="'knife4jDocumentShowEditor'+api.id">
+        <editor-show :value="
           multipData.responseBasicType
             ? multipData.responseText
             : multipData.responseValue
         "></editor-show>
-      <!-- <editor :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue" @init="singleResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorSingleHeight"></editor> -->
+      </a-row>
     </div>
   </div>
 </template>
 <script>
+import KUtils from "@/core/utils";
 import DataType from "./DataType";
 import markdownSingleText from "@/components/officeDocument/markdownSingleTransform";
 import EditorShow from "./EditorShow";
@@ -223,6 +228,10 @@ export default {
     api: {
       type: Object,
       required: true
+    },
+    swaggerInstance: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -246,6 +255,9 @@ export default {
     this.copyApiMarkdown();
     this.initRequestParams();
     this.initResponseCodeParams();
+    setTimeout(() => {
+      this.showResponseEditFieldDescription();
+    }, 1000);
   },
   methods: {
     copyApiAddress() {
@@ -382,6 +394,77 @@ export default {
       console.log("响应头");
       console.log(that.multipCodeDatas);
       console.log(that.multipData);
+    },
+    showResponseEditFieldDescription() {
+      //显示说明
+      var that = this;
+      if (this.api.multipartResponseSchema) {
+        //多个
+        this.multipCodeDatas.forEach(function(resp) {
+          var id = "knife4jDocumentShowEditor" + this.api.id + resp.code;
+          that.showEditorFieldAnyWay(id);
+        });
+      } else {
+        //单个
+        var id = "knife4jDocumentShowEditor" + this.api.id;
+        this.showEditorFieldAnyWay(id);
+      }
+    },
+    showEditorFieldAnyWay(containerId) {
+      var swaggerInstance = this.swaggerInstance;
+      var responseCode = this.api.getHttpSuccessCodeObject();
+      var editorContainer = document.getElementById(containerId);
+      var paths = [];
+      //var aceJsonText = $aceJsonContent.find(".ace_text-layer");
+      var aceJsonText = editorContainer.getElementsByClassName(
+        "ace_text-layer"
+      );
+      var acePrintMarginLeft = editorContainer.querySelector(
+        ".ace_print-margin"
+      ).style.left;
+      if (aceJsonText.length > 0) {
+        var aceLineDoms = aceJsonText[0].getElementsByClassName("ace_line");
+        for (var i = 0; i < aceLineDoms.length; i++) {
+          var item = aceLineDoms[i];
+          var $variable = item.getElementsByClassName("ace_variable");
+          var key;
+          if (KUtils.arrNotEmpty($variable)) {
+            key = KUtils.toString($variable[0].innerHTML, "").replace(
+              /^"(.*)"$/g,
+              "$1"
+            );
+            //判断是否存在
+            var sfd = item.getElementsByClassName(
+              "knife4j-debug-editor-field-description"
+            );
+            if (!KUtils.arrNotEmpty(sfd)) {
+              var fieldSpan = document.createElement("span");
+              fieldSpan.className = "knife4j-debug-editor-field-description";
+              fieldSpan.innerHTML = responseCode.responseDescriptionFind(
+                paths,
+                key,
+                swaggerInstance
+              );
+              fieldSpan.style.left = acePrintMarginLeft;
+              item.appendChild(fieldSpan);
+            }
+          }
+          var itemParen = item.getElementsByClassName("ace_paren");
+          if (KUtils.arrNotEmpty(itemParen)) {
+            var parentText = itemParen[0].innerHTML;
+            switch (parentText) {
+              case "[":
+              case "{":
+                paths.push(key ? key : 0);
+                break;
+              case "}":
+              case "]":
+                paths.pop();
+                break;
+            }
+          }
+        }
+      }
     }
   }
 };

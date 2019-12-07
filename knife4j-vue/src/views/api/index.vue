@@ -5,7 +5,7 @@
         <a-tab-pane key="1">
           <span slot="tab">
             <my-icon type="icon-wendang" />文档</span>
-          <Document :api="api" />
+          <Document :api="api" :swaggerInstance="swaggerInstance" />
         </a-tab-pane>
         <a-tab-pane key="2">
           <span slot="tab">
@@ -15,7 +15,7 @@
       </a-tabs>
     </a-row>
     <a-row class="knife4j-api-readonly" v-else>
-      <Document :api="api" />
+      <Document :api="api" :swaggerInstance="swaggerInstance" />
     </a-row>
   </a-layout-content>
 </template>
