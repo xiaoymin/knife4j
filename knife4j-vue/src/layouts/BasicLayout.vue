@@ -155,6 +155,7 @@ export default {
       this.defaultServiceOption = value;
       console.log(value);
       console.log(option);
+      this.updateMainTabInstance();
     },
     onMenuSelect(key, target) {
       let pageKey = this.getPageKey(target);
@@ -246,6 +247,7 @@ export default {
     },
     openDefaultTabByPath() {
       //根据地址栏打开Tab选项卡
+      var that = this;
       console.log("根据地址栏打开Tab选项卡");
       const panes = this.panels;
       var url = this.$route.path;
@@ -287,8 +289,18 @@ export default {
       } else {
         //主页
         this.activeKey = "kmain";
+        this.updateMainTabInstance();
       }
       //this.watchPathMenuSelect();
+    },
+    updateMainTabInstance() {
+      var that = this;
+      //修改kmain中的instance示例对象
+      that.panels.forEach(function(panel) {
+        if (panel.key == "kmain") {
+          panel.instance = that.swaggerCurrentInstance;
+        }
+      });
     },
     watchPathMenuSelect() {
       var url = this.$route.path;
@@ -363,6 +375,7 @@ export default {
       } else {
         //主页
         this.activeKey = "kmain";
+        this.updateMainTabInstance();
       }
     },
     tabEditCallback(targetKey, action) {
