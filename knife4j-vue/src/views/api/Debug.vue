@@ -1380,43 +1380,8 @@ export default {
         fullurl += "/";
       }
       fullurl += url;
-      //判断是否是GET请求
-      if (this.api.methodType.toLowerCase() == "get") {
-        /* if (paramBodyType == "form") {
-          if (
-            formCurlParams == null ||
-            formCurlParams == undefined ||
-            !formCurlParams
-          ) {
-            if (reqdata != null && reqdata != undefined) {
-              var urlAppend = new Array();
-              //判断是否包含参数
-              var paramExists = false;
-              for (var d in reqdata) {
-                urlAppend.push(d + "=" + reqdata[d]);
-                if (fullurl.indexOf(d + "=") != -1) {
-                  paramExists = true;
-                }
-              }
-              if (!paramExists) {
-                if (urlAppend.length > 0) {
-                  var _appendStr = urlAppend.join("&");
-                  if (fullurl.indexOf("?") == -1) {
-                    fullurl = fullurl + "?" + _appendStr;
-                  } else {
-                    fullurl = fullurl + "&" + _appendStr;
-                  }
-                }
-              }
-            }
-          }
-        } */
-      }
-
       curlified.push("curl");
       curlified.push("-X", this.api.methodType.toUpperCase());
-      //此处url需要encoding
-      curlified.push('"' + encodeURI(fullurl) + '"');
       //设置请求头
       var headers = this.debugHeaders();
       if (KUtils.checkUndefined(headers)) {
@@ -1426,7 +1391,111 @@ export default {
         }
       }
 
+      if (this.rawFlag) {
+        //headers["Content-Type"] = this.rawRequestType;
+      } else if (this.urlFormFlag) {
+        //判断请求类型是否为get或者delete
+        var urlFormParams = this.debugUrlFormParams();
+        if (KUtils.checkUndefined(urlFormParams)) {
+          var tmpUrls = [];
+          for (var p in urlFormParams) {
+            tmpUrls.push(p + "=" + urlFormParams[p]);
+          }
+          var tmpUrlStr = tmpUrls.join("&");
+          console.log("tmpUrlStr:" + tmpUrlStr);
+          if (
+            this.api.methodType.toLowerCase() == "get" ||
+            this.api.methodType.toLowerCase() == "delete"
+          ) {
+            //地址栏追加参数
+            if (fullurl.indexOf("?") == -1) {
+              fullurl = fullurl + "?" + tmpUrlStr;
+            } else {
+              fullurl = fullurl + "&" + tmpUrlStr;
+            }
+          } else {
+            //-d 追加参数
+            curlified.push("--data-urlencode ");
+            curlified.push('"' + tmpUrlStr + '"');
+          }
+        }
+      } else if (this.formFlag) {
+        //此处需要验证是否是文件上传的表单类型
+        var params = this.debugFormCurlParams();
+        if (KUtils.checkUndefined(params)) {
+          if (instance.validateFormDataContaintsFile()) {
+            //包含文件
+            //headers["Content-Type"] = "multipart/form-data";
+            this.formData.forEach(function(form) {
+              if (!form.new) {
+                //判断header是否选中
+                var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+                  rs => rs == form.id
+                );
+                if (tmphArrs.length > 0) {
+                  //必须选中
+                  if (KUtils.strNotBlank(form.name)) {
+                    curlified.push("-F ");
+                    //判断类型
+                    if (form.type == "text") {
+                      curlified.push(
+                        '"' + form.name + "=" + form.content + '"'
+                      );
+                    } else {
+                      curlified.push(
+                        '"' + form.name + "=@" + form.content + '"'
+                      );
+                    }
+                  }
+                }
+              }
+            });
+          } else {
+            var tmpUrls = [];
+            for (var p in params) {
+              tmpUrls.push(p + "=" + params[p]);
+            }
+            var tmpUrlStr = tmpUrls.join("&");
+            console.log("tmpUrlStr:" + tmpUrlStr);
+            if (
+              this.api.methodType.toLowerCase() == "get" ||
+              this.api.methodType.toLowerCase() == "delete"
+            ) {
+              //地址栏追加参数
+              if (fullurl.indexOf("?") == -1) {
+                fullurl = fullurl + "?" + tmpUrlStr;
+              } else {
+                fullurl = fullurl + "&" + tmpUrlStr;
+              }
+            } else {
+              //-d 追加参数
+              curlified.push("--data-urlencode ");
+              curlified.push('"' + tmpUrlStr + '"');
+            }
+          }
+        }
+      }
+      //此处url需要encoding
+      curlified.push('"' + encodeURI(fullurl) + '"');
       this.responseCurlText = curlified.join(" ");
+    },
+    debugFormCurlParams() {
+      var params = {};
+      this.formData.forEach(function(form) {
+        if (!form.new) {
+          //判断header是否选中
+          var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+            rs => rs == form.id
+          );
+          if (tmphArrs.length > 0) {
+            //必须选中
+            if (KUtils.strNotBlank(form.name)) {
+              params[form.name] = form.content;
+            }
+          }
+        }
+      });
+      return params;
     },
     setResponseBody(res) {
       if (KUtils.checkUndefined(res)) {
