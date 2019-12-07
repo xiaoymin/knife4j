@@ -149,13 +149,16 @@ export default {
   methods: {
     serviceChange(value, option) {
       console.log("菜单下拉选择");
+      var that = this;
       //id
       let swaggerIns = this.swagger.selectInstanceByGroupId(value);
       this.swagger.analysisApi(swaggerIns);
       this.defaultServiceOption = value;
       console.log(value);
       console.log(option);
-      this.updateMainTabInstance();
+      setTimeout(() => {
+        that.updateMainTabInstance();
+      }, 500);
     },
     onMenuSelect(key, target) {
       let pageKey = this.getPageKey(target);
