@@ -121,7 +121,7 @@
       </a-tabs>
     </a-row>
     <a-row>
-      <DebugResponse :api="api" @debugEditorChange="debugEditorChange" :debugSend="debugSend" :responseContent="responseContent" :responseCurlText="responseCurlText" :responseStatus="responseStatus" :responseRawText="responseRawText" :responseHeaders="responseHeaders" />
+      <DebugResponse ref="childDebugResponse" :responseFieldDescriptionChecked="responseFieldDescriptionChecked" :swaggerInstance="swaggerInstance" :api="api" @debugShowFieldDescriptionChange="debugShowFieldDescriptionChange" @debugEditorChange="debugEditorChange" :debugSend="debugSend" :responseContent="responseContent" :responseCurlText="responseCurlText" :responseStatus="responseStatus" :responseRawText="responseRawText" :responseHeaders="responseHeaders" />
     </a-row>
   </div>
 </template>
@@ -139,6 +139,10 @@ export default {
   components: { EditorDebugShow, DebugResponse },
   props: {
     api: {
+      type: Object,
+      required: true
+    },
+    swaggerInstance: {
       type: Object,
       required: true
     }
@@ -202,7 +206,8 @@ export default {
       responseRawText: "",
       responseCurlText: "",
       responseStatus: null,
-      responseContent: null
+      responseContent: null,
+      responseFieldDescriptionChecked: true
     };
   },
   created() {
@@ -869,6 +874,10 @@ export default {
         instance.$message.info(validateHeader.message);
       }
     },
+    callChildEditorShow() {
+      console.log("调用子类方法---");
+      this.$refs.childDebugResponse.showEditorFieldDescription();
+    },
     debugHeaders() {
       //获取发送请求的自定义等等请求头参数
       var headers = {};
@@ -1154,6 +1163,7 @@ export default {
           })
           .catch(function(err) {
             console.log("触发url-form-error");
+            console.log(err);
             if (err.response) {
               instance.handleDebugError(startTime, err.response);
             } else {
@@ -1255,6 +1265,7 @@ export default {
       console.log("开始执行status--");
       instance.setResponseStatus(startTime, res);
       instance.setResponseCurl(res.request);
+      instance.callChildEditorShow();
     },
     handleDebugError(startTime, resp) {
       console.log("失败情况---");
@@ -1265,6 +1276,7 @@ export default {
       instance.setResponseRaw(resp);
       instance.setResponseStatus(startTime, resp);
       instance.setResponseCurl(resp.request);
+      instance.callChildEditorShow();
     },
     setResponseHeaders(respHeaders) {
       //给相应请求头表格赋值
@@ -1452,7 +1464,11 @@ export default {
             console.log(res);
             if (mode == "json") {
               //_text = KUtils.json5stringify(KUtils.json5parse(_text));
-              _text = KUtils.json5stringify(res.data);
+              //不能使用res.data对象,必须使用stringfy重新转换1次,否则会出现精度丢失的情况
+              //_text = KUtils.json5stringify(res.data);
+              _text = KUtils.json5stringify(
+                KUtils.json5parse(resp.responseText)
+              );
             } else {
               _text = resp.responseText;
             }
@@ -1494,6 +1510,9 @@ export default {
         }
       }
       return mode;
+    },
+    debugShowFieldDescriptionChange(flag) {
+      this.responseFieldDescriptionChecked = flag;
     }
   }
 };

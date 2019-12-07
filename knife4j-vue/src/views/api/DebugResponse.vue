@@ -4,6 +4,9 @@
       <a-tabs defaultActiveKey="debugResponse">
         <template slot="tabBarExtraContent">
           <a-row v-if="responseStatus" class="knife4j-debug-status">
+            <span>
+              <a-checkbox :defaultChecked="responseFieldDescriptionChecked" @change="showFieldDesChange"><span style="color: #919191;">显示说明</span></a-checkbox>
+            </span>
             <span class="key">响应码:</span>
             <span class="value">{{responseStatus.code}}</span>
             <span class="key">耗时:</span>
@@ -17,7 +20,7 @@
             <a-row v-if="responseContent.blobFlag">
               <a-button type="link" :href="responseContent.blobUrl" :download="responseContent.blobFileName">下载文件</a-button>
             </a-row>
-            <a-row v-else>
+            <a-row :id="'responseEditorContent'+api.id" v-else>
               <editor-debug-show @debugEditorChange="debugEditorChange" :debugResponse="debugResponse" :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
             </a-row>
           </a-row>
@@ -64,6 +67,10 @@ export default {
       type: Object,
       required: true
     },
+    swaggerInstance: {
+      type: Object,
+      required: true
+    },
     debugSend: {
       type: Boolean,
       default: false
@@ -83,6 +90,10 @@ export default {
     },
     responseContent: {
       type: Object
+    },
+    responseFieldDescriptionChecked: {
+      type: Boolean,
+      default: true
     }
   },
   components: { EditorDebugShow },
@@ -107,6 +118,7 @@ export default {
     //this.resetResponseContent();
     this.copyRawText();
     this.copyCurlText();
+    this.showEditorFieldDescription();
   },
   methods: {
     copyRawText() {
@@ -154,8 +166,107 @@ export default {
         }
       }
     },
+    showFieldDesChange(e) {
+      var flag = e.target.checked;
+      this.$emit("debugShowFieldDescriptionChange", flag);
+      this.toggleFieldDescription(flag);
+    },
     debugEditorChange(value) {
       this.$emit("debugEditorChange", value);
+    },
+    toggleFieldDescription(flag) {
+      var cid = "responseEditorContent" + this.api.id;
+      var editorContainer = document.getElementById(cid);
+      var fields = editorContainer.getElementsByClassName(
+        "knife4j-debug-editor-field-description"
+      );
+      if (KUtils.arrNotEmpty(fields)) {
+        fields.forEach(function(item) {
+          if (flag) {
+            //显示
+            item.style.display = "block";
+          } else {
+            //隐藏
+            item.style.display = "none";
+          }
+        });
+      } else {
+        this.showEditorFieldAnyWay();
+      }
+    },
+    showEditorFieldDescription() {
+      var that = this;
+      //需要延时1s处理
+      setTimeout(() => {
+        that.showEditorFieldWait();
+      }, 1000);
+    },
+    showEditorFieldWait() {
+      //显示editor字段说明
+      if (this.debugSend) {
+        if (this.responseFieldDescriptionChecked) {
+          this.showEditorFieldAnyWay();
+        }
+      }
+    },
+    showEditorFieldAnyWay() {
+      var swaggerInstance = this.swaggerInstance;
+      console.log("我被调用了--------");
+      var responseCode = this.api.getHttpSuccessCodeObject();
+      var cid = "responseEditorContent" + this.api.id;
+      var editorContainer = document.getElementById(cid);
+      console.log(cid);
+      var paths = [];
+      //var $aceJsonText = $aceJsonContent.find(".ace_text-layer");
+      var $aceJsonText = editorContainer.getElementsByClassName(
+        "ace_text-layer"
+      );
+      var acePrintMarginLeft = editorContainer.querySelector(
+        ".ace_print-margin"
+      ).style.left;
+      if ($aceJsonText.length > 0) {
+        var aceLineDoms = $aceJsonText[0].getElementsByClassName("ace_line");
+        for (var i = 0; i < aceLineDoms.length; i++) {
+          var item = aceLineDoms[i];
+          var $variable = item.getElementsByClassName("ace_variable");
+          var key;
+          if (KUtils.arrNotEmpty($variable)) {
+            key = KUtils.toString($variable[0].innerHTML, "").replace(
+              /^"(.*)"$/g,
+              "$1"
+            );
+            //判断是否存在
+            var sfd = item.getElementsByClassName(
+              "knife4j-debug-editor-field-description"
+            );
+            if (!KUtils.arrNotEmpty(sfd)) {
+              var fieldSpan = document.createElement("span");
+              fieldSpan.className = "knife4j-debug-editor-field-description";
+              fieldSpan.innerHTML = responseCode.responseDescriptionFind(
+                paths,
+                key,
+                swaggerInstance
+              );
+              fieldSpan.style.left = acePrintMarginLeft;
+              item.appendChild(fieldSpan);
+            }
+          }
+          var itemParen = item.getElementsByClassName("ace_paren");
+          if (KUtils.arrNotEmpty(itemParen)) {
+            var parentText = itemParen[0].innerHTML;
+            switch (parentText) {
+              case "[":
+              case "{":
+                paths.push(key ? key : 0);
+                break;
+              case "}":
+              case "]":
+                paths.pop();
+                break;
+            }
+          }
+        }
+      }
     }
   }
 };

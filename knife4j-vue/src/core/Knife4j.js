@@ -3096,7 +3096,49 @@ var SwaggerBootstrapUiResponseCode = function () {
   }
 }
 
-
+var getKeyDescriptions = function (target, that, parentTypes) {
+  var keyList = {};
+  if (typeof (target) == 'object') {
+    if (Array.isArray(target)) {
+      for (var index in target) {
+        var objc = target[index];
+        //遍历属性
+        if (parentTypes == null || parentTypes == undefined) {
+          //first init
+          parentTypes = new Array();
+        }
+        if (typeof (objc) == 'object') {
+          var key = objc.name;
+          var keyListTemp;
+          keyList[key] = objc.description;
+          if (objc.schemaValue || objc.refType) {
+            //此处判断父级schema不能是自己
+            //parentTypes次数>1此,出现递归
+            if (parentTypes.indexOf(objc.schemaValue || objc.refType) == -1) {
+              //if ($.inArray(objc.schemaValue || objc.refType, parentTypes) == -1) {
+              parentTypes.push(objc.schemaValue || objc.refType);
+              var def = that.getDefinitionByName(objc.schemaValue || objc.refType);
+              if (def) {
+                if (def.properties) {
+                  //递归存在相互引用的情况,导致无限递归
+                  keyListTemp = getKeyDescriptions(def.properties, that, parentTypes);
+                }
+              }
+            }
+          } else if (objc.params) {
+            keyListTemp = getKeyDescriptions(objc.params, that);
+          }
+          if (keyListTemp) {
+            for (var j in keyListTemp) {
+              keyList[key + ">" + j] = keyListTemp[j];
+            }
+          }
+        }
+      }
+    }
+  }
+  return keyList;
+}
 /**
  * 过滤多余POST功能 
  */
@@ -3474,6 +3516,22 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   this.markdownFiles = []
 
   this.i18n = null
+}
+
+
+/***
+ * 根据类名查找definition
+ */
+SwaggerBootstrapUiInstance.prototype.getDefinitionByName = function (name) {
+  var that = this;
+  var def = null;
+  that.difArrs.forEach(function (d) {
+    if (d.name == name) {
+      def = d;
+      return;
+    }
+  })
+  return def;
 }
 
 function checkFiledExistsAndEqStr(object, filed, eq) {

@@ -10,7 +10,7 @@
         <a-tab-pane key="2">
           <span slot="tab">
             <my-icon type="icon-debug" />调试</span>
-          <Debug :api="api" />
+          <Debug :api="api" :swaggerInstance="swaggerInstance" />
         </a-tab-pane>
       </a-tabs>
     </a-row>
@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       api: null,
+      swaggerInstance: null,
       debugSupport: false
     };
   },
@@ -50,6 +51,7 @@ export default {
         apiInfo = path;
       }
     });
+    this.swaggerInstance = instance;
     this.api = apiInfo;
     this.debugSupport = this.api.configurationDebugSupport;
   },
