@@ -80,7 +80,12 @@
                 <div v-else>
                   <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
                   <div>
-                    <input :id="'file'+record.id" style="display:none;" type="file" :data-key="record.id" @change="formFileChange" />
+                    <div style="display:none;" v-if="record.multipart">
+                      <input :id="'file'+record.id" multiple style="display:none;" type="file" :data-key="record.id" @change="formFileChange" />
+                    </div>
+                    <div style="display:none;" v-else>
+                      <input :id="'file'+record.id" style="display:none;" type="file" :data-key="record.id" @change="formFileChange" />
+                    </div>
                     <a-input-group compact>
                       <a-input style="width: 82%" :value="record.content" disabled />
                       <a-button @click="formFileUploadClick(record)" class="knife4j-api-send" style="width:80px;" type="primary">选择文件</a-button>
@@ -204,8 +209,6 @@ export default {
     //初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
     this.initDebugUrl();
-    //form-data表单
-    this.initFirstFormValue();
     //显示表单参数
     //this.initShowFormTable();
   },
@@ -317,6 +320,7 @@ export default {
         if (bodySize == 1) {
           console.log("显示raw类型");
           //raw类型
+          //raw类型之中可能有表格参数-待写
           this.showTabRaw();
         } else {
           //判断是否包含文件
@@ -324,14 +328,23 @@ export default {
             param =>
               param.schemaValue == "MultipartFile" ||
               param.schemaValue == "file" ||
-              param.type == "file"
+              param.type == "file" ||
+              param.in == "formData" ||
+              param.in == "formdata"
           ).length;
+          console.log("文件大小参数---" + fileSize);
+
           if (fileSize > 0) {
             //form-data
             this.showTabForm();
+            instance.addGlobalParameterToForm(showGlobalParameters);
+            instance.addApiParameterToForm(showApiParameters);
+            //form-data表单
+            this.initFirstFormValue();
           } else {
             //url-form
             this.showTabUrlForm();
+            instance.addGlobalParameterToUrlForm(showGlobalParameters);
             instance.addApiParameterToUrlForm(showApiParameters);
             //url-form-data表单
             instance.initUrlFormValue();
@@ -344,31 +357,6 @@ export default {
         instance.addApiParameterToUrlForm(showApiParameters);
         //url-form-data表单
         instance.initUrlFormValue();
-      }
-    },
-    initBodyType() {
-      //请求参数类型
-      var contentValue = this.api.contentValue;
-      this.requestContentType = contentValue;
-      if (contentValue == "form-data") {
-        this.formFlag = true;
-        this.rawFlag = false;
-        this.rawTypeFlag = false;
-        this.urlFormFlag = false;
-      } else if (contentValue == "x-www-form-urlencoded") {
-        this.urlFormFlag = true;
-        this.rawFlag = false;
-        this.rawTypeFlag = false;
-        this.formFlag = false;
-      } else if (contentValue == "raw") {
-        this.rawFlag = true;
-        this.rawMode = this.api.contentMode;
-        this.rawDefaultText = this.api.contentShowValue;
-        this.rawTypeFlag = true;
-        this.formFlag = false;
-        this.urlFormFlag = false;
-        //如果是raw类型，则赋值
-        this.rawText = this.api.requestValue;
       }
     },
     readApiHeader() {
@@ -436,12 +424,14 @@ export default {
       this.rawFlag = false;
       this.rawTypeFlag = false;
       this.urlFormFlag = false;
+      this.requestContentType = "form-data";
     },
     showTabUrlForm() {
       this.urlFormFlag = true;
       this.rawFlag = false;
       this.rawTypeFlag = false;
       this.formFlag = false;
+      this.requestContentType = "x-www-form-urlencoded";
     },
     showTabRaw() {
       this.rawFlag = true;
@@ -463,10 +453,66 @@ export default {
         require: false,
         //文件表单域的target
         target: null,
+        multipart: false,
         content: "",
         new: true
       };
       this.formData.push(newFormHeader);
+    },
+    addGlobalParameterToForm(globalParameters) {
+      //form-data类型添加参数
+      if (KUtils.arrNotEmpty(globalParameters)) {
+        globalParameters.forEach(function(global) {
+          var newFormHeader = {
+            id: KUtils.randomMd5(),
+            name: global.name,
+            type: "text",
+            require: false,
+            //文件表单域的target
+            target: null,
+            multipart: false,
+            content: global.value,
+            new: false
+          };
+          instance.formData.push(newFormHeader);
+        });
+      }
+    },
+    addApiParameterToForm(apiParameters) {
+      //form-data类型
+      if (KUtils.arrNotEmpty(apiParameters)) {
+        apiParameters.forEach(function(param) {
+          console.log(param);
+          var ptype = "text";
+          var multipart = false;
+          if (
+            param.schemaValue == "MultipartFile" ||
+            param.schemaValue == "file" ||
+            param.type == "file"
+          ) {
+            ptype = "file";
+            //文件类型,判断是否是arrar
+            if (param.type == "array") {
+              multipart = true;
+            }
+          }
+          //form-data的参数多一个文件是否允许多个上传的属性
+          var newFormHeader = {
+            id: KUtils.randomMd5(),
+            name: param.name,
+            type: ptype,
+            //是否必须
+            require: param.require,
+            //文件表单域的target
+            target: null,
+            //文件是否允许多个上传
+            multipart: multipart,
+            content: param.txtValue,
+            new: false
+          };
+          instance.formData.push(newFormHeader);
+        });
+      }
     },
     addGlobalParameterToUrlForm(globalParameters) {
       if (KUtils.arrNotEmpty(globalParameters)) {
@@ -900,7 +946,8 @@ export default {
     validateUrlForm() {
       var validate = true;
       var message = "";
-      this.urlFormData.forEach(function(form) {
+      for (var i = 0; i < this.urlFormData.length; i++) {
+        var form = this.urlFormData[i];
         if (!form.new) {
           //判断header是否选中
           var tmphArrs = instance.rowUrlFormSelection.selectedRowKeys.filter(
@@ -913,12 +960,13 @@ export default {
                 if (!KUtils.strNotBlank(form.content)) {
                   validate = false;
                   message = form.name + "不能为空";
+                  break;
                 }
               }
             }
           }
         }
-      });
+      }
       return { validate: validate, message: message };
     },
     debugSendUrlFormRequest() {
@@ -1223,7 +1271,7 @@ export default {
       }
     },
     debugEditorChange(value) {
-      //针对Debug调试框inputchange时间做的处理
+      //针对Debug调试框inputchange事件做的处理
       if (KUtils.checkUndefined(this.responseContent)) {
         this.responseContent.text = value;
       }
