@@ -905,7 +905,13 @@ export default {
         } else if (this.urlFormFlag) {
           headers["Content-Type"] = "application/x-www-form-urlencoded";
         } else if (this.formFlag) {
-          headers["Content-Type"] = "form-data";
+          //此处需要验证是否是文件上传的表单类型
+          if (instance.validateFormDataContaintsFile()) {
+            //包含文件
+            headers["Content-Type"] = "multipart/form-data";
+          } else {
+            headers["Content-Type"] = "application/x-www-form-urlencoded";
+          }
         }
       }
       return headers;
@@ -929,6 +935,57 @@ export default {
       });
       return params;
     },
+    debugFormDataParams(fileFlag) {
+      //form-data类型的请求参数
+      if (fileFlag) {
+        //文件
+        var formData = new FormData();
+        this.formData.forEach(function(form) {
+          if (!form.new) {
+            //判断header是否选中
+            var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+              rs => rs == form.id
+            );
+            if (tmphArrs.length > 0) {
+              //必须选中
+              if (KUtils.strNotBlank(form.name)) {
+                //判断类型
+                if (form.type == "text") {
+                  formData.append(form.name, form.content);
+                } else {
+                  //文件
+                  var files = form.target.files;
+                  //判断是否是运行多个上传
+                  if (files.length > 0) {
+                    for (var i = 0; i < files.length; i++) {
+                      formData.append(form.name, files[i]);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        });
+        return formData;
+      } else {
+        var params = {};
+        this.formData.forEach(function(form) {
+          if (!form.new) {
+            //判断header是否选中
+            var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+              rs => rs == form.id
+            );
+            if (tmphArrs.length > 0) {
+              //必须选中
+              if (KUtils.strNotBlank(form.name)) {
+                params[form.name] = form.content;
+              }
+            }
+          }
+        });
+        return params;
+      }
+    },
     debugStreamFlag() {
       var streamFlag = false;
       var apiInfo = this.api;
@@ -945,6 +1002,40 @@ export default {
     },
     validateFormData() {
       //验证form-data的参数
+      var validate = true;
+      var message = "";
+      for (var i = 0; i < this.formData.length; i++) {
+        var form = this.formData[i];
+        if (!form.new) {
+          //判断header是否选中
+          var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+            rs => rs == form.id
+          );
+          if (tmphArrs.length > 0) {
+            //必须选中
+            if (KUtils.strNotBlank(form.name)) {
+              if (form.require) {
+                //判断参数类型,如果是text，则验证content，否则验证target
+                if (form.type == "text") {
+                  if (!KUtils.strNotBlank(form.content)) {
+                    validate = false;
+                    message = form.name + "不能为空";
+                    break;
+                  }
+                } else {
+                  //文件
+                  if (form.target == null) {
+                    validate = false;
+                    message = form.name + "文件不能为空";
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      return { validate: validate, message: message };
     },
     validateUrlForm() {
       //验证url-form的参数
@@ -972,6 +1063,24 @@ export default {
         }
       }
       return { validate: validate, message: message };
+    },
+    validateFormDataContaintsFile() {
+      //验证form-data中是否包含file文件
+      var flag = false;
+      this.formData.forEach(function(form) {
+        if (!form.new) {
+          //判断header是否选中
+          var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+            rs => rs == form.id
+          );
+          if (tmphArrs.length > 0) {
+            if (form.type == "file") {
+              flag = true;
+            }
+          }
+        }
+      });
+      return flag;
     },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
@@ -1022,6 +1131,56 @@ export default {
     },
     debugSendFormRequest() {
       //发送form类型的请求
+      console.log("发送form接口");
+      var validateForm = this.validateFormData();
+      console.log(validateForm);
+      if (validateForm.validate) {
+        console.log("验证通过---");
+        //发送状态置为已发送请求
+        this.debugSend = true;
+        var startTime = new Date();
+        //raw类型的请求需要判断是何种类型
+        var headers = this.debugHeaders();
+        var url = this.debugUrl;
+        var methodType = this.api.methodType.toLowerCase();
+        var fileFlag = this.validateFormDataContaintsFile();
+        var formParams = this.debugFormDataParams(fileFlag);
+        var requestConfig = {
+          url: url,
+          method: methodType,
+          headers: headers,
+          timeout: 0
+        };
+        if (fileFlag) {
+          requestConfig = { ...requestConfig, data: formParams };
+        } else {
+          requestConfig = { ...requestConfig, params: formParams };
+        }
+        //需要判断是否是下载请求
+        if (this.debugStreamFlag()) {
+          //流请求
+          requestConfig = { ...requestConfig, responseType: "blob" };
+        }
+        console.log(headers);
+        console.log(requestConfig);
+        DebugAxios.create()
+          .request(requestConfig)
+          .then(function(res) {
+            console.log("url-form-success");
+            console.log(res);
+            instance.handleDebugSuccess(startTime, res);
+          })
+          .catch(function(err) {
+            console.log("触发url-form-error");
+            if (err.response) {
+              instance.handleDebugError(startTime, err.response);
+            } else {
+              //console.log(err.message);
+            }
+          });
+      } else {
+        instance.$message.info(validateForm.message);
+      }
     },
     debugSendRawRequest() {
       //发送raw类型的请求
