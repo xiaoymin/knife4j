@@ -1,5 +1,6 @@
 module.exports = {
   publicPath: "/",
+  assetsDir: "webjars",
   outputDir: "dist",
   lintOnSave: false,
   productionSourceMap: false,
