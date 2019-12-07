@@ -1417,6 +1417,14 @@ export default {
       curlified.push("-X", this.api.methodType.toUpperCase());
       //此处url需要encoding
       curlified.push('"' + encodeURI(fullurl) + '"');
+      //设置请求头
+      var headers = this.debugHeaders();
+      if (KUtils.checkUndefined(headers)) {
+        for (var h in headers) {
+          curlified.push("-H ");
+          curlified.push('"' + h + ":" + headers[h] + '"');
+        }
+      }
 
       this.responseCurlText = curlified.join(" ");
     },
