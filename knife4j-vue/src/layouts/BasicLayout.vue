@@ -22,7 +22,7 @@
       <!-- <SiderMenu :defaultOption="defaultServiceOption" :serviceOptions="serviceOptions" @menuClick='menuClick' :logo="logo" :menuData="MenuData" :collapsed="collapsed" :location="$route" :onCollapse="handleMenuCollapse" :menuWidth="menuWidth" /> -->
       <a-layout>
         <a-layout-header style="padding: 0;background: #fff;    height: 56px; line-height: 56px;">
-          <GlobalHeader :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="(item)=>handleMenuClick(item)" />
+          <GlobalHeader :documentTitle="documentTitle" :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="(item)=>handleMenuClick(item)" />
         </a-layout-header>
         <context-menu :itemList="menuItemList" :visible.sync="menuVisible" @select="onMenuSelect" />
         <a-tabs hideAdd v-model="activeKey" @contextmenu.native="e => onContextmenu(e)" type="editable-card" @change="tabChange" @edit="tabEditCallback" class="knife4j-tab">
@@ -81,6 +81,7 @@ export default {
     ]; */
     return {
       logo: logo,
+      documentTitle: "",
       menuWidth: constMenuWidth,
       headerClass: "knife4j-header-width",
       swagger: null,
@@ -141,6 +142,7 @@ export default {
       if (!title) {
         title = "Knife4j 接口文档";
       }
+      this.documentTitle = title;
       window.document.title = title;
     }
   },

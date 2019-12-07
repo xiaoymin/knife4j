@@ -316,6 +316,7 @@ SwaggerBootstrapUi.prototype.configInit = function () {
     .$axios({
       url: that.configUrl,
       type: 'get',
+      timeout: 20000,
       dataType: 'json'
     })
     .then(function (data) {
@@ -335,6 +336,9 @@ SwaggerBootstrapUi.prototype.configInit = function () {
           that.configuration.supportedSubmitMethods = []
         }
       }
+    }).catch(function (err) {
+      message.error('Knife4j文档请求异常')
+      that.error(err);
     })
 }
 
@@ -348,6 +352,7 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
       .$axios({
         url: that.url,
         type: 'get',
+        timeout: 20000,
         dataType: 'json'
       })
       .then(function (data) {
@@ -356,7 +361,7 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
         that.createGroupElement()
       })
       .catch(function (err) {
-        message.error(err)
+        message.error('Knife4j文档请求异常')
         that.error(err)
       })
   } catch (err) {
@@ -545,9 +550,13 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       that.$Vue.$axios({
         url: api,
         dataType: 'json',
+        timeout: 20000,
         type: 'get'
       }).then(function (data) {
         that.analysisApiSuccess(data);
+      }).catch(function (err) {
+        message.error('Knife4j文档请求异常')
+        that.error(err);
       })
     } else {
       //that.setInstanceBasicPorperties(null);
