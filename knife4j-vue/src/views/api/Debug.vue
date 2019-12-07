@@ -229,6 +229,11 @@ export default {
         instance.initHeaderParameter();
         //请求体参数初始化
         instance.initBodyParameter();
+
+        instance.initFirstHeader();
+        instance.initSelectionHeaders();
+        //计算heaer数量
+        instance.headerResetCalc();
       });
     },
     initHeaderParameter() {
@@ -236,10 +241,7 @@ export default {
       instance.globalParameters.forEach(function(param) {
         if (param.in == "header") {
           var newHeader = {
-            id: md5(
-              new Date().getTime().toString() +
-                Math.floor(Math.random() * 10000).toString()
-            ),
+            id: KUtils.randomMd5(),
             name: param.name,
             content: param.value,
             new: false
@@ -249,10 +251,6 @@ export default {
       });
       //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
       //this.readApiHeader();
-      this.initFirstHeader();
-      this.initSelectionHeaders();
-      //计算heaer数量
-      this.headerResetCalc();
     },
     initBodyParameter() {
       //this.initBodyType();
@@ -322,6 +320,7 @@ export default {
           //raw类型
           //raw类型之中可能有表格参数-待写
           this.showTabRaw();
+          instance.addApiParameterToRaw(showApiParameters);
         } else {
           //判断是否包含文件
           var fileSize = showApiParameters.filter(
@@ -441,7 +440,7 @@ export default {
       this.formFlag = false;
       this.urlFormFlag = false;
       //如果是raw类型，则赋值
-      this.rawText = this.api.requestValue;
+      this.rawText = KUtils.toString(this.api.requestValue, "");
       this.requestContentType = "raw";
     },
     addNewLineFormValue() {
@@ -478,39 +477,65 @@ export default {
         });
       }
     },
+    addApiParameterToRaw(apiParameters) {
+      //raw类型添加header
+      if (KUtils.arrNotEmpty(apiParameters)) {
+        var headers = apiParameters.filter(param => param.in == "header");
+        if (headers.length > 0) {
+          headers.forEach(function(param) {
+            var newHeader = {
+              id: KUtils.randomMd5(),
+              name: param.name,
+              content: param.txtValue,
+              new: false
+            };
+            instance.headerData.push(newHeader);
+          });
+        }
+      }
+    },
     addApiParameterToForm(apiParameters) {
       //form-data类型
       if (KUtils.arrNotEmpty(apiParameters)) {
         apiParameters.forEach(function(param) {
-          console.log(param);
-          var ptype = "text";
-          var multipart = false;
-          if (
-            param.schemaValue == "MultipartFile" ||
-            param.schemaValue == "file" ||
-            param.type == "file"
-          ) {
-            ptype = "file";
-            //文件类型,判断是否是arrar
-            if (param.type == "array") {
-              multipart = true;
+          if (param.in == "header") {
+            var newHeader = {
+              id: KUtils.randomMd5(),
+              name: param.name,
+              content: param.txtValue,
+              new: false
+            };
+            instance.headerData.push(newHeader);
+          } else {
+            var ptype = "text";
+            var multipart = false;
+            if (
+              param.schemaValue == "MultipartFile" ||
+              param.schemaValue == "file" ||
+              param.type == "file"
+            ) {
+              ptype = "file";
+              //文件类型,判断是否是arrar
+              if (param.type == "array") {
+                multipart = true;
+              }
             }
+            //form-data的参数多一个文件是否允许多个上传的属性
+            var newFormHeader = {
+              id: KUtils.randomMd5(),
+              name: param.name,
+              type: ptype,
+              //是否必须
+              require: param.require,
+              //文件表单域的target
+              target: null,
+              //文件是否允许多个上传
+              multipart: multipart,
+              content: param.txtValue,
+              new: false
+            };
+            instance.formData.push(newFormHeader);
           }
-          //form-data的参数多一个文件是否允许多个上传的属性
-          var newFormHeader = {
-            id: KUtils.randomMd5(),
-            name: param.name,
-            type: ptype,
-            //是否必须
-            require: param.require,
-            //文件表单域的target
-            target: null,
-            //文件是否允许多个上传
-            multipart: multipart,
-            content: param.txtValue,
-            new: false
-          };
-          instance.formData.push(newFormHeader);
         });
       }
     },
@@ -534,18 +559,28 @@ export default {
     addApiParameterToUrlForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
         apiParameters.forEach(function(param) {
-          var newFormHeader = {
-            id: KUtils.randomMd5(),
-            name: param.name,
-            type: "text",
-            //是否必须
-            require: param.require,
-            //文件表单域的target
-            target: null,
-            content: param.txtValue,
-            new: false
-          };
-          instance.urlFormData.push(newFormHeader);
+          if (param.in == "header") {
+            var newHeader = {
+              id: KUtils.randomMd5(),
+              name: param.name,
+              content: param.txtValue,
+              new: false
+            };
+            instance.headerData.push(newHeader);
+          } else {
+            var newFormHeader = {
+              id: KUtils.randomMd5(),
+              name: param.name,
+              type: "text",
+              //是否必须
+              require: param.require,
+              //文件表单域的target
+              target: null,
+              content: param.txtValue,
+              new: false
+            };
+            instance.urlFormData.push(newFormHeader);
+          }
         });
       }
     },
