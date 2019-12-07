@@ -742,13 +742,19 @@ export default {
       console.log("文件发生变化了");
       console.log(e);
       console.log(e.target.files);
+      var files = e.target.files;
+      var fileStr = [];
+      for (var i = 0; i < files.length; i++) {
+        fileStr.push(files[i].name);
+      }
+      var fileStrValue = fileStr.join(",");
       var target = e.target;
       var formId = target.getAttribute("data-key");
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
         this.formData.forEach(function(form) {
           if (form.id == record.id) {
-            form.content = target.value;
+            form.content = fileStrValue;
             form.target = target;
             form.new = false;
           }
@@ -758,7 +764,7 @@ export default {
       } else {
         this.formData.forEach(function(form) {
           if (form.id == record.id) {
-            form.content = target.value;
+            form.content = fileStrValue;
             form.target = target;
             form.new = false;
           }
@@ -1131,7 +1137,6 @@ export default {
     },
     debugSendFormRequest() {
       //发送form类型的请求
-      console.log("发送form接口");
       var validateForm = this.validateFormData();
       console.log(validateForm);
       if (validateForm.validate) {

@@ -68,6 +68,12 @@ Vue.prototype.$axios = axios
 import localStore from './store/local'
 Vue.prototype.$localStore = localStore;
 
+/**
+ * 日志组件
+ */
+import logger from '@/core/logger'
+Vue.prototype.$logger = logger;
+
 String.prototype.gblen = function () {
   var len = 0;
   for (var i = 0; i < this.length; i++) {
