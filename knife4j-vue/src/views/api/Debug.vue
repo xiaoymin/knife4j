@@ -234,11 +234,6 @@ export default {
         instance.initHeaderParameter();
         //请求体参数初始化
         instance.initBodyParameter();
-
-        instance.addNewLineHeader();
-        instance.initSelectionHeaders();
-        //计算heaer数量
-        instance.headerResetCalc();
       });
     },
     initHeaderParameter() {
@@ -256,6 +251,28 @@ export default {
         }
       });
       //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
+      //读取Author的参数情况
+      var key = constant.globalSecurityParamPrefix + this.api.instanceId;
+      this.$localStore.getItem(key).then(function(val) {
+        console.log("读取本都Auth请");
+        if (KUtils.arrNotEmpty(val)) {
+          //不为空
+          val.forEach(function(security) {
+            var newHeader = {
+              id: KUtils.randomMd5(),
+              name: security.name,
+              content: security.value,
+              require: false,
+              new: false
+            };
+            instance.headerData.push(newHeader);
+          });
+        }
+        instance.addNewLineHeader();
+        instance.initSelectionHeaders();
+        //计算heaer数量
+        instance.headerResetCalc();
+      });
     },
     initBodyParameter() {
       //this.initBodyType();

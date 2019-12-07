@@ -205,7 +205,9 @@ export default {
       //显示editor字段说明
       if (this.debugSend) {
         if (this.responseFieldDescriptionChecked) {
-          this.showEditorFieldAnyWay();
+          if (this.responseContent.mode == "json") {
+            this.showEditorFieldAnyWay();
+          }
         }
       }
     },
