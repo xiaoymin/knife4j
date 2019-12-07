@@ -345,7 +345,9 @@ export default {
       if (pathArr.length == 2) {
         //二级子菜单
         var parentM = findComponentsByPath(pathArr[0], this.MenuData);
-        this.openKeys = [parentM.key];
+        if (parentM != null) {
+          this.openKeys = [parentM.key];
+        }
       } else {
         this.openKeys = [m.key];
       }

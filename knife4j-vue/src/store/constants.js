@@ -32,6 +32,7 @@ const constants = {
       }
     }
   ],
+  globalSecurityParamPrefix: "Knife4jSecurityParams",
   //个性化设置名称
   globalSettingsKey: "Knife4jGlobalSettings",
   defaultSettings: {

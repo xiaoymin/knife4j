@@ -1075,6 +1075,10 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
             //如果cache不存在,存储
             that.storeGlobalParam(sdf,"securityArrs");
         }*/
+        //at 2019-12-7 18:22:01
+        //得到主键id端
+        var md5StrBefore = sdf.key + sdf.type + sdf.in + sdf.name;
+        sdf.id = md5(md5StrBefore);
         securityArr.push(sdf);
         //that.currentInstance.securityArrs.push(sdf);
       }
@@ -3237,6 +3241,9 @@ var SwaggerBootstrapUiSecurityDefinition = function () {
   this.in = "";
   this.name = "";
   this.value = "";
+  //add at 2019-12-7 18:20:35
+  this.id = "";
+
 }
 
 /***

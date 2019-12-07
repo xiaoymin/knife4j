@@ -2,19 +2,12 @@
   <a-layout-content class="knife4j-body-content">
     <div class="authorize">
       <a-row>
-        <a-button type="primary">注销</a-button>
+        <a-button type="primary" @click="resetAuth">注销</a-button>
       </a-row>
       <a-row style="margin-top:15px;">
-        <a-table :columns="columns" :dataSource="data.instance.securityArrs" :pagination="pagination" bordered>
-          <template slot="name" slot-scope="text">
-            <a href="javascript:;">{{text}}</a>
-          </template>
+        <a-table size="small" :columns="columns" :dataSource="securityArr" :pagination="pagination" bordered>
           <template slot="paramIpt" slot-scope="text, record">
-            <a-input :value=record.value />
-          </template>
-
-          <template slot="operation">
-            <a-button type="primary">保存</a-button>
+            <a-input :value="text" :data-id="record.id" @change="authParamChange" />
           </template>
         </a-table>
 
@@ -24,6 +17,9 @@
 
 </template>
 <script>
+import constant from "@/store/constants";
+import KUtils from "@/core/utils";
+
 const columns = [
   {
     title: "参数key",
@@ -47,13 +43,6 @@ const columns = [
     scopedSlots: {
       customRender: "paramIpt"
     }
-  },
-  {
-    title: "操作",
-    dataIndex: "operator",
-    scopedSlots: {
-      customRender: "operation"
-    }
   }
 ];
 export default {
@@ -65,8 +54,77 @@ export default {
   data() {
     return {
       pagination: false,
-      columns: columns
+      columns: columns,
+      //请求头Authorize参数
+      securityArr: []
     };
+  },
+  methods: {
+    initLocalSecuritys() {
+      //初始化从本地读取
+      var that = this;
+      var backArr = that.data.instance.securityArrs;
+      //前缀+实例id
+      var key = constant.globalSecurityParamPrefix + this.data.instance.id;
+      this.$localStore.getItem(key).then(function(val) {
+        if (KUtils.arrNotEmpty(backArr)) {
+          if (KUtils.checkUndefined(val)) {
+            //存在
+            //需要对比后端最新的参数情况,后端有可能已经删除参数
+            var tmpSecuritys = [];
+            backArr.forEach(function(security) {
+              //判断当前的key在缓存中是否存在
+              var caches = val.filter(se => se.id == security.id);
+              if (caches.length > 0) {
+                //存在
+                if (KUtils.strNotBlank(security.value)) {
+                  tmpSecuritys.push(security);
+                } else {
+                  tmpSecuritys.push(caches[0]);
+                }
+              } else {
+                tmpSecuritys.push(security);
+              }
+            });
+            that.securityArr = tmpSecuritys;
+          } else {
+            //不存在
+            that.securityArr = backArr;
+          }
+          that.storeToLocalIndexDB();
+        }
+      });
+    },
+    storeToLocalIndexDB() {
+      //前缀+实例id
+      var key = constant.globalSecurityParamPrefix + this.data.instance.id;
+      this.$localStore.setItem(key, this.securityArr);
+    },
+    resetAuth() {
+      const tmpArr = this.securityArr;
+      if (KUtils.arrNotEmpty(tmpArr)) {
+        tmpArr.forEach(function(security) {
+          security.value = "";
+        });
+        this.securityArr = tmpArr;
+        this.storeToLocalIndexDB();
+      }
+      this.$message.info("注销成功");
+    },
+    authParamChange(e) {
+      var target = e.target;
+      var pkId = target.getAttribute("data-id");
+      var value = target.value;
+      this.securityArr.forEach(function(security) {
+        if (security.id == pkId) {
+          security.value = value;
+        }
+      });
+      this.storeToLocalIndexDB();
+    }
+  },
+  created() {
+    this.initLocalSecuritys();
   }
 };
 </script>
