@@ -257,7 +257,7 @@ export default {
     this.initResponseCodeParams();
     setTimeout(() => {
       this.showResponseEditFieldDescription();
-    }, 1000);
+    }, 1500);
   },
   methods: {
     copyApiAddress() {
