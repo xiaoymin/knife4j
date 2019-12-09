@@ -255,7 +255,13 @@ export default {
           }
           var itemParen = item.getElementsByClassName("ace_paren");
           if (KUtils.arrNotEmpty(itemParen)) {
-            var parentText = itemParen[0].innerHTML;
+            //如果元素大于0,拼装多个
+            var parentArrs = [];
+            for (var e = 0; e < itemParen.length; e++) {
+              parentArrs.push(itemParen[e].innerHTML);
+            }
+            //var parentText = itemParen[0].innerHTML;
+            var parentText = parentArrs.join("");
             switch (parentText) {
               case "[":
               case "{":

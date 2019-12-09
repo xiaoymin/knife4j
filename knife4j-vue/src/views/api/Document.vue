@@ -433,25 +433,35 @@ export default {
               /^"(.*)"$/g,
               "$1"
             );
+            console.log("key:=" + key);
             //判断是否存在
             var sfd = item.getElementsByClassName(
               "knife4j-debug-editor-field-description"
             );
+            console.log(sfd);
             if (!KUtils.arrNotEmpty(sfd)) {
               var fieldSpan = document.createElement("span");
               fieldSpan.className = "knife4j-debug-editor-field-description";
+              console.log(paths);
               fieldSpan.innerHTML = responseCode.responseDescriptionFind(
                 paths,
                 key,
                 swaggerInstance
               );
               fieldSpan.style.left = acePrintMarginLeft;
+              console.log(fieldSpan);
               item.appendChild(fieldSpan);
             }
           }
           var itemParen = item.getElementsByClassName("ace_paren");
           if (KUtils.arrNotEmpty(itemParen)) {
-            var parentText = itemParen[0].innerHTML;
+            //如果元素大于0,拼装多个
+            var parentArrs = [];
+            for (var e = 0; e < itemParen.length; e++) {
+              parentArrs.push(itemParen[e].innerHTML);
+            }
+            //var parentText = itemParen[0].innerHTML;
+            var parentText = parentArrs.join("");
             switch (parentText) {
               case "[":
               case "{":
