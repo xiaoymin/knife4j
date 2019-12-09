@@ -8,17 +8,13 @@
       </a-row>
       <a-row class="knife4j-download-button">
         <a-button @click="triggerDownloadMarkdown">
-          <a-icon type="file-markdown" />下载Markdown</a-button
-        >
+          <a-icon type="file-markdown" />下载Markdown</a-button>
         <a-button type="default" @click="triggerDownload">
-          <a-icon type="file-text" />下载Html</a-button
-        >
+          <a-icon type="file-text" />下载Html</a-button>
         <a-button type="default" @click="triggerDownloadWord">
-          <a-icon type="file-word" />下载Word</a-button
-        >
+          <a-icon type="file-word" />下载Word</a-button>
         <a-button type="default" @click="triggerDownloadPDF">
-          <a-icon type="file-pdf" />下载PDF</a-button
-        >
+          <a-icon type="file-pdf" />下载PDF</a-button>
       </a-row>
       <!--  <a-modal v-model="downloadHtmlFlag" :footer="null" :maskClosable="false" :keyboard="false" :closable="false">
         <p>正在下载中...</p>
@@ -112,7 +108,7 @@ export default {
       //下载markdown
       var that = this;
       that.$kloading.show({
-        text: "正在下载Markdown文件中..."
+        text: "正在下载Markdown文件中,请稍后..."
       });
       //遍历得到markdown语法
       if (this.markdownText == null || this.markdownText == "") {
@@ -132,7 +128,7 @@ export default {
       //html
       that.downloadType = "DownloadHtml";
       that.$kloading.show({
-        text: "正在下载Html中..."
+        text: "正在下载Html中,请稍后..."
       });
 
       if (!this.downloadHtmlFlag) {
