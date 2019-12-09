@@ -5,9 +5,10 @@
  * Developer Web Site: http://open.xiaominfo.com.
  */
 
-package configuration;
+package com.github.xiaoymin.knife4j.spring.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /***
  * 配置文件
@@ -15,13 +16,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/08/27 15:40
  */
+@Component
 @ConfigurationProperties(prefix = "knife4j")
 public class Knife4jProperties {
 
     private Knife4jHttpBasic basic;
 
+    /**
+     * 是否生产环境
+     */
     private boolean production;
 
+    /**
+     * markdown路径
+     */
     private String markdowns;
 
     public Knife4jHttpBasic getBasic() {

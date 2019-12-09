@@ -5,7 +5,7 @@
  * Developer Web Site: http://open.xiaominfo.com.
  */
 
-package configuration;
+package com.github.xiaoymin.knife4j.spring.configuration;
 
 
 /***
@@ -16,10 +16,19 @@ package configuration;
  */
 public class Knife4jHttpBasic {
 
+    /**
+     * basick是否开启,默认为false
+     */
     private boolean enable=false;
 
+    /**
+     * basic 用户名
+     */
     private String username;
 
+    /**
+     * basic 密码
+     */
     private String password;
 
     public boolean isEnable() {

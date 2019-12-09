@@ -6,9 +6,7 @@
  */
 package com.github.xiaoymin.knife4j.spring.annotations;
 
-import com.github.xiaoymin.knife4j.spring.configuration.MarkdownFileConfiguration;
-import com.github.xiaoymin.knife4j.spring.configuration.SecurityConfiguration;
-import com.github.xiaoymin.knife4j.spring.configuration.SwaggerBootstrapUIConfiguration;
+import com.github.xiaoymin.knife4j.spring.configuration.Knife4jAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -27,6 +25,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Documented
-@Import({SwaggerBootstrapUIConfiguration.class, SecurityConfiguration.class, MarkdownFileConfiguration.class})
+@Import({Knife4jAutoConfiguration.class})
 public @interface EnableKnife4j {
 }
