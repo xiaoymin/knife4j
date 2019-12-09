@@ -442,14 +442,12 @@ export default {
             if (!KUtils.arrNotEmpty(sfd)) {
               var fieldSpan = document.createElement("span");
               fieldSpan.className = "knife4j-debug-editor-field-description";
-              console.log(paths);
               fieldSpan.innerHTML = responseCode.responseDescriptionFind(
                 paths,
                 key,
                 swaggerInstance
               );
               fieldSpan.style.left = acePrintMarginLeft;
-              console.log(fieldSpan);
               item.appendChild(fieldSpan);
             }
           }

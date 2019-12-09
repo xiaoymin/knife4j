@@ -763,10 +763,19 @@ JSON5.stringify = function (obj, replacer, space) {
                 } else {
                   key = isWord(prop) ? prop : escapeString(prop);
                 }
-
-                //buffer += key + ":" + (indentStr ? ' ' : '') + value + ",";
                 //此处会把key的双引号去掉,导致在editor中显示异常
-                buffer += "\"" + key + "\"" + ":" + (indentStr ? ' ' : '') + value + ",";
+                // modified at 2019-12-9 18:12:23
+                // https://gitee.com/xiaoym/knife4j/issues/I125B2
+                //校验key值是否包含双引号,如果包含则使用默认的，否则追加双引号
+                //正则
+                var doubleQuoReg = new RegExp("\".*?\"", "ig")
+                if (doubleQuoReg.test(key)) {
+                  console.log("包含双引号，key:" + key)
+                  buffer += key + ":" + (indentStr ? ' ' : '') + value + ",";
+                } else {
+                  console.log("不包含双引号，key:" + key)
+                  buffer += "\"" + key + "\"" + ":" + (indentStr ? ' ' : '') + value + ",";
+                }
               }
             }
           }

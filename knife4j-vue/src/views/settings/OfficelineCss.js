@@ -132,6 +132,17 @@ export const resumecss = `
 .knife4j-api-patch .knife4j-api-summary-method {
   background: #50e3c2;
 }
+#knife4jDoc ul{
+  padding-left: 10px;
+  list-style: none;
+  counter-reset: ordered;
+}
+
+#knife4jDoc ul li:before {
+  counter-increment: ordered;
+  content: counters(ordered,".")" ";
+  color:#1890ff;
+}
 .api-basic {
   padding: 11px;
 }
