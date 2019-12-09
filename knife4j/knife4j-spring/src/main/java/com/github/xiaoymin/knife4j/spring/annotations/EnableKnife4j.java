@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
-/**
- * Enable SwaggerBootstrapUi enhanced annotation and use @EnableSwagger2 annotation together.
+/***
+ * Enable Knife4j enhanced annotation and use @EnableSwagger2 annotation together.
  *
  * inlude:
  * <ul>
@@ -22,16 +22,11 @@ import java.lang.annotation.*;
  *     <li>Interface document download  (word)</li>
  * </ul>
  *
- * This annotation has been deprecated since 2.0.0,please use {@link EnableKnife4j} replace it,and it will be removed in a later release.
- *
- * @since 1.8.5
+ * @since 2.0.0
  */
-@Deprecated
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Documented
 @Import({SwaggerBootstrapUIConfiguration.class, SecurityConfiguration.class, MarkdownFileConfiguration.class})
-public @interface EnableSwaggerBootstrapUi {
-
-
+public @interface EnableKnife4j {
 }
