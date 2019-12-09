@@ -69,14 +69,14 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static springfox.documentation.swagger.common.HostNameProvider.componentsFrom;
 
 /***
- * SwaggerBootstrapUiZ增强接口
+ * Knife4j增强接口
  * @since:swagger-bootstrap-ui 1.8.5
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2018/10/11 11:26
  */
 @Controller
 @ApiIgnore
-public class SwaggerBootstrapUiController {
+public class Knife4jController {
 
     /***
      * sort排序接口
@@ -84,7 +84,7 @@ public class SwaggerBootstrapUiController {
     public static final String DEFAULT_SORT_URL = "/v2/api-docs-ext";
 
     private static final String HAL_MEDIA_TYPE = "application/hal+json";
-    private static final Logger LOGGER = LoggerFactory.getLogger(SwaggerBootstrapUiController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Knife4jController.class);
     private final ServiceModelToSwagger2Mapper mapper;
     private final DocumentationCache documentationCache;
     private final JsonSerializer jsonSerializer;
@@ -102,9 +102,9 @@ public class SwaggerBootstrapUiController {
 
 
     @Autowired
-    public SwaggerBootstrapUiController(Environment environment,
-                                        ServiceModelToSwagger2Mapper mapper, DocumentationCache documentationCache, JsonSerializer jsonSerializer, List<RequestHandlerProvider> handlerProviders,
-                                        ObjectProvider<MarkdownFiles> markdownFilesObjectProvider) {
+    public Knife4jController(Environment environment,
+                             ServiceModelToSwagger2Mapper mapper, DocumentationCache documentationCache, JsonSerializer jsonSerializer, List<RequestHandlerProvider> handlerProviders,
+                             ObjectProvider<MarkdownFiles> markdownFilesObjectProvider) {
         this.mapper = mapper;
         this.documentationCache = documentationCache;
         this.jsonSerializer = jsonSerializer;
