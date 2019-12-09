@@ -156,7 +156,8 @@ public class ByteUtils {
 
     public static Class<?> load(String classPathName){
         try{
-            return Class.forName(classPathName);
+            return ClassPool.getDefault().getClassLoader().loadClass(classPathName);
+//            return Class.forName(classPathName);
         }catch (Exception e){
 
         }
