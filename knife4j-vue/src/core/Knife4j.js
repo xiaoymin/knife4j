@@ -56,6 +56,7 @@ function SwaggerBootstrapUi(options) {
   this.url = options.url || 'swagger-resources'
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
   this.$Vue = options.Vue
+  this.plus = options.plus
   //文档id
   this.docId = 'content'
   this.title = 'knife4j'
@@ -176,13 +177,22 @@ SwaggerBootstrapUi.prototype.initSettings = function () {
   var that = this
   that.log("本地Settings初始化")
   var defaultSettings = Constants.defaultSettings;
+  var defaultPlusSettings = Constants.defaultPlusSettings;
   //读取本地变量
   that.$Vue.$localStore.getItem(Constants.globalSettingsKey).then(function (val) {
-    if (val != undefined && val != null && val != '') {
-      that.settings = val;
+    //判断是否开启增强
+    if (that.plus) {
+      that.settings = defaultPlusSettings;
     } else {
-      that.settings = defaultSettings;
+      if (val != undefined && val != null && val != '') {
+        //如果本地存在,则使用本地的
+        that.settings = val;
+      } else {
+        //判断是否开启增强
+        that.settings = defaultSettings;
+      }
     }
+
     that.log("Setings------------------------------")
     that.log(that.settings)
     //本地缓存
@@ -1260,8 +1270,6 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
           //})
           //$.each(requestParams, function (j, param) {
           var name = param.name;
-          console.log("参数名称:" + name)
-          console.log("下标索引:" + that.currentInstance.modelNames.indexOf(name))
           //判断集合中是否存在name
           if (that.currentInstance.modelNames.indexOf(name) == -1) {
             //if ($.inArray(name, that.currentInstance.modelNames) == -1) {
@@ -1376,11 +1384,8 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       } else {
         //解析响应Model
         var responseParams = path.responseTreetableRefParameters;
-        console.log("参数名称11:" + path.responseParameterRefName)
         //首先解析响应Model类
         if (path.responseParameterRefName != null && path.responseParameterRefName != "") {
-          console.log("参数名称:" + path.responseParameterRefName)
-          console.log("下标索引:" + that.currentInstance.modelNames.indexOf(path.responseParameterRefName))
           //判断是否存在
           if (that.currentInstance.modelNames.indexOf(path.responseParameterRefName) == -1) {
             //}
@@ -1401,7 +1406,6 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
                 }
               })
             }
-            console.log(model)
             that.currentInstance.models.push(model);
           }
         }
@@ -1783,13 +1787,10 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   })
   //console.log(menuArr)
   var mdata = KUtils.formatter(menuArr);
-  console.log("菜单--------------")
-  console.log(mdata)
   //添加全局参数
   if (addFlag) {
     that.globalMenuDatas = that.globalMenuDatas.concat(mdata);
   }
-  console.log(that)
   //console.log(JSON.stringify(mdata))
   //双向绑定
   that.$Vue.MenuData = mdata;

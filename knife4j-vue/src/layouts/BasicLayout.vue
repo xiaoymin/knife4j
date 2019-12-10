@@ -1,10 +1,23 @@
 <template>
   <div class="BasicLayout">
     <a-layout class="ant-layout-has-sider">
-      <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider">
+      <a-layout-sider
+        :trigger="null"
+        collapsible
+        :collapsed="collapsed"
+        breakpoint="lg"
+        @collapse="handleMenuCollapse"
+        :width="menuWidth"
+        class="sider"
+      >
         <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
           <a to="/" style="float:left;">
-            <a-select :value="defaultServiceOption" style="width: 280px" :options="serviceOptions" @change="serviceChange">
+            <a-select
+              :value="defaultServiceOption"
+              style="width: 280px"
+              :options="serviceOptions"
+              @change="serviceChange"
+            >
             </a-select>
           </a>
         </div>
@@ -14,28 +27,66 @@
           </a>
         </div>
         <div class="knife4j-menu">
-          <a-menu key="Menu" theme="dark" mode="inline" :inlineCollapsed="collapsed" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 16px 0; width: 100%">
+          <a-menu
+            key="Menu"
+            theme="dark"
+            mode="inline"
+            :inlineCollapsed="collapsed"
+            @openChange="handleOpenChange"
+            @select="selected"
+            :openKeys="openKeys"
+            :selectedKeys="selectedKeys"
+            style="padding: 16px 0; width: 100%"
+          >
             <ThreeMenu :menuData="MenuData" />
           </a-menu>
         </div>
       </a-layout-sider>
       <!-- <SiderMenu :defaultOption="defaultServiceOption" :serviceOptions="serviceOptions" @menuClick='menuClick' :logo="logo" :menuData="MenuData" :collapsed="collapsed" :location="$route" :onCollapse="handleMenuCollapse" :menuWidth="menuWidth" /> -->
       <a-layout>
-        <a-layout-header style="padding: 0;background: #fff;    height: 56px; line-height: 56px;">
-          <GlobalHeader :documentTitle="documentTitle" :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="(item)=>handleMenuClick(item)" />
+        <a-layout-header
+          style="padding: 0;background: #fff;    height: 56px; line-height: 56px;"
+        >
+          <GlobalHeader
+            :documentTitle="documentTitle"
+            :collapsed="collapsed"
+            :headerClass="headerClass"
+            :currentUser="currentUser"
+            :onCollapse="handleMenuCollapse"
+            :onMenuClick="item => handleMenuClick(item)"
+          />
         </a-layout-header>
-        <context-menu :itemList="menuItemList" :visible.sync="menuVisible" @select="onMenuSelect" />
-        <a-tabs hideAdd v-model="activeKey" @contextmenu.native="e => onContextmenu(e)" type="editable-card" @change="tabChange" @edit="tabEditCallback" class="knife4j-tab">
-          <a-tab-pane v-for="pane in panels" :key="pane.key" :closable="pane.closable">
-            <span slot="tab" :pagekey="pane.key">{{pane.title}}</span>
-            <component :is="pane.content" :data='pane' @childrenMethods="childrenEmitMethod">
+        <context-menu
+          :itemList="menuItemList"
+          :visible.sync="menuVisible"
+          @select="onMenuSelect"
+        />
+        <a-tabs
+          hideAdd
+          v-model="activeKey"
+          @contextmenu.native="e => onContextmenu(e)"
+          type="editable-card"
+          @change="tabChange"
+          @edit="tabEditCallback"
+          class="knife4j-tab"
+        >
+          <a-tab-pane
+            v-for="pane in panels"
+            :key="pane.key"
+            :closable="pane.closable"
+          >
+            <span slot="tab" :pagekey="pane.key">{{ pane.title }}</span>
+            <component
+              :is="pane.content"
+              :data="pane"
+              @childrenMethods="childrenEmitMethod"
+            >
             </component>
           </a-tab-pane>
         </a-tabs>
         <a-layout-footer style="padding: 0">
           <GlobalFooter />
         </a-layout-footer>
-
       </a-layout>
     </a-layout>
   </div>
@@ -109,7 +160,16 @@ export default {
   beforeCreate() {},
   created() {
     var that = this;
-    this.swagger = new SwaggerBootstrapUi({ Vue: that });
+    //初始化swagger文档
+    console.log("初始化swagger文档");
+    var url = this.$route.path;
+    console.log(url);
+    var plusFlag = false;
+    if (url == "/plus") {
+      //开启增强
+      plusFlag = true;
+    }
+    this.swagger = new SwaggerBootstrapUi({ Vue: that, plus: plusFlag });
     try {
       this.swagger.main();
     } catch (e) {
@@ -251,10 +311,14 @@ export default {
     openDefaultTabByPath() {
       //根据地址栏打开Tab选项卡
       var that = this;
-      console.log("根据地址栏打开Tab选项卡");
+      console.log("根据地址栏打开Tab选项卡1111111");
       const panes = this.panels;
       var url = this.$route.path;
       console.log(url);
+      if (url == "/plus") {
+        //如果是使用的增强地址,替换成主页地址进行查找
+        url = "/home";
+      }
       //var menu = findComponentsByPath(url, this.MenuData);
       var menu = findComponentsByPath(url, this.swagger.globalMenuDatas);
       if (menu != null) {
@@ -478,5 +542,4 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>
