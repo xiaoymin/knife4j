@@ -547,6 +547,8 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       if (idx == 0) {
         api = api.substr(1);
       }
+      //测试
+      api = "jj1.json";
       that.$Vue.$axios({
         url: api,
         dataType: 'json',
@@ -1258,6 +1260,8 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
           //})
           //$.each(requestParams, function (j, param) {
           var name = param.name;
+          console.log("参数名称:" + name)
+          console.log("下标索引:" + that.currentInstance.modelNames.indexOf(name))
           //判断集合中是否存在name
           if (that.currentInstance.modelNames.indexOf(name) == -1) {
             //if ($.inArray(name, that.currentInstance.modelNames) == -1) {
@@ -1293,73 +1297,157 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
           }
         })
       }
-      //解析响应Model
-      var responseParams = path.responseTreetableRefParameters;
-      //首先解析响应Model类
-      if (path.responseParameterRefName != null && path.responseParameterRefName != "") {
-        //判断是否存在
-        if (that.currentInstance.modelNames.indexOf(path.responseParameterRefName) == -1) {
-          //}
-          //if ($.inArray(path.responseParameterRefName, that.currentInstance.modelNames) == -1) {
-          that.currentInstance.modelNames.push(path.responseParameterRefName);
-          var id = "param" + Math.round(Math.random() * 1000000);
-          var model = new SwaggerBootstrapUiModel(id, path.responseParameterRefName);
-          model.data = [].concat(path.responseParameters);
+      //此处需要判断是否存在多个schema的情况
+      //modified at 2019-12-10 16:40:55 
+      //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/170
+      if (path.multipartResponseSchema) {
+        //多个
+        path.responseCodes.forEach(function (resp) {
+          //解析响应Model
+          var responseParams = resp.responseTreetableRefParameters;
+          //首先解析响应Model类
+          if (resp.responseParameterRefName != null && resp.responseParameterRefName != "") {
+            //判断是否存在
+            if (that.currentInstance.modelNames.indexOf(resp.responseParameterRefName) == -1) {
+              //}
+              //if ($.inArray(path.responseParameterRefName, that.currentInstance.modelNames) == -1) {
+              that.currentInstance.modelNames.push(resp.responseParameterRefName);
+              var id = "param" + Math.round(Math.random() * 1000000);
+              var model = new SwaggerBootstrapUiModel(id, resp.responseParameterRefName);
+              model.data = [].concat(resp.responseParameters);
+              if (responseParams != null && responseParams != undefined && responseParams.length > 0) {
+                responseParams.forEach(function (param) {
+
+                  //})
+                  //$.each(responseParams, function (j, param) {
+                  //遍历params
+                  if (param.params != null && param.params.length > 0) {
+                    //data数据加入本身
+                    model.data = model.data.concat(param.params);
+                  }
+                })
+              }
+              that.currentInstance.models.push(model);
+            }
+          }
+
           if (responseParams != null && responseParams != undefined && responseParams.length > 0) {
             responseParams.forEach(function (param) {
-
-              //})
               //$.each(responseParams, function (j, param) {
-              //遍历params
-              if (param.params != null && param.params.length > 0) {
-                //data数据加入本身
-                model.data = model.data.concat(param.params);
+              var name = param.name;
+              //判断集合中是否存在name
+              if (that.currentInstance.modelNames.indexOf(name) == -1) {
+                //if ($.inArray(name, that.currentInstance.modelNames) == -1) {
+                that.currentInstance.modelNames.push(name);
+                //不存在
+                var model = new SwaggerBootstrapUiModel(param.id, name);
+                //遍历params
+                if (param.params != null && param.params.length > 0) {
+                  //model本身需要添加一个父类
+                  //model.data.push({id:model.id,name:name,pid:"-1"});
+                  //data数据加入本身
+                  //model.data=model.data.concat(param.params);
+                  param.params.forEach(function (ps) {
+
+                    //})
+                    //$.each(param.params, function (a, ps) {
+                    /*  var newparam = $.extend({}, ps, {
+                       pid: "-1"
+                     }); */
+                    var newparam = {
+                      ...ps,
+                      pid: '-1'
+                    }
+                    model.data.push(newparam);
+                    if (ps.schema) {
+                      //是schema
+                      //查找紫属性中存在的pid
+                      deepSchemaModel(model, responseParams, ps.id);
+                    }
+                  })
+                }
+                that.currentInstance.models.push(model);
               }
             })
           }
-          that.currentInstance.models.push(model);
-        }
-      }
 
-      if (responseParams != null && responseParams != undefined && responseParams.length > 0) {
-        responseParams.forEach(function (param) {
-          //$.each(responseParams, function (j, param) {
-          var name = param.name;
-          //判断集合中是否存在name
-          if (that.currentInstance.modelNames.indexOf(name) == -1) {
-            //if ($.inArray(name, that.currentInstance.modelNames) == -1) {
-            that.currentInstance.modelNames.push(name);
-            //不存在
-            var model = new SwaggerBootstrapUiModel(param.id, name);
-            //遍历params
-            if (param.params != null && param.params.length > 0) {
-              //model本身需要添加一个父类
-              //model.data.push({id:model.id,name:name,pid:"-1"});
-              //data数据加入本身
-              //model.data=model.data.concat(param.params);
-              param.params.forEach(function (ps) {
+        })
+
+      } else {
+        //解析响应Model
+        var responseParams = path.responseTreetableRefParameters;
+        console.log("参数名称11:" + path.responseParameterRefName)
+        //首先解析响应Model类
+        if (path.responseParameterRefName != null && path.responseParameterRefName != "") {
+          console.log("参数名称:" + path.responseParameterRefName)
+          console.log("下标索引:" + that.currentInstance.modelNames.indexOf(path.responseParameterRefName))
+          //判断是否存在
+          if (that.currentInstance.modelNames.indexOf(path.responseParameterRefName) == -1) {
+            //}
+            //if ($.inArray(path.responseParameterRefName, that.currentInstance.modelNames) == -1) {
+            that.currentInstance.modelNames.push(path.responseParameterRefName);
+            var id = "param" + Math.round(Math.random() * 1000000);
+            var model = new SwaggerBootstrapUiModel(id, path.responseParameterRefName);
+            model.data = [].concat(path.responseParameters);
+            if (responseParams != null && responseParams != undefined && responseParams.length > 0) {
+              responseParams.forEach(function (param) {
 
                 //})
-                //$.each(param.params, function (a, ps) {
-                /*  var newparam = $.extend({}, ps, {
-                   pid: "-1"
-                 }); */
-                var newparam = {
-                  ...ps,
-                  pid: '-1'
-                }
-                model.data.push(newparam);
-                if (ps.schema) {
-                  //是schema
-                  //查找紫属性中存在的pid
-                  deepSchemaModel(model, responseParams, ps.id);
+                //$.each(responseParams, function (j, param) {
+                //遍历params
+                if (param.params != null && param.params.length > 0) {
+                  //data数据加入本身
+                  model.data = model.data.concat(param.params);
                 }
               })
             }
+            console.log(model)
             that.currentInstance.models.push(model);
           }
-        })
+        }
+
+        if (responseParams != null && responseParams != undefined && responseParams.length > 0) {
+          responseParams.forEach(function (param) {
+            //$.each(responseParams, function (j, param) {
+            var name = param.name;
+            //判断集合中是否存在name
+            if (that.currentInstance.modelNames.indexOf(name) == -1) {
+              //if ($.inArray(name, that.currentInstance.modelNames) == -1) {
+              that.currentInstance.modelNames.push(name);
+              //不存在
+              var model = new SwaggerBootstrapUiModel(param.id, name);
+              //遍历params
+              if (param.params != null && param.params.length > 0) {
+                //model本身需要添加一个父类
+                //model.data.push({id:model.id,name:name,pid:"-1"});
+                //data数据加入本身
+                //model.data=model.data.concat(param.params);
+                param.params.forEach(function (ps) {
+
+                  //})
+                  //$.each(param.params, function (a, ps) {
+                  /*  var newparam = $.extend({}, ps, {
+                     pid: "-1"
+                   }); */
+                  var newparam = {
+                    ...ps,
+                    pid: '-1'
+                  }
+                  model.data.push(newparam);
+                  if (ps.schema) {
+                    //是schema
+                    //查找紫属性中存在的pid
+                    deepSchemaModel(model, responseParams, ps.id);
+                  }
+                })
+              }
+              that.currentInstance.models.push(model);
+            }
+          })
+        }
       }
+
+
     })
   }
   //遍历models,如果存在自定义Model,则添加进去

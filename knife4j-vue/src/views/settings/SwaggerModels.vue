@@ -2,8 +2,20 @@
   <a-layout-content class="knife4j-body-content">
     <div class="swaggermododel">
       <a-collapse defaultActiveKey="1">
-        <a-collapse-panel v-for="model in data.instance.modelArrs" :header="model.name" :key="model.id" :class="model.modelClass()">
-          <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="model.data" rowKey="id" size="middle" :pagination="page" />
+        <a-collapse-panel
+          v-for="model in data.instance.modelArrs"
+          :header="model.name"
+          :key="model.id"
+          :class="model.modelClass()"
+        >
+          <a-table
+            :defaultExpandAllRows="expanRows"
+            :columns="columns"
+            :dataSource="model.data"
+            rowKey="id"
+            size="middle"
+            :pagination="page"
+          />
         </a-collapse-panel>
       </a-collapse>
     </div>
@@ -36,6 +48,9 @@ export default {
     data: {
       type: Object
     }
+  },
+  created() {
+    console.log(this.data.instance);
   },
   data() {
     return {
