@@ -19,7 +19,7 @@
  *
  * 重构swagger-bootstrap-ui组件,为以后动态扩展更高效,扩展接口打下基础
  *
- * v1.9.7
+ * v2.0.0
  * modified by xiaoymin on 2019-11-11 16:42:43
  *
  * 基于Vue + Ant Design Vue重构Ui组件
@@ -548,7 +548,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         api = api.substr(1);
       }
       //测试
-      api = "jj1.json";
+      //api = "jj1.json";
       that.$Vue.$axios({
         url: api,
         dataType: 'json',
