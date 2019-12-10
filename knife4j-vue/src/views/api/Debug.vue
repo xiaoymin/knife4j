@@ -230,6 +230,7 @@ export default {
       this.debugUrl = this.api.url;
       //判断是否为paht类型
       var reg=new RegExp('\{(.*?)\}','ig');
+      console.log("地址是否为path")
       if(reg.test(this.debugUrl)){
         this.debugPathFlag=true;
         var ma=null;
@@ -238,6 +239,8 @@ export default {
           instance.debugPathParams.push(ma[1]);
         }
       }
+      console.log(this.debugPathFlag)
+      console.log(this.debugPathParams)
     },
     initLocalGlobalParameters() {
       const key = this.api.instanceId;
@@ -808,7 +811,7 @@ export default {
     },
     formContentChange(e) {
       var formValue = e.target.value;
-      console.log("formcontent-value:" + formValue);
+      //console.log("formcontent-value:" + formValue);
       var formId = e.target.getAttribute("data-key");
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
@@ -991,6 +994,7 @@ export default {
       //form-data类型的请求参数
       var validateForm={url:"",params:{}}
       var url=this.debugUrl;
+      console.log("表单验证url:"+url)
       if (fileFlag) {
         //文件
         var formData = new FormData();
@@ -1007,7 +1011,7 @@ export default {
                 if (form.type == "text") {
                   //判断是否是urlPath参数
                   if(instance.debugPathFlag){
-                    if(instance.debugPathParams.indexOf(form.content)==-1){
+                    if(instance.debugPathParams.indexOf(form.name)==-1){
                       formData.append(form.name, form.content);
                     }else{
                        var replaceRege="\{"+form.name+"\}";
@@ -1018,13 +1022,16 @@ export default {
                   }
                 } else {
                   //文件
-                  var files = form.target.files;
-                  //判断是否是运行多个上传
-                  if (files.length > 0) {
-                    for (var i = 0; i < files.length; i++) {
-                      formData.append(form.name, files[i]);
+                  if(KUtils.checkUndefined(form.target)){
+                    var files = form.target.files;
+                    //判断是否是运行多个上传
+                    if (files.length > 0) {
+                      for (var i = 0; i < files.length; i++) {
+                        formData.append(form.name, files[i]);
+                      }
                     }
                   }
+                  
                 }
               }
             }
@@ -1044,7 +1051,7 @@ export default {
               if (KUtils.strNotBlank(form.name)) {
                 //判断是否是urlPath参数
                 if(instance.debugPathFlag){
-                  if(instance.debugPathParams.indexOf(form.content)==-1){
+                  if(instance.debugPathParams.indexOf(form.name)==-1){
                     params[form.name] = form.content;
                   }else{
                       var replaceRege="\{"+form.name+"\}";
@@ -1061,6 +1068,7 @@ export default {
         //return params;
       }
       validateForm.url=url;
+      return validateForm;
     },
     debugStreamFlag() {
       var streamFlag = false;
@@ -1269,6 +1277,7 @@ export default {
         var methodType = this.api.methodType.toLowerCase();
         var fileFlag = this.validateFormDataContaintsFile();
         var validateFormd=this.debugFormDataParams(fileFlag);
+        console.log(validateFormd)
         url=validateFormd.url;
         //var formParams = this.debugFormDataParams(fileFlag);
         var formParams = validateFormd.params;
