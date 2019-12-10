@@ -189,6 +189,10 @@ export default {
       globalParameters: [],
       //调试接口
       debugUrl: "",
+      //当前请求接口地址是否为path类型,如果是,在发送请求时需要对地址栏进行替换
+      debugPathFlag:false,
+      //需要替换的参数值key
+      debugPathParams:[],
       debugSend: false,
       //form参数值对象
       formData: [],
@@ -224,6 +228,16 @@ export default {
     },
     initDebugUrl() {
       this.debugUrl = this.api.url;
+      //判断是否为paht类型
+      var reg=new RegExp('\{(.*?)\}','ig');
+      if(reg.test(this.debugUrl)){
+        this.debugPathFlag=true;
+        var ma=null;
+        var mreg=new RegExp('\{(.*?)\}','ig');
+        while(( ma=mreg.exec(this.debugUrl))){
+          instance.debugPathParams.push(ma[1]);
+        }
+      }
     },
     initLocalGlobalParameters() {
       const key = this.api.instanceId;
@@ -975,6 +989,8 @@ export default {
     },
     debugFormDataParams(fileFlag) {
       //form-data类型的请求参数
+      var validateForm={url:"",params:{}}
+      var url=this.debugUrl;
       if (fileFlag) {
         //文件
         var formData = new FormData();
@@ -989,7 +1005,17 @@ export default {
               if (KUtils.strNotBlank(form.name)) {
                 //判断类型
                 if (form.type == "text") {
-                  formData.append(form.name, form.content);
+                  //判断是否是urlPath参数
+                  if(instance.debugPathFlag){
+                    if(instance.debugPathParams.indexOf(form.content)==-1){
+                      formData.append(form.name, form.content);
+                    }else{
+                       var replaceRege="\{"+form.name+"\}";
+                      url=url.replace(replaceRege,form.content);
+                    }
+                  }else{
+                    formData.append(form.name, form.content);
+                  }
                 } else {
                   //文件
                   var files = form.target.files;
@@ -1004,7 +1030,7 @@ export default {
             }
           }
         });
-        return formData;
+        validateForm.params=formData;
       } else {
         var params = {};
         this.formData.forEach(function(form) {
@@ -1016,13 +1042,25 @@ export default {
             if (tmphArrs.length > 0) {
               //必须选中
               if (KUtils.strNotBlank(form.name)) {
-                params[form.name] = form.content;
+                //判断是否是urlPath参数
+                if(instance.debugPathFlag){
+                  if(instance.debugPathParams.indexOf(form.content)==-1){
+                    params[form.name] = form.content;
+                  }else{
+                      var replaceRege="\{"+form.name+"\}";
+                      url=url.replace(replaceRege,form.content);
+                    }
+                }else{
+                  params[form.name] = form.content;
+                }
               }
             }
           }
         });
-        return params;
+        validateForm.params=params;
+        //return params;
       }
+      validateForm.url=url;
     },
     debugStreamFlag() {
       var streamFlag = false;
@@ -1146,7 +1184,8 @@ export default {
         }
       });
       return flag;
-    },
+    }
+    ,
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
       console.log("发送url-form接口");
@@ -1161,6 +1200,25 @@ export default {
         var url = this.debugUrl;
         var methodType = this.api.methodType.toLowerCase();
         var formParams = this.debugUrlFormParams();
+        //得到key-value的参数值,对请求类型进行判断，判断是否为path
+        if(instance.debugPathFlag){
+          const realFormParams={};
+          //是path类型的接口,需要对地址、参数进行replace处理
+          this.debugPathParams.forEach(function(pathKey){
+            var replaceRege="\{"+pathKey+"\}";
+            var value=formParams[pathKey];
+            url=url.replace(replaceRege,value);
+          })
+          for(var key in formParams){
+            //判断key在debugPath中是否存在
+            if(instance.debugPathParams.indexOf(key)==-1){
+              //不存在
+              realFormParams[key]=formParams[key];
+            }
+          }
+          //重新赋值
+          formParams=realFormParams;
+        }
         var requestConfig = {
           url: url,
           method: methodType,
@@ -1207,9 +1265,13 @@ export default {
         //raw类型的请求需要判断是何种类型
         var headers = this.debugHeaders();
         var url = this.debugUrl;
+        
         var methodType = this.api.methodType.toLowerCase();
         var fileFlag = this.validateFormDataContaintsFile();
-        var formParams = this.debugFormDataParams(fileFlag);
+        var validateFormd=this.debugFormDataParams(fileFlag);
+        url=validateFormd.url;
+        //var formParams = this.debugFormDataParams(fileFlag);
+        var formParams = validateFormd.params;
         var requestConfig = {
           url: url,
           method: methodType,
