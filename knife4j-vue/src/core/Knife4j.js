@@ -181,18 +181,17 @@ SwaggerBootstrapUi.prototype.initSettings = function () {
   //读取本地变量
   that.$Vue.$localStore.getItem(Constants.globalSettingsKey).then(function (val) {
     //判断是否开启增强
-    if (that.plus) {
-      that.settings = defaultPlusSettings;
+    if (val != undefined && val != null && val != '') {
+      //如果本地存在,则使用本地的
+      that.settings = val;
     } else {
-      if (val != undefined && val != null && val != '') {
-        //如果本地存在,则使用本地的
-        that.settings = val;
+      if (that.plus) {
+        that.settings = defaultPlusSettings;
       } else {
         //判断是否开启增强
         that.settings = defaultSettings;
       }
     }
-
     that.log("Setings------------------------------")
     that.log(that.settings)
     //本地缓存

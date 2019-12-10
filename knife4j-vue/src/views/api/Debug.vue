@@ -115,7 +115,24 @@
             </a-table>
           </a-row>
           <a-row v-if="rawFlag">
-            <editor-debug-show :value="rawText" :mode="rawMode" @change="rawChange"></editor-debug-show>
+            <a-row v-if="rawFormFlag">
+              <!--如果存在raw类型的参数则显示该表格-->
+              <a-table bordered size="small" :rowSelection="rowRawFormSelection" :columns="urlFormColumn" :pagination="pagination" :dataSource="rawFormData" rowKey="id">
+              <!--参数名称-->
+              <template slot="urlFormName" slot-scope="text,record">
+                <a-input placeholder="参数名称" :data-key="record.id" :defaultValue="text" @change="rawFormNameChange" />
+              </template>
+
+              <!--参数名称-->
+              <template slot="urlFormValue" slot-scope="text,record">
+                <a-input placeholder="参数值" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="rawFormContentChange" />
+              </template>
+              <a-row slot="operation" slot-scope="text,record">
+                <a-button type="link" v-if="!record.new" @click="rawFormDelete(record)">删除</a-button>
+              </a-row>
+            </a-table>
+            </a-row>
+            <editor-debug-show style="margin-top:5px;" :value="rawText" :mode="rawMode" @change="rawChange"></editor-debug-show>
           </a-row>
         </a-tab-pane>
       </a-tabs>
@@ -177,6 +194,11 @@ export default {
         onChange(selectrowkey, selectrows) {
           instance.rowFormSelection.selectedRowKeys = selectrowkey;
         }
+      },rowRawFormSelection:{
+        selectedRowKeys: [],
+        onChange(selectrowkey, selectrows) {
+          instance.rowRawFormSelection.selectedRowKeys = selectrowkey;
+        }
       },
       rowUrlFormSelection: {
         selectedRowKeys: [],
@@ -199,6 +221,9 @@ export default {
       formFlag: false,
       urlFormData: [],
       urlFormFlag: false,
+      //raw类型请求存在query类型的参数
+      rawFormData:[],
+      rawFormFlag:false,
       rawDefaultText: "Auto",
       rawFlag: false,
       rawTypeFlag: false,
@@ -360,6 +385,19 @@ export default {
           .length;
         if (bodySize == 1) {
           console.log("显示raw类型");
+          console.log(showApiParameters)
+          //判断raw类型是否还存在query类型的参数,如果存在,加入rawFormdata集合中
+          var rawQueryParams=showApiParameters.filter(param => (param.in !="body" && param.in!="header"));
+          if(rawQueryParams.length>0){
+            //存在
+            this.rawFormFlag=true;
+            //添加参数
+             instance.addGlobalParameterToRawForm(showGlobalParameters);
+             instance.addApiParameterToRawForm(rawQueryParams);
+             //raw-form-data表单
+            this.initFirstRawFormValue();
+            console.log(this.rawFormData)
+          }
           //raw类型
           //raw类型之中可能有表格参数-待写
           this.showTabRaw();
@@ -421,6 +459,11 @@ export default {
         instance.rowFormSelection.selectedRowKeys.push(form.id);
       });
     },
+    initRawFormSelections(){
+      this.rawFormData.forEach(function(form) {
+        instance.rowRawFormSelection.selectedRowKeys.push(form.id);
+      });
+    },
     initUrlFormSelections() {
       this.urlFormData.forEach(function(form) {
         instance.rowUrlFormSelection.selectedRowKeys.push(form.id);
@@ -465,6 +508,24 @@ export default {
         new: true
       };
       this.formData.push(newFormHeader);
+    },addGlobalParameterToRawForm(globalParameters){
+      //raw-form-data类型添加参数
+      if (KUtils.arrNotEmpty(globalParameters)) {
+        globalParameters.forEach(function(global) {
+          var newFormHeader = {
+            id: KUtils.randomMd5(),
+            name: global.name,
+            type: "text",
+            require: false,
+            //文件表单域的target
+            target: null,
+            multipart: false,
+            content: global.value,
+            new: false
+          };
+          instance.rawFormData.push(newFormHeader);
+        });
+      }
     },
     addGlobalParameterToForm(globalParameters) {
       //form-data类型添加参数
@@ -567,6 +628,35 @@ export default {
         });
       }
     },
+    addApiParameterToRawForm(apiParameters){
+      if (KUtils.arrNotEmpty(apiParameters)) {
+        apiParameters.forEach(function(param) {
+          if (param.in == "header") {
+            var newHeader = {
+              id: KUtils.randomMd5(),
+              name: param.name,
+              require: param.require,
+              content: param.txtValue,
+              new: false
+            };
+            instance.headerData.push(newHeader);
+          } else {
+            var newFormHeader = {
+              id: KUtils.randomMd5(),
+              name: param.name,
+              type: "text",
+              //是否必须
+              require: param.require,
+              //文件表单域的target
+              target: null,
+              content: param.txtValue,
+              new: false
+            };
+            instance.rawFormData.push(newFormHeader);
+          }
+        });
+      }
+    },
     addApiParameterToUrlForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
         apiParameters.forEach(function(param) {
@@ -609,6 +699,24 @@ export default {
         new: true
       };
       this.urlFormData.push(newFormHeader);
+    },
+    addNewLineRawFormValue(){
+      var newFormHeader = {
+        id: KUtils.randomMd5(),
+        name: "",
+        type: "text",
+        //是否必须
+        require: false,
+        //文件表单域的target
+        target: null,
+        content: "",
+        new: true
+      };
+      this.rawFormData.push(newFormHeader);
+    },
+    initFirstRawFormValue(){
+      this.addNewLineRawFormValue();
+      this.initRawFormSelections();
     },
     initUrlFormValue() {
       this.addNewLineUrlFormValue();
@@ -832,6 +940,15 @@ export default {
       }
       this.initFormSelections();
     },
+    rawFormDelete(record){
+      var nforms = [];
+      this.rawFormData.forEach(function(form) {
+        if (form.id != record.id) {
+          nforms.push(form);
+        }
+      });
+      this.rawFormData = nforms;
+    },
     urlFormDelete(record) {
       var nforms = [];
       this.urlFormData.forEach(function(form) {
@@ -840,6 +957,28 @@ export default {
         }
       });
       this.urlFormData = nforms;
+    },
+    rawFormNameChange(e){
+      var formValue = e.target.value;
+      var formId = e.target.getAttribute("data-key");
+      var record = this.rawFormData.filter(form => form.id == formId)[0];
+      if (record.new) {
+        this.rawFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.name = formValue;
+            form.new = false;
+          }
+        });
+        this.addNewLineRawFormValue();
+      } else {
+        this.rawFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.name = formValue;
+            form.new = false;
+          }
+        });
+      }
+      this.initRawFormSelections();
     },
     urlFormNameChange(e) {
       var formValue = e.target.value;
@@ -862,6 +1001,28 @@ export default {
         });
       }
       this.initUrlFormSelections();
+    },
+    rawFormContentChange(e){
+      var formValue = e.target.value;
+      var formId = e.target.getAttribute("data-key");
+      var record = this.rawFormData.filter(form => form.id == formId)[0];
+      if (record.new) {
+        this.rawFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.content = formValue;
+            form.new = false;
+          }
+        });
+        this.addNewLineRawFormValue();
+      } else {
+        this.rawFormData.forEach(function(form) {
+          if (form.id == record.id) {
+            form.content = formValue;
+            form.new = false;
+          }
+        });
+      }
+      this.initRawFormSelections();
     },
     urlFormContentChange(e) {
       var formValue = e.target.value;
@@ -944,7 +1105,7 @@ export default {
                 headers[header.name] = encodeURIComponent(header.content);
               } else {
                 //header名称不等于空
-                headers[header.name] = header.content;
+                headers[header.name] = KUtils.toString(header.content,"");
               }
             }
           }
@@ -970,6 +1131,25 @@ export default {
         }
       }
       return headers;
+    },
+    debugRawFormParams(){
+      //获取url-form类型的参数
+      var params = {};
+      this.rawFormData.forEach(function(form) {
+        if (!form.new) {
+          //判断header是否选中
+          var tmphArrs = instance.rowRawFormSelection.selectedRowKeys.filter(
+            rs => rs == form.id
+          );
+          if (tmphArrs.length > 0) {
+            //必须选中
+            if (KUtils.strNotBlank(form.name)) {
+              params[form.name] = form.content;
+            }
+          }
+        }
+      });
+      return params;
     },
     debugUrlFormParams() {
       //获取url-form类型的参数
@@ -1140,6 +1320,33 @@ export default {
                     message = form.name + "文件不能为空";
                     break;
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+      return { validate: validate, message: message };
+    },
+    validateRawForm(){
+      //验证raw-form的参数
+      var validate = true;
+      var message = "";
+      for (var i = 0; i < this.rawFormData.length; i++) {
+        var form = this.rawFormData[i];
+        if (!form.new) {
+          //判断header是否选中
+          var tmphArrs = instance.rowRawFormSelection.selectedRowKeys.filter(
+            rs => rs == form.id
+          );
+          if (tmphArrs.length > 0) {
+            //必须选中
+            if (KUtils.strNotBlank(form.name)) {
+              if (form.require) {
+                if (!KUtils.strNotBlank(form.content)) {
+                  validate = false;
+                  message = form.name + "不能为空";
+                  break;
                 }
               }
             }
@@ -1321,21 +1528,45 @@ export default {
     debugSendRawRequest() {
       //发送raw类型的请求
       console.log("发送raw接口");
-      //发送状态置为已发送请求
-      this.debugSend = true;
-      var startTime = new Date();
-      //raw类型的请求需要判断是何种类型
-      var headers = this.debugHeaders();
-      var url = this.debugUrl;
-      var methodType = this.api.methodType.toLowerCase();
-      var data = this.rawText;
-      console.log(headers);
-      console.log(this.rawText);
-      DebugAxios.create()
+      var validateForm = this.validateRawForm();
+      if(validateForm.validate){
+        //发送状态置为已发送请求
+        this.debugSend = true;
+        var startTime = new Date();
+        //raw类型的请求需要判断是何种类型
+        var headers = this.debugHeaders();
+        var url = this.debugUrl;
+        var methodType = this.api.methodType.toLowerCase();
+        var data = this.rawText;
+        var formParams = this.debugRawFormParams();
+        //得到key-value的参数值,对请求类型进行判断，判断是否为path
+        if(instance.debugPathFlag){
+          const realFormParams={};
+          //是path类型的接口,需要对地址、参数进行replace处理
+          this.debugPathParams.forEach(function(pathKey){
+            var replaceRege="\{"+pathKey+"\}";
+            var value=formParams[pathKey];
+            url=url.replace(replaceRege,value);
+          })
+          for(var key in formParams){
+            //判断key在debugPath中是否存在
+            if(instance.debugPathParams.indexOf(key)==-1){
+              //不存在
+              realFormParams[key]=formParams[key];
+            }
+          }
+          //重新赋值
+          formParams=realFormParams;
+        }
+
+        console.log(headers);
+        console.log(this.rawText);
+        DebugAxios.create()
         .request({
           url: url,
           method: methodType,
           headers: headers,
+          params:formParams,
           data: data,
           timeout: 0
         })
@@ -1348,6 +1579,9 @@ export default {
           } else {
           }
         });
+      }else{
+        instance.$message.info(validateForm.message);
+      }
     },
     handleDebugSuccess(startTime, res) {
       //成功的情况
