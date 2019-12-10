@@ -50,7 +50,7 @@ public class Knife4jAutoConfiguration {
         if (knife4jProperties==null){
             markdownFiles=new MarkdownFiles(environment!=null?environment.getProperty("knife4j.markdowns"):"");
         }else{
-            markdownFiles=new MarkdownFiles(knife4jProperties.getMarkdowns());
+            markdownFiles=new MarkdownFiles(knife4jProperties.getMarkdowns()==null?"":knife4jProperties.getMarkdowns());
         }
         return markdownFiles;
     }
@@ -78,7 +78,12 @@ public class Knife4jAutoConfiguration {
                 securityBasicAuthFilter=new SecurityBasicAuthFilter(enableSwaggerBasicAuth,dftUserName,dftPass);
             }
         }else{
-            securityBasicAuthFilter=new SecurityBasicAuthFilter(knife4jProperties.getBasic().isEnable(),knife4jProperties.getBasic().getUsername(),knife4jProperties.getBasic().getPassword());
+            //判断非空
+            if(knife4jProperties.getBasic()==null){
+                securityBasicAuthFilter=new SecurityBasicAuthFilter(enableSwaggerBasicAuth,dftUserName,dftPass);
+            }else{
+                securityBasicAuthFilter=new SecurityBasicAuthFilter(knife4jProperties.getBasic().isEnable(),knife4jProperties.getBasic().getUsername(),knife4jProperties.getBasic().getPassword());
+            }
         }
         return securityBasicAuthFilter;
     }
