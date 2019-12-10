@@ -4,7 +4,7 @@
       <a-col :class="'knife4j-debug-api-' + api.methodType.toLowerCase()" :span="24">
         <a-input-group compact>
           <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
-          <a-input style="width: 80%" :value="debugUrl" />
+          <a-input style="width: 80%" :value="debugUrl"  @change="debugUrlChange" />
           <a-button class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送</a-button>
         </a-input-group>
       </a-col>
@@ -218,6 +218,10 @@ export default {
     //this.initShowFormTable();
   },
   methods: {
+    debugUrlChange(e){
+      this.debugUrl=e.target.value;
+
+    },
     initDebugUrl() {
       this.debugUrl = this.api.url;
     },

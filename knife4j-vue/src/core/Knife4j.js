@@ -1871,6 +1871,14 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
           minfo.in = KUtils.propValue("in", m, "");
           minfo.require = KUtils.propValue("required", m, false);
           minfo.description = KUtils.replaceMultipLineStr(KUtils.propValue("description", m, ""));
+          //add at 2019-12-10 09:20:08  判断请求参数类型是否包含format
+          //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/161
+          var _format = KUtils.propValue("format", m, "");
+          if (KUtils.strNotBlank(_format)) {
+            //存在format
+            var _rtype = minfo.type + "(" + _format + ")";
+            minfo.type = _rtype;
+          }
           //判断是否有枚举类型
           if (m.hasOwnProperty("enum")) {
             //that.log("包括枚举类型...")
