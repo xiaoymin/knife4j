@@ -350,11 +350,69 @@ export default {
             //判断当前header参数在缓存中是否存在，如果当前header存在值,则不更新
             if (!KUtils.strNotBlank(header.content)) {
               var cacheHeaderArr = cacheHeaderData.filter(
-                ch => (ch.id = header.id)
+                ch => ch.name == header.name
               );
               if (cacheHeaderArr.length > 0) {
                 //update
                 header.content = cacheHeaderArr[0].content;
+              }
+            }
+          });
+        }
+      }
+    },
+    updateUrlFormCacheApi(cacheApi) {
+      console.log("从缓存中更新UrlForm参数");
+      //从缓存中更新header参数
+      if (this.enableRequestCache) {
+        if (KUtils.checkUndefined(cacheApi)) {
+          var cacheUrlFormData = cacheApi.urlFormData;
+          instance.urlFormData.forEach(function(form) {
+            if (!KUtils.strNotBlank(form.content)) {
+              var cacheUrlFormArr = cacheUrlFormData.filter(
+                f => f.name == form.name
+              );
+              if (cacheUrlFormArr.length > 0) {
+                form.content = cacheUrlFormArr[0].content;
+              }
+            }
+          });
+        }
+      }
+    },
+    updateRawFormCacheApi(cacheApi) {
+      console.log("从缓存中更新rawForm参数");
+      //从缓存中更新header参数
+      if (this.enableRequestCache) {
+        if (KUtils.checkUndefined(cacheApi)) {
+          var cacheFormData = cacheApi.rawFormData;
+          instance.rawFormData.forEach(function(form) {
+            if (!KUtils.strNotBlank(form.content)) {
+              console.log("缓存-raw:" + form.id);
+              console.log(cacheFormData);
+              var cacheFormArr = cacheFormData.filter(f => f.name == form.name);
+              console.log(cacheFormArr);
+              if (cacheFormArr.length > 0) {
+                form.content = cacheFormArr[0].content;
+              }
+            }
+          });
+          //更新Txt
+          instance.rawText = cacheApi.rawText;
+        }
+      }
+    },
+    updateFormCacheApi(cacheApi) {
+      console.log("从缓存中更新Form参数");
+      //从缓存中更新header参数
+      if (this.enableRequestCache) {
+        if (KUtils.checkUndefined(cacheApi)) {
+          var cacheFormData = cacheApi.formData;
+          instance.formData.forEach(function(form) {
+            if (!KUtils.strNotBlank(form.content)) {
+              var cacheFormArr = cacheFormData.filter(f => f.name == form.name);
+              if (cacheFormArr.length > 0) {
+                form.content = cacheFormArr[0].content;
               }
             }
           });
@@ -437,14 +495,18 @@ export default {
             //添加参数
             instance.addGlobalParameterToRawForm(showGlobalParameters);
             instance.addApiParameterToRawForm(rawQueryParams);
-            //raw-form-data表单
-            this.initFirstRawFormValue();
-            console.log(this.rawFormData);
           }
           //raw类型
           //raw类型之中可能有表格参数-待写
           this.showTabRaw();
           instance.addApiParameterToRaw(showApiParameters);
+          //从缓存更新
+          instance.updateRawFormCacheApi(cacheApi);
+          if (this.rawFormFlag) {
+            //raw-form-data表单
+            this.initFirstRawFormValue();
+            console.log(this.rawFormData);
+          }
         } else {
           //判断是否包含文件
           var fileSize = showApiParameters.filter(
@@ -462,6 +524,7 @@ export default {
             this.showTabForm();
             instance.addGlobalParameterToForm(showGlobalParameters);
             instance.addApiParameterToForm(showApiParameters);
+            instance.updateFormCacheApi(cacheApi);
             //form-data表单
             this.initFirstFormValue();
           } else {
@@ -469,6 +532,7 @@ export default {
             this.showTabUrlForm();
             instance.addGlobalParameterToUrlForm(showGlobalParameters);
             instance.addApiParameterToUrlForm(showApiParameters);
+            instance.updateUrlFormCacheApi(cacheApi);
             //url-form-data表单
             instance.initUrlFormValue();
           }
@@ -478,6 +542,7 @@ export default {
         this.showTabUrlForm();
         instance.addGlobalParameterToUrlForm(showGlobalParameters);
         instance.addApiParameterToUrlForm(showApiParameters);
+        instance.updateUrlFormCacheApi(cacheApi);
         //url-form-data表单
         instance.initUrlFormValue();
       }
