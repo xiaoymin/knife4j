@@ -4,7 +4,7 @@
       <a-col :class="'knife4j-debug-api-' + api.methodType.toLowerCase()" :span="24">
         <a-input-group compact>
           <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
-          <a-input style="width: 80%" :value="debugUrl"  @change="debugUrlChange" />
+          <a-input style="width: 80%" :value="debugUrl" @change="debugUrlChange" />
           <a-button class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送</a-button>
         </a-input-group>
       </a-col>
@@ -118,19 +118,19 @@
             <a-row v-if="rawFormFlag">
               <!--如果存在raw类型的参数则显示该表格-->
               <a-table bordered size="small" :rowSelection="rowRawFormSelection" :columns="urlFormColumn" :pagination="pagination" :dataSource="rawFormData" rowKey="id">
-              <!--参数名称-->
-              <template slot="urlFormName" slot-scope="text,record">
-                <a-input placeholder="参数名称" :data-key="record.id" :defaultValue="text" @change="rawFormNameChange" />
-              </template>
+                <!--参数名称-->
+                <template slot="urlFormName" slot-scope="text,record">
+                  <a-input placeholder="参数名称" :data-key="record.id" :defaultValue="text" @change="rawFormNameChange" />
+                </template>
 
-              <!--参数名称-->
-              <template slot="urlFormValue" slot-scope="text,record">
-                <a-input placeholder="参数值" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="rawFormContentChange" />
-              </template>
-              <a-row slot="operation" slot-scope="text,record">
-                <a-button type="link" v-if="!record.new" @click="rawFormDelete(record)">删除</a-button>
-              </a-row>
-            </a-table>
+                <!--参数名称-->
+                <template slot="urlFormValue" slot-scope="text,record">
+                  <a-input placeholder="参数值" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="rawFormContentChange" />
+                </template>
+                <a-row slot="operation" slot-scope="text,record">
+                  <a-button type="link" v-if="!record.new" @click="rawFormDelete(record)">删除</a-button>
+                </a-row>
+              </a-table>
             </a-row>
             <editor-debug-show style="margin-top:5px;" :value="rawText" :mode="rawMode" @change="rawChange"></editor-debug-show>
           </a-row>
@@ -169,6 +169,8 @@ export default {
   },
   data() {
     return {
+      //是否开启缓存
+      enableRequestCache: false,
       headerColumn: constant.debugRequestHeaderColumn,
       formColumn: constant.debugFormRequestHeader,
       urlFormColumn: constant.debugUrlFormRequestHeader,
@@ -194,7 +196,8 @@ export default {
         onChange(selectrowkey, selectrows) {
           instance.rowFormSelection.selectedRowKeys = selectrowkey;
         }
-      },rowRawFormSelection:{
+      },
+      rowRawFormSelection: {
         selectedRowKeys: [],
         onChange(selectrowkey, selectrows) {
           instance.rowRawFormSelection.selectedRowKeys = selectrowkey;
@@ -212,9 +215,9 @@ export default {
       //调试接口
       debugUrl: "",
       //当前请求接口地址是否为path类型,如果是,在发送请求时需要对地址栏进行替换
-      debugPathFlag:false,
+      debugPathFlag: false,
       //需要替换的参数值key
-      debugPathParams:[],
+      debugPathParams: [],
       debugSend: false,
       //form参数值对象
       formData: [],
@@ -222,8 +225,8 @@ export default {
       urlFormData: [],
       urlFormFlag: false,
       //raw类型请求存在query类型的参数
-      rawFormData:[],
-      rawFormFlag:false,
+      rawFormData: [],
+      rawFormFlag: false,
       rawDefaultText: "Auto",
       rawFlag: false,
       rawTypeFlag: false,
@@ -247,42 +250,57 @@ export default {
     //this.initShowFormTable();
   },
   methods: {
-    debugUrlChange(e){
-      this.debugUrl=e.target.value;
-
+    debugUrlChange(e) {
+      this.debugUrl = e.target.value;
     },
     initDebugUrl() {
       this.debugUrl = this.api.url;
       //判断是否为paht类型
-      var reg=new RegExp('\{(.*?)\}','ig');
-      console.log("地址是否为path")
-      if(reg.test(this.debugUrl)){
-        this.debugPathFlag=true;
-        var ma=null;
-        var mreg=new RegExp('\{(.*?)\}','ig');
-        while(( ma=mreg.exec(this.debugUrl))){
+      var reg = new RegExp("{(.*?)}", "ig");
+      console.log("地址是否为path");
+      if (reg.test(this.debugUrl)) {
+        this.debugPathFlag = true;
+        var ma = null;
+        var mreg = new RegExp("{(.*?)}", "ig");
+        while ((ma = mreg.exec(this.debugUrl))) {
           instance.debugPathParams.push(ma[1]);
         }
       }
-      console.log(this.debugPathFlag)
-      console.log(this.debugPathParams)
+      console.log(this.debugPathFlag);
+      console.log(this.debugPathParams);
     },
     initLocalGlobalParameters() {
       const key = this.api.instanceId;
-      //初始化读取本地缓存全局参数
-      this.$localStore.getItem(constant.globalParameter).then(function(val) {
-        if (val != null) {
-          if (val[key] != undefined && val[key] != null) {
-            instance.globalParameters = val[key];
+      //读取是否开启请求缓存标志
+      this.$localStore
+        .getItem(constant.globalSettingsKey)
+        .then(function(settings) {
+          if (KUtils.checkUndefined(settings)) {
+            instance.enableRequestCache = settings.enableRequestCache;
           }
-        }
-        //开始同步执行其他方法-初始化请求头参数
-        instance.initHeaderParameter();
-        //请求体参数初始化
-        instance.initBodyParameter();
-      });
+          //初始化读取本地缓存全局参数
+          instance.$localStore
+            .getItem(constant.globalParameter)
+            .then(function(val) {
+              if (val != null) {
+                if (val[key] != undefined && val[key] != null) {
+                  instance.globalParameters = val[key];
+                }
+              }
+              //当前接口的id作为缓存key值
+              var cacheApiKey = constant.debugCacheApiId + instance.api.id;
+              instance.$localStore
+                .getItem(cacheApiKey)
+                .then(function(cacheApi) {
+                  //开始同步执行其他方法-初始化请求头参数
+                  instance.initHeaderParameter(cacheApi);
+                  //请求体参数初始化
+                  instance.initBodyParameter(cacheApi);
+                });
+            });
+        });
     },
-    initHeaderParameter() {
+    initHeaderParameter(cacheApi) {
       //本都缓存读取到参数，初始化header参数
       instance.globalParameters.forEach(function(param) {
         if (param.in == "header") {
@@ -314,13 +332,36 @@ export default {
             instance.headerData.push(newHeader);
           });
         }
+        instance.updateHeaderFromCacheApi(cacheApi);
+        //判断是否开启了接口请求参数
         instance.addNewLineHeader();
         instance.initSelectionHeaders();
         //计算heaer数量
         instance.headerResetCalc();
       });
     },
-    initBodyParameter() {
+    updateHeaderFromCacheApi(cacheApi) {
+      console.log("从缓存中更新header参数");
+      //从缓存中更新header参数
+      if (this.enableRequestCache) {
+        if (KUtils.checkUndefined(cacheApi)) {
+          var cacheHeaderData = cacheApi.headerData;
+          instance.headerData.forEach(function(header) {
+            //判断当前header参数在缓存中是否存在，如果当前header存在值,则不更新
+            if (!KUtils.strNotBlank(header.content)) {
+              var cacheHeaderArr = cacheHeaderData.filter(
+                ch => (ch.id = header.id)
+              );
+              if (cacheHeaderArr.length > 0) {
+                //update
+                header.content = cacheHeaderArr[0].content;
+              }
+            }
+          });
+        }
+      }
+    },
+    initBodyParameter(cacheApi) {
       //this.initBodyType();
       //初始化请求体参数
       //得到body类型的请求参数
@@ -385,18 +426,20 @@ export default {
           .length;
         if (bodySize == 1) {
           console.log("显示raw类型");
-          console.log(showApiParameters)
+          console.log(showApiParameters);
           //判断raw类型是否还存在query类型的参数,如果存在,加入rawFormdata集合中
-          var rawQueryParams=showApiParameters.filter(param => (param.in !="body" && param.in!="header"));
-          if(rawQueryParams.length>0){
+          var rawQueryParams = showApiParameters.filter(
+            param => param.in != "body" && param.in != "header"
+          );
+          if (rawQueryParams.length > 0) {
             //存在
-            this.rawFormFlag=true;
+            this.rawFormFlag = true;
             //添加参数
-             instance.addGlobalParameterToRawForm(showGlobalParameters);
-             instance.addApiParameterToRawForm(rawQueryParams);
-             //raw-form-data表单
+            instance.addGlobalParameterToRawForm(showGlobalParameters);
+            instance.addApiParameterToRawForm(rawQueryParams);
+            //raw-form-data表单
             this.initFirstRawFormValue();
-            console.log(this.rawFormData)
+            console.log(this.rawFormData);
           }
           //raw类型
           //raw类型之中可能有表格参数-待写
@@ -459,7 +502,7 @@ export default {
         instance.rowFormSelection.selectedRowKeys.push(form.id);
       });
     },
-    initRawFormSelections(){
+    initRawFormSelections() {
       this.rawFormData.forEach(function(form) {
         instance.rowRawFormSelection.selectedRowKeys.push(form.id);
       });
@@ -508,7 +551,8 @@ export default {
         new: true
       };
       this.formData.push(newFormHeader);
-    },addGlobalParameterToRawForm(globalParameters){
+    },
+    addGlobalParameterToRawForm(globalParameters) {
       //raw-form-data类型添加参数
       if (KUtils.arrNotEmpty(globalParameters)) {
         globalParameters.forEach(function(global) {
@@ -628,7 +672,7 @@ export default {
         });
       }
     },
-    addApiParameterToRawForm(apiParameters){
+    addApiParameterToRawForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
         apiParameters.forEach(function(param) {
           if (param.in == "header") {
@@ -700,7 +744,7 @@ export default {
       };
       this.urlFormData.push(newFormHeader);
     },
-    addNewLineRawFormValue(){
+    addNewLineRawFormValue() {
       var newFormHeader = {
         id: KUtils.randomMd5(),
         name: "",
@@ -714,7 +758,7 @@ export default {
       };
       this.rawFormData.push(newFormHeader);
     },
-    initFirstRawFormValue(){
+    initFirstRawFormValue() {
       this.addNewLineRawFormValue();
       this.initRawFormSelections();
     },
@@ -940,7 +984,7 @@ export default {
       }
       this.initFormSelections();
     },
-    rawFormDelete(record){
+    rawFormDelete(record) {
       var nforms = [];
       this.rawFormData.forEach(function(form) {
         if (form.id != record.id) {
@@ -958,7 +1002,7 @@ export default {
       });
       this.urlFormData = nforms;
     },
-    rawFormNameChange(e){
+    rawFormNameChange(e) {
       var formValue = e.target.value;
       var formId = e.target.getAttribute("data-key");
       var record = this.rawFormData.filter(form => form.id == formId)[0];
@@ -1002,7 +1046,7 @@ export default {
       }
       this.initUrlFormSelections();
     },
-    rawFormContentChange(e){
+    rawFormContentChange(e) {
       var formValue = e.target.value;
       var formId = e.target.getAttribute("data-key");
       var record = this.rawFormData.filter(form => form.id == formId)[0];
@@ -1105,7 +1149,7 @@ export default {
                 headers[header.name] = encodeURIComponent(header.content);
               } else {
                 //header名称不等于空
-                headers[header.name] = KUtils.toString(header.content,"");
+                headers[header.name] = KUtils.toString(header.content, "");
               }
             }
           }
@@ -1132,7 +1176,7 @@ export default {
       }
       return headers;
     },
-    debugRawFormParams(){
+    debugRawFormParams() {
       //获取url-form类型的参数
       var params = {};
       this.rawFormData.forEach(function(form) {
@@ -1172,9 +1216,9 @@ export default {
     },
     debugFormDataParams(fileFlag) {
       //form-data类型的请求参数
-      var validateForm={url:"",params:{}}
-      var url=this.debugUrl;
-      console.log("表单验证url:"+url)
+      var validateForm = { url: "", params: {} };
+      var url = this.debugUrl;
+      console.log("表单验证url:" + url);
       if (fileFlag) {
         //文件
         var formData = new FormData();
@@ -1190,19 +1234,19 @@ export default {
                 //判断类型
                 if (form.type == "text") {
                   //判断是否是urlPath参数
-                  if(instance.debugPathFlag){
-                    if(instance.debugPathParams.indexOf(form.name)==-1){
+                  if (instance.debugPathFlag) {
+                    if (instance.debugPathParams.indexOf(form.name) == -1) {
                       formData.append(form.name, form.content);
-                    }else{
-                       var replaceRege="\{"+form.name+"\}";
-                      url=url.replace(replaceRege,form.content);
+                    } else {
+                      var replaceRege = "{" + form.name + "}";
+                      url = url.replace(replaceRege, form.content);
                     }
-                  }else{
+                  } else {
                     formData.append(form.name, form.content);
                   }
                 } else {
                   //文件
-                  if(KUtils.checkUndefined(form.target)){
+                  if (KUtils.checkUndefined(form.target)) {
                     var files = form.target.files;
                     //判断是否是运行多个上传
                     if (files.length > 0) {
@@ -1211,13 +1255,12 @@ export default {
                       }
                     }
                   }
-                  
                 }
               }
             }
           }
         });
-        validateForm.params=formData;
+        validateForm.params = formData;
       } else {
         var params = {};
         this.formData.forEach(function(form) {
@@ -1230,24 +1273,24 @@ export default {
               //必须选中
               if (KUtils.strNotBlank(form.name)) {
                 //判断是否是urlPath参数
-                if(instance.debugPathFlag){
-                  if(instance.debugPathParams.indexOf(form.name)==-1){
+                if (instance.debugPathFlag) {
+                  if (instance.debugPathParams.indexOf(form.name) == -1) {
                     params[form.name] = form.content;
-                  }else{
-                      var replaceRege="\{"+form.name+"\}";
-                      url=url.replace(replaceRege,form.content);
-                    }
-                }else{
+                  } else {
+                    var replaceRege = "{" + form.name + "}";
+                    url = url.replace(replaceRege, form.content);
+                  }
+                } else {
                   params[form.name] = form.content;
                 }
               }
             }
           }
         });
-        validateForm.params=params;
+        validateForm.params = params;
         //return params;
       }
-      validateForm.url=url;
+      validateForm.url = url;
       return validateForm;
     },
     debugStreamFlag() {
@@ -1328,7 +1371,7 @@ export default {
       }
       return { validate: validate, message: message };
     },
-    validateRawForm(){
+    validateRawForm() {
       //验证raw-form的参数
       var validate = true;
       var message = "";
@@ -1399,8 +1442,7 @@ export default {
         }
       });
       return flag;
-    }
-    ,
+    },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
       console.log("发送url-form接口");
@@ -1416,23 +1458,23 @@ export default {
         var methodType = this.api.methodType.toLowerCase();
         var formParams = this.debugUrlFormParams();
         //得到key-value的参数值,对请求类型进行判断，判断是否为path
-        if(instance.debugPathFlag){
-          const realFormParams={};
+        if (instance.debugPathFlag) {
+          const realFormParams = {};
           //是path类型的接口,需要对地址、参数进行replace处理
-          this.debugPathParams.forEach(function(pathKey){
-            var replaceRege="\{"+pathKey+"\}";
-            var value=formParams[pathKey];
-            url=url.replace(replaceRege,value);
-          })
-          for(var key in formParams){
+          this.debugPathParams.forEach(function(pathKey) {
+            var replaceRege = "{" + pathKey + "}";
+            var value = formParams[pathKey];
+            url = url.replace(replaceRege, value);
+          });
+          for (var key in formParams) {
             //判断key在debugPath中是否存在
-            if(instance.debugPathParams.indexOf(key)==-1){
+            if (instance.debugPathParams.indexOf(key) == -1) {
               //不存在
-              realFormParams[key]=formParams[key];
+              realFormParams[key] = formParams[key];
             }
           }
           //重新赋值
-          formParams=realFormParams;
+          formParams = realFormParams;
         }
         var requestConfig = {
           url: url,
@@ -1480,12 +1522,12 @@ export default {
         //raw类型的请求需要判断是何种类型
         var headers = this.debugHeaders();
         var url = this.debugUrl;
-        
+
         var methodType = this.api.methodType.toLowerCase();
         var fileFlag = this.validateFormDataContaintsFile();
-        var validateFormd=this.debugFormDataParams(fileFlag);
-        console.log(validateFormd)
-        url=validateFormd.url;
+        var validateFormd = this.debugFormDataParams(fileFlag);
+        console.log(validateFormd);
+        url = validateFormd.url;
         //var formParams = this.debugFormDataParams(fileFlag);
         var formParams = validateFormd.params;
         var requestConfig = {
@@ -1529,7 +1571,7 @@ export default {
       //发送raw类型的请求
       console.log("发送raw接口");
       var validateForm = this.validateRawForm();
-      if(validateForm.validate){
+      if (validateForm.validate) {
         //发送状态置为已发送请求
         this.debugSend = true;
         var startTime = new Date();
@@ -1540,46 +1582,46 @@ export default {
         var data = this.rawText;
         var formParams = this.debugRawFormParams();
         //得到key-value的参数值,对请求类型进行判断，判断是否为path
-        if(instance.debugPathFlag){
-          const realFormParams={};
+        if (instance.debugPathFlag) {
+          const realFormParams = {};
           //是path类型的接口,需要对地址、参数进行replace处理
-          this.debugPathParams.forEach(function(pathKey){
-            var replaceRege="\{"+pathKey+"\}";
-            var value=formParams[pathKey];
-            url=url.replace(replaceRege,value);
-          })
-          for(var key in formParams){
+          this.debugPathParams.forEach(function(pathKey) {
+            var replaceRege = "{" + pathKey + "}";
+            var value = formParams[pathKey];
+            url = url.replace(replaceRege, value);
+          });
+          for (var key in formParams) {
             //判断key在debugPath中是否存在
-            if(instance.debugPathParams.indexOf(key)==-1){
+            if (instance.debugPathParams.indexOf(key) == -1) {
               //不存在
-              realFormParams[key]=formParams[key];
+              realFormParams[key] = formParams[key];
             }
           }
           //重新赋值
-          formParams=realFormParams;
+          formParams = realFormParams;
         }
 
         console.log(headers);
         console.log(this.rawText);
         DebugAxios.create()
-        .request({
-          url: url,
-          method: methodType,
-          headers: headers,
-          params:formParams,
-          data: data,
-          timeout: 0
-        })
-        .then(function(res) {
-          instance.handleDebugSuccess(startTime, res);
-        })
-        .catch(function(err) {
-          if (err.response) {
-            instance.handleDebugError(startTime, err.response);
-          } else {
-          }
-        });
-      }else{
+          .request({
+            url: url,
+            method: methodType,
+            headers: headers,
+            params: formParams,
+            data: data,
+            timeout: 0
+          })
+          .then(function(res) {
+            instance.handleDebugSuccess(startTime, res);
+          })
+          .catch(function(err) {
+            if (err.response) {
+              instance.handleDebugError(startTime, err.response);
+            } else {
+            }
+          });
+      } else {
         instance.$message.info(validateForm.message);
       }
     },
@@ -1592,6 +1634,7 @@ export default {
       instance.setResponseStatus(startTime, res);
       instance.setResponseCurl(res.request);
       instance.callChildEditorShow();
+      instance.storeApiParams();
     },
     handleDebugError(startTime, resp) {
       console.log("失败情况---");
@@ -1603,6 +1646,38 @@ export default {
       instance.setResponseStatus(startTime, resp);
       instance.setResponseCurl(resp.request);
       instance.callChildEditorShow();
+      instance.storeApiParams();
+    },
+    storeApiParams() {
+      //对于开启请求参数缓存的配置,在接口发送后,缓存配置
+      if (this.enableRequestCache) {
+        var cacheApi = {
+          headerData: [],
+          formData: [],
+          urlFormData: [],
+          rawFormData: [],
+          rawText: ""
+        };
+        var cacheApiKey = constant.debugCacheApiId + instance.api.id;
+        //得到headercans
+        cacheApi.headerData = this.headerData.filter(
+          header => header.new == false
+        );
+        //得到form
+        cacheApi.formData = this.formData.filter(form => form.new == false);
+        //url-form
+        cacheApi.urlFormData = this.urlFormData.filter(
+          form => form.new == false
+        );
+        //raw-form
+        cacheApi.rawFormData = this.rawFormData.filter(
+          form => form.new == false
+        );
+        cacheApi.rawText = this.rawText;
+        console.log("缓存请求参数");
+        console.log(cacheApi);
+        instance.$localStore.setItem(cacheApiKey, cacheApi);
+      }
     },
     setResponseHeaders(respHeaders) {
       //给相应请求头表格赋值

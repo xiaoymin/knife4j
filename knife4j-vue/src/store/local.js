@@ -1,6 +1,5 @@
 import localForage from 'localforage';
 import Vue from 'vue';
-import Constants from './constants'
 /**
  * 创建默认实例
  */

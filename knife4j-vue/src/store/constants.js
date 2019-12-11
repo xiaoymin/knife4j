@@ -300,6 +300,7 @@ const constants = {
       }
     }
   ],
+  debugCacheApiId: "Knife4jCacheApi",
   i18n: {
     zh: {
       title: "swagger-bootstrap-ui-前后端api接口文档",
