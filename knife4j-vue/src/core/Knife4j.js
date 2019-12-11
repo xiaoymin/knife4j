@@ -182,7 +182,10 @@ SwaggerBootstrapUi.prototype.initSettings = function () {
   that.$Vue.$localStore.getItem(Constants.globalSettingsKey).then(function (val) {
     //判断是否开启增强
     if (val != undefined && val != null && val != '') {
-      //如果本地存在,则使用本地的
+      if (that.plus) {
+        val.enableSwaggerBootstrapUi = defaultPlusSettings.enableSwaggerBootstrapUi
+        val.enableRequestCache = defaultPlusSettings.enableRequestCache;
+      } //如果本地存在,则使用本地的
       that.settings = val;
     } else {
       if (that.plus) {
