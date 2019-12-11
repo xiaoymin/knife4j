@@ -16,7 +16,7 @@
             <router-link to="/documentManager/Settings">
               <a-icon type="setting" /> 个性化配置</router-link>
           </a-menu-item>
-          <a-menu-item>
+          <a-menu-item @click="clearLocalCache">
             <a-icon type="delete" /> 清除缓存
           </a-menu-item>
           <!-- <a-menu-divider />
@@ -97,6 +97,12 @@ export default {
     },
     onItemClick(item, tabProps) {
       console.log(item, tabProps);
+    },
+    clearLocalCache() {
+      try {
+        this.$localStore.clear();
+      } catch (error) {}
+      this.$message.info("清除本地缓存成功");
     }
   }
 };
