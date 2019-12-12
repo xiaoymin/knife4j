@@ -175,10 +175,22 @@ const utils = {
     };
     return bobj;
   },
+  copyOneObject(source) {
+    var target = {};
+    for (var k in source) {
+      target[k] = source[k];
+    }
+    return target;
+  },
   randomMd5() {
     //生成一个随机MD5码
     return md5(new Date().getTime().toString() +
       Math.floor(Math.random() * 10000).toString());
+  },
+  randomMd5Str(str) {
+    //生成一个随机MD5码
+    return md5(new Date().getTime().toString() +
+      Math.floor(Math.random() * 10000).toString() + str);
   },
   formatter: function (data, parentPath = "/", parentAuthority) {
     return data.map(item => {

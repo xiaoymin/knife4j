@@ -560,7 +560,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         api = api.substr(1);
       }
       //测试
-      //api = "jj1.json";
+      //api = "jj2.json";
       that.$Vue.$axios({
         url: api,
         dataType: 'json',
@@ -973,13 +973,12 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
           swud.value = defiTypeValue;
         }
       }
-
+      //console.log("开始递归---------------deepTreeTableRefParameter")
       deepTreeTableRefParameter(swud, that, swud, swud);
-
+      //console.log(swud)
       that.currentInstance.difArrs.push(swud);
     }
   }
-
   //解析tags标签
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("tags")) {
     var tags = menu["tags"];
@@ -1259,293 +1258,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   that.log("开始解析refTreetableparameters属性.................")
   that.log(new Date().toTimeString());
   var pathStartTime = new Date().getTime();
-  //遍历 refTreetableparameters属性
-  if (that.currentInstance.paths != null && that.currentInstance.paths.length > 0) {
-    that.currentInstance.paths.forEach(function (path) {
-      //})
-      //$.each(that.currentInstance.paths, function (i, path) {
-      //解析请求Model
-      //var requestParams=path.refTreetableparameters;
-      var requestParams = path.refTreetableModelsparameters;
-      if (requestParams != null && requestParams != undefined && requestParams.length > 0) {
-        requestParams.forEach(function (param) {
-          //})
-          //$.each(requestParams, function (j, param) {
-          var name = param.name;
-          //判断集合中是否存在name
-          if (that.currentInstance.modelNames.indexOf(name) == -1) {
-            //if ($.inArray(name, that.currentInstance.modelNames) == -1) {
-            that.currentInstance.modelNames.push(name);
-            //不存在
-            var model = new SwaggerBootstrapUiModel(param.id, name);
-            //遍历params
-            if (param.params != null && param.params.length > 0) {
-              //model本身需要添加一个父类
-              //model.data.push({id:model.id,name:name,pid:"-1"});
-              //data数据加入本身
-              //model.data=model.data.concat(param.params);
-              //第一层属性设置为pid
-              param.params.forEach(function (ps) {
-                //})
-                //$.each(param.params, function (a, ps) {
-                /* var newparam = $.extend({}, ps, {
-                  pid: "-1"
-                }); */
-                var newparam = {
-                  ...ps,
-                  pid: "-1"
-                }
-                model.data.push(newparam);
-                if (ps.schema) {
-                  //是schema
-                  //查找紫属性中存在的pid
-                  deepSchemaModel(model, requestParams, ps.id);
-                }
-              })
-            }
-            that.currentInstance.models.push(model);
-          }
-        })
-      }
-      //此处需要判断是否存在多个schema的情况
-      //modified at 2019-12-10 16:40:55 
-      //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/170
-      if (path.multipartResponseSchema) {
-        //多个
-        path.responseCodes.forEach(function (resp) {
-          //解析响应Model
-          var responseParams = resp.responseTreetableRefParameters;
-          //首先解析响应Model类
-          if (resp.responseParameterRefName != null && resp.responseParameterRefName != "") {
-            //判断是否存在
-            if (that.currentInstance.modelNames.indexOf(resp.responseParameterRefName) == -1) {
-              //}
-              //if ($.inArray(path.responseParameterRefName, that.currentInstance.modelNames) == -1) {
-              that.currentInstance.modelNames.push(resp.responseParameterRefName);
-              var id = "param" + Math.round(Math.random() * 1000000);
-              var model = new SwaggerBootstrapUiModel(id, resp.responseParameterRefName);
-              model.data = [].concat(resp.responseParameters);
-              if (responseParams != null && responseParams != undefined && responseParams.length > 0) {
-                responseParams.forEach(function (param) {
-
-                  //})
-                  //$.each(responseParams, function (j, param) {
-                  //遍历params
-                  if (param.params != null && param.params.length > 0) {
-                    //data数据加入本身
-                    model.data = model.data.concat(param.params);
-                  }
-                })
-              }
-              that.currentInstance.models.push(model);
-            }
-          }
-
-          if (responseParams != null && responseParams != undefined && responseParams.length > 0) {
-            responseParams.forEach(function (param) {
-              //$.each(responseParams, function (j, param) {
-              var name = param.name;
-              //判断集合中是否存在name
-              if (that.currentInstance.modelNames.indexOf(name) == -1) {
-                //if ($.inArray(name, that.currentInstance.modelNames) == -1) {
-                that.currentInstance.modelNames.push(name);
-                //不存在
-                var model = new SwaggerBootstrapUiModel(param.id, name);
-                //遍历params
-                if (param.params != null && param.params.length > 0) {
-                  //model本身需要添加一个父类
-                  //model.data.push({id:model.id,name:name,pid:"-1"});
-                  //data数据加入本身
-                  //model.data=model.data.concat(param.params);
-                  param.params.forEach(function (ps) {
-
-                    //})
-                    //$.each(param.params, function (a, ps) {
-                    /*  var newparam = $.extend({}, ps, {
-                       pid: "-1"
-                     }); */
-                    var newparam = {
-                      ...ps,
-                      pid: '-1'
-                    }
-                    model.data.push(newparam);
-                    if (ps.schema) {
-                      //是schema
-                      //查找紫属性中存在的pid
-                      deepSchemaModel(model, responseParams, ps.id);
-                    }
-                  })
-                }
-                that.currentInstance.models.push(model);
-              }
-            })
-          }
-
-        })
-
-      } else {
-        //解析响应Model
-        var responseParams = path.responseTreetableRefParameters;
-        //首先解析响应Model类
-        if (path.responseParameterRefName != null && path.responseParameterRefName != "") {
-          //判断是否存在
-          if (that.currentInstance.modelNames.indexOf(path.responseParameterRefName) == -1) {
-            //}
-            //if ($.inArray(path.responseParameterRefName, that.currentInstance.modelNames) == -1) {
-            that.currentInstance.modelNames.push(path.responseParameterRefName);
-            var id = "param" + Math.round(Math.random() * 1000000);
-            var model = new SwaggerBootstrapUiModel(id, path.responseParameterRefName);
-            model.data = [].concat(path.responseParameters);
-            if (responseParams != null && responseParams != undefined && responseParams.length > 0) {
-              responseParams.forEach(function (param) {
-
-                //})
-                //$.each(responseParams, function (j, param) {
-                //遍历params
-                if (param.params != null && param.params.length > 0) {
-                  //data数据加入本身
-                  model.data = model.data.concat(param.params);
-                }
-              })
-            }
-            that.currentInstance.models.push(model);
-          }
-        }
-
-        if (responseParams != null && responseParams != undefined && responseParams.length > 0) {
-          responseParams.forEach(function (param) {
-            //$.each(responseParams, function (j, param) {
-            var name = param.name;
-            //判断集合中是否存在name
-            if (that.currentInstance.modelNames.indexOf(name) == -1) {
-              //if ($.inArray(name, that.currentInstance.modelNames) == -1) {
-              that.currentInstance.modelNames.push(name);
-              //不存在
-              var model = new SwaggerBootstrapUiModel(param.id, name);
-              //遍历params
-              if (param.params != null && param.params.length > 0) {
-                //model本身需要添加一个父类
-                //model.data.push({id:model.id,name:name,pid:"-1"});
-                //data数据加入本身
-                //model.data=model.data.concat(param.params);
-                param.params.forEach(function (ps) {
-
-                  //})
-                  //$.each(param.params, function (a, ps) {
-                  /*  var newparam = $.extend({}, ps, {
-                     pid: "-1"
-                   }); */
-                  var newparam = {
-                    ...ps,
-                    pid: '-1'
-                  }
-                  model.data.push(newparam);
-                  if (ps.schema) {
-                    //是schema
-                    //查找紫属性中存在的pid
-                    deepSchemaModel(model, responseParams, ps.id);
-                  }
-                })
-              }
-              that.currentInstance.models.push(model);
-            }
-          })
-        }
-      }
-
-
-    })
-  }
-  //遍历models,如果存在自定义Model,则添加进去
-  //遍历definitions
-  if (that.currentInstance.difArrs != undefined && that.currentInstance.difArrs != null && that.currentInstance.difArrs.length > 0) {
-    that.currentInstance.difArrs.forEach(function (dif) {
-      //})
-      //$.each(that.currentInstance.difArrs, function (i, dif) {
-      //判断models是否存在
-      var name = dif.name;
-      //判断集合中是否存在name
-      if (that.currentInstance.modelNames.indexOf(name) == -1) {
-        //if ($.inArray(name, that.currentInstance.modelNames) == -1) {
-        //当前Models是自定义
-        that.currentInstance.modelNames.push(name);
-
-        //var requestParams=path.refTreetableparameters;
-        var requestParams = dif.refTreetableModelsparameters;
-        if (requestParams != null && requestParams != undefined && requestParams.length > 0) {
-          var param = requestParams[0];
-          //判断集合中是否存在name
-          that.currentInstance.modelNames.push(name);
-          //不存在
-          var model = new SwaggerBootstrapUiModel(param.id, name);
-          //遍历params
-          if (param.params != null && param.params.length > 0) {
-            //model本身需要添加一个父类
-            //model.data.push({id:model.id,name:name,pid:"-1"});
-            //data数据加入本身
-            //model.data=model.data.concat(param.params);
-            //第一层属性设置为pid
-            param.params.forEach(function (ps) {
-              //$.each(param.params, function (a, ps) {
-              /* var newparam = $.extend({}, ps, {
-                pid: "-1"
-              }); */
-              var newparam = {
-                ...ps,
-                pid: '-1'
-              }
-              model.data.push(newparam);
-              if (ps.schema) {
-                //是schema
-                //查找紫属性中存在的pid
-                deepSchemaModel(model, requestParams, ps.id);
-              }
-            })
-          }
-          that.currentInstance.models.push(model);
-        }
-      }
-    })
-  }
-  //排序
-  if (that.currentInstance.models != null && that.currentInstance.models.length > 0) {
-    that.currentInstance.models.sort(function (a, b) {
-      var aname = a.name;
-      var bname = b.name;
-      if (aname < bname) {
-        return -1;
-      } else if (aname > bname) {
-        return 1;
-      } else {
-        return 0;
-      }
-    })
-
-    //新版改用Antd的树形表格,需要增加一个属性
-    that.currentInstance.models.forEach(function (model) {
-      const modelA = {
-        ...model
-      };
-      const modelData = [].concat(model.data);
-      modelA.data = [];
-      //递归查找data
-      if (modelData != null && modelData != undefined && modelData.length > 0) {
-        //找出第一基本的父级结构
-        modelData.forEach(function (md) {
-          if (md.pid == '-1') {
-            md.children = []
-            findModelChildren(md, modelData)
-            //查找后如果没有,则将children置空
-            if (md.children.length == 0) {
-              md.children = null;
-            }
-            modelA.data.push(md)
-          }
-        })
-      }
-      that.currentInstance.modelArrs.push(modelA);
-    })
-  }
+  //models的逻辑从这里移除,放到单组件中进行异步加载,解决效率问题
 
   //自定义文档
   if (that.settings.enableSwaggerBootstrapUi) {
@@ -1568,17 +1281,133 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
 
 }
 
+/**
+ * 处理Models
+ * add at 2019-12-11 21:01:46
+ */
+SwaggerBootstrapUi.prototype.processModels = function () {
+  var that = this;
+  if (KUtils.checkUndefined(this.currentInstance.refTreeTableModels)) {
+    for (var name in that.currentInstance.refTreeTableModels) {
+      that.currentInstance.modelNames.push(name);
+      var param = that.currentInstance.refTreeTableModels[name];
+      var model = new SwaggerBootstrapUiModel(param.id, name);
+      if (KUtils.arrNotEmpty(param.params)) {
+        param.params.forEach(function (ps) {
+          var newparam = {
+            ...ps,
+            pid: "-1"
+          }
+          model.data.push(newparam);
+          if (ps.schema) {
+            //查找当前ps的属性值
+            deepTreeTableSchemaModel(model, that.currentInstance.refTreeTableModels, ps, newparam);
+          }
+
+        })
+      }
+      that.currentInstance.models.push(model);
+    }
+  }
+}
+
+/**
+ * 递归查找
+ * @param {*} model 
+ * @param {*} treeTableModel 
+ * @param {*} id 
+ * @param {*} rootParam 
+ */
+function deepTreeTableSchemaModel(model, treeTableModel, param, rootParam) {
+  //console.log(model.name)
+  if (KUtils.checkUndefined(param.schemaValue)) {
+    var schema = treeTableModel[param.schemaValue]
+    if (KUtils.checkUndefined(schema)) {
+      rootParam.parentTypes.push(param.schemaValue);
+      if (KUtils.arrNotEmpty(schema.params)) {
+        schema.params.forEach(function (nmd) {
+          //childrenparam需要深拷贝一个对象
+          var childrenParam = {
+            childrenTypes: nmd.childrenTypes,
+            def: nmd.def,
+            description: nmd.description,
+            enum: nmd.enum,
+            example: nmd.example,
+            id: nmd.id,
+            ignoreFilterName: nmd.ignoreFilterName,
+            in: nmd.in,
+            level: nmd.level,
+            name: nmd.name,
+            parentTypes: nmd.parentTypes,
+            pid: nmd.pid,
+            readOnly: nmd.readOnly,
+            require: nmd.require,
+            schema: nmd.schema,
+            schemaValue: nmd.schemaValue,
+            show: nmd.show,
+            txtValue: nmd.txtValue,
+            type: nmd.type,
+            validateInstance: nmd.validateInstance,
+            validateStatus: nmd.validateStatus,
+            value: nmd.value
+          }
+          childrenParam.pid = param.id;
+          childrenParam.parentParam = param;
+          model.data.push(childrenParam);
+          if (childrenParam.schema) {
+            //存在schema,判断是否出现过
+            if (rootParam.parentTypes.indexOf(childrenParam.schemaValue) == -1) {
+              deepTreeTableSchemaModel(model, treeTableModel, childrenParam, rootParam);
+            }
+          }
+        })
+      }
+    }
+  }
+}
+
+
 function findModelChildren(md, modelData) {
   if (modelData != null && modelData != undefined && modelData.length > 0) {
     modelData.forEach(function (nmd) {
-      if (nmd.pid == md.id) {
-        nmd.children = [];
-        findModelChildren(nmd, modelData);
+      var newnmd = {
+        childrenTypes: nmd.childrenTypes,
+        def: nmd.def,
+        description: nmd.description,
+        enum: nmd.enum,
+        example: nmd.example,
+        id: nmd.id,
+        ignoreFilterName: nmd.ignoreFilterName,
+        in: nmd.in,
+        level: nmd.level,
+        name: nmd.name,
+        parentTypes: nmd.parentTypes,
+        pid: nmd.pid,
+        readOnly: nmd.readOnly,
+        require: nmd.require,
+        schema: nmd.schema,
+        schemaValue: nmd.schemaValue,
+        show: nmd.show,
+        txtValue: nmd.txtValue,
+        type: nmd.type,
+        validateInstance: nmd.validateInstance,
+        validateStatus: nmd.validateStatus,
+        value: nmd.value
+      }
+      if (newnmd.pid == md.id) {
+        newnmd.children = [];
+        newnmd.childrenIds = [];
+        findModelChildren(newnmd, modelData);
         //查找后如果没有,则将children置空
-        if (nmd.children.length == 0) {
-          nmd.children = null;
+        if (newnmd.children.length == 0) {
+          newnmd.children = null;
         }
-        md.children.push(nmd);
+        //判断是否存在
+        if (md.childrenIds.indexOf(newnmd.id) == -1) {
+          //不存在
+          md.childrenIds.push(newnmd.id);
+          md.children.push(newnmd);
+        }
       }
     })
   }
@@ -2149,6 +1978,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
             swpinfo.parameters.push(minfo);
             //判断当前属性是否是schema
             if (minfo.schema) {
+              //console.log("存在schema------------开始递归")
+              //console.log(minfo)
               deepRefParameter(minfo, that, minfo.def, swpinfo);
               minfo.parentTypes.push(minfo.schemaValue);
               //第一层的对象要一直传递
@@ -2675,113 +2506,119 @@ SwaggerBootstrapUi.prototype.getDefinitionByName = function (name) {
 SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, definitions, flag, globalArr) {
   var that = this;
   var defaultValue = "";
-  for (var definition in definitions) {
-    if (definitionName == definition) {
-      //不解析本身
-      //that.log("解析definitionName:"+definitionName);
-      //that.log("是否递归："+flag);
-      var value = definitions[definition];
-      //是否有properties
-      if (value.hasOwnProperty("properties")) {
-        var properties = value["properties"];
-        var defiTypeValue = {};
-        for (var property in properties) {
-          var propobj = properties[property];
-          if (!propobj.hasOwnProperty("readOnly") || !propobj["readOnly"]) {
-            //默认string类型
-            var propValue = "";
-            //判断是否有类型
-            if (propobj.hasOwnProperty("type")) {
-              var type = propobj["type"];
-              //判断是否有example
-              if (propobj.hasOwnProperty("example")) {
-                propValue = propobj["example"];
-              } else if (KUtils.checkIsBasicType(type)) {
-                propValue = KUtils.getBasicTypeValue(type);
-                //此处如果是object情况,需要判断additionalProperties属性的情况
-                if (type == "object") {
-                  if (propobj.hasOwnProperty("additionalProperties")) {
-                    var addpties = propobj["additionalProperties"];
-                    //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
-                    if (addpties.hasOwnProperty("$ref")) {
-                      var adref = addpties["$ref"];
-                      var regex = new RegExp("#/definitions/(.*)$", "ig");
-                      if (regex.test(adref)) {
-                        var addrefType = RegExp.$1;
-                        var addTempValue = null;
-                        if (!flag) {
-                          if (globalArr.indexOf(addrefType) == -1) {
-                            addTempValue = that.findRefDefinition(addrefType, definitions, flag, globalArr);
-                            propValue = {
-                              "additionalProperties1": addTempValue
+  if (KUtils.checkUndefined(that.currentInstance.definitionValues[definitionName])) {
+    defaultValue = that.currentInstance.definitionValues[definitionName];
+  } else {
+    for (var definition in definitions) {
+      if (definitionName == definition) {
+        //不解析本身
+        //that.log("解析definitionName:"+definitionName);
+        //that.log("是否递归："+flag);
+        var value = definitions[definition];
+        //是否有properties
+        if (value.hasOwnProperty("properties")) {
+          var properties = value["properties"];
+          var defiTypeValue = {};
+          for (var property in properties) {
+            var propobj = properties[property];
+            if (!propobj.hasOwnProperty("readOnly") || !propobj["readOnly"]) {
+              //默认string类型
+              var propValue = "";
+              //判断是否有类型
+              if (propobj.hasOwnProperty("type")) {
+                var type = propobj["type"];
+                //判断是否有example
+                if (propobj.hasOwnProperty("example")) {
+                  propValue = propobj["example"];
+                } else if (KUtils.checkIsBasicType(type)) {
+                  propValue = KUtils.getBasicTypeValue(type);
+                  //此处如果是object情况,需要判断additionalProperties属性的情况
+                  if (type == "object") {
+                    if (propobj.hasOwnProperty("additionalProperties")) {
+                      var addpties = propobj["additionalProperties"];
+                      //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+                      if (addpties.hasOwnProperty("$ref")) {
+                        var adref = addpties["$ref"];
+                        var regex = new RegExp("#/definitions/(.*)$", "ig");
+                        if (regex.test(adref)) {
+                          var addrefType = RegExp.$1;
+                          var addTempValue = null;
+                          if (!flag) {
+                            if (globalArr.indexOf(addrefType) == -1) {
+                              addTempValue = that.findRefDefinition(addrefType, definitions, flag, globalArr);
+                              propValue = {
+                                "additionalProperties1": addTempValue
+                              }
                             }
-                          }
 
+                          }
                         }
                       }
                     }
                   }
-                }
-              } else {
-                if (type == "array") {
-                  propValue = new Array();
-                  var items = propobj["items"];
-                  var ref = items["$ref"];
-                  if (items.hasOwnProperty("type")) {
-                    if (items["type"] == "array") {
-                      ref = items["items"]["$ref"];
+                } else {
+                  if (type == "array") {
+                    propValue = new Array();
+                    var items = propobj["items"];
+                    var ref = items["$ref"];
+                    if (items.hasOwnProperty("type")) {
+                      if (items["type"] == "array") {
+                        ref = items["items"]["$ref"];
+                      }
+                    }
+                    var regex = new RegExp("#/definitions/(.*)$", "ig");
+                    if (regex.test(ref)) {
+                      var refType = RegExp.$1;
+                      if (!flag) {
+                        //判断是否存在集合中
+                        if (globalArr.indexOf(refType) != -1) {
+                          //存在
+                          propValue.push({});
+                        } else {
+                          globalArr.push(definitionName);
+                          propValue.push(that.findRefDefinition(refType, definitions, flag, globalArr));
+                        }
+                      }
+
                     }
                   }
+                }
+
+              } else {
+                //存在ref
+                if (propobj.hasOwnProperty("$ref")) {
+                  var ref = propobj["$ref"];
                   var regex = new RegExp("#/definitions/(.*)$", "ig");
                   if (regex.test(ref)) {
                     var refType = RegExp.$1;
+                    //这里需要递归判断是否是本身,如果是,则退出递归查找
                     if (!flag) {
-                      //判断是否存在集合中
+                      //if($.inArray(refType,globalArr) != -1){
                       if (globalArr.indexOf(refType) != -1) {
                         //存在
-                        propValue.push({});
+                        propValue = {};
                       } else {
                         globalArr.push(definitionName);
-                        propValue.push(that.findRefDefinition(refType, definitions, flag, globalArr));
+                        propValue = that.findRefDefinition(refType, definitions, flag, globalArr);
                       }
                     }
-
                   }
+                } else {
+                  propValue = {};
                 }
-              }
 
-            } else {
-              //存在ref
-              if (propobj.hasOwnProperty("$ref")) {
-                var ref = propobj["$ref"];
-                var regex = new RegExp("#/definitions/(.*)$", "ig");
-                if (regex.test(ref)) {
-                  var refType = RegExp.$1;
-                  //这里需要递归判断是否是本身,如果是,则退出递归查找
-                  if (!flag) {
-                    //if($.inArray(refType,globalArr) != -1){
-                    if (globalArr.indexOf(refType) != -1) {
-                      //存在
-                      propValue = {};
-                    } else {
-                      globalArr.push(definitionName);
-                      propValue = that.findRefDefinition(refType, definitions, flag, globalArr);
-                    }
-                  }
-                }
-              } else {
-                propValue = {};
               }
-
+              defiTypeValue[property] = propValue;
             }
-            defiTypeValue[property] = propValue;
           }
+          defaultValue = defiTypeValue;
+        } else {
+          defaultValue = {};
         }
-        defaultValue = defiTypeValue;
-      } else {
-        defaultValue = {};
       }
     }
+    //赋值
+    that.currentInstance.definitionValues[definitionName] = defaultValue;
   }
   return defaultValue;
 }
@@ -2941,76 +2778,89 @@ function deepTreeTableResponseRefParameter(swpinfo, that, def, resParam) {
  */
 function deepTreeTableRefParameter(minfo, that, def, apiInfo) {
   if (def != null) {
-    var refParam = new SwaggerBootstrapUiTreeTableRefParameter();
-    refParam.name = def.name;
-    refParam.id = minfo.id;
-    //SwaggerModels
-    var refModelParam = new SwaggerBootstrapUiTreeTableRefParameter();
-    refModelParam.name = def.name;
-    refModelParam.id = minfo.id;
-    //如果当前属性中的schema类出现过1次则不在继续,防止递归死循环
-    if (!checkParamTreeTableArrsExists(apiInfo.refTreetableparameters, refParam)) {
-      //firstParameter.childrenTypes.push(def.name);
+    //查询
+    if (KUtils.checkUndefined(that.currentInstance.refTreeTableModels[def.name])) {
+      //存在
+      //console.log("refTreeTableModels-----------递归存在,modelName:" + def.name)
+      var refParam = that.currentInstance.refTreeTableModels[def.name];
+      //console.log(refParam)
       apiInfo.refTreetableparameters.push(refParam);
-      apiInfo.refTreetableModelsparameters.push(refModelParam);
-      if (def.hasOwnProperty("properties")) {
-        var props = def["properties"];
-        props.forEach(function (p) {
-          var _ignoreFilterName = minfo.ignoreFilterName + "." + p.name;
-          if (apiInfo.ignoreParameters == null || (apiInfo.ignoreParameters != null && !apiInfo.ignoreParameters.hasOwnProperty(_ignoreFilterName))) {
-            var refp = new SwaggerBootstrapUiParameter();
-            refp.pid = minfo.id;
-            minfo.parentTypes.forEach(function (pt) {
-              refp.parentTypes.push(pt);
-            })
-            refp.readOnly = p.readOnly;
-            //refp.parentTypes=minfo.parentTypes;
-            refp.parentTypes.push(def.name)
-            //level+1
-            refp.level = minfo.level + 1;
-            refp.name = p.name;
-            refp.ignoreFilterName = _ignoreFilterName;
-            refp.type = p.type;
-            //判断非array
-            if (p.type != "array") {
-              if (p.refType != null && p.refType != undefined && p.refType != "") {
-                //修复针对schema类型的参数,显示类型为schema类型
-                refp.type = p.refType;
-              }
-            }
-            refp.in = minfo.in;
-            refp.require = p.required;
-            refp.example = p.example;
-            refp.description = KUtils.replaceMultipLineStr(p.description);
-            that.validateJSR303(refp, p.originProperty);
-            //models添加所有属性
-            refModelParam.params.push(refp);
-            if (!p.readOnly) {
-              refParam.params.push(refp);
-            }
-            //判断类型是否基础类型
-            if (!KUtils.checkIsBasicType(p.refType)) {
-              refp.schemaValue = p.refType;
-              refp.schema = true;
-              //属性名称不同,或者ref类型不同
-              if (minfo.name != refp.name || minfo.schemaValue != p.refType) {
-                var deepDef = that.getDefinitionByName(p.refType);
-                if (!checkDeepTypeAppear(refp.parentTypes, p.refType)) {
-                  deepTreeTableRefParameter(refp, that, deepDef, apiInfo);
-                }
-              }
-            } else {
-              if (p.type == "array") {
+      apiInfo.refTreetableModelsparameters.push(refParam);
+    } else {
+      var refParam = new SwaggerBootstrapUiTreeTableRefParameter();
+      refParam.name = def.name;
+      refParam.id = minfo.id;
+      //SwaggerModels
+      var refModelParam = new SwaggerBootstrapUiTreeTableRefParameter();
+      refModelParam.name = def.name;
+      refModelParam.id = minfo.id;
+      //如果当前属性中的schema类出现过1次则不在继续,防止递归死循环
+      if (!checkParamTreeTableArrsExists(apiInfo.refTreetableparameters, refParam)) {
+        //firstParameter.childrenTypes.push(def.name);
+        apiInfo.refTreetableparameters.push(refParam);
+        apiInfo.refTreetableModelsparameters.push(refModelParam);
+        if (def.hasOwnProperty("properties")) {
+          var props = def["properties"];
+          props.forEach(function (p) {
+            var _ignoreFilterName = minfo.ignoreFilterName + "." + p.name;
+            if (apiInfo.ignoreParameters == null || (apiInfo.ignoreParameters != null && !apiInfo.ignoreParameters.hasOwnProperty(_ignoreFilterName))) {
+              var refp = new SwaggerBootstrapUiParameter();
+              refp.pid = minfo.id;
+              minfo.parentTypes.forEach(function (pt) {
+                refp.parentTypes.push(pt);
+              })
+              refp.readOnly = p.readOnly;
+              //refp.parentTypes=minfo.parentTypes;
+              refp.parentTypes.push(def.name)
+              //level+1
+              refp.level = minfo.level + 1;
+              refp.name = p.name;
+              refp.ignoreFilterName = _ignoreFilterName;
+              refp.type = p.type;
+              //判断非array
+              if (p.type != "array") {
                 if (p.refType != null && p.refType != undefined && p.refType != "") {
                   //修复针对schema类型的参数,显示类型为schema类型
-                  refp.schemaValue = p.refType;
+                  refp.type = p.refType;
+                }
+              }
+              refp.in = minfo.in;
+              refp.require = p.required;
+              refp.example = p.example;
+              refp.description = KUtils.replaceMultipLineStr(p.description);
+              that.validateJSR303(refp, p.originProperty);
+              //models添加所有属性
+              refModelParam.params.push(refp);
+              if (!p.readOnly) {
+                refParam.params.push(refp);
+              }
+              //判断类型是否基础类型
+              if (KUtils.checkUndefined(p.refType) && !KUtils.checkIsBasicType(p.refType)) {
+                //console.log("schema类型--------------" + p.refType)
+                refp.schemaValue = p.refType;
+                refp.schema = true;
+                //属性名称不同,或者ref类型不同
+                if (minfo.name != refp.name || minfo.schemaValue != p.refType) {
+                  var deepDef = that.getDefinitionByName(p.refType);
+                  if (!checkDeepTypeAppear(refp.parentTypes, p.refType)) {
+                    deepTreeTableRefParameter(refp, that, deepDef, apiInfo);
+                  }
+                }
+              } else {
+                if (p.type == "array") {
+                  if (p.refType != null && p.refType != undefined && p.refType != "") {
+                    //修复针对schema类型的参数,显示类型为schema类型
+                    refp.schemaValue = p.refType;
+                  }
                 }
               }
             }
-          }
-        })
+          })
 
+        }
       }
+      //存放值
+      that.currentInstance.refTreeTableModels[def.name] = refParam;
     }
   }
 }
@@ -3103,6 +2953,7 @@ function checkParamTreeTableArrsExists(arr, param) {
 }
 
 function deepSchemaModel(model, arrs, id) {
+  //console.log(model.name)
   arrs.forEach(function (arr) {
     //})
     //$.each(arrs,function (i, arr) {
@@ -3311,7 +3162,8 @@ var SwaggerBootstrapUiDefinition = function () {
   this.name = "";
   this.ignoreFilterName = null;
   this.schemaValue = null;
-  this.id = "definition" + Math.round(Math.random() * 1000000);
+  //this.id = "definition" + Math.round(Math.random() * 1000000);
+  this.id = "definition" + KUtils.randomMd5();
   this.pid = "-1";
   this.level = 1;
   this.childrenTypes = new Array();
@@ -3530,7 +3382,8 @@ var SwaggerBootstrapUiParameter = function () {
   //枚举类型
   this.enum = null;
 
-  this.id = "param" + Math.round(Math.random() * 1000000);
+  //this.id = "param" + Math.round(Math.random() * 1000000);
+  this.id = "param" + KUtils.randomMd5();
   this.pid = "-1";
 
   this.level = 1;
@@ -3585,8 +3438,15 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   //当前definistion数组
   // SwaggerBootstrapUiDefinition 集合
   this.difArrs = []
+  //difinition的请求value缓存值
+  //key-definiationName  -value :requestValue
+  // add 2019-12-11 15:06:30
+  this.definitionValues = {};
   //针对Swagger Models功能,再存一份SwaggerBootstrapUiDefinition集合
   this.swaggerModelsDifinitions = []
+  //add 2019-12-11 20:08:51
+  //存放treeTable已经递归查询过的schema值
+  this.refTreeTableModels = {};
   //标签分类信息组
   //SwaggerBootstrapUiTag 集合
   this.tags = []
@@ -3655,10 +3515,10 @@ function checkFiledExistsAndEqStr(object, filed, eq) {
  * @param msg
  */
 SwaggerBootstrapUi.prototype.log = function (msg) {
-  /* if (window.console) {
+  if (window.console) {
     //正式版不开启console功能
     window.console.log(msg)
-  } */
+  }
 }
 
 /***

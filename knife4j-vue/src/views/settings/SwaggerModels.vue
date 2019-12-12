@@ -1,27 +1,16 @@
 <template>
   <a-layout-content class="knife4j-body-content">
     <div class="swaggermododel">
-      <a-collapse defaultActiveKey="1">
-        <a-collapse-panel
-          v-for="model in data.instance.modelArrs"
-          :header="model.name"
-          :key="model.id"
-          :class="model.modelClass()"
-        >
-          <a-table
-            :defaultExpandAllRows="expanRows"
-            :columns="columns"
-            :dataSource="model.data"
-            rowKey="id"
-            size="middle"
-            :pagination="page"
-          />
+      <a-collapse @change="modelChange">
+        <a-collapse-panel v-for="model in modelNames" :header="model.name" :key="model.id" :class="model.modelClass()">
+          <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="model.data" rowKey="id" size="middle" :pagination="page" />
         </a-collapse-panel>
       </a-collapse>
     </div>
   </a-layout-content>
 </template>
 <script>
+import KUtils from "@/core/utils";
 const columns = [
   {
     title: "名称",
@@ -51,15 +40,272 @@ export default {
   },
   created() {
     console.log(this.data.instance);
+    this.initModelNames();
   },
   data() {
     return {
       columns: columns,
       expanRows: false,
-      page: false
+      page: false,
+      modelNames: []
     };
   },
-  methods: {}
+  methods: {
+    initModelNames() {
+      //根据instance的实例初始化model名称
+      var treeTableModel = this.data.instance.refTreeTableModels;
+      if (KUtils.checkUndefined(treeTableModel)) {
+        for (var name in treeTableModel) {
+          var random = parseInt(Math.random() * (6 - 1 + 1) + 1, 10);
+          var modelInfo = {
+            id: KUtils.randomMd5Str(name),
+            name: name,
+            //是否加载过
+            load: false,
+            data: [],
+            random: random
+          };
+          modelInfo.modelClass = function() {
+            var cname = "panel-default";
+            switch (this.random) {
+              case 1:
+                cname = "panel-success";
+                break;
+              case 2:
+                cname = "panel-success";
+                break;
+              case 3:
+                cname = "panel-info";
+                break;
+              case 4:
+                cname = "panel-warning";
+                break;
+              case 5:
+                cname = "panel-danger";
+                break;
+              case 6:
+                cname = "panel-default";
+                break;
+            }
+            return cname;
+          };
+          this.modelNames.push(modelInfo);
+        }
+      }
+    },
+    modelChange(key) {
+      var that = this;
+      var treeTableModel = this.data.instance.refTreeTableModels;
+      if (KUtils.arrNotEmpty(key)) {
+        var id = key[0];
+        this.modelNames.forEach(function(model) {
+          if (model.id == id) {
+            //找到该model,判断是否已加载
+            if (!model.load) {
+              //未加载的情况下,进行查找数据
+              //console.log("查找属性");
+              //console.log(model);
+              var modelData = [];
+              //得到当前model的原始对象
+              var originalModel = treeTableModel[model.name];
+              if (KUtils.checkUndefined(originalModel)) {
+                //存在
+                //查找属性集合
+                if (KUtils.arrNotEmpty(originalModel.params)) {
+                  originalModel.params.forEach(function(nmd) {
+                    //第一层属性的pid=-1
+                    var childrenParam = {
+                      childrenTypes: nmd.childrenTypes,
+                      def: nmd.def,
+                      description: nmd.description,
+                      enum: nmd.enum,
+                      example: nmd.example,
+                      id: nmd.id,
+                      ignoreFilterName: nmd.ignoreFilterName,
+                      in: nmd.in,
+                      level: nmd.level,
+                      name: nmd.name,
+                      parentTypes: nmd.parentTypes,
+                      pid: "-1",
+                      readOnly: nmd.readOnly,
+                      require: nmd.require,
+                      schema: nmd.schema,
+                      schemaValue: nmd.schemaValue,
+                      show: nmd.show,
+                      txtValue: nmd.txtValue,
+                      type: nmd.type,
+                      validateInstance: nmd.validateInstance,
+                      validateStatus: nmd.validateStatus,
+                      value: nmd.value
+                    };
+                    modelData.push(childrenParam);
+                    //判断是否存在schema
+                    if (childrenParam.schema) {
+                      that.deepTreeTableSchemaModel(
+                        modelData,
+                        treeTableModel,
+                        childrenParam,
+                        childrenParam
+                      );
+                    }
+                  });
+                }
+              }
+              //console.log(modelData);
+              //对modelData做父子关联处理
+              model.data = that.deepFindChildren(modelData);
+              model.load = true;
+            }
+          }
+        });
+      }
+    },
+    deepFindChildren(modelData) {
+      var that = this;
+      var paramDatas = [];
+      if (KUtils.arrNotEmpty(modelData)) {
+        //找出第一基本的父级结构
+        modelData.forEach(function(md) {
+          var newmd = {
+            childrenTypes: md.childrenTypes,
+            def: md.def,
+            description: md.description,
+            enum: md.enum,
+            example: md.example,
+            id: md.id,
+            ignoreFilterName: md.ignoreFilterName,
+            in: md.in,
+            level: md.level,
+            name: md.name,
+            parentTypes: md.parentTypes,
+            pid: md.pid,
+            readOnly: md.readOnly,
+            require: md.require,
+            schema: md.schema,
+            schemaValue: md.schemaValue,
+            show: md.show,
+            txtValue: md.txtValue,
+            type: md.type,
+            validateInstance: md.validateInstance,
+            validateStatus: md.validateStatus,
+            value: md.value
+          };
+          if (newmd.pid == "-1") {
+            newmd.children = [];
+            newmd.childrenIds = [];
+            that.findModelChildren(newmd, modelData);
+            //查找后如果没有,则将children置空
+            if (newmd.children.length == 0) {
+              newmd.children = null;
+            }
+            // modelA.data.push(md)
+            paramDatas.push(newmd);
+          }
+        });
+      }
+      return paramDatas;
+    },
+    findModelChildren(md, modelData) {
+      var that = this;
+      if (KUtils.arrNotEmpty(modelData)) {
+        modelData.forEach(function(nmd) {
+          var newnmd = {
+            childrenTypes: nmd.childrenTypes,
+            def: nmd.def,
+            description: nmd.description,
+            enum: nmd.enum,
+            example: nmd.example,
+            id: nmd.id,
+            ignoreFilterName: nmd.ignoreFilterName,
+            in: nmd.in,
+            level: nmd.level,
+            name: nmd.name,
+            parentTypes: nmd.parentTypes,
+            pid: nmd.pid,
+            readOnly: nmd.readOnly,
+            require: nmd.require,
+            schema: nmd.schema,
+            schemaValue: nmd.schemaValue,
+            show: nmd.show,
+            txtValue: nmd.txtValue,
+            type: nmd.type,
+            validateInstance: nmd.validateInstance,
+            validateStatus: nmd.validateStatus,
+            value: nmd.value
+          };
+          if (newnmd.pid == md.id) {
+            newnmd.children = [];
+            newnmd.childrenIds = [];
+            that.findModelChildren(newnmd, modelData);
+            //查找后如果没有,则将children置空
+            if (newnmd.children.length == 0) {
+              newnmd.children = null;
+            }
+            //判断是否存在
+            if (md.childrenIds.indexOf(newnmd.id) == -1) {
+              //不存在
+              md.childrenIds.push(newnmd.id);
+              md.children.push(newnmd);
+            }
+          }
+        });
+      }
+    },
+    deepTreeTableSchemaModel(modelData, treeTableModel, param, rootParam) {
+      var that = this;
+      //console.log(model.name)
+      if (KUtils.checkUndefined(param.schemaValue)) {
+        var schema = treeTableModel[param.schemaValue];
+        if (KUtils.checkUndefined(schema)) {
+          rootParam.parentTypes.push(param.schemaValue);
+          if (KUtils.arrNotEmpty(schema.params)) {
+            schema.params.forEach(function(nmd) {
+              //childrenparam需要深拷贝一个对象
+              var childrenParam = {
+                childrenTypes: nmd.childrenTypes,
+                def: nmd.def,
+                description: nmd.description,
+                enum: nmd.enum,
+                example: nmd.example,
+                id: nmd.id,
+                ignoreFilterName: nmd.ignoreFilterName,
+                in: nmd.in,
+                level: nmd.level,
+                name: nmd.name,
+                parentTypes: nmd.parentTypes,
+                pid: nmd.pid,
+                readOnly: nmd.readOnly,
+                require: nmd.require,
+                schema: nmd.schema,
+                schemaValue: nmd.schemaValue,
+                show: nmd.show,
+                txtValue: nmd.txtValue,
+                type: nmd.type,
+                validateInstance: nmd.validateInstance,
+                validateStatus: nmd.validateStatus,
+                value: nmd.value
+              };
+              childrenParam.pid = param.id;
+              modelData.push(childrenParam);
+              if (childrenParam.schema) {
+                //存在schema,判断是否出现过
+                if (
+                  rootParam.parentTypes.indexOf(childrenParam.schemaValue) == -1
+                ) {
+                  that.deepTreeTableSchemaModel(
+                    modelData,
+                    treeTableModel,
+                    childrenParam,
+                    rootParam
+                  );
+                }
+              }
+            });
+          }
+        }
+      }
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
