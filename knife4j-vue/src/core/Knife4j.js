@@ -1980,10 +1980,11 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
             if (minfo.schema) {
               //console.log("存在schema------------开始递归")
               //console.log(minfo)
-              deepRefParameter(minfo, that, minfo.def, swpinfo);
+
+              //deepRefParameter(minfo, that, minfo.def, swpinfo);
               minfo.parentTypes.push(minfo.schemaValue);
               //第一层的对象要一直传递
-              deepTreeTableRefParameter(minfo, that, minfo.def, swpinfo);
+              //deepTreeTableRefParameter(minfo, that, minfo.def, swpinfo);
             }
           }
         }

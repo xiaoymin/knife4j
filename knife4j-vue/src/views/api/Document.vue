@@ -293,6 +293,7 @@ export default {
     initRequestParams() {
       var data = [];
       var that = this;
+      var treeTableModel = this.swaggerInstance.refTreeTableModels;
       var apiInfo = this.api;
       if (apiInfo.parameters != null && apiInfo.parameters.length > 0) {
         data = data.concat(apiInfo.parameters);
@@ -312,10 +313,17 @@ export default {
       }
       let reqParameters = [];
       if (data != null && data.length > 0) {
+        console.log("初始化请求参数----------");
+        console.log(data);
         data.forEach(function(md) {
           if (md.pid == "-1") {
             md.children = [];
-            that.findModelChildren(md, data);
+            if (md.schema) {
+              //根据schema查找当前的子级参数
+              that.deepTreeTableSchemaModel(md, treeTableModel, md);
+            }
+            //查找当前参数的子级参数
+            //that.findModelChildren(md, data);
             //查找后如果没有,则将children置空
             if (md.children.length == 0) {
               md.children = null;
@@ -327,6 +335,63 @@ export default {
       that.reqParameters = reqParameters;
       console.log("遍历完成");
       console.log(reqParameters);
+    },
+    deepTreeTableSchemaModel(param, treeTableModel, rootParam) {
+      var that = this;
+      //console.log(model.name)
+      if (KUtils.checkUndefined(param.schemaValue)) {
+        var schema = treeTableModel[param.schemaValue];
+        if (KUtils.checkUndefined(schema)) {
+          rootParam.parentTypes.push(param.schemaValue);
+          if (KUtils.arrNotEmpty(schema.params)) {
+            schema.params.forEach(function(nmd) {
+              //childrenparam需要深拷贝一个对象
+              var childrenParam = {
+                childrenTypes: nmd.childrenTypes,
+                def: nmd.def,
+                description: nmd.description,
+                enum: nmd.enum,
+                example: nmd.example,
+                id: nmd.id,
+                ignoreFilterName: nmd.ignoreFilterName,
+                in: nmd.in,
+                level: nmd.level,
+                name: nmd.name,
+                parentTypes: nmd.parentTypes,
+                pid: nmd.pid,
+                readOnly: nmd.readOnly,
+                require: nmd.require,
+                schema: nmd.schema,
+                schemaValue: nmd.schemaValue,
+                show: nmd.show,
+                txtValue: nmd.txtValue,
+                type: nmd.type,
+                validateInstance: nmd.validateInstance,
+                validateStatus: nmd.validateStatus,
+                value: nmd.value
+              };
+              childrenParam.pid = param.id;
+              param.children.push(childrenParam);
+              if (childrenParam.schema) {
+                //存在schema,判断是否出现过
+                if (
+                  rootParam.parentTypes.indexOf(childrenParam.schemaValue) == -1
+                ) {
+                  childrenParam.children = [];
+                  that.deepTreeTableSchemaModel(
+                    childrenParam,
+                    treeTableModel,
+                    rootParam
+                  );
+                  if (childrenParam.children.length == 0) {
+                    childrenParam.children = null;
+                  }
+                }
+              }
+            });
+          }
+        }
+      }
     },
     findModelChildren(md, modelData) {
       var that = this;

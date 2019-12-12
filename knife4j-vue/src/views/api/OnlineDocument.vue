@@ -45,7 +45,7 @@
     <div class="api-title">
       请求参数
     </div>
-    <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small" :pagination="page">
+    <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" :rowKey="genUnionTableKey" size="small" :pagination="page">
       <template slot="requireTemplate" slot-scope="text">
         <span v-if="text" style="color:red">{{text.toLocaleString()}}</span>
         <span v-else>{{text.toLocaleString()}}</span>
@@ -128,6 +128,8 @@
   </div>
 </template>
 <script>
+import KUtils from "@/core/utils";
+import Constants from "@/store/constants";
 import DataType from "./DataType";
 import EditorShow from "./EditorShow";
 //请求参数table-header
@@ -219,6 +221,7 @@ const responseParametersColumns = [
     width: "15%"
   }
 ];
+var instance = null;
 export default {
   name: "Document",
   components: { editor: require("vue2-ace-editor"), DataType, EditorShow },
@@ -226,7 +229,14 @@ export default {
     api: {
       type: Object,
       required: true
+    },
+    swaggerInstance: {
+      type: Object,
+      required: true
     }
+  },
+  beforeCreate() {
+    instance = this;
   },
   data() {
     return {
@@ -245,13 +255,22 @@ export default {
     };
   },
   created() {
-    this.initRequestParams();
-    this.initResponseCodeParams();
+    var key = Constants.globalTreeTableModelParams + this.api.instanceId;
+    var treeTableModel = this.swaggerInstance.refTreeTableModels;
+    instance.$Knife4jModels.setValue(key, treeTableModel);
+    instance.initRequestParams();
+    instance.initResponseCodeParams();
   },
   methods: {
+    genUnionTableKey() {
+      return KUtils.randomMd5();
+    },
     initRequestParams() {
       var data = [];
       var that = this;
+      var key = Constants.globalTreeTableModelParams + this.api.instanceId;
+
+      var treeTableModel = this.swaggerInstance.refTreeTableModels;
       var apiInfo = this.api;
       if (apiInfo.parameters != null && apiInfo.parameters.length > 0) {
         data = data.concat(apiInfo.parameters);
@@ -274,18 +293,153 @@ export default {
         data.forEach(function(md) {
           if (md.pid == "-1") {
             md.children = [];
-            that.findModelChildren(md, data);
+            if (md.schema) {
+              //判断当前缓存是否存在
+              var schemaName = md.schemaValue;
+              if (KUtils.checkUndefined(schemaName)) {
+                if (that.$Knife4jModels.exists(key, schemaName)) {
+                  //存在
+                  console.log("存在-不用查找---" + schemaName);
+                  //console.log(that.$Knife4jModels.instance);
+                  var model = that.$Knife4jModels.getByModelName(
+                    key,
+                    schemaName
+                  );
+                  if (KUtils.checkUndefined(model)) {
+                    var children = model.params;
+                    //更改pid
+                    if (KUtils.arrNotEmpty(children)) {
+                      children.forEach(function(chd) {
+                        var target = that.copyNewParameter(chd);
+                        target.pid = md.id;
+                        md.children.push(target);
+                      });
+                    }
+                  }
+
+                  //md.children = children;
+                } else {
+                  //不存在
+                  console.log("不存在--开始查找---" + schemaName);
+                }
+              }
+            }
+            // that.findModelChildren(md, data);
             //查找后如果没有,则将children置空
-            if (md.children.length == 0) {
+            if (!KUtils.arrNotEmpty(md.children)) {
               md.children = null;
             }
+            /* if (md.children.length == 0) {
+              md.children = null;
+            } */
             reqParameters.push(md);
           }
         });
       }
       that.reqParameters = reqParameters;
+      //that.storeCacheModels(cacheModelChildrens);
       //console.log("遍历完成");
       //console.log(reqParameters);
+    },
+    storeCacheModels(val) {
+      var key = Constants.globalTreeTableModelParams + this.api.instanceId;
+      this.$localStore.setItem(key, val);
+    },
+    deepTreeTableSchemaModel(param, treeTableModel, rootParam) {
+      var that = this;
+      var key = Constants.globalTreeTableModelParams + this.api.instanceId;
+      //console.log(model.name)
+      if (KUtils.checkUndefined(param.schemaValue)) {
+        var schema = treeTableModel[param.schemaValue];
+        if (KUtils.checkUndefined(schema)) {
+          rootParam.parentTypes.push(param.schemaValue);
+          if (KUtils.arrNotEmpty(schema.params)) {
+            schema.params.forEach(function(nmd) {
+              //childrenparam需要深拷贝一个对象
+              var childrenParam = that.copyNewParameter(nmd);
+              childrenParam.pid = param.id;
+              param.children.push(childrenParam);
+              //children.push(childrenParam)
+              if (childrenParam.schema) {
+                //存在schema,判断是否出现过
+                if (
+                  rootParam.parentTypes.indexOf(childrenParam.schemaValue) == -1
+                ) {
+                  var schemaName = childrenParam.schemaValue;
+                  if (KUtils.checkUndefined(schemaName)) {
+                    childrenParam.children = [];
+                    //减少递归次数
+                    if (that.$Knife4jModels.exists(key, schemaName)) {
+                      console.log("递归中存在--不用找了");
+                      var children = that.$Knife4jModels.getByModelName(
+                        key,
+                        schemaName
+                      );
+                      //更改pid
+                      if (KUtils.arrNotEmpty(children)) {
+                        children.forEach(function(chd) {
+                          var target = that.copyNewParameter(chd);
+                          target.pid = childrenParam.id;
+                          childrenParam.children.push(target);
+                        });
+                      }
+                      //childrenParam.children = children;
+                    } else {
+                      //不存在
+                      console.log("不存在--开始查找-递归中---" + schemaName);
+                      //根据schema查找当前的子级参数
+                      that.deepTreeTableSchemaModel(
+                        childrenParam,
+                        treeTableModel,
+                        rootParam
+                      );
+                      if (childrenParam.children.length == 0) {
+                        childrenParam.children = null;
+                      }
+                      that.$Knife4jModels.addModels(
+                        key,
+                        schemaName,
+                        childrenParam.children
+                      );
+                      //更新
+                      //cacheModelChildrens[schemaName] = md.children;
+                    }
+                  }
+                  //找chlidrenParam的子类
+                }
+              }
+            });
+          }
+        }
+      }
+    },
+    copyNewParameter(source) {
+      var target = {
+        children: source.children,
+        childrenTypes: source.childrenTypes,
+        def: source.def,
+        description: source.description,
+        enum: source.enum,
+        example: source.example,
+        id: source.id,
+        ignoreFilterName: source.ignoreFilterName,
+        in: source.in,
+        level: source.level,
+        name: source.name,
+        parentTypes: source.parentTypes,
+        pid: source.pid,
+        readOnly: source.readOnly,
+        require: source.require,
+        schema: source.schema,
+        schemaValue: source.schemaValue,
+        show: source.show,
+        txtValue: source.txtValue,
+        type: source.type,
+        validateInstance: source.validateInstance,
+        validateStatus: source.validateStatus,
+        value: source.value
+      };
+      return target;
     },
     findModelChildren(md, modelData) {
       var that = this;
@@ -333,7 +487,7 @@ export default {
               respdata.forEach(function(md) {
                 if (md.pid == "-1") {
                   md.children = [];
-                  that.findModelChildren(md, respdata);
+                  //that.findModelChildren(md, respdata);
                   //查找后如果没有,则将children置空
                   if (md.children.length == 0) {
                     md.children = null;

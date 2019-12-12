@@ -26,6 +26,7 @@ module.exports = {
       "/": {
         /* target: "http://swagger-bootstrap-ui.xiaominfo.com/",*/
         target: 'http://localhost:8999/',
+        /* target: 'https://seeyouweb.com/mema/', */
         ws: true,
         changeOrigin: true
       }

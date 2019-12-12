@@ -111,7 +111,7 @@
     </a-row>
     <a-row v-for="tag in tags" :key="tag.name">
       <h1 :id="tag.name">{{tag.name}}</h1>
-      <OnlineDocument v-for="api in tag.childrens" :key="api.id" :api="api" />
+      <OnlineDocument v-for="api in tag.childrens" :swaggerInstance="instance" :key="api.id" :api="api" />
     </a-row>
   </a-row>
 </template>
@@ -135,6 +135,7 @@ export default {
     return {
       hideShow: true
     };
-  }
+  },
+  methods: {}
 };
 </script>

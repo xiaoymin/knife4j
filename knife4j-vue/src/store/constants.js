@@ -35,6 +35,7 @@ const constants = {
   globalSecurityParamPrefix: "Knife4jSecurityParams",
   //个性化设置名称
   globalSettingsKey: "Knife4jGlobalSettings",
+  globalTreeTableModelParams: "Knife4jGlobalTreeTableModelParams",
   defaultSettings: {
     showApiUrl: false, //接口api地址不显示
     showTagStatus: false, //分组tag显示description属性,针对@Api注解没有tags属性值的情况

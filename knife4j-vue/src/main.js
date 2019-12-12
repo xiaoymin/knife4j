@@ -67,6 +67,10 @@ Vue.prototype.$axios = axios
  */
 import localStore from './store/local'
 Vue.prototype.$localStore = localStore;
+//本地缓存models
+import knife4jModel from './store/knife4jModels'
+
+Vue.prototype.$Knife4jModels = knife4jModel;
 
 /**
  * 日志组件
