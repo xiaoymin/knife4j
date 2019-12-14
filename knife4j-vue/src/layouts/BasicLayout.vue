@@ -360,7 +360,9 @@ export default {
         this.openKeys = [m.key];
       }
       //this.selectedKeys = [this.location.path];
-      this.selectedKeys = [m.key];
+      if (m != undefined && m != null) {
+        this.selectedKeys = [m.key];
+      }
     },
     menuClick(key) {
       console.log("菜单click");
