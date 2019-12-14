@@ -3,7 +3,7 @@
     <div class="swaggermododel">
       <a-collapse @change="modelChange">
         <a-collapse-panel v-for="model in modelNames" :header="model.name" :key="model.id" :class="model.modelClass()">
-          <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="model.data" rowKey="id" size="middle" :pagination="page" />
+          <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="model.data" :rowKey="unionKey" size="middle" :pagination="page" />
         </a-collapse-panel>
       </a-collapse>
     </div>
@@ -11,6 +11,7 @@
 </template>
 <script>
 import KUtils from "@/core/utils";
+import Constants from "@/store/constants";
 const columns = [
   {
     title: "名称",
@@ -51,14 +52,20 @@ export default {
     };
   },
   methods: {
+    unionKey() {
+      return KUtils.randomMd5();
+    },
     initModelNames() {
+      var key = Constants.globalTreeTableModelParams + this.data.instance.id;
       //根据instance的实例初始化model名称
       var treeTableModel = this.data.instance.refTreeTableModels;
+      this.$Knife4jModels.setValue(key, treeTableModel);
       if (KUtils.checkUndefined(treeTableModel)) {
         for (var name in treeTableModel) {
           var random = parseInt(Math.random() * (6 - 1 + 1) + 1, 10);
           var modelInfo = {
-            id: KUtils.randomMd5Str(name),
+            //id: KUtils.randomMd5Str(name),
+            id: name,
             name: name,
             //是否加载过
             load: false,
@@ -95,11 +102,22 @@ export default {
     },
     modelChange(key) {
       var that = this;
-      var treeTableModel = this.data.instance.refTreeTableModels;
+      console.log("当前激活面板key:" + that.activeKey);
+
+      var instanceKey =
+        Constants.globalTreeTableModelParams + this.data.instance.id;
+      console.log("chang事件-------");
+      console.log(key);
+
       if (KUtils.arrNotEmpty(key)) {
-        var id = key[0];
+        //默认要取最后一个
+        var lastIndex = key.length - 1;
+        var id = key[lastIndex];
+        console.log("key------------");
         this.modelNames.forEach(function(model) {
           if (model.id == id) {
+            console.log("找到匹配的model了===");
+            console.log(model);
             //找到该model,判断是否已加载
             if (!model.load) {
               //未加载的情况下,进行查找数据
@@ -107,7 +125,14 @@ export default {
               //console.log(model);
               var modelData = [];
               //得到当前model的原始对象
-              var originalModel = treeTableModel[model.name];
+              //所有丶属性全部深拷贝,pid设置为-1
+              //var originalModel = treeTableModel[model.name];
+              var originalModel = that.$Knife4jModels.getByModelName(
+                instanceKey,
+                model.name
+              );
+              console.log("查找原始model:" + model.name);
+              console.log(originalModel);
               if (KUtils.checkUndefined(originalModel)) {
                 //存在
                 //查找属性集合
@@ -115,6 +140,7 @@ export default {
                   originalModel.params.forEach(function(nmd) {
                     //第一层属性的pid=-1
                     var childrenParam = {
+                      children: nmd.children,
                       childrenTypes: nmd.childrenTypes,
                       def: nmd.def,
                       description: nmd.description,
@@ -140,20 +166,11 @@ export default {
                     };
                     modelData.push(childrenParam);
                     //判断是否存在schema
-                    if (childrenParam.schema) {
-                      that.deepTreeTableSchemaModel(
-                        modelData,
-                        treeTableModel,
-                        childrenParam,
-                        childrenParam
-                      );
-                    }
                   });
                 }
               }
               //console.log(modelData);
-              //对modelData做父子关联处理
-              model.data = that.deepFindChildren(modelData);
+              model.data = modelData;
               model.load = true;
             }
           }
