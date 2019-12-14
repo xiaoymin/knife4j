@@ -4,7 +4,7 @@
       <slot name="copyright" />
     </div>
     <div v-else class="copyright">Apache License 2.0 | Copyright
-      <a-icon type="copyright" /> 2019-<a target="_blank" href="https://gitee.com/xiaoym">Knife4j</a></div>
+      <a-icon type="copyright" /> 2019-<a target="_blank" href="https://gitee.com/xiaoym/knife4j">Knife4j</a></div>
   </div>
 </template>
 <script>
