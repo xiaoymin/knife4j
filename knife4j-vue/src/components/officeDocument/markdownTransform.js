@@ -174,66 +174,20 @@ function createApiResponseHeaderParams(responseHeaderParameters, markdownCollect
  * @param {*} singleFlag 
  */
 function createApiResponseParameters(apiInfo, markdownCollections) {
-  var multipartData = [];
-  let rcodes = apiInfo.responseCodes;
-  if (rcodes != null && rcodes != undefined) {
-    rcodes.forEach(function (rc) {
-      //遍历
-      if (rc.schema != undefined && rc.schema != null) {
-        var respdata = [];
-        if (
-          rc.responseParameters != null &&
-          rc.responseParameters.length > 0
-        ) {
-          respdata = respdata.concat(rc.responseParameters);
-        }
-        if (
-          rc.responseTreetableRefParameters != null &&
-          rc.responseTreetableRefParameters.length > 0
-        ) {
-          rc.responseTreetableRefParameters.forEach(function (ref) {
-            respdata = respdata.concat(ref.params);
-          });
-        }
-        let nrecodedatas = [];
-        //遍历得到新的符合antd的树形结构
-        if (respdata != null && respdata.length > 0) {
-          respdata.forEach(function (md) {
-            if (md.pid == '-1') {
-              md.children = [];
-              findRespModelChildren(md, respdata);
-              //查找后如果没有,则将children置空
-              if (md.children.length == 0) {
-                md.children = null;
-              }
-              nrecodedatas.push(md);
-            }
-          });
-        }
-        var nresobj = {
-          ...rc,
-          data: nrecodedatas
-        };
-        multipartData.push(nresobj);
-      }
-    });
-  }
-  //判断是否为空
-  if (multipartData.length > 0) {
-    if (multipartData.length == 1) {
-      //单个
-      var multipData = multipartData[0]
-      createApiResponseSingleParam(multipData, markdownCollections);
-    } else {
-      //多个
+  //判断是否多个schema
+  if (apiInfo.multipartResponseSchema) {
+    var multipartData = apiInfo.multipCodeDatas;
+    if (KUtils.arrNotEmpty(multipartData)) {
       multipartData.forEach(function (resp) {
         markdownLines(markdownCollections);
         markdownCollections.push('**响应状态码-' + KUtils.toString(resp.code, '') + '**:');
         createApiResponseSingleParam(resp, markdownCollections);
       })
     }
+  } else {
+    //单个
+    createApiResponseSingleParam(apiInfo.multipData, markdownCollections);
   }
-
 }
 /**
  * 单个响应状态
@@ -243,17 +197,22 @@ function createApiResponseParameters(apiInfo, markdownCollections) {
 function createApiResponseSingleParam(resp, markdownCollections) {
   //判断是否有响应Header
   createApiResponseHeaderParams(resp.responseHeaderParameters, markdownCollections);
-  //数据
+  //数据 
   markdownLines(markdownCollections);
   markdownCollections.push('**响应参数**:');
   markdownLines(markdownCollections);
-  //拥有参数
-  markdownCollections.push('| 参数名称 | 参数说明 | 类型 | schema |');
-  markdownCollections.push('| -------- | -------- | ----- |----- | ');
-  resp.data.forEach(function (param) {
-    markdownCollections.push('|' + getMdTableByLevel(param) + '|' + KUtils.toString(param.description, '') + '|' + KUtils.toString(param.type, '') + '|' + KUtils.toString(param.schemaValue, '') + '|')
-    deepMdTableByResponseParameter(param.children, markdownCollections);
-  })
+  if (KUtils.arrNotEmpty(resp.data)) {
+    //拥有参数
+    markdownCollections.push('| 参数名称 | 参数说明 | 类型 | schema |');
+    markdownCollections.push('| -------- | -------- | ----- |----- | ');
+    resp.data.forEach(function (param) {
+      param.level = 1;
+      markdownCollections.push('|' + getMdTableByLevel(param) + '|' + KUtils.toString(param.description, '') + '|' + KUtils.toString(param.type, '') + '|' + KUtils.toString(param.schemaValue, '') + '|')
+      deepMdTableByResponseParameter(param.children, markdownCollections, param.level);
+    })
+  } else {
+    markdownCollections.push('暂无');
+  }
   //判断是否拥有响应示例
   markdownLines(markdownCollections);
   markdownCollections.push('**响应示例**:');
@@ -276,37 +235,8 @@ function createApiResponseSingleParam(resp, markdownCollections) {
  * @param {*} markdownCollections 
  */
 function createApiRequestParameters(apiInfo, markdownCollections) {
-  var data = [];
-  if (apiInfo.parameters != null && apiInfo.parameters.length > 0) {
-    data = data.concat(apiInfo.parameters);
-  }
-  if (
-    apiInfo.refTreetableparameters != null &&
-    apiInfo.refTreetableparameters.length > 0
-  ) {
-    apiInfo.refTreetableparameters.forEach(function (ref) {
-      data = data.concat(ref.params);
-    });
-  }
-  if (data != null) {
-    data.sort(function (a, b) {
-      return b.require - a.require;
-    });
-  }
-  let reqParameters = [];
-  if (data != null && data.length > 0) {
-    data.forEach(function (md) {
-      if (md.pid == '-1') {
-        md.children = [];
-        findModelChildren(md, data);
-        //查找后如果没有,则将children置空
-        if (md.children.length == 0) {
-          md.children = null;
-        }
-        reqParameters.push(md);
-      }
-    });
-  }
+
+  let reqParameters = apiInfo.reqParameters;
   markdownLines(markdownCollections);
   markdownCollections.push('**请求参数**:');
   //判断是否拥有请求参数
@@ -316,7 +246,7 @@ function createApiRequestParameters(apiInfo, markdownCollections) {
     markdownCollections.push('| 参数名称 | 参数说明 | in    | 是否必须 | 数据类型 | schema |');
     markdownCollections.push('| -------- | -------- | ----- | -------- | -------- | ------ |');
     //级联表格，在表格需要最佳空格缩进符号
-    deepMdTableByRequestParameter(reqParameters, markdownCollections);
+    deepMdTableByRequestParameter(reqParameters, markdownCollections, 1);
   } else {
     markdownLines(markdownCollections);
     markdownCollections.push('暂无');
@@ -328,11 +258,12 @@ function createApiRequestParameters(apiInfo, markdownCollections) {
  * @param {*} parameters 
  * @param {*} markdownCollections 
  */
-function deepMdTableByResponseParameter(parameters, markdownCollections) {
+function deepMdTableByResponseParameter(parameters, markdownCollections, level) {
   if (parameters != null && parameters != undefined && parameters.length > 0) {
     parameters.forEach(function (param) {
+      param.level = level;
       markdownCollections.push('|' + getMdTableByLevel(param) + '|' + KUtils.toString(param.description, '') + '|' + KUtils.toString(param.type, '') + '|' + KUtils.toString(param.schemaValue, '') + '|')
-      deepMdTableByRequestParameter(param.children, markdownCollections);
+      deepMdTableByRequestParameter(param.children, markdownCollections, (param.level + 1));
     })
   }
 
@@ -344,11 +275,13 @@ function deepMdTableByResponseParameter(parameters, markdownCollections) {
  * @param {*} parameters 
  * @param {*} markdownCollections 
  */
-function deepMdTableByRequestParameter(parameters, markdownCollections) {
+function deepMdTableByRequestParameter(parameters, markdownCollections, level) {
   if (parameters != null && parameters != undefined && parameters.length > 0) {
     parameters.forEach(function (param) {
+      //赋值一个level
+      param.level = level;
       markdownCollections.push('|' + getMdTableByLevel(param) + '|' + KUtils.toString(param.description, '') + '|' + KUtils.toString(param.in, '') + '|' + KUtils.toString(param.require, '') + '|' + KUtils.toString(param.type, '') + '|' + KUtils.toString(param.schemaValue, '') + '|')
-      deepMdTableByRequestParameter(param.children, markdownCollections);
+      deepMdTableByRequestParameter(param.children, markdownCollections, (param.level + 1));
     })
   }
 

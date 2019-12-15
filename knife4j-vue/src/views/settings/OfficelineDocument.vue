@@ -223,7 +223,6 @@ export default {
     },
     deepResponseParameters(apiInfo) {
       //遍历响应参数
-      console.log("----------------响应 参数-------------");
       var that = this;
       var key = Constants.globalTreeTableModelParams + this.data.instance.id;
       //添加自定义属性
@@ -232,7 +231,6 @@ export default {
       //这里不
       apiInfo.multipData = {};
       let rcodes = apiInfo.responseCodes;
-      console.log(rcodes);
       if (rcodes != null && rcodes != undefined) {
         rcodes.forEach(function(rc) {
           //遍历
@@ -265,7 +263,7 @@ export default {
                     if (KUtils.checkUndefined(schemaName)) {
                       // console.log("schemaValue--checkUndefined");
                       if (that.$Knife4jModels.exists(key, schemaName)) {
-                        console.log("存在-不用查找---" + schemaName);
+                        //console.log("存在-不用查找---" + schemaName);
                         //console.log(that.$Knife4jModels.instance);
                         var model = that.$Knife4jModels.getByModelName(
                           key,
@@ -282,7 +280,7 @@ export default {
                           }
                         }
                       } else {
-                        console.log("schemavalue--Not Existis");
+                        //console.log("schemavalue--Not Existis");
                       }
                     }
                   }
@@ -349,10 +347,28 @@ export default {
       that.$kloading.show({
         text: "正在下载Markdown文件中,请稍后..."
       });
+      this.deepTags();
+      var instance = {
+        title: that.data.instance.title,
+        description: that.data.instance.title,
+        contact: that.data.instance.contact,
+        version: that.data.instance.version,
+        host: that.data.instance.host,
+        basePath: that.data.instance.basePath,
+        termsOfService: that.data.instance.termsOfService,
+        name: that.data.instance.name,
+        url: that.data.instance.url,
+        location: that.data.instance.location,
+        pathArrs: that.data.instance.pathArrs,
+        tags: that.tags,
+        markdownFiles: that.data.instance.markdownFiles
+      };
+
       //遍历得到markdown语法
       if (this.markdownText == null || this.markdownText == "") {
         //遍历得到markdown文本
-        this.markdownText = markdownText(this.data.instance);
+        //this.markdownText = markdownText(this.data.instance);
+        this.markdownText = markdownText(instance);
       }
       //等待ace-editor渲染,给与充足时间
       setTimeout(() => {
@@ -369,24 +385,11 @@ export default {
       that.$kloading.show({
         text: "正在下载Html中,请稍后..."
       });
-
-      if (!this.downloadHtmlFlag) {
-        this.downloadHtmlFlag = true;
-        //赋值Html重新渲染dom
-        setTimeout(() => {
-          //that.tags = that.data.instance.tags;
-          that.deepTags();
-          that.$kloading.destroy();
-        }, 300);
-      } else {
-        setTimeout(() => {
-          //that.apis = that.data.instance.paths;
-          that.$kloading.destroy();
-          that.downloadHtml();
-        }, 1000);
-      }
-
-      //
+      that.deepTags();
+      setTimeout(() => {
+        that.$kloading.destroy();
+        that.downloadHtml();
+      }, 1000);
     },
     downloadMarkdown(content) {
       console.log("downloadMarkdown");
@@ -408,7 +411,7 @@ export default {
       window.URL.revokeObjectURL(url);
     },
     downloadHtml() {
-      console.log("downloadHtml");
+      //console.log("downloadHtml");
       var a = document.createElement("a");
       var content = this.getHtmlContent(this.data.instance.title);
       var option = {};
@@ -470,11 +473,6 @@ export default {
       }
       //抛弃template
       // const template = document.getElementById(domId).innerHTML;
-      var objs = [];
-      objs.push({
-        name: "test",
-        text: "xxx"
-      });
       var dstr = JSON.stringify(this.getHtmlData());
       //const template = document.getElementById("content_views").innerHTML;
       //return getDocumentTemplates(title, resumecss, template);
