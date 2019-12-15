@@ -41,8 +41,8 @@ export default {
   created() {
     //根据地址栏得到api详情
     let params = this.$route.params;
-    console.log(params);
-    console.log(this.data);
+    //console(params);
+    //console(this.data);
     //根据当前的分组id、接口id找出apiInfo信息
     let instance = this.data.instance;
     let apiInfo = null;
@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     onTabChange(key, type) {
-      console.log(key, type);
+      //console(key, type);
       this[type] = key;
     }
   }

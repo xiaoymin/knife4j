@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     handleMenuClick() {
-      console.log("handleMenuClick");
+      //console("handleMenuClick");
     },
     jumpSettings() {
       this.$router.push({ path: "/documentManager/Settings" });
@@ -90,13 +90,13 @@ export default {
       this.onCollapse(!this.collapsed);
     },
     onSearch(value) {
-      console.log("input", value);
+      //console("input", value);
     },
     onPressEnter(value) {
-      console.log("enter", value);
+      //console("enter", value);
     },
     onItemClick(item, tabProps) {
-      console.log(item, tabProps);
+      //console(item, tabProps);
     },
     clearLocalCache() {
       try {

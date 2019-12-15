@@ -92,7 +92,7 @@ export default {
     };
   },
   updated() {
-    console.log("dom重新被渲染");
+    //console("dom重新被渲染");
     var that = this;
     if (that.downloadType == "DownloadHtml") {
       //html
@@ -117,25 +117,25 @@ export default {
       //根据instance的实例初始化model名称
       var treeTableModel = this.data.instance.refTreeTableModels;
       this.$Knife4jModels.setValue(key, treeTableModel);
-      console.log("初始化Models");
+      //console("初始化Models");
       //this.$Knife4jModels.setTags(key, this.data.instance.tags);
     },
     deepTags() {
       var that = this;
       var key = Constants.globalTreeTableModelParams + this.data.instance.id;
       if (!this.deepTagFlag) {
-        console.log("deepTags");
+        //console("deepTags");
         var tags = this.data.instance.tags;
-        //console.log(tags);
-        console.log("开始遍历tags时间：" + new Date().toGMTString());
+        ////console(tags);
+        //console("开始遍历tags时间：" + new Date().toGMTString());
         if (KUtils.arrNotEmpty(tags)) {
           tags.forEach(function(tag) {
-            //console.log(tag);
+            ////console(tag);
             //判断是否存在参数
             if (KUtils.arrNotEmpty(tag.childrens)) {
               //存在接口,遍历接口的参数
               tag.childrens.forEach(function(apiInfo) {
-                //console.log("接口地址:" + apiInfo.showUrl);
+                ////console("接口地址:" + apiInfo.showUrl);
                 //获取接口的参数
                 var data = [];
                 if (
@@ -162,7 +162,7 @@ export default {
                 if (KUtils.arrNotEmpty(data)) {
                   //存在请求参数,遍历data参数
                   data.forEach(function(param) {
-                    //console.log(param);
+                    ////console(param);
                     //只查找第一级的参数，即pid=-1的参数
                     if (param.pid == "-1") {
                       param.children = [];
@@ -172,10 +172,10 @@ export default {
                         var schemaName = param.schemaValue;
 
                         if (KUtils.checkUndefined(schemaName)) {
-                          // console.log("schemaValue--checkUndefined");
+                          // //console("schemaValue--checkUndefined");
                           if (that.$Knife4jModels.exists(key, schemaName)) {
-                            //console.log("存在-不用查找---" + schemaName);
-                            //console.log(that.$Knife4jModels.instance);
+                            ////console("存在-不用查找---" + schemaName);
+                            ////console(that.$Knife4jModels.instance);
                             var model = that.$Knife4jModels.getByModelName(
                               key,
                               schemaName
@@ -191,7 +191,7 @@ export default {
                               }
                             }
                           } else {
-                            //console.log("schemavalue--Not Existis");
+                            ////console("schemavalue--Not Existis");
                           }
                         }
                       }
@@ -212,8 +212,8 @@ export default {
             }
           });
         }
-        console.log("结束遍历tags时间：" + new Date().toGMTString());
-        console.log(tags);
+        //console("结束遍历tags时间：" + new Date().toGMTString());
+        //console(tags);
         /* var tgdata = [];
         tgdata.push(tags[0]); */
         this.tags = tags;
@@ -261,10 +261,10 @@ export default {
                     //判断当前缓存是否存在
                     var schemaName = param.schemaValue;
                     if (KUtils.checkUndefined(schemaName)) {
-                      // console.log("schemaValue--checkUndefined");
+                      // //console("schemaValue--checkUndefined");
                       if (that.$Knife4jModels.exists(key, schemaName)) {
-                        //console.log("存在-不用查找---" + schemaName);
-                        //console.log(that.$Knife4jModels.instance);
+                        ////console("存在-不用查找---" + schemaName);
+                        ////console(that.$Knife4jModels.instance);
                         var model = that.$Knife4jModels.getByModelName(
                           key,
                           schemaName
@@ -280,7 +280,7 @@ export default {
                           }
                         }
                       } else {
-                        //console.log("schemavalue--Not Existis");
+                        ////console("schemavalue--Not Existis");
                       }
                     }
                   }
@@ -392,7 +392,7 @@ export default {
       }, 1000);
     },
     downloadMarkdown(content) {
-      console.log("downloadMarkdown");
+      //console("downloadMarkdown");
       var a = document.createElement("a");
       //var content = this.getHtmlContent(this.data.instance.title);
       var option = {};
@@ -411,7 +411,7 @@ export default {
       window.URL.revokeObjectURL(url);
     },
     downloadHtml() {
-      //console.log("downloadHtml");
+      ////console("downloadHtml");
       var a = document.createElement("a");
       var content = this.getHtmlContent(this.data.instance.title);
       var option = {};

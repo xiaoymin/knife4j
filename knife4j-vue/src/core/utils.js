@@ -253,7 +253,7 @@ const utils = {
     try {
       ret = JSON5.stringify(rtext, null, 2);
     } catch (err) {
-      console.log(err)
+      //console(err)
       ret = JSON.stringify(rtext, null, 2);
     }
     return ret;
@@ -263,7 +263,7 @@ const utils = {
     try {
       ret = JSON5.parse(rtext)
     } catch (err) {
-      console.log(err)
+      //console(err)
       ret = JSON.parse(rtext);
     }
     return ret;

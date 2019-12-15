@@ -15,8 +15,8 @@ var knife4jModels = new Vue({
   methods: {
     setTags(key, value) {
       //该方法是递归遍历tags的方法
-      console.log("setTags--------")
-      console.log(value);
+      //console("setTags--------")
+      //console(value);
 
     },
     setValue(key, value) {
@@ -45,8 +45,8 @@ var knife4jModels = new Vue({
         }
         //初始化一个空的instance对象
         this.instance[key] = data;
-        window.console.log("递归初始化完成-----------")
-        window.console.log(this.instance[key])
+        // window.//console("递归初始化完成-----------")
+        // window.//console(this.instance[key])
       }
     },
     deepModel(data, param, rootParam) {

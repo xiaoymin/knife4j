@@ -158,8 +158,8 @@ export default {
         if (this.responseContent.mode == "json") {
           //json格式特别处理
           const tmpJson = this.responseContent.text;
-          console.log("特殊处理json");
-          console.log(tmpJson);
+          //console("特殊处理json");
+          //console(tmpJson);
           this.responseContent.text = KUtils.json5stringify(
             KUtils.json5parse(tmpJson)
           );
@@ -213,11 +213,11 @@ export default {
     },
     showEditorFieldAnyWay() {
       var swaggerInstance = this.swaggerInstance;
-      console.log("我被调用了--------");
+      //console("我被调用了--------");
       var responseCode = this.api.getHttpSuccessCodeObject();
       var cid = "responseEditorContent" + this.api.id;
       var editorContainer = document.getElementById(cid);
-      console.log(cid);
+      //console(cid);
       var paths = [];
       //var aceJsonText = $aceJsonContent.find(".ace_text-layer");
       var aceJsonText = editorContainer.getElementsByClassName(

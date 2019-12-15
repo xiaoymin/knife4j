@@ -377,7 +377,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
       <script type="text/javascript">
       function getData(){
         var datas=${dataStr};
-        console.log(datas);
+        //console(datas);
         return datas;
       }
 

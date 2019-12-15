@@ -257,7 +257,7 @@ export default {
       this.debugUrl = this.api.url;
       //判断是否为paht类型
       var reg = new RegExp("{(.*?)}", "ig");
-      console.log("地址是否为path");
+      //console("地址是否为path");
       if (reg.test(this.debugUrl)) {
         this.debugPathFlag = true;
         var ma = null;
@@ -266,8 +266,8 @@ export default {
           instance.debugPathParams.push(ma[1]);
         }
       }
-      console.log(this.debugPathFlag);
-      console.log(this.debugPathParams);
+      //console(this.debugPathFlag);
+      //console(this.debugPathParams);
     },
     initLocalGlobalParameters() {
       const key = this.api.instanceId;
@@ -318,7 +318,7 @@ export default {
       //读取Author的参数情况
       var key = constant.globalSecurityParamPrefix + this.api.instanceId;
       this.$localStore.getItem(key).then(function(val) {
-        console.log("读取本都Auth请");
+        //console("读取本都Auth请");
         if (KUtils.arrNotEmpty(val)) {
           //不为空
           val.forEach(function(security) {
@@ -341,7 +341,7 @@ export default {
       });
     },
     updateHeaderFromCacheApi(cacheApi) {
-      console.log("从缓存中更新header参数");
+      //console("从缓存中更新header参数");
       //从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
@@ -362,7 +362,7 @@ export default {
       }
     },
     updateUrlFormCacheApi(cacheApi) {
-      console.log("从缓存中更新UrlForm参数");
+      //console("从缓存中更新UrlForm参数");
       //从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
@@ -381,17 +381,17 @@ export default {
       }
     },
     updateRawFormCacheApi(cacheApi) {
-      console.log("从缓存中更新rawForm参数");
+      //console("从缓存中更新rawForm参数");
       //从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheFormData = cacheApi.rawFormData;
           instance.rawFormData.forEach(function(form) {
             if (!KUtils.strNotBlank(form.content)) {
-              console.log("缓存-raw:" + form.id);
-              console.log(cacheFormData);
+              //console("缓存-raw:" + form.id);
+              //console(cacheFormData);
               var cacheFormArr = cacheFormData.filter(f => f.name == form.name);
-              console.log(cacheFormArr);
+              //console(cacheFormArr);
               if (cacheFormArr.length > 0) {
                 form.content = cacheFormArr[0].content;
               }
@@ -403,7 +403,7 @@ export default {
       }
     },
     updateFormCacheApi(cacheApi) {
-      console.log("从缓存中更新Form参数");
+      //console("从缓存中更新Form参数");
       //从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
@@ -477,14 +477,14 @@ export default {
       //根据参数列表、参数类型,开始自动判断接口的请求类型
       //如果是单个@RequestBody类型,则参数只有一个,且只有一个，类型必须是body类型
       var paramSize = showGlobalParameters.length + showApiParameters.length;
-      console.log("参数大小:" + paramSize);
+      //console("参数大小:" + paramSize);
       if (KUtils.arrNotEmpty(showApiParameters)) {
         //判断参数是否为body类型
         var bodySize = showApiParameters.filter(param => param.in == "body")
           .length;
         if (bodySize == 1) {
-          console.log("显示raw类型");
-          console.log(showApiParameters);
+          //console("显示raw类型");
+          //console(showApiParameters);
           //判断raw类型是否还存在query类型的参数,如果存在,加入rawFormdata集合中
           var rawQueryParams = showApiParameters.filter(
             param => param.in != "body" && param.in != "header"
@@ -505,7 +505,7 @@ export default {
           if (this.rawFormFlag) {
             //raw-form-data表单
             this.initFirstRawFormValue();
-            console.log(this.rawFormData);
+            //console(this.rawFormData);
           }
         } else {
           //判断是否包含文件
@@ -517,7 +517,7 @@ export default {
               param.in == "formData" ||
               param.in == "formdata"
           ).length;
-          console.log("文件大小参数---" + fileSize);
+          //console("文件大小参数---" + fileSize);
 
           if (fileSize > 0) {
             //form-data
@@ -661,7 +661,7 @@ export default {
         var headers = apiParameters.filter(param => param.in == "header");
         if (headers.length > 0) {
           headers.forEach(function(param) {
-            console.log(param);
+            //console(param);
             var newHeader = {
               id: KUtils.randomMd5(),
               name: param.name,
@@ -940,7 +940,7 @@ export default {
       }
     },
     requestContentTypeChange(e) {
-      console.log("radio checked", e.target.value);
+      //console("radio checked", e.target.value);
       this.requestContentType = e.target.value;
       this.initShowFormTable();
     },
@@ -993,9 +993,9 @@ export default {
       });
     },
     formFileChange(e) {
-      console.log("文件发生变化了");
-      console.log(e);
-      console.log(e.target.files);
+      //console("文件发生变化了");
+      //console(e);
+      //console(e.target.files);
       var files = e.target.files;
       var fileStr = [];
       for (var i = 0; i < files.length; i++) {
@@ -1013,7 +1013,7 @@ export default {
             form.new = false;
           }
         });
-        console.log(this.formData);
+        //console(this.formData);
         this.addNewLineFormValue();
       } else {
         this.formData.forEach(function(form) {
@@ -1028,7 +1028,7 @@ export default {
     },
     formContentChange(e) {
       var formValue = e.target.value;
-      //console.log("formcontent-value:" + formValue);
+      ////console("formcontent-value:" + formValue);
       var formId = e.target.getAttribute("data-key");
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
@@ -1167,8 +1167,8 @@ export default {
       e.preventDefault();
       //验证公共请求头
       var validateHeader = this.validateCommonHeaders();
-      console.log("公共请求头验证");
-      console.log(validateHeader);
+      //console("公共请求头验证");
+      //console(validateHeader);
       if (validateHeader.validate) {
         //根据不同的请求类型,发送不同的请求
         if (this.rawFlag) {
@@ -1183,7 +1183,7 @@ export default {
       }
     },
     callChildEditorShow() {
-      console.log("调用子类方法---");
+      //console("调用子类方法---");
       this.$refs.childDebugResponse.showEditorFieldDescription();
     },
     debugHeaders() {
@@ -1283,7 +1283,7 @@ export default {
       //form-data类型的请求参数
       var validateForm = { url: "", params: {} };
       var url = this.debugUrl;
-      console.log("表单验证url:" + url);
+      //console("表单验证url:" + url);
       if (fileFlag) {
         //文件
         var formData = new FormData();
@@ -1510,9 +1510,9 @@ export default {
     },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
-      console.log("发送url-form接口");
+      //console("发送url-form接口");
       var validateForm = this.validateUrlForm();
-      console.log(validateForm);
+      //console(validateForm);
       if (validateForm.validate) {
         //发送状态置为已发送请求
         this.debugSend = true;
@@ -1553,22 +1553,22 @@ export default {
           //流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
-        console.log(headers);
-        console.log(requestConfig);
+        //console(headers);
+        //console(requestConfig);
         DebugAxios.create()
           .request(requestConfig)
           .then(function(res) {
-            console.log("url-form-success");
-            console.log(res);
+            //console("url-form-success");
+            //console(res);
             instance.handleDebugSuccess(startTime, res);
           })
           .catch(function(err) {
-            console.log("触发url-form-error");
-            console.log(err);
+            //console("触发url-form-error");
+            //console(err);
             if (err.response) {
               instance.handleDebugError(startTime, err.response);
             } else {
-              //console.log(err.message);
+              ////console(err.message);
             }
           });
       } else {
@@ -1578,9 +1578,9 @@ export default {
     debugSendFormRequest() {
       //发送form类型的请求
       var validateForm = this.validateFormData();
-      console.log(validateForm);
+      //console(validateForm);
       if (validateForm.validate) {
-        console.log("验证通过---");
+        //console("验证通过---");
         //发送状态置为已发送请求
         this.debugSend = true;
         var startTime = new Date();
@@ -1591,7 +1591,7 @@ export default {
         var methodType = this.api.methodType.toLowerCase();
         var fileFlag = this.validateFormDataContaintsFile();
         var validateFormd = this.debugFormDataParams(fileFlag);
-        console.log(validateFormd);
+        //console(validateFormd);
         url = validateFormd.url;
         //var formParams = this.debugFormDataParams(fileFlag);
         var formParams = validateFormd.params;
@@ -1611,21 +1611,21 @@ export default {
           //流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
-        console.log(headers);
-        console.log(requestConfig);
+        //console(headers);
+        //console(requestConfig);
         DebugAxios.create()
           .request(requestConfig)
           .then(function(res) {
-            console.log("url-form-success");
-            console.log(res);
+            //console("url-form-success");
+            //console(res);
             instance.handleDebugSuccess(startTime, res);
           })
           .catch(function(err) {
-            console.log("触发url-form-error");
+            //console("触发url-form-error");
             if (err.response) {
               instance.handleDebugError(startTime, err.response);
             } else {
-              //console.log(err.message);
+              ////console(err.message);
             }
           });
       } else {
@@ -1634,7 +1634,7 @@ export default {
     },
     debugSendRawRequest() {
       //发送raw类型的请求
-      console.log("发送raw接口");
+      //console("发送raw接口");
       var validateForm = this.validateRawForm();
       if (validateForm.validate) {
         //发送状态置为已发送请求
@@ -1666,8 +1666,8 @@ export default {
           formParams = realFormParams;
         }
 
-        console.log(headers);
-        console.log(this.rawText);
+        //console(headers);
+        //console(this.rawText);
         DebugAxios.create()
           .request({
             url: url,
@@ -1695,15 +1695,15 @@ export default {
       instance.setResponseBody(res);
       instance.setResponseHeaders(res.headers);
       instance.setResponseRaw(res);
-      console.log("开始执行status--");
+      //console("开始执行status--");
       instance.setResponseStatus(startTime, res);
       instance.setResponseCurl(res.request);
       instance.callChildEditorShow();
       instance.storeApiParams();
     },
     handleDebugError(startTime, resp) {
-      console.log("失败情况---");
-      console.log(resp);
+      //console("失败情况---");
+      //console(resp);
       //失败的情况
       instance.setResponseBody(resp);
       instance.setResponseHeaders(resp.headers);
@@ -1739,8 +1739,8 @@ export default {
           form => form.new == false
         );
         cacheApi.rawText = this.rawText;
-        console.log("缓存请求参数");
-        console.log(cacheApi);
+        //console("缓存请求参数");
+        //console(cacheApi);
         instance.$localStore.setItem(cacheApiKey, cacheApi);
       }
     },
@@ -1773,7 +1773,7 @@ export default {
       }
     },
     setResponseStatus(startTime, res) {
-      console.log("响应状态------------");
+      //console("响应状态------------");
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
         //响应状态
@@ -1807,7 +1807,7 @@ export default {
             cost: costStr,
             size: size
           };
-          console.log(this.responseStatus);
+          //console(this.responseStatus);
         }
       }
     },
@@ -1842,14 +1842,14 @@ export default {
 
       if (this.rawFlag) {
         //headers["Content-Type"] = this.rawRequestType;
-        console.log("raw------------------curl");
+        //console("raw------------------curl");
         if (KUtils.strNotBlank(this.rawText)) {
           try {
             var jobj = JSON.parse(this.rawText);
             var objstr = JSON.stringify(jobj)
               .replace(/\\n/g, "")
               .replace(/"/g, '\\"');
-            console.log(objstr);
+            //console(objstr);
             curlified.push("-d");
             curlified.push('"' + objstr + '"');
           } catch (error) {
@@ -1867,7 +1867,7 @@ export default {
             tmpUrls.push(p + "=" + urlFormParams[p]);
           }
           var tmpUrlStr = tmpUrls.join("&");
-          console.log("tmpUrlStr:" + tmpUrlStr);
+          //console("tmpUrlStr:" + tmpUrlStr);
           if (
             this.api.methodType.toLowerCase() == "get" ||
             this.api.methodType.toLowerCase() == "delete"
@@ -1921,7 +1921,7 @@ export default {
               tmpUrls.push(p + "=" + params[p]);
             }
             var tmpUrlStr = tmpUrls.join("&");
-            console.log("tmpUrlStr:" + tmpUrlStr);
+            //console("tmpUrlStr:" + tmpUrlStr);
             if (
               this.api.methodType.toLowerCase() == "get" ||
               this.api.methodType.toLowerCase() == "delete"
@@ -2019,8 +2019,8 @@ export default {
             //var _text = resp.responseText;
             var _text = "";
             var mode = this.getContentTypeByHeaders(headers);
-            console.log("动态mode-----" + mode);
-            console.log(res);
+            //console("动态mode-----" + mode);
+            //console(res);
             if (mode == "json") {
               //_text = KUtils.json5stringify(KUtils.json5parse(_text));
               //不能使用res.data对象,必须使用stringfy重新转换1次,否则会出现精度丢失的情况
@@ -2055,7 +2055,7 @@ export default {
       if (!KUtils.strNotBlank(contentType)) {
         contentType = KUtils.propValue("content-type", headers, "");
       }
-      console.log("contentType:" + contentType);
+      //console("contentType:" + contentType);
       if (KUtils.strNotBlank(contentType)) {
         //不为空
         if (contentType.indexOf("json") >= 0) {

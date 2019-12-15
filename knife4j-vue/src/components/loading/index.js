@@ -12,8 +12,8 @@ const loadOptions = {
   show(options = {}) {
     instance.show = true;
     if (options) {
-      console.log(instance)
-      console.log(options)
+      //console(instance)
+      //console(options)
       document.body.append(instance.$el);
       //options.el.appendChild(instance.$el);
       instance.text = options.text;

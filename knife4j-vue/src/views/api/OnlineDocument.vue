@@ -314,9 +314,9 @@ export default {
     //var treeTableModel = this.swaggerInstance.refTreeTableModels;
     //instance.$Knife4jModels.setValue(key, treeTableModel);
     //instance.initRequestParams();
-    console.log("该请求参数----------：" + this.api.showUrl);
-    console.log(this.api);
-    console.log(this.api.reqParameters);
+    //console("该请求参数----------：" + this.api.showUrl);
+    //console(this.api);
+    //console(this.api.reqParameters);
     //赋值
     this.reqParameters = this.api.reqParameters;
     instance.initResponseCodeParams();
@@ -359,8 +359,8 @@ export default {
               if (KUtils.checkUndefined(schemaName)) {
                 if (that.$Knife4jModels.exists(key, schemaName)) {
                   //存在
-                  console.log("存在-不用查找---" + schemaName);
-                  //console.log(that.$Knife4jModels.instance);
+                  //console("存在-不用查找---" + schemaName);
+                  ////console(that.$Knife4jModels.instance);
                   var model = that.$Knife4jModels.getByModelName(
                     key,
                     schemaName
@@ -380,7 +380,7 @@ export default {
                   //md.children = children;
                 } else {
                   //不存在
-                  console.log("不存在--开始查找---" + schemaName);
+                  //console("不存在--开始查找---" + schemaName);
                 }
               }
             }
@@ -398,8 +398,8 @@ export default {
       }
       that.reqParameters = reqParameters;
       //that.storeCacheModels(cacheModelChildrens);
-      //console.log("遍历完成");
-      //console.log(reqParameters);
+      ////console("遍历完成");
+      ////console(reqParameters);
     },
     storeCacheModels(val) {
       var key = Constants.globalTreeTableModelParams + this.api.instanceId;
@@ -408,7 +408,7 @@ export default {
     deepTreeTableSchemaModel(param, treeTableModel, rootParam) {
       var that = this;
       var key = Constants.globalTreeTableModelParams + this.api.instanceId;
-      //console.log(model.name)
+      ////console(model.name)
       if (KUtils.checkUndefined(param.schemaValue)) {
         var schema = treeTableModel[param.schemaValue];
         if (KUtils.checkUndefined(schema)) {
@@ -430,7 +430,7 @@ export default {
                     childrenParam.children = [];
                     //减少递归次数
                     if (that.$Knife4jModels.exists(key, schemaName)) {
-                      console.log("递归中存在--不用找了");
+                      //console("递归中存在--不用找了");
                       var children = that.$Knife4jModels.getByModelName(
                         key,
                         schemaName
@@ -446,7 +446,7 @@ export default {
                       //childrenParam.children = children;
                     } else {
                       //不存在
-                      console.log("不存在--开始查找-递归中---" + schemaName);
+                      //console("不存在--开始查找-递归中---" + schemaName);
                       //根据schema查找当前的子级参数
                       that.deepTreeTableSchemaModel(
                         childrenParam,
@@ -564,9 +564,9 @@ export default {
           }
         });
       }
-      //console.log("响应头");
-      //console.log(that.multipCodeDatas);
-      //console.log(that.multipData);
+      ////console("响应头");
+      ////console(that.multipCodeDatas);
+      ////console(that.multipData);
     },
     formaterJson(json) {
       try {

@@ -76,7 +76,7 @@ export default {
     },
     editorInit(editor) {
       var that = this;
-      console.log("aaa");
+      //console("aaa");
       this.editor = editor;
       require("brace/ext/language_tools"); //language extension prerequsite...
       require("brace/theme/eclipse");

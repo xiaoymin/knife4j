@@ -8,7 +8,7 @@ var logger = {
   info: function (msg) {
     if (debug) {
       if (window.console) {
-        window.console.log(msg)
+        window.console(msg)
       }
     }
   },

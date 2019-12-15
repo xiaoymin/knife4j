@@ -154,14 +154,14 @@ export default {
   },
   methods: {
     serviceChange(value, option) {
-      console.log("菜单下拉选择");
+      //console("菜单下拉选择");
       var that = this;
       //id
       let swaggerIns = this.swagger.selectInstanceByGroupId(value);
       this.swagger.analysisApi(swaggerIns);
       this.defaultServiceOption = value;
-      console.log(value);
-      console.log(option);
+      //console(value);
+      //console(option);
       setTimeout(() => {
         that.updateMainTabInstance();
       }, 500);
@@ -283,8 +283,8 @@ export default {
 
         //判断tab是否已加载
         if (tabKeys.indexOf(menu.key) == -1) {
-          console.log(menu);
-          console.log(this.swaggerCurrentInstance);
+          //console(menu);
+          //console(this.swaggerCurrentInstance);
           //不存在,添加，否则直接选中tab即可
           panes.push({
             title: menu.tabName ? menu.tabName : menu.name,
@@ -316,9 +316,9 @@ export default {
     watchPathMenuSelect() {
       var url = this.$route.path;
       const tmpcol = this.collapsed;
-      console.log("watch-------------------------");
+      //console("watch-------------------------");
       const pathArr = urlToList(url);
-      console.log(pathArr);
+      //console(pathArr);
       var m = findComponentsByPath(url, this.MenuData);
       //如果菜单面板已折叠,则不用打开openKeys
       if (!tmpcol) {
@@ -365,14 +365,14 @@ export default {
       }
     },
     menuClick(key) {
-      console.log("菜单click");
-      console.log(key);
+      //console("菜单click");
+      //console(key);
       const panes = this.panels;
-      console.log(panes);
+      //console(panes);
       const tabKeys = this.panels.map(tab => tab.key);
       // var menu = findComponentsByPath(url, this.MenuData);
       var menu = findMenuByKey(key, this.MenuData);
-      console.log(menu);
+      //console(menu);
       if (menu != null) {
         //判断tab是否已加载
         if (tabKeys.indexOf(menu.key) == -1) {
@@ -397,11 +397,11 @@ export default {
       this[action](targetKey);
     },
     tabChange(targetKey) {
-      console.log("tabchange------------");
-      console.log(targetKey);
+      //console("tabchange------------");
+      //console(targetKey);
       //var menu = findMenuByKey(targetKey, this.MenuData);
       var menu = findMenuByKey(targetKey, this.swagger.globalMenuDatas);
-      console.log(menu);
+      //console(menu);
       if (menu != null) {
         var path = menu.path;
         this.$router.push({ path: path });
@@ -436,7 +436,7 @@ export default {
     handleMenuCollapse(collapsed) {
       const tmpColl = this.collapsed;
       this.collapsed = !tmpColl;
-      console.log("調用selectDefaultMenu");
+      //console("調用selectDefaultMenu");
       this.selectDefaultMenu();
       setTimeout(() => {
         if (tmpColl) {

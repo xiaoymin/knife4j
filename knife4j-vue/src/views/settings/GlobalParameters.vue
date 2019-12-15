@@ -142,7 +142,7 @@ export default {
       });
     },
     handleCancel(e) {
-      console.log("Clicked cancel button");
+      //console("Clicked cancel button");
       this.visible = false;
     },
     addGlobalParameters() {

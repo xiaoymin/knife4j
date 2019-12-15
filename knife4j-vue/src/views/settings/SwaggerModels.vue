@@ -114,26 +114,26 @@ export default {
     },
     modelChange(key) {
       var that = this;
-      console.log("当前激活面板key:" + that.activeKey);
+      //console("当前激活面板key:" + that.activeKey);
 
       var instanceKey =
         Constants.globalTreeTableModelParams + this.data.instance.id;
-      console.log("chang事件-------");
-      console.log(key);
+      //console("chang事件-------");
+      //console(key);
 
       if (KUtils.arrNotEmpty(key)) {
         //默认要取最后一个
         var lastIndex = key.length - 1;
         var id = key[lastIndex];
-        console.log("key------------");
+        //console("key------------");
         this.modelNames.forEach(function(model) {
           if (model.id == id) {
-            console.log("找到匹配的model了===");
+            //console("找到匹配的model了===");
             //找到该model,判断是否已加载
             if (!model.load) {
               //未加载的情况下,进行查找数据
-              //console.log("查找属性");
-              //console.log(model);
+              ////console("查找属性");
+              ////console(model);
               var modelData = [];
               //得到当前model的原始对象
               //所有丶属性全部深拷贝,pid设置为-1
@@ -142,7 +142,7 @@ export default {
                 instanceKey,
                 model.name
               );
-              console.log("查找原始model:" + model.name);
+              //console("查找原始model:" + model.name);
               if (KUtils.checkUndefined(originalModel)) {
                 //存在
                 //查找属性集合
@@ -179,7 +179,7 @@ export default {
                   });
                 }
               }
-              //console.log(modelData);
+              ////console(modelData);
               model.data = modelData;
               model.load = true;
             }
@@ -282,7 +282,7 @@ export default {
     },
     deepTreeTableSchemaModel(modelData, treeTableModel, param, rootParam) {
       var that = this;
-      //console.log(model.name)
+      ////console(model.name)
       if (KUtils.checkUndefined(param.schemaValue)) {
         var schema = treeTableModel[param.schemaValue];
         if (KUtils.checkUndefined(schema)) {

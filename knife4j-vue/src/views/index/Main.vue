@@ -104,8 +104,8 @@ export default {
     };
   },
   created() {
-    console.log("子组件渲染");
-    console.log(this.data);
+    //console("子组件渲染");
+    //console(this.data);
   }
 };
 </script>

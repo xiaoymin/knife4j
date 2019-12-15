@@ -114,7 +114,7 @@ export default {
         api = api.substr(1);
       }
       //api = "/tx/fff/www/xx";
-      console.log("验证api地址：" + api);
+      //console("验证api地址：" + api);
       var flag = true;
       this.$axios({
         url: api,
@@ -164,7 +164,7 @@ export default {
           api = api.substr(1);
         }
         api = "/tx/fff/www/xx";
-        console.log("验证api地址：" + api);
+        //console("验证api地址：" + api);
         var flag = true;
         this.$axios({
           url: api,

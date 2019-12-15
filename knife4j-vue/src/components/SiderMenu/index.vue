@@ -60,10 +60,10 @@ export default {
     }
   },
   mounted() {
-    console.log("men5u-mounted------------------");
-    console.log(this.location.path);
+    //console("men5u-mounted------------------");
+    //console(this.location.path);
     const pathArr = urlToList(this.location.path);
-    console.log(pathArr);
+    //console(pathArr);
     if (pathArr[2] && !this.checkPath(pathArr[2])) {
       this.openKeys = [pathArr[0]];
       this.selectedKeys = [pathArr[1]];
@@ -73,28 +73,28 @@ export default {
     } else {
       this.openKeys = [pathArr[0]];
     }
-    console.log(this.menuData);
-    console.log(this.openKeys);
+    //console(this.menuData);
+    //console(this.openKeys);
     if (this.menuData.length > 0) {
-      console.log("菜单>0");
+      //console("菜单>0");
       var m = findComponentsByPath(this.location.path, this.menuData);
-      console.log(m);
+      //console(m);
       //this.selectedKeys = [this.location.path];
       this.selectedKeys = [m.key];
     } else {
       this.selectedKeys = ["kmain"];
     }
-    console.log(this.selectedKeys);
-    console.log("传递父级参数---");
+    //console(this.selectedKeys);
+    //console("传递父级参数---");
     this.openTab();
   },
   watch: {
     collapsed: "collapsedChange",
     $route() {
-      console.log("menu -watch-------------");
+      //console("menu -watch-------------");
       const pathArr = urlToList(this.location.path);
-      console.log(pathArr);
-      console.log(this.menuData);
+      //console(pathArr);
+      //console(this.menuData);
       /* if (pathArr[2] && !this.checkPath(pathArr[2])) {
         this.openKeys = [pathArr[0]];
         this.selectedKeys = [pathArr[1]];
@@ -102,11 +102,11 @@ export default {
       } else if (pathArr[2]) {
         this.openKeys = [pathArr[0], pathArr[1]];
       } else {
-        console.log("设置openKeys");
+        //console("设置openKeys");
         var m = findComponentsByPath(pathArr[0], this.menuData);
-        console.log(m);
+        //console(m);
         this.openKeys = [m.key];
-        console.log()
+        //console()
       } */
       //只有一个菜单
       setTimeout(() => {
@@ -115,14 +115,14 @@ export default {
           //二级子菜单
           var parentM = findComponentsByPath(pathArr[0], this.menuData);
           this.openKeys = [parentM.key];
-          console.log("openkeys----");
-          console.log(this.openKeys);
+          //console("openkeys----");
+          //console(this.openKeys);
         } else {
           this.openKeys = [m.key];
         }
         //this.selectedKeys = [this.location.path];
         this.selectedKeys = [m.key];
-        console.log(this.selectedKeys);
+        //console(this.selectedKeys);
         this.openTab();
       }, 2000);
     }

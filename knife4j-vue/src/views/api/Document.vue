@@ -313,8 +313,8 @@ export default {
       }
       let reqParameters = [];
       if (data != null && data.length > 0) {
-        console.log("初始化请求参数----------");
-        console.log(data);
+        //console("初始化请求参数----------");
+        //console(data);
         data.forEach(function(md) {
           if (md.pid == "-1") {
             md.children = [];
@@ -333,12 +333,12 @@ export default {
         });
       }
       that.reqParameters = reqParameters;
-      console.log("遍历完成");
-      console.log(reqParameters);
+      //console("遍历完成");
+      //console(reqParameters);
     },
     deepTreeTableSchemaModel(param, treeTableModel, rootParam) {
       var that = this;
-      //console.log(model.name)
+      ////console(model.name)
       if (KUtils.checkUndefined(param.schemaValue)) {
         var schema = treeTableModel[param.schemaValue];
         if (KUtils.checkUndefined(schema)) {
@@ -456,9 +456,9 @@ export default {
           }
         });
       }
-      console.log("响应头");
-      console.log(that.multipCodeDatas);
-      console.log(that.multipData);
+      //console("响应头");
+      //console(that.multipCodeDatas);
+      //console(that.multipData);
     },
     showResponseEditFieldDescription() {
       //显示说明
@@ -468,11 +468,11 @@ export default {
         //默认只显示第1个
         var resp = this.multipCodeDatas[0];
         var id = "knife4jDocumentShowEditor" + that.api.id + resp.code;
-        console.log("editorShowID:" + id);
+        //console("editorShowID:" + id);
         that.showEditorFieldAnyWay(id);
         /* this.multipCodeDatas.forEach(function(resp) {
           var id = "knife4jDocumentShowEditor" + that.api.id + resp.code;
-          console.log("editorShowID:" + id);
+          //console("editorShowID:" + id);
           that.showEditorFieldAnyWay(id);
         }); */
       } else {

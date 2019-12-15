@@ -973,9 +973,9 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
           swud.value = defiTypeValue;
         }
       }
-      //console.log("开始递归---------------deepTreeTableRefParameter")
+      ////console("开始递归---------------deepTreeTableRefParameter")
       deepTreeTableRefParameter(swud, that, swud, swud);
-      //console.log(swud)
+      ////console(swud)
       that.currentInstance.difArrs.push(swud);
     }
   }
@@ -1319,7 +1319,7 @@ SwaggerBootstrapUi.prototype.processModels = function () {
  * @param {*} rootParam 
  */
 function deepTreeTableSchemaModel(model, treeTableModel, param, rootParam) {
-  //console.log(model.name)
+  ////console(model.name)
   if (KUtils.checkUndefined(param.schemaValue)) {
     var schema = treeTableModel[param.schemaValue]
     if (KUtils.checkUndefined(schema)) {
@@ -1436,7 +1436,7 @@ SwaggerBootstrapUi.prototype.createDescriptionElement = function () {
 SwaggerBootstrapUi.prototype.selectInstanceByGroupId = function (id) {
   var that = this;
   var instance = null;
-  console.log(that.instances)
+  //console(that.instances)
   that.instances.forEach(function (group) {
     //})
     //$.each(that.instances, function (i, id) {
@@ -1616,13 +1616,13 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
 
     }
   })
-  //console.log(menuArr)
+  ////console(menuArr)
   var mdata = KUtils.formatter(menuArr);
   //添加全局参数
   if (addFlag) {
     that.globalMenuDatas = that.globalMenuDatas.concat(mdata);
   }
-  //console.log(JSON.stringify(mdata))
+  ////console(JSON.stringify(mdata))
   //双向绑定
   that.$Vue.MenuData = mdata;
   that.$Vue.swaggerCurrentInstance = that.currentInstance;
@@ -1978,8 +1978,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
             swpinfo.parameters.push(minfo);
             //判断当前属性是否是schema
             if (minfo.schema) {
-              //console.log("存在schema------------开始递归")
-              //console.log(minfo)
+              ////console("存在schema------------开始递归")
+              ////console(minfo)
 
               //deepRefParameter(minfo, that, minfo.def, swpinfo);
               minfo.parentTypes.push(minfo.schemaValue);
@@ -2786,9 +2786,9 @@ function deepTreeTableRefParameter(minfo, that, def, apiInfo) {
     //查询
     if (KUtils.checkUndefined(that.currentInstance.refTreeTableModels[def.name])) {
       //存在
-      //console.log("refTreeTableModels-----------递归存在,modelName:" + def.name)
+      ////console("refTreeTableModels-----------递归存在,modelName:" + def.name)
       var refParam = that.currentInstance.refTreeTableModels[def.name];
-      //console.log(refParam)
+      ////console(refParam)
       apiInfo.refTreetableparameters.push(refParam);
       apiInfo.refTreetableModelsparameters.push(refParam);
     } else {
@@ -2841,7 +2841,7 @@ function deepTreeTableRefParameter(minfo, that, def, apiInfo) {
               }
               //判断类型是否基础类型
               if (KUtils.checkUndefined(p.refType) && !KUtils.checkIsBasicType(p.refType)) {
-                //console.log("schema类型--------------" + p.refType)
+                ////console("schema类型--------------" + p.refType)
                 refp.schemaValue = p.refType;
                 refp.schema = true;
                 //属性名称不同,或者ref类型不同
@@ -2958,7 +2958,7 @@ function checkParamTreeTableArrsExists(arr, param) {
 }
 
 function deepSchemaModel(model, arrs, id) {
-  //console.log(model.name)
+  ////console(model.name)
   arrs.forEach(function (arr) {
     //})
     //$.each(arrs,function (i, arr) {
@@ -3048,7 +3048,7 @@ var SwaggerBootstrapUiResponseCode = function () {
     }
     var path = paths.join('>') + '>' + key;
     path = path.replace(/0>/g, '');
-    //console.log(this.responseDescriptions)
+    ////console(this.responseDescriptions)
     if (this.responseDescriptions && this.responseDescriptions[path]) {
       return this.responseDescriptions[path];
     }
@@ -3523,10 +3523,10 @@ function checkFiledExistsAndEqStr(object, filed, eq) {
  * @param msg
  */
 SwaggerBootstrapUi.prototype.log = function (msg) {
-  if (window.console) {
+  /* if (window.console) {
     //正式版不开启console功能
     window.console.log(msg)
-  }
+  } */
 }
 
 /***
