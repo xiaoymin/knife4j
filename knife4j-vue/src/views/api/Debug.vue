@@ -1842,6 +1842,34 @@ export default {
       if (this.rawFlag) {
         //headers["Content-Type"] = this.rawRequestType;
         //console("raw------------------curl");
+        var formParams = this.debugRawFormParams();
+        var tmpUrls = [];
+        if (KUtils.checkUndefined(formParams)) {
+          for (var p in formParams) {
+          if(that.debugPathFlag){
+            //确实是，判断该参数是否出现
+            if(that.debugPathParams.indexOf(p)==-1){
+              tmpUrls.push(p + "=" + formParams[p]);
+            }else{
+              var replaceRege = "{" + p + "}";
+              var value = formParams[p];
+              fullurl = fullurl.replace(replaceRege, value);
+            }
+          }else{
+            tmpUrls.push(p + "=" + formParams[p]);
+          }
+        }
+        }
+        var tmpUrlStr = tmpUrls.join("&");
+        if(KUtils.strNotBlank(tmpUrlStr)){
+           //地址栏追加参数
+          if (fullurl.indexOf("?") == -1) {
+            fullurl = fullurl + "?" + tmpUrlStr;
+          } else {
+            fullurl = fullurl + "&" + tmpUrlStr;
+          }
+        }
+
         if (KUtils.strNotBlank(this.rawText)) {
           try {
             var jobj = JSON.parse(this.rawText);

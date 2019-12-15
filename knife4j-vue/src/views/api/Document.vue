@@ -67,11 +67,13 @@
       size="small"
       :pagination="page"
     >
+      <template slot="descriptionValueTemplate" slot-scope="text">
+        {{ text }}
+      </template>
       <template slot="requireTemplate" slot-scope="text">
         <span v-if="text" style="color:red">{{ text.toLocaleString() }}</span>
         <span v-else>{{ text.toLocaleString() }}</span>
       </template>
-
       <template slot="typeTemplate" slot-scope="text">
         <span :class="'knife4j-request-' + text">{{ text }}</span>
       </template>
@@ -207,7 +209,8 @@ const requestcolumns = [
   {
     title: "参数说明",
     dataIndex: "description",
-    width: "25%"
+    width: "25%",
+    scopedSlots: { customRender: "descriptionValueTemplate" }
   },
   {
     title: "请求类型",
@@ -431,6 +434,7 @@ export default {
         });
       }
       that.reqParameters = reqParameters;
+      //console.log(reqParameters);
     },
     copyNewParameter(source) {
       var tmpc = source.children;
