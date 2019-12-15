@@ -208,7 +208,7 @@ function createApiResponseSingleParam(resp, markdownCollections) {
     resp.data.forEach(function (param) {
       param.level = 1;
       markdownCollections.push('|' + getMdTableByLevel(param) + '|' + KUtils.toString(param.description, '') + '|' + KUtils.toString(param.type, '') + '|' + KUtils.toString(param.schemaValue, '') + '|')
-      deepMdTableByResponseParameter(param.children, markdownCollections, param.level);
+      deepMdTableByResponseParameter(param.children, markdownCollections, (param.level + 1));
     })
   } else {
     markdownCollections.push('暂无');
