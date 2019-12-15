@@ -2147,6 +2147,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
                     if (p.refType != null) {
                       if (!KUtils.checkIsBasicType(p.refType)) {
                         resParam.schemaValue = p.refType;
+                        resParam.schema = true;
                         //存在引用类型,修改默认type
                         resParam.type = p.refType;
                         var deepDef = that.getDefinitionByName(p.refType);
@@ -2161,6 +2162,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
                       if (p.refType != null) {
                         if (!KUtils.checkIsBasicType(p.refType)) {
                           resParam.schemaValue = p.refType;
+                          resParam.schema = true;
                           //存在引用类型,修改默认type
                           if (p.type != "array") {
                             resParam.type = p.refType;
@@ -2172,6 +2174,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
                         }
                       } else {
                         resParam.schemaValue = p.type;
+                        resParam.schema = true;
                         //存在引用类型,修改默认type
                         resParam.type = p.type;
                         var deepDef = that.getDefinitionByName(p.type);
@@ -2255,6 +2258,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
                 if (p.refType != null) {
                   if (!KUtils.checkIsBasicType(p.refType)) {
                     resParam.schemaValue = p.refType;
+                    resParam.schema = true;
                     //存在引用类型,修改默认type
                     resParam.type = p.refType;
                     var deepDef = that.getDefinitionByName(p.refType);
@@ -3279,6 +3283,9 @@ var SwaggerBootstrapUiApiInfo = function () {
   this.refTreetableparameters = new Array();
   //swaggerModels功能
   this.refTreetableModelsparameters = new Array();
+  //请求参数treetalbe
+  // add at 2019-12-15 13:29:19
+  this.reqParameters = new Array();
 
   this.responseCodes = new Array();
   this.responseHttpObject = null;

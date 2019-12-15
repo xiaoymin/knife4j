@@ -10,10 +10,10 @@ export const resumecss = `
 .title {
   margin-top: 25px;
 }
-.description {
+.knife4j-description {
  /*  width: 90%;
   margin: 15px auto; */
-  margin-top: 30px;
+  margin-top: 5px;
 }
 .divider {
   margin: 4px 0;
@@ -154,7 +154,7 @@ export const resumecss = `
   font-size: 14px;
   font-family: -webkit-body;
 }
-.api-editor-show {
+.knife4j-api-editor-show {
   margin: 15px 0;
   font: 100 12px/18px monaco, andale mono, courier new;
   padding: 10px 12px;
@@ -166,11 +166,11 @@ export const resumecss = `
   word-wrap: break-word;
   color: #444;
 }
-.api-editor-show .string { color: green; }        /*字符串的样式*/
-.api-editor-show .number { color: darkorange; }    /*数字的样式*/
-.api-editor-show .boolean { color: blue; }        /*布尔型数据的样式*/
-.api-editor-show .null { color: magenta; }        /*null值的样式*/
-.api-editor-show .key { color: red; }            /*key值的样式*/
+.knife4j-api-editor-show .string { color: green; }        /*字符串的样式*/
+.knife4j-api-editor-show .number { color: darkorange; }    /*数字的样式*/
+.knife4j-api-editor-show .boolean { color: blue; }        /*布尔型数据的样式*/
+.knife4j-api-editor-show .null { color: magenta; }        /*null值的样式*/
+.knife4j-api-editor-show .key { color: red; }            /*key值的样式*/
 .api-description {
   border-left: 4px solid #ddd;
   line-height: 30px;

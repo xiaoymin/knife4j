@@ -7,10 +7,20 @@ var knife4jModels = new Vue({
     },
     load: {
 
+    },
+    tags: {
+
     }
   },
   methods: {
+    setTags(key, value) {
+      //该方法是递归遍历tags的方法
+      console.log("setTags--------")
+      console.log(value);
+
+    },
     setValue(key, value) {
+      //该方法是递归Models的方法
       //判断是否已经赋值
       var that = this;
       var tmp = this.instance[key];

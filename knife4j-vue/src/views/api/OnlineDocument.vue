@@ -3,24 +3,25 @@
     <!-- <h2 :id="api.operationId">{{api.summary}}</h2> -->
     <a-row>
       <a-row :id="api.operationId" class="knife4j-api-title">
-        {{api.summary}}
+        {{ api.summary }}
       </a-row>
-      <a-row :class="'knife4j-api-'+api.methodType.toLowerCase()">
+      <a-row :class="'knife4j-api-' + api.methodType.toLowerCase()">
         <div class="knife4j-api-summary">
-          <span class="knife4j-api-summary-method">{{api.methodType}}</span>
-          <span class="knife4j-api-summary-path">{{api.showUrl}}</span>
+          <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
+          <span class="knife4j-api-summary-path">{{ api.showUrl }}</span>
         </div>
       </a-row>
       <a-row class="knife4j-api-row">
         <a-col :span="12">
           <a-row>
             <a-col class="api-basic-title" :span="6">请求数据类型</a-col>
-            {{api.consumes}}
+            {{ api.consumes }}
           </a-row>
         </a-col>
         <a-col :span="12">
           <a-row>
-            <a-col class="api-basic-title" :span="6">响应数据类型</a-col> {{api.produces}}
+            <a-col class="api-basic-title" :span="6">响应数据类型</a-col>
+            {{ api.produces }}
           </a-row>
         </a-col>
       </a-row>
@@ -31,39 +32,58 @@
       <div class="api-title">
         接口描述
       </div>
-      <div v-if="api.description" v-html="api.description" class="api-body-desc">
-      </div>
+      <div
+        v-if="api.description"
+        v-html="api.description"
+        class="api-body-desc"
+      ></div>
     </div>
     <!--请求示例-->
     <div v-if="api.requestValue">
       <div class="api-title">
         请求示例
       </div>
-      <pre class="api-editor-show" v-html="formaterJson(api.requestValue)"></pre>
+      <pre
+        class="api-editor-show"
+        v-html="formaterJson(api.requestValue)"
+      ></pre>
       <!-- <editor-show :value="api.requestValue"></editor-show> -->
     </div>
     <div class="api-title">
-      请求参数
+      请求参数1111111111111
     </div>
-    <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" :rowKey="genUnionTableKey" size="small" :pagination="page">
+    <a-table
+      defaultExpandAllRows
+      :columns="columns"
+      :dataSource="reqParameters"
+      :rowKey="genUnionTableKey"
+      size="small"
+      :pagination="page"
+    >
       <template slot="requireTemplate" slot-scope="text">
-        <span v-if="text" style="color:red">{{text.toLocaleString()}}</span>
-        <span v-else>{{text.toLocaleString()}}</span>
+        <span v-if="text" style="color:red">{{ text.toLocaleString() }}</span>
+        <span v-else>{{ text.toLocaleString() }}</span>
       </template>
 
       <template slot="typeTemplate" slot-scope="text">
-        <span :class="'knife4j-request-'+text">{{text}}</span>
+        <span :class="'knife4j-request-' + text">{{ text }}</span>
       </template>
 
-      <template slot="datatypeTemplate" slot-scope="text,record">
+      <template slot="datatypeTemplate" slot-scope="text, record">
         <data-type :text="text" :record="record"></data-type>
       </template>
-
     </a-table>
     <div class="api-title">
       响应状态
     </div>
-    <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes" rowKey="code" size="small" :pagination="page">
+    <a-table
+      :defaultExpandAllRows="expanRows"
+      :columns="responseStatuscolumns"
+      :dataSource="api.responseCodes"
+      rowKey="code"
+      size="small"
+      :pagination="page"
+    >
       <template slot="descriptionTemplate" slot-scope="text">
         <div v-html="text"></div>
       </template>
@@ -78,22 +98,40 @@
             <div class="api-title">
               响应Header
             </div>
-            <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="resp.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
+            <a-table
+              :defaultExpandAllRows="expanRows"
+              :columns="responseHeaderColumns"
+              :dataSource="resp.responseHeaderParameters"
+              rowKey="id"
+              size="small"
+              :pagination="page"
+            >
             </a-table>
           </div>
           <!--响应参数-->
           <div class="api-title">
             响应参数
           </div>
-          <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data" rowKey="id" size="small" :pagination="page">
+          <a-table
+            :defaultExpandAllRows="expanRows"
+            :columns="responseParametersColumns"
+            :dataSource="resp.data"
+            rowKey="id"
+            size="small"
+            :pagination="page"
+          >
           </a-table>
           <div class="api-title">
             响应示例
           </div>
           <div class="api-editor-show" v-if="resp.responseBasicType">
-            {{resp.responseText}}
+            {{ resp.responseText }}
           </div>
-          <pre class="api-editor-show" v-else v-html="formaterJson(resp.responseValue)"> </pre>
+          <pre
+            class="api-editor-show"
+            v-else
+            v-html="formaterJson(resp.responseValue)"
+          ></pre>
           <!-- <editor-show :value="resp.responseBasicType ? resp.responseText : resp.responseValue"></editor-show> -->
           <!-- <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor> -->
         </a-tab-pane>
@@ -105,26 +143,43 @@
         <div class="api-title">
           响应Header
         </div>
-        <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="api.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
+        <a-table
+          :defaultExpandAllRows="expanRows"
+          :columns="responseHeaderColumns"
+          :dataSource="api.responseHeaderParameters"
+          rowKey="id"
+          size="small"
+          :pagination="page"
+        >
         </a-table>
       </div>
       <!--响应参数-->
       <div class="api-title">
         响应参数
       </div>
-      <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data" rowKey="id" size="small" :pagination="page">
+      <a-table
+        :defaultExpandAllRows="expanRows"
+        :columns="responseParametersColumns"
+        :dataSource="multipData.data"
+        rowKey="id"
+        size="small"
+        :pagination="page"
+      >
       </a-table>
       <div class="api-title">
         响应示例
       </div>
       <div class="api-editor-show" v-if="multipData.responseBasicType">
-        {{multipData.responseText}}
+        {{ multipData.responseText }}
       </div>
-      <pre class="api-editor-show" v-else v-html="formaterJson(multipData.responseValue)"></pre>
+      <pre
+        class="api-editor-show"
+        v-else
+        v-html="formaterJson(multipData.responseValue)"
+      ></pre>
       <!--  <editor-show :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue"></editor-show> -->
       <!-- <editor :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue" @init="singleResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorSingleHeight"></editor> -->
     </div>
-
   </div>
 </template>
 <script>
@@ -255,10 +310,15 @@ export default {
     };
   },
   created() {
-    var key = Constants.globalTreeTableModelParams + this.api.instanceId;
-    var treeTableModel = this.swaggerInstance.refTreeTableModels;
-    instance.$Knife4jModels.setValue(key, treeTableModel);
-    instance.initRequestParams();
+    //var key = Constants.globalTreeTableModelParams + this.api.instanceId;
+    //var treeTableModel = this.swaggerInstance.refTreeTableModels;
+    //instance.$Knife4jModels.setValue(key, treeTableModel);
+    //instance.initRequestParams();
+    console.log("该请求参数----------：" + this.api.showUrl);
+    console.log(this.api);
+    console.log(this.api.reqParameters);
+    //赋值
+    this.reqParameters = this.api.reqParameters;
     instance.initResponseCodeParams();
   },
   methods: {

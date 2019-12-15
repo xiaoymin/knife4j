@@ -1186,9 +1186,9 @@ ansi-styles@^3.2.0, ansi-styles@^3.2.1:
   dependencies:
     color-convert "^1.9.0"
 
-ant-design-vue@^1.4.8:
-  version "1.4.8"
-  resolved "https://registry.yarnpkg.com/ant-design-vue/-/ant-design-vue-1.4.8.tgz#458b96e770d1762de7b11e144bca6c418c29d125"
+ant-design-vue@^1.4.10:
+  version "1.4.10"
+  resolved "https://registry.yarnpkg.com/ant-design-vue/-/ant-design-vue-1.4.10.tgz#26bf3570a3c93d54bae571e98f29457b0fd116d8"
   dependencies:
     "@ant-design/icons" "^2.1.1"
     "@ant-design/icons-vue" "^2.0.0"

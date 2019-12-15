@@ -2,8 +2,21 @@
   <a-layout-content class="knife4j-body-content">
     <div class="swaggermododel">
       <a-collapse @change="modelChange">
-        <a-collapse-panel v-for="model in modelNames" :header="model.name" :key="model.id" :class="model.modelClass()">
-          <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="model.data" :rowKey="unionKey" size="middle" :pagination="page" />
+        <a-collapse-panel
+          v-for="model in modelNames"
+          :header="model.name"
+          :key="model.id"
+          :class="model.modelClass()"
+        >
+          <a-table
+            v-if="model.load"
+            :defaultExpandAllRows="expanRows"
+            :columns="columns"
+            :dataSource="model.data"
+            :rowKey="unionKey"
+            size="middle"
+            :pagination="page"
+          />
         </a-collapse-panel>
       </a-collapse>
     </div>
@@ -40,13 +53,12 @@ export default {
     }
   },
   created() {
-    console.log(this.data.instance);
     this.initModelNames();
   },
   data() {
     return {
       columns: columns,
-      expanRows: false,
+      expanRows: true,
       page: false,
       modelNames: []
     };
@@ -117,7 +129,6 @@ export default {
         this.modelNames.forEach(function(model) {
           if (model.id == id) {
             console.log("找到匹配的model了===");
-            console.log(model);
             //找到该model,判断是否已加载
             if (!model.load) {
               //未加载的情况下,进行查找数据
@@ -132,7 +143,6 @@ export default {
                 model.name
               );
               console.log("查找原始model:" + model.name);
-              console.log(originalModel);
               if (KUtils.checkUndefined(originalModel)) {
                 //存在
                 //查找属性集合
@@ -176,6 +186,8 @@ export default {
           }
         });
       }
+      //第二次复制
+      that.expanRows = true;
     },
     deepFindChildren(modelData) {
       var that = this;

@@ -8,13 +8,17 @@
       </a-row>
       <a-row class="knife4j-download-button">
         <a-button @click="triggerDownloadMarkdown">
-          <a-icon type="file-markdown" />下载Markdown</a-button>
+          <a-icon type="file-markdown" />下载Markdown</a-button
+        >
         <a-button type="default" @click="triggerDownload">
-          <a-icon type="file-text" />下载Html</a-button>
+          <a-icon type="file-text" />下载Html</a-button
+        >
         <a-button type="default" @click="triggerDownloadWord">
-          <a-icon type="file-word" />下载Word</a-button>
+          <a-icon type="file-word" />下载Word</a-button
+        >
         <a-button type="default" @click="triggerDownloadPDF">
-          <a-icon type="file-pdf" />下载PDF</a-button>
+          <a-icon type="file-pdf" />下载PDF</a-button
+        >
       </a-row>
       <!--  <a-modal v-model="downloadHtmlFlag" :footer="null" :maskClosable="false" :keyboard="false" :closable="false">
         <p>正在下载中...</p>
@@ -29,11 +33,16 @@
 import VueMarkdown from "vue-markdown";
 import html2canvas from "html2canvas";
 import { resumecss } from "./OfficelineCss";
-import getDocumentTemplates from "@/components/officeDocument/officeDocTemplate";
+import {
+  getDocumentTemplates,
+  getDocumentVueTemplates
+} from "@/components/officeDocument/officeDocTemplate";
 import markdownText from "@/components/officeDocument/markdownTransform";
 import OnlineDocument from "@/views/api/OnlineDocument";
 import { Modal } from "ant-design-vue";
 import DownloadHtml from "./DownloadHtml";
+import KUtils from "@/core/utils";
+import Constants from "@/store/constants";
 
 const columns = [
   {
@@ -70,6 +79,8 @@ export default {
   data() {
     return {
       columns: columns,
+      //是否递归遍历过tags
+      deepTagFlag: false,
       tags: [],
       downloadType: "DownloadHtml",
       markdownText: "",
@@ -92,12 +103,240 @@ export default {
           that.downloadHtml();
           //关闭
           that.$kloading.destroy();
-        }, 1000);
+        }, 1500);
       }
     }
   },
-  created() {},
+  created() {
+    this.initModels();
+    //this.deepTags();
+  },
   methods: {
+    initModels() {
+      var key = Constants.globalTreeTableModelParams + this.data.instance.id;
+      //根据instance的实例初始化model名称
+      var treeTableModel = this.data.instance.refTreeTableModels;
+      this.$Knife4jModels.setValue(key, treeTableModel);
+      console.log("初始化Models");
+      //this.$Knife4jModels.setTags(key, this.data.instance.tags);
+    },
+    deepTags() {
+      var that = this;
+      var key = Constants.globalTreeTableModelParams + this.data.instance.id;
+      if (!this.deepTagFlag) {
+        console.log("deepTags");
+        var tags = this.data.instance.tags;
+        //console.log(tags);
+        console.log("开始遍历tags时间：" + new Date().toGMTString());
+        if (KUtils.arrNotEmpty(tags)) {
+          tags.forEach(function(tag) {
+            //console.log(tag);
+            //判断是否存在参数
+            if (KUtils.arrNotEmpty(tag.childrens)) {
+              //存在接口,遍历接口的参数
+              tag.childrens.forEach(function(apiInfo) {
+                //console.log("接口地址:" + apiInfo.showUrl);
+                //获取接口的参数
+                var data = [];
+                if (
+                  apiInfo.parameters != null &&
+                  apiInfo.parameters.length > 0
+                ) {
+                  data = data.concat(apiInfo.parameters);
+                }
+                if (
+                  apiInfo.refTreetableparameters != null &&
+                  apiInfo.refTreetableparameters.length > 0
+                ) {
+                  apiInfo.refTreetableparameters.forEach(function(ref) {
+                    data = data.concat(ref.params);
+                  });
+                }
+                if (data != null) {
+                  data.sort(function(a, b) {
+                    return b.require - a.require;
+                  });
+                }
+                var reqParameters = [];
+                //判断当前data参数接口是否依然还存在参数
+                if (KUtils.arrNotEmpty(data)) {
+                  //存在请求参数,遍历data参数
+                  data.forEach(function(param) {
+                    //console.log(param);
+                    //只查找第一级的参数，即pid=-1的参数
+                    if (param.pid == "-1") {
+                      param.children = [];
+                      //判断该参数是否存在schema参数
+                      if (param.schema) {
+                        //判断当前缓存是否存在
+                        var schemaName = param.schemaValue;
+
+                        if (KUtils.checkUndefined(schemaName)) {
+                          // console.log("schemaValue--checkUndefined");
+                          if (that.$Knife4jModels.exists(key, schemaName)) {
+                            //console.log("存在-不用查找---" + schemaName);
+                            //console.log(that.$Knife4jModels.instance);
+                            var model = that.$Knife4jModels.getByModelName(
+                              key,
+                              schemaName
+                            );
+                            if (KUtils.checkUndefined(model)) {
+                              var children = model.params;
+                              if (KUtils.arrNotEmpty(children)) {
+                                children.forEach(function(chd) {
+                                  var target = that.copyNewParameter(chd);
+                                  target.pid = param.id;
+                                  param.children.push(target);
+                                });
+                              }
+                            }
+                          } else {
+                            //console.log("schemavalue--Not Existis");
+                          }
+                        }
+                      }
+                      //针对非空的参数,设置children属性为空
+                      if (!KUtils.arrNotEmpty(param.children)) {
+                        param.children = null;
+                        //从knife4jModels中查询参数
+                      }
+                      reqParameters.push(param);
+                    }
+                  });
+                }
+                //给请求参数重新赋值
+                apiInfo.reqParameters = reqParameters;
+                //遍历响应参数的值
+                that.deepResponseParameters(apiInfo);
+              });
+            }
+          });
+        }
+        console.log("结束遍历tags时间：" + new Date().toGMTString());
+        console.log(tags);
+        /* var tgdata = [];
+        tgdata.push(tags[0]); */
+        this.tags = tags;
+        this.deepTagFlag = true;
+        //that.$kloading.destroy();
+      }
+    },
+    deepResponseParameters(apiInfo) {
+      //遍历响应参数
+      console.log("----------------响应 参数-------------");
+      var that = this;
+      var key = Constants.globalTreeTableModelParams + this.data.instance.id;
+      //添加自定义属性
+      apiInfo.multipCode = apiInfo.multipartResponseSchema;
+      apiInfo.multipCodeDatas = [];
+      //这里不
+      apiInfo.multipData = {};
+      let rcodes = apiInfo.responseCodes;
+      console.log(rcodes);
+      if (rcodes != null && rcodes != undefined) {
+        rcodes.forEach(function(rc) {
+          //遍历
+          if (rc.schema != undefined && rc.schema != null) {
+            var respdata = [];
+            if (
+              rc.responseParameters != null &&
+              rc.responseParameters.length > 0
+            ) {
+              respdata = respdata.concat(rc.responseParameters);
+            }
+            if (
+              rc.responseTreetableRefParameters != null &&
+              rc.responseTreetableRefParameters.length > 0
+            ) {
+              rc.responseTreetableRefParameters.forEach(function(ref) {
+                respdata = respdata.concat(ref.params);
+              });
+            }
+            let nrecodedatas = [];
+            //遍历得到新的符合antd的树形结构
+            if (respdata != null && respdata.length > 0) {
+              respdata.forEach(function(param) {
+                if (param.pid == "-1") {
+                  param.children = [];
+                  //判断该参数是否存在schema参数
+                  if (param.schema) {
+                    //判断当前缓存是否存在
+                    var schemaName = param.schemaValue;
+                    if (KUtils.checkUndefined(schemaName)) {
+                      // console.log("schemaValue--checkUndefined");
+                      if (that.$Knife4jModels.exists(key, schemaName)) {
+                        console.log("存在-不用查找---" + schemaName);
+                        //console.log(that.$Knife4jModels.instance);
+                        var model = that.$Knife4jModels.getByModelName(
+                          key,
+                          schemaName
+                        );
+                        if (KUtils.checkUndefined(model)) {
+                          var children = model.params;
+                          if (KUtils.arrNotEmpty(children)) {
+                            children.forEach(function(chd) {
+                              var target = that.copyNewParameter(chd);
+                              target.pid = param.id;
+                              param.children.push(target);
+                            });
+                          }
+                        }
+                      } else {
+                        console.log("schemavalue--Not Existis");
+                      }
+                    }
+                  }
+
+                  //that.findModelChildren(md, respdata);
+                  //查找后如果没有,则将children置空
+                  if (param.children.length == 0) {
+                    param.children = null;
+                  }
+                  nrecodedatas.push(param);
+                }
+              });
+            }
+            var nresobj = { ...rc, data: nrecodedatas };
+            if (!apiInfo.multipCode) {
+              apiInfo.multipData = nresobj;
+            }
+            apiInfo.multipCodeDatas.push(nresobj);
+          }
+        });
+      }
+    },
+    copyNewParameter(source) {
+      var tmpc = source.children;
+      if (!KUtils.checkUndefined(tmpc)) {
+        tmpc = null;
+      }
+      var target = {
+        children: tmpc,
+        childrenTypes: source.childrenTypes,
+        def: source.def,
+        description: source.description,
+        enum: source.enum,
+        example: source.example,
+        id: source.id,
+        ignoreFilterName: source.ignoreFilterName,
+        in: source.in,
+        level: source.level,
+        name: source.name,
+        parentTypes: source.parentTypes,
+        pid: source.pid,
+        readOnly: source.readOnly,
+        require: source.require,
+        schema: source.schema,
+        schemaValue: source.schemaValue,
+        show: source.show,
+        txtValue: source.txtValue,
+        type: source.type,
+        validateInstance: source.validateInstance,
+        validateStatus: source.validateStatus,
+        value: source.value
+      };
+      return target;
+    },
     triggerDownloadPDF() {
       this.$message.info("该功能尚未实现...");
     },
@@ -135,8 +374,9 @@ export default {
         this.downloadHtmlFlag = true;
         //赋值Html重新渲染dom
         setTimeout(() => {
-          that.tags = that.data.instance.tags;
-          //that.$kloading.destroy();
+          //that.tags = that.data.instance.tags;
+          that.deepTags();
+          that.$kloading.destroy();
         }, 300);
       } else {
         setTimeout(() => {
@@ -199,15 +439,46 @@ export default {
         a.click()
       }) */
     },
+    getHtmlData() {
+      //获取导出网页的Html数据结构,用于在单页面渲染
+      var that = this;
+      var htmlData = {
+        //接口基本信息
+        instance: {
+          title: that.data.instance.title,
+          description: that.data.instance.title,
+          contact: that.data.instance.contact,
+          version: that.data.instance.version,
+          host: that.data.instance.host,
+          basePath: that.data.instance.basePath,
+          termsOfService: that.data.instance.termsOfService,
+          name: that.data.instance.name,
+          url: that.data.instance.url,
+          location: that.data.instance.location,
+          pathArrs: that.data.instance.pathArrs
+        },
+        hideShow: true,
+        tags: that.tags
+      };
+      return htmlData;
+    },
     getHtmlContent(title) {
       //获取html另外一种方式：this.$el.outerHTML
       var domId = "content_views" + this.data.instance.id;
       if (title == undefined || title == null || title == "") {
         title = "Knife4j-API接口文档";
       }
-      const template = document.getElementById(domId).innerHTML;
+      //抛弃template
+      // const template = document.getElementById(domId).innerHTML;
+      var objs = [];
+      objs.push({
+        name: "test",
+        text: "xxx"
+      });
+      var dstr = JSON.stringify(this.getHtmlData());
       //const template = document.getElementById("content_views").innerHTML;
-      return getDocumentTemplates(title, resumecss, template);
+      //return getDocumentTemplates(title, resumecss, template);
+      return getDocumentVueTemplates(title, resumecss, dstr);
     }
   }
 };
