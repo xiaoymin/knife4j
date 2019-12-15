@@ -12,6 +12,13 @@
     <artifactId>knife4j-core</artifactId>
     <name>knife4j-core</name>
     <description>knife4j核心层</description>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+    </dependencies>
 
 
 </project>
