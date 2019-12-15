@@ -139,12 +139,12 @@ Demo示例见另外项目地址：[https://gitee.com/xiaoym/swagger-bootstrap-ui
 
 ## 界面效果
 
-![接口说明](static/des.png)
+![接口说明](static/1.png)
 
-![接口调试](static/debug.png)
+![接口调试](static/8.png)
 
-![个性化设置](static/settings.png)
+![个性化设置](static/5.png)
 
-![接口离线文档](static/markdown.png)
+![接口离线文档](static/6.png)
 
-![SwaggerModels](static/models.png)
+![SwaggerModels](static/7.png)
