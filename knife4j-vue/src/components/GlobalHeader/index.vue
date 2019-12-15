@@ -1,11 +1,21 @@
 <template>
   <div class="header knife4j-header-default" :class="headerClass">
-    <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="toggle" />
-    <span class="knife4j-header-title">{{documentTitle}}</span>
+    <a-icon
+      class="trigger"
+      :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+      @click="toggle"
+    />
+    <span class="knife4j-header-title">{{ documentTitle }}</span>
     <div class="right">
-      <HeaderSearch class='action search' placeholder="站内搜索" :dataSource="['搜索提示一', '搜索提示二', '搜索提示三']" :onSearch="(value) => onSearch(value)" :onPressEnter="(value) => onPressEnter(value)" />
+      <!--搜索功能在2.0暂不提供-->
+      <!-- <HeaderSearch class='action search' placeholder="站内搜索" :dataSource="['搜索提示一', '搜索提示二', '搜索提示三']" :onSearch="(value) => onSearch(value)" :onPressEnter="(value) => onPressEnter(value)" /> -->
       <a-tooltip title="使用文档">
-        <a target="_blank" href="https://doc.xiaominfo.com/" rel="noopener noreferrer" class="action">
+        <a
+          target="_blank"
+          href="https://doc.xiaominfo.com/"
+          rel="noopener noreferrer"
+          class="action"
+        >
           <a-icon type="question-circle-o" />
         </a>
       </a-tooltip>
@@ -14,7 +24,8 @@
         <a-menu slot="overlay" class="menu">
           <a-menu-item>
             <router-link to="/documentManager/Settings">
-              <a-icon type="setting" /> 个性化配置</router-link>
+              <a-icon type="setting" /> 个性化配置</router-link
+            >
           </a-menu-item>
           <a-menu-item @click="clearLocalCache">
             <a-icon type="delete" /> 清除缓存
@@ -27,7 +38,7 @@
             <a-icon type="close-circle" />English
           </a-menu-item> -->
         </a-menu>
-        <span class='action account'>
+        <span class="action account">
           <span class="name">中</span>
         </span>
       </a-dropdown>
@@ -107,7 +118,6 @@ export default {
   }
 };
 </script>
-
 
 <style lang="less" scoped>
 @import "./index.less";

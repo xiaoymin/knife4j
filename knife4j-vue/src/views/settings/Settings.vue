@@ -3,14 +3,26 @@
     <a-row class="settingConfig">
       <a-row class="content-line">
         <a-col :span="24">
-          <a-checkbox @change="checkboxChange('enableRequestCache')" :checked="settings.enableRequestCache">开启请求参数缓存</a-checkbox>
+          <a-checkbox
+            @change="checkboxChange('enableRequestCache')"
+            :checked="settings.enableRequestCache"
+            >开启请求参数缓存</a-checkbox
+          >
         </a-col>
       </a-row>
       <a-divider class="divider" />
       <a-row class="content-line">
         <a-col :span="24">
-          <a-checkbox @change="checkboxChange('enableFilterMultipartApis')" :checked="settings.enableFilterMultipartApis">开启RequestMapping接口过滤,默认只显示</a-checkbox>
-          <a-select style="width:140px;" @change="filterOptionsChange" :value="settings.enableFilterMultipartApiMethodType">
+          <a-checkbox
+            @change="checkboxChange('enableFilterMultipartApis')"
+            :checked="settings.enableFilterMultipartApis"
+            >开启RequestMapping接口过滤,默认只显示</a-checkbox
+          >
+          <a-select
+            style="width:140px;"
+            @change="filterOptionsChange"
+            :value="settings.enableFilterMultipartApiMethodType"
+          >
             <a-select-option value="GET">GET</a-select-option>
             <a-select-option value="POST">POST</a-select-option>
             <a-select-option value="PUT">PUT</a-select-option>
@@ -22,15 +34,19 @@
         </a-col>
       </a-row>
       <a-divider class="divider" />
-      <a-row class="content-line">
+      <!--  <a-row class="content-line">
         <a-col :span="24">
           <a-checkbox @change="checkboxChange('enableCacheOpenApiTable')" :checked="settings.enableCacheOpenApiTable">开启缓存已打开的api文档</a-checkbox>
         </a-col>
       </a-row>
-      <a-divider class="divider" />
+      <a-divider class="divider" /> -->
       <a-row class="content-line">
         <a-col :span="24">
-          <a-checkbox @change="checkboxChange('enableSwaggerBootstrapUi')" :checked="settings.enableSwaggerBootstrapUi">启用Knife4j提供的增强功能</a-checkbox>
+          <a-checkbox
+            @change="checkboxChange('enableSwaggerBootstrapUi')"
+            :checked="settings.enableSwaggerBootstrapUi"
+            >启用Knife4j提供的增强功能</a-checkbox
+          >
         </a-col>
       </a-row>
       <a-divider class="divider" />
