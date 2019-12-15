@@ -3,8 +3,18 @@
     <a-row>
       <a-row class="knife4j-api-title">
         <a-col :span="20">{{ api.summary }}</a-col>
-        <a-col :span="2" :id="'btnCopyMarkdown' + api.id" class="knife4j-api-copy-address">复制文档</a-col>
-        <a-col :span="2" :id="'btnCopyAddress' + api.id" class="knife4j-api-copy-address">复制地址</a-col>
+        <a-col
+          :span="2"
+          :id="'btnCopyMarkdown' + api.id"
+          class="knife4j-api-copy-address"
+          >复制文档</a-col
+        >
+        <a-col
+          :span="2"
+          :id="'btnCopyAddress' + api.id"
+          class="knife4j-api-copy-address"
+          >复制地址</a-col
+        >
       </a-row>
       <a-row :class="'knife4j-api-' + api.methodType.toLowerCase()">
         <div class="knife4j-api-summary">
@@ -33,7 +43,11 @@
       <div class="api-title">
         接口描述
       </div>
-      <div v-if="api.description" v-html="api.description" class="api-body-desc"></div>
+      <div
+        v-if="api.description"
+        v-html="api.description"
+        class="api-body-desc"
+      ></div>
     </div>
     <!--请求示例-->
     <div v-if="api.requestValue">
@@ -45,7 +59,14 @@
     <div class="api-title">
       请求参数
     </div>
-    <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small" :pagination="page">
+    <a-table
+      :defaultExpandAllRows="expanRows"
+      :columns="columns"
+      :dataSource="reqParameters"
+      rowKey="id"
+      size="small"
+      :pagination="page"
+    >
       <template slot="requireTemplate" slot-scope="text">
         <span v-if="text" style="color:red">{{ text.toLocaleString() }}</span>
         <span v-else>{{ text.toLocaleString() }}</span>
@@ -62,7 +83,14 @@
     <div class="api-title">
       响应状态
     </div>
-    <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes" rowKey="code" size="small" :pagination="page">
+    <a-table
+      :defaultExpandAllRows="expanRows"
+      :columns="responseStatuscolumns"
+      :dataSource="api.responseCodes"
+      rowKey="code"
+      size="small"
+      :pagination="page"
+    >
       <template slot="descriptionTemplate" slot-scope="text">
         <div v-html="text"></div>
       </template>
@@ -70,28 +98,48 @@
     <!--响应参数需要判断是否存在多个code-schema的情况-->
     <div v-if="api.multipartResponseSchema">
       <a-tabs @change="multipartTabCodeChanges">
-        <a-tab-pane v-for="resp in multipCodeDatas" :key="resp.code" :tab="resp.code">
+        <a-tab-pane
+          v-for="resp in multipCodeDatas"
+          :key="resp.code"
+          :tab="resp.code"
+        >
           <!--判断响应头-->
           <div v-if="resp.responseHeaderParameters">
             <div class="api-title">
               响应Header
             </div>
-            <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="resp.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
+            <a-table
+              :defaultExpandAllRows="expanRows"
+              :columns="responseHeaderColumns"
+              :dataSource="resp.responseHeaderParameters"
+              rowKey="id"
+              size="small"
+              :pagination="page"
+            >
             </a-table>
           </div>
           <!--响应参数-->
           <div class="api-title">
             响应参数
           </div>
-          <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data" rowKey="id" size="small" :pagination="page">
+          <a-table
+            :defaultExpandAllRows="expanRows"
+            :columns="responseParametersColumns"
+            :dataSource="resp.data"
+            rowKey="id"
+            size="small"
+            :pagination="page"
+          >
           </a-table>
           <div class="api-title">
             响应示例
           </div>
           <a-row :id="'knife4jDocumentShowEditor' + api.id + resp.code">
-            <editor-show :value="
+            <editor-show
+              :value="
                 resp.responseBasicType ? resp.responseText : resp.responseValue
-              "></editor-show>
+              "
+            ></editor-show>
           </a-row>
 
           <!-- <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor> -->
@@ -104,30 +152,47 @@
         <div class="api-title">
           响应Header
         </div>
-        <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="api.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
+        <a-table
+          :defaultExpandAllRows="expanRows"
+          :columns="responseHeaderColumns"
+          :dataSource="api.responseHeaderParameters"
+          rowKey="id"
+          size="small"
+          :pagination="page"
+        >
         </a-table>
       </div>
       <!--响应参数-->
       <div class="api-title">
         响应参数
       </div>
-      <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data" rowKey="id" size="small" :pagination="page">
+      <a-table
+        :defaultExpandAllRows="expanRows"
+        :columns="responseParametersColumns"
+        :dataSource="multipData.data"
+        rowKey="id"
+        size="small"
+        :pagination="page"
+      >
       </a-table>
       <div class="api-title">
         响应示例
       </div>
       <a-row :id="'knife4jDocumentShowEditor' + api.id">
-        <editor-show :value="
+        <editor-show
+          :value="
             multipData.responseBasicType
               ? multipData.responseText
               : multipData.responseValue
-          "></editor-show>
+          "
+        ></editor-show>
       </a-row>
     </div>
   </div>
 </template>
 <script>
 import KUtils from "@/core/utils";
+import Constants from "@/store/constants";
 import DataType from "./DataType";
 import markdownSingleText from "@/components/officeDocument/markdownSingleTransform";
 import EditorShow from "./EditorShow";
@@ -251,12 +316,17 @@ export default {
     };
   },
   created() {
-    this.copyApiAddress();
-    this.copyApiMarkdown();
+    var that = this;
+    var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
+    //根据instance的实例初始化model名称
+    var treeTableModel = this.swaggerInstance.refTreeTableModels;
+    this.$Knife4jModels.setValue(key, treeTableModel);
     this.initRequestParams();
     this.initResponseCodeParams();
     setTimeout(() => {
-      this.showResponseEditFieldDescription();
+      that.showResponseEditFieldDescription();
+      that.copyApiAddress();
+      that.copyApiMarkdown();
     }, 1500);
   },
   methods: {
@@ -278,9 +348,16 @@ export default {
     copyApiMarkdown() {
       var that = this;
       var btnId = "btnCopyMarkdown" + this.api.id;
+      var api = {
+        ...that.api,
+        reqParameters: that.reqParameters,
+        multipCodeDatas: that.multipCodeDatas,
+        multipData: that.multipData
+      };
+      //console.log(api);
       var clipboard = new ClipboardJS("#" + btnId, {
         text() {
-          return markdownSingleText(that.api);
+          return markdownSingleText(api);
         }
       });
       clipboard.on("success", function(e) {
@@ -291,9 +368,9 @@ export default {
       });
     },
     initRequestParams() {
+      var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
       var data = [];
       var that = this;
-      var treeTableModel = this.swaggerInstance.refTreeTableModels;
       var apiInfo = this.api;
       if (apiInfo.parameters != null && apiInfo.parameters.length > 0) {
         data = data.concat(apiInfo.parameters);
@@ -315,26 +392,77 @@ export default {
       if (data != null && data.length > 0) {
         //console("初始化请求参数----------");
         //console(data);
-        data.forEach(function(md) {
-          if (md.pid == "-1") {
-            md.children = [];
-            if (md.schema) {
-              //根据schema查找当前的子级参数
-              that.deepTreeTableSchemaModel(md, treeTableModel, md);
+        data.forEach(function(param) {
+          if (param.pid == "-1") {
+            param.children = [];
+            //判断该参数是否存在schema参数
+            if (param.schema) {
+              //判断当前缓存是否存在
+              var schemaName = param.schemaValue;
+              if (KUtils.checkUndefined(schemaName)) {
+                // //console("schemaValue--checkUndefined");
+                if (that.$Knife4jModels.exists(key, schemaName)) {
+                  ////console("存在-不用查找---" + schemaName);
+                  ////console(that.$Knife4jModels.instance);
+                  var model = that.$Knife4jModels.getByModelName(
+                    key,
+                    schemaName
+                  );
+                  if (KUtils.checkUndefined(model)) {
+                    var children = model.params;
+                    if (KUtils.arrNotEmpty(children)) {
+                      children.forEach(function(chd) {
+                        var target = that.copyNewParameter(chd);
+                        target.pid = param.id;
+                        param.children.push(target);
+                      });
+                    }
+                  }
+                }
+              }
             }
-            //查找当前参数的子级参数
-            //that.findModelChildren(md, data);
-            //查找后如果没有,则将children置空
-            if (md.children.length == 0) {
-              md.children = null;
+            //针对非空的参数,设置children属性为空
+            if (!KUtils.arrNotEmpty(param.children)) {
+              param.children = null;
+              //从knife4jModels中查询参数
             }
-            reqParameters.push(md);
+            reqParameters.push(param);
           }
         });
       }
       that.reqParameters = reqParameters;
-      //console("遍历完成");
-      //console(reqParameters);
+    },
+    copyNewParameter(source) {
+      var tmpc = source.children;
+      if (!KUtils.checkUndefined(tmpc)) {
+        tmpc = null;
+      }
+      var target = {
+        children: tmpc,
+        childrenTypes: source.childrenTypes,
+        def: source.def,
+        description: source.description,
+        enum: source.enum,
+        example: source.example,
+        id: source.id,
+        ignoreFilterName: source.ignoreFilterName,
+        in: source.in,
+        level: source.level,
+        name: source.name,
+        parentTypes: source.parentTypes,
+        pid: source.pid,
+        readOnly: source.readOnly,
+        require: source.require,
+        schema: source.schema,
+        schemaValue: source.schemaValue,
+        show: source.show,
+        txtValue: source.txtValue,
+        type: source.type,
+        validateInstance: source.validateInstance,
+        validateStatus: source.validateStatus,
+        value: source.value
+      };
+      return target;
     },
     deepTreeTableSchemaModel(param, treeTableModel, rootParam) {
       var that = this;
@@ -410,10 +538,15 @@ export default {
       }
     },
     initResponseCodeParams() {
-      //响应体参数
+      //遍历响应参数
       var that = this;
-      that.multipCode = that.api.multipartResponseSchema;
-      let rcodes = that.api.responseCodes;
+      var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
+      //添加自定义属性
+      that.multipCode = this.api.multipartResponseSchema;
+      that.multipCodeDatas = [];
+      //这里不
+      that.multipData = {};
+      let rcodes = this.api.responseCodes;
       if (rcodes != null && rcodes != undefined) {
         rcodes.forEach(function(rc) {
           //遍历
@@ -436,15 +569,44 @@ export default {
             let nrecodedatas = [];
             //遍历得到新的符合antd的树形结构
             if (respdata != null && respdata.length > 0) {
-              respdata.forEach(function(md) {
-                if (md.pid == "-1") {
-                  md.children = [];
-                  that.findModelChildren(md, respdata);
-                  //查找后如果没有,则将children置空
-                  if (md.children.length == 0) {
-                    md.children = null;
+              respdata.forEach(function(param) {
+                if (param.pid == "-1") {
+                  param.children = [];
+                  //判断该参数是否存在schema参数
+                  if (param.schema) {
+                    //判断当前缓存是否存在
+                    var schemaName = param.schemaValue;
+                    if (KUtils.checkUndefined(schemaName)) {
+                      // //console("schemaValue--checkUndefined");
+                      if (that.$Knife4jModels.exists(key, schemaName)) {
+                        ////console("存在-不用查找---" + schemaName);
+                        ////console(that.$Knife4jModels.instance);
+                        var model = that.$Knife4jModels.getByModelName(
+                          key,
+                          schemaName
+                        );
+                        if (KUtils.checkUndefined(model)) {
+                          var children = model.params;
+                          if (KUtils.arrNotEmpty(children)) {
+                            children.forEach(function(chd) {
+                              var target = that.copyNewParameter(chd);
+                              target.pid = param.id;
+                              param.children.push(target);
+                            });
+                          }
+                        }
+                      } else {
+                        ////console("schemavalue--Not Existis");
+                      }
+                    }
                   }
-                  nrecodedatas.push(md);
+
+                  //that.findModelChildren(md, respdata);
+                  //查找后如果没有,则将children置空
+                  if (param.children.length == 0) {
+                    param.children = null;
+                  }
+                  nrecodedatas.push(param);
                 }
               });
             }
@@ -456,9 +618,6 @@ export default {
           }
         });
       }
-      //console("响应头");
-      //console(that.multipCodeDatas);
-      //console(that.multipData);
     },
     showResponseEditFieldDescription() {
       //显示说明
