@@ -266,8 +266,6 @@ export default {
           instance.debugPathParams.push(ma[1]);
         }
       }
-      //console(this.debugPathFlag);
-      //console(this.debugPathParams);
     },
     initLocalGlobalParameters() {
       const key = this.api.instanceId;
@@ -1812,6 +1810,7 @@ export default {
       }
     },
     setResponseCurl(resp) {
+      var that=this;
       var url = this.debugUrl;
       //构建请求响应CURL
       var curlified = new Array();
@@ -1863,25 +1862,38 @@ export default {
         var urlFormParams = this.debugUrlFormParams();
         if (KUtils.checkUndefined(urlFormParams)) {
           var tmpUrls = [];
+          //此处需要判断url是否是path类型
           for (var p in urlFormParams) {
-            tmpUrls.push(p + "=" + urlFormParams[p]);
+            if(that.debugPathFlag){
+              //确实是，判断该参数是否出现
+              if(that.debugPathParams.indexOf(p)==-1){
+                tmpUrls.push(p + "=" + urlFormParams[p]);
+              }else{
+                var replaceRege = "{" + p + "}";
+                var value = urlFormParams[p];
+                fullurl = fullurl.replace(replaceRege, value);
+              }
+            }else{
+              tmpUrls.push(p + "=" + urlFormParams[p]);
+            }
           }
           var tmpUrlStr = tmpUrls.join("&");
-          //console("tmpUrlStr:" + tmpUrlStr);
-          if (
-            this.api.methodType.toLowerCase() == "get" ||
-            this.api.methodType.toLowerCase() == "delete"
-          ) {
-            //地址栏追加参数
-            if (fullurl.indexOf("?") == -1) {
-              fullurl = fullurl + "?" + tmpUrlStr;
+          if(KUtils.strNotBlank(tmpUrlStr)){
+            if (
+              this.api.methodType.toLowerCase() == "get" ||
+              this.api.methodType.toLowerCase() == "delete"
+            ) {
+              //地址栏追加参数
+              if (fullurl.indexOf("?") == -1) {
+                fullurl = fullurl + "?" + tmpUrlStr;
+              } else {
+                fullurl = fullurl + "&" + tmpUrlStr;
+              }
             } else {
-              fullurl = fullurl + "&" + tmpUrlStr;
+              //-d 追加参数
+              curlified.push("--data-urlencode ");
+              curlified.push('"' + tmpUrlStr + '"');
             }
-          } else {
-            //-d 追加参数
-            curlified.push("--data-urlencode ");
-            curlified.push('"' + tmpUrlStr + '"');
           }
         }
       } else if (this.formFlag) {
@@ -1917,25 +1929,42 @@ export default {
             });
           } else {
             var tmpUrls = [];
+            //此处需要判断url是否是path类型
             for (var p in params) {
-              tmpUrls.push(p + "=" + params[p]);
+              if(that.debugPathFlag){
+                //确实是，判断该参数是否出现
+                if(that.debugPathParams.indexOf(p)==-1){
+                  tmpUrls.push(p + "=" + params[p]);
+                }else{
+                  var replaceRege = "{" + p + "}";
+                  var value = params[p];
+                  fullurl = fullurl.replace(replaceRege, value);
+                }
+              }else{
+                tmpUrls.push(p + "=" + params[p]);
+              }
             }
+            /* for (var p in params) {
+              tmpUrls.push(p + "=" + params[p]);
+            } */
             var tmpUrlStr = tmpUrls.join("&");
             //console("tmpUrlStr:" + tmpUrlStr);
-            if (
-              this.api.methodType.toLowerCase() == "get" ||
-              this.api.methodType.toLowerCase() == "delete"
-            ) {
-              //地址栏追加参数
-              if (fullurl.indexOf("?") == -1) {
-                fullurl = fullurl + "?" + tmpUrlStr;
-              } else {
-                fullurl = fullurl + "&" + tmpUrlStr;
-              }
-            } else {
-              //-d 追加参数
-              curlified.push("--data-urlencode ");
-              curlified.push('"' + tmpUrlStr + '"');
+            if(KUtils.strNotBlank(tmpUrlStr)){
+              if (
+                  this.api.methodType.toLowerCase() == "get" ||
+                  this.api.methodType.toLowerCase() == "delete"
+                ) {
+                  //地址栏追加参数
+                  if (fullurl.indexOf("?") == -1) {
+                    fullurl = fullurl + "?" + tmpUrlStr;
+                  } else {
+                    fullurl = fullurl + "&" + tmpUrlStr;
+                  }
+                } else {
+                  //-d 追加参数
+                  curlified.push("--data-urlencode ");
+                  curlified.push('"' + tmpUrlStr + '"');
+                }
             }
           }
         }
