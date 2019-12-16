@@ -17,6 +17,8 @@ swagger-bootstrap-ui
 
 `Swagger-bootstrap-UI` is the enhanced UI implementation of `springfox-swagger`, which enables Java developers to have a simple and powerful interface document experience when using Swagger
 
+2.0:http://knife4j.xiaominfo.com/doc.html
+
 online of effect: http://swagger-bootstrap-ui.xiaominfo.com/doc.html
 
 Project Demo:https://gitee.com/xiaoym/swagger-bootstrap-ui-demo
