@@ -3,26 +3,20 @@
     <a-row class="settingConfig">
       <a-row class="content-line">
         <a-col :span="24">
-          <a-checkbox
-            @change="checkboxChange('enableRequestCache')"
-            :checked="settings.enableRequestCache"
-            >开启请求参数缓存</a-checkbox
-          >
+          <a-checkbox @change="checkboxChange('enableRequestCache')" :checked="settings.enableRequestCache">开启请求参数缓存</a-checkbox>
         </a-col>
       </a-row>
       <a-divider class="divider" />
       <a-row class="content-line">
         <a-col :span="24">
-          <a-checkbox
-            @change="checkboxChange('enableFilterMultipartApis')"
-            :checked="settings.enableFilterMultipartApis"
-            >开启RequestMapping接口过滤,默认只显示</a-checkbox
-          >
-          <a-select
-            style="width:140px;"
-            @change="filterOptionsChange"
-            :value="settings.enableFilterMultipartApiMethodType"
-          >
+          <a-checkbox @change="checkboxChange('enableDynamicParameter')" :checked="settings.enableDynamicParameter">开启动态请求参数</a-checkbox>
+        </a-col>
+      </a-row>
+      <a-divider class="divider" />
+      <a-row class="content-line">
+        <a-col :span="24">
+          <a-checkbox @change="checkboxChange('enableFilterMultipartApis')" :checked="settings.enableFilterMultipartApis">开启RequestMapping接口过滤,默认只显示</a-checkbox>
+          <a-select style="width:140px;" @change="filterOptionsChange" :value="settings.enableFilterMultipartApiMethodType">
             <a-select-option value="GET">GET</a-select-option>
             <a-select-option value="POST">POST</a-select-option>
             <a-select-option value="PUT">PUT</a-select-option>
@@ -42,11 +36,7 @@
       <a-divider class="divider" /> -->
       <a-row class="content-line">
         <a-col :span="24">
-          <a-checkbox
-            @change="checkboxChange('enableSwaggerBootstrapUi')"
-            :checked="settings.enableSwaggerBootstrapUi"
-            >启用Knife4j提供的增强功能</a-checkbox
-          >
+          <a-checkbox @change="checkboxChange('enableSwaggerBootstrapUi')" :checked="settings.enableSwaggerBootstrapUi">启用Knife4j提供的增强功能</a-checkbox>
         </a-col>
       </a-row>
       <a-divider class="divider" />
@@ -94,6 +84,13 @@ export default {
     //读取本地缓存信息,判断是否存在,如果存在即初始化赋值
     localStore.getItem(Constants.globalSettingsKey).then(function(val) {
       if (val != null) {
+        //向下兼容,判断是否包含动态参数的配置
+        if (
+          val["enableDynamicParameter"] == undefined ||
+          val["enableDynamicParameter"] == null
+        ) {
+          val["enableDynamicParameter"] = false;
+        }
         instance.settings = val;
       } else {
         localStore.setItem(Constants.globalSettingsKey, instance.settings);
@@ -103,7 +100,12 @@ export default {
   methods: {
     checkboxChange(field) {
       const ckStatus = this.settings[field];
-      this.settings[field] = !ckStatus;
+      //需要判断是否存在,向下兼容
+      if (ckStatus != undefined && ckStatus != null) {
+        this.settings[field] = !ckStatus;
+      } else {
+        this.settings[field] = true;
+      }
       //判断是否开启增强
       if (field == "enableSwaggerBootstrapUi") {
         if (this.settings.enableSwaggerBootstrapUi) {
