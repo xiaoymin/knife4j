@@ -1,6 +1,6 @@
 # SwaggerBootstrapUi
 
-**本项目停止在GitHub更新,最新的代码访问Gitee地址：https://gitee.com/xiaoym/knife4j**
+**本项目停止在GitHub更新,仅作为Gitee的备份库,最新的代码访问Gitee地址：https://gitee.com/xiaoym/knife4j**
 
 **也请大家在Gitee上提新的PR、ISSUES**
 
@@ -9,6 +9,8 @@
 ## 项目说明
 
 `swagger-bootstrap-ui`是`springfox-swagger`的增强UI实现，为Java开发者在使用Swagger的时候，能拥有一份简洁、强大的接口文档体验
+
+**效果(2.0版):**[http://knife4j.xiaominfo.com/doc.html](http://knife4j.xiaominfo.com/doc.html)
 
 **在 线 效 果：**[http://swagger-bootstrap-ui.xiaominfo.com/doc.html](http://swagger-bootstrap-ui.xiaominfo.com/doc.html)
 
