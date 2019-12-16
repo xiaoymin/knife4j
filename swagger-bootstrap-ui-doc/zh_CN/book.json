@@ -1,0 +1,59 @@
+{
+    "title": "swagger-bootstrap-ui 用户指南",
+    "description": "swagger-bootstrap-ui是Java中Springfox组件的UI实现,增强了swagger的相关功能,简洁、强大.",
+    "language": "zh",
+    "plugins": [
+        "github",
+        "editlink",
+        "-highlight",
+        "prism-themes",
+        "splitter",
+        "tbfed-pagefooter",
+        "fontsettings",
+        "simple-page-toc",
+        "myseo"
+    ],
+    "pluginsConfig": {
+        "myseo": {
+            "titlePrefix": "swagger-bootstrap-ui ",
+            "description": "swagger-bootstrap-ui是springfox-swagger的增强UI实现，为Java开发者在使用Swagger的时候，能拥有一份简洁、强大的接口文档体验",
+            "keywords": "swagger-bootstrap-ui,swagger-bootstrap-ui 手册,swagger-bootstrap-ui 开发指南,swagger-bootstrap-ui 用户指南,swagger排序,swagger增强,swagger文件上传"
+        },
+        "tbfed-pagefooter": {
+            "copyright": "八一菜刀",
+            "modify_label": "最后修订时间：",
+            "modify_format": "YYYY-MM-DD HH:mm:ss"
+        },
+        "fontsettings": {
+            "theme": "white",
+            "family": "sans",
+            "size": 18
+        },
+        "simple-page-toc": {
+            "maxDepth": 3,
+            "skipFirstH1": true
+        },
+        "prism": {
+            "css": [
+                "prismjs/themes/prism-tomorrow.css"
+            ]
+        },
+        "github": {
+            "url": "https://github.com/xiaoymin/Swagger-Bootstrap-UI"
+        },
+        "editlink": {
+            "base": "https://gitee.com/xiaoym/swagger-bootstrap-ui/blob/master/swagger-bootstrap-ui-doc/zh_CN/",
+            "label": "编辑本页面"
+        },
+        "theme-default": {
+            "showLevel": true
+        },
+		"ghcomment": {
+			"owner": "xiaoymin",
+			"repo": "blog-comments"
+		}
+    },
+    "styles": {
+        "website": "styles/website.css"
+    }
+}

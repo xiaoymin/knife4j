@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>根据RESTFul API请求Swagger资源接口渲染UI</title>
+    <link rel="icon" href="/img/sbu_favicon.ico">
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="extension/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="extension/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="extension/layer3.0.3/layer.js"></script>
+    <link rel="stylesheet" href="iconfont/iconfont.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="text/javascript" src="module/store.js"></script>
+    <script type="text/javascript" src="module/global.js"></script>
+</head>
+<body>
+    <div class="api-top">
+        <div class="well">
+            <ul>
+                <li>RESTFul API接口支持两种类型的接口:1.分组资源 2.非分组资源,请求接口类型必须是<span style="color:red;font-weight:bold;">GET</span></li>
+                <li>分组资源返回JSON格式：参考接口<a href="http://swagger-bootstrap-ui.xiaominfo.com/swagger-resources" target="_blank">http://swagger-bootstrap-ui.xiaominfo.com/swagger-resources</a></li>
+                <li>非分组资源返回JSON格式：参考接口<a href="http://swagger-bootstrap-ui.xiaominfo.com/v2/api-docs-ext?group=%E5%88%86%E7%BB%84%E6%8E%A5%E5%8F%A3" target="_blank">http://swagger-bootstrap-ui.xiaominfo.com/v2/api-docs-ext?group=分组接口</a></li>
+            </ul>
+        </div>
+        <form class="form-horizontal" role="form">
+            <div class="form-group api-form-pad">
+                <label for="firstname" class="col-sm-1 control-label">类型</label>
+                <div class="col-sm-10">
+                    <label class="radio-inline">
+                        <input type="radio" name="type" value="group" checked> 分组资源
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="type"  value="single"> 非分组资源
+                    </label>
+                </div>
+            </div>
+            <div class="form-group api-form-pad">
+                <label for="firstname" class="col-sm-1 control-label">地址</label>
+                <div class="col-sm-10">
+                    <input type="text" id="address" class="form-control" value="http://swagger-bootstrap-ui.xiaominfo.com/swagger-resources" id="firstname" placeholder="请输入地址">
+                </div>
+            </div>
+            <div class="form-group api-form-pad">
+                <label for="firstname" class="col-sm-1 control-label"></label>
+                <div class="col-sm-10">
+                        <button type="submit" id="btnPreview" class="btn btn-default"><span class="iconfont icon-yulan"></span> 预 览 </button></div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="module/api.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+server:
+  port: 18088
+spring:
+  application:
+    name: swagger-bootstrap-ui-service
+  servlet:
+    multipart:
+      max-request-size: 200MB
+      max-file-size: 200MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    joda-date-time-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  freemarker:
+    enabled: true
+    cache: false
+    suffix: .html
+    settings:
+      classic_compatible: true
+    request-context-attribute: request

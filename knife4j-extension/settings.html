@@ -1,0 +1,93 @@
+<div class="ng-scope" id="SwaggerBootstrapUiSettings">
+  <section class="settings-group ng-scope">
+    <h2 class="ng-binding">个性化设置</h2>
+    <form>
+      <div class="form-group">
+        <div class="col-lg-10">
+          <label class="radio-inline">
+            <input type="radio" name="language" value="zh" checked> 中文
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="language" value="en"> English
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-10">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="enableRequestCache" />
+              开启请求参数缓存
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-10">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="showApi" />
+              菜单Api地址显示
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-10">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="showTagStatus" />
+              分组tag显示dsecription说明属性
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-10">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="enableFilterMultipartApis" />
+              开启RequestMapping接口过滤,默认只显示
+              <select class="form-control" name="enableFilterMultipartApiMethodType"
+                style="display: inline;width: 25%;height: 30px;line-height: 30px;">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+                <option value="PATCH">PATCH</option>
+                <option value="OPTIONS">OPTIONS</option>
+                <option value="HEAD">HEAD</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-10">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="enableCacheOpenApiTable" />
+              开启缓存已打开的api文档
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-10">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="enableSwaggerBootstrapUi" />
+              启用SwaggerBootstrapUi提供的增强功能
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top: 5px;">
+        <div class="col-lg-10">
+          <button class="btn btn-primary" type="button" id="btnSaveSettings">保存</button>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>
+<script src="module/settings.js"></script>

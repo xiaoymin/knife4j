@@ -1,0 +1,8 @@
+.page-inner {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 15px 40px 15px;
+	font-size:15px;
+	font-family:"monaco"
+}

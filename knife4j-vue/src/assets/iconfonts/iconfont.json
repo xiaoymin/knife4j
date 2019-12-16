@@ -1,0 +1,79 @@
+{
+  "id": "1502994",
+  "name": "Knife4jVue",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "157195",
+      "name": "modeling",
+      "font_class": "modeling",
+      "unicode": "e727",
+      "unicode_decimal": 59175
+    },
+    {
+      "icon_id": "175339",
+      "name": "icon-home",
+      "font_class": "home",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "763858",
+      "name": "authenticationSystem",
+      "font_class": "authenticationsystem",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "1015188",
+      "name": "主页",
+      "font_class": "zhuye",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "1364596",
+      "name": "API文档",
+      "font_class": "APIwendang",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "2040851",
+      "name": "文档",
+      "font_class": "wendang",
+      "unicode": "e6f5",
+      "unicode_decimal": 59125
+    },
+    {
+      "icon_id": "4427415",
+      "name": "文档",
+      "font_class": "tubiaozhizuomobanyihuifu-",
+      "unicode": "e6a4",
+      "unicode_decimal": 59044
+    },
+    {
+      "icon_id": "4512932",
+      "name": "终端参数管理",
+      "font_class": "zdlxb",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "5277251",
+      "name": "API文档",
+      "font_class": "APIwendang1",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "6828169",
+      "name": "debug",
+      "font_class": "debug",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    }
+  ]
+}

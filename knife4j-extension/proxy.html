@@ -1,0 +1,31 @@
+<div class="page-header ng-scope">
+  <h2 class="ng-binding">接口Proxy设置</h2>
+</div>
+<section class="settings-group ng-scope" id="settingsforProxys">
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label for="inputEmail3" class="col-sm-2 control-label">当前接口API-Proxy</label>
+      <div class="col-sm-10">
+        <div class="input-group m-bot15">
+          <input type="text" id="settings_proxy_current_api" class="form-control">
+          <span class="input-group-btn">
+            <button class="btn btn-default" id="settings_proxy_save" type="button">确认</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </form>
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>选择</th>
+        <th>proxy</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="settings_proxy_table_body">
+    </tbody>
+  </table>
+</section>
+
+<script src="module/proxy.js"></script>

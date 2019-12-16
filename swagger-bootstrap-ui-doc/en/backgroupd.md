@@ -1,0 +1,15 @@
+Probably in April 2017, the entire development method of our team decided to use the separation of front and back ends to cooperate and develop. The whole technical solution at the time of separation was also responsible for sorting and exploring how to make the whole team develop more efficiently. I completed my own work. From the beginning of jsonp, to the back nginx reverse proxy, I also got a lot of things here, and also wrote some related blog summary.
+
+But the most troublesome thing is how the front and back end docked for the interface. At that time, I found a lot of solutions. I started using apidocs. Some of them are similar to writing java comments. It is good to use, but it is not generated online. After the document is written, a separate command is required to generate a document. It is very troublesome, and then it is abandoned.
+
+Finally, consider using swagger to do this document, but swagger everyone knows that swagger's ui can make the document clear, but it is not very easy to use, it may not be suitable for our people's eyes, at least I think so, So I wanted to see how swagger was generated, so swagger-bootstrap-ui was born.
+
+Talk about swagger here, although many people spray him, it is not easy to use, based on annotations, code intrusion is very strong, and so on. But overall, swagger has been developed to date, including in various languages, nodeJs, .net, java, php, etc. It can be said that it is a thing with some interface specifications. From the beginning to the step-by-step specification, it is actually a very difficult one. Process, everything is not perfect, swagger is the same, at least it provides a document generation solution for so many languages, its value far exceeds its own shortcomings
+
+In Java, springfox implements swagger interface mode, and other languages are similar.
+
+The monks have always felt that if someone developed this thing in front of them, and the scope of the user and the stability are relatively high, this thing must have his meaning. Standing on the shoulders of the giants, doing the right thing has always been I think that in line with the actual situation, at least you don't have to fill in the pits yourself. Because, when you open source, an idea may be relatively new and highly concerned at the time, but I think most people can't escape inertia, and the lack is perseverance. Especially in China, many open source is actually done by individuals (including my own swagger-bootstrap-ui). In terms of consciousness, it is relatively weak relative to foreign countries, and there is still energy, perseverance, and a long way to go. !
+
+Therefore, swagger-bootstrap-ui is just a ui package, which does not include any Java code. Based on swagger, I hope to contribute to the ecological development of swagger.
+
+Swagger-bootstrap-ui has been open source for more than a year in April. I have been insisting on calling for it, and I will continue to maintain it. Although it is small, it will always be rewarded.

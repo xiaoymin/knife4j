@@ -1,0 +1,86 @@
+html, body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+}
+  
+body {
+    min-width: 12em;
+}
+
+
+.sbu-hidden {
+    display: none !important;
+}
+
+/* Menu */
+
+.sbu-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+  
+.sbu-nav-item {
+    display: block;
+    margin: 3px 0;
+}
+
+.sbu-nav-item > a > .glyphicon {
+    margin-right: 8px;
+}
+
+.sbu-nav-item > a {
+    display: block;
+    padding: 5px 25px 5px 8px;
+    border-radius: 4px;
+    line-height: 1.5em;
+    font-size: 1em;
+    color: #337ab7;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.sbu-nav-item > a:hover {
+    text-decoration: none;
+    background-color: #eee;
+}
+.sbu-nav-item > a:hover {
+    color: #23527c;
+}
+.sbu-nav-item.sbu-effective > a {
+    background-color: #d9edf7;
+}
+.sbu-nav-item.sbu-active > a {
+    color: #fff;
+    background-color: #337ab7;
+}
+
+.sbu-nav-item .sbu-profile-name{
+    margin-left: 5px;
+}
+
+.sbu-divider {
+    height: 1px;
+    overflow: hidden;
+    background-color: #E5E5E5;
+}
+
+
+.api-top{
+    margin:0px auto;margin-top: 60px;width:70%;
+}
+
+.api-form-pad{
+    margin:20px;padding:15px;
+}
+
+.api-top .well ul{
+    padding: 0px;
+}
+
+.api-top .well ul li{
+    padding: 10px;
+    list-style: inside;
+}

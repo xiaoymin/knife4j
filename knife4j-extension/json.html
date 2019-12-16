@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>通过Swagger标准JSON文件进行渲染</title>
+    <link rel="icon" href="/img/sbu_favicon.ico">
+    <link rel="stylesheet" href="extension/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="lib/jsoneditor/jsoneditor.min.css" />
+    <link rel="stylesheet" href="iconfont/iconfont.css" />
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="extension/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="lib/jsoneditor/jsoneditor.min.js"></script>
+    <script type="text/javascript" src="extension/layer3.0.3/layer.js"></script>
+    <script type="text/javascript" src="module/store.js"></script>
+    <script type="text/javascript" src="module/global.js"></script>
+</head>
+
+<body>
+    <div style="margin:0px auto;margin-top: 20px;width:95%;">
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for="firstname" class="col-sm-1 control-label">名称</label>
+                <div class="col-sm-10">
+                    <input type="text" id="jsonName" class="form-control" value="default" id="firstname"
+                        placeholder="请输入名字">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lastname" class="col-sm-1 control-label">JSON</label>
+                <div class="col-sm-10">
+                    <div id="jsoneditor" style="height:500px;"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div style="position:absolute;top:19px;right:40px;">
+        <button type="button" id="btnPreview" class="btn btn-default"><span class="iconfont icon-yulan"></span> 预 览
+        </button></div>
+
+    <script src="module/json.js"></script>
+</body>
+
+</html>

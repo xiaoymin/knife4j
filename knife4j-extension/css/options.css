@@ -1,0 +1,148 @@
+.side-nav {
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+h1 {
+    color: #5c6166;
+    font-size: 1.7em;
+    font-weight: bold;
+    margin-bottom: 1.5em;
+}
+
+.nav-header {
+    margin-right: -15px !important;
+    margin-left: -15px !important;
+    display: block;
+    padding: 3px 15px;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 20px;
+    color: #999;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+}
+
+@media (max-height: 767px) .side-nav .nav-pills>li>a {
+    padding: 5px 15px;
+}
+
+.side-nav .nav-pills>li>a {
+    padding: 8px 15px;
+}
+
+.sbu-wrap {
+    min-height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: column;
+    flex-flow: column;
+    overflow: hidden;
+}
+
+.wlimit {
+    width: 990px;
+    padding: 0 15px;
+    margin: 0 auto;
+}
+
+
+.sbu-wrap>.wlimit {
+    display: flex;
+    padding-bottom: 50px;
+}
+
+.sbu-footer {
+    margin-top: auto;
+}
+
+.sbu-footer .rate-row {
+    background-color: #F7F7F7;
+}
+
+.sbu-footer .rate-row .wlimit {
+    height: 80px;
+}
+
+.sbu-footer .wlimit {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    min-width: 1200px;
+}
+
+.sbu-footer .rate-row .text {
+    color: #505050;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sbu-footer .btn-rate {
+    text-decoration: none;
+    font-size: 14px;
+    color: #6a6a6a;
+    border: 2px solid #D1D1D1;
+    border-radius: 6px;
+    padding: 9px 30px;
+}
+
+.sbu-footer .btn-rate img {
+    width: 17px;
+    vertical-align: text-bottom;
+    margin-right: 9px;
+}
+
+.sbu-footer .links-row {
+    background-color: #494848;
+}
+
+.sbu-footer .links-row .wlimit {
+    height: 60px;
+}
+
+.sbu-footer .copy {
+    color: #d9e0e0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.sbu-footer .copy img {
+    width: 29px;
+    vertical-align: middle;
+    margin-right: 13px;
+}
+
+.sbu-footer .links-row a:first-child {
+    padding-left: 0;
+}
+
+.sbu-footer .links-row a {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.83);
+    text-decoration: none;
+    padding-left: 40px;
+}
+
+
+.page-header {
+    padding-bottom: 5px;
+    margin: 20px 0 10px;
+}
+
+.article-body {
+    color: #4d4d4d;
+}
+
+.row-line {
+    height: 40px;
+}

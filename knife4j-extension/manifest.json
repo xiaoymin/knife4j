@@ -1,0 +1,24 @@
+{
+  "name": "swagger-bootstrap-ui",
+  "version": "1.0.0",
+  "description": "swagger-bootstrap-ui extension program for fast rendering of Swagger resources",
+  "permissions": ["webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "storage", "proxy"],
+  "browser_action": {
+    "default_popup": "menu.html",
+    "default_title": "swagger-bootstrap-ui Extension",
+    "default_icon": "sbu.png"
+  },
+  "icons": {
+    "16": "img/icon16.png",
+    "19": "img/icon19.png",
+    "48": "img/icon48.png",
+    "128": "img/icon128.png"
+  },
+  "options_ui": {
+    "page": "json.html",
+    "chrome_style": false
+  },
+  "manifest_version": 2,
+  "web_accessible_resources": ["extension/jquery/*"],
+  "content_security_policy": "script-src 'self' 'unsafe-eval';object-src 'self' 'unsafe-eval';"
+}

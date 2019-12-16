@@ -1,0 +1,55 @@
+{
+    "title": "swagger-bootstrap-ui User Guide",
+    "description": "Swagger-bootstrap-ui is the UI implementation of Springfox components in Java, which enhances the related functions of swagger, simple and powerful.",
+    "language": "en",
+    "plugins": [
+        "github",
+        "editlink",
+        "-highlight",
+        "prism-themes",
+        "splitter",
+        "tbfed-pagefooter",
+        "fontsettings",
+        "simple-page-toc",
+        "myseo"
+    ],
+    "pluginsConfig": {
+        "myseo": {
+            "titlePrefix": "swagger-bootstrap-ui",
+            "description": "Swagger-bootstrap-ui is the UI implementation of Springfox components in Java, which enhances the related functions of swagger, simple and powerful.",
+            "keywords": "swagger-bootstrap-ui, swagger sorting, swagger enhancement, swagger file upload"
+        },
+        "tbfed-pagefooter": {
+            "copyright": "xiaoymin",
+            "modify_label": "Last ModfiedTime at：",
+            "modify_format": "YYYY-MM-DD HH:mm:ss"
+        },
+        "fontsettings": {
+            "theme": "white",
+            "family": "sans",
+            "size": 18
+        },
+        "simple-page-toc": {
+            "maxDepth": 3,
+            "skipFirstH1": true
+        },
+        "prism": {
+            "css": [
+                "prismjs/themes/prism-tomorrow.css"
+            ]
+        },
+        "github": {
+            "url": "https://github.com/xiaoymin/Swagger-Bootstrap-UI"
+        },
+        "editlink": {
+            "base": "https://gitee.com/xiaoym/swagger-bootstrap-ui/blob/master/swagger-bootstrap-ui-doc/en",
+            "label": "Edit"
+        },
+        "theme-default": {
+            "showLevel": true
+        }
+    },
+    "styles": {
+        "website": "styles/website.css"
+    }
+}
