@@ -206,7 +206,7 @@ export default {
       rowUrlFormSelection: {
         selectedRowKeys: [],
         onChange(selectrowkey, selectrows) {
-          instance.rowFormSelection.selectedRowKeys = selectrowkey;
+          instance.rowUrlFormSelection.selectedRowKeys = selectrowkey;
         }
       },
       headerData: [],
