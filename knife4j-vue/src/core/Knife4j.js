@@ -349,7 +349,8 @@ SwaggerBootstrapUi.prototype.configInit = function () {
         }
       }
     }).catch(function (err) {
-      message.error('Knife4j文档请求异常')
+      //message.error('Knife4j文档请求异常')
+      //隐藏config的请求接口错误显示
       that.error(err);
     })
 }
