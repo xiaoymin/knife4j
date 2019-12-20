@@ -130,6 +130,9 @@ export default {
   computed: {
     currentUser() {
       return this.$store.state.header.userCurrent;
+    },
+    cacheMenuData() {
+      return this.$store.state.globals.menuData;
     }
   },
   updated() {
