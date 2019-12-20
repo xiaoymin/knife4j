@@ -1605,6 +1605,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
           groupId: groupId,
           key: md5(groupName + children.summary + children.operationId),
           name: children.summary,
+          description: children.description,
           path: children.operationId,
           component: 'ApiInfo',
           hasNew: tag.hasNew || tag.hasChanged,

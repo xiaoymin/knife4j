@@ -22,7 +22,7 @@
       <!-- <SiderMenu :defaultOption="defaultServiceOption" :serviceOptions="serviceOptions" @menuClick='menuClick' :logo="logo" :menuData="MenuData" :collapsed="collapsed" :location="$route" :onCollapse="handleMenuCollapse" :menuWidth="menuWidth" /> -->
       <a-layout>
         <a-layout-header style="padding: 0;background: #fff;    height: 56px; line-height: 56px;">
-          <GlobalHeader :documentTitle="documentTitle" :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="item => handleMenuClick(item)" />
+          <GlobalHeader @searchKey="searchKey" @searchClear="searchClear" :documentTitle="documentTitle" :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="item => handleMenuClick(item)" />
         </a-layout-header>
         <context-menu :itemList="menuItemList" :visible.sync="menuVisible" @select="onMenuSelect" />
         <a-tabs hideAdd v-model="activeKey" @contextmenu.native="e => onContextmenu(e)" type="editable-card" @change="tabChange" @edit="tabEditCallback" class="knife4j-tab">
@@ -46,6 +46,7 @@ import GlobalHeader from "@/components/GlobalHeader";
 import GlobalFooter from "@/components/GlobalFooter";
 import GlobalHeaderTab from "@/components/GlobalHeaderTab";
 import { getMenuData } from "./menu";
+import KUtils from "@/core/utils";
 import SwaggerBootstrapUi from "@/core/Knife4j.js";
 import {
   findComponentsByPath,
@@ -156,6 +157,46 @@ export default {
     }
   },
   methods: {
+    searchClear() {
+      //搜索输入框清空,菜单还原
+      this.MenuData = this.cacheMenuData;
+    },
+    searchKey(key) {
+      //根据输入搜索
+      if (KUtils.strNotBlank(key)) {
+        var tmpMenu = [];
+        var regx = ".*?" + key + ".*";
+        this.cacheMenuData.forEach(function(menu) {
+          if (KUtils.arrNotEmpty(menu.children)) {
+            //遍历children
+            var tmpChildrens = [];
+            menu.children.forEach(function(children) {
+              var urlflag = KUtils.regexMatchStr(regx, children.path);
+              var sumflag = KUtils.regexMatchStr(regx, children.name);
+              var desflag = KUtils.regexMatchStr(regx, children.description);
+              if (urlflag || sumflag || desflag) {
+                tmpChildrens.push(children);
+              }
+            });
+            if (tmpChildrens.length > 0) {
+              var tmpObj = {
+                groupName: menu.groupName,
+                groupId: menu.groupId,
+                key: menu.key,
+                name: menu.name,
+                icon: menu.icon,
+                path: menu.path,
+                hasNew: menu.hasNew,
+                authority: menu.authority,
+                children: tmpChildrens
+              };
+              tmpMenu.push(tmpObj);
+            }
+          }
+        });
+        this.MenuData = tmpMenu;
+      }
+    },
     serviceChange(value, option) {
       //console("菜单下拉选择");
       var that = this;

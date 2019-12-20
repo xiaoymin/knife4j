@@ -4,7 +4,7 @@
     <span class="knife4j-header-title">{{ documentTitle }}</span>
     <div class="right">
       <!--搜索功能在2.0暂不提供-->
-      <HeaderSearch class='action search' placeholder="站内搜索" :dataSource="['搜索提示一', '搜索提示二', '搜索提示三']" :onSearch="(value) => onSearch(value)" :onPressEnter="(value) => onPressEnter(value)" />
+      <HeaderSearch class='action search' placeholder="输入文档关键字搜索" :onSearch="(value) => onSearch(value)" :onPressEnter="(value) => onPressEnter(value)" />
       <a-tooltip title="帮助文档">
         <a target="_blank" href="https://doc.xiaominfo.com/" rel="noopener noreferrer" class="action">
           <a-icon type="question-circle-o" />
@@ -91,10 +91,12 @@ export default {
       this.onCollapse(!this.collapsed);
     },
     onSearch(value) {
-      //console("input", value);
+      if (value == undefined || value == null || value == "") {
+        this.$emit("searchClear");
+      }
     },
     onPressEnter(value) {
-      //console("enter", value);
+      this.$emit("searchKey", value);
     },
     onItemClick(item, tabProps) {
       //console(item, tabProps);

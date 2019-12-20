@@ -1,9 +1,9 @@
 <template>
   <span :class="className + ' headerSearch'" @click="enterSearchMode">
-    <a-icon type="search" key="Icon" />
-    <a-autoComplete key="AutoComplete" :class="'input '+ (searchMode ? 'show' : '')" @change="(value)=>onSearchChange(value)" :dataSource="dataSource" @search="onSearch" :value="value">
-      <a-input :placeholder="placeholder" @keydown="(e)=>onKeyDown(e)" @blur="()=>leaveSearchMode()" />
+    <a-autoComplete key="AutoComplete" :class="'input '+ (searchMode ? 'show' : '')" @change="(value)=>onSearchChange(value)" @search="onSearch" :value="value">
+      <a-input :value="value" :placeholder="placeholder" @keydown="(e)=>onKeyDown(e)" @blur="()=>leaveSearchMode()" />
     </a-autoComplete>
+    <a-icon type="search" key="Icon" @click="buttonSearch" />
   </span>
 </template>
 
@@ -21,9 +21,6 @@ export default {
     className: {
       type: String
     },
-    dataSource: {
-      type: Array
-    },
     onSearch: {
       type: Function
     },
@@ -38,7 +35,7 @@ export default {
   data() {
     return {
       value: "",
-      searchMode: false
+      searchMode: true
     };
   },
   methods: {
@@ -48,6 +45,9 @@ export default {
           this.onPressEnter(this.value); // Fix duplicate onPressEnter
         }, 0);
       }
+    },
+    buttonSearch() {
+      this.onPressEnter(this.value); // Fix duplicate onPressEnter
     },
     onSearchChange(value) {
       this.value = value;
@@ -60,8 +60,8 @@ export default {
       // this.input.focus();
     },
     leaveSearchMode() {
-      this.value = "";
-      this.searchMode = false;
+      /* this.value = "";
+      this.searchMode = false; */
     }
   }
 };
