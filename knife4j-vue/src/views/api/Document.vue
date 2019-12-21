@@ -2,19 +2,16 @@
   <div class="document">
     <a-row>
       <a-row class="knife4j-api-title">
-        <a-col :span="20">{{ api.summary }}</a-col>
-        <a-col
-          :span="2"
-          :id="'btnCopyMarkdown' + api.id"
-          class="knife4j-api-copy-address"
-          >复制文档</a-col
-        >
-        <a-col
-          :span="2"
-          :id="'btnCopyAddress' + api.id"
-          class="knife4j-api-copy-address"
-          >复制地址</a-col
-        >
+        <a-col :span="20">
+          <span v-if="api.deprecated" class="knife4j-menu-api-deprecated">
+            {{ api.summary }}
+          </span>
+          <span v-else>
+            {{ api.summary }}
+          </span>
+        </a-col>
+        <a-col :span="2" :id="'btnCopyMarkdown' + api.id" class="knife4j-api-copy-address">复制文档</a-col>
+        <a-col :span="2" :id="'btnCopyAddress' + api.id" class="knife4j-api-copy-address">复制地址</a-col>
       </a-row>
       <a-row :class="'knife4j-api-' + api.methodType.toLowerCase()">
         <div class="knife4j-api-summary">
@@ -43,11 +40,7 @@
       <div class="api-title">
         接口描述
       </div>
-      <div
-        v-if="api.description"
-        v-html="api.description"
-        class="api-body-desc"
-      ></div>
+      <div v-if="api.description" v-html="api.description" class="api-body-desc"></div>
     </div>
     <!--请求示例-->
     <div v-if="api.requestValue">
@@ -59,14 +52,7 @@
     <div class="api-title">
       请求参数
     </div>
-    <a-table
-      :defaultExpandAllRows="expanRows"
-      :columns="columns"
-      :dataSource="reqParameters"
-      rowKey="id"
-      size="small"
-      :pagination="page"
-    >
+    <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small" :pagination="page">
       <template slot="descriptionValueTemplate" slot-scope="text">
         {{ text }}
       </template>
@@ -85,14 +71,7 @@
     <div class="api-title">
       响应状态
     </div>
-    <a-table
-      :defaultExpandAllRows="expanRows"
-      :columns="responseStatuscolumns"
-      :dataSource="api.responseCodes"
-      rowKey="code"
-      size="small"
-      :pagination="page"
-    >
+    <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes" rowKey="code" size="small" :pagination="page">
       <template slot="descriptionTemplate" slot-scope="text">
         <div v-html="text"></div>
       </template>
@@ -100,48 +79,28 @@
     <!--响应参数需要判断是否存在多个code-schema的情况-->
     <div v-if="api.multipartResponseSchema">
       <a-tabs @change="multipartTabCodeChanges">
-        <a-tab-pane
-          v-for="resp in multipCodeDatas"
-          :key="resp.code"
-          :tab="resp.code"
-        >
+        <a-tab-pane v-for="resp in multipCodeDatas" :key="resp.code" :tab="resp.code">
           <!--判断响应头-->
           <div v-if="resp.responseHeaderParameters">
             <div class="api-title">
               响应Header
             </div>
-            <a-table
-              :defaultExpandAllRows="expanRows"
-              :columns="responseHeaderColumns"
-              :dataSource="resp.responseHeaderParameters"
-              rowKey="id"
-              size="small"
-              :pagination="page"
-            >
+            <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="resp.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
             </a-table>
           </div>
           <!--响应参数-->
           <div class="api-title">
             响应参数
           </div>
-          <a-table
-            :defaultExpandAllRows="expanRows"
-            :columns="responseParametersColumns"
-            :dataSource="resp.data"
-            rowKey="id"
-            size="small"
-            :pagination="page"
-          >
+          <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data" rowKey="id" size="small" :pagination="page">
           </a-table>
           <div class="api-title">
             响应示例
           </div>
           <a-row :id="'knife4jDocumentShowEditor' + api.id + resp.code">
-            <editor-show
-              :value="
+            <editor-show :value="
                 resp.responseBasicType ? resp.responseText : resp.responseValue
-              "
-            ></editor-show>
+              "></editor-show>
           </a-row>
 
           <!-- <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor> -->
@@ -154,40 +113,24 @@
         <div class="api-title">
           响应Header
         </div>
-        <a-table
-          :defaultExpandAllRows="expanRows"
-          :columns="responseHeaderColumns"
-          :dataSource="api.responseHeaderParameters"
-          rowKey="id"
-          size="small"
-          :pagination="page"
-        >
+        <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="api.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
         </a-table>
       </div>
       <!--响应参数-->
       <div class="api-title">
         响应参数
       </div>
-      <a-table
-        :defaultExpandAllRows="expanRows"
-        :columns="responseParametersColumns"
-        :dataSource="multipData.data"
-        rowKey="id"
-        size="small"
-        :pagination="page"
-      >
+      <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data" rowKey="id" size="small" :pagination="page">
       </a-table>
       <div class="api-title">
         响应示例
       </div>
       <a-row :id="'knife4jDocumentShowEditor' + api.id">
-        <editor-show
-          :value="
+        <editor-show :value="
             multipData.responseBasicType
               ? multipData.responseText
               : multipData.responseValue
-          "
-        ></editor-show>
+          "></editor-show>
       </a-row>
     </div>
   </div>
