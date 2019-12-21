@@ -32,6 +32,9 @@ export const resumecss = `
     line-height: 32px;
   }
 }
+.knife4j-menu-api-deprecated {
+  text-decoration: line-through;
+}
 
 .knife4j-api-title {
   margin-top: 10px;
