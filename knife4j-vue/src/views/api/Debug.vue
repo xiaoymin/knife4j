@@ -2137,7 +2137,6 @@ export default {
               //_text = KUtils.json5stringify(KUtils.json5parse(_text));
               //不能使用res.data对象,必须使用stringfy重新转换1次,否则会出现精度丢失的情况
               //_text = KUtils.json5stringify(res.data);
-              //var maxSize = parseInt("‭2097152‬");
               var responseSize = resp.responseText.gblen();
               var mbSize = (responseSize / 1024).toFixed(1);
               var maxSize = 500;
