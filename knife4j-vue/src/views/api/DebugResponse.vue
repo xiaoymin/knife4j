@@ -12,7 +12,7 @@
             <span class="key">耗时:</span>
             <span class="value">{{responseStatus.cost}}</span>
             <span class="key">大小:</span>
-            <span class="value">{{responseStatus.size}} b</span>
+            <span class="value">{{responseSizeText}} </span>
           </a-row>
         </template>
         <a-tab-pane tab="响应内容" key="debugResponse">
@@ -113,6 +113,25 @@ export default {
         }
       ]
     };
+  },
+  computed: {
+    responseSizeText() {
+      var str = "0 b";
+      var responseStatus = this.responseStatus;
+      if (responseStatus != null && responseStatus != undefined) {
+        var responseSize = responseStatus.size;
+        var kbSize = (responseSize / 1024).toFixed(2);
+        var mbSize = (responseSize / 1024 / 1024).toFixed(2);
+        if (kbSize > 1) {
+          str = kbSize + " kb";
+        } else if (mbSize > 1) {
+          str = mbSize + " mb";
+        } else {
+          str = responseSize + " b";
+        }
+      }
+      return str;
+    }
   },
   created() {
     //this.resetResponseContent();

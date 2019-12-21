@@ -2137,9 +2137,21 @@ export default {
               //_text = KUtils.json5stringify(KUtils.json5parse(_text));
               //不能使用res.data对象,必须使用stringfy重新转换1次,否则会出现精度丢失的情况
               //_text = KUtils.json5stringify(res.data);
-              _text = KUtils.json5stringify(
-                KUtils.json5parse(resp.responseText)
-              );
+              //var maxSize = parseInt("‭2097152‬");
+              var responseSize = resp.responseText.gblen();
+              var mbSize = (responseSize / 1024).toFixed(1);
+              var maxSize = 500;
+              if (mbSize > maxSize) {
+                //_text = resp.responseText;
+                this.$message.info(
+                  "接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看"
+                );
+                mode = "text";
+              } else {
+                _text = KUtils.json5stringify(
+                  KUtils.json5parse(resp.responseText)
+                );
+              }
             } else {
               _text = resp.responseText;
             }
