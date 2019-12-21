@@ -1627,6 +1627,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   ////console(JSON.stringify(mdata))
   //双向绑定
   that.$Vue.MenuData = mdata;
+  console.log(mdata)
   that.$Vue.swaggerCurrentInstance = that.currentInstance;
   that.$Vue.$store.dispatch("globals/setMenuData", mdata);
   //设置菜单选中
