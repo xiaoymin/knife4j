@@ -1,12 +1,27 @@
 <template>
   <div class="header knife4j-header-default" :class="headerClass">
-    <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="toggle" />
+    <a-icon
+      class="trigger"
+      :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+      @click="toggle"
+    />
     <span class="knife4j-header-title">{{ documentTitle }}</span>
+
+    <span class="knife4j-header-title" v-html="$t('title')"></span>
     <div class="right">
-      <!--搜索功能在2.0暂不提供-->
-      <HeaderSearch class='action search' placeholder="输入文档关键字搜索" :onSearch="(value) => onSearch(value)" :onPressEnter="(value) => onPressEnter(value)" />
-      <a-tooltip title="帮助文档">
-        <a target="_blank" href="https://doc.xiaominfo.com/" rel="noopener noreferrer" class="action">
+      <HeaderSearch
+        class="action search"
+        :placeholder="$t('searchHolderText')"
+        :onSearch="value => onSearch(value)"
+        :onPressEnter="value => onPressEnter(value)"
+      />
+      <a-tooltip :title="$t('docLinkTip')">
+        <a
+          target="_blank"
+          href="https://doc.xiaominfo.com/"
+          rel="noopener noreferrer"
+          class="action"
+        >
           <a-icon type="question-circle-o" />
         </a>
       </a-tooltip>
@@ -15,21 +30,22 @@
         <a-menu slot="overlay" class="menu">
           <a-menu-item>
             <router-link to="/documentManager/Settings">
-              <a-icon type="setting" /> 个性化配置</router-link>
+              <a-icon type="setting"/> <span v-html="$t('settingText')"></span
+            ></router-link>
           </a-menu-item>
           <a-menu-item @click="clearLocalCache">
-            <a-icon type="delete" /> 清除缓存
+            <a-icon type="delete" /> <span v-html="$t('cacheText')"></span>
           </a-menu-item>
-          <!-- <a-menu-divider />
-          <a-menu-item key="logout">
+          <a-menu-divider />
+          <a-menu-item key="logout" @click="changeZh">
             <a-icon type="logout" />简体中文
           </a-menu-item>
-          <a-menu-item key="triggerError">
+          <a-menu-item key="triggerError" @click="changeEn">
             <a-icon type="close-circle" />English
-          </a-menu-item> -->
+          </a-menu-item>
         </a-menu>
         <span class="action account">
-          <span class="name">中</span>
+          <span class="name" v-html="$t('langText')"></span>
         </span>
       </a-dropdown>
       <a-spin v-else size="small" style="margin-left: 8px" />
@@ -81,6 +97,14 @@ export default {
     return {};
   },
   methods: {
+    changeZh() {
+      //中文
+      this.$i18n.locale = "zh-CN";
+    },
+    changeEn() {
+      //英文
+      this.$i18n.locale = "en-US";
+    },
     handleMenuClick() {
       //console("handleMenuClick");
     },
