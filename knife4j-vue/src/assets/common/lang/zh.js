@@ -129,6 +129,8 @@ const langOptions = {
     note: '接口说明',
     copy: '复制文档',
     copyHash: '复制地址',
+    produces: '请求数据类型',
+    consumes: '响应数据类型',
     author: '开发者',
     url: '接口地址',
     method: '请求方式',

@@ -2081,6 +2081,7 @@ export default {
         if (KUtils.checkUndefined(resp)) {
           //判断是否是blob类型
           if (resp.responseType == "blob") {
+            var ctype=KUtils.propValue("content-type",headers,"");
             //从响应头中得到文件名称
             var fileName = "Knife4j.txt";
             var contentDisposition = KUtils.propValue(
@@ -2118,52 +2119,71 @@ export default {
                 }
               }
             }
+            //双重验证,判断是否为图片
+            var imageFlag=false;
+            if(ctype.indexOf("image")!=-1){
+              imageFlag=true;
+            }else{
+              //如果contentType非image,判断文件名称
+              //png,jpg,jpeg,gif
+              var imageArrs=['bmp','jpg','png','tif','gif','pcx','tga','exif','fpx','svg','psd','cdr','pcd','dxf','ufo','eps','ai','raw','WMF','webp'];
+              imageArrs.forEach(function(fmt){
+                if(fileName.indexOf(fmt)!=-1){
+                  imageFlag=true;
+                }
+              })         
+            }
             var downloadurl = window.URL.createObjectURL(res.data);
             this.responseContent = {
               text: "",
               mode: "blob",
               blobFlag: true,
+              imageFlag:imageFlag,
               blobFileName: fileName,
               blobUrl: downloadurl
             };
           } else {
-            //判断响应的类型
-            //var _text = resp.responseText;
-            var _text = "";
-            var mode = this.getContentTypeByHeaders(headers);
-            //console("动态mode-----" + mode);
-            //console(res);
-            if (mode == "json") {
-              //_text = KUtils.json5stringify(KUtils.json5parse(_text));
-              //不能使用res.data对象,必须使用stringfy重新转换1次,否则会出现精度丢失的情况
-              //_text = KUtils.json5stringify(res.data);
-              var responseSize = resp.responseText.gblen();
-              var mbSize = (responseSize / 1024).toFixed(1);
-              var maxSize = 500;
-              if (mbSize > maxSize) {
-                //_text = resp.responseText;
-                this.$message.info(
-                  "接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看"
-                );
-                mode = "text";
-              } else {
-                _text = KUtils.json5stringify(
-                  KUtils.json5parse(resp.responseText)
-                );
-              }
-            } else {
-              _text = resp.responseText;
-            }
-            this.responseContent = {
-              text: _text,
-              mode: mode,
-              blobFlag: false,
-              blobFileName: "",
-              blobUrl: ""
-            };
+            this.setResponseJsonBody(resp,headers);
           }
         }
       }
+    },
+    setResponseJsonBody(resp,headers){
+      //判断响应的类型
+      //var _text = resp.responseText;
+      var _text = "";
+      var mode = this.getContentTypeByHeaders(headers);
+      //console("动态mode-----" + mode);
+      //console(res);
+      if (mode == "json") {
+        //_text = KUtils.json5stringify(KUtils.json5parse(_text));
+        //不能使用res.data对象,必须使用stringfy重新转换1次,否则会出现精度丢失的情况
+        //_text = KUtils.json5stringify(res.data);
+        var responseSize = resp.responseText.gblen();
+        var mbSize = (responseSize / 1024).toFixed(1);
+        var maxSize = 500;
+        if (mbSize > maxSize) {
+          //_text = resp.responseText;
+          this.$message.info(
+            "接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看"
+          );
+          mode = "text";
+        } else {
+          _text = KUtils.json5stringify(
+            KUtils.json5parse(resp.responseText)
+          );
+        }
+      } else {
+        _text = resp.responseText;
+      }
+      this.responseContent = {
+        text: _text,
+        mode: mode,
+        blobFlag: false,
+        imageFlag:false,
+        blobFileName: "",
+        blobUrl: ""
+      };
     },
     debugEditorChange(value) {
       //针对Debug调试框inputchange事件做的处理

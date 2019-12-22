@@ -132,6 +132,8 @@ const langOptions = {
     note: 'Description',
     copy: 'Copy',
     copyHash: 'Copy Url',
+    produces: 'produces',
+    consumes: 'consumes',
     author: 'Developer',
     url: 'url',
     method: 'method',

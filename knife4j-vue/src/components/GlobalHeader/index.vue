@@ -7,7 +7,6 @@
     />
     <span class="knife4j-header-title">{{ documentTitle }}</span>
 
-    <span class="knife4j-header-title" v-html="$t('title')"></span>
     <div class="right">
       <HeaderSearch
         class="action search"
