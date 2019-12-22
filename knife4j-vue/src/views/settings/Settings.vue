@@ -3,20 +3,36 @@
     <a-row class="settingConfig">
       <a-row class="content-line">
         <a-col :span="24">
-          <a-checkbox @change="checkboxChange('enableRequestCache')" :checked="settings.enableRequestCache">开启请求参数缓存</a-checkbox>
+          <a-checkbox
+            @change="checkboxChange('enableRequestCache')"
+            :checked="settings.enableRequestCache"
+            ><span v-html="$t('settings.openCache')"></span
+          ></a-checkbox>
         </a-col>
       </a-row>
       <a-divider class="divider" />
       <a-row class="content-line">
         <a-col :span="24">
-          <a-checkbox @change="checkboxChange('enableDynamicParameter')" :checked="settings.enableDynamicParameter">开启动态请求参数</a-checkbox>
+          <a-checkbox
+            @change="checkboxChange('enableDynamicParameter')"
+            :checked="settings.enableDynamicParameter"
+            ><span v-html="$t('settings.dynamicParameter')"></span
+          ></a-checkbox>
         </a-col>
       </a-row>
       <a-divider class="divider" />
       <a-row class="content-line">
         <a-col :span="24">
-          <a-checkbox @change="checkboxChange('enableFilterMultipartApis')" :checked="settings.enableFilterMultipartApis">开启RequestMapping接口过滤,默认只显示</a-checkbox>
-          <a-select style="width:140px;" @change="filterOptionsChange" :value="settings.enableFilterMultipartApiMethodType">
+          <a-checkbox
+            @change="checkboxChange('enableFilterMultipartApis')"
+            :checked="settings.enableFilterMultipartApis"
+            ><span v-html="$t('settings.apiFilter')"></span
+          ></a-checkbox>
+          <a-select
+            style="width:140px;"
+            @change="filterOptionsChange"
+            :value="settings.enableFilterMultipartApiMethodType"
+          >
             <a-select-option value="GET">GET</a-select-option>
             <a-select-option value="POST">POST</a-select-option>
             <a-select-option value="PUT">PUT</a-select-option>
@@ -36,7 +52,11 @@
       <a-divider class="divider" /> -->
       <a-row class="content-line">
         <a-col :span="24">
-          <a-checkbox @change="checkboxChange('enableSwaggerBootstrapUi')" :checked="settings.enableSwaggerBootstrapUi">启用Knife4j提供的增强功能</a-checkbox>
+          <a-checkbox
+            @change="checkboxChange('enableSwaggerBootstrapUi')"
+            :checked="settings.enableSwaggerBootstrapUi"
+            ><span v-html="$t('settings.plus')"></span
+          ></a-checkbox>
         </a-col>
       </a-row>
       <a-divider class="divider" />
