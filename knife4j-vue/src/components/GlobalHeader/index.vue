@@ -35,13 +35,13 @@
           <a-menu-item @click="clearLocalCache">
             <a-icon type="delete" /> <span v-html="$t('cacheText')"></span>
           </a-menu-item>
-          <a-menu-divider />
+          <!--  <a-menu-divider />
           <a-menu-item key="logout" @click="changeZh">
             <a-icon type="environment" /> 简体中文
           </a-menu-item>
           <a-menu-item key="triggerError" @click="changeEn">
             <a-icon type="environment" /> English
-          </a-menu-item>
+          </a-menu-item> -->
         </a-menu>
         <span class="action account">
           <span class="name" v-html="$t('langText')"></span>
