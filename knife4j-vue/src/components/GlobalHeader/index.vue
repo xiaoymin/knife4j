@@ -38,10 +38,10 @@
           </a-menu-item>
           <a-menu-divider />
           <a-menu-item key="logout" @click="changeZh">
-            <a-icon type="logout" />简体中文
+            <a-icon type="environment" /> 简体中文
           </a-menu-item>
           <a-menu-item key="triggerError" @click="changeEn">
-            <a-icon type="close-circle" />English
+            <a-icon type="environment" /> English
           </a-menu-item>
         </a-menu>
         <span class="action account">
@@ -99,10 +99,12 @@ export default {
   methods: {
     changeZh() {
       //中文
+      console.log(this);
       this.$i18n.locale = "zh-CN";
     },
     changeEn() {
       //英文
+      console.log(this);
       this.$i18n.locale = "en-US";
     },
     handleMenuClick() {
