@@ -6,10 +6,15 @@
       @click="toggle"
     />
     <span class="knife4j-header-title">{{ documentTitle }}</span>
+
     <div class="right">
-      <!--搜索功能在2.0暂不提供-->
-      <!-- <HeaderSearch class='action search' placeholder="站内搜索" :dataSource="['搜索提示一', '搜索提示二', '搜索提示三']" :onSearch="(value) => onSearch(value)" :onPressEnter="(value) => onPressEnter(value)" /> -->
-      <a-tooltip title="使用文档">
+      <HeaderSearch
+        class="action search"
+        :placeholder="$t('searchHolderText')"
+        :onSearch="value => onSearch(value)"
+        :onPressEnter="value => onPressEnter(value)"
+      />
+      <a-tooltip :title="$t('docLinkTip')">
         <a
           target="_blank"
           href="https://doc.xiaominfo.com/"
@@ -24,22 +29,22 @@
         <a-menu slot="overlay" class="menu">
           <a-menu-item>
             <router-link to="/documentManager/Settings">
-              <a-icon type="setting" /> 个性化配置</router-link
-            >
+              <a-icon type="setting"/> <span v-html="$t('settingText')"></span
+            ></router-link>
           </a-menu-item>
           <a-menu-item @click="clearLocalCache">
-            <a-icon type="delete" /> 清除缓存
+            <a-icon type="delete" /> <span v-html="$t('cacheText')"></span>
           </a-menu-item>
-          <!-- <a-menu-divider />
-          <a-menu-item key="logout">
-            <a-icon type="logout" />简体中文
+          <!--  <a-menu-divider />
+          <a-menu-item key="logout" @click="changeZh">
+            <a-icon type="environment" /> 简体中文
           </a-menu-item>
-          <a-menu-item key="triggerError">
-            <a-icon type="close-circle" />English
+          <a-menu-item key="triggerError" @click="changeEn">
+            <a-icon type="environment" /> English
           </a-menu-item> -->
         </a-menu>
         <span class="action account">
-          <span class="name">中</span>
+          <span class="name" v-html="$t('langText')"></span>
         </span>
       </a-dropdown>
       <a-spin v-else size="small" style="margin-left: 8px" />
@@ -91,6 +96,16 @@ export default {
     return {};
   },
   methods: {
+    changeZh() {
+      //中文
+      console.log(this);
+      this.$i18n.locale = "zh-CN";
+    },
+    changeEn() {
+      //英文
+      console.log(this);
+      this.$i18n.locale = "en-US";
+    },
     handleMenuClick() {
       //console("handleMenuClick");
     },
@@ -101,10 +116,12 @@ export default {
       this.onCollapse(!this.collapsed);
     },
     onSearch(value) {
-      //console("input", value);
+      if (value == undefined || value == null || value == "") {
+        this.$emit("searchClear");
+      }
     },
     onPressEnter(value) {
-      //console("enter", value);
+      this.$emit("searchKey", value);
     },
     onItemClick(item, tabProps) {
       //console(item, tabProps);

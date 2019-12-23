@@ -12,7 +12,9 @@ import {
 } from 'ant-design-vue'
 
 import kloading from '@/components/loading'
+import VueI18n from 'vue-i18n'
 
+Vue.use(VueI18n)
 Vue.use(kloading)
 
 /***
@@ -94,10 +96,24 @@ String.prototype.startWith = function (str) {
   var reg = new RegExp("^" + str);
   return reg.test(this);
 }
+
+import i18nZH from '@/assets/common/lang/zh'
+import i18nEN from '@/assets/common/lang/en'
+
+//i18n
+const i18n = new VueI18n({
+  locale: 'zh-CN',
+  messages: {
+    'zh-CN': i18nZH,
+    'en-US': i18nEN
+  }
+})
+
 //Vue.use(localStore)
 Vue.use(Antd)
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app')

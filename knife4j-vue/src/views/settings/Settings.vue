@@ -6,8 +6,18 @@
           <a-checkbox
             @change="checkboxChange('enableRequestCache')"
             :checked="settings.enableRequestCache"
-            >开启请求参数缓存</a-checkbox
-          >
+            ><span v-html="$t('settings.openCache')"></span
+          ></a-checkbox>
+        </a-col>
+      </a-row>
+      <a-divider class="divider" />
+      <a-row class="content-line">
+        <a-col :span="24">
+          <a-checkbox
+            @change="checkboxChange('enableDynamicParameter')"
+            :checked="settings.enableDynamicParameter"
+            ><span v-html="$t('settings.dynamicParameter')"></span
+          ></a-checkbox>
         </a-col>
       </a-row>
       <a-divider class="divider" />
@@ -16,8 +26,8 @@
           <a-checkbox
             @change="checkboxChange('enableFilterMultipartApis')"
             :checked="settings.enableFilterMultipartApis"
-            >开启RequestMapping接口过滤,默认只显示</a-checkbox
-          >
+            ><span v-html="$t('settings.apiFilter')"></span
+          ></a-checkbox>
           <a-select
             style="width:140px;"
             @change="filterOptionsChange"
@@ -45,8 +55,8 @@
           <a-checkbox
             @change="checkboxChange('enableSwaggerBootstrapUi')"
             :checked="settings.enableSwaggerBootstrapUi"
-            >启用Knife4j提供的增强功能</a-checkbox
-          >
+            ><span v-html="$t('settings.plus')"></span
+          ></a-checkbox>
         </a-col>
       </a-row>
       <a-divider class="divider" />
@@ -94,6 +104,13 @@ export default {
     //读取本地缓存信息,判断是否存在,如果存在即初始化赋值
     localStore.getItem(Constants.globalSettingsKey).then(function(val) {
       if (val != null) {
+        //向下兼容,判断是否包含动态参数的配置
+        if (
+          val["enableDynamicParameter"] == undefined ||
+          val["enableDynamicParameter"] == null
+        ) {
+          val["enableDynamicParameter"] = false;
+        }
         instance.settings = val;
       } else {
         localStore.setItem(Constants.globalSettingsKey, instance.settings);
@@ -103,7 +120,12 @@ export default {
   methods: {
     checkboxChange(field) {
       const ckStatus = this.settings[field];
-      this.settings[field] = !ckStatus;
+      //需要判断是否存在,向下兼容
+      if (ckStatus != undefined && ckStatus != null) {
+        this.settings[field] = !ckStatus;
+      } else {
+        this.settings[field] = true;
+      }
       //判断是否开启增强
       if (field == "enableSwaggerBootstrapUi") {
         if (this.settings.enableSwaggerBootstrapUi) {

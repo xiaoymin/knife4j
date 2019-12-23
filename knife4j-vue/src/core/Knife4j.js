@@ -349,7 +349,8 @@ SwaggerBootstrapUi.prototype.configInit = function () {
         }
       }
     }).catch(function (err) {
-      message.error('Knife4j文档请求异常')
+      //message.error('Knife4j文档请求异常')
+      //隐藏config的请求接口错误显示
       that.error(err);
     })
 }
@@ -1604,6 +1605,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
           groupId: groupId,
           key: md5(groupName + children.summary + children.operationId),
           name: children.summary,
+          description: children.description,
           path: children.operationId,
           component: 'ApiInfo',
           hasNew: tag.hasNew || tag.hasChanged,
@@ -1626,6 +1628,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   //双向绑定
   that.$Vue.MenuData = mdata;
   that.$Vue.swaggerCurrentInstance = that.currentInstance;
+  that.$Vue.$store.dispatch("globals/setMenuData", mdata);
   //设置菜单选中
   that.selectDefaultMenu(mdata);
   that.log("菜单初始化完成...")

@@ -15,12 +15,21 @@ export default {
     const { menuData } = context.props;
     const vnodes = [];
     const getMenuItemPath = item => {
-      return (
-        <router-link to={item.path}>
-          {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
-          <span>{item.name}</span>
-        </router-link>
-      );
+      if (item.deprecated) {
+        return (
+          <router-link class="knife4j-menu-api-deprecated" to={item.path}>
+            {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+            <span>{item.name}</span>
+          </router-link>
+        );
+      } else {
+        return (
+          <router-link to={item.path}>
+            {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+            <span>{item.name}</span>
+          </router-link>
+        );
+      }
     };
 
     const getSubMenuOrItem = item => {

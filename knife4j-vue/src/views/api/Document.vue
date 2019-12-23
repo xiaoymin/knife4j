@@ -2,17 +2,26 @@
   <div class="document">
     <a-row>
       <a-row class="knife4j-api-title">
-        <a-col :span="20">{{ api.summary }}</a-col>
+        <a-col :span="20">
+          <span v-if="api.deprecated" class="knife4j-menu-api-deprecated">
+            {{ api.summary }}
+          </span>
+          <span v-else>
+            {{ api.summary }}
+          </span>
+        </a-col>
         <a-col
           :span="2"
           :id="'btnCopyMarkdown' + api.id"
           class="knife4j-api-copy-address"
+          v-html="$t('doc.copy')"
           >复制文档</a-col
         >
         <a-col
           :span="2"
           :id="'btnCopyAddress' + api.id"
           class="knife4j-api-copy-address"
+          v-html="$t('doc.copyHash')"
           >复制地址</a-col
         >
       </a-row>
@@ -25,13 +34,17 @@
       <a-row class="knife4j-api-row">
         <a-col :span="12">
           <a-row>
-            <a-col class="api-basic-title" :span="6">请求数据类型</a-col>
+            <a-col class="api-basic-title" :span="6" v-html="$t('doc.produces')"
+              >请求数据类型</a-col
+            >
             {{ api.consumes }}
           </a-row>
         </a-col>
         <a-col :span="12">
           <a-row>
-            <a-col class="api-basic-title" :span="6">响应数据类型</a-col>
+            <a-col class="api-basic-title" :span="6" v-html="$t('doc.consumes')"
+              >响应数据类型</a-col
+            >
             {{ api.produces }}
           </a-row>
         </a-col>
@@ -40,7 +53,7 @@
     <!-- <a-divider class="divider" /> -->
     <!--接口描述-->
     <div v-if="api.description">
-      <div class="api-title">
+      <div class="api-title" v-html="$t('doc.des')">
         接口描述
       </div>
       <div
@@ -51,12 +64,12 @@
     </div>
     <!--请求示例-->
     <div v-if="api.requestValue">
-      <div class="api-title">
+      <div class="api-title" v-html="$t('doc.requestExample')">
         请求示例
       </div>
       <editor-show :value="api.requestValue"></editor-show>
     </div>
-    <div class="api-title">
+    <div class="api-title" v-html="$t('doc.params')">
       请求参数
     </div>
     <a-table
@@ -82,7 +95,7 @@
         <data-type :text="text" :record="record"></data-type>
       </template>
     </a-table>
-    <div class="api-title">
+    <div class="api-title" v-html="$t('doc.response')">
       响应状态
     </div>
     <a-table
@@ -107,7 +120,7 @@
         >
           <!--判断响应头-->
           <div v-if="resp.responseHeaderParameters">
-            <div class="api-title">
+            <div class="api-title" v-html="$t('doc.responseHeaderParams')">
               响应Header
             </div>
             <a-table
@@ -121,7 +134,7 @@
             </a-table>
           </div>
           <!--响应参数-->
-          <div class="api-title">
+          <div class="api-title" v-html="$t('doc.responseParams')">
             响应参数
           </div>
           <a-table
@@ -133,7 +146,7 @@
             :pagination="page"
           >
           </a-table>
-          <div class="api-title">
+          <div class="api-title" v-html="$t('doc.responseExample')">
             响应示例
           </div>
           <a-row :id="'knife4jDocumentShowEditor' + api.id + resp.code">
@@ -151,7 +164,7 @@
     <div v-else>
       <!--判断响应头-->
       <div v-if="api.responseHeaderParameters">
-        <div class="api-title">
+        <div class="api-title" v-html="$t('doc.responseHeaderParams')">
           响应Header
         </div>
         <a-table
@@ -165,7 +178,7 @@
         </a-table>
       </div>
       <!--响应参数-->
-      <div class="api-title">
+      <div class="api-title" v-html="$t('doc.responseParams')">
         响应参数
       </div>
       <a-table
@@ -177,7 +190,7 @@
         :pagination="page"
       >
       </a-table>
-      <div class="api-title">
+      <div class="api-title" v-html="$t('doc.responseExample')">
         响应示例
       </div>
       <a-row :id="'knife4jDocumentShowEditor' + api.id">

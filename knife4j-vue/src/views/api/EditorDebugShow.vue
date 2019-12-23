@@ -35,6 +35,12 @@ export default {
       editor: null,
       editorHeight: 200,
       debugOptions: {
+        readOnly: false,
+        autoScrollEditorIntoView: true,
+        displayIndentGuides: false,
+        fixedWidthGutter: true
+      },
+      commonOptions: {
         readOnly: false
       }
     };
@@ -91,8 +97,15 @@ export default {
       } else if (this.mode == "xml") {
       } else if (this.mode == "javascript") {
       } */
-      this.editor.gotoLine(1);
-      this.editor.setOptions(this.debugOptions);
+      //this.editor.gotoLine(1);
+      if (this.debugResponse) {
+        this.editor.setOptions(this.debugOptions);
+        if (this.mode == "text") {
+          this.editor.getSession().setUseWrapMode(true);
+        }
+      } else {
+        this.editor.setOptions(this.commonOptions);
+      }
       //重设高度
       this.resetEditorHeight();
     }

@@ -197,7 +197,12 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <!--接口基本信息-->
               <a-row>
                 <a-row :id="api.operationId" class="knife4j-api-title">
-                  {{ api.summary }}
+                  <span v-if="api.deprecated" class="knife4j-menu-api-deprecated">
+                    {{ api.summary }}
+                  </span>
+                  <span v-else>
+                    {{ api.summary }}
+                  </span>
                 </a-row>
                 <a-row :class="'knife4j-api-' + api.methodType.toLowerCase()">
                   <div class="knife4j-api-summary">

@@ -7446,6 +7446,10 @@ vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.npm.taobao.org/vue-hot-reload-api/download/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
 
+vue-i18n@^8.15.3:
+  version "8.15.3"
+  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-8.15.3.tgz#9f947802d9b734fcb92e2ce724da654f2f9fc0f4"
+
 vue-loader@^15.7.0:
   version "15.7.2"
   resolved "https://registry.npm.taobao.org/vue-loader/download/vue-loader-15.7.2.tgz?cache=0&sync_timestamp=1572672101730&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-loader%2Fdownload%2Fvue-loader-15.7.2.tgz#cc89e2716df87f70fe656c9da9d7f8bec06c73d6"
