@@ -150,7 +150,7 @@ import EditorDebugShow from "./EditorDebugShow";
 import DebugResponse from "./DebugResponse";
 import DebugAxios from "axios";
 
-var instance;
+
 export default {
   name: "Debug",
   components: { EditorDebugShow, DebugResponse },
@@ -163,9 +163,6 @@ export default {
       type: Object,
       required: true
     }
-  },
-  beforeCreate() {
-    instance = this;
   },
   data() {
     return {
@@ -189,26 +186,26 @@ export default {
       //请求头的选中框
       rowSelection: {
         selectedRowKeys: [],
-        onChange(selectrowkey, selectrows) {
-          instance.rowSelection.selectedRowKeys = selectrowkey;
+        onChange: (selectrowkey, selectrows) => {
+          this.rowSelection.selectedRowKeys = selectrowkey;
         }
       },
       rowFormSelection: {
         selectedRowKeys: [],
-        onChange(selectrowkey, selectrows) {
-          instance.rowFormSelection.selectedRowKeys = selectrowkey;
+        onChange: (selectrowkey, selectrows) => {
+          this.rowFormSelection.selectedRowKeys = selectrowkey;
         }
       },
       rowRawFormSelection: {
         selectedRowKeys: [],
-        onChange(selectrowkey, selectrows) {
-          instance.rowRawFormSelection.selectedRowKeys = selectrowkey;
+        onChange: (selectrowkey, selectrows) => {
+          this.rowRawFormSelection.selectedRowKeys = selectrowkey;
         }
       },
       rowUrlFormSelection: {
         selectedRowKeys: [],
-        onChange(selectrowkey, selectrows) {
-          instance.rowUrlFormSelection.selectedRowKeys = selectrowkey;
+        onChange: (selectrowkey, selectrows) => {
+          this.rowUrlFormSelection.selectedRowKeys = selectrowkey;
         }
       },
       headerData: [],
@@ -269,7 +266,7 @@ export default {
         var ma = null;
         var mreg = new RegExp("{(.*?)}", "ig");
         while ((ma = mreg.exec(this.debugUrl))) {
-          instance.debugPathParams.push(ma[1]);
+          this.debugPathParams.push(ma[1]);
         }
       }
     },
@@ -278,40 +275,40 @@ export default {
       //读取是否开启请求缓存标志
       this.$localStore
         .getItem(constant.globalSettingsKey)
-        .then(function(settings) {
+        .then( (settings) => {
           if (KUtils.checkUndefined(settings)) {
-            instance.enableRequestCache = settings.enableRequestCache;
+            this.enableRequestCache = settings.enableRequestCache;
             //判断settings是否包含动态参数的配置
             if (KUtils.checkUndefined(settings["enableDynamicParameter"])) {
               //如果存在,赋值
-              instance.enableDynamicParameter = settings.enableDynamicParameter;
+              this.enableDynamicParameter = settings.enableDynamicParameter;
             }
           }
           //初始化读取本地缓存全局参数
-          instance.$localStore
+          this.$localStore
             .getItem(constant.globalParameter)
-            .then(function(val) {
+            .then( (val) => {
               if (val != null) {
                 if (val[key] != undefined && val[key] != null) {
-                  instance.globalParameters = val[key];
+                  this.globalParameters = val[key];
                 }
               }
               //当前接口的id作为缓存key值
-              var cacheApiKey = constant.debugCacheApiId + instance.api.id;
-              instance.$localStore
+              var cacheApiKey = constant.debugCacheApiId + this.api.id;
+              this.$localStore
                 .getItem(cacheApiKey)
-                .then(function(cacheApi) {
+                .then( (cacheApi) => {
                   //开始同步执行其他方法-初始化请求头参数
-                  instance.initHeaderParameter(cacheApi);
+                  this.initHeaderParameter(cacheApi);
                   //请求体参数初始化
-                  instance.initBodyParameter(cacheApi);
+                  this.initBodyParameter(cacheApi);
                 });
             });
         });
     },
     initHeaderParameter(cacheApi) {
       //本都缓存读取到参数，初始化header参数
-      instance.globalParameters.forEach(function(param) {
+      this.globalParameters.forEach( (param) => {
         if (param.in == "header") {
           var newHeader = {
             id: KUtils.randomMd5(),
@@ -320,17 +317,17 @@ export default {
             require: false,
             new: false
           };
-          instance.headerData.push(newHeader);
+          this.headerData.push(newHeader);
         }
       });
       //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
       //读取Author的参数情况
       var key = constant.globalSecurityParamPrefix + this.api.instanceId;
-      this.$localStore.getItem(key).then(function(val) {
+      this.$localStore.getItem(key).then( (val) => {
         //console("读取本都Auth请");
         if (KUtils.arrNotEmpty(val)) {
           //不为空
-          val.forEach(function(security) {
+          val.forEach( (security) => {
             var newHeader = {
               id: KUtils.randomMd5(),
               name: security.name,
@@ -338,15 +335,15 @@ export default {
               require: false,
               new: false
             };
-            instance.headerData.push(newHeader);
+            this.headerData.push(newHeader);
           });
         }
-        instance.updateHeaderFromCacheApi(cacheApi);
+        this.updateHeaderFromCacheApi(cacheApi);
         //判断是否开启了接口请求参数
-        instance.addNewLineHeader();
-        instance.initSelectionHeaders();
+        this.addNewLineHeader();
+        this.initSelectionHeaders();
         //计算heaer数量
-        instance.headerResetCalc();
+        this.headerResetCalc();
       });
     },
     updateHeaderFromCacheApi(cacheApi) {
@@ -355,7 +352,7 @@ export default {
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheHeaderData = cacheApi.headerData;
-          instance.headerData.forEach(function(header) {
+          this.headerData.forEach( (header) => {
             //判断当前header参数在缓存中是否存在，如果当前header存在值,则不更新
             if (!KUtils.strNotBlank(header.content)) {
               var cacheHeaderArr = cacheHeaderData.filter(
@@ -376,7 +373,7 @@ export default {
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheUrlFormData = cacheApi.urlFormData;
-          instance.urlFormData.forEach(function(form) {
+          this.urlFormData.forEach( (form) => {
             if (!KUtils.strNotBlank(form.content)) {
               var cacheUrlFormArr = cacheUrlFormData.filter(
                 f => f.name == form.name
@@ -395,7 +392,7 @@ export default {
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheFormData = cacheApi.rawFormData;
-          instance.rawFormData.forEach(function(form) {
+          this.rawFormData.forEach( (form) => {
             if (!KUtils.strNotBlank(form.content)) {
               //console("缓存-raw:" + form.id);
               //console(cacheFormData);
@@ -407,7 +404,7 @@ export default {
             }
           });
           //更新Txt
-          instance.rawText = cacheApi.rawText;
+          this.rawText = cacheApi.rawText;
         }
       }
     },
@@ -417,7 +414,7 @@ export default {
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheFormData = cacheApi.formData;
-          instance.formData.forEach(function(form) {
+          this.formData.forEach( (form) => {
             if (!KUtils.strNotBlank(form.content)) {
               var cacheFormArr = cacheFormData.filter(f => f.name == form.name);
               if (cacheFormArr.length > 0) {
@@ -432,7 +429,7 @@ export default {
       //this.initBodyType();
       //初始化请求体参数
       //得到body类型的请求参数
-      var bodyParameters = instance.globalParameters.filter(
+      var bodyParameters = this.globalParameters.filter(
         param => param.in != "header"
       );
       var bodyData = [];
@@ -445,10 +442,10 @@ export default {
       //是否存在全局参数
       if (bodyParameters.length > 0) {
         //存在，判断全局参数中和parameter对比，是否存在相同参数，如果存在，判断是否parameters参数有值，如果后端有值,则globalParams中的参数值不显示
-        bodyParameters.forEach(function(global) {
+        bodyParameters.forEach( (global) => {
           if (KUtils.arrNotEmpty(tmpApiParameters)) {
             var show = true;
-            tmpApiParameters.forEach(function(param) {
+            tmpApiParameters.forEach( (param) => {
               if (global.name == param.name && global.in == param.in) {
                 //在全局参数中存在相同的参数
                 //判断txtValue是否有值
@@ -465,10 +462,10 @@ export default {
         });
       }
       if (KUtils.arrNotEmpty(tmpApiParameters)) {
-        tmpApiParameters.forEach(function(param) {
+        tmpApiParameters.forEach( (param) => {
           if (KUtils.arrNotEmpty(bodyParameters)) {
             var show = true;
-            bodyParameters.forEach(function(global) {
+            bodyParameters.forEach( (global) => {
               if (global.name == param.name && global.in == param.in) {
                 if (!KUtils.strNotBlank(param.txtValue)) {
                   show = false;
@@ -502,15 +499,15 @@ export default {
             //存在
             this.rawFormFlag = true;
             //添加参数
-            instance.addGlobalParameterToRawForm(showGlobalParameters);
-            instance.addApiParameterToRawForm(rawQueryParams);
+            this.addGlobalParameterToRawForm(showGlobalParameters);
+            this.addApiParameterToRawForm(rawQueryParams);
           }
           //raw类型
           //raw类型之中可能有表格参数-待写
           this.showTabRaw();
-          instance.addApiParameterToRaw(showApiParameters);
+          this.addApiParameterToRaw(showApiParameters);
           //从缓存更新
-          instance.updateRawFormCacheApi(cacheApi);
+          this.updateRawFormCacheApi(cacheApi);
           if (this.rawFormFlag) {
             //raw-form-data表单
             this.initFirstRawFormValue();
@@ -531,57 +528,57 @@ export default {
           if (fileSize > 0) {
             //form-data
             this.showTabForm();
-            instance.addGlobalParameterToForm(showGlobalParameters);
-            instance.addApiParameterToForm(showApiParameters);
-            instance.updateFormCacheApi(cacheApi);
+            this.addGlobalParameterToForm(showGlobalParameters);
+            this.addApiParameterToForm(showApiParameters);
+            this.updateFormCacheApi(cacheApi);
             //form-data表单
             this.initFirstFormValue();
           } else {
             //url-form
             this.showTabUrlForm();
-            instance.addGlobalParameterToUrlForm(showGlobalParameters);
-            instance.addApiParameterToUrlForm(showApiParameters);
-            instance.updateUrlFormCacheApi(cacheApi);
+            this.addGlobalParameterToUrlForm(showGlobalParameters);
+            this.addApiParameterToUrlForm(showApiParameters);
+            this.updateUrlFormCacheApi(cacheApi);
             //url-form-data表单
-            instance.initUrlFormValue();
+            this.initUrlFormValue();
           }
         }
       } else {
         //url-form类型
         this.showTabUrlForm();
-        instance.addGlobalParameterToUrlForm(showGlobalParameters);
-        instance.addApiParameterToUrlForm(showApiParameters);
-        instance.updateUrlFormCacheApi(cacheApi);
+        this.addGlobalParameterToUrlForm(showGlobalParameters);
+        this.addApiParameterToUrlForm(showApiParameters);
+        this.updateUrlFormCacheApi(cacheApi);
         //url-form-data表单
-        instance.initUrlFormValue();
+        this.initUrlFormValue();
       }
     },
     hideDynamicParameterTable() {
       //如果当前确定未开启动态参数调试,且参数为0的情况下,关闭table 的参数显示
-      if (!instance.enableDynamicParameter) {
+      if (!this.enableDynamicParameter) {
         //关闭header
-        if (instance.headerData.length == 0) {
-          instance.headerTableFlag = false;
+        if (this.headerData.length == 0) {
+          this.headerTableFlag = false;
         } else {
-          instance.headerTableFlag = true;
+          this.headerTableFlag = true;
         }
         //关闭urlform
-        if (instance.urlFormData.length == 0) {
-          instance.urlFormTableFlag = false;
+        if (this.urlFormData.length == 0) {
+          this.urlFormTableFlag = false;
         } else {
-          instance.urlFormTableFlag = true;
+          this.urlFormTableFlag = true;
         }
         //关闭form
-        if (instance.formData.length == 0) {
-          instance.formTableFlag = false;
+        if (this.formData.length == 0) {
+          this.formTableFlag = false;
         } else {
-          instance.formTableFlag = true;
+          this.formTableFlag = true;
         }
         //关闭rawtable
-        if (instance.rawFormData.length == 0) {
-          instance.rawFormTableFlag = false;
+        if (this.rawFormData.length == 0) {
+          this.rawFormTableFlag = false;
         } else {
-          instance.rawFormTableFlag = true;
+          this.rawFormTableFlag = true;
         }
       }
     },
@@ -604,18 +601,18 @@ export default {
       this.initFormSelections();
     },
     initFormSelections() {
-      this.formData.forEach(function(form) {
-        instance.rowFormSelection.selectedRowKeys.push(form.id);
+      this.formData.forEach( (form) => {
+        this.rowFormSelection.selectedRowKeys.push(form.id);
       });
     },
     initRawFormSelections() {
-      this.rawFormData.forEach(function(form) {
-        instance.rowRawFormSelection.selectedRowKeys.push(form.id);
+      this.rawFormData.forEach( (form) => {
+        this.rowRawFormSelection.selectedRowKeys.push(form.id);
       });
     },
     initUrlFormSelections() {
-      this.urlFormData.forEach(function(form) {
-        instance.rowUrlFormSelection.selectedRowKeys.push(form.id);
+      this.urlFormData.forEach( (form) =>{
+        this.rowUrlFormSelection.selectedRowKeys.push(form.id);
       });
     },
     showTabForm() {
@@ -665,7 +662,7 @@ export default {
     addGlobalParameterToRawForm(globalParameters) {
       //raw-form-data类型添加参数
       if (KUtils.arrNotEmpty(globalParameters)) {
-        globalParameters.forEach(function(global) {
+        globalParameters.forEach( (global) => {
           var newFormHeader = {
             id: KUtils.randomMd5(),
             name: global.name,
@@ -677,14 +674,14 @@ export default {
             content: global.value,
             new: false
           };
-          instance.rawFormData.push(newFormHeader);
+          this.rawFormData.push(newFormHeader);
         });
       }
     },
     addGlobalParameterToForm(globalParameters) {
       //form-data类型添加参数
       if (KUtils.arrNotEmpty(globalParameters)) {
-        globalParameters.forEach(function(global) {
+        globalParameters.forEach( (global) => {
           var newFormHeader = {
             id: KUtils.randomMd5(),
             name: global.name,
@@ -696,7 +693,7 @@ export default {
             content: global.value,
             new: false
           };
-          instance.formData.push(newFormHeader);
+          this.formData.push(newFormHeader);
         });
       }
     },
@@ -705,7 +702,7 @@ export default {
       if (KUtils.arrNotEmpty(apiParameters)) {
         var headers = apiParameters.filter(param => param.in == "header");
         if (headers.length > 0) {
-          headers.forEach(function(param) {
+          headers.forEach( (param) => {
             //console(param);
             var newHeader = {
               id: KUtils.randomMd5(),
@@ -714,7 +711,7 @@ export default {
               content: param.txtValue,
               new: false
             };
-            instance.headerData.push(newHeader);
+            this.headerData.push(newHeader);
           });
         }
       }
@@ -722,7 +719,7 @@ export default {
     addApiParameterToForm(apiParameters) {
       //form-data类型
       if (KUtils.arrNotEmpty(apiParameters)) {
-        apiParameters.forEach(function(param) {
+        apiParameters.forEach( (param) => {
           if (param.in == "header") {
             var newHeader = {
               id: KUtils.randomMd5(),
@@ -731,7 +728,7 @@ export default {
               content: param.txtValue,
               new: false
             };
-            instance.headerData.push(newHeader);
+            this.headerData.push(newHeader);
           } else {
             var ptype = "text";
             var multipart = false;
@@ -760,14 +757,14 @@ export default {
               content: param.txtValue,
               new: false
             };
-            instance.formData.push(newFormHeader);
+            this.formData.push(newFormHeader);
           }
         });
       }
     },
     addGlobalParameterToUrlForm(globalParameters) {
       if (KUtils.arrNotEmpty(globalParameters)) {
-        globalParameters.forEach(function(global) {
+        globalParameters.forEach( (global) => {
           var newFormHeader = {
             id: KUtils.randomMd5(),
             name: global.name,
@@ -778,13 +775,13 @@ export default {
             content: global.value,
             new: false
           };
-          instance.urlFormData.push(newFormHeader);
+          this.urlFormData.push(newFormHeader);
         });
       }
     },
     addApiParameterToRawForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
-        apiParameters.forEach(function(param) {
+        apiParameters.forEach( (param) => {
           if (param.in == "header") {
             var newHeader = {
               id: KUtils.randomMd5(),
@@ -793,7 +790,7 @@ export default {
               content: param.txtValue,
               new: false
             };
-            instance.headerData.push(newHeader);
+            this.headerData.push(newHeader);
           } else {
             var newFormHeader = {
               id: KUtils.randomMd5(),
@@ -806,14 +803,14 @@ export default {
               content: param.txtValue,
               new: false
             };
-            instance.rawFormData.push(newFormHeader);
+            this.rawFormData.push(newFormHeader);
           }
         });
       }
     },
     addApiParameterToUrlForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
-        apiParameters.forEach(function(param) {
+        apiParameters.forEach( (param) => {
           if (param.in == "header") {
             var newHeader = {
               id: KUtils.randomMd5(),
@@ -822,7 +819,7 @@ export default {
               content: param.txtValue,
               new: false
             };
-            instance.headerData.push(newHeader);
+            this.headerData.push(newHeader);
           } else {
             var newFormHeader = {
               id: KUtils.randomMd5(),
@@ -835,7 +832,7 @@ export default {
               content: param.txtValue,
               new: false
             };
-            instance.urlFormData.push(newFormHeader);
+            this.urlFormData.push(newFormHeader);
           }
         });
       }
@@ -903,8 +900,8 @@ export default {
       }
     },
     initSelectionHeaders() {
-      this.headerData.forEach(function(header) {
-        instance.rowSelection.selectedRowKeys.push(header.id);
+      this.headerData.forEach( (header) => {
+        this.rowSelection.selectedRowKeys.push(header.id);
       });
     },
     headerContentChnage(e) {
@@ -912,16 +909,16 @@ export default {
       var headerId = e.target.getAttribute("data-key");
       var record = this.headerData.filter(header => header.id == headerId)[0];
       if (record.new) {
-        this.headerData.forEach(function(header) {
+        this.headerData.forEach( (header) => {
           if (header.id == record.id) {
             header.content = headerValue;
             header.new = false;
           }
         });
         //插入一行
-        instance.addNewLineHeader();
+        this.addNewLineHeader();
       } else {
-        this.headerData.forEach(function(header) {
+        this.headerData.forEach( (header) => {
           if (header.id == record.id) {
             header.content = headerValue;
             header.new = false;
@@ -950,18 +947,18 @@ export default {
     headerNameChange(record) {
       //判断是否是new标志位,如果是new标志位,当前标志位置为false，重新生成一个new标志位的行
       if (record.new) {
-        this.headerData.forEach(function(header) {
+        this.headerData.forEach( (header) => {
           if (header.id == record.id) {
-            header.name = instance.headerSelectName;
+            header.name = this.headerSelectName;
             header.new = false;
           }
         });
         //插入一行
-        instance.addNewLineHeader();
+        this.addNewLineHeader();
       } else {
-        this.headerData.forEach(function(header) {
+        this.headerData.forEach( (header) => {
           if (header.id == record.id) {
-            header.name = instance.headerSelectName;
+            header.name = this.headerSelectName;
             header.new = false;
           }
         });
@@ -971,7 +968,7 @@ export default {
     },
     headerDelete(record) {
       var nheader = [];
-      this.headerData.forEach(function(header) {
+      this.headerData.forEach( (header) => {
         if (header.id != record.id) {
           nheader.push(header);
         }
@@ -999,7 +996,7 @@ export default {
     },
     formDelete(record) {
       var nforms = [];
-      this.formData.forEach(function(form) {
+      this.formData.forEach( (form) => {
         if (form.id != record.id) {
           nforms.push(form);
         }
@@ -1015,7 +1012,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.formData.forEach(function(form) {
+        this.formData.forEach( (form) => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1023,7 +1020,7 @@ export default {
         });
         this.addNewLineFormValue();
       } else {
-        this.formData.forEach(function(form) {
+        this.formData.forEach( (form) => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1036,7 +1033,7 @@ export default {
       var arr = value.split("-");
       var formType = arr[0];
       var formId = arr[1];
-      this.formData.forEach(function(form) {
+      this.formData.forEach( (form) => {
         if (form.id == formId) {
           //选择表单类型后,表单值置空
           form.content = "";
@@ -1059,7 +1056,7 @@ export default {
       var formId = target.getAttribute("data-key");
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.formData.forEach(function(form) {
+        this.formData.forEach( (form) => {
           if (form.id == record.id) {
             form.content = fileStrValue;
             form.target = target;
@@ -1069,7 +1066,7 @@ export default {
         //console(this.formData);
         this.addNewLineFormValue();
       } else {
-        this.formData.forEach(function(form) {
+        this.formData.forEach( (form) => {
           if (form.id == record.id) {
             form.content = fileStrValue;
             form.target = target;
@@ -1085,7 +1082,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.formData.forEach(function(form) {
+        this.formData.forEach( (form) => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1093,7 +1090,7 @@ export default {
         });
         this.addNewLineFormValue();
       } else {
-        this.formData.forEach(function(form) {
+        this.formData.forEach( (form) => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1104,7 +1101,7 @@ export default {
     },
     rawFormDelete(record) {
       var nforms = [];
-      this.rawFormData.forEach(function(form) {
+      this.rawFormData.forEach( (form) => {
         if (form.id != record.id) {
           nforms.push(form);
         }
@@ -1113,7 +1110,7 @@ export default {
     },
     urlFormDelete(record) {
       var nforms = [];
-      this.urlFormData.forEach(function(form) {
+      this.urlFormData.forEach( (form) => {
         if (form.id != record.id) {
           nforms.push(form);
         }
@@ -1125,7 +1122,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.rawFormData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.rawFormData.forEach(function(form) {
+        this.rawFormData.forEach( (form) => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1133,7 +1130,7 @@ export default {
         });
         this.addNewLineRawFormValue();
       } else {
-        this.rawFormData.forEach(function(form) {
+        this.rawFormData.forEach( (form) => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1147,7 +1144,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.urlFormData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.urlFormData.forEach(function(form) {
+        this.urlFormData.forEach( (form) => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1155,7 +1152,7 @@ export default {
         });
         this.addNewLineUrlFormValue();
       } else {
-        this.urlFormData.forEach(function(form) {
+        this.urlFormData.forEach( (form) => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1169,7 +1166,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.rawFormData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.rawFormData.forEach(function(form) {
+        this.rawFormData.forEach( (form) => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1177,7 +1174,7 @@ export default {
         });
         this.addNewLineRawFormValue();
       } else {
-        this.rawFormData.forEach(function(form) {
+        this.rawFormData.forEach( (form) => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1191,7 +1188,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.urlFormData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.urlFormData.forEach(function(form) {
+        this.urlFormData.forEach( (form) => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1199,7 +1196,7 @@ export default {
         });
         this.addNewLineUrlFormValue();
       } else {
-        this.urlFormData.forEach(function(form) {
+        this.urlFormData.forEach( (form) => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1232,7 +1229,7 @@ export default {
           this.debugSendUrlFormRequest();
         }
       } else {
-        instance.$message.info(validateHeader.message);
+        this.$message.info(validateHeader.message);
       }
     },
     callChildEditorShow() {
@@ -1252,11 +1249,11 @@ export default {
         var first = apiInfo.produces[0];
         headers["Accept"] = first;
       }
-      this.headerData.forEach(function(header) {
+      this.headerData.forEach( (header) => {
         if (!header.new) {
           //不是新行
           //判断header是否选中
-          var tmphArrs = instance.rowSelection.selectedRowKeys.filter(
+          var tmphArrs = this.rowSelection.selectedRowKeys.filter(
             rs => rs == header.id
           );
           if (tmphArrs.length > 0) {
@@ -1284,7 +1281,7 @@ export default {
           headers["Content-Type"] = "application/x-www-form-urlencoded";
         } else if (this.formFlag) {
           //此处需要验证是否是文件上传的表单类型
-          if (instance.validateFormDataContaintsFile()) {
+          if (this.validateFormDataContaintsFile()) {
             //包含文件
             headers["Content-Type"] = "multipart/form-data";
           } else {
@@ -1297,10 +1294,10 @@ export default {
     debugRawFormParams() {
       //获取url-form类型的参数
       var params = {};
-      this.rawFormData.forEach(function(form) {
+      this.rawFormData.forEach( (form) => {
         if (!form.new) {
           //判断header是否选中
-          var tmphArrs = instance.rowRawFormSelection.selectedRowKeys.filter(
+          var tmphArrs = this.rowRawFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
@@ -1316,10 +1313,10 @@ export default {
     debugUrlFormParams() {
       //获取url-form类型的参数
       var params = {};
-      this.urlFormData.forEach(function(form) {
+      this.urlFormData.forEach( (form) => {
         if (!form.new) {
           //判断header是否选中
-          var tmphArrs = instance.rowUrlFormSelection.selectedRowKeys.filter(
+          var tmphArrs = this.rowUrlFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
@@ -1340,10 +1337,10 @@ export default {
       if (fileFlag) {
         //文件
         var formData = new FormData();
-        this.formData.forEach(function(form) {
+        this.formData.forEach( (form) => {
           if (!form.new) {
             //判断header是否选中
-            var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+            var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
               rs => rs == form.id
             );
             if (tmphArrs.length > 0) {
@@ -1352,8 +1349,8 @@ export default {
                 //判断类型
                 if (form.type == "text") {
                   //判断是否是urlPath参数
-                  if (instance.debugPathFlag) {
-                    if (instance.debugPathParams.indexOf(form.name) == -1) {
+                  if (this.debugPathFlag) {
+                    if (this.debugPathParams.indexOf(form.name) == -1) {
                       formData.append(form.name, form.content);
                     } else {
                       var replaceRege = "{" + form.name + "}";
@@ -1381,18 +1378,18 @@ export default {
         validateForm.params = formData;
       } else {
         var params = {};
-        this.formData.forEach(function(form) {
+        this.formData.forEach( (form) => {
           if (!form.new) {
             //判断header是否选中
-            var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+            var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
               rs => rs == form.id
             );
             if (tmphArrs.length > 0) {
               //必须选中
               if (KUtils.strNotBlank(form.name)) {
                 //判断是否是urlPath参数
-                if (instance.debugPathFlag) {
-                  if (instance.debugPathParams.indexOf(form.name) == -1) {
+                if (this.debugPathFlag) {
+                  if (this.debugPathParams.indexOf(form.name) == -1) {
                     params[form.name] = form.content;
                   } else {
                     var replaceRege = "{" + form.name + "}";
@@ -1433,7 +1430,7 @@ export default {
         var header = this.headerData[i];
         if (!header.new) {
           //判断header是否选中
-          var tmphArrs = instance.rowSelection.selectedRowKeys.filter(
+          var tmphArrs = this.rowSelection.selectedRowKeys.filter(
             rs => rs == header.id
           );
           if (tmphArrs.length > 0) {
@@ -1460,7 +1457,7 @@ export default {
         var form = this.formData[i];
         if (!form.new) {
           //判断header是否选中
-          var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+          var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
@@ -1497,7 +1494,7 @@ export default {
         var form = this.rawFormData[i];
         if (!form.new) {
           //判断header是否选中
-          var tmphArrs = instance.rowRawFormSelection.selectedRowKeys.filter(
+          var tmphArrs = this.rowRawFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
@@ -1524,7 +1521,7 @@ export default {
         var form = this.urlFormData[i];
         if (!form.new) {
           //判断header是否选中
-          var tmphArrs = instance.rowUrlFormSelection.selectedRowKeys.filter(
+          var tmphArrs = this.rowUrlFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
@@ -1546,10 +1543,10 @@ export default {
     validateFormDataContaintsFile() {
       //验证form-data中是否包含file文件
       var flag = false;
-      this.formData.forEach(function(form) {
+      this.formData.forEach( (form) => {
         if (!form.new) {
           //判断header是否选中
-          var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+          var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
@@ -1576,17 +1573,17 @@ export default {
         var methodType = this.api.methodType.toLowerCase();
         var formParams = this.debugUrlFormParams();
         //得到key-value的参数值,对请求类型进行判断，判断是否为path
-        if (instance.debugPathFlag) {
+        if (this.debugPathFlag) {
           const realFormParams = {};
           //是path类型的接口,需要对地址、参数进行replace处理
-          this.debugPathParams.forEach(function(pathKey) {
+          this.debugPathParams.forEach( (pathKey) => {
             var replaceRege = "{" + pathKey + "}";
             var value = formParams[pathKey];
             url = url.replace(replaceRege, value);
           });
           for (var key in formParams) {
             //判断key在debugPath中是否存在
-            if (instance.debugPathParams.indexOf(key) == -1) {
+            if (this.debugPathParams.indexOf(key) == -1) {
               //不存在
               realFormParams[key] = formParams[key];
             }
@@ -1610,22 +1607,22 @@ export default {
         //console(requestConfig);
         DebugAxios.create()
           .request(requestConfig)
-          .then(function(res) {
+          .then((res) => {
             //console("url-form-success");
             //console(res);
-            instance.handleDebugSuccess(startTime, res);
+            this.handleDebugSuccess(startTime, res);
           })
-          .catch(function(err) {
+          .catch((err) => {
             //console("触发url-form-error");
             //console(err);
             if (err.response) {
-              instance.handleDebugError(startTime, err.response);
+              this.handleDebugError(startTime, err.response);
             } else {
               ////console(err.message);
             }
           });
       } else {
-        instance.$message.info(validateForm.message);
+        this.$message.info(validateForm.message);
       }
     },
     debugSendFormRequest() {
@@ -1668,21 +1665,21 @@ export default {
         //console(requestConfig);
         DebugAxios.create()
           .request(requestConfig)
-          .then(function(res) {
+          .then((res) => {
             //console("url-form-success");
             //console(res);
-            instance.handleDebugSuccess(startTime, res);
+            this.handleDebugSuccess(startTime, res);
           })
-          .catch(function(err) {
+          .catch((err) => {
             //console("触发url-form-error");
             if (err.response) {
-              instance.handleDebugError(startTime, err.response);
+              this.handleDebugError(startTime, err.response);
             } else {
               ////console(err.message);
             }
           });
       } else {
-        instance.$message.info(validateForm.message);
+        this.$message.info(validateForm.message);
       }
     },
     debugSendRawRequest() {
@@ -1700,17 +1697,17 @@ export default {
         var data = this.rawText;
         var formParams = this.debugRawFormParams();
         //得到key-value的参数值,对请求类型进行判断，判断是否为path
-        if (instance.debugPathFlag) {
+        if (this.debugPathFlag) {
           const realFormParams = {};
           //是path类型的接口,需要对地址、参数进行replace处理
-          this.debugPathParams.forEach(function(pathKey) {
+          this.debugPathParams.forEach( (pathKey) => {
             var replaceRege = "{" + pathKey + "}";
             var value = formParams[pathKey];
             url = url.replace(replaceRege, value);
           });
           for (var key in formParams) {
             //判断key在debugPath中是否存在
-            if (instance.debugPathParams.indexOf(key) == -1) {
+            if (this.debugPathParams.indexOf(key) == -1) {
               //不存在
               realFormParams[key] = formParams[key];
             }
@@ -1730,41 +1727,41 @@ export default {
             data: data,
             timeout: 0
           })
-          .then(function(res) {
-            instance.handleDebugSuccess(startTime, res);
+          .then((res) => {
+            this.handleDebugSuccess(startTime, res);
           })
-          .catch(function(err) {
+          .catch((err) => {
             if (err.response) {
-              instance.handleDebugError(startTime, err.response);
+              this.handleDebugError(startTime, err.response);
             } else {
             }
           });
       } else {
-        instance.$message.info(validateForm.message);
+        this.$message.info(validateForm.message);
       }
     },
     handleDebugSuccess(startTime, res) {
       //成功的情况
-      instance.setResponseBody(res);
-      instance.setResponseHeaders(res.headers);
-      instance.setResponseRaw(res);
+      this.setResponseBody(res);
+      this.setResponseHeaders(res.headers);
+      this.setResponseRaw(res);
       //console("开始执行status--");
-      instance.setResponseStatus(startTime, res);
-      instance.setResponseCurl(res.request);
-      instance.callChildEditorShow();
-      instance.storeApiParams();
+      this.setResponseStatus(startTime, res);
+      this.setResponseCurl(res.request);
+      this.callChildEditorShow();
+      this.storeApiParams();
     },
     handleDebugError(startTime, resp) {
       //console("失败情况---");
       //console(resp);
       //失败的情况
-      instance.setResponseBody(resp);
-      instance.setResponseHeaders(resp.headers);
-      instance.setResponseRaw(resp);
-      instance.setResponseStatus(startTime, resp);
-      instance.setResponseCurl(resp.request);
-      instance.callChildEditorShow();
-      instance.storeApiParams();
+      this.setResponseBody(resp);
+      this.setResponseHeaders(resp.headers);
+      this.setResponseRaw(resp);
+      this.setResponseStatus(startTime, resp);
+      this.setResponseCurl(resp.request);
+      this.callChildEditorShow();
+      this.storeApiParams();
     },
     storeApiParams() {
       //对于开启请求参数缓存的配置,在接口发送后,缓存配置
@@ -1776,7 +1773,7 @@ export default {
           rawFormData: [],
           rawText: ""
         };
-        var cacheApiKey = constant.debugCacheApiId + instance.api.id;
+        var cacheApiKey = constant.debugCacheApiId + this.api.id;
         //得到headercans
         cacheApi.headerData = this.headerData.filter(
           header => header.new == false
@@ -1794,7 +1791,7 @@ export default {
         cacheApi.rawText = this.rawText;
         //console("缓存请求参数");
         //console(cacheApi);
-        instance.$localStore.setItem(cacheApiKey, cacheApi);
+        this.$localStore.setItem(cacheApiKey, cacheApi);
       }
     },
     setResponseHeaders(respHeaders) {
@@ -1810,7 +1807,7 @@ export default {
           tmpRespHeaderArrs.push(tmpH);
         }
       }
-      instance.responseHeaders = tmpRespHeaderArrs;
+      this.responseHeaders = tmpRespHeaderArrs;
     },
     setResponseRaw(res) {
       if (KUtils.checkUndefined(res)) {
@@ -1983,13 +1980,13 @@ export default {
         //此处需要验证是否是文件上传的表单类型
         var params = this.debugFormCurlParams();
         if (KUtils.checkUndefined(params)) {
-          if (instance.validateFormDataContaintsFile()) {
+          if (this.validateFormDataContaintsFile()) {
             //包含文件
             //headers["Content-Type"] = "multipart/form-data";
-            this.formData.forEach(function(form) {
+            this.formData.forEach( (form) => {
               if (!form.new) {
                 //判断header是否选中
-                var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+                var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
                   rs => rs == form.id
                 );
                 if (tmphArrs.length > 0) {
@@ -2058,10 +2055,10 @@ export default {
     },
     debugFormCurlParams() {
       var params = {};
-      this.formData.forEach(function(form) {
+      this.formData.forEach( (form) => {
         if (!form.new) {
           //判断header是否选中
-          var tmphArrs = instance.rowFormSelection.selectedRowKeys.filter(
+          var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
@@ -2127,11 +2124,11 @@ export default {
               //如果contentType非image,判断文件名称
               //png,jpg,jpeg,gif
               var imageArrs=['bmp','jpg','png','tif','gif','pcx','tga','exif','fpx','svg','psd','cdr','pcd','dxf','ufo','eps','ai','raw','WMF','webp'];
-              imageArrs.forEach(function(fmt){
+              imageArrs.forEach( (fmt) =>{
                 if(fileName.indexOf(fmt)!=-1){
                   imageFlag=true;
                 }
-              })         
+              })
             }
             var downloadurl = window.URL.createObjectURL(res.data);
             this.responseContent = {
@@ -2219,4 +2216,3 @@ export default {
   }
 };
 </script>
- 
