@@ -593,20 +593,52 @@ export default {
       this.addNewLineFormValue();
       this.initFormSelections();
     },
-    initFormSelections() {
-      this.formData.forEach(form => {
-        this.rowFormSelection.selectedRowKeys.push(form.id);
-      });
+    initFormSelections(selectedKey) {
+      //表单
+      if (KUtils.strNotBlank(selectedKey)) {
+        //判断是否添加过
+        var len = this.rowFormSelection.selectedRowKeys.filter(
+          id => id == selectedKey
+        ).length;
+        if (len == 0) {
+          this.rowFormSelection.selectedRowKeys.push(selectedKey);
+        }
+      } else {
+        this.formData.forEach(form => {
+          this.rowFormSelection.selectedRowKeys.push(form.id);
+        });
+      }
     },
-    initRawFormSelections() {
-      this.rawFormData.forEach(form => {
-        this.rowRawFormSelection.selectedRowKeys.push(form.id);
-      });
+    initRawFormSelections(selectedKey) {
+      if (KUtils.strNotBlank(selectedKey)) {
+        //判断是否添加过
+        var len = this.rowRawFormSelection.selectedRowKeys.filter(
+          id => id == selectedKey
+        ).length;
+        if (len == 0) {
+          this.rowRawFormSelection.selectedRowKeys.push(selectedKey);
+        }
+      } else {
+        this.rawFormData.forEach(form => {
+          this.rowRawFormSelection.selectedRowKeys.push(form.id);
+        });
+      }
     },
-    initUrlFormSelections() {
-      this.urlFormData.forEach(form => {
-        this.rowUrlFormSelection.selectedRowKeys.push(form.id);
-      });
+    initUrlFormSelections(selectedKey) {
+      if (KUtils.strNotBlank(selectedKey)) {
+        //判断是否添加过
+        var len = this.rowUrlFormSelection.selectedRowKeys.filter(
+          id => id == selectedKey
+        ).length;
+        if (len == 0) {
+          this.rowUrlFormSelection.selectedRowKeys.push(selectedKey);
+        }
+      } else {
+        //全选
+        this.urlFormData.forEach(form => {
+          this.rowUrlFormSelection.selectedRowKeys.push(form.id);
+        });
+      }
     },
     showTabForm() {
       this.formFlag = true;
@@ -892,10 +924,20 @@ export default {
         this.formFlag = false;
       }
     },
-    initSelectionHeaders() {
-      this.headerData.forEach(header => {
-        this.rowSelection.selectedRowKeys.push(header.id);
-      });
+    initSelectionHeaders(selectedKey) {
+      if (KUtils.strNotBlank(selectedKey)) {
+        //判断是否添加过
+        var len = this.rowSelection.selectedRowKeys.filter(
+          id => id == selectedKey
+        ).length;
+        if (len == 0) {
+          this.rowSelection.selectedRowKeys.push(selectedKey);
+        }
+      } else {
+        this.headerData.forEach(header => {
+          this.rowSelection.selectedRowKeys.push(header.id);
+        });
+      }
     },
     headerContentChnage(e) {
       var headerValue = e.target.value;
@@ -918,7 +960,7 @@ export default {
           }
         });
       }
-      this.initSelectionHeaders();
+      this.initSelectionHeaders(record.id);
       this.headerResetCalc();
     },
     /**
@@ -956,7 +998,7 @@ export default {
           }
         });
       }
-      this.initSelectionHeaders();
+      this.initSelectionHeaders(record.id);
       this.headerResetCalc();
     },
     headerDelete(record) {
@@ -1020,7 +1062,7 @@ export default {
           }
         });
       }
-      this.initFormSelections();
+      this.initFormSelections(record.id);
     },
     formTypeChange(value, option) {
       var arr = value.split("-");
@@ -1067,7 +1109,7 @@ export default {
           }
         });
       }
-      this.initFormSelections();
+      this.initFormSelections(record.id);
     },
     formContentChange(e) {
       var formValue = e.target.value;
@@ -1090,7 +1132,7 @@ export default {
           }
         });
       }
-      this.initFormSelections();
+      this.initFormSelections(record.id);
     },
     rawFormDelete(record) {
       var nforms = [];
@@ -1130,7 +1172,7 @@ export default {
           }
         });
       }
-      this.initRawFormSelections();
+      this.initRawFormSelections(record.id);
     },
     urlFormNameChange(e) {
       var formValue = e.target.value;
@@ -1152,7 +1194,7 @@ export default {
           }
         });
       }
-      this.initUrlFormSelections();
+      this.initUrlFormSelections(record.id);
     },
     rawFormContentChange(e) {
       var formValue = e.target.value;
@@ -1174,7 +1216,7 @@ export default {
           }
         });
       }
-      this.initRawFormSelections();
+      this.initRawFormSelections(record.id);
     },
     urlFormContentChange(e) {
       var formValue = e.target.value;
@@ -1196,7 +1238,7 @@ export default {
           }
         });
       }
-      this.initUrlFormSelections();
+      this.initUrlFormSelections(record.id);
     },
     rawMenuClick({ item, key, keyPath }) {
       this.rawMode = item.$el.getAttribute("data-mode");
@@ -1989,7 +2031,11 @@ export default {
                     //判断类型
                     if (form.type == "text") {
                       curlified.push(
-                        '"' + form.name + "=" + form.content + '"'
+                        '"' +
+                          form.name +
+                          "=" +
+                          KUtils.toString(form.content, "") +
+                          '"'
                       );
                     } else {
                       curlified.push(
