@@ -150,7 +150,6 @@ import EditorDebugShow from "./EditorDebugShow";
 import DebugResponse from "./DebugResponse";
 import DebugAxios from "axios";
 
-
 export default {
   name: "Debug",
   components: { EditorDebugShow, DebugResponse },
@@ -273,42 +272,36 @@ export default {
     initLocalGlobalParameters() {
       const key = this.api.instanceId;
       //读取是否开启请求缓存标志
-      this.$localStore
-        .getItem(constant.globalSettingsKey)
-        .then( (settings) => {
-          if (KUtils.checkUndefined(settings)) {
-            this.enableRequestCache = settings.enableRequestCache;
-            //判断settings是否包含动态参数的配置
-            if (KUtils.checkUndefined(settings["enableDynamicParameter"])) {
-              //如果存在,赋值
-              this.enableDynamicParameter = settings.enableDynamicParameter;
+      this.$localStore.getItem(constant.globalSettingsKey).then(settings => {
+        if (KUtils.checkUndefined(settings)) {
+          this.enableRequestCache = settings.enableRequestCache;
+          //判断settings是否包含动态参数的配置
+          if (KUtils.checkUndefined(settings["enableDynamicParameter"])) {
+            //如果存在,赋值
+            this.enableDynamicParameter = settings.enableDynamicParameter;
+          }
+        }
+        //初始化读取本地缓存全局参数
+        this.$localStore.getItem(constant.globalParameter).then(val => {
+          if (val != null) {
+            if (val[key] != undefined && val[key] != null) {
+              this.globalParameters = val[key];
             }
           }
-          //初始化读取本地缓存全局参数
-          this.$localStore
-            .getItem(constant.globalParameter)
-            .then( (val) => {
-              if (val != null) {
-                if (val[key] != undefined && val[key] != null) {
-                  this.globalParameters = val[key];
-                }
-              }
-              //当前接口的id作为缓存key值
-              var cacheApiKey = constant.debugCacheApiId + this.api.id;
-              this.$localStore
-                .getItem(cacheApiKey)
-                .then( (cacheApi) => {
-                  //开始同步执行其他方法-初始化请求头参数
-                  this.initHeaderParameter(cacheApi);
-                  //请求体参数初始化
-                  this.initBodyParameter(cacheApi);
-                });
-            });
+          //当前接口的id作为缓存key值
+          var cacheApiKey = constant.debugCacheApiId + this.api.id;
+          this.$localStore.getItem(cacheApiKey).then(cacheApi => {
+            //开始同步执行其他方法-初始化请求头参数
+            this.initHeaderParameter(cacheApi);
+            //请求体参数初始化
+            this.initBodyParameter(cacheApi);
+          });
         });
+      });
     },
     initHeaderParameter(cacheApi) {
       //本都缓存读取到参数，初始化header参数
-      this.globalParameters.forEach( (param) => {
+      this.globalParameters.forEach(param => {
         if (param.in == "header") {
           var newHeader = {
             id: KUtils.randomMd5(),
@@ -323,11 +316,11 @@ export default {
       //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
       //读取Author的参数情况
       var key = constant.globalSecurityParamPrefix + this.api.instanceId;
-      this.$localStore.getItem(key).then( (val) => {
+      this.$localStore.getItem(key).then(val => {
         //console("读取本都Auth请");
         if (KUtils.arrNotEmpty(val)) {
           //不为空
-          val.forEach( (security) => {
+          val.forEach(security => {
             var newHeader = {
               id: KUtils.randomMd5(),
               name: security.name,
@@ -352,7 +345,7 @@ export default {
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheHeaderData = cacheApi.headerData;
-          this.headerData.forEach( (header) => {
+          this.headerData.forEach(header => {
             //判断当前header参数在缓存中是否存在，如果当前header存在值,则不更新
             if (!KUtils.strNotBlank(header.content)) {
               var cacheHeaderArr = cacheHeaderData.filter(
@@ -373,7 +366,7 @@ export default {
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheUrlFormData = cacheApi.urlFormData;
-          this.urlFormData.forEach( (form) => {
+          this.urlFormData.forEach(form => {
             if (!KUtils.strNotBlank(form.content)) {
               var cacheUrlFormArr = cacheUrlFormData.filter(
                 f => f.name == form.name
@@ -392,7 +385,7 @@ export default {
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheFormData = cacheApi.rawFormData;
-          this.rawFormData.forEach( (form) => {
+          this.rawFormData.forEach(form => {
             if (!KUtils.strNotBlank(form.content)) {
               //console("缓存-raw:" + form.id);
               //console(cacheFormData);
@@ -414,7 +407,7 @@ export default {
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheFormData = cacheApi.formData;
-          this.formData.forEach( (form) => {
+          this.formData.forEach(form => {
             if (!KUtils.strNotBlank(form.content)) {
               var cacheFormArr = cacheFormData.filter(f => f.name == form.name);
               if (cacheFormArr.length > 0) {
@@ -442,10 +435,10 @@ export default {
       //是否存在全局参数
       if (bodyParameters.length > 0) {
         //存在，判断全局参数中和parameter对比，是否存在相同参数，如果存在，判断是否parameters参数有值，如果后端有值,则globalParams中的参数值不显示
-        bodyParameters.forEach( (global) => {
+        bodyParameters.forEach(global => {
           if (KUtils.arrNotEmpty(tmpApiParameters)) {
             var show = true;
-            tmpApiParameters.forEach( (param) => {
+            tmpApiParameters.forEach(param => {
               if (global.name == param.name && global.in == param.in) {
                 //在全局参数中存在相同的参数
                 //判断txtValue是否有值
@@ -462,10 +455,10 @@ export default {
         });
       }
       if (KUtils.arrNotEmpty(tmpApiParameters)) {
-        tmpApiParameters.forEach( (param) => {
+        tmpApiParameters.forEach(param => {
           if (KUtils.arrNotEmpty(bodyParameters)) {
             var show = true;
-            bodyParameters.forEach( (global) => {
+            bodyParameters.forEach(global => {
               if (global.name == param.name && global.in == param.in) {
                 if (!KUtils.strNotBlank(param.txtValue)) {
                   show = false;
@@ -601,17 +594,17 @@ export default {
       this.initFormSelections();
     },
     initFormSelections() {
-      this.formData.forEach( (form) => {
+      this.formData.forEach(form => {
         this.rowFormSelection.selectedRowKeys.push(form.id);
       });
     },
     initRawFormSelections() {
-      this.rawFormData.forEach( (form) => {
+      this.rawFormData.forEach(form => {
         this.rowRawFormSelection.selectedRowKeys.push(form.id);
       });
     },
     initUrlFormSelections() {
-      this.urlFormData.forEach( (form) =>{
+      this.urlFormData.forEach(form => {
         this.rowUrlFormSelection.selectedRowKeys.push(form.id);
       });
     },
@@ -662,7 +655,7 @@ export default {
     addGlobalParameterToRawForm(globalParameters) {
       //raw-form-data类型添加参数
       if (KUtils.arrNotEmpty(globalParameters)) {
-        globalParameters.forEach( (global) => {
+        globalParameters.forEach(global => {
           var newFormHeader = {
             id: KUtils.randomMd5(),
             name: global.name,
@@ -681,7 +674,7 @@ export default {
     addGlobalParameterToForm(globalParameters) {
       //form-data类型添加参数
       if (KUtils.arrNotEmpty(globalParameters)) {
-        globalParameters.forEach( (global) => {
+        globalParameters.forEach(global => {
           var newFormHeader = {
             id: KUtils.randomMd5(),
             name: global.name,
@@ -702,7 +695,7 @@ export default {
       if (KUtils.arrNotEmpty(apiParameters)) {
         var headers = apiParameters.filter(param => param.in == "header");
         if (headers.length > 0) {
-          headers.forEach( (param) => {
+          headers.forEach(param => {
             //console(param);
             var newHeader = {
               id: KUtils.randomMd5(),
@@ -719,7 +712,7 @@ export default {
     addApiParameterToForm(apiParameters) {
       //form-data类型
       if (KUtils.arrNotEmpty(apiParameters)) {
-        apiParameters.forEach( (param) => {
+        apiParameters.forEach(param => {
           if (param.in == "header") {
             var newHeader = {
               id: KUtils.randomMd5(),
@@ -764,7 +757,7 @@ export default {
     },
     addGlobalParameterToUrlForm(globalParameters) {
       if (KUtils.arrNotEmpty(globalParameters)) {
-        globalParameters.forEach( (global) => {
+        globalParameters.forEach(global => {
           var newFormHeader = {
             id: KUtils.randomMd5(),
             name: global.name,
@@ -781,7 +774,7 @@ export default {
     },
     addApiParameterToRawForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
-        apiParameters.forEach( (param) => {
+        apiParameters.forEach(param => {
           if (param.in == "header") {
             var newHeader = {
               id: KUtils.randomMd5(),
@@ -810,7 +803,7 @@ export default {
     },
     addApiParameterToUrlForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
-        apiParameters.forEach( (param) => {
+        apiParameters.forEach(param => {
           if (param.in == "header") {
             var newHeader = {
               id: KUtils.randomMd5(),
@@ -900,7 +893,7 @@ export default {
       }
     },
     initSelectionHeaders() {
-      this.headerData.forEach( (header) => {
+      this.headerData.forEach(header => {
         this.rowSelection.selectedRowKeys.push(header.id);
       });
     },
@@ -909,7 +902,7 @@ export default {
       var headerId = e.target.getAttribute("data-key");
       var record = this.headerData.filter(header => header.id == headerId)[0];
       if (record.new) {
-        this.headerData.forEach( (header) => {
+        this.headerData.forEach(header => {
           if (header.id == record.id) {
             header.content = headerValue;
             header.new = false;
@@ -918,7 +911,7 @@ export default {
         //插入一行
         this.addNewLineHeader();
       } else {
-        this.headerData.forEach( (header) => {
+        this.headerData.forEach(header => {
           if (header.id == record.id) {
             header.content = headerValue;
             header.new = false;
@@ -947,7 +940,7 @@ export default {
     headerNameChange(record) {
       //判断是否是new标志位,如果是new标志位,当前标志位置为false，重新生成一个new标志位的行
       if (record.new) {
-        this.headerData.forEach( (header) => {
+        this.headerData.forEach(header => {
           if (header.id == record.id) {
             header.name = this.headerSelectName;
             header.new = false;
@@ -956,7 +949,7 @@ export default {
         //插入一行
         this.addNewLineHeader();
       } else {
-        this.headerData.forEach( (header) => {
+        this.headerData.forEach(header => {
           if (header.id == record.id) {
             header.name = this.headerSelectName;
             header.new = false;
@@ -968,7 +961,7 @@ export default {
     },
     headerDelete(record) {
       var nheader = [];
-      this.headerData.forEach( (header) => {
+      this.headerData.forEach(header => {
         if (header.id != record.id) {
           nheader.push(header);
         }
@@ -996,7 +989,7 @@ export default {
     },
     formDelete(record) {
       var nforms = [];
-      this.formData.forEach( (form) => {
+      this.formData.forEach(form => {
         if (form.id != record.id) {
           nforms.push(form);
         }
@@ -1012,7 +1005,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.formData.forEach( (form) => {
+        this.formData.forEach(form => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1020,7 +1013,7 @@ export default {
         });
         this.addNewLineFormValue();
       } else {
-        this.formData.forEach( (form) => {
+        this.formData.forEach(form => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1033,7 +1026,7 @@ export default {
       var arr = value.split("-");
       var formType = arr[0];
       var formId = arr[1];
-      this.formData.forEach( (form) => {
+      this.formData.forEach(form => {
         if (form.id == formId) {
           //选择表单类型后,表单值置空
           form.content = "";
@@ -1056,7 +1049,7 @@ export default {
       var formId = target.getAttribute("data-key");
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.formData.forEach( (form) => {
+        this.formData.forEach(form => {
           if (form.id == record.id) {
             form.content = fileStrValue;
             form.target = target;
@@ -1066,7 +1059,7 @@ export default {
         //console(this.formData);
         this.addNewLineFormValue();
       } else {
-        this.formData.forEach( (form) => {
+        this.formData.forEach(form => {
           if (form.id == record.id) {
             form.content = fileStrValue;
             form.target = target;
@@ -1082,7 +1075,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.formData.forEach( (form) => {
+        this.formData.forEach(form => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1090,7 +1083,7 @@ export default {
         });
         this.addNewLineFormValue();
       } else {
-        this.formData.forEach( (form) => {
+        this.formData.forEach(form => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1101,7 +1094,7 @@ export default {
     },
     rawFormDelete(record) {
       var nforms = [];
-      this.rawFormData.forEach( (form) => {
+      this.rawFormData.forEach(form => {
         if (form.id != record.id) {
           nforms.push(form);
         }
@@ -1110,7 +1103,7 @@ export default {
     },
     urlFormDelete(record) {
       var nforms = [];
-      this.urlFormData.forEach( (form) => {
+      this.urlFormData.forEach(form => {
         if (form.id != record.id) {
           nforms.push(form);
         }
@@ -1122,7 +1115,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.rawFormData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.rawFormData.forEach( (form) => {
+        this.rawFormData.forEach(form => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1130,7 +1123,7 @@ export default {
         });
         this.addNewLineRawFormValue();
       } else {
-        this.rawFormData.forEach( (form) => {
+        this.rawFormData.forEach(form => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1144,7 +1137,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.urlFormData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.urlFormData.forEach( (form) => {
+        this.urlFormData.forEach(form => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1152,7 +1145,7 @@ export default {
         });
         this.addNewLineUrlFormValue();
       } else {
-        this.urlFormData.forEach( (form) => {
+        this.urlFormData.forEach(form => {
           if (form.id == record.id) {
             form.name = formValue;
             form.new = false;
@@ -1166,7 +1159,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.rawFormData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.rawFormData.forEach( (form) => {
+        this.rawFormData.forEach(form => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1174,7 +1167,7 @@ export default {
         });
         this.addNewLineRawFormValue();
       } else {
-        this.rawFormData.forEach( (form) => {
+        this.rawFormData.forEach(form => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1188,7 +1181,7 @@ export default {
       var formId = e.target.getAttribute("data-key");
       var record = this.urlFormData.filter(form => form.id == formId)[0];
       if (record.new) {
-        this.urlFormData.forEach( (form) => {
+        this.urlFormData.forEach(form => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1196,7 +1189,7 @@ export default {
         });
         this.addNewLineUrlFormValue();
       } else {
-        this.urlFormData.forEach( (form) => {
+        this.urlFormData.forEach(form => {
           if (form.id == record.id) {
             form.content = formValue;
             form.new = false;
@@ -1249,7 +1242,7 @@ export default {
         var first = apiInfo.produces[0];
         headers["Accept"] = first;
       }
-      this.headerData.forEach( (header) => {
+      this.headerData.forEach(header => {
         if (!header.new) {
           //不是新行
           //判断header是否选中
@@ -1294,7 +1287,7 @@ export default {
     debugRawFormParams() {
       //获取url-form类型的参数
       var params = {};
-      this.rawFormData.forEach( (form) => {
+      this.rawFormData.forEach(form => {
         if (!form.new) {
           //判断header是否选中
           var tmphArrs = this.rowRawFormSelection.selectedRowKeys.filter(
@@ -1313,7 +1306,7 @@ export default {
     debugUrlFormParams() {
       //获取url-form类型的参数
       var params = {};
-      this.urlFormData.forEach( (form) => {
+      this.urlFormData.forEach(form => {
         if (!form.new) {
           //判断header是否选中
           var tmphArrs = this.rowUrlFormSelection.selectedRowKeys.filter(
@@ -1337,7 +1330,7 @@ export default {
       if (fileFlag) {
         //文件
         var formData = new FormData();
-        this.formData.forEach( (form) => {
+        this.formData.forEach(form => {
           if (!form.new) {
             //判断header是否选中
             var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
@@ -1378,7 +1371,7 @@ export default {
         validateForm.params = formData;
       } else {
         var params = {};
-        this.formData.forEach( (form) => {
+        this.formData.forEach(form => {
           if (!form.new) {
             //判断header是否选中
             var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
@@ -1543,7 +1536,7 @@ export default {
     validateFormDataContaintsFile() {
       //验证form-data中是否包含file文件
       var flag = false;
-      this.formData.forEach( (form) => {
+      this.formData.forEach(form => {
         if (!form.new) {
           //判断header是否选中
           var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
@@ -1576,7 +1569,7 @@ export default {
         if (this.debugPathFlag) {
           const realFormParams = {};
           //是path类型的接口,需要对地址、参数进行replace处理
-          this.debugPathParams.forEach( (pathKey) => {
+          this.debugPathParams.forEach(pathKey => {
             var replaceRege = "{" + pathKey + "}";
             var value = formParams[pathKey];
             url = url.replace(replaceRege, value);
@@ -1607,12 +1600,12 @@ export default {
         //console(requestConfig);
         DebugAxios.create()
           .request(requestConfig)
-          .then((res) => {
+          .then(res => {
             //console("url-form-success");
             //console(res);
             this.handleDebugSuccess(startTime, res);
           })
-          .catch((err) => {
+          .catch(err => {
             //console("触发url-form-error");
             //console(err);
             if (err.response) {
@@ -1665,12 +1658,12 @@ export default {
         //console(requestConfig);
         DebugAxios.create()
           .request(requestConfig)
-          .then((res) => {
+          .then(res => {
             //console("url-form-success");
             //console(res);
             this.handleDebugSuccess(startTime, res);
           })
-          .catch((err) => {
+          .catch(err => {
             //console("触发url-form-error");
             if (err.response) {
               this.handleDebugError(startTime, err.response);
@@ -1700,7 +1693,7 @@ export default {
         if (this.debugPathFlag) {
           const realFormParams = {};
           //是path类型的接口,需要对地址、参数进行replace处理
-          this.debugPathParams.forEach( (pathKey) => {
+          this.debugPathParams.forEach(pathKey => {
             var replaceRege = "{" + pathKey + "}";
             var value = formParams[pathKey];
             url = url.replace(replaceRege, value);
@@ -1727,10 +1720,10 @@ export default {
             data: data,
             timeout: 0
           })
-          .then((res) => {
+          .then(res => {
             this.handleDebugSuccess(startTime, res);
           })
-          .catch((err) => {
+          .catch(err => {
             if (err.response) {
               this.handleDebugError(startTime, err.response);
             } else {
@@ -1983,7 +1976,7 @@ export default {
           if (this.validateFormDataContaintsFile()) {
             //包含文件
             //headers["Content-Type"] = "multipart/form-data";
-            this.formData.forEach( (form) => {
+            this.formData.forEach(form => {
               if (!form.new) {
                 //判断header是否选中
                 var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
@@ -2055,7 +2048,7 @@ export default {
     },
     debugFormCurlParams() {
       var params = {};
-      this.formData.forEach( (form) => {
+      this.formData.forEach(form => {
         if (!form.new) {
           //判断header是否选中
           var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
@@ -2078,7 +2071,7 @@ export default {
         if (KUtils.checkUndefined(resp)) {
           //判断是否是blob类型
           if (resp.responseType == "blob") {
-            var ctype=KUtils.propValue("content-type",headers,"");
+            var ctype = KUtils.propValue("content-type", headers, "");
             //从响应头中得到文件名称
             var fileName = "Knife4j.txt";
             var contentDisposition = KUtils.propValue(
@@ -2117,35 +2110,56 @@ export default {
               }
             }
             //双重验证,判断是否为图片
-            var imageFlag=false;
-            if(ctype.indexOf("image")!=-1){
-              imageFlag=true;
-            }else{
+            var imageFlag = false;
+            if (ctype.indexOf("image") != -1) {
+              imageFlag = true;
+            } else {
               //如果contentType非image,判断文件名称
               //png,jpg,jpeg,gif
-              var imageArrs=['bmp','jpg','png','tif','gif','pcx','tga','exif','fpx','svg','psd','cdr','pcd','dxf','ufo','eps','ai','raw','WMF','webp'];
-              imageArrs.forEach( (fmt) =>{
-                if(fileName.indexOf(fmt)!=-1){
-                  imageFlag=true;
+              var imageArrs = [
+                "bmp",
+                "jpg",
+                "png",
+                "tif",
+                "gif",
+                "pcx",
+                "tga",
+                "exif",
+                "fpx",
+                "svg",
+                "psd",
+                "cdr",
+                "pcd",
+                "dxf",
+                "ufo",
+                "eps",
+                "ai",
+                "raw",
+                "WMF",
+                "webp"
+              ];
+              imageArrs.forEach(fmt => {
+                if (fileName.indexOf(fmt) != -1) {
+                  imageFlag = true;
                 }
-              })
+              });
             }
             var downloadurl = window.URL.createObjectURL(res.data);
             this.responseContent = {
               text: "",
               mode: "blob",
               blobFlag: true,
-              imageFlag:imageFlag,
+              imageFlag: imageFlag,
               blobFileName: fileName,
               blobUrl: downloadurl
             };
           } else {
-            this.setResponseJsonBody(resp,headers);
+            this.setResponseJsonBody(resp, headers);
           }
         }
       }
     },
-    setResponseJsonBody(resp,headers){
+    setResponseJsonBody(resp, headers) {
       //判断响应的类型
       //var _text = resp.responseText;
       var _text = "";
@@ -2166,9 +2180,7 @@ export default {
           );
           mode = "text";
         } else {
-          _text = KUtils.json5stringify(
-            KUtils.json5parse(resp.responseText)
-          );
+          _text = KUtils.json5stringify(KUtils.json5parse(resp.responseText));
         }
       } else {
         _text = resp.responseText;
@@ -2177,7 +2189,7 @@ export default {
         text: _text,
         mode: mode,
         blobFlag: false,
-        imageFlag:false,
+        imageFlag: false,
         blobFileName: "",
         blobUrl: ""
       };

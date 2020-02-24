@@ -1,0 +1,8 @@
+[
+    {
+        "name": "分组接口",
+        "url": "/json/server1.json",
+        "swaggerVersion": "2.0",
+        "location": "/json/server1.json"
+    }
+]
