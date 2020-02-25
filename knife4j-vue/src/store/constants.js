@@ -8,7 +8,7 @@ const constants = {
   globalParameterTableColumns: [{
       title: "参数名称",
       dataIndex: "name",
-      width: "20%",
+      width: "15%",
       scopedSlots: {
         customRender: "name"
       }
@@ -17,12 +17,18 @@ const constants = {
       title: "参数值",
       className: "column-money",
       dataIndex: "value",
-      width: "40%"
+      width: "65%",
+      scopedSlots: {
+        customRender: "paramContentLabel"
+      }
     },
     {
       title: "参数类型",
       dataIndex: "in",
-      width: "20%"
+      width: "10%",
+      scopedSlots: {
+        customRender: "paramTypeLable"
+      }
     },
     {
       title: "操作",
