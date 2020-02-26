@@ -13,8 +13,8 @@
  *
  * Licensed under Apache License 2.0
  * https://github.com/xiaoymin/swagger-bootstrap-ui/blob/master/LICENSE
- * 
- * v1.7.5 
+ *
+ * v1.7.5
  * create by xiaoymin on 2018-7-4 15:32:07
  *
  * 重构swagger-bootstrap-ui组件,为以后动态扩展更高效,扩展接口打下基础
@@ -40,6 +40,10 @@ import {
   findMenuByKey
 } from '@/components/utils/Knife4jUtils'
 import Constants from '@/store/constants'
+import uniqueId from 'lodash/uniqueId'
+import isObject from 'lodash/isObject'
+import has from 'lodash/has'
+import unset from 'lodash/unset'
 
 marked.setOptions({
   gfm: true,
@@ -484,7 +488,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
  */
 SwaggerBootstrapUi.prototype.createGroupElement = function () {
   var that = this;
-  //创建分组flag 
+  //创建分组flag
   that.log("分组-------------------------------")
   //that.log(that.instances)
   that.log(that.$Vue.$route.params)
@@ -1314,10 +1318,10 @@ SwaggerBootstrapUi.prototype.processModels = function () {
 
 /**
  * 递归查找
- * @param {*} model 
- * @param {*} treeTableModel 
- * @param {*} id 
- * @param {*} rootParam 
+ * @param {*} model
+ * @param {*} treeTableModel
+ * @param {*} id
+ * @param {*} rootParam
  */
 function deepTreeTableSchemaModel(model, treeTableModel, param, rootParam) {
   ////console(model.name)
@@ -1848,7 +1852,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
                 minfo.schemaValue = schItem["type"]
                 //此处判断Array的类型,如果
                 if (sty == "string") {
-                  minfo.value = "exmpale Value";
+                  minfo.value = "";
                 }
                 if (sty == "integer") {
                   //判断format
@@ -1956,29 +1960,43 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
               minfo.value = "";
             }
           }
-          if (minfo.in == "body") {
-            //判断属性是否是array
-            if (minfo.type == "array") {
-              var txtArr = new Array();
-              //针对参数过滤
-              var newValue = KUtils.filterJsonObject(minfo.ignoreFilterName, minfo.value, swpinfo.ignoreParameters);
-              //txtArr.push(minfo.value);
-              txtArr.push(newValue);
-              //JSON显示
-              minfo.txtValue = JSON.stringify(txtArr, null, "\t")
-            } else {
-              //引用类型
-              if (!KUtils.checkIsBasicType(minfo.type)) {
-                var newValue = KUtils.filterJsonObject(minfo.ignoreFilterName, minfo.value, swpinfo.ignoreParameters);
-                //minfo.txtValue=JSON.stringify(minfo.value,null,"\t");
-                minfo.txtValue = JSON.stringify(newValue, null, "\t");
-              }
+
+          // ********************************************************************
+          // 改造参数过滤规则，新的规则支持数组嵌套过滤，参考文档：https://www.lodashjs.com/docs/latest#_unsetobject-path
+          // 入参方式   参数类型  忽略规则写法                               参数example                                       过滤后的example
+          // form      object   ignoreParameters={"key"}                 {key:'', value:''}                               {key:'', value:''}
+          // form      object   ignoreParameters={"nodes[0].key"}        {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
+          // form      array    ignoreParameters={"[0].key"}             [{key:'', value:''}]                             [{value:''}]
+          // body      object   ignoreParameters={"item.key"}            {key:'', value:''}                               {key:'', value:''}
+          // body      object   ignoreParameters={"item.nodes[0].key"}   {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
+          // body      array    ignoreParameters={"item.[0].key"}        [{key:'', value:''}]                             [{value:''}]
+          // ********************************************************************
+          const newValue = (() => {
+            if (swpinfo.ignoreParameters && isObject(minfo.value)) {
+              const cloneValue = JSON.parse(JSON.stringify(minfo.value)); // 深拷贝对象或数组
+              Object.keys(swpinfo.ignoreParameters || {}).forEach(key => {
+                const ignorePath = key.startsWith(`${originalName}.`)
+                  ? key.replace(`${originalName}.`, '') // 处理 body 带参，需要加前缀问题
+                  : key;
+                if (has(cloneValue, ignorePath)) {
+                  // 使用 lodash.unset 方法移除 newValue 对象中的属性
+                  unset(cloneValue, ignorePath);
+                }
+              });
+              return cloneValue;
             }
-          }
+            return minfo.value;
+          })();
+          minfo.txtValue = JSON.stringify(minfo.type == "array" ? [newValue] : newValue, null, "\t");
+
           //JSR-303 注解支持.
           that.validateJSR303(minfo, m);
           if (!KUtils.checkParamArrsExists(swpinfo.parameters, minfo)) {
-            swpinfo.parameters.push(minfo);
+            const ignoreParameterKeys= Object.keys(swpinfo.ignoreParameters || {});
+            // 处理请求参数表格依然展示忽略参数
+            if (!ignoreParameterKeys.includes(originalName)) {
+              swpinfo.parameters.push(minfo);
+            }
             //判断当前属性是否是schema
             if (minfo.schema) {
               ////console("存在schema------------开始递归")
@@ -2208,7 +2226,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
               id: md5(_headerN),
               pid: "-1"
             }
-            /* 
+            /*
             var _hv = $.extend({}, _headers[_headerN], {
               name: _headerN,
               id: md5(_headerN),
@@ -3103,7 +3121,7 @@ var getKeyDescriptions = function (target, that, parentTypes) {
   return keyList;
 }
 /**
- * 过滤多余POST功能 
+ * 过滤多余POST功能
  */
 var SwaggerBootstrapUiApiFilter = function () {
   this.api = function (methodType) {
@@ -3394,7 +3412,7 @@ var SwaggerBootstrapUiParameter = function () {
   this.enum = null;
 
   //this.id = "param" + Math.round(Math.random() * 1000000);
-  this.id = "param" + KUtils.randomMd5();
+  this.id = uniqueId('param'); // "param" + KUtils.randomMd5(); 使用 uniqueId 方法替代
   this.pid = "-1";
 
   this.level = 1;
