@@ -233,15 +233,16 @@ const utils = {
 
   },
   checkParamArrsExists: function (arr, param) {
-    var flag = false;
-    if (arr != null && arr.length > 0) {
-      arr.forEach(function (a) {
-        if (a.name == param.name) {
-          flag = true;
-        }
-      })
-    }
-    return flag;
+    return (arr || []).some(row => row.name == param.name)
+    // var flag = false;
+    // if (arr != null && arr.length > 0) {
+    //   arr.forEach(function (a) {
+    //     if (a.name == param.name) {
+    //       flag = true;
+    //     }
+    //   })
+    // }
+    // return flag;
   },
   isChinese: function (keyword) {
     //判断是否包含中文
@@ -271,7 +272,7 @@ const utils = {
   filterJsonObject: function (prefix, originalJson, filterObject) {
     var _tmpValue = null;
     try {
-      _tmpValue = $.filterObject(prefix, originalJson, filterObject);
+      _tmpValue = utils.filterObject(prefix, originalJson, filterObject);
     } catch (err) {
       _tmpValue = originalJson;
     }
@@ -286,13 +287,13 @@ const utils = {
         if (!filterObject.hasOwnProperty(filterName)) {
           newObj[x] = _tmp;
         }
-        var _type = $.genericType(_tmp);
+        var _type = utils.genericType(_tmp);
         if (_type == "object") {
-          newObj[x] = $.filterObject(filterName, _tmp, filterObject);
+          newObj[x] = utils.filterObject(filterName, _tmp, filterObject);
         } else if (_type == "array") {
           var _t1 = _tmp[0];
           var _na = new Array();
-          _na.push($.filterObject(filterName, _t1, filterObject));
+          _na.push(utils.filterObject(filterName, _t1, filterObject));
           newObj[x] = _na;
         }
 
@@ -442,7 +443,7 @@ const utils = {
   },
   jsString: function (s) {
     s = JSON.stringify(s).slice(1, -1);
-    return $.htmlEncode(s);
+    return utils.htmlEncode(s);
   },
   replaceMultipLineStr: function (str) {
     if (str != null && str != undefined && str != "") {
@@ -456,7 +457,7 @@ const utils = {
     return "";
   },
   generUUID: function () {
-    return ($.randomNumber() + $.randomNumber() + "-" + $.randomNumber() + "-" + $.randomNumber() + "-" + $.randomNumber() + "-" + $.randomNumber() + $.randomNumber() + $.randomNumber());
+    return (utils.randomNumber() + utils.randomNumber() + "-" + utils.randomNumber() + "-" + utils.randomNumber() + "-" + utils.randomNumber() + "-" + utils.randomNumber() + utils.randomNumber() + utils.randomNumber());
   },
   base64Encode: function (str) {
     var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";

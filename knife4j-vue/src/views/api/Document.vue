@@ -212,6 +212,7 @@ import DataType from "./DataType";
 import markdownSingleText from "@/components/officeDocument/markdownSingleTransform";
 import EditorShow from "./EditorShow";
 import ClipboardJS from "clipboard";
+import uniqueId from "lodash/uniqueId";
 //请求参数table-header
 const requestcolumns = [
   {
@@ -383,13 +384,35 @@ export default {
         that.$message.info("复制文档失败");
       });
     },
+    /**
+     * 递归剔除请求参数表格忽略字段
+     * @param keys ['a.b.c', 'a']
+     * @param childrens []
+     * @param parent ''
+     */
+    filterChildrens(keys = [], childrens = [], parent) {
+      if (keys.length === 0) return childrens;
+      const that = this;
+      const arrs = parent
+        ? childrens.filter(child => !keys.includes(`${parent}.${child.name}`))
+        : childrens.filter(child => !keys.includes(child.name));
+      return arrs.map(child => {
+        child.id = uniqueId('param') // 这里顺带重置一下 id , 避免与相应参数对象服用时组件 id 相同报错
+        if (child.children) child.children = that.filterChildrens(keys, child.children, child.name);
+        return child;
+      });
+    },
     initRequestParams() {
       var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
       var data = [];
       var that = this;
       var apiInfo = this.api;
+      const ignoreParameterAllKeys = Object.keys(apiInfo.ignoreParameters || {});
       if (apiInfo.parameters != null && apiInfo.parameters.length > 0) {
-        data = data.concat(apiInfo.parameters);
+        data = data.concat(apiInfo.parameters
+          // 过滤掉忽略参数
+          .filter(({name}) => !ignoreParameterAllKeys.includes(name))
+        );
       }
       if (
         apiInfo.refTreetableparameters != null &&
@@ -410,7 +433,7 @@ export default {
         //console(data);
         data.forEach(function(param) {
           if (param.pid == "-1") {
-            param.children = [];
+            param.children = null;
             //判断该参数是否存在schema参数
             if (param.schema) {
               //判断当前缓存是否存在
@@ -424,23 +447,39 @@ export default {
                     key,
                     schemaName
                   );
-                  if (KUtils.checkUndefined(model)) {
-                    var children = model.params;
-                    if (KUtils.arrNotEmpty(children)) {
-                      children.forEach(function(chd) {
-                        var target = that.copyNewParameter(chd);
-                        target.pid = param.id;
-                        param.children.push(target);
-                      });
-                    }
+                  if (model && model.params) {
+                    const childrens = model.params
+                      .filter(({name}) => {
+                        // 过滤第一层忽略的参数
+                        return !(
+                          ignoreParameterAllKeys.includes(name) // 处理 form 表单提交
+                          || ignoreParameterAllKeys.includes(`${param.name}.${name}`) // 处理 json 提交
+                        );
+                      })
+                      .map(swaggerBootstrapUiParameter => {
+                        const newObj = that.copyNewParameter(swaggerBootstrapUiParameter);
+                        newObj.pid = param.id;
+                        if (newObj.children) { // 递归过滤更深层次忽略的属性
+                          const childrens = JSON.parse(JSON.stringify(newObj.children)); // 深拷贝原始集合
+                          const currentIgnores = ignoreParameterAllKeys
+                            .map(key => {
+                              if (key.startsWith(`${param.name}.${newObj.name}.`)) {
+                                return key.replace(`${param.name}.${newObj.name}.`, '')
+                              } else if (key.startsWith(`${newObj.name}.`)) {
+                                return key.replace(`${newObj.name}.`, '')
+                              }
+                              return null;
+                            })
+                            .filter(Boolean);
+                          newObj.children = that.filterChildrens(currentIgnores, childrens);
+                        }
+                        return newObj;
+                      })
+                    ;
+                    param.children = childrens.length > 0 ? childrens : null;
                   }
                 }
               }
-            }
-            //针对非空的参数,设置children属性为空
-            if (!KUtils.arrNotEmpty(param.children)) {
-              param.children = null;
-              //从knife4jModels中查询参数
             }
             reqParameters.push(param);
           }
@@ -450,35 +489,21 @@ export default {
       //console.log(reqParameters);
     },
     copyNewParameter(source) {
-      var tmpc = source.children;
-      if (!KUtils.checkUndefined(tmpc)) {
-        tmpc = null;
-      }
-      var target = {
-        children: tmpc,
-        childrenTypes: source.childrenTypes,
-        def: source.def,
-        description: source.description,
-        enum: source.enum,
-        example: source.example,
-        id: source.id,
-        ignoreFilterName: source.ignoreFilterName,
-        in: source.in,
-        level: source.level,
-        name: source.name,
-        parentTypes: source.parentTypes,
-        pid: source.pid,
-        readOnly: source.readOnly,
-        require: source.require,
-        schema: source.schema,
-        schemaValue: source.schemaValue,
-        show: source.show,
-        txtValue: source.txtValue,
-        type: source.type,
-        validateInstance: source.validateInstance,
-        validateStatus: source.validateStatus,
-        value: source.value
+      const renewId = arrs => {
+        if (!arrs) {
+          return null;
+        }
+        return arrs.map(row => {
+          row.id = uniqueId('param');
+          renewId(row.children);
+        });
       };
+      // 拷贝原始对象
+      const target = Object.assign({}, source);
+      // 这里需要重新生成新的 id, 否则对象被重复引用时参数 id 是相同的,造成组件出现重复 key 引起页面报错
+      target.id = uniqueId('param');
+      renewId(target.children);
+
       return target;
     },
     deepTreeTableSchemaModel(param, treeTableModel, rootParam) {
@@ -602,15 +627,12 @@ export default {
                           key,
                           schemaName
                         );
-                        if (KUtils.checkUndefined(model)) {
-                          var children = model.params;
-                          if (KUtils.arrNotEmpty(children)) {
-                            children.forEach(function(chd) {
-                              var target = that.copyNewParameter(chd);
-                              target.pid = param.id;
-                              param.children.push(target);
-                            });
-                          }
+                        if (model && model.params) {
+                          param.children = model.params.map(child => {
+                            const newObj = that.copyNewParameter(child);
+                            newObj.pid = param.id;
+                            return newObj;
+                          })
                         }
                       } else {
                         ////console("schemavalue--Not Existis");
