@@ -44,6 +44,8 @@ import uniqueId from 'lodash/uniqueId'
 import isObject from 'lodash/isObject'
 import has from 'lodash/has'
 import unset from 'lodash/unset'
+import isNull from 'lodash/isNull'
+import isUndefined from 'lodash/isUndefined'
 
 marked.setOptions({
   gfm: true,
@@ -1961,34 +1963,42 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
             }
           }
 
-          // ********************************************************************
-          // 改造参数过滤规则，新的规则支持数组嵌套过滤，参考文档：https://www.lodashjs.com/docs/latest#_unsetobject-path
-          // 入参方式   参数类型  忽略规则写法                               参数example                                       过滤后的example
-          // form      object   ignoreParameters={"key"}                 {key:'', value:''}                               {key:'', value:''}
-          // form      object   ignoreParameters={"nodes[0].key"}        {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
-          // form      array    ignoreParameters={"[0].key"}             [{key:'', value:''}]                             [{value:''}]
-          // body      object   ignoreParameters={"item.key"}            {key:'', value:''}                               {key:'', value:''}
-          // body      object   ignoreParameters={"item.nodes[0].key"}   {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
-          // body      array    ignoreParameters={"item.[0].key"}        [{key:'', value:''}]                             [{value:''}]
-          // ********************************************************************
-          const newValue = (() => {
-            if (swpinfo.ignoreParameters && isObject(minfo.value)) {
-              const cloneValue = JSON.parse(JSON.stringify(minfo.value)); // 深拷贝对象或数组
-              Object.keys(swpinfo.ignoreParameters || {}).forEach(key => {
-                const ignorePath = key.startsWith(`${originalName}.`)
-                  ? key.replace(`${originalName}.`, '') // 处理 body 带参，需要加前缀问题
-                  : key;
-                if (has(cloneValue, ignorePath)) {
-                  // 使用 lodash.unset 方法移除 newValue 对象中的属性
-                  unset(cloneValue, ignorePath);
-                }
-              });
-              return cloneValue;
+          // if (minfo.in == 'body') {
+          if (isUndefined(minfo.txtValue) || isNull(minfo.txtValue)) {
+            // ********************************************************************
+            // 改造参数过滤规则，新的规则支持数组嵌套过滤，参考文档：https://www.lodashjs.com/docs/latest#_unsetobject-path
+            // 入参方式   参数类型  忽略规则写法                               参数example                                       过滤后的example
+            // form      object   ignoreParameters={"key"}                 {key:'', value:''}                               {key:'', value:''}
+            // form      object   ignoreParameters={"nodes[0].key"}        {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
+            // form      array    ignoreParameters={"[0].key"}             [{key:'', value:''}]                             [{value:''}]
+            // body      object   ignoreParameters={"item.key"}            {key:'', value:''}                               {key:'', value:''}
+            // body      object   ignoreParameters={"item.nodes[0].key"}   {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
+            // body      array    ignoreParameters={"item.[0].key"}        [{key:'', value:''}]                             [{value:''}]
+            // ********************************************************************
+            const newValue = (() => {
+              if (swpinfo.ignoreParameters && isObject(minfo.value)) {
+                const cloneValue = JSON.parse(JSON.stringify(minfo.value)); // 深拷贝对象或数组
+                Object.keys(swpinfo.ignoreParameters || {}).forEach(key => {
+                  const ignorePath = key.startsWith(`${originalName}.`)
+                    ? key.replace(`${originalName}.`, '') // 处理 body 带参，需要加前缀问题
+                    : key;
+                  if (has(cloneValue, ignorePath)) {
+                    // 使用 lodash.unset 方法移除 newValue 对象中的属性
+                    unset(cloneValue, ignorePath);
+                  }
+                });
+                return cloneValue;
+              }
+              return minfo.value;
+            })();
+            if (isUndefined(newValue) || isNull(newValue)) {
+              if (minfo.type === 'array') {
+                minfo.txtValue = JSON.stringify([]);
+              }
+            } else {
+              minfo.txtValue = JSON.stringify(minfo.type === 'array' ? [newValue] : newValue, null, "\t");
             }
-            return minfo.value;
-          })();
-          minfo.txtValue = JSON.stringify(minfo.type == "array" ? [newValue] : newValue, null, "\t");
-
+          }
           //JSR-303 注解支持.
           that.validateJSR303(minfo, m);
           if (!KUtils.checkParamArrsExists(swpinfo.parameters, minfo)) {
