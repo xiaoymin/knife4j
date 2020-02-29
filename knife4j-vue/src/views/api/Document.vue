@@ -10,20 +10,8 @@
             {{ api.summary }}
           </span>
         </a-col>
-        <a-col
-          :span="2"
-          :id="'btnCopyMarkdown' + api.id"
-          class="knife4j-api-copy-address"
-          v-html="$t('doc.copy')"
-          >复制文档</a-col
-        >
-        <a-col
-          :span="2"
-          :id="'btnCopyAddress' + api.id"
-          class="knife4j-api-copy-address"
-          v-html="$t('doc.copyHash')"
-          >复制地址</a-col
-        >
+        <a-col :span="2" :id="'btnCopyMarkdown' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copy')">复制文档</a-col>
+        <a-col :span="2" :id="'btnCopyAddress' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copyHash')">复制地址</a-col>
       </a-row>
       <a-row :class="'knife4j-api-' + api.methodType.toLowerCase()">
         <div class="knife4j-api-summary">
@@ -34,17 +22,13 @@
       <a-row class="knife4j-api-row">
         <a-col :span="12">
           <a-row>
-            <a-col class="api-basic-title" :span="6" v-html="$t('doc.produces')"
-              >请求数据类型</a-col
-            >
+            <a-col class="api-basic-title" :span="6" v-html="$t('doc.produces')">请求数据类型</a-col>
             {{ api.consumes }}
           </a-row>
         </a-col>
         <a-col :span="12">
           <a-row>
-            <a-col class="api-basic-title" :span="6" v-html="$t('doc.consumes')"
-              >响应数据类型</a-col
-            >
+            <a-col class="api-basic-title" :span="6" v-html="$t('doc.consumes')">响应数据类型</a-col>
             {{ api.produces }}
           </a-row>
         </a-col>
@@ -56,11 +40,7 @@
       <div class="api-title" v-html="$t('doc.des')">
         接口描述
       </div>
-      <div
-        v-if="api.description"
-        v-html="api.description"
-        class="api-body-desc"
-      ></div>
+      <div v-if="api.description" v-html="api.description" class="api-body-desc"></div>
     </div>
     <!--请求示例-->
     <div v-if="api.requestValue">
@@ -72,14 +52,7 @@
     <div class="api-title" v-html="$t('doc.params')">
       请求参数
     </div>
-    <a-table
-      :defaultExpandAllRows="expanRows"
-      :columns="columns"
-      :dataSource="reqParameters"
-      rowKey="id"
-      size="small"
-      :pagination="page"
-    >
+    <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small" :pagination="page">
       <template slot="descriptionValueTemplate" slot-scope="text">
         {{ text }}
       </template>
@@ -98,14 +71,7 @@
     <div class="api-title" v-html="$t('doc.response')">
       响应状态
     </div>
-    <a-table
-      :defaultExpandAllRows="expanRows"
-      :columns="responseStatuscolumns"
-      :dataSource="api.responseCodes"
-      rowKey="code"
-      size="small"
-      :pagination="page"
-    >
+    <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes" rowKey="code" size="small" :pagination="page">
       <template slot="descriptionTemplate" slot-scope="text">
         <div v-html="text"></div>
       </template>
@@ -113,48 +79,28 @@
     <!--响应参数需要判断是否存在多个code-schema的情况-->
     <div v-if="api.multipartResponseSchema">
       <a-tabs @change="multipartTabCodeChanges">
-        <a-tab-pane
-          v-for="resp in multipCodeDatas"
-          :key="resp.code"
-          :tab="resp.code"
-        >
+        <a-tab-pane v-for="resp in multipCodeDatas" :key="resp.code" :tab="resp.code">
           <!--判断响应头-->
           <div v-if="resp.responseHeaderParameters">
             <div class="api-title" v-html="$t('doc.responseHeaderParams')">
               响应Header
             </div>
-            <a-table
-              :defaultExpandAllRows="expanRows"
-              :columns="responseHeaderColumns"
-              :dataSource="resp.responseHeaderParameters"
-              rowKey="id"
-              size="small"
-              :pagination="page"
-            >
+            <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="resp.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
             </a-table>
           </div>
           <!--响应参数-->
           <div class="api-title" v-html="$t('doc.responseParams')">
             响应参数
           </div>
-          <a-table
-            :defaultExpandAllRows="expanRows"
-            :columns="responseParametersColumns"
-            :dataSource="resp.data"
-            rowKey="id"
-            size="small"
-            :pagination="page"
-          >
+          <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data" rowKey="id" size="small" :pagination="page">
           </a-table>
           <div class="api-title" v-html="$t('doc.responseExample')">
             响应示例
           </div>
           <a-row :id="'knife4jDocumentShowEditor' + api.id + resp.code">
-            <editor-show
-              :value="
+            <editor-show :value="
                 resp.responseBasicType ? resp.responseText : resp.responseValue
-              "
-            ></editor-show>
+              "></editor-show>
           </a-row>
 
           <!-- <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor> -->
@@ -167,40 +113,24 @@
         <div class="api-title" v-html="$t('doc.responseHeaderParams')">
           响应Header
         </div>
-        <a-table
-          :defaultExpandAllRows="expanRows"
-          :columns="responseHeaderColumns"
-          :dataSource="api.responseHeaderParameters"
-          rowKey="id"
-          size="small"
-          :pagination="page"
-        >
+        <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="api.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
         </a-table>
       </div>
       <!--响应参数-->
       <div class="api-title" v-html="$t('doc.responseParams')">
         响应参数
       </div>
-      <a-table
-        :defaultExpandAllRows="expanRows"
-        :columns="responseParametersColumns"
-        :dataSource="multipData.data"
-        rowKey="id"
-        size="small"
-        :pagination="page"
-      >
+      <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data" rowKey="id" size="small" :pagination="page">
       </a-table>
       <div class="api-title" v-html="$t('doc.responseExample')">
         响应示例
       </div>
       <a-row :id="'knife4jDocumentShowEditor' + api.id">
-        <editor-show
-          :value="
+        <editor-show :value="
             multipData.responseBasicType
               ? multipData.responseText
               : multipData.responseValue
-          "
-        ></editor-show>
+          "></editor-show>
       </a-row>
     </div>
   </div>
@@ -397,8 +327,13 @@ export default {
         ? childrens.filter(child => !keys.includes(`${parent}.${child.name}`))
         : childrens.filter(child => !keys.includes(child.name));
       return arrs.map(child => {
-        child.id = uniqueId('param') // 这里顺带重置一下 id , 避免与相应参数对象服用时组件 id 相同报错
-        if (child.children) child.children = that.filterChildrens(keys, child.children, child.name);
+        child.id = uniqueId("param"); // 这里顺带重置一下 id , 避免与相应参数对象服用时组件 id 相同报错
+        if (child.children)
+          child.children = that.filterChildrens(
+            keys,
+            child.children,
+            child.name
+          );
         return child;
       });
     },
@@ -407,11 +342,25 @@ export default {
       var data = [];
       var that = this;
       var apiInfo = this.api;
-      const ignoreParameterAllKeys = Object.keys(apiInfo.ignoreParameters || {});
+      //console.log(apiInfo);
+      //针对数组类型的ignore写法,在这里不需要,table树里面是对象点属性
+      var tmpKeys = Object.keys(apiInfo.ignoreParameters || {});
+      var ignoreParameterAllKeys = [];
+      var reg = new RegExp("\\[0\\]", "gm");
+      if (tmpKeys != null && tmpKeys.length > 0) {
+        tmpKeys.forEach(tk => {
+          ignoreParameterAllKeys.push(tk.replace(reg, ""));
+        });
+      }
+      /*  const ignoreParameterAllKeys = Object.keys(
+        apiInfo.ignoreParameters || {}
+      ); */
+      //console.log(ignoreParameterAllKeys);
       if (apiInfo.parameters != null && apiInfo.parameters.length > 0) {
-        data = data.concat(apiInfo.parameters
-          // 过滤掉忽略参数
-          .filter(({name}) => !ignoreParameterAllKeys.includes(name))
+        data = data.concat(
+          apiInfo.parameters
+            // 过滤掉忽略参数
+            .filter(({ name }) => !ignoreParameterAllKeys.includes(name))
         );
       }
       if (
@@ -449,33 +398,49 @@ export default {
                   );
                   if (model && model.params) {
                     const childrens = model.params
-                      .filter(({name}) => {
+                      .filter(({ name }) => {
                         // 过滤第一层忽略的参数
                         return !(
-                          ignoreParameterAllKeys.includes(name) // 处理 form 表单提交
-                          || ignoreParameterAllKeys.includes(`${param.name}.${name}`) // 处理 json 提交
+                          (
+                            ignoreParameterAllKeys.includes(name) || // 处理 form 表单提交
+                            ignoreParameterAllKeys.includes(
+                              `${param.name}.${name}`
+                            )
+                          ) // 处理 json 提交
                         );
                       })
                       .map(swaggerBootstrapUiParameter => {
-                        const newObj = that.copyNewParameter(swaggerBootstrapUiParameter);
+                        const newObj = that.copyNewParameter(
+                          swaggerBootstrapUiParameter
+                        );
                         newObj.pid = param.id;
-                        if (newObj.children) { // 递归过滤更深层次忽略的属性
-                          const childrens = JSON.parse(JSON.stringify(newObj.children)); // 深拷贝原始集合
+                        if (newObj.children) {
+                          // 递归过滤更深层次忽略的属性
+                          const childrens = JSON.parse(
+                            JSON.stringify(newObj.children)
+                          ); // 深拷贝原始集合
                           const currentIgnores = ignoreParameterAllKeys
                             .map(key => {
-                              if (key.startsWith(`${param.name}.${newObj.name}.`)) {
-                                return key.replace(`${param.name}.${newObj.name}.`, '')
+                              if (
+                                key.startsWith(`${param.name}.${newObj.name}.`)
+                              ) {
+                                return key.replace(
+                                  `${param.name}.${newObj.name}.`,
+                                  ""
+                                );
                               } else if (key.startsWith(`${newObj.name}.`)) {
-                                return key.replace(`${newObj.name}.`, '')
+                                return key.replace(`${newObj.name}.`, "");
                               }
                               return null;
                             })
                             .filter(Boolean);
-                          newObj.children = that.filterChildrens(currentIgnores, childrens);
+                          newObj.children = that.filterChildrens(
+                            currentIgnores,
+                            childrens
+                          );
                         }
                         return newObj;
-                      })
-                    ;
+                      });
                     param.children = childrens.length > 0 ? childrens : null;
                   }
                 }
@@ -494,14 +459,14 @@ export default {
           return null;
         }
         return arrs.map(row => {
-          row.id = uniqueId('param');
+          row.id = uniqueId("param");
           renewId(row.children);
         });
       };
       // 拷贝原始对象
       const target = Object.assign({}, source);
       // 这里需要重新生成新的 id, 否则对象被重复引用时参数 id 是相同的,造成组件出现重复 key 引起页面报错
-      target.id = uniqueId('param');
+      target.id = uniqueId("param");
       renewId(target.children);
 
       return target;
@@ -632,7 +597,7 @@ export default {
                             const newObj = that.copyNewParameter(child);
                             newObj.pid = param.id;
                             return newObj;
-                          })
+                          });
                         }
                       } else {
                         ////console("schemavalue--Not Existis");
