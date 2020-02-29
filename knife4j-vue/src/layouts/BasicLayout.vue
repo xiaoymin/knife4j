@@ -157,6 +157,11 @@ export default {
     }
   },
   methods: {
+    mouseMiddleCloseTab(e) {
+      //鼠标中键关闭tab标签
+      console.log("鼠标中键关闭tab标签");
+      console.log(e);
+    },
     searchClear() {
       //搜索输入框清空,菜单还原
       this.MenuData = this.cacheMenuData;
