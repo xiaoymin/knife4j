@@ -75,7 +75,15 @@
               <!--参数名称-->
               <template slot="formValue" slot-scope="text,record">
                 <div v-if="record.type=='text'">
-                  <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="formContentChange" />
+                  <!--判断枚举类型-->
+                  <a-row v-if="record.enums!=null">
+                    <!--不为空-->
+                    <a-select :defaultValue="text" :data-key="record.id" :options="record.enums" style="width: 100%" @change="formContentEnumChange">
+                    </a-select>
+                  </a-row>
+                  <a-row v-else>
+                    <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="formContentChange" />
+                  </a-row>
                 </div>
                 <div v-else>
                   <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
@@ -110,7 +118,7 @@
                 <!--判断枚举类型-->
                 <a-row v-if="record.enums!=null">
                   <!--不为空-->
-                  <a-select :defaultValue="record.enums[0].value" :data-key="record.id" :options="record.enums" style="width: 100%" @change="urlFormContentEnumChange">
+                  <a-select :defaultValue="text" :data-key="record.id" :options="record.enums" style="width: 100%" @change="urlFormContentEnumChange">
                   </a-select>
                 </a-row>
                 <a-row v-else>
@@ -133,7 +141,16 @@
 
                 <!--参数名称-->
                 <template slot="urlFormValue" slot-scope="text,record">
-                  <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="rawFormContentChange" />
+                  <!--判断枚举类型-->
+                  <a-row v-if="record.enums!=null">
+                    <!--不为空-->
+                    <a-select :defaultValue="text" :data-key="record.id" :options="record.enums" style="width: 100%" @change="rawFormContentEnumChange">
+                    </a-select>
+                  </a-row>
+                  <a-row v-else>
+                    <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="rawFormContentChange" />
+                  </a-row>
+
                 </template>
                 <a-row slot="operation" slot-scope="text,record">
                   <a-button type="link" v-if="!record.new" @click="rawFormDelete(record)">删除</a-button>
@@ -1220,10 +1237,7 @@ export default {
       }
       this.initFormSelections(record.id);
     },
-    formContentChange(e) {
-      var formValue = e.target.value;
-      ////console("formcontent-value:" + formValue);
-      var formId = e.target.getAttribute("data-key");
+    formContentUpdate(formValue, formId) {
       var record = this.formData.filter(form => form.id == formId)[0];
       if (record.new) {
         this.formData.forEach(form => {
@@ -1242,6 +1256,18 @@ export default {
         });
       }
       this.initFormSelections(record.id);
+    },
+    formContentEnumChange(formValue, option) {
+      console.log(option);
+      var formId = option.context.$attrs["data-key"];
+      console.log("value:" + formValue + ",formId:" + formId);
+      this.formContentUpdate(formValue, formId);
+    },
+    formContentChange(e) {
+      var formValue = e.target.value;
+      ////console("formcontent-value:" + formValue);
+      var formId = e.target.getAttribute("data-key");
+      this.formContentUpdate(formValue, formId);
     },
     rawFormDelete(record) {
       var nforms = [];
@@ -1305,9 +1331,7 @@ export default {
       }
       this.initUrlFormSelections(record.id);
     },
-    rawFormContentChange(e) {
-      var formValue = e.target.value;
-      var formId = e.target.getAttribute("data-key");
+    rawFormContentUpdate(formValue, formId) {
       var record = this.rawFormData.filter(form => form.id == formId)[0];
       if (record.new) {
         this.rawFormData.forEach(form => {
@@ -1327,7 +1351,16 @@ export default {
       }
       this.initRawFormSelections(record.id);
     },
-    urlFormContentUpdate(formId, formValue) {
+    rawFormContentEnumChange(formValue, option) {
+      var formId = option.context.$attrs["data-key"];
+      this.rawFormContentUpdate(formValue, formId);
+    },
+    rawFormContentChange(e) {
+      var formValue = e.target.value;
+      var formId = e.target.getAttribute("data-key");
+      this.rawFormContentUpdate(formValue, formId);
+    },
+    urlFormContentUpdate(formValue, formId) {
       //更新urlForm的表单内容
       var record = this.urlFormData.filter(form => form.id == formId)[0];
       if (record.new) {
@@ -1350,12 +1383,12 @@ export default {
     },
     urlFormContentEnumChange(formValue, option) {
       var formId = option.context.$attrs["data-key"];
-      this.urlFormContentUpdate(formId, formValue);
+      this.urlFormContentUpdate(formValue, formId);
     },
     urlFormContentChange(e) {
       var formValue = e.target.value;
       var formId = e.target.getAttribute("data-key");
-      this.urlFormContentUpdate(formId, formValue);
+      this.urlFormContentUpdate(formValue, formId);
     },
     rawMenuClick({ item, key, keyPath }) {
       this.rawMode = item.$el.getAttribute("data-mode");
