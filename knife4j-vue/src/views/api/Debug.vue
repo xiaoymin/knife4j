@@ -107,7 +107,15 @@
 
               <!--参数名称-->
               <template slot="urlFormValue" slot-scope="text,record">
-                <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
+                <!--判断枚举类型-->
+                <a-row v-if="record.enums!=null">
+                  <!--不为空-->
+                  <a-select :defaultValue="record.enums[0].value" :data-key="record.id" :options="record.enums" style="width: 100%" @change="urlFormContentEnumChange">
+                  </a-select>
+                </a-row>
+                <a-row v-else>
+                  <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
+                </a-row>
               </template>
               <a-row slot="operation" slot-scope="text,record">
                 <a-button type="link" v-if="!record.new" @click="urlFormDelete(record)">删除</a-button>
@@ -309,6 +317,7 @@ export default {
             content: param.value,
             require: false,
             description: "",
+            enums: null, //枚举下拉框
             new: false
           };
           this.headerData.push(newHeader);
@@ -328,6 +337,7 @@ export default {
               content: security.value,
               require: false,
               description: "",
+              enums: null, //枚举下拉框
               new: false
             };
             this.headerData.push(newHeader);
@@ -547,6 +557,7 @@ export default {
         //url-form-data表单
         this.initUrlFormValue();
       }
+      console.log(this.urlFormData);
     },
     hideDynamicParameterTable() {
       //如果当前确定未开启动态参数调试,且参数为0的情况下,关闭table 的参数显示
@@ -585,6 +596,7 @@ export default {
           content: "",
           require: false,
           description: "",
+          enums: null, //枚举下拉框
           new: true
         };
         this.headerData.push(newHeader);
@@ -668,6 +680,18 @@ export default {
       this.rawText = KUtils.toString(this.api.requestValue, "");
       this.requestContentType = "raw";
     },
+    getEnumOptions(param) {
+      var tmpenum = KUtils.propValue("enum", param, null);
+      var enumValue = null;
+      if (KUtils.checkUndefined(tmpenum)) {
+        var tmArr = [];
+        tmpenum.forEach(em => {
+          tmArr.push({ value: em, label: em });
+        });
+        enumValue = tmArr;
+      }
+      return enumValue;
+    },
     addNewLineFormValue() {
       if (this.enableDynamicParameter) {
         //添加新行form表单值
@@ -681,6 +705,7 @@ export default {
           multipart: false,
           content: "",
           description: "",
+          enums: null, //枚举下拉框
           new: true
         };
         this.formData.push(newFormHeader);
@@ -702,6 +727,7 @@ export default {
             multipart: false,
             content: global.value,
             description: "",
+            enums: null, //枚举下拉框
             new: false
           };
           this.rawFormData.push(newFormHeader);
@@ -722,6 +748,7 @@ export default {
             multipart: false,
             content: global.value,
             description: "",
+            enums: null, //枚举下拉框
             new: false
           };
           this.formData.push(newFormHeader);
@@ -741,8 +768,17 @@ export default {
               require: param.require,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
+              enums: this.getEnumOptions(param), //枚举下拉框
               new: false
             };
+            //判断枚举类型是否为空
+            if (newHeader.enums != null) {
+              //判断content是否为空
+              if (!KUtils.strNotBlank(newHeader.content)) {
+                //默认取第一个枚举值
+                newHeader.content = newHeader.enums[0].value;
+              }
+            }
             this.headerData.push(newHeader);
           });
         }
@@ -759,8 +795,17 @@ export default {
               require: param.require,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
+              enums: this.getEnumOptions(param), //枚举下拉框
               new: false
             };
+            //判断枚举类型是否为空
+            if (newHeader.enums != null) {
+              //判断content是否为空
+              if (!KUtils.strNotBlank(newHeader.content)) {
+                //默认取第一个枚举值
+                newHeader.content = newHeader.enums[0].value;
+              }
+            }
             this.headerData.push(newHeader);
           } else {
             var ptype = "text";
@@ -789,8 +834,17 @@ export default {
               multipart: multipart,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
+              enums: this.getEnumOptions(param), //枚举下拉框
               new: false
             };
+            //判断枚举类型是否为空
+            if (newFormHeader.enums != null) {
+              //判断content是否为空
+              if (!KUtils.strNotBlank(newFormHeader.content)) {
+                //默认取第一个枚举值
+                newFormHeader.content = newFormHeader.enums[0].value;
+              }
+            }
             this.formData.push(newFormHeader);
           }
         });
@@ -808,6 +862,7 @@ export default {
             target: null,
             content: global.value,
             description: "",
+            enums: null, //枚举下拉框
             new: false
           };
           this.urlFormData.push(newFormHeader);
@@ -824,8 +879,17 @@ export default {
               require: param.require,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
+              enums: this.getEnumOptions(param), //枚举下拉框
               new: false
             };
+            //判断枚举类型是否为空
+            if (newHeader.enums != null) {
+              //判断content是否为空
+              if (!KUtils.strNotBlank(newHeader.content)) {
+                //默认取第一个枚举值
+                newHeader.content = newHeader.enums[0].value;
+              }
+            }
             this.headerData.push(newHeader);
           } else {
             var newFormHeader = {
@@ -838,8 +902,17 @@ export default {
               target: null,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
+              enums: this.getEnumOptions(param), //枚举下拉框
               new: false
             };
+            //判断枚举类型是否为空
+            if (newFormHeader.enums != null) {
+              //判断content是否为空
+              if (!KUtils.strNotBlank(newFormHeader.content)) {
+                //默认取第一个枚举值
+                newFormHeader.content = newFormHeader.enums[0].value;
+              }
+            }
             this.rawFormData.push(newFormHeader);
           }
         });
@@ -855,8 +928,17 @@ export default {
               require: param.require,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
+              enums: this.getEnumOptions(param), //枚举下拉框
               new: false
             };
+            //判断枚举类型是否为空
+            if (newHeader.enums != null) {
+              //判断content是否为空
+              if (!KUtils.strNotBlank(newHeader.content)) {
+                //默认取第一个枚举值
+                newHeader.content = newHeader.enums[0].value;
+              }
+            }
             this.headerData.push(newHeader);
           } else {
             var newFormHeader = {
@@ -869,8 +951,17 @@ export default {
               target: null,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
+              enums: this.getEnumOptions(param), //枚举下拉框
               new: false
             };
+            //判断枚举类型是否为空
+            if (newFormHeader.enums != null) {
+              //判断content是否为空
+              if (!KUtils.strNotBlank(newFormHeader.content)) {
+                //默认取第一个枚举值
+                newFormHeader.content = newFormHeader.enums[0].value;
+              }
+            }
             this.urlFormData.push(newFormHeader);
           }
         });
@@ -888,6 +979,7 @@ export default {
           target: null,
           content: "",
           description: "",
+          enums: null, //枚举下拉框
           new: true
         };
         this.urlFormData.push(newFormHeader);
@@ -907,6 +999,7 @@ export default {
           target: null,
           content: "",
           description: "",
+          enums: null, //枚举下拉框
           new: true
         };
         this.rawFormData.push(newFormHeader);
@@ -1234,9 +1327,8 @@ export default {
       }
       this.initRawFormSelections(record.id);
     },
-    urlFormContentChange(e) {
-      var formValue = e.target.value;
-      var formId = e.target.getAttribute("data-key");
+    urlFormContentUpdate(formId, formValue) {
+      //更新urlForm的表单内容
       var record = this.urlFormData.filter(form => form.id == formId)[0];
       if (record.new) {
         this.urlFormData.forEach(form => {
@@ -1255,6 +1347,15 @@ export default {
         });
       }
       this.initUrlFormSelections(record.id);
+    },
+    urlFormContentEnumChange(formValue, option) {
+      var formId = option.context.$attrs["data-key"];
+      this.urlFormContentUpdate(formId, formValue);
+    },
+    urlFormContentChange(e) {
+      var formValue = e.target.value;
+      var formId = e.target.getAttribute("data-key");
+      this.urlFormContentUpdate(formId, formValue);
     },
     rawMenuClick({ item, key, keyPath }) {
       this.rawMode = item.$el.getAttribute("data-mode");
