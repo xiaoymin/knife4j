@@ -63,7 +63,7 @@
             <a-table v-if="formTableFlag" bordered size="small" :rowSelection="rowFormSelection" :columns="formColumn" :pagination="pagination" :dataSource="formData" rowKey="id">
               <!--参数名称-->
               <template slot="formName" slot-scope="text,record">
-                <a-input placeholder="参数名称" :data-key="record.id" :defaultValue="text" @change="formNameChange" />
+                <a-input :placeholder="record.description" :data-key="record.id" :defaultValue="text" @change="formNameChange" />
               </template>
               <!--参数下拉框-->
               <template slot="formType" slot-scope="text,record">
@@ -75,7 +75,7 @@
               <!--参数名称-->
               <template slot="formValue" slot-scope="text,record">
                 <div v-if="record.type=='text'">
-                  <a-input placeholder="参数值" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="formContentChange" />
+                  <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="formContentChange" />
                 </div>
                 <div v-else>
                   <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
@@ -102,12 +102,12 @@
             <a-table v-if="urlFormTableFlag" bordered size="small" :rowSelection="rowUrlFormSelection" :columns="urlFormColumn" :pagination="pagination" :dataSource="urlFormData" rowKey="id">
               <!--参数名称-->
               <template slot="urlFormName" slot-scope="text,record">
-                <a-input placeholder="参数名称" :data-key="record.id" :defaultValue="text" @change="urlFormNameChange" />
+                <a-input :placeholder="record.description" :data-key="record.id" :defaultValue="text" @change="urlFormNameChange" />
               </template>
 
               <!--参数名称-->
               <template slot="urlFormValue" slot-scope="text,record">
-                <a-input placeholder="参数值" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
+                <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
               </template>
               <a-row slot="operation" slot-scope="text,record">
                 <a-button type="link" v-if="!record.new" @click="urlFormDelete(record)">删除</a-button>
@@ -120,12 +120,12 @@
               <a-table v-if="rawFormTableFlag" bordered size="small" :rowSelection="rowRawFormSelection" :columns="urlFormColumn" :pagination="pagination" :dataSource="rawFormData" rowKey="id">
                 <!--参数名称-->
                 <template slot="urlFormName" slot-scope="text,record">
-                  <a-input placeholder="参数名称" :data-key="record.id" :defaultValue="text" @change="rawFormNameChange" />
+                  <a-input :placeholder="record.description" :data-key="record.id" :defaultValue="text" @change="rawFormNameChange" />
                 </template>
 
                 <!--参数名称-->
                 <template slot="urlFormValue" slot-scope="text,record">
-                  <a-input placeholder="参数值" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="rawFormContentChange" />
+                  <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="rawFormContentChange" />
                 </template>
                 <a-row slot="operation" slot-scope="text,record">
                   <a-button type="link" v-if="!record.new" @click="rawFormDelete(record)">删除</a-button>
@@ -308,6 +308,7 @@ export default {
             name: param.name,
             content: param.value,
             require: false,
+            description: "",
             new: false
           };
           this.headerData.push(newHeader);
@@ -326,6 +327,7 @@ export default {
               name: security.name,
               content: security.value,
               require: false,
+              description: "",
               new: false
             };
             this.headerData.push(newHeader);
@@ -582,6 +584,7 @@ export default {
           name: "",
           content: "",
           require: false,
+          description: "",
           new: true
         };
         this.headerData.push(newHeader);
@@ -677,6 +680,7 @@ export default {
           target: null,
           multipart: false,
           content: "",
+          description: "",
           new: true
         };
         this.formData.push(newFormHeader);
@@ -697,6 +701,7 @@ export default {
             target: null,
             multipart: false,
             content: global.value,
+            description: "",
             new: false
           };
           this.rawFormData.push(newFormHeader);
@@ -716,6 +721,7 @@ export default {
             target: null,
             multipart: false,
             content: global.value,
+            description: "",
             new: false
           };
           this.formData.push(newFormHeader);
@@ -734,6 +740,7 @@ export default {
               name: param.name,
               require: param.require,
               content: param.txtValue,
+              description: KUtils.propValue("description", param, ""),
               new: false
             };
             this.headerData.push(newHeader);
@@ -751,6 +758,7 @@ export default {
               name: param.name,
               require: param.require,
               content: param.txtValue,
+              description: KUtils.propValue("description", param, ""),
               new: false
             };
             this.headerData.push(newHeader);
@@ -780,6 +788,7 @@ export default {
               //文件是否允许多个上传
               multipart: multipart,
               content: param.txtValue,
+              description: KUtils.propValue("description", param, ""),
               new: false
             };
             this.formData.push(newFormHeader);
@@ -798,6 +807,7 @@ export default {
             //文件表单域的target
             target: null,
             content: global.value,
+            description: "",
             new: false
           };
           this.urlFormData.push(newFormHeader);
@@ -813,6 +823,7 @@ export default {
               name: param.name,
               require: param.require,
               content: param.txtValue,
+              description: KUtils.propValue("description", param, ""),
               new: false
             };
             this.headerData.push(newHeader);
@@ -826,6 +837,7 @@ export default {
               //文件表单域的target
               target: null,
               content: param.txtValue,
+              description: KUtils.propValue("description", param, ""),
               new: false
             };
             this.rawFormData.push(newFormHeader);
@@ -842,6 +854,7 @@ export default {
               name: param.name,
               require: param.require,
               content: param.txtValue,
+              description: KUtils.propValue("description", param, ""),
               new: false
             };
             this.headerData.push(newHeader);
@@ -855,6 +868,7 @@ export default {
               //文件表单域的target
               target: null,
               content: param.txtValue,
+              description: KUtils.propValue("description", param, ""),
               new: false
             };
             this.urlFormData.push(newFormHeader);
@@ -873,6 +887,7 @@ export default {
           //文件表单域的target
           target: null,
           content: "",
+          description: "",
           new: true
         };
         this.urlFormData.push(newFormHeader);
@@ -891,6 +906,7 @@ export default {
           //文件表单域的target
           target: null,
           content: "",
+          description: "",
           new: true
         };
         this.rawFormData.push(newFormHeader);
