@@ -344,12 +344,16 @@ export default {
       var apiInfo = this.api;
       console.log(apiInfo);
       //针对数组类型的ignore写法,在这里不需要,table树里面是对象点属性
+      //忽略数组的写法 name[0]
       var tmpKeys = Object.keys(apiInfo.ignoreParameters || {});
       var ignoreParameterAllKeys = [];
       var reg = new RegExp("\\[0\\]", "gm");
       if (tmpKeys != null && tmpKeys.length > 0) {
         tmpKeys.forEach(tk => {
-          ignoreParameterAllKeys.push(tk.replace(reg, ""));
+          ignoreParameterAllKeys.push(tk);
+          if (tk.indexOf("[0]") > -1) {
+            ignoreParameterAllKeys.push(tk.replace(reg, ""));
+          }
         });
       }
       /*  const ignoreParameterAllKeys = Object.keys(
@@ -357,11 +361,31 @@ export default {
       ); */
       //console.log(ignoreParameterAllKeys);
       if (apiInfo.parameters != null && apiInfo.parameters.length > 0) {
-        data = data.concat(
+        var dx = apiInfo.parameters.filter(function(pm) {
+          if (pm.name.indexOf("[0]") > -1) {
+            //存在数组的情况
+            if (ignoreParameterAllKeys.length > 0) {
+              return (
+                ignoreParameterAllKeys.filter(name => !pm.name.startsWith(name))
+                  .length > 0
+              );
+            } else {
+              return true;
+            }
+          } else {
+            return !ignoreParameterAllKeys.includes(name);
+          }
+        });
+        data = data.concat(dx);
+        /*  data = data.concat(
           apiInfo.parameters
             // 过滤掉忽略参数
-            .filter(({ name }) => !ignoreParameterAllKeys.includes(name))
-        );
+            .filter(
+              ({ name }) =>
+                !ignoreParameterAllKeys.includes(name) 
+            )
+        ); */
+        //console.log(data);
       }
       if (
         apiInfo.refTreetableparameters != null &&
@@ -403,6 +427,7 @@ export default {
                         return !(
                           (
                             ignoreParameterAllKeys.includes(name) || // 处理 form 表单提交
+                            ignoreParameterAllKeys.includes(name + "[0]") ||
                             ignoreParameterAllKeys.includes(
                               `${param.name}.${name}`
                             )

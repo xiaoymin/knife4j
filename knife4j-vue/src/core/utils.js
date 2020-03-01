@@ -152,6 +152,36 @@ function isUrl(path) {
 }
 
 const utils = {
+  filterIgnoreParameters(name, ignoreParameters) {
+    //是否过滤参数
+    if (ignoreParameters == null) {
+      return true;
+    }
+    var tmpKeys = Object.keys(ignoreParameters || {});
+    var ignoreParameterAllKeys = [];
+    var reg = new RegExp("\\[0\\]", "gm");
+    if (tmpKeys != null && tmpKeys.length > 0) {
+      tmpKeys.forEach(tk => {
+        ignoreParameterAllKeys.push(tk);
+        if (tk.indexOf("[0]") > -1) {
+          ignoreParameterAllKeys.push(tk.replace(reg, ""));
+        }
+      });
+    }
+    if (name.indexOf("[0]") > -1) {
+      //存在数组的情况
+      if (ignoreParameterAllKeys.length > 0) {
+        return (
+          ignoreParameterAllKeys.filter(ignoreName => !name.startsWith(ignoreName))
+          .length > 0
+        );
+      } else {
+        return true;
+      }
+    } else {
+      return !ignoreParameterAllKeys.includes(name);
+    }
+  },
   binaryContentType(produces, contentType) {
     var binary = false;
     var binaryType = "";
