@@ -1498,6 +1498,7 @@ export default {
     debugUrlFormParams() {
       //获取url-form类型的参数
       var params = {};
+      //对于GET 类型请求编码处理
       this.urlFormData.forEach(form => {
         if (!form.new) {
           //判断header是否选中
@@ -1783,14 +1784,35 @@ export default {
           params: formParams,
           timeout: 0
         };
+        //console.log(requestConfig);
         //需要判断是否是下载请求
         if (this.debugStreamFlag()) {
           //流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
+        const debugInstance = DebugAxios.create();
+        //get请求编码问题
+        //https://gitee.com/xiaoym/knife4j/issues/I19C8Y
+        debugInstance.interceptors.request.use(config => {
+          let url = config.url;
+          // get参数编码
+          if (config.method === "get" && config.params) {
+            url += "?";
+            let keys = Object.keys(config.params);
+            for (let key of keys) {
+              url += `${encodeURIComponent(key)}=${encodeURIComponent(
+                config.params[key]
+              )}&`;
+            }
+            url = url.substring(0, url.length - 1);
+            config.params = {};
+          }
+          config.url = url;
+          return config;
+        });
         //console(headers);
         //console(requestConfig);
-        DebugAxios.create()
+        debugInstance
           .request(requestConfig)
           .then(res => {
             //console("url-form-success");

@@ -62,7 +62,6 @@ axios.interceptors.response.use(function (response) {
 }, function (error) {
   return Promise.reject(error)
 })
-
 Vue.prototype.$axios = axios
 /***
  * 本地存储解决方案
