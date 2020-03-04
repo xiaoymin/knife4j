@@ -171,10 +171,12 @@ const utils = {
     if (name.indexOf("[0]") > -1) {
       //存在数组的情况
       if (ignoreParameterAllKeys.length > 0) {
-        return (
-          ignoreParameterAllKeys.filter(ignoreName => !name.startsWith(ignoreName))
-          .length > 0
-        );
+        var containtsKey = ignoreParameterAllKeys.filter(ignoreName => name.startsWith(ignoreName));
+        if (containtsKey.length > 0) {
+          return false;
+        } else {
+          return true;
+        }
       } else {
         return true;
       }
