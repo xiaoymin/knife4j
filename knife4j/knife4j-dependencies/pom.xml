@@ -41,14 +41,7 @@
     </properties>
     <dependencyManagement>
         <dependencies>
-            <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>${javassist.version}</version>
-            </dependency>
 
-            <!-- https://mvnrepository.com/artifact/io.swagger/swagger-models -->
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-models</artifactId>
@@ -101,6 +94,10 @@
                     <exclusion>
                         <groupId>io.swagger</groupId>
                         <artifactId>swagger-models</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-annotations</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
