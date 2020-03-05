@@ -205,9 +205,19 @@ SwaggerBootstrapUi.prototype.initSettings = function () {
     that.log(that.settings)
     //本地缓存
     that.$Vue.$localStore.setItem(Constants.globalSettingsKey, that.settings);
-    that.configInit()
-    //加载分组接口
-    that.analysisGroup()
+    //初始化读取缓存api接口
+    that.$Vue.$localStore.getItem(Constants.globalGitApiVersionCaches).then(gitVal => {
+      if (KUtils.strNotBlank(gitVal)) {
+        //存在值
+        that.cacheApis = gitVal;
+      } else {
+        that.cacheApis = []
+      }
+      that.configInit()
+      //加载分组接口
+      that.analysisGroup()
+    })
+
   });
 
 
@@ -445,11 +455,16 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     //赋值查找缓存的id
     if (that.cacheApis.length > 0) {
       var cainstance = null
-      $.each(that.cacheApis, function (x, ca) {
+      that.cacheApis.forEach(ca => {
         if (ca.id == g.groupId) {
           cainstance = ca
         }
       })
+      /*  $.each(that.cacheApis, function (x, ca) {
+         if (ca.id == g.groupId) {
+           cainstance = ca
+         }
+       }) */
       if (cainstance != null) {
         g.firstLoad = false
         //判断旧版本是否包含updatesApi属性
@@ -1161,7 +1176,8 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       that.clearSecuritys();
     }
   }
-
+  //console.log("分组------------")
+  //console.log(that.currentInstance.cacheInstance)
   //tag分组
   that.currentInstance.tags.forEach(function (tag) {
     //})
@@ -1173,21 +1189,18 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       //是否改变
       var tagChangeApis = false;
       //查找childrens
-      that.currentInstance.paths.forEach(function (methodApi) {
-        //})
-        //$.each(that.currentInstance.paths, function (k, methodApi) {
+      that.currentInstance.paths.forEach(methodApi => {
         //判断tags是否相同
-        methodApi.tags.forEach(function (tagName) {
-          //})
-          //$.each(methodApi.tags, function (x, tagName) {
+        methodApi.tags.forEach(tagName => {
           if (tagName == tag.name) {
             //是否存在
-            if (that.currentInstance.cacheInstance.cacheApis.indexOf(methodApi.id) < 0) {
+            if (!that.currentInstance.cacheInstance.cacheApis.includes(methodApi.id)) {
               //}
               //if ($.inArray(methodApi.id, that.currentInstance.cacheInstance.cacheApis) < 0) {
               tagNewApis = true;
               methodApi.hasNew = true;
             }
+            //console.log(methodApi)
             tag.childrens.push(methodApi);
           }
         })
@@ -1614,7 +1627,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
           description: children.description,
           path: children.operationId,
           component: 'ApiInfo',
-          hasNew: tag.hasNew || tag.hasChanged,
+          hasNew: children.hasNew || children.hasChanged,
           deprecated: children.deprecated
         }
         tagMenu.children.push(tabSubMenu);
@@ -1696,12 +1709,13 @@ SwaggerBootstrapUi.prototype.checkPropertiesExists = function (properties, prop)
 SwaggerBootstrapUi.prototype.storeCacheApis = function () {
   var that = this;
   that.log("缓存对象...storeCacheApis-->")
-  if (window.localStorage) {
+  /* if (window.localStorage) {
     var store = window.localStorage;
     that.log(that.cacheApis);
     var str = JSON.stringify(that.cacheApis);
     store.setItem("SwaggerBootstrapUiCacheApis", str);
-  }
+  } */
+  that.$Vue.$localStore.setItem(Constants.globalGitApiVersionCaches, that.cacheApis);
 }
 /***
  * 创建对象实例,返回SwaggerBootstrapUiApiInfo实例

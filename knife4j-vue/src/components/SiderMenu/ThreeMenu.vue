@@ -15,20 +15,49 @@ export default {
     const { menuData } = context.props;
     const vnodes = [];
     const getMenuItemPath = item => {
+      //console.log(item);
       if (item.deprecated) {
-        return (
-          <router-link class="knife4j-menu-api-deprecated" to={item.path}>
-            {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
-            <span>{item.name}</span>
-          </router-link>
-        );
+        if (item.hasNew) {
+          return (
+            <router-link class="knife4j-menu-api-deprecated" to={item.path}>
+              {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+              <a-badge
+                status="processing"
+                title="新接口"
+                style="margin-bottom:3px;"
+              />
+              <span>{item.name}</span>
+            </router-link>
+          );
+        } else {
+          return (
+            <router-link class="knife4j-menu-api-deprecated" to={item.path}>
+              {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+              <span>{item.name}</span>
+            </router-link>
+          );
+        }
       } else {
-        return (
-          <router-link to={item.path}>
-            {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
-            <span>{item.name}</span>
-          </router-link>
-        );
+        if (item.hasNew) {
+          return (
+            <router-link to={item.path}>
+              {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+              <a-badge
+                status="processing"
+                title="新接口"
+                style="margin-bottom:3px;"
+              />
+              <span>{item.name}</span>
+            </router-link>
+          );
+        } else {
+          return (
+            <router-link to={item.path}>
+              {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+              <span>{item.name}</span>
+            </router-link>
+          );
+        }
       }
     };
 
@@ -37,23 +66,48 @@ export default {
         const childrenItems = getNavMenuItems(item.children); // eslint-disable-line
         // 当无子菜单时就不展示菜单
         if (childrenItems && childrenItems.length > 0) {
-          return (
-            <a-sub-menu
-              key={item.key}
-              title={
-                item.icon ? (
-                  <span>
-                    <my-icon type={item.icon}></my-icon>
+          if (item.hasNew) {
+            return (
+              <a-sub-menu
+                key={item.key}
+                title={
+                  item.icon ? (
+                    <span>
+                      <my-icon type={item.icon}></my-icon>
+                      <a-badge
+                        status="processing"
+                        title="新接口"
+                        style="margin-bottom:3px;"
+                      />
+                      <span>{item.name}</span>
+                    </span>
+                  ) : (
                     <span>{item.name}</span>
-                  </span>
-                ) : (
-                  <span>{item.name}</span>
-                )
-              }
-            >
-              {childrenItems}
-            </a-sub-menu>
-          );
+                  )
+                }
+              >
+                {childrenItems}
+              </a-sub-menu>
+            );
+          } else {
+            return (
+              <a-sub-menu
+                key={item.key}
+                title={
+                  item.icon ? (
+                    <span>
+                      <my-icon type={item.icon}></my-icon>
+                      <span>{item.name}</span>
+                    </span>
+                  ) : (
+                    <span>{item.name}</span>
+                  )
+                }
+              >
+                {childrenItems}
+              </a-sub-menu>
+            );
+          }
         }
         return null;
       } else {
