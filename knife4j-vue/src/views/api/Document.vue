@@ -35,6 +35,12 @@
       </a-row>
     </a-row>
     <!-- <a-divider class="divider" /> -->
+    <div v-if="api.author">
+      <div class="api-title" v-html="$t('doc.author')">
+        开发者
+      </div>
+      <div v-if="api.author" v-html="api.author" class="api-body-desc"></div>
+    </div>
     <!--接口描述-->
     <div v-if="api.description">
       <div class="api-title" v-html="$t('doc.des')">
