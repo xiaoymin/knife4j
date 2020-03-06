@@ -55,6 +55,8 @@ export default {
     return {
       pagination: false,
       columns: columns,
+      //全局的
+      globalSecuritys: [],
       //请求头Authorize参数
       securityArr: []
     };
@@ -65,40 +67,57 @@ export default {
       var that = this;
       var backArr = that.data.instance.securityArrs;
       //前缀+实例id
+      //全局通用
       var key = constant.globalSecurityParamPrefix + this.data.instance.id;
-      this.$localStore.getItem(key).then(function(val) {
+      var tmpGlobalSecuritys = [];
+      //var key = constant.globalSecurityParamPrefix;
+      this.$localStore.getItem(constant.globalSecurityParameters).then(gbp => {
+        //判断当前分组下的security是否为空
         if (KUtils.arrNotEmpty(backArr)) {
-          if (KUtils.checkUndefined(val)) {
-            //存在
-            //需要对比后端最新的参数情况,后端有可能已经删除参数
-            var tmpSecuritys = [];
-            backArr.forEach(function(security) {
-              //判断当前的key在缓存中是否存在
-              var caches = val.filter(se => se.id == security.id);
-              if (caches.length > 0) {
-                //存在
-                if (KUtils.strNotBlank(security.value)) {
-                  tmpSecuritys.push(security);
+          //读取本分组下的security
+          this.$localStore.getItem(key).then(currentSecurity => {
+            if (KUtils.checkUndefined(currentSecurity)) {
+              //当前分组不为空
+              //需要对比后端最新的参数情况,后端有可能已经删除参数
+              var tmpSecuritys = [];
+              backArr.forEach(security => {
+                //判断当前的key在缓存中是否存在
+                var caches = currentSecurity.filter(se => se.id == security.id);
+                if (caches.length > 0) {
+                  //存在
+                  if (KUtils.strNotBlank(security.value)) {
+                    tmpSecuritys.push(security);
+                  } else {
+                    tmpSecuritys.push(caches[0]);
+                  }
                 } else {
-                  tmpSecuritys.push(caches[0]);
+                  tmpSecuritys.push(security);
                 }
-              } else {
-                tmpSecuritys.push(security);
-              }
-            });
-            that.securityArr = tmpSecuritys;
-          } else {
-            //不存在
-            that.securityArr = backArr;
-          }
-          that.storeToLocalIndexDB();
+              });
+              that.securityArr = tmpSecuritys;
+            } else {
+              that.securityArr = backArr;
+            }
+            //当前分组下的security不为空，判断全局分组，兼容升级的情况下,gbp可能会存在为空的情况
+            if (KUtils.arrNotEmpty(gbp)) {
+              tmpGlobalSecuritys = tmpGlobalSecuritys.concat(gbp);
+              //更新全局参数
+            } else {
+              //为空的情况下,则默认直接新增当前分组下的security
+              tmpGlobalSecuritys = tmpGlobalSecuritys.concat(that.securityArr);
+            }
+            this.globalSecuritys = tmpGlobalSecuritys;
+            that.storeToLocalIndexDB();
+          });
         }
       });
     },
     storeToLocalIndexDB() {
       //前缀+实例id
       var key = constant.globalSecurityParamPrefix + this.data.instance.id;
+      //更新当前实例下的securitys
       this.$localStore.setItem(key, this.securityArr);
+      //更新全局的securitys
     },
     resetAuth() {
       const tmpArr = this.securityArr;

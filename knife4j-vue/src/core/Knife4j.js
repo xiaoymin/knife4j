@@ -597,7 +597,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
     } else {
       //that.setInstanceBasicPorperties(null);
       //更新当前缓存security
-      that.updateCurrentInstanceSecuritys();
+      //that.updateCurrentInstanceSecuritys();
       that.createDescriptionElement();
       that.createDetailMenu(false);
       that.afterApiInitSuccess();
@@ -1120,7 +1120,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       if (securityArr.length > 0) {
         that.currentInstance.securityArrs = securityArr;
         that.log("解析securityDefinitions属性--------------------------------------------------------------->")
-        if (window.localStorage) {
+        /* if (window.localStorage) {
           var store = window.localStorage;
           var storeKey = "SwaggerBootstrapUiSecuritys";
           var _securityValue = store[storeKey];
@@ -1166,7 +1166,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
           that.log(_secArr)
           //store.setItem("securityArrs",JSON.stringify(securityArr))
           store.setItem(storeKey, JSON.stringify(_secArr))
-        }
+        } */
       } else {
         //清空缓存
         that.clearSecuritys();
@@ -1300,7 +1300,12 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   that.log(new Date().toTimeString());
 
 }
-
+/***
+ * 清空security
+ */
+SwaggerBootstrapUi.prototype.clearSecuritys = function () {
+  this.$Vue.$localStore.setItem(Constants.globalSecurityParamPrefix, []);
+}
 /**
  * 处理Models
  * add at 2019-12-11 21:01:46

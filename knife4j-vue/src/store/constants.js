@@ -38,6 +38,7 @@ const constants = {
       }
     }
   ],
+  globalSecurityParameters: "Knife4jGlobalSecurityParameters",
   globalSecurityParamPrefix: "Knife4jSecurityParams",
   //缓存api接口,用于判断后端接口是否存在变化
   globalGitApiVersionCaches: "Knife4jGitApiVersionCaches",
