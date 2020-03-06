@@ -5,7 +5,7 @@
         <a-input-group compact>
           <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
           <a-input style="width: 80%" :value="debugUrl" @change="debugUrlChange" />
-          <a-button class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送</a-button>
+          <a-button :loading="debugLoading" class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送</a-button>
         </a-input-group>
       </a-col>
     </a-row>
@@ -242,6 +242,8 @@ export default {
       debugPathFlag: false,
       //需要替换的参数值key
       debugPathParams: [],
+      //loading效果
+      debugLoading: false,
       debugSend: false,
       //form参数值对象
       formData: [],
@@ -1750,6 +1752,7 @@ export default {
       var validateForm = this.validateUrlForm();
       //console(validateForm);
       if (validateForm.validate) {
+        this.debugLoading = true;
         //发送状态置为已发送请求
         this.debugSend = true;
         var startTime = new Date();
@@ -1817,11 +1820,13 @@ export default {
           .then(res => {
             //console("url-form-success");
             //console(res);
+            this.debugLoading = false;
             this.handleDebugSuccess(startTime, res);
           })
           .catch(err => {
             //console("触发url-form-error");
             //console(err);
+            this.debugLoading = false;
             if (err.response) {
               this.handleDebugError(startTime, err.response);
             } else {
@@ -1838,6 +1843,7 @@ export default {
       //console(validateForm);
       if (validateForm.validate) {
         //console("验证通过---");
+        this.debugLoading = true;
         //发送状态置为已发送请求
         this.debugSend = true;
         var startTime = new Date();
@@ -1875,9 +1881,11 @@ export default {
           .then(res => {
             //console("url-form-success");
             //console(res);
+            this.debugLoading = false;
             this.handleDebugSuccess(startTime, res);
           })
           .catch(err => {
+            this.debugLoading = false;
             //console("触发url-form-error");
             if (err.response) {
               this.handleDebugError(startTime, err.response);
@@ -1894,6 +1902,7 @@ export default {
       //console("发送raw接口");
       var validateForm = this.validateRawForm();
       if (validateForm.validate) {
+        this.debugLoading = true;
         //发送状态置为已发送请求
         this.debugSend = true;
         var startTime = new Date();
@@ -1935,9 +1944,11 @@ export default {
             timeout: 0
           })
           .then(res => {
+            this.debugLoading = false;
             this.handleDebugSuccess(startTime, res);
           })
           .catch(err => {
+            this.debugLoading = false;
             if (err.response) {
               this.handleDebugError(startTime, err.response);
             } else {
