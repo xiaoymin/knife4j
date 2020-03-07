@@ -1633,7 +1633,9 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
           path: children.operationId,
           component: 'ApiInfo',
           hasNew: children.hasNew || children.hasChanged,
-          deprecated: children.deprecated
+          deprecated: children.deprecated,
+          //用于搜索
+          url: children.url
         }
         tagMenu.children.push(tabSubMenu);
 

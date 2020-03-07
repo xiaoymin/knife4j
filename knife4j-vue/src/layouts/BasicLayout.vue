@@ -171,14 +171,15 @@ export default {
       if (KUtils.strNotBlank(key)) {
         var tmpMenu = [];
         var regx = ".*?" + key + ".*";
+        //console.log(this.cacheMenuData);
         this.cacheMenuData.forEach(function(menu) {
           if (KUtils.arrNotEmpty(menu.children)) {
             //遍历children
             var tmpChildrens = [];
             menu.children.forEach(function(children) {
-              var urlflag = KUtils.regexMatchStr(regx, children.path);
-              var sumflag = KUtils.regexMatchStr(regx, children.name);
-              var desflag = KUtils.regexMatchStr(regx, children.description);
+              var urlflag = KUtils.searchMatch(regx, children.url);
+              var sumflag = KUtils.searchMatch(regx, children.name);
+              var desflag = KUtils.searchMatch(regx, children.description);
               if (urlflag || sumflag || desflag) {
                 tmpChildrens.push(children);
               }

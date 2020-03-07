@@ -367,6 +367,17 @@ const utils = {
     }
     return flag;
   },
+  searchMatch(regex, str) {
+    var flag = false;
+    if (regex != null && regex != undefined && str != null && str != undefined) {
+      /* var matchResult = str.match(regex);
+      if (matchResult != null) {
+        flag = true;
+      } */
+      flag = new RegExp(regex, "ig").test(str);
+    }
+    return flag;
+  },
   checkUndefined: function (obj) {
     var flag = false;
     if (obj != undefined && obj != null && typeof (obj) != "undefined") {
