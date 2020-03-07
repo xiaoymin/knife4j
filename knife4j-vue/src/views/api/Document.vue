@@ -699,7 +699,7 @@ export default {
         for (var i = 0; i < aceLineDoms.length; i++) {
           var item = aceLineDoms[i];
           var $variable = item.getElementsByClassName("ace_variable");
-          var key;
+          var key = null;
           if (KUtils.arrNotEmpty($variable)) {
             key = KUtils.toString($variable[0].innerHTML, "").replace(
               /^"(.*)"$/g,

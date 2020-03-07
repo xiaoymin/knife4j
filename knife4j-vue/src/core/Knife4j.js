@@ -3100,7 +3100,7 @@ var SwaggerBootstrapUiResponseCode = function () {
     }
     var path = paths.join('>') + '>' + key;
     path = path.replace(/0>/g, '');
-    ////console(this.responseDescriptions)
+    //console.log(this.responseDescriptions)
     if (this.responseDescriptions && this.responseDescriptions[path]) {
       return this.responseDescriptions[path];
     }

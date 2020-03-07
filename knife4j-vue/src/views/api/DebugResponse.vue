@@ -5,11 +5,7 @@
         <template slot="tabBarExtraContent">
           <a-row v-if="responseStatus" class="knife4j-debug-status">
             <span>
-              <a-checkbox
-                :defaultChecked="responseFieldDescriptionChecked"
-                @change="showFieldDesChange"
-                ><span style="color: #919191;">显示说明</span></a-checkbox
-              >
+              <a-checkbox :defaultChecked="responseFieldDescriptionChecked" @change="showFieldDesChange"><span style="color: #919191;">显示说明</span></a-checkbox>
             </span>
             <span class="key">响应码:</span>
             <span class="value">{{ responseStatus.code }}</span>
@@ -26,29 +22,18 @@
                 <img :src="responseContent.blobUrl" />
               </div>
               <div v-else>
-                <a-button
-                  type="link"
-                  :href="responseContent.blobUrl"
-                  :download="responseContent.blobFileName"
-                  >下载文件</a-button
-                >
+                <a-button type="link" :href="responseContent.blobUrl" :download="responseContent.blobFileName">下载文件</a-button>
               </div>
             </a-row>
             <a-row :id="'responseEditorContent' + api.id" v-else>
-              <editor-debug-show
-                @debugEditorChange="debugEditorChange"
-                :debugResponse="debugResponse"
-                :value="responseContent.text"
-                :mode="responseContent.mode"
-              ></editor-debug-show>
+              <editor-debug-show @debugEditorChange="debugEditorChange" :debugResponse="debugResponse" :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
             </a-row>
           </a-row>
         </a-tab-pane>
         <a-tab-pane tab="Raw" key="debugRaw" forceRender>
           <a-row class="knife4j-debug-response-mt">
             <a-button :id="'btnDebugCopyRaw' + api.id" type="primary">
-              <a-icon type="copy" /> 复制</a-button
-            >
+              <a-icon type="copy" /> 复制</a-button>
           </a-row>
           <a-row class="knife4j-debug-response-mt">
             <a-textarea :rows="10" :value="responseRawText" />
@@ -56,22 +41,14 @@
         </a-tab-pane>
         <a-tab-pane tab="Headers" key="debugHeaders">
           <a-row class="knife4j-debug-response-mt">
-            <a-table
-              bordered
-              size="small"
-              :columns="responseHeaderColumn"
-              :pagination="pagination"
-              :dataSource="responseHeaders"
-              rowKey="id"
-            >
+            <a-table bordered size="small" :columns="responseHeaderColumn" :pagination="pagination" :dataSource="responseHeaders" rowKey="id">
             </a-table>
           </a-row>
         </a-tab-pane>
         <a-tab-pane tab="Curl" key="debugCurl">
           <a-row class="knife4j-debug-response-mt">
             <a-button :id="'btnDebugCopyCurl' + api.id" type="primary">
-              <a-icon type="copy" /> 复制</a-button
-            >
+              <a-icon type="copy" /> 复制</a-button>
           </a-row>
           <a-row class="knife4j-debug-response-mt">
             <pre class="knife4j-debug-response-curl">{{
@@ -278,7 +255,7 @@ export default {
         for (var i = 0; i < aceLineDoms.length; i++) {
           var item = aceLineDoms[i];
           var $variable = item.getElementsByClassName("ace_variable");
-          var key;
+          var key = null;
           if (KUtils.arrNotEmpty($variable)) {
             key = KUtils.toString($variable[0].innerHTML, "").replace(
               /^"(.*)"$/g,
