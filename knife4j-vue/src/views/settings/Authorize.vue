@@ -101,7 +101,15 @@ export default {
             //当前分组下的security不为空，判断全局分组，兼容升级的情况下,gbp可能会存在为空的情况
             if (KUtils.arrNotEmpty(gbp)) {
               tmpGlobalSecuritys = tmpGlobalSecuritys.concat(gbp);
-              //更新全局参数
+              //从全局参数中更新当前分组下的参数
+              gbp.forEach(globalSeris => {
+                that.securityArr.forEach(selfSecurity => {
+                  if (selfSecurity.id == globalSeris.id) {
+                    //id相等，更新value值
+                    selfSecurity.value = globalSeris.value;
+                  }
+                });
+              });
             } else {
               //为空的情况下,则默认直接新增当前分组下的security
               tmpGlobalSecuritys = tmpGlobalSecuritys.concat(that.securityArr);
@@ -118,6 +126,10 @@ export default {
       //更新当前实例下的securitys
       this.$localStore.setItem(key, this.securityArr);
       //更新全局的securitys
+      this.$localStore.setItem(
+        constant.globalSecurityParameters,
+        this.globalSecuritys
+      );
     },
     resetAuth() {
       const tmpArr = this.securityArr;
@@ -126,6 +138,13 @@ export default {
           security.value = "";
         });
         this.securityArr = tmpArr;
+        //获取当前分组需要重置的value值
+        var resetIds = tmpArr.map(security => security.id);
+        this.globalSecuritys.forEach(globalSecurity => {
+          if (resetIds.includes(globalSecurity.id)) {
+            globalSecurity.value = "";
+          }
+        });
         this.storeToLocalIndexDB();
       }
       this.$message.info("注销成功");
@@ -137,6 +156,12 @@ export default {
       this.securityArr.forEach(function(security) {
         if (security.id == pkId) {
           security.value = value;
+        }
+      });
+      //更新全局参数
+      this.globalSecuritys.forEach(globlSeris => {
+        if (globlSeris.id == pkId) {
+          globlSeris.value = value;
         }
       });
       this.storeToLocalIndexDB();
