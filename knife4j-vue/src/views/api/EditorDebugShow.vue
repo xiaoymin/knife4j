@@ -99,6 +99,8 @@ export default {
       } */
       //this.editor.gotoLine(1);
       if (this.debugResponse) {
+        //启动换行
+        this.editor.getSession().setUseWrapMode(true);
         this.editor.setOptions(this.debugOptions);
         if (this.mode == "text") {
           this.editor.getSession().setUseWrapMode(true);
