@@ -456,6 +456,7 @@ export default {
       var bodyParameters = this.globalParameters.filter(
         param => param.in != "header"
       );
+      //console.log(bodyParameters);
       var bodyData = [];
       //接口本身的参数对象
       var tmpApiParameters = this.api.parameters;
@@ -482,6 +483,9 @@ export default {
             if (show) {
               showGlobalParameters.push(global);
             }
+          } else {
+            //当前接口不存在参数,但是开发者在界面添加了全局参数
+            showGlobalParameters.push(global);
           }
         });
       }
