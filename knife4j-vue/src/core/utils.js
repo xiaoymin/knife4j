@@ -152,6 +152,38 @@ function isUrl(path) {
 }
 
 const utils = {
+  filterIgnoreParameters(name, ignoreParameters) {
+    //是否过滤参数
+    if (ignoreParameters == null) {
+      return true;
+    }
+    var tmpKeys = Object.keys(ignoreParameters || {});
+    var ignoreParameterAllKeys = [];
+    var reg = new RegExp("\\[0\\]", "gm");
+    if (tmpKeys != null && tmpKeys.length > 0) {
+      tmpKeys.forEach(tk => {
+        ignoreParameterAllKeys.push(tk);
+        if (tk.indexOf("[0]") > -1) {
+          ignoreParameterAllKeys.push(tk.replace(reg, ""));
+        }
+      });
+    }
+    if (name.indexOf("[0]") > -1) {
+      //存在数组的情况
+      if (ignoreParameterAllKeys.length > 0) {
+        var containtsKey = ignoreParameterAllKeys.filter(ignoreName => name.startsWith(ignoreName));
+        if (containtsKey.length > 0) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return !ignoreParameterAllKeys.includes(name);
+    }
+  },
   binaryContentType(produces, contentType) {
     var binary = false;
     var binaryType = "";
@@ -233,15 +265,16 @@ const utils = {
 
   },
   checkParamArrsExists: function (arr, param) {
-    var flag = false;
-    if (arr != null && arr.length > 0) {
-      arr.forEach(function (a) {
-        if (a.name == param.name) {
-          flag = true;
-        }
-      })
-    }
-    return flag;
+    return (arr || []).some(row => row.name == param.name)
+    // var flag = false;
+    // if (arr != null && arr.length > 0) {
+    //   arr.forEach(function (a) {
+    //     if (a.name == param.name) {
+    //       flag = true;
+    //     }
+    //   })
+    // }
+    // return flag;
   },
   isChinese: function (keyword) {
     //判断是否包含中文
@@ -271,7 +304,7 @@ const utils = {
   filterJsonObject: function (prefix, originalJson, filterObject) {
     var _tmpValue = null;
     try {
-      _tmpValue = $.filterObject(prefix, originalJson, filterObject);
+      _tmpValue = utils.filterObject(prefix, originalJson, filterObject);
     } catch (err) {
       _tmpValue = originalJson;
     }
@@ -286,13 +319,13 @@ const utils = {
         if (!filterObject.hasOwnProperty(filterName)) {
           newObj[x] = _tmp;
         }
-        var _type = $.genericType(_tmp);
+        var _type = utils.genericType(_tmp);
         if (_type == "object") {
-          newObj[x] = $.filterObject(filterName, _tmp, filterObject);
+          newObj[x] = utils.filterObject(filterName, _tmp, filterObject);
         } else if (_type == "array") {
           var _t1 = _tmp[0];
           var _na = new Array();
-          _na.push($.filterObject(filterName, _t1, filterObject));
+          _na.push(utils.filterObject(filterName, _t1, filterObject));
           newObj[x] = _na;
         }
 
@@ -331,6 +364,17 @@ const utils = {
       if (matchResult != null) {
         flag = true;
       }
+    }
+    return flag;
+  },
+  searchMatch(regex, str) {
+    var flag = false;
+    if (regex != null && regex != undefined && str != null && str != undefined) {
+      /* var matchResult = str.match(regex);
+      if (matchResult != null) {
+        flag = true;
+      } */
+      flag = new RegExp(regex, "ig").test(str);
     }
     return flag;
   },
@@ -442,7 +486,7 @@ const utils = {
   },
   jsString: function (s) {
     s = JSON.stringify(s).slice(1, -1);
-    return $.htmlEncode(s);
+    return utils.htmlEncode(s);
   },
   replaceMultipLineStr: function (str) {
     if (str != null && str != undefined && str != "") {
@@ -456,7 +500,7 @@ const utils = {
     return "";
   },
   generUUID: function () {
-    return ($.randomNumber() + $.randomNumber() + "-" + $.randomNumber() + "-" + $.randomNumber() + "-" + $.randomNumber() + "-" + $.randomNumber() + $.randomNumber() + $.randomNumber());
+    return (utils.randomNumber() + utils.randomNumber() + "-" + utils.randomNumber() + "-" + utils.randomNumber() + "-" + utils.randomNumber() + "-" + utils.randomNumber() + utils.randomNumber() + utils.randomNumber());
   },
   base64Encode: function (str) {
     var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";

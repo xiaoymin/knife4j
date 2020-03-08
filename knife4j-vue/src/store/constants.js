@@ -8,7 +8,7 @@ const constants = {
   globalParameterTableColumns: [{
       title: "参数名称",
       dataIndex: "name",
-      width: "20%",
+      width: "15%",
       scopedSlots: {
         customRender: "name"
       }
@@ -17,12 +17,18 @@ const constants = {
       title: "参数值",
       className: "column-money",
       dataIndex: "value",
-      width: "40%"
+      width: "65%",
+      scopedSlots: {
+        customRender: "paramContentLabel"
+      }
     },
     {
       title: "参数类型",
       dataIndex: "in",
-      width: "20%"
+      width: "10%",
+      scopedSlots: {
+        customRender: "paramTypeLable"
+      }
     },
     {
       title: "操作",
@@ -32,7 +38,10 @@ const constants = {
       }
     }
   ],
+  globalSecurityParameters: "Knife4jGlobalSecurityParameters",
   globalSecurityParamPrefix: "Knife4jSecurityParams",
+  //缓存api接口,用于判断后端接口是否存在变化
+  globalGitApiVersionCaches: "Knife4jGitApiVersionCaches",
   //个性化设置名称
   globalSettingsKey: "Knife4jGlobalSettings",
   globalTreeTableModelParams: "Knife4jGlobalTreeTableModelParams",

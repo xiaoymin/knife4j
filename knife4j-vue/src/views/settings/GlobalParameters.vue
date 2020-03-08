@@ -15,9 +15,18 @@
     </a-row>
     <a-row class="globalparameters">
       <a-table :columns="columns" rowKey="pkid" size="small" :dataSource="globalParameters" :pagination="pagination" bordered>
-        <a-row slot="operation" slot-scope="text, record">
+        <a-row slot="operation" slot-scope="text,record">
           <a-button icon="delete" type="danger" @click="deleteParam(record)" style="margin-left:10px;">删除</a-button>
         </a-row>
+        <template slot="paramContentLabel" slot-scope="text,record">
+          <a-textarea @change="headerContentChange" :data-key="record.pkid" :defaultValue="text" :autosize="{ minRows: 2, maxRows: 6 }" allowClear />
+        </template>
+        <template slot="paramTypeLable" slot-scope="text,record">
+          <a-select :defaultValue="text" @change="globalParamTypeChange">
+            <a-select-option :data-name="record.name" :data-key="record.pkid" value="header">header</a-select-option>
+            <a-select-option :data-name="record.name" :data-key="record.pkid" value="query">query</a-select-option>
+          </a-select>
+        </template>
       </a-table>
     </a-row>
     <!--参数编辑及新增-->
@@ -102,6 +111,73 @@ export default {
     });
   },
   methods: {
+    headerContentChange(e) {
+      var globalParamValue = e.target.value;
+      var pkid = e.target.getAttribute("data-key");
+      //更新参数,同步参数到本地local
+      var newArrs = [];
+      this.globalParameters.forEach(gp => {
+        if (gp.pkid != pkid) {
+          //直接push
+          newArrs.push(gp);
+        } else {
+          //新的值
+          newArrs.push({
+            name: gp.name,
+            value: globalParamValue,
+            in: gp.in,
+            pkid: pkid
+          });
+        }
+      });
+      this.globalParameters = newArrs;
+      this.storeGlobalParameters();
+    },
+    globalParamTypeChange(globalParamValue, option) {
+      var that = this;
+      const tmpArrs = this.globalParameters;
+      //旧pkid
+      var pkid = option.data.attrs["data-key"];
+      var name = option.data.attrs["data-name"];
+      var newpkid = name + globalParamValue;
+      //判断是否已经存在该参数
+      var fl = gpInstance.globalParameters.filter(
+        gp => gp.name == name && gp.in == globalParamValue
+      ).length;
+      if (fl == 0) {
+        var newArrs = [];
+        //由于in类型已经更改,重新生成数据类型
+        this.globalParameters.forEach(gp => {
+          if (gp.pkid != pkid) {
+            //直接push
+            newArrs.push(gp);
+          } else {
+            //新的值
+            newArrs.push({
+              name: gp.name,
+              value: gp.value,
+              in: globalParamValue,
+              pkid: newpkid
+            });
+          }
+        });
+        this.globalParameters = newArrs;
+        this.storeGlobalParameters();
+      } else {
+        gpInstance.$message.info("参数已存在,不可重复添加");
+        this.globalParameters = [];
+        setTimeout(function() {
+          that.globalParameters = tmpArrs;
+        }, 10);
+      }
+    },
+    storeGlobalParameters() {
+      localStore.getItem(Constants.globalParameter).then(function(val) {
+        const dfv = val;
+        dfv[gpInstance.groupId] = gpInstance.globalParameters;
+        localStore.setItem(Constants.globalParameter, dfv);
+      });
+    },
     deleteParam(record) {
       var np = [];
       this.globalParameters.forEach(function(gp) {
@@ -110,11 +186,7 @@ export default {
         }
       });
       this.globalParameters = np;
-      localStore.getItem(Constants.globalParameter).then(function(val) {
-        const dfv = val;
-        dfv[gpInstance.groupId] = gpInstance.globalParameters;
-        localStore.setItem(Constants.globalParameter, dfv);
-      });
+      this.storeGlobalParameters();
     },
     handleOk(e) {
       e.preventDefault();

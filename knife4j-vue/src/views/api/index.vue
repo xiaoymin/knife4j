@@ -22,6 +22,9 @@
 <script>
 import Document from "./Document";
 import Debug from "./Debug";
+import Constants from "@/store/constants";
+import KUtils from "@/core/utils";
+
 export default {
   name: "APIDoc",
   components: { Document, Debug },
@@ -51,6 +54,7 @@ export default {
         apiInfo = path;
       }
     });
+    this.storeCacheApiAddApiInfo(apiInfo, instance.groupId);
     this.swaggerInstance = instance;
     this.api = apiInfo;
     this.debugSupport = this.api.configurationDebugSupport;
@@ -59,6 +63,46 @@ export default {
     onTabChange(key, type) {
       //console(key, type);
       this[type] = key;
+    },
+    /**
+     * 将接口id加入缓存，再页面点击后
+     */
+    storeCacheApiAddApiInfo(apiInfo, groupId) {
+      //只有在当前接口是new的情况下才加入缓存
+      if (apiInfo.hasNew || apiInfo.hasChanged) {
+        this.$localStore
+          .getItem(Constants.globalGitApiVersionCaches)
+          .then(gitVal => {
+            if (KUtils.strNotBlank(gitVal)) {
+              gitVal.forEach(s => {
+                if (s.id == groupId) {
+                  //判断是新增还是修改
+                  if (apiInfo.hasNew) {
+                    s.cacheApis.push(apiInfo.id);
+                  } else if (apiInfo.hasChanged) {
+                    var _upt = s.updateApis;
+                    if (_upt != undefined && _upt != null) {
+                      //判断是否有值
+                      if (_upt.hasOwnProperty(apiInfo.id)) {
+                        s.updateApis[apiInfo.id].versionId = apiInfo.versionId;
+                        s.updateApis[apiInfo.id].lastTime = new Date();
+                      }
+                    } else {
+                      s.updateApis = new Object();
+                      s.updateApis[apiInfo.id].url = apiInfo.url;
+                      s.updateApis[apiInfo.id].versionId = apiInfo.versionId;
+                      s.updateApis[apiInfo.id].lastTime = new Date();
+                    }
+                  }
+                }
+              });
+            }
+            this.$localStore.setItem(
+              Constants.globalGitApiVersionCaches,
+              gitVal
+            );
+          });
+      }
     }
   }
 };

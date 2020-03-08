@@ -2,25 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xiaoymin</groupId>
-    <artifactId>knife4j</artifactId>
+    <artifactId>knife4j-dependencies</artifactId>
     <version>2.0.2</version>
-    <modules>
-        <module>knife4j-annotations</module>
-        <module>knife4j-spring</module>
-        <module>knife4j-spring-boot-starter</module>
-        <module>knife4j-spring-ui</module>
-        <module>knife4j-core</module>
-        <module>knife4j-micro-spring-boot-starter</module>
-        <module>knife4j-spring-boot-autoconfigure</module>
-        <module>knife4j-dependencies</module>
-    </modules>
     <packaging>pom</packaging>
-    <name>knife4j</name>
+    <name>knife4j-dependencies</name>
+    <description>Knife4j Dependencies</description>
     <url>https://gitee.com/xiaoym/knife4j</url>
-    <description>knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案,前身是swagger-bootstrap-ui,取名kni4j是希望她能像一把匕首一样小巧,轻量,并且功能强悍!!.</description>
     <developers>
         <developer>
             <id>xiaoym</id>
@@ -29,21 +19,9 @@
             <roles>
                 <role>Java Development Engineer</role>
             </roles>
-            <timezone>2019-8-26 16:58:07</timezone>
+            <timezone>2020-03-01 20:43:21</timezone>
         </developer>
     </developers>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <knife4j.version>2.0.2</knife4j.version>
-        <java.version>1.8</java.version>
-        <spring.version>5.1.0.RELEASE</spring.version>
-        <springfox.version>2.9.2</springfox.version>
-        <servlet.version>3.1.0</servlet.version>
-        <slf4j.version>1.7.28</slf4j.version>
-        <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
-        <!-- 打包跳过单元测试 -->
-        <skipTests>true</skipTests>
-    </properties>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -55,6 +33,13 @@
         <developerConnection>scm:git@gitee.com:xiaoym/knife4j.git</developerConnection>
         <url>git@gitee.com:xiaoym/knife4j.git</url>
     </scm>
+    <properties>
+        <java.version>1.8</java.version>
+        <knife4j.version>2.0.2</knife4j.version>
+        <swagger-models.version>1.5.22</swagger-models.version>
+        <springfox.version>2.9.2</springfox.version>
+        <javassist.version>3.25.0-GA</javassist.version>
+    </properties>
     <distributionManagement>
         <snapshotRepository>
             <id>oss</id>
@@ -65,10 +50,15 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-
-    <!--定义Jar包主版本-->
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-models</artifactId>
+                <version>${swagger-models.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-annotations</artifactId>
@@ -79,7 +69,6 @@
                 <artifactId>knife4j-spring</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-core</artifactId>
@@ -90,6 +79,11 @@
                 <artifactId>knife4j-spring-ui</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-micro-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
@@ -97,60 +91,26 @@
                 <version>${knife4j.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>1.2.58</version>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>3.25.0-GA</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/io.swagger/swagger-models -->
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-models</artifactId>
-                <version>1.5.22</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${servlet.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${springfox.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-models</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-annotations</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/io.springfox/springfox-bean-validators -->
@@ -159,12 +119,7 @@
                 <artifactId>springfox-bean-validators</artifactId>
                 <version>${springfox.version}</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -225,7 +180,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.18.1</version>
                 <configuration>
-                    <skipTests>${skipTests}</skipTests>
+                    <skipTests>true</skipTests>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
             </plugin>
@@ -292,5 +247,7 @@
             </distributionManagement>
         </profile>
     </profiles>
+
+
 
 </project>
