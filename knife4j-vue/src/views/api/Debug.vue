@@ -580,7 +580,7 @@ export default {
         //url-form-data表单
         this.initUrlFormValue();
       }
-      console.log(this.urlFormData);
+      //console.log(this.urlFormData);
     },
     hideDynamicParameterTable() {
       //如果当前确定未开启动态参数调试,且参数为0的情况下,关闭table 的参数显示
