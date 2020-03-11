@@ -1763,10 +1763,15 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   /*var urlForRealUsage=newurl.replace(/^([^{]+).*$/g, '$1');
   swpinfo.url=urlForRealUsage;
   swpinfo.originalUrl=urlForRealUsage;*/
-
-
   swpinfo.basePathFlag = basePathFlag;
   swpinfo.methodType = mtype.toUpperCase();
+  //add by xiaoymin 2020-3-11 20:34:39
+  // 判断当前接口是否支持调试
+  if (KUtils.arrNotEmpty(that.configuration.supportedSubmitMethods)) {
+    if (!that.configuration.supportedSubmitMethods.includes(mtype.toLowerCase())) {
+      swpinfo.configurationDebugSupport = false;
+    }
+  }
   //接口id使用MD5策略,缓存整个调试参数到localStorage对象中,供二次调用
   var md5Str = newurl + mtype.toUpperCase();
   swpinfo.id = md5(md5Str);
