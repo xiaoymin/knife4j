@@ -1,0 +1,2363 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "# swagger-bootstrap-ui-demo RESTful APIs",
+        "version": "1.0",
+        "title": "swagger-bootstrap-ui-demo RESTful APIs",
+        "termsOfService": "http://www.xx.com/",
+        "contact": {
+            "name": "xx@qq.com"
+        }
+    },
+    "host": "127.0.0.1:8999",
+    "basePath": "/",
+    "tags": [
+        {
+            "name": "2.0.2版本-20200226",
+            "description": "Api 202 Controller"
+        }
+    ],
+    "paths": {
+        "/api/nxew202/Knife4jUser": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "url-form类型枚举下拉框显示-简单枚举11",
+                "operationId": "findAll5UsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "主键id",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "x-example": 12
+                    },
+                    {
+                        "name": "knife4jType",
+                        "in": "query",
+                        "description": "用户类型",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "ADMIN",
+                            "SUPER_ADMIN",
+                            "TEST_ADMIN"
+                        ]
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "ABBB"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«Knife4jUser»",
+                            "$ref": "#/definitions/Rest«Knife4jUser»"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/Knife4jUser1": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "url-form类型枚举下拉框显示-复杂枚举22",
+                "operationId": "findAll6UsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "主键id",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "x-example": 12
+                    },
+                    {
+                        "name": "knife4jUTypes",
+                        "in": "query",
+                        "description": "用户类型",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "KU_AAA",
+                            "KU_BBB"
+                        ]
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "ABBB"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«Knife4jUab»",
+                            "$ref": "#/definitions/Rest«Knife4jUab»"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/Knife4jUser11": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "忽略数组类型的参数",
+                "operationId": "findAll16UsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "createTimes[0].date",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].day",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].hours",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].minutes",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].month",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].nanos",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].seconds",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].time",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "createTimes[0].timezoneOffset",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].year",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "主键id",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "x-example": 12
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "ABBB"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«Knife4jTime»",
+                            "$ref": "#/definitions/Rest«Knife4jTime»"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-ignoreParameters": [
+                    {
+                        "createTimes[0]": true
+                    }
+                ],
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/Knife4jUser12": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "忽略数组类型的参数-不忽略",
+                "operationId": "findAll18UsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "createTimes[0].date",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].day",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].hours",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].minutes",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].month",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].nanos",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].seconds",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].time",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "createTimes[0].timezoneOffset",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "createTimes[0].year",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "主键id",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "x-example": 12
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "ABBB"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«Knife4jTime»",
+                            "$ref": "#/definitions/Rest«Knife4jTime»"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/Knife4jUser7": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "raw-form类型枚举下拉框显示-复杂枚举",
+                "operationId": "findAll7UsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "主键id",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "x-example": 12
+                    },
+                    {
+                        "name": "knife4jUTypes",
+                        "in": "query",
+                        "description": "用户类型",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "KU_AAA",
+                            "KU_BBB"
+                        ]
+                    },
+                    {
+                        "in": "body",
+                        "name": "knife4jUser",
+                        "description": "knife4jUser",
+                        "required": true,
+                        "schema": {
+                            "originalRef": "Knife4jUser",
+                            "$ref": "#/definitions/Knife4jUser"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "ABBB"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«Knife4jUab»",
+                            "$ref": "#/definitions/Rest«Knife4jUab»"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/ex": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "忽略参数值-Form类型",
+                "operationId": "findAllUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "主键id",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "x-example": 12
+                    },
+                    {
+                        "name": "ids",
+                        "in": "query",
+                        "description": "教师 id 列表。",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "ABBB"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«LongUser»",
+                            "$ref": "#/definitions/Rest«LongUser»"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-ignoreParameters": [
+                    {
+                        "ids": true
+                    }
+                ],
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/ex1": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "忽略参数值-Form类型1",
+                "operationId": "findAll12UsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "ignoreLabels[0].code",
+                        "in": "query",
+                        "description": "编码",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "10000"
+                    },
+                    {
+                        "name": "ignoreLabels[0].label",
+                        "in": "query",
+                        "description": "标签",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "酒店"
+                    },
+                    {
+                        "name": "longUser.id",
+                        "in": "query",
+                        "description": "主键id",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "x-example": 12
+                    },
+                    {
+                        "name": "longUser.ids",
+                        "in": "query",
+                        "description": "教师 id 列表。",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "longUser.name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "ABBB"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "姓名a啊",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "你好"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«IgnoreP1»",
+                            "$ref": "#/definitions/Rest«IgnoreP1»"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-ignoreParameters": [
+                    {
+                        "longUser.ids": true,
+                        "ignoreLabels": true
+                    }
+                ],
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/ex2": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "忽略参数值-JSON类型",
+                "operationId": "findAll1UsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "longUser",
+                        "description": "longUser",
+                        "required": true,
+                        "schema": {
+                            "originalRef": "LongUser",
+                            "$ref": "#/definitions/LongUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«LongUser»",
+                            "$ref": "#/definitions/Rest«LongUser»"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-ignoreParameters": [
+                    {
+                        "longUser.ids": true
+                    }
+                ],
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/ex3": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "忽略参数值-JSON类型1",
+                "operationId": "findAll3UsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "ignoreP1",
+                        "description": "ignoreP1",
+                        "required": true,
+                        "schema": {
+                            "originalRef": "IgnoreP1",
+                            "$ref": "#/definitions/IgnoreP1"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«IgnoreP1»",
+                            "$ref": "#/definitions/Rest«IgnoreP1»"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-ignoreParameters": [
+                    {
+                        "ignoreP1.longUser.ids": true,
+                        "ignoreP1.ignoreLabels[0].code": true
+                    }
+                ],
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/ex4": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "忽略参数值-数组类型",
+                "operationId": "findAll4UsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "longUsers",
+                        "description": "longUsers",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "originalRef": "LongUser",
+                                "$ref": "#/definitions/LongUser"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«List«LongUser»»",
+                            "$ref": "#/definitions/Rest«List«LongUser»»"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-ignoreParameters": [
+                    {
+                        "longUsers.ids": true
+                    }
+                ],
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getKdes": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "字段太多了属性不显示?",
+                "operationId": "getKdesUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«KDescrption»",
+                            "$ref": "#/definitions/Rest«KDescrption»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-author": "xiaoymin@foxmail.com",
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getLoading": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "测试Loading效果",
+                "operationId": "getLoadingUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«GetParam»",
+                            "$ref": "#/definitions/Rest«GetParam»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-author": "xiaoymin@foxmail.com",
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getParams": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "Get无刷新请求",
+                "operationId": "getUse1rx1UsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«GetParam»",
+                            "$ref": "#/definitions/Rest«GetParam»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getParams1": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "Get无刷新请求1",
+                "operationId": "getUse1rx111UsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«GetParam»",
+                            "$ref": "#/definitions/Rest«GetParam»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getParams21": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "Get无刷新请求1777722222",
+                "operationId": "getUse1rx1113UsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«GetParam»",
+                            "$ref": "#/definitions/Rest«GetParam»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-author": "xiaoymin@foxmail.com",
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getRealDoc": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "写文档注释我是认真的",
+                "operationId": "getRealDocUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«RealDescription»",
+                            "$ref": "#/definitions/Rest«RealDescription»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-author": "xiaoymin@foxmail.com",
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getRealDocarr": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "写文档注释我是认真的-array",
+                "operationId": "getRealDoc1UsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«List«RealDescription»»",
+                            "$ref": "#/definitions/Rest«List«RealDescription»»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-author": "xiaoymin@foxmail.com",
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getRealDocarrx": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "响应数据太长不换行",
+                "operationId": "getRealDoc3UsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«List«RealDescription»»",
+                            "$ref": "#/definitions/Rest«List«RealDescription»»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-author": "xiaoymin@foxmail.com",
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getUser": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "GET请求参数编码处理",
+                "operationId": "getUserUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "knife4jUsers[0].id",
+                        "in": "query",
+                        "description": "主键id",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "x-example": 12
+                    },
+                    {
+                        "name": "knife4jUsers[0].knife4jType",
+                        "in": "query",
+                        "description": "用户类型",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "ADMIN",
+                            "SUPER_ADMIN",
+                            "TEST_ADMIN"
+                        ]
+                    },
+                    {
+                        "name": "knife4jUsers[0].name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "ABBB"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«GetArray»",
+                            "$ref": "#/definitions/Rest«GetArray»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getUser1": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "GET请求参数编码处理1",
+                "operationId": "getUse1rUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "knife4jUsers[0].id",
+                        "in": "query",
+                        "description": "主键id",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "x-example": 12
+                    },
+                    {
+                        "name": "knife4jUsers[0].knife4jType",
+                        "in": "query",
+                        "description": "用户类型",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "ADMIN",
+                            "SUPER_ADMIN",
+                            "TEST_ADMIN"
+                        ]
+                    },
+                    {
+                        "name": "knife4jUsers[0].name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "ABBB"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«GetArray»",
+                            "$ref": "#/definitions/Rest«GetArray»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getUser221": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "忽略参数",
+                "operationId": "getUse1rxUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "nodes[0].knife4jUsers[0].id",
+                        "in": "query",
+                        "description": "主键id",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "x-example": 12
+                    },
+                    {
+                        "name": "nodes[0].knife4jUsers[0].knife4jType",
+                        "in": "query",
+                        "description": "用户类型",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "ADMIN",
+                            "SUPER_ADMIN",
+                            "TEST_ADMIN"
+                        ]
+                    },
+                    {
+                        "name": "nodes[0].knife4jUsers[0].name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string",
+                        "x-example": "ABBB"
+                    },
+                    {
+                        "name": "nodes[0].name",
+                        "in": "query",
+                        "description": "姓名",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "value",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«KDto»",
+                            "$ref": "#/definitions/Rest«KDto»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-ignoreParameters": [
+                    {
+                        "nodes[0]": true
+                    }
+                ],
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/getUser221x": {
+            "get": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "忽略参数xx1-json",
+                "operationId": "getUse1rx1UsingGET_1",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "kDto",
+                        "description": "kDto",
+                        "required": true,
+                        "schema": {
+                            "originalRef": "KDto",
+                            "$ref": "#/definitions/KDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "Rest«KDto»",
+                            "$ref": "#/definitions/Rest«KDto»"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-ignoreParameters": [
+                    {
+                        "kDto.nodes[0]": true
+                    }
+                ],
+                "x-order": "2147483647"
+            }
+        },
+        "/api/nxew202/uploadModel": {
+            "post": {
+                "tags": [
+                    "2.0.2版本-20200226"
+                ],
+                "summary": "formdata上传附带枚举参数",
+                "operationId": "uploadModelUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "query",
+                        "description": "上传文件",
+                        "required": false,
+                        "type": "file"
+                    },
+                    {
+                        "name": "knife4jType",
+                        "in": "query",
+                        "description": "用户类型",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "ADMIN",
+                            "SUPER_ADMIN",
+                            "TEST_ADMIN"
+                        ]
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "名称",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "originalRef": "RestMessage",
+                            "$ref": "#/definitions/RestMessage"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerToken": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false,
+                "x-order": "2147483647"
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerToken": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "definitions": {
+        "GetArray": {
+            "type": "object",
+            "properties": {
+                "knife4jUsers": {
+                    "type": "array",
+                    "description": "用户",
+                    "items": {
+                        "originalRef": "Knife4jUser",
+                        "$ref": "#/definitions/Knife4jUser"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "description": "姓名"
+                }
+            },
+            "title": "GetArray"
+        },
+        "GetParam": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            },
+            "title": "GetParam"
+        },
+        "IgnoreLabel": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": 10000,
+                    "description": "编码"
+                },
+                "label": {
+                    "type": "string",
+                    "example": "酒店",
+                    "description": "标签"
+                }
+            },
+            "title": "IgnoreLabel"
+        },
+        "IgnoreP1": {
+            "type": "object",
+            "properties": {
+                "ignoreLabels": {
+                    "type": "array",
+                    "description": "标签集合",
+                    "items": {
+                        "originalRef": "IgnoreLabel",
+                        "$ref": "#/definitions/IgnoreLabel"
+                    }
+                },
+                "longUser": {
+                    "description": "用户列表",
+                    "originalRef": "LongUser",
+                    "$ref": "#/definitions/LongUser"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "你好",
+                    "description": "姓名a啊"
+                }
+            },
+            "title": "IgnoreP1"
+        },
+        "KCollectionInfo": {
+            "type": "object",
+            "properties": {
+                "compareCols": {
+                    "type": "array",
+                    "description": "让对项",
+                    "items": {
+                        "originalRef": "KCompareCol",
+                        "$ref": "#/definitions/KCompareCol"
+                    }
+                },
+                "kEndCols": {
+                    "type": "array",
+                    "description": "结束",
+                    "items": {
+                        "originalRef": "KEndCol",
+                        "$ref": "#/definitions/KEndCol"
+                    }
+                },
+                "kStartCols": {
+                    "type": "array",
+                    "description": "开始",
+                    "items": {
+                        "originalRef": "KStartCol",
+                        "$ref": "#/definitions/KStartCol"
+                    }
+                }
+            },
+            "title": "KCollectionInfo"
+        },
+        "KCompareCol": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "主键"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "名称"
+                },
+                "seq": {
+                    "type": "string",
+                    "description": "序列"
+                },
+                "templateId": {
+                    "type": "string",
+                    "description": "模板id"
+                }
+            },
+            "title": "KCompareCol"
+        },
+        "KDescrption": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "响应结果码"
+                },
+                "info": {
+                    "description": "返回信息",
+                    "originalRef": "KInfo",
+                    "$ref": "#/definitions/KInfo"
+                }
+            },
+            "title": "KDescrption"
+        },
+        "KDto": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "nodes": {
+                    "type": "array",
+                    "items": {
+                        "originalRef": "GetArray",
+                        "$ref": "#/definitions/GetArray"
+                    }
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "title": "KDto"
+        },
+        "KEndCol": {
+            "type": "object",
+            "properties": {
+                "col": {
+                    "type": "string",
+                    "description": "是是是"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "主键"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "名称"
+                },
+                "seq": {
+                    "type": "string",
+                    "description": "序列"
+                },
+                "templateId": {
+                    "type": "string",
+                    "description": "模板id"
+                }
+            },
+            "title": "KEndCol"
+        },
+        "KInfo": {
+            "type": "object",
+            "properties": {
+                "checkTplField": {
+                    "type": "string",
+                    "description": "模板校验字段,如需多个字段配置多个规则来实现"
+                },
+                "checkType": {
+                    "type": "string",
+                    "description": "检查类型"
+                },
+                "kCollectionInfo": {
+                    "description": "视图模板",
+                    "originalRef": "KCollectionInfo",
+                    "$ref": "#/definitions/KCollectionInfo"
+                }
+            },
+            "title": "KInfo"
+        },
+        "KStartCol": {
+            "type": "object",
+            "properties": {
+                "col": {
+                    "type": "string",
+                    "description": "是是是"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "主键"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "名称"
+                },
+                "seq": {
+                    "type": "string",
+                    "description": "序列"
+                },
+                "start": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "开始时间"
+                },
+                "templateId": {
+                    "type": "string",
+                    "description": "模板id"
+                }
+            },
+            "title": "KStartCol"
+        },
+        "Knife4jTime": {
+            "type": "object",
+            "properties": {
+                "createTimes": {
+                    "type": "array",
+                    "description": "创建时间",
+                    "items": {
+                        "originalRef": "Timestamp",
+                        "$ref": "#/definitions/Timestamp"
+                    }
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 12,
+                    "description": "主键id"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "ABBB",
+                    "description": "姓名"
+                }
+            },
+            "title": "Knife4jTime"
+        },
+        "Knife4jUab": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 12,
+                    "description": "主键id"
+                },
+                "knife4jUTypes": {
+                    "type": "string",
+                    "description": "用户类型",
+                    "enum": [
+                        "KU_AAA",
+                        "KU_BBB"
+                    ]
+                },
+                "name": {
+                    "type": "string",
+                    "example": "ABBB",
+                    "description": "姓名"
+                }
+            },
+            "title": "Knife4jUab"
+        },
+        "Knife4jUser": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 12,
+                    "description": "主键id"
+                },
+                "knife4jType": {
+                    "type": "string",
+                    "description": "用户类型",
+                    "enum": [
+                        "ADMIN",
+                        "SUPER_ADMIN",
+                        "TEST_ADMIN"
+                    ]
+                },
+                "name": {
+                    "type": "string",
+                    "example": "ABBB",
+                    "description": "姓名"
+                }
+            },
+            "title": "Knife4jUser"
+        },
+        "LongUser": {
+            "type": "object",
+            "required": [
+                "ids"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 12,
+                    "description": "主键id"
+                },
+                "ids": {
+                    "type": "array",
+                    "description": "教师 id 列表。",
+                    "items": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "example": "ABBB",
+                    "description": "姓名"
+                }
+            },
+            "title": "LongUser"
+        },
+        "RealDescription": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 12,
+                    "description": "主键id"
+                },
+                "id1": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 12,
+                    "description": "主键id1"
+                },
+                "id2": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 12,
+                    "description": "主键id2"
+                },
+                "id3": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 12,
+                    "description": "主键id3"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "ABBB",
+                    "description": "姓名"
+                },
+                "name1": {
+                    "type": "string",
+                    "example": "ABBB",
+                    "description": "姓名1"
+                },
+                "name2": {
+                    "type": "string",
+                    "example": "ABBB",
+                    "description": "姓名2"
+                },
+                "name3": {
+                    "type": "string",
+                    "example": "ABBB",
+                    "description": "姓名3"
+                }
+            },
+            "title": "RealDescription"
+        },
+        "RestMessage": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "description": "返回对象"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "RestMessage",
+            "description": "返回接口类"
+        },
+        "Rest«GetArray»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "返回对象",
+                    "originalRef": "GetArray",
+                    "$ref": "#/definitions/GetArray"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«GetArray»"
+        },
+        "Rest«GetParam»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "返回对象",
+                    "originalRef": "GetParam",
+                    "$ref": "#/definitions/GetParam"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«GetParam»"
+        },
+        "Rest«IgnoreP1»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "返回对象",
+                    "originalRef": "IgnoreP1",
+                    "$ref": "#/definitions/IgnoreP1"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«IgnoreP1»"
+        },
+        "Rest«KDescrption»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "返回对象",
+                    "originalRef": "KDescrption",
+                    "$ref": "#/definitions/KDescrption"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«KDescrption»"
+        },
+        "Rest«KDto»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "返回对象",
+                    "originalRef": "KDto",
+                    "$ref": "#/definitions/KDto"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«KDto»"
+        },
+        "Rest«Knife4jTime»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "返回对象",
+                    "originalRef": "Knife4jTime",
+                    "$ref": "#/definitions/Knife4jTime"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«Knife4jTime»"
+        },
+        "Rest«Knife4jUab»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "返回对象",
+                    "originalRef": "Knife4jUab",
+                    "$ref": "#/definitions/Knife4jUab"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«Knife4jUab»"
+        },
+        "Rest«Knife4jUser»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "返回对象",
+                    "originalRef": "Knife4jUser",
+                    "$ref": "#/definitions/Knife4jUser"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«Knife4jUser»"
+        },
+        "Rest«List«LongUser»»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "description": "返回对象",
+                    "items": {
+                        "originalRef": "LongUser",
+                        "$ref": "#/definitions/LongUser"
+                    }
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«List«LongUser»»"
+        },
+        "Rest«List«RealDescription»»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "description": "返回对象",
+                    "items": {
+                        "originalRef": "RealDescription",
+                        "$ref": "#/definitions/RealDescription"
+                    }
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«List«RealDescription»»"
+        },
+        "Rest«LongUser»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "返回对象",
+                    "originalRef": "LongUser",
+                    "$ref": "#/definitions/LongUser"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«LongUser»"
+        },
+        "Rest«RealDescription»": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "返回对象",
+                    "originalRef": "RealDescription",
+                    "$ref": "#/definitions/RealDescription"
+                },
+                "errCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "错误编号"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "错误信息"
+                },
+                "success": {
+                    "type": "boolean",
+                    "description": "是否成功"
+                }
+            },
+            "title": "Rest«RealDescription»"
+        },
+        "Timestamp": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "day": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "hours": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "minutes": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "month": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "nanos": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "seconds": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "time": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "timezoneOffset": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "year": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "title": "Timestamp"
+        }
+    }
+}

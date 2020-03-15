@@ -1,0 +1,14 @@
+[
+    {
+        "name": "knife4j-front服务模块",
+        "url": "/static/server1.json",
+        "swaggerVersion": "2.0",
+        "location": "/static/server1.json"
+    },
+    {
+        "name": "第二个模块",
+        "url": "/static/server2.json",
+        "swaggerVersion": "2.0",
+        "location": "/static/server2.json"
+    }
+]

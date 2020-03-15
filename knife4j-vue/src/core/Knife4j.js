@@ -61,6 +61,10 @@ function SwaggerBootstrapUi(options) {
   //swagger请求api地址
   this.url = options.url || 'swagger-resources'
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
+  //用于控制是否请求configUrl的配置
+  this.configSupport = options.configSupport || false;
+  //用于控制是否请求configSecurityUrl的配置
+  this.securitySupport = options.securitySupport || false;
   this.$Vue = options.Vue
   this.plus = options.plus
   //文档id
@@ -213,7 +217,10 @@ SwaggerBootstrapUi.prototype.initSettings = function () {
       } else {
         that.cacheApis = []
       }
-      that.configInit()
+      //添加对knife4j-front版本的支持,静态版本不提供配置
+      if (that.configSupport) {
+        that.configInit()
+      }
       //加载分组接口
       that.analysisGroup()
     })
