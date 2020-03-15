@@ -460,6 +460,11 @@ const utils = {
     }
     return null;
   },
+  trim(text) {
+    var whitespace = "[\\x20\\t\\r\\n\\f]";
+    var rtrim = new RegExp("^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$", "g");
+    return text == null ? "" : (text + "").replace(rtrim, "");
+  },
   getStringValue: function (obj) {
     var str = "";
     if (obj != undefined && typeof (obj) != 'undefined' && obj != null) {

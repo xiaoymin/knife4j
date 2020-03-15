@@ -168,7 +168,7 @@ SwaggerBootstrapUi.prototype.initRequestParameters = function () {
         var pm = pms[i]
         if (pm != undefined && pm != null && pm != '') {
           var pmArr = pm.split('=')
-          that.requestParameter[$.trim(pmArr[0])] = $.trim(pmArr[1])
+          that.requestParameter[KUtils.trim(pmArr[0])] = KUtils.trim(pmArr[1])
         }
       }
     }
@@ -2132,7 +2132,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
                   spropObj.required = KUtils.propValue("required", propobj, false);
                   if (swud.required.length > 0) {
                     //有required属性,需要再判断一次
-                    if ($.inArray(spropObj.name, swud.required) > -1) {
+                    //if ($.inArray(spropObj.name, swud.required) > -1) {
+                    if (swud.required.includes(spropObj.name)) {
                       //存在
                       spropObj.required = true;
                     }
@@ -2150,7 +2151,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
                         propValue = propobj["example"];
                       }
                     } else if (KUtils.checkIsBasicType(type)) {
-                      propValue = $.getBasicTypeValue(type);
+                      propValue = KUtils.getBasicTypeValue(type);
                     }
 
                   }
