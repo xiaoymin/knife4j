@@ -11,4 +11,11 @@
         "swaggerVersion": "2.0",
         "location": "/static/server2.json"
     }
+    ,
+    {
+        "name": "内存溢出模块",
+        "url": "/static/api-docs.json",
+        "swaggerVersion": "2.0",
+        "location": "/static/api-docs.json"
+    }
 ]

@@ -1,23 +1,10 @@
 <template>
   <div class="BasicLayout">
     <a-layout class="ant-layout-has-sider">
-      <a-layout-sider
-        :trigger="null"
-        collapsible
-        :collapsed="collapsed"
-        breakpoint="lg"
-        @collapse="handleMenuCollapse"
-        :width="menuWidth"
-        class="sider"
-      >
+      <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider">
         <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
           <a to="/" style="float:left;">
-            <a-select
-              :value="defaultServiceOption"
-              style="width: 280px"
-              :options="serviceOptions"
-              @change="serviceChange"
-            >
+            <a-select :value="defaultServiceOption" style="width: 280px" :options="serviceOptions" @change="serviceChange">
             </a-select>
           </a>
         </div>
@@ -27,62 +14,21 @@
           </a>
         </div>
         <div class="knife4j-menu">
-          <a-menu
-            key="Menu"
-            theme="dark"
-            mode="inline"
-            :inlineCollapsed="collapsed"
-            @openChange="handleOpenChange"
-            @select="selected"
-            :openKeys="openKeys"
-            :selectedKeys="selectedKeys"
-            style="padding: 16px 0; width: 100%"
-          >
+          <a-menu key="Menu" theme="dark" mode="inline" :inlineCollapsed="collapsed" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 16px 0; width: 100%">
             <ThreeMenu :menuData="MenuData" />
           </a-menu>
         </div>
       </a-layout-sider>
       <!-- <SiderMenu :defaultOption="defaultServiceOption" :serviceOptions="serviceOptions" @menuClick='menuClick' :logo="logo" :menuData="MenuData" :collapsed="collapsed" :location="$route" :onCollapse="handleMenuCollapse" :menuWidth="menuWidth" /> -->
       <a-layout>
-        <a-layout-header
-          style="padding: 0;background: #fff;    height: 56px; line-height: 56px;"
-        >
-          <GlobalHeader
-            @searchKey="searchKey"
-            @searchClear="searchClear"
-            :documentTitle="documentTitle"
-            :collapsed="collapsed"
-            :headerClass="headerClass"
-            :currentUser="currentUser"
-            :onCollapse="handleMenuCollapse"
-            :onMenuClick="item => handleMenuClick(item)"
-          />
+        <a-layout-header style="padding: 0;background: #fff;    height: 56px; line-height: 56px;">
+          <GlobalHeader @searchKey="searchKey" @searchClear="searchClear" :documentTitle="documentTitle" :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse" :onMenuClick="item => handleMenuClick(item)" />
         </a-layout-header>
-        <context-menu
-          :itemList="menuItemList"
-          :visible.sync="menuVisible"
-          @select="onMenuSelect"
-        />
-        <a-tabs
-          hideAdd
-          v-model="activeKey"
-          @contextmenu.native="e => onContextmenu(e)"
-          type="editable-card"
-          @change="tabChange"
-          @edit="tabEditCallback"
-          class="knife4j-tab"
-        >
-          <a-tab-pane
-            v-for="pane in panels"
-            :key="pane.key"
-            :closable="pane.closable"
-          >
+        <context-menu :itemList="menuItemList" :visible.sync="menuVisible" @select="onMenuSelect" />
+        <a-tabs hideAdd v-model="activeKey" @contextmenu.native="e => onContextmenu(e)" type="editable-card" @change="tabChange" @edit="tabEditCallback" class="knife4j-tab">
+          <a-tab-pane v-for="pane in panels" :key="pane.key" :closable="pane.closable">
             <span slot="tab" :pagekey="pane.key">{{ pane.title }}</span>
-            <component
-              :is="pane.content"
-              :data="pane"
-              @childrenMethods="childrenEmitMethod"
-            >
+            <component :is="pane.content" :data="pane" @childrenMethods="childrenEmitMethod">
             </component>
           </a-tab-pane>
         </a-tabs>
@@ -162,8 +108,8 @@ export default {
   },
   beforeCreate() {},
   created() {
-    //this.initKnife4jSpringUi();
-    this.initKnife4jFront();
+    this.initKnife4jSpringUi();
+    //this.initKnife4jFront();
   },
   computed: {
     currentUser() {

@@ -1,24 +1,11 @@
 <template>
   <div class="knife4j-debug">
     <a-row>
-      <a-col
-        :class="'knife4j-debug-api-' + api.methodType.toLowerCase()"
-        :span="24"
-      >
+      <a-col :class="'knife4j-debug-api-' + api.methodType.toLowerCase()" :span="24">
         <a-input-group compact>
           <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
-          <a-input
-            style="width: 80%"
-            :value="debugUrl"
-            @change="debugUrlChange"
-          />
-          <a-button
-            :loading="debugLoading"
-            class="knife4j-api-send"
-            type="primary"
-            @click="sendRestfulApi"
-            >发 送</a-button
-          >
+          <a-input style="width: 80%" :value="debugUrl" @change="debugUrlChange" />
+          <a-button :loading="debugLoading" class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送</a-button>
         </a-input-group>
       </a-col>
     </a-row>
@@ -29,66 +16,29 @@
             <span>
               <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
                 headerCount
-              }}</a-tag
-              >请求头部
+              }}</a-tag>请求头部
             </span>
           </template>
-          <a-table
-            v-if="headerTableFlag"
-            bordered
-            size="small"
-            :rowSelection="rowSelection"
-            :columns="headerColumn"
-            :pagination="pagination"
-            :dataSource="headerData"
-            rowKey="id"
-          >
+          <a-table v-if="headerTableFlag" bordered size="small" :rowSelection="rowSelection" :columns="headerColumn" :pagination="pagination" :dataSource="headerData" rowKey="id">
             <!--请求头下拉框-->
             <template slot="headerName" slot-scope="text, record">
               <!-- <a-select showSearch :options="headerOptions" placeholder="输入请求头" optionFilterProp="children" style="width: 100%">
               </a-select> -->
-              <a-auto-complete
-                @select="headerSelect"
-                @search="headerSearch"
-                @change="headerNameChange(record)"
-                :value="text"
-                :filterOption="headerNameFilterOption"
-                :allowClear="allowClear"
-                :dataSource="headerAutoOptions"
-                style="width: 100%"
-                placeholder="请求头名称"
-              />
+              <a-auto-complete @select="headerSelect" @search="headerSearch" @change="headerNameChange(record)" :value="text" :filterOption="headerNameFilterOption" :allowClear="allowClear" :dataSource="headerAutoOptions" style="width: 100%" placeholder="请求头名称" />
             </template>
             <template slot="headerValue" slot-scope="text, record">
-              <a-input
-                placeholder="请求头内容"
-                :class="'knife4j-debug-param-require' + record.require"
-                :data-key="record.id"
-                :defaultValue="text"
-                @change="headerContentChnage"
-              />
+              <a-input placeholder="请求头内容" :class="'knife4j-debug-param-require' + record.require" :data-key="record.id" :defaultValue="text" @change="headerContentChnage" />
             </template>
             <a-row slot="operation" slot-scope="text, record">
-              <a-button
-                type="link"
-                v-if="!record.new"
-                @click="headerDelete(record)"
-                >删除</a-button
-              >
+              <a-button type="link" v-if="!record.new" @click="headerDelete(record)">删除</a-button>
             </a-row>
           </a-table>
         </a-tab-pane>
         <a-tab-pane tab="请求参数" key="2" forceRender>
           <a-row class="knife4j-debug-request-type">
             <div class="knife4j-debug-request-content-type-float">
-              <a-radio-group
-                @change="requestContentTypeChange"
-                class="knife4j-debug-request-content-type"
-                v-model="requestContentType"
-              >
-                <a-radio value="x-www-form-urlencoded"
-                  >x-www-form-urlencoded</a-radio
-                >
+              <a-radio-group @change="requestContentTypeChange" class="knife4j-debug-request-content-type" v-model="requestContentType">
+                <a-radio value="x-www-form-urlencoded">x-www-form-urlencoded</a-radio>
                 <a-radio value="form-data">form-data</a-radio>
                 <a-radio value="raw">raw</a-radio>
               </a-radio-group>
@@ -97,89 +47,33 @@
               <div class="knife4j-debug-request-content-type-raw">
                 <a-dropdown v-if="rawTypeFlag" :trigger="['click']">
                   <span class="knife4j-debug-raw-span">
-                    <span>{{ rawDefaultText }}</span> <a-icon type="down" />
+                    <span>{{ rawDefaultText }}</span>
+                    <a-icon type="down" />
                   </span>
                   <a-menu slot="overlay" @click="rawMenuClick">
-                    <a-menu-item
-                      data-mode-type="application/json"
-                      data-mode="text"
-                      key="Auto"
-                      >Auto</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="text/plain"
-                      data-mode="text"
-                      key="Text(text/plain)"
-                      >Text(text/plain)</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="application/json"
-                      data-mode="json"
-                      key="JSON(application/json)"
-                      >JSON(application/json)</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="application/javascript"
-                      data-mode="javascript"
-                      key="Javascript(application/Javascript)"
-                      >Javascript(application/Javascript)</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="application/xml"
-                      data-mode="xml"
-                      key="XML(application/xml)"
-                      >XML(application/xml)</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="text/xml"
-                      data-mode="xml"
-                      key="XML(text/xml)"
-                      >XML(text/xml)</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="text/html"
-                      data-mode="html"
-                      key="HTML(text/html)"
-                      >HTML(text/html)</a-menu-item
-                    >
+                    <a-menu-item data-mode-type="application/json" data-mode="text" key="Auto">Auto</a-menu-item>
+                    <a-menu-item data-mode-type="text/plain" data-mode="text" key="Text(text/plain)">Text(text/plain)</a-menu-item>
+                    <a-menu-item data-mode-type="application/json" data-mode="json" key="JSON(application/json)">JSON(application/json)</a-menu-item>
+                    <a-menu-item data-mode-type="application/javascript" data-mode="javascript" key="Javascript(application/Javascript)">Javascript(application/Javascript)</a-menu-item>
+                    <a-menu-item data-mode-type="application/xml" data-mode="xml" key="XML(application/xml)">XML(application/xml)</a-menu-item>
+                    <a-menu-item data-mode-type="text/xml" data-mode="xml" key="XML(text/xml)">XML(text/xml)</a-menu-item>
+                    <a-menu-item data-mode-type="text/html" data-mode="html" key="HTML(text/html)">HTML(text/html)</a-menu-item>
                   </a-menu>
                 </a-dropdown>
               </div>
             </div>
           </a-row>
           <a-row v-if="formFlag">
-            <a-table
-              v-if="formTableFlag"
-              bordered
-              size="small"
-              :rowSelection="rowFormSelection"
-              :columns="formColumn"
-              :pagination="pagination"
-              :dataSource="formData"
-              rowKey="id"
-            >
+            <a-table v-if="formTableFlag" bordered size="small" :rowSelection="rowFormSelection" :columns="formColumn" :pagination="pagination" :dataSource="formData" rowKey="id">
               <!--参数名称-->
               <template slot="formName" slot-scope="text, record">
-                <a-input
-                  :placeholder="record.description"
-                  :data-key="record.id"
-                  :defaultValue="text"
-                  @change="formNameChange"
-                />
+                <a-input :placeholder="record.description" :data-key="record.id" :defaultValue="text" @change="formNameChange" />
               </template>
               <!--参数下拉框-->
               <template slot="formType" slot-scope="text, record">
-                <a-select
-                  :defaultValue="text + '-' + record.id"
-                  @change="formTypeChange"
-                  style="width: 100%;"
-                >
-                  <a-select-option :value="'text-' + record.id"
-                    >文本</a-select-option
-                  >
-                  <a-select-option :value="'file-' + record.id"
-                    >文件</a-select-option
-                  >
+                <a-select :defaultValue="text + '-' + record.id" @change="formTypeChange" style="width: 100%;">
+                  <a-select-option :value="'text-' + record.id">文本</a-select-option>
+                  <a-select-option :value="'file-' + record.id">文件</a-select-option>
                 </a-select>
               </template>
               <!--参数名称-->
@@ -188,94 +82,39 @@
                   <!--判断枚举类型-->
                   <a-row v-if="record.enums != null">
                     <!--不为空-->
-                    <a-select
-                      :defaultValue="text"
-                      :data-key="record.id"
-                      :options="record.enums"
-                      style="width: 100%"
-                      @change="formContentEnumChange"
-                    >
+                    <a-select :defaultValue="text" :data-key="record.id" :options="record.enums" style="width: 100%" @change="formContentEnumChange">
                     </a-select>
                   </a-row>
                   <a-row v-else>
-                    <a-input
-                      :placeholder="record.description"
-                      :class="'knife4j-debug-param-require' + record.require"
-                      :data-key="record.id"
-                      :defaultValue="text"
-                      @change="formContentChange"
-                    />
+                    <a-input :placeholder="record.description" :class="'knife4j-debug-param-require' + record.require" :data-key="record.id" :defaultValue="text" @change="formContentChange" />
                   </a-row>
                 </div>
                 <div v-else>
                   <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
                   <div>
                     <div style="display:none;" v-if="record.multipart">
-                      <input
-                        :id="'file' + record.id"
-                        multiple
-                        style="display:none;"
-                        type="file"
-                        :data-key="record.id"
-                        @change="formFileChange"
-                      />
+                      <input :id="'file' + record.id" multiple style="display:none;" type="file" :data-key="record.id" @change="formFileChange" />
                     </div>
                     <div style="display:none;" v-else>
-                      <input
-                        :id="'file' + record.id"
-                        style="display:none;"
-                        type="file"
-                        :data-key="record.id"
-                        @change="formFileChange"
-                      />
+                      <input :id="'file' + record.id" style="display:none;" type="file" :data-key="record.id" @change="formFileChange" />
                     </div>
                     <a-input-group compact>
-                      <a-input
-                        style="width: 82%"
-                        :class="'knife4j-debug-param-require' + record.require"
-                        :value="record.content"
-                        disabled
-                      />
-                      <a-button
-                        @click="formFileUploadClick(record)"
-                        class="knife4j-api-send"
-                        style="width:80px;"
-                        type="primary"
-                        >选择文件</a-button
-                      >
+                      <a-input style="width: 82%" :class="'knife4j-debug-param-require' + record.require" :value="record.content" disabled />
+                      <a-button @click="formFileUploadClick(record)" class="knife4j-api-send" style="width:80px;" type="primary">选择文件</a-button>
                     </a-input-group>
                   </div>
                 </div>
               </template>
               <a-row slot="operation" slot-scope="text, record">
-                <a-button
-                  type="link"
-                  v-if="!record.new"
-                  @click="formDelete(record)"
-                  >删除</a-button
-                >
+                <a-button type="link" v-if="!record.new" @click="formDelete(record)">删除</a-button>
               </a-row>
             </a-table>
           </a-row>
           <a-row v-if="urlFormFlag">
-            <a-table
-              v-if="urlFormTableFlag"
-              bordered
-              size="small"
-              :rowSelection="rowUrlFormSelection"
-              :columns="urlFormColumn"
-              :pagination="pagination"
-              :dataSource="urlFormData"
-              rowKey="id"
-            >
+            <a-table v-if="urlFormTableFlag" bordered size="small" :rowSelection="rowUrlFormSelection" :columns="urlFormColumn" :pagination="pagination" :dataSource="urlFormData" rowKey="id">
               <!--参数名称-->
               <template slot="urlFormName" slot-scope="text, record">
-                <a-input
-                  :placeholder="record.description"
-                  :data-key="record.id"
-                  :defaultValue="text"
-                  @change="urlFormNameChange"
-                />
+                <a-input :placeholder="record.description" :data-key="record.id" :defaultValue="text" @change="urlFormNameChange" />
               </template>
 
               <!--参数名称-->
@@ -283,56 +122,25 @@
                 <!--判断枚举类型-->
                 <a-row v-if="record.enums != null">
                   <!--不为空-->
-                  <a-select
-                    :defaultValue="text"
-                    :data-key="record.id"
-                    :options="record.enums"
-                    style="width: 100%"
-                    @change="urlFormContentEnumChange"
-                  >
+                  <a-select :defaultValue="text" :data-key="record.id" :options="record.enums" style="width: 100%" @change="urlFormContentEnumChange">
                   </a-select>
                 </a-row>
                 <a-row v-else>
-                  <a-input
-                    :placeholder="record.description"
-                    :class="'knife4j-debug-param-require' + record.require"
-                    :data-key="record.id"
-                    :defaultValue="text"
-                    @change="urlFormContentChange"
-                  />
+                  <a-input :placeholder="record.description" :class="'knife4j-debug-param-require' + record.require" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
                 </a-row>
               </template>
               <a-row slot="operation" slot-scope="text, record">
-                <a-button
-                  type="link"
-                  v-if="!record.new"
-                  @click="urlFormDelete(record)"
-                  >删除</a-button
-                >
+                <a-button type="link" v-if="!record.new" @click="urlFormDelete(record)">删除</a-button>
               </a-row>
             </a-table>
           </a-row>
           <a-row v-if="rawFlag">
             <a-row v-if="rawFormFlag">
               <!--如果存在raw类型的参数则显示该表格-->
-              <a-table
-                v-if="rawFormTableFlag"
-                bordered
-                size="small"
-                :rowSelection="rowRawFormSelection"
-                :columns="urlFormColumn"
-                :pagination="pagination"
-                :dataSource="rawFormData"
-                rowKey="id"
-              >
+              <a-table v-if="rawFormTableFlag" bordered size="small" :rowSelection="rowRawFormSelection" :columns="urlFormColumn" :pagination="pagination" :dataSource="rawFormData" rowKey="id">
                 <!--参数名称-->
                 <template slot="urlFormName" slot-scope="text, record">
-                  <a-input
-                    :placeholder="record.description"
-                    :data-key="record.id"
-                    :defaultValue="text"
-                    @change="rawFormNameChange"
-                  />
+                  <a-input :placeholder="record.description" :data-key="record.id" :defaultValue="text" @change="rawFormNameChange" />
                 </template>
 
                 <!--参数名称-->
@@ -340,60 +148,25 @@
                   <!--判断枚举类型-->
                   <a-row v-if="record.enums != null">
                     <!--不为空-->
-                    <a-select
-                      :defaultValue="text"
-                      :data-key="record.id"
-                      :options="record.enums"
-                      style="width: 100%"
-                      @change="rawFormContentEnumChange"
-                    >
+                    <a-select :defaultValue="text" :data-key="record.id" :options="record.enums" style="width: 100%" @change="rawFormContentEnumChange">
                     </a-select>
                   </a-row>
                   <a-row v-else>
-                    <a-input
-                      :placeholder="record.description"
-                      :class="'knife4j-debug-param-require' + record.require"
-                      :data-key="record.id"
-                      :defaultValue="text"
-                      @change="rawFormContentChange"
-                    />
+                    <a-input :placeholder="record.description" :class="'knife4j-debug-param-require' + record.require" :data-key="record.id" :defaultValue="text" @change="rawFormContentChange" />
                   </a-row>
                 </template>
                 <a-row slot="operation" slot-scope="text, record">
-                  <a-button
-                    type="link"
-                    v-if="!record.new"
-                    @click="rawFormDelete(record)"
-                    >删除</a-button
-                  >
+                  <a-button type="link" v-if="!record.new" @click="rawFormDelete(record)">删除</a-button>
                 </a-row>
               </a-table>
             </a-row>
-            <editor-debug-show
-              style="margin-top:5px;"
-              :value="rawText"
-              :mode="rawMode"
-              @change="rawChange"
-            ></editor-debug-show>
+            <editor-debug-show style="margin-top:5px;" :value="rawText" :mode="rawMode" @change="rawChange"></editor-debug-show>
           </a-row>
         </a-tab-pane>
       </a-tabs>
     </a-row>
     <a-row>
-      <DebugResponse
-        ref="childDebugResponse"
-        :responseFieldDescriptionChecked="responseFieldDescriptionChecked"
-        :swaggerInstance="swaggerInstance"
-        :api="api"
-        @debugShowFieldDescriptionChange="debugShowFieldDescriptionChange"
-        @debugEditorChange="debugEditorChange"
-        :debugSend="debugSend"
-        :responseContent="responseContent"
-        :responseCurlText="responseCurlText"
-        :responseStatus="responseStatus"
-        :responseRawText="responseRawText"
-        :responseHeaders="responseHeaders"
-      />
+      <DebugResponse ref="childDebugResponse" :responseFieldDescriptionChecked="responseFieldDescriptionChecked" :swaggerInstance="swaggerInstance" :api="api" @debugShowFieldDescriptionChange="debugShowFieldDescriptionChange" @debugEditorChange="debugEditorChange" :debugSend="debugSend" :responseContent="responseContent" :responseCurlText="responseCurlText" :responseStatus="responseStatus" :responseRawText="responseRawText" :responseHeaders="responseHeaders" />
     </a-row>
   </div>
 </template>
@@ -1980,6 +1753,42 @@ export default {
       });
       return flag;
     },
+    checkUrlParams(url) {
+      //如果开发者自己在url栏添加了后缀参数,则解析动态添加
+      //https://gitee.com/xiaoym/knife4j/issues/I1C5OQ
+      //校验url请求参数是否携带参数
+      //如果开发者自己在url栏添加了后缀参数,则解析动态添加
+      //https://gitee.com/xiaoym/knife4j/issues/I1C5OQ
+      var paramIndex = url.indexOf("?");
+      var checkResult = {
+        result: false, //不包含参数
+        params: {},
+        url: url
+      };
+      if (paramIndex > -1) {
+        //包含参数
+        var subParam = url.substring(paramIndex + 1);
+        //存在
+        //url重新赋值
+        checkResult.url = url.substring(0, paramIndex);
+        checkResult.result = true;
+        //url重新赋值
+        //split
+        if (KUtils.strNotBlank(subParam)) {
+          var subParamArrs = subParam.split("&");
+          subParamArrs.forEach(suba => {
+            if (KUtils.strNotBlank(suba)) {
+              var realpa = suba.split("=");
+              if (realpa.length == 2) {
+                //追加参数
+                checkResult.params[realpa[0]] = realpa[1];
+              }
+            }
+          });
+        }
+      }
+      return checkResult;
+    },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
       //console("发送url-form接口");
@@ -2013,6 +1822,11 @@ export default {
           }
           //重新赋值
           formParams = realFormParams;
+        }
+        var checkResult = this.checkUrlParams(url);
+        if (checkResult.result) {
+          url = checkResult.url;
+          formParams = Object.assign(formParams, checkResult.params);
         }
         var requestConfig = {
           url: url,
@@ -2103,6 +1917,11 @@ export default {
         if (fileFlag) {
           requestConfig = { ...requestConfig, data: formParams };
         } else {
+          var checkResult = this.checkUrlParams(url);
+          if (checkResult.result) {
+            url = checkResult.url;
+            formParams = Object.assign(formParams, checkResult.params);
+          }
           requestConfig = { ...requestConfig, params: formParams };
         }
         //需要判断是否是下载请求
@@ -2167,7 +1986,11 @@ export default {
           //重新赋值
           formParams = realFormParams;
         }
-
+        var checkResult = this.checkUrlParams(url);
+        if (checkResult.result) {
+          url = checkResult.url;
+          formParams = Object.assign(formParams, checkResult.params);
+        }
         //console(headers);
         //console(this.rawText);
         DebugAxios.create()
