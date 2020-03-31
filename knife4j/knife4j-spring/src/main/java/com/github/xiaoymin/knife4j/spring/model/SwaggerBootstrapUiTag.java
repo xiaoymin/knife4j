@@ -18,7 +18,20 @@ import io.swagger.models.Tag;
  */
 public class SwaggerBootstrapUiTag extends Tag {
 
+    /**
+     * add at 2020-3-31 13:03:39 by xiaoymin
+     */
+    private String author;
+
     private Integer order;
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
     public Integer getOrder() {
         return order;

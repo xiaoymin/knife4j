@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.spring.web;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSort;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.github.xiaoymin.knife4j.spring.model.SwaggerBootstrapUi;
 import com.github.xiaoymin.knife4j.spring.model.SwaggerBootstrapUiPath;
 import com.github.xiaoymin.knife4j.spring.common.SwaggerBootstrapUiHostNameProvider;
@@ -245,6 +246,10 @@ public class Knife4jController {
             }
             if (tagMapping!=null){
                 tag.setOrder(getRestTagOrder(tagMapping.getBeanType(),tagApi));
+                String author=getRestTagAuthor(tagMapping.getBeanType());
+                if (author!=null&&!"".equalsIgnoreCase(author)){
+                    tag.setAuthor(author);
+                }
             }
             targetTagLists.add(tag);
         }
@@ -365,6 +370,16 @@ public class Knife4jController {
         }
     }
 
+    private String getRestTagAuthor(Class<?> aClass){
+        if (aClass!=null){
+            ApiSupport apiSupport=ClassUtils.getUserClass(aClass).getAnnotation(ApiSupport.class);
+            if (apiSupport!=null){
+                return apiSupport.author();
+            }
+        }
+        return null;
+    }
+
     /***
      * 获取tag排序
      * @param aClass
@@ -377,20 +392,26 @@ public class Knife4jController {
             //优先获取api注解的position属性,如果不等于0,则取此值,否则获取apiSort注解,判断是否为空,如果不为空,则获取apisort的值,优先级:@Api-position>@ApiSort-value
             int post=api.position();
             if (post==0){
-                if (aClass!=null){
-                    ApiSort annotation = ClassUtils.getUserClass(aClass).getAnnotation(ApiSort.class);
-                    if (annotation!=null){
-                        order=annotation.value();
-                    }
-                }
+                order=findOrder(aClass);
             }else{
                 order=post;
             }
         }else{
-            if (aClass!=null){
-                ApiSort annotation = ClassUtils.getUserClass(aClass).getAnnotation(ApiSort.class);
-                if (annotation!=null){
-                    order=annotation.value();
+            order=findOrder(aClass);
+        }
+        return order;
+    }
+
+    private Integer findOrder(Class<?> aClass){
+        int order=Integer.MAX_VALUE;
+        if (aClass!=null){
+            ApiSort annotation = ClassUtils.getUserClass(aClass).getAnnotation(ApiSort.class);
+            if (annotation!=null){
+                order=annotation.value();
+            }else{
+                ApiSupport apiSupport=ClassUtils.getUserClass(aClass).getAnnotation(ApiSupport.class);
+                if (apiSupport!=null){
+                    order=apiSupport.order();
                 }
             }
         }
