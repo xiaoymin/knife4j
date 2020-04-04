@@ -40,7 +40,8 @@
   </div>
 </template>
 <script>
-import logo from "@/assets/logo.png";
+//import logo from "@/assets/logo.png";
+import logo from "@/core/logo.js";
 import SiderMenu from "@/components/SiderMenu";
 import GlobalHeader from "@/components/GlobalHeader";
 import GlobalFooter from "@/components/GlobalFooter";
