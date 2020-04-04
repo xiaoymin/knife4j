@@ -22,7 +22,6 @@
     "lodash": "^4.17.15",
     "markdown-loader": "^5.1.0",
     "marked": "^0.7.0",
-    "register-service-worker": "^1.6.2",
     "vue": "^2.6.10",
     "vue-i18n": "^8.15.3",
     "vue-markdown": "^2.2.4",
