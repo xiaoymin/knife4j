@@ -421,7 +421,7 @@ export default {
       var data = [];
       var that = this;
       var apiInfo = this.api;
-      console.log(apiInfo);
+      //console.log(apiInfo);
       //针对数组类型的ignore写法,在这里不需要,table树里面是对象点属性
       //忽略数组的写法 name[0]
       var tmpKeys = Object.keys(apiInfo.ignoreParameters || {});

@@ -405,6 +405,7 @@ import constant from "@/store/constants";
 import EditorDebugShow from "./EditorDebugShow";
 import DebugResponse from "./DebugResponse";
 import DebugAxios from "axios";
+import vkbeautify from "@/components/utils/vkbeautify";
 
 export default {
   name: "Debug",
@@ -936,8 +937,8 @@ export default {
       this.urlFormFlag = false;
       //如果是raw类型，则赋值
       this.rawText = KUtils.toString(this.api.requestValue, "");
-      if(this.api.xmlRequest){
-        this.rawRequestType="application/xml";
+      if (this.api.xmlRequest) {
+        this.rawRequestType = "application/xml";
       }
       this.requestContentType = "raw";
     },
@@ -2590,6 +2591,7 @@ export default {
     setResponseBody(res) {
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
+        //console.log(res);
         var headers = res.headers;
         if (KUtils.checkUndefined(resp)) {
           //判断是否是blob类型
@@ -2687,7 +2689,7 @@ export default {
       //var _text = resp.responseText;
       var _text = "";
       var mode = this.getContentTypeByHeaders(headers);
-      //console("动态mode-----" + mode);
+      //console.log("动态mode-- ---" + mode);
       //console(res);
       if (mode == "json") {
         //_text = KUtils.json5stringify(KUtils.json5parse(_text));
@@ -2707,6 +2709,13 @@ export default {
           if (KUtils.strNotBlank(resp.responseText)) {
             _text = KUtils.json5stringify(KUtils.json5parse(resp.responseText));
           }
+        }
+      } else if (mode == "xml") {
+        var tmpXmlText = resp.responseText;
+        if (KUtils.strNotBlank(tmpXmlText)) {
+          _text = new vkbeautify().xml(tmpXmlText);
+        } else {
+          _text = tmpXmlText;
         }
       } else {
         _text = resp.responseText;
