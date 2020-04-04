@@ -152,7 +152,7 @@ function isUrl(path) {
 }
 
 const utils = {
-  filterIgnoreParameters(name, ignoreParameters) {
+  filterIgnoreParameters(inType, name, ignoreParameters) {
     //是否过滤参数
     if (ignoreParameters == null) {
       return true;
@@ -181,7 +181,12 @@ const utils = {
         return true;
       }
     } else {
-      return !ignoreParameterAllKeys.includes(name);
+      if (inType == 'query') {
+        return !ignoreParameterAllKeys.some(key =>
+          new RegExp(`^(${key}$|${key}[.[])`).test(name));
+      } else {
+        return !ignoreParameterAllKeys.includes(name);
+      }
     }
   },
   binaryContentType(produces, contentType) {

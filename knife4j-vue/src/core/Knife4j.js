@@ -1824,14 +1824,15 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
         //})
         //$.each(pameters, function (i, m) {
         var originalName = KUtils.propValue("name", m, "");
+        var inType = KUtils.propValue("in", m, "");
         //忽略参数
         //if (swpinfo.ignoreParameters == null || (swpinfo.ignoreParameters != null && !swpinfo.ignoreParameters.hasOwnProperty(originalName))) {
-        if (KUtils.filterIgnoreParameters(originalName, swpinfo.ignoreParameters)) {
+        if (KUtils.filterIgnoreParameters(inType, originalName, swpinfo.ignoreParameters)) {
           var minfo = new SwaggerBootstrapUiParameter();
           minfo.name = originalName;
           minfo.ignoreFilterName = originalName;
           minfo.type = KUtils.propValue("type", m, "");
-          minfo.in = KUtils.propValue("in", m, "");
+          minfo.in = inType;
           minfo.require = KUtils.propValue("required", m, false);
           minfo.description = KUtils.replaceMultipLineStr(KUtils.propValue("description", m, ""));
           //add at 2019-12-10 09:20:08  判断请求参数类型是否包含format
