@@ -754,12 +754,16 @@ export default {
           var rawQueryParams = showApiParameters.filter(
             param => param.in != "body" && param.in != "header"
           );
+          this.addGlobalParameterToRawForm(showGlobalParameters);
           if (rawQueryParams.length > 0) {
             //存在
             this.rawFormFlag = true;
             //添加参数
-            this.addGlobalParameterToRawForm(showGlobalParameters);
             this.addApiParameterToRawForm(rawQueryParams);
+          }
+          if (KUtils.arrNotEmpty(this.rawFormData)) {
+            //存在
+            this.rawFormFlag = true;
           }
           //raw类型
           //raw类型之中可能有表格参数-待写
