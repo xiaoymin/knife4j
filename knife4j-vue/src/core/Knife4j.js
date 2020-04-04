@@ -46,6 +46,7 @@ import has from 'lodash/has'
 import unset from 'lodash/unset'
 import isNull from 'lodash/isNull'
 import isUndefined from 'lodash/isUndefined'
+import xml2js from 'xml2js'
 
 marked.setOptions({
   gfm: true,
@@ -2379,6 +2380,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   if (swpinfo.parameters != null) {
     var count = 0;
     var tmpJsonValue = null;
+    var tmpRootXmlName = "";
     swpinfo.parameters.forEach(function (p) {
       //})
       //$.each(swpinfo.parameters, function (i, p) {
@@ -2386,11 +2388,33 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
         count = count + 1;
         if (p.txtValue != null && p.txtValue != "") {
           tmpJsonValue = p.txtValue;
+          tmpRootXmlName = p.schemaValue;
         }
       }
     })
     if (count == 1) {
       swpinfo.requestValue = tmpJsonValue;
+      //判断consume是否是XML
+      //https://gitee.com/xiaoym/knife4j/issues/I1BCKB
+      if (KUtils.arrNotEmpty(swpinfo.consumes)) {
+        var notEmptyConsumes = swpinfo.consumes.filter(consume => KUtils.strNotBlank(consume));
+        if (KUtils.arrNotEmpty(notEmptyConsumes)) {
+          var xmlRequest = notEmptyConsumes.some(consume => consume.toLowerCase().indexOf("xml") > -1);
+          if (xmlRequest) {
+            //是Xml请求
+            if (KUtils.strNotBlank(tmpJsonValue)) {
+              var tmpJsonObject = KUtils.json5parse(tmpJsonValue);
+              var builder = new xml2js.Builder({
+                rootName: tmpRootXmlName
+              });
+              var obj = builder.buildObject(tmpJsonObject);
+              swpinfo.requestValue = builder.buildObject(tmpJsonObject);
+              swpinfo.xmlRequest = true;
+            }
+          }
+
+        }
+      }
     }
     //此处判断接口的请求参数类型
     //判断consumes请求类型
@@ -2404,6 +2428,11 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
         swpinfo.contentValue = "raw";
         swpinfo.contentShowValue = "Text(text/plain)";
         swpinfo.contentMode = "text";
+      } else if (ctp == "application/xml") {
+        swpinfo.contentType = ctp;
+        swpinfo.contentValue = "raw";
+        swpinfo.contentShowValue = "XML(application/xml)";
+        swpinfo.contentMode = "xml";
       } else {
         //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
         var defaultType = "application/x-www-form-urlencoded;charset=UTF-8";
@@ -3344,6 +3373,8 @@ var SwaggerBootstrapUiApiInfo = function () {
   this.parameterSize = 0;
   //请求json示例
   this.requestValue = null;
+  //是否xml请求
+  this.xmlRequest = false;
   //针对parameter属性有引用类型的参数,继续以table 的形式展现
   //存放SwaggerBootstrapUiRefParameter 集合
   this.refparameters = new Array();

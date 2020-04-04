@@ -1,6 +1,13 @@
 <template>
   <div>
-    <editor :value="value" @init="editorInit" lang="json" theme="eclipse" width="100%" :height="editorHeight"></editor>
+    <editor
+      :value="value"
+      @init="editorInit"
+      :lang="lang"
+      theme="eclipse"
+      width="100%"
+      :height="editorHeight"
+    ></editor>
   </div>
 </template>
 
@@ -13,10 +20,16 @@ export default {
       type: String,
       required: true,
       default: ""
+    },
+    xmlMode: {
+      type: Boolean,
+      default: false,
+      required: false
     }
   },
   data() {
     return {
+      lang: "json",
       editor: null,
       editorHeight: 200
     };
@@ -39,6 +52,10 @@ export default {
       this.editor = editor;
       require("brace/ext/language_tools"); //language extension prerequsite...
       require("brace/mode/json");
+      require("brace/mode/xml");
+      if (this.xmlMode) {
+        this.lang = "xml";
+      }
       require("brace/theme/eclipse");
       //重设高度
       this.resetEditorHeight();

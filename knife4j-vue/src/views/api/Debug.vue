@@ -936,6 +936,9 @@ export default {
       this.urlFormFlag = false;
       //如果是raw类型，则赋值
       this.rawText = KUtils.toString(this.api.requestValue, "");
+      if(this.api.xmlRequest){
+        this.rawRequestType="application/xml";
+      }
       this.requestContentType = "raw";
     },
     getEnumOptions(param) {
