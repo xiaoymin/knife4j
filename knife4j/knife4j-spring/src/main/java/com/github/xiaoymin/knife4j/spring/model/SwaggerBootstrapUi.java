@@ -33,7 +33,7 @@ public class SwaggerBootstrapUi {
     /***
      * 自定义菜单内容
      */
-    private List<MarkdownFile> markdownFiles;
+    private List<MarkdownFile> markdownFiles=new ArrayList<>();
 
     /***
      * 开启增强失败,错误原因

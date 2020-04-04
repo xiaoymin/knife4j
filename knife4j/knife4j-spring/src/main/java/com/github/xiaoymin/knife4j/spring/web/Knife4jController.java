@@ -69,7 +69,7 @@ import static com.google.common.collect.FluentIterable.from;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static springfox.documentation.swagger.common.HostNameProvider.componentsFrom;
 
-/***
+/**
  * Knife4j增强接口
  * @since:swagger-bootstrap-ui 1.8.5
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
@@ -117,12 +117,7 @@ public class Knife4jController {
     }
 
     private Function<RequestHandlerProvider, ? extends Iterable<RequestHandler>> handlers() {
-        return new Function<RequestHandlerProvider, Iterable<RequestHandler>>() {
-            @Override
-            public Iterable<RequestHandler> apply(RequestHandlerProvider input) {
-                return input.requestHandlers();
-            }
-        };
+        return new RequestHandlerFunction();
     }
     @RequestMapping(value = DEFAULT_SORT_URL,
             method = RequestMethod.GET,
@@ -253,19 +248,8 @@ public class Knife4jController {
             }
             targetTagLists.add(tag);
         }
-        Collections.sort(targetTagLists, new Comparator<SwaggerBootstrapUiTag>() {
-            @Override
-            public int compare(SwaggerBootstrapUiTag o1, SwaggerBootstrapUiTag o2) {
-                return o1.getOrder().compareTo(o2.getOrder());
-            }
-        });
-        Collections.sort(targetPathLists, new Comparator<SwaggerBootstrapUiPath>() {
-            @Override
-            public int compare(SwaggerBootstrapUiPath o1, SwaggerBootstrapUiPath o2) {
-                return o1.getOrder().compareTo(o2.getOrder());
-            }
-        });
-
+        Collections.sort(targetTagLists, new Knife4jTagComparator());
+        Collections.sort(targetPathLists, new Knife4jPathComparator());
         swaggerBootstrapUi.setTagSortLists(targetTagLists);
         swaggerBootstrapUi.setPathSortLists(targetPathLists);
         if (markdownFiles!=null){
@@ -388,6 +372,7 @@ public class Knife4jController {
      */
     private int getRestTagOrder(Class<?> aClass,Api api){
         int order=Integer.MAX_VALUE;
+        //优先级ApiSupport>ApiSort>Api
         if (api!=null){
             //优先获取api注解的position属性,如果不等于0,则取此值,否则获取apiSort注解,判断是否为空,如果不为空,则获取apisort的值,优先级:@Api-position>@ApiSort-value
             int post=api.position();
@@ -478,4 +463,24 @@ public class Knife4jController {
         return hostNameOverride;
     }
 
+    static class Knife4jTagComparator implements Comparator<SwaggerBootstrapUiTag>{
+        @Override
+        public int compare(SwaggerBootstrapUiTag o1, SwaggerBootstrapUiTag o2) {
+            return o1.getOrder().compareTo(o2.getOrder());
+        }
+    }
+
+    static class Knife4jPathComparator implements Comparator<SwaggerBootstrapUiPath>{
+        @Override
+        public int compare(SwaggerBootstrapUiPath o1, SwaggerBootstrapUiPath o2) {
+            return o1.getOrder().compareTo(o2.getOrder());
+        }
+    }
+
+    static class RequestHandlerFunction implements Function<RequestHandlerProvider, Iterable<RequestHandler>>{
+        @Override
+        public Iterable<RequestHandler> apply(RequestHandlerProvider input) {
+            return input.requestHandlers();
+        }
+    }
 }

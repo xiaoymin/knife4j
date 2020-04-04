@@ -24,7 +24,7 @@ public @interface ApiSupport {
      * Sort Fields
      * @return 排序
      */
-    int order() default 0;
+    int order() default Integer.MAX_VALUE;
 
 
     /***
