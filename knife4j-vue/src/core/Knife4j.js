@@ -1023,6 +1023,9 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
     }
     tags.forEach(function (tag) {
       var swuTag = new SwaggerBootstrapUiTag(tag.name, tag.description);
+      if (KUtils.strNotBlank(tag.author)) {
+        swuTag.author = tag.author;
+      }
       that.currentInstance.tags.push(swuTag);
     })
   }
@@ -1209,6 +1212,12 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
               methodApi.hasNew = true;
             }
             //console.log(methodApi)
+            //判断作者
+            if (!KUtils.strNotBlank(methodApi.author)) {
+              if (KUtils.strNotBlank(tag.author)) {
+                methodApi.author = tag.author;
+              }
+            }
             tag.childrens.push(methodApi);
           }
         })
@@ -1241,6 +1250,12 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
         methodApi.tags.forEach(function (tagName) {
           //$.each(methodApi.tags, function (x, tagName) {
           if (tagName == tag.name) {
+            //判断作者
+            if (!KUtils.strNotBlank(methodApi.author)) {
+              if (KUtils.strNotBlank(tag.author)) {
+                methodApi.author = tag.author;
+              }
+            }
             tag.childrens.push(methodApi);
           }
         })
@@ -1808,7 +1823,10 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     }
     //读取扩展属性x-author
     if (apiInfo.hasOwnProperty("x-author")) {
-      swpinfo.author = apiInfo["x-author"];
+      var xauthor = apiInfo["x-author"];
+      if (KUtils.strNotBlank(xauthor)) {
+        swpinfo.author = xauthor;
+      }
     }
     //operationId
     swpinfo.operationId = KUtils.getValue(apiInfo, "operationId", "", true);
@@ -3335,6 +3353,8 @@ var SwaggerBootstrapUiProperty = function () {
 var SwaggerBootstrapUiTag = function (name, description) {
   this.name = name;
   this.description = description;
+  //add by xiaoymin 2020-4-5 11:03:07 分组作者
+  this.author = null;
   this.childrens = new Array();
   //是否有新接口
   this.hasNew = false;

@@ -8,7 +8,6 @@ import java.lang.annotation.*;
  * @since 1.8.5
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  */
-@Deprecated
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -18,5 +17,5 @@ public @interface ApiSort {
      * tag order value, Deprecated since 2.0.3,see {@link ApiSupport} order field
      * @return order
      */
-    @Deprecated int value() default Integer.MAX_VALUE;
+   int value() default Integer.MAX_VALUE;
 }
