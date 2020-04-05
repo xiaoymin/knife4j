@@ -60,4 +60,12 @@ public @interface ApiOperationSupport {
      */
     String[] ignoreParameters() default {};
 
+
+    /**
+     * 请求接口包含的参数数组,和ignoreParameters属性对立
+     * @since 2.0.3
+     * @return 包含参数数组
+     */
+    String[] includeParameters() default {};
+
 }
