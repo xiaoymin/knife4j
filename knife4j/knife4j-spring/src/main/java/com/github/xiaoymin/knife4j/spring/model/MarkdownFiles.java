@@ -78,8 +78,8 @@ public class MarkdownFiles {
                         }
                     }
                 }
-            } catch (IOException e) {
-                logger.error(e.getMessage(),e);
+            } catch (Exception e) {
+                logger.error("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
             }
         }
     }
@@ -112,7 +112,7 @@ public class MarkdownFiles {
                     markdownFile.setContent(new String(CommonUtils.readBytes(resource.getInputStream()),"UTF-8"));
                     return markdownFile;
                 } catch (Exception e) {
-                    logger.error(e.getMessage(),e);
+                    logger.error("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
                 }finally {
                     CommonUtils.closeQuiltly(reader);
                 }
