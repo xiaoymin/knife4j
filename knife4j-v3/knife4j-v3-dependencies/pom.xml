@@ -5,11 +5,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xiaoymin</groupId>
-    <artifactId>knife4j-dependencies</artifactId>
+    <artifactId>knife4j-v3-dependencies</artifactId>
     <version>2.0.3</version>
     <packaging>pom</packaging>
-    <name>knife4j-dependencies</name>
-    <description>Knife4j Dependencies</description>
+    <name>knife4j-v3-dependencies</name>
+    <description>Knife4j-v3 Dependencies</description>
     <url>https://gitee.com/xiaoym/knife4j</url>
     <developers>
         <developer>
@@ -61,39 +61,39 @@
 
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-annotations</artifactId>
+                <artifactId>knife4j-v3-annotations</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring</artifactId>
+                <artifactId>knife4j-v3-spring</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-core</artifactId>
+                <artifactId>knife4j-v3-core</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-ui</artifactId>
+                <artifactId>knife4j-v3-spring-ui</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-micro-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-autoconfigure</artifactId>
+                <artifactId>knife4j-v3-micro-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <artifactId>knife4j-v3-spring-boot-autoconfigure</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-v3-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
 

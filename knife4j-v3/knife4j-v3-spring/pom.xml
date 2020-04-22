@@ -3,24 +3,24 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>knife4j</artifactId>
+        <artifactId>knife4j-v3</artifactId>
         <groupId>com.github.xiaoymin</groupId>
         <version>2.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>knife4j-spring</artifactId>
-    <name>knife4j-spring</name>
+    <artifactId>knife4j-v3-spring</artifactId>
+    <name>knife4j-v3-spring</name>
     <description>依赖Springfox框架,生成Spring的增强文档</description>
 
     <dependencies>
 
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-annotations</artifactId>
+            <artifactId>knife4j-v3-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-core</artifactId>
+            <artifactId>knife4j-v3-core</artifactId>
         </dependency>
 
         <dependency>

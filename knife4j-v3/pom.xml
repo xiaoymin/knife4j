@@ -5,20 +5,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.xiaoymin</groupId>
-    <artifactId>knife4j</artifactId>
+    <artifactId>knife4j-v3</artifactId>
     <version>2.0.3</version>
     <modules>
-        <module>knife4j-annotations</module>
-        <module>knife4j-spring</module>
-        <module>knife4j-spring-boot-starter</module>
-        <module>knife4j-spring-ui</module>
-        <module>knife4j-core</module>
-        <module>knife4j-micro-spring-boot-starter</module>
-        <module>knife4j-spring-boot-autoconfigure</module>
-        <module>knife4j-dependencies</module>
+        <module>knife4j-v3-annotations</module>
+        <module>knife4j-v3-spring</module>
+        <module>knife4j-v3-spring-boot-starter</module>
+        <module>knife4j-v3-spring-ui</module>
+        <module>knife4j-v3-core</module>
+        <module>knife4j-v3-micro-spring-boot-starter</module>
+        <module>knife4j-v3-spring-boot-autoconfigure</module>
+        <module>knife4j-v3-dependencies</module>
     </modules>
     <packaging>pom</packaging>
-    <name>knife4j</name>
+    <name>knife4j-v3</name>
     <url>https://gitee.com/xiaoym/knife4j</url>
     <description>knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案,前身是swagger-bootstrap-ui,取名kni4j是希望她能像一把匕首一样小巧,轻量,并且功能强悍!!.</description>
     <developers>
@@ -36,11 +36,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <knife4j.version>2.0.3</knife4j.version>
         <java.version>1.8</java.version>
-        <spring.version>5.1.0.RELEASE</spring.version>
+        <spring.version>5.2.5.RELEASE</spring.version>
         <springfox.version>2.9.2</springfox.version>
         <servlet.version>3.1.0</servlet.version>
         <slf4j.version>1.7.28</slf4j.version>
-        <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
+        <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
         <!-- 打包跳过单元测试 -->
         <skipTests>true</skipTests>
     </properties>
@@ -71,29 +71,29 @@
         <dependencies>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-annotations</artifactId>
+                <artifactId>knife4j-v3-annotations</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-core</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-ui</artifactId>
+                <artifactId>knife4j-v3-spring</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-autoconfigure</artifactId>
+                <artifactId>knife4j-v3-core</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-v3-spring-ui</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-v3-spring-boot-autoconfigure</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
 
