@@ -10,27 +10,15 @@ package com.github.xiaoymin.knife4j.spring.plugin;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.github.xiaoymin.knife4j.spring.extension.ApiAuthorExtension;
 import com.github.xiaoymin.knife4j.spring.extension.ApiOrderExtension;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import io.swagger.annotations.Api;
-import springfox.documentation.service.Tag;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.ApiListingBuilderPlugin;
-import springfox.documentation.spi.service.contexts.ApiListingContext;
+import io.swagger.v3.oas.models.OpenAPI;
+import org.springdoc.core.OpenAPIBuilder;
+import org.springdoc.core.customizers.OpenApiBuilderCustomiser;
+import org.springdoc.core.customizers.OpenApiCustomiser;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.base.Strings.emptyToNull;
-import static com.google.common.collect.FluentIterable.from;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.newTreeSet;
 import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
-import static springfox.documentation.service.Tags.emptyTags;
-import static springfox.documentation.swagger.common.SwaggerPluginSupport.pluginDoesApply;
 
 /***
  * unused
@@ -40,7 +28,12 @@ import static springfox.documentation.swagger.common.SwaggerPluginSupport.plugin
  */
 /*@Component
 @Order(Ordered.HIGHEST_PRECEDENCE+101)*/
-public class ApiSupportListingReaderPlugin implements ApiListingBuilderPlugin {
+public class ApiSupportListingReaderPlugin implements OpenApiCustomiser {
+
+    @Override
+    public void customise(OpenAPI openApi) {
+        
+    }
 
     @Override
     public void apply(ApiListingContext apiListingContext) {
@@ -98,4 +91,6 @@ public class ApiSupportListingReaderPlugin implements ApiListingBuilderPlugin {
     public boolean supports(DocumentationType delimiter) {
         return pluginDoesApply(delimiter);
     }
+
+    
 }
