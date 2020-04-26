@@ -60,8 +60,8 @@ marked.setOptions({
 
 function SwaggerBootstrapUi(options) {
   //swagger请求api地址
-  this.url = options.url || 'v3/api-docs/swagger-config'
-  this.configUrl = options.configUrl || 'v3/api-docs/swagger-config'
+  this.url = options.url || '/v3/api-docs/swagger-config'
+  this.configUrl = options.configUrl || '/v3/api-docs/swagger-config'
   //用于控制是否请求configUrl的配置
   this.configSupport = options.configSupport || false;
   //用于控制是否请求configSecurityUrl的配置
@@ -460,6 +460,8 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       group.basePath != ''
     ) {
       g.baseUrl = group.basePath
+    } else {
+      g.baseUrl = "/";
     }
     //赋值查找缓存的id
     if (that.cacheApis.length > 0) {
@@ -586,10 +588,11 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       }
       //这里判断url请求是否已加载过
       //防止出现根路径的情况
-      var idx = api.indexOf('/');
-      if (idx == 0) {
-        api = api.substr(1);
-      }
+      // 每个 group 的 文档接口, 都是由服务器返回的, 这里无需手动处理, 也与nginx的配置无关, 直接使用服务端返回的 url 即可
+      // var idx = api.indexOf('/');
+      // if (idx == 0) {
+      //   api = api.substr(1);
+      // }
       //测试
       //api = "jj2.json";
       that.$Vue.$axios({
@@ -1773,6 +1776,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   //that.log("新的url:"+newurl)
   newurl = newurl.replace("//", "/");
   //判断应用实例的baseurl
+  console.log(that.currentInstance.baseUrl)
   if (that.currentInstance.baseUrl != "" && that.currentInstance.baseUrl != "/") {
     newurl = that.currentInstance.baseUrl + newurl;
   }
