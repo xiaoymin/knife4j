@@ -458,7 +458,7 @@ const utils = {
     return val;
   },
   getClassName: function (item) {
-    var regex = new RegExp("#/definitions/(.*)$", "ig");
+    var regex = new RegExp("#/components/schemas/(.*)$", "ig");
     if (regex.test(item)) {
       var ptype = RegExp.$1;
       return ptype;
