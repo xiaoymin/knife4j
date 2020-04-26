@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>knife4j-v3</artifactId>
+        <groupId>com.github.xiaoymin</groupId>
+        <version>2.0.3</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>knife4j-v3-micro-spring-boot-reactive-starter</artifactId>
+    <name>knife4j-v3-micro-spring-boot-reactive-starter</name>
+    <description>Spring Cloud微服务架构下,子服务无需引用前端UI模块,只需引入后端的Jar包</description>
+    <dependencies>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-v3-spring-boot-reactive-autoconfigure</artifactId>
+        </dependency>
+
+    </dependencies>
+
+
+</project>

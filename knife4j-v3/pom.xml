@@ -10,11 +10,15 @@
     <modules>
         <module>knife4j-v3-annotations</module>
         <module>knife4j-v3-spring</module>
+        <module>knife4j-v3-spring-webflux</module>
         <module>knife4j-v3-spring-boot-starter</module>
+        <module>knife4j-v3-spring-boot-reactive-starter</module>
         <module>knife4j-v3-spring-ui</module>
         <module>knife4j-v3-core</module>
         <module>knife4j-v3-micro-spring-boot-starter</module>
+        <module>knife4j-v3-micro-spring-boot-reactive-starter</module>
         <module>knife4j-v3-spring-boot-autoconfigure</module>
+        <module>knife4j-v3-spring-boot-reactive-autoconfigure</module>
         <module>knife4j-v3-dependencies</module>
     </modules>
     <packaging>pom</packaging>
@@ -79,6 +83,11 @@
                 <artifactId>knife4j-v3-spring</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-v3-spring-webflux</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
@@ -94,6 +103,11 @@
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-v3-spring-boot-autoconfigure</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-v3-spring-boot-reactive-autoconfigure</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
 
