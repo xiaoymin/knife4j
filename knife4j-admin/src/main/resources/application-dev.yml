@@ -1,0 +1,9 @@
+server:
+  port: 17808
+spring:
+  r2dbc:
+    url: r2dbc:pool:mysql://127.0.0.1:3306/test
+    username: root
+    password: 123456
+  application:
+    name: Knife4j-Cloud v1.0(Developerment)

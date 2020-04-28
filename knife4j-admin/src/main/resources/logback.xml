@@ -1,0 +1,38 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %p (%file:%line\)- %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="syslog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>logs/knife4j-cloud.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/knife4j-cloud.%d.%i.log</fileNamePattern>
+            <!-- 每产生一个日志文件，该日志文件的保存期限为30天 -->
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %p (%file:%line\)- %m%n</pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+    </appender>
+    <!-- 控制台输出日志级别 -->
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+    <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
+    <logger name="com.xiaominfo.swagger.cloud" level="DEBUG">
+        <appender-ref ref="syslog" />
+    </logger>
+    <logger name="org.springframework.web" level="INFO">
+        <appender-ref ref="syslog" />
+    </logger>
+    <logger name="org.springframework.boot" level="INFO">
+        <appender-ref ref="syslog" />
+    </logger>
+
+</configuration>
