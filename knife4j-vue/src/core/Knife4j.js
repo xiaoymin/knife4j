@@ -43,6 +43,7 @@ import Constants from '@/store/constants'
 import uniqueId from 'lodash/uniqueId'
 import isObject from 'lodash/isObject'
 import has from 'lodash/has'
+import keys from 'lodash/keys'
 import unset from 'lodash/unset'
 import isNull from 'lodash/isNull'
 import isUndefined from 'lodash/isUndefined'
@@ -1817,6 +1818,12 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
       //忽略参数对象
       swpinfo.ignoreParameters = ignoArr[0];
     }
+    //读取扩展属性x-includeParameters
+    if (apiInfo.hasOwnProperty("x-includeParameters")) {
+      var includeArr = apiInfo["x-includeParameters"];
+      //包含参数
+      swpinfo.includeParameters = includeArr[0];
+    }
     //读取扩展属性x-order值
     if (apiInfo.hasOwnProperty("x-order")) {
       swpinfo.order = parseInt(apiInfo["x-order"]);
@@ -1846,6 +1853,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
         var inType = KUtils.propValue("in", m, "");
         //忽略参数
         //if (swpinfo.ignoreParameters == null || (swpinfo.ignoreParameters != null && !swpinfo.ignoreParameters.hasOwnProperty(originalName))) {
+        //暂时放弃增加includeParameters的新特性支持
+        //if (KUtils.filterIncludeParameters(inType, originalName, swpinfo.includeParameters)) {
         if (KUtils.filterIgnoreParameters(inType, originalName, swpinfo.ignoreParameters)) {
           var minfo = new SwaggerBootstrapUiParameter();
           minfo.name = originalName;
@@ -2029,22 +2038,49 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
               // body      object   ignoreParameters={"item.nodes[0].key"}   {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
               // body      array    ignoreParameters={"item.[0].key"}        [{key:'', value:''}]                             [{value:''}]
               // ********************************************************************
+              //处理ignore
               const newValue = (() => {
-                if (swpinfo.ignoreParameters && isObject(minfo.value)) {
+                if (isObject(minfo.value)) {
                   const cloneValue = JSON.parse(JSON.stringify(minfo.value)); // 深拷贝对象或数组
-                  Object.keys(swpinfo.ignoreParameters || {}).forEach(key => {
-                    const ignorePath = key.startsWith(`${originalName}.`) ?
-                      key.replace(`${originalName}.`, '') // 处理 body 带参，需要加前缀问题
-                      :
-                      key;
-                    if (has(cloneValue, ignorePath)) {
-                      // 使用 lodash.unset 方法移除 newValue 对象中的属性
-                      unset(cloneValue, ignorePath);
+                  //判断include是否不为空
+                  if (swpinfo.includeParameters != null) {
+                    var includeKeys = Object.keys(swpinfo.includeParameters || {});
+                    //父级的属性节点排除掉
+                    var paramRootKeys = KUtils.rootKeysPath(minfo.description, cloneValue, includeKeys);
+                    //过滤得到ignore
+                    var ignoreKeys = paramRootKeys.filter(key => !includeKeys.includes(key));
+                    console.log(minfo.description)
+                    console.log(ignoreKeys)
+                    console.log(JSON.stringify(cloneValue))
+                    //处理include
+                    ignoreKeys.forEach(key => {
+                      const ignorePath = key.startsWith(`${originalName}.`) ?
+                        key.replace(`${originalName}.`, '') // 处理 body 带参，需要加前缀问题
+                        :
+                        key;
+                      if (has(cloneValue, ignorePath)) {
+                        // 使用 lodash.unset 方法移除 newValue 对象中的属性
+                        unset(cloneValue, ignorePath);
+                      }
+                    });
+                    console.log(JSON.stringify(cloneValue))
+                  } else {
+                    if (swpinfo.ignoreParameters && isObject(minfo.value)) {
+                      Object.keys(swpinfo.ignoreParameters || {}).forEach(key => {
+                        const ignorePath = key.startsWith(`${originalName}.`) ?
+                          key.replace(`${originalName}.`, '') // 处理 body 带参，需要加前缀问题
+                          :
+                          key;
+                        if (has(cloneValue, ignorePath)) {
+                          // 使用 lodash.unset 方法移除 newValue 对象中的属性
+                          unset(cloneValue, ignorePath);
+                        }
+                      });
                     }
-                  });
+                  }
                   return cloneValue;
                 }
-                return minfo.value;
+                return null;
               })();
               if (isUndefined(newValue) || isNull(newValue)) {
                 if (minfo.type === 'array') {
@@ -2076,6 +2112,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
             }
           }
         }
+        //}
       })
     }
     var definitionType = null;
@@ -3459,6 +3496,8 @@ var SwaggerBootstrapUiApiInfo = function () {
   this.hashCollections = [];
   //ignoreParameters add 2019-7-30 16:10:08
   this.ignoreParameters = null;
+  //includeParameters add 2020-4-5 14:12:23
+  this.includeParameters = null;
   //当前接口用户实例id add 2019-12-5 10:49:40
   this.instanceId = null;
   // 用于请求后构建curl
