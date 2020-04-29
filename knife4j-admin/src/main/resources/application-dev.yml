@@ -6,4 +6,8 @@ spring:
     username: root
     password: 123456
   application:
-    name: Knife4j-Cloud v1.0(Developerment)
+    name: Knife4j-Cloud
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.0.223:8848
