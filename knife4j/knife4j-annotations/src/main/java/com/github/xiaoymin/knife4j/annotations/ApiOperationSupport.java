@@ -62,7 +62,7 @@ public @interface ApiOperationSupport {
 
 
     /**
-     * 请求接口包含的参数数组,和ignoreParameters属性对立
+     * 请求接口包含的参数数组,和ignoreParameters属性对立,前端Ui目前尚未实现,不要使用该特性.
      * @since 2.0.3
      * @return 包含参数数组
      */
