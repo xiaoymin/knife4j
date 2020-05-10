@@ -149,6 +149,10 @@ import markdownSingleText from "@/components/officeDocument/markdownSingleTransf
 import EditorShow from "./EditorShow";
 import ClipboardJS from "clipboard";
 import uniqueId from "lodash/uniqueId";
+import isObject from 'lodash/isObject'
+import has from 'lodash/has'
+import keys from 'lodash/keys'
+import cloneDeep from 'lodash/cloneDeep'
 //请求参数table-header
 const requestcolumns = [
   {
@@ -406,6 +410,7 @@ export default {
           return b.require - a.require;
         });
       }
+      console.log(data)
       let reqParameters = [];
       if (data != null && data.length > 0) {
         //console("初始化请求参数----------");
@@ -481,8 +486,84 @@ export default {
           }
         });
       }
-      that.reqParameters = reqParameters;
+      //此处需要递归去除include之外的parameters
+      if(apiInfo.includeParameters!=null){
+        var tmpIncludeKeys = Object.keys(apiInfo.includeParameters || {});
+        var bodyParam=reqParameters.filter(req=>req.in=="body").length;
+        if(tmpIncludeKeys.length>0&&bodyParam>0){
+          var includeParameters=[];
+          //rootkey代表的JSON的父级path,父级path必须保留
+          var rootKeys=[];
+          this.deepRootKeys(tmpIncludeKeys,rootKeys);
+          console.log(rootKeys)
+          console.log(tmpIncludeKeys)
+          reqParameters.forEach(param=>{
+            //判断是否有childrens
+            if(rootKeys.includes(param.name)){
+              var copyParam=cloneDeep(param);
+              copyParam.children=null;
+              if(param.children!=null&&param.children.length>0){
+                copyParam.children=new Array();
+                this.deepIncludeParam(copyParam.name,copyParam,param.children,tmpIncludeKeys,rootKeys);
+              }
+              includeParameters.push(copyParam);
+            }else{
+              if(tmpIncludeKeys.includes(param.name)){
+                var copyParam=cloneDeep(param);
+                copyParam.children=null;
+                if(param.children!=null&&param.children.length>0){
+                  copyParam.children=new Array();
+                  this.deepIncludeParam(copyParam.name,copyParam,param.children,tmpIncludeKeys,rootKeys);
+                }
+                includeParameters.push(copyParam);
+              }
+            }
+          })
+          that.reqParameters=includeParameters;
+        }else{
+          that.reqParameters = reqParameters;
+        }
+      }else{
+        that.reqParameters = reqParameters;
+      }
       //console.log(reqParameters);
+    },
+    deepRootKeys(tmpIncludeKeys,rootKeys){
+      var tmpRooks=[];
+      tmpIncludeKeys.forEach(key=>{
+        var rootKey=key.substring(0,key.lastIndexOf("."));
+        if(rootKey.indexOf(".")>-1){
+          tmpRooks.push(rootKey);
+        }
+        if(!rootKeys.includes(rootKey)){
+          rootKeys.push(rootKey);
+        }
+      })
+      if(tmpRooks.length>0){
+        this.deepRootKeys(tmpRooks,rootKeys);
+      }
+    },
+    deepIncludeParam(parentName,deepParams,children,tmpIncludeKeys,rootKeys){
+      if(children!=null&&children.length>0){
+        children.forEach(childrenParam=>{
+          var jsonPath=parentName+"."+childrenParam.name;
+          //判断root
+          if(rootKeys.includes(jsonPath)){
+            var copyParam=cloneDeep(childrenParam);
+            //初始化children需要判断当前的param.name是否在includes中
+            copyParam.children=null;
+            deepParams.children.push(copyParam)
+            if(KUtils.arrNotEmpty(childrenParam.children)){
+              copyParam.children=new Array();
+              this.deepIncludeParam(jsonPath,copyParam,childrenParam.children,tmpIncludeKeys,rootKeys);
+            }
+          }else{
+            if(tmpIncludeKeys.includes(jsonPath)){
+              deepParams.children.push(childrenParam)
+            }
+          }
+        })
+      }
     },
     copyNewParameter(source) {
       const renewId = arrs => {
