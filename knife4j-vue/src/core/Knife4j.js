@@ -1855,263 +1855,17 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
         //if (swpinfo.ignoreParameters == null || (swpinfo.ignoreParameters != null && !swpinfo.ignoreParameters.hasOwnProperty(originalName))) {
         //暂时放弃增加includeParameters的新特性支持
         //if (KUtils.filterIncludeParameters(inType, originalName, swpinfo.includeParameters)) {
-        if (KUtils.filterIgnoreParameters(inType, originalName, swpinfo.ignoreParameters)) {
-          var minfo = new SwaggerBootstrapUiParameter();
-          minfo.name = originalName;
-          minfo.ignoreFilterName = originalName;
-          minfo.type = KUtils.propValue("type", m, "");
-          minfo.in = inType;
-          minfo.require = KUtils.propValue("required", m, false);
-          minfo.description = KUtils.replaceMultipLineStr(KUtils.propValue("description", m, ""));
-          //add at 2019-12-10 09:20:08  判断请求参数类型是否包含format
-          //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/161
-          var _format = KUtils.propValue("format", m, "");
-          if (KUtils.strNotBlank(_format)) {
-            //存在format
-            var _rtype = minfo.type + "(" + _format + ")";
-            minfo.type = _rtype;
+        if(swpinfo.includeParameters!=null){
+          //直接判断include的参数即可
+          if (KUtils.filterIncludeParameters(inType, originalName, swpinfo.includeParameters)) {
+            that.assembleParameter(m,swpinfo);
           }
-          //判断是否有枚举类型
-          if (m.hasOwnProperty("enum")) {
-            //that.log("包括枚举类型...")
-            //that.log(m.enum);
-            minfo.enum = m.enum;
-            //that.log(minfo);
-            //枚举类型,描述显示可用值
-            var avaiableArrStr = m.enum.join(",");
-            if (m.description != null && m.description != undefined && m.description != "") {
-              minfo.description = m.description + ",可用值:" + avaiableArrStr;
-            } else {
-              minfo.description = "枚举类型,可用值:" + avaiableArrStr;
-            }
-
-          }
-          //判断你是否有默认值(后台)
-          if (m.hasOwnProperty("default")) {
-            minfo.txtValue = m["default"];
-          }
-          //swagger 2.9.2版本默认值响应X-EXAMPLE的值为2.9.2
-          if (m.hasOwnProperty("x-example")) {
-            minfo.txtValue = m["x-example"];
-          }
-          if (m.hasOwnProperty("schema")) {
-            //存在schema属性,请求对象是实体类
-            minfo.schema = true;
-            var schemaObject = m["schema"];
-            var schemaType = schemaObject["type"];
-            if (schemaType == "array") {
-              minfo.type = schemaType;
-              var schItem = schemaObject["items"];
-              var ref = schItem["$ref"];
-              var className = KUtils.getClassName(ref);
-              minfo.schemaValue = className;
-              var def = that.getDefinitionByName(className);
-              if (def != null) {
-                minfo.def = def;
-                minfo.value = def.value;
-                if (def.description != undefined && def.description != null && def.description != "") {
-                  minfo.description = KUtils.replaceMultipLineStr(def.description);
-                }
-              } else {
-                var sty = schItem["type"];
-                minfo.schemaValue = schItem["type"]
-                //此处判断Array的类型,如果
-                if (sty == "string") {
-                  minfo.value = "";
-                }
-                if (sty == "integer") {
-                  //判断format
-                  if (schItem["format"] != undefined && schItem["format"] != null && schItem["format"] == "int32") {
-                    minfo.value = 0;
-                  } else {
-                    minfo.value = 1054661322597744642;
-                  }
-                }
-                if (sty == "number") {
-                  if (schItem["format"] != undefined && schItem["format"] != null && schItem["format"] == "double") {
-                    minfo.value = 0.5;
-                  } else {
-                    minfo.value = 0;
-                  }
-                }
-              }
-            } else {
-              if (schemaObject.hasOwnProperty("$ref")) {
-                var ref = m["schema"]["$ref"];
-                var className = KUtils.getClassName(ref);
-                if (minfo.type != "array") {
-                  minfo.type = className;
-                }
-                minfo.schemaValue = className;
-                var def = that.getDefinitionByName(className);
-                if (def != null) {
-                  minfo.def = def;
-                  minfo.value = def.value;
-                  if (def.description != undefined && def.description != null && def.description != "") {
-                    minfo.description = KUtils.replaceMultipLineStr(def.description);
-                  }
-                }
-              } else {
-                //判断是否包含addtionalProperties属性
-                if (schemaObject.hasOwnProperty("additionalProperties")) {
-                  //判断是否是数组
-                  var addProp = schemaObject["additionalProperties"];
-                  if (addProp.hasOwnProperty("$ref")) {
-                    //object
-                    var className = KUtils.getClassName(addProp["$ref"]);
-                    if (className != null) {
-                      var def = that.getDefinitionByName(className);
-                      if (def != null) {
-                        minfo.def = def;
-                        minfo.value = {
-                          "additionalProperties1": def.value
-                        };
-                        if (def.description != undefined && def.description != null && def.description != "") {
-                          minfo.description = KUtils.replaceMultipLineStr(def.description);
-                        }
-                      }
-                    }
-                  } else if (addProp.hasOwnProperty("items")) {
-                    //数组
-                    var addItems = addProp["items"];
-                    var className = KUtils.getClassName(addItems["$ref"]);
-                    if (className != null) {
-                      var def = that.getDefinitionByName(className);
-                      if (def != null) {
-                        var addArrValue = new Array();
-                        addArrValue.push(def.value)
-                        minfo.def = def;
-                        minfo.value = {
-                          "additionalProperties1": addArrValue
-                        };
-                        if (def.description != undefined && def.description != null && def.description != "") {
-                          minfo.description = KUtils.replaceMultipLineStr(def.description);
-                        }
-                      }
-                    }
-
-                  }
-
-
-                } else {
-                  if (schemaObject.hasOwnProperty("type")) {
-                    minfo.type = schemaObject["type"];
-                  }
-                  minfo.value = "";
-                }
-              }
-            }
-          }
-          if (m.hasOwnProperty("items")) {
-            var items = m["items"];
-            if (items.hasOwnProperty("$ref")) {
-              var ref = items["$ref"];
-              var className = KUtils.getClassName(ref);
-              //minfo.type=className;
-              minfo.schemaValue = className;
-              var def = that.getDefinitionByName(className);
-              if (def != null) {
-                minfo.def = def;
-                minfo.value = def.value;
-                if (def.description != undefined && def.description != null && def.description != "") {
-                  minfo.description = KUtils.replaceMultipLineStr(def.description);
-                }
-              }
-            } else {
-              if (items.hasOwnProperty("type")) {
-                //minfo.type=items["type"];
-                minfo.schemaValue = items["type"];
-              }
-              minfo.value = "";
-            }
-          }
-
-          if (minfo.in == 'body') {
-            if (isUndefined(minfo.txtValue) || isNull(minfo.txtValue)) {
-              // ********************************************************************
-              // 改造参数过滤规则，新的规则支持数组嵌套过滤，参考文档：https://www.lodashjs.com/docs/latest#_unsetobject-path
-              // 入参方式   参数类型  忽略规则写法                               参数example                                       过滤后的example
-              // form      object   ignoreParameters={"key"}                 {key:'', value:''}                               {key:'', value:''}
-              // form      object   ignoreParameters={"nodes[0].key"}        {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
-              // form      array    ignoreParameters={"[0].key"}             [{key:'', value:''}]                             [{value:''}]
-              // body      object   ignoreParameters={"item.key"}            {key:'', value:''}                               {key:'', value:''}
-              // body      object   ignoreParameters={"item.nodes[0].key"}   {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
-              // body      array    ignoreParameters={"item.[0].key"}        [{key:'', value:''}]                             [{value:''}]
-              // ********************************************************************
-              //处理ignore
-              const newValue = (() => {
-                if (isObject(minfo.value)) {
-                  const cloneValue = JSON.parse(JSON.stringify(minfo.value)); // 深拷贝对象或数组
-                  //判断include是否不为空
-                  if (swpinfo.includeParameters != null) {
-                    var includeKeys = Object.keys(swpinfo.includeParameters || {});
-                    //父级的属性节点排除掉
-                    var paramRootKeys = KUtils.rootKeysPath(minfo.description, cloneValue, includeKeys);
-                    //过滤得到ignore
-                    var ignoreKeys = paramRootKeys.filter(key => !includeKeys.includes(key));
-                    console.log(minfo.description)
-                    console.log(ignoreKeys)
-                    console.log(JSON.stringify(cloneValue))
-                    //处理include
-                    ignoreKeys.forEach(key => {
-                      const ignorePath = key.startsWith(`${originalName}.`) ?
-                        key.replace(`${originalName}.`, '') // 处理 body 带参，需要加前缀问题
-                        :
-                        key;
-                      if (has(cloneValue, ignorePath)) {
-                        // 使用 lodash.unset 方法移除 newValue 对象中的属性
-                        unset(cloneValue, ignorePath);
-                      }
-                    });
-                    console.log(JSON.stringify(cloneValue))
-                  } else {
-                    if (swpinfo.ignoreParameters && isObject(minfo.value)) {
-                      Object.keys(swpinfo.ignoreParameters || {}).forEach(key => {
-                        const ignorePath = key.startsWith(`${originalName}.`) ?
-                          key.replace(`${originalName}.`, '') // 处理 body 带参，需要加前缀问题
-                          :
-                          key;
-                        if (has(cloneValue, ignorePath)) {
-                          // 使用 lodash.unset 方法移除 newValue 对象中的属性
-                          unset(cloneValue, ignorePath);
-                        }
-                      });
-                    }
-                  }
-                  return cloneValue;
-                }
-                return null;
-              })();
-              if (isUndefined(newValue) || isNull(newValue)) {
-                if (minfo.type === 'array') {
-                  minfo.txtValue = JSON.stringify([]);
-                }
-              } else {
-                //如果type是发array类型,判断撒地方是否是integer
-                minfo.txtValue = JSON.stringify(minfo.type === 'array' ? [newValue] : newValue, null, "\t");
-              }
-            }
-          }
-          //JSR-303 注解支持.
-          that.validateJSR303(minfo, m);
-          if (!KUtils.checkParamArrsExists(swpinfo.parameters, minfo)) {
-            const ignoreParameterKeys = Object.keys(swpinfo.ignoreParameters || {});
-            // 处理请求参数表格依然展示忽略参数
-            if (!ignoreParameterKeys.includes(originalName)) {
-              swpinfo.parameters.push(minfo);
-            }
-            //判断当前属性是否是schema
-            if (minfo.schema) {
-              ////console("存在schema------------开始递归")
-              ////console(minfo)
-
-              //deepRefParameter(minfo, that, minfo.def, swpinfo);
-              minfo.parentTypes.push(minfo.schemaValue);
-              //第一层的对象要一直传递
-              //deepTreeTableRefParameter(minfo, that, minfo.def, swpinfo);
-            }
+        }else{
+          if (KUtils.filterIgnoreParameters(inType, originalName, swpinfo.ignoreParameters)) {
+            that.assembleParameter(m,swpinfo);
           }
         }
+        
         //}
       })
     }
@@ -2585,6 +2339,356 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     }
   }
   return swpinfo;
+}
+
+/**
+ * 处理Open API v2的请求参数，获取SwaggerBootstrapUiParameter的对象
+ * @param m 原始parameter参数
+ * @param swpinfo knife4j 创建的API对象
+ */
+SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
+  var that=this;
+  var originalName = KUtils.propValue("name", m, "");
+  var inType = KUtils.propValue("in", m, "");
+  var minfo = new SwaggerBootstrapUiParameter();
+  minfo.name = originalName;
+  minfo.ignoreFilterName = originalName;
+  minfo.type = KUtils.propValue("type", m, "");
+  minfo.in = inType;
+  minfo.require = KUtils.propValue("required", m, false);
+  minfo.description = KUtils.replaceMultipLineStr(KUtils.propValue("description", m, ""));
+  //add at 2019-12-10 09:20:08  判断请求参数类型是否包含format
+  //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/161
+  var _format = KUtils.propValue("format", m, "");
+  if (KUtils.strNotBlank(_format)) {
+    //存在format
+    var _rtype = minfo.type + "(" + _format + ")";
+    minfo.type = _rtype;
+  }
+  //判断是否有枚举类型
+  if (m.hasOwnProperty("enum")) {
+    //that.log("包括枚举类型...")
+    //that.log(m.enum);
+    minfo.enum = m.enum;
+    //that.log(minfo);
+    //枚举类型,描述显示可用值
+    var avaiableArrStr = m.enum.join(",");
+    if (m.description != null && m.description != undefined && m.description != "") {
+      minfo.description = m.description + ",可用值:" + avaiableArrStr;
+    } else {
+      minfo.description = "枚举类型,可用值:" + avaiableArrStr;
+    }
+
+  }
+  //判断你是否有默认值(后台)
+  if (m.hasOwnProperty("default")) {
+    minfo.txtValue = m["default"];
+  }
+  //swagger 2.9.2版本默认值响应X-EXAMPLE的值为2.9.2
+  if (m.hasOwnProperty("x-example")) {
+    minfo.txtValue = m["x-example"];
+  }
+  if (m.hasOwnProperty("schema")) {
+    //存在schema属性,请求对象是实体类
+    minfo.schema = true;
+    var schemaObject = m["schema"];
+    var schemaType = schemaObject["type"];
+    if (schemaType == "array") {
+      minfo.type = schemaType;
+      var schItem = schemaObject["items"];
+      var ref = schItem["$ref"];
+      var className = KUtils.getClassName(ref);
+      minfo.schemaValue = className;
+      var def = that.getDefinitionByName(className);
+      if (def != null) {
+        minfo.def = def;
+        minfo.value = def.value;
+        if (def.description != undefined && def.description != null && def.description != "") {
+          minfo.description = KUtils.replaceMultipLineStr(def.description);
+        }
+      } else {
+        var sty = schItem["type"];
+        minfo.schemaValue = schItem["type"]
+        //此处判断Array的类型,如果
+        if (sty == "string") {
+          minfo.value = "";
+        }
+        if (sty == "integer") {
+          //判断format
+          if (schItem["format"] != undefined && schItem["format"] != null && schItem["format"] == "int32") {
+            minfo.value = 0;
+          } else {
+            minfo.value = 1054661322597744642;
+          }
+        }
+        if (sty == "number") {
+          if (schItem["format"] != undefined && schItem["format"] != null && schItem["format"] == "double") {
+            minfo.value = 0.5;
+          } else {
+            minfo.value = 0;
+          }
+        }
+      }
+    } else {
+      if (schemaObject.hasOwnProperty("$ref")) {
+        var ref = m["schema"]["$ref"];
+        var className = KUtils.getClassName(ref);
+        if (minfo.type != "array") {
+          minfo.type = className;
+        }
+        minfo.schemaValue = className;
+        var def = that.getDefinitionByName(className);
+        if (def != null) {
+          minfo.def = def;
+          minfo.value = def.value;
+          if (def.description != undefined && def.description != null && def.description != "") {
+            minfo.description = KUtils.replaceMultipLineStr(def.description);
+          }
+        }
+      } else {
+        //判断是否包含addtionalProperties属性
+        if (schemaObject.hasOwnProperty("additionalProperties")) {
+          //判断是否是数组
+          var addProp = schemaObject["additionalProperties"];
+          if (addProp.hasOwnProperty("$ref")) {
+            //object
+            var className = KUtils.getClassName(addProp["$ref"]);
+            if (className != null) {
+              var def = that.getDefinitionByName(className);
+              if (def != null) {
+                minfo.def = def;
+                minfo.value = {
+                  "additionalProperties1": def.value
+                };
+                if (def.description != undefined && def.description != null && def.description != "") {
+                  minfo.description = KUtils.replaceMultipLineStr(def.description);
+                }
+              }
+            }
+          } else if (addProp.hasOwnProperty("items")) {
+            //数组
+            var addItems = addProp["items"];
+            var className = KUtils.getClassName(addItems["$ref"]);
+            if (className != null) {
+              var def = that.getDefinitionByName(className);
+              if (def != null) {
+                var addArrValue = new Array();
+                addArrValue.push(def.value)
+                minfo.def = def;
+                minfo.value = {
+                  "additionalProperties1": addArrValue
+                };
+                if (def.description != undefined && def.description != null && def.description != "") {
+                  minfo.description = KUtils.replaceMultipLineStr(def.description);
+                }
+              }
+            }
+
+          }
+
+
+        } else {
+          if (schemaObject.hasOwnProperty("type")) {
+            minfo.type = schemaObject["type"];
+          }
+          minfo.value = "";
+        }
+      }
+    }
+  }
+  if (m.hasOwnProperty("items")) {
+    var items = m["items"];
+    if (items.hasOwnProperty("$ref")) {
+      var ref = items["$ref"];
+      var className = KUtils.getClassName(ref);
+      //minfo.type=className;
+      minfo.schemaValue = className;
+      var def = that.getDefinitionByName(className);
+      if (def != null) {
+        minfo.def = def;
+        minfo.value = def.value;
+        if (def.description != undefined && def.description != null && def.description != "") {
+          minfo.description = KUtils.replaceMultipLineStr(def.description);
+        }
+      }
+    } else {
+      if (items.hasOwnProperty("type")) {
+        //minfo.type=items["type"];
+        minfo.schemaValue = items["type"];
+      }
+      minfo.value = "";
+    }
+  }
+
+  if (minfo.in == 'body') {
+    if (isUndefined(minfo.txtValue) || isNull(minfo.txtValue)) {
+      // ********************************************************************
+      // 改造参数过滤规则，新的规则支持数组嵌套过滤，参考文档：https://www.lodashjs.com/docs/latest#_unsetobject-path
+      // 入参方式   参数类型  忽略规则写法                               参数example                                       过滤后的example
+      // form      object   ignoreParameters={"key"}                 {key:'', value:''}                               {key:'', value:''}
+      // form      object   ignoreParameters={"nodes[0].key"}        {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
+      // form      array    ignoreParameters={"[0].key"}             [{key:'', value:''}]                             [{value:''}]
+      // body      object   ignoreParameters={"item.key"}            {key:'', value:''}                               {key:'', value:''}
+      // body      object   ignoreParameters={"item.nodes[0].key"}   {key:'', value:'',nodes:[{key:'', value:''}]}    {key:'', value:'',nodes:[{value:''}]}
+      // body      array    ignoreParameters={"item.[0].key"}        [{key:'', value:''}]                             [{value:''}]
+      // ********************************************************************
+      //处理ignore
+      const newValue = (() => {
+        if (isObject(minfo.value)) {
+          let cloneValue = null;
+          var tmpJson=JSON.parse(JSON.stringify(minfo.value)); // 深拷贝对象或数组
+          //判断include是否不为空
+          if (swpinfo.includeParameters != null) {
+            cloneValue=new IncludeAssemble(tmpJson,swpinfo.includeParameters).result();
+          } else {
+            cloneValue = tmpJson;
+            if (swpinfo.ignoreParameters && isObject(minfo.value)) {
+              Object.keys(swpinfo.ignoreParameters || {}).forEach(key => {
+                const ignorePath = key.startsWith(`${originalName}.`) ?
+                  key.replace(`${originalName}.`, '') // 处理 body 带参，需要加前缀问题
+                  :
+                  key;
+                if (has(cloneValue, ignorePath)) {
+                  // 使用 lodash.unset 方法移除 newValue 对象中的属性
+                  unset(cloneValue, ignorePath);
+                }
+              });
+            }
+          }
+          return cloneValue;
+        }
+        return null;
+      })();
+      if (isUndefined(newValue) || isNull(newValue)) {
+        if (minfo.type === 'array') {
+          minfo.txtValue = JSON.stringify([]);
+        }
+      } else {
+        //如果type是发array类型,判断撒地方是否是integer
+        minfo.txtValue = JSON.stringify(minfo.type === 'array' ? [newValue] : newValue, null, "\t");
+      }
+    }
+  }
+  //JSR-303 注解支持.
+  that.validateJSR303(minfo, m);
+  if (!KUtils.checkParamArrsExists(swpinfo.parameters, minfo)) {
+    const ignoreParameterKeys = Object.keys(swpinfo.ignoreParameters || {});
+    // 处理请求参数表格依然展示忽略参数
+    if (!ignoreParameterKeys.includes(originalName)) {
+      swpinfo.parameters.push(minfo);
+    }
+    //判断当前属性是否是schema
+    if (minfo.schema) {
+      ////console("存在schema------------开始递归")
+      ////console(minfo)
+
+      //deepRefParameter(minfo, that, minfo.def, swpinfo);
+      minfo.parentTypes.push(minfo.schemaValue);
+      //第一层的对象要一直传递
+      //deepTreeTableRefParameter(minfo, that, minfo.def, swpinfo);
+    }
+  }
+}
+
+/**
+ * 过滤组件
+ * @param json
+ * @param includeArry
+ * @constructor
+ */
+function IncludeAssemble(json,includeArry) {
+  this.json=json;
+  //包含的关系需要把参数的body名称去掉
+  var filterArr=new Array();
+  var tmpKeys = Object.keys(includeArry || {});
+  tmpKeys.forEach(key=>{
+    filterArr.push(key.substring(key.indexOf(".")+1))
+  })
+  this.includeArrays=filterArr;
+}
+
+IncludeAssemble.prototype={
+  isObjInArray (o) {
+      if(!this.isArray(o)){
+          return false;
+      }
+      if(o.length===0){
+          return false;
+      }
+      return this.isObject(o[0]);
+  },
+  isObject(o){
+      return Object.prototype.toString.call(o)=== '[object Object]';
+  },
+  isArray(o){
+      return Object.prototype.toString.call(o) === '[object Array]';
+  },
+  merge(source,target){
+      if(this.isObject(source)){
+          for (let key in target) {
+              source[key] = this.isObject(source[key])||this.isObjInArray(source[key]) ?
+                  this.merge(source[key], target[key]) : source[key] = target[key];
+          }
+      }else{
+          if(this.isObjInArray(target)){
+              source.forEach((o1,index)=>{
+                  this.merge(o1,target[index]);
+              })
+          }else{
+              source.push.apply(source,target);
+          }
+      }
+      return source;
+  },
+  getByPath(srcObj,path){
+      if(this.isObjInArray(srcObj)){
+          const r=[];
+          srcObj.forEach(el=>{
+              r.push(this.getByPath(el,path));
+          });
+          return r;
+      }else{
+          const pathArr=path.split(".");
+          const r=JSON.parse(JSON.stringify(srcObj));
+          let tempObj=r;
+          const len=pathArr.length;
+          for (let i = 0; i < len; i++) {
+              let pathComp = pathArr[i];
+              for (let k in tempObj){
+                  if(k!==pathComp){
+                      delete tempObj[k];
+                  }
+              }
+              if(!tempObj[pathComp]){
+                  break;
+              }
+              if(this.isObjInArray(tempObj[pathComp])){
+                  let t=this.getByPath(tempObj[pathComp],pathArr.slice(i+1).join('.'));
+                  tempObj[pathComp]=JSON.parse(JSON.stringify(t));
+                  break;
+              }
+              tempObj=tempObj[pathComp];
+          }
+          return r
+      }
+  },
+  result(){
+    if(this.includeArrays==null||this.includeArrays.length==0){
+      return this.json;
+    }else{
+      let arr=[];
+      this.includeArrays.forEach(p=>{
+          arr.push(this.getByPath(this.json,p));
+      });
+      return arr.reduce((prev,cur)=>{
+          if(prev){
+              this.merge(prev,cur);
+              return prev;
+          }
+          return cur
+      });
+    }
+  }
 }
 /***
  * 根据api接口自定义tags添加

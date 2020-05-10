@@ -219,10 +219,11 @@ const utils = {
       }
     } else {
       if (inType == 'query') {
-        return includeParameterAllKeys.some(key =>
-          new RegExp(`^(${key}$|${key}[.[])`).test(name));
+        /* return includeParameterAllKeys.some(key =>
+          new RegExp(`^(${key}$|${key}[.[])`).test(name)); */
+        return includeParameterAllKeys.includes(name);
       } else if (inType == 'body') {
-        return includeParameterAllKeys.some(key => key.startsWith(name));
+        return true;
       } else {
         return includeParameterAllKeys.includes(name);
       }
