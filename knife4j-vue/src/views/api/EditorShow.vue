@@ -59,6 +59,9 @@ export default {
       require("brace/theme/eclipse");
       //重设高度
       this.resetEditorHeight();
+      this.editor.renderer.on("afterRender", function() {
+        that.$emit("showDescription","123")
+      });
     }
   }
 };

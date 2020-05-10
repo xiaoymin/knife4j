@@ -26,7 +26,7 @@
               </div>
             </a-row>
             <a-row :id="'responseEditorContent' + api.id" v-else>
-              <editor-debug-show @debugEditorChange="debugEditorChange" :debugResponse="debugResponse" :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
+              <editor-debug-show @showDescription="showEditorFieldDescription" @debugEditorChange="debugEditorChange" :debugResponse="debugResponse" :value="responseContent.text" :mode="responseContent.mode"></editor-debug-show>
             </a-row>
           </a-row>
         </a-tab-pane>
@@ -142,7 +142,7 @@ export default {
     //this.resetResponseContent();
     this.copyRawText();
     this.copyCurlText();
-    this.showEditorFieldDescription();
+    //this.showEditorFieldDescription();
   },
   methods: {
     copyRawText() {
@@ -218,12 +218,13 @@ export default {
         this.showEditorFieldAnyWay();
       }
     },
-    showEditorFieldDescription() {
+    showEditorFieldDescription(p) {
+      console.log("emit事件-"+p)
       var that = this;
       //需要延时1s处理
       setTimeout(() => {
         that.showEditorFieldWait();
-      }, 1000);
+      }, 100);
     },
     showEditorFieldWait() {
       //显示editor字段说明

@@ -104,7 +104,7 @@
             响应示例
           </div>
           <a-row :id="'knife4jDocumentShowEditor' + api.id + resp.code">
-            <editor-show :value="
+            <editor-show @showDescription="showResponseEditFieldDescription" :value="
                 resp.responseBasicType ? resp.responseText : resp.responseValue
               "></editor-show>
           </a-row>
@@ -132,11 +132,12 @@
         响应示例
       </div>
       <a-row :id="'knife4jDocumentShowEditor' + api.id">
-        <editor-show :value="
+        <editor-show @showDescription="showResponseEditFieldDescription" :value="
             multipData.responseBasicType
               ? multipData.responseText
               : multipData.responseValue
           "></editor-show>
+          
       </a-row>
     </div>
   </div>
@@ -245,7 +246,7 @@ const responseParametersColumns = [
 ];
 export default {
   name: "Document",
-  components: { editor: require("vue2-ace-editor"), DataType, EditorShow },
+  components: { editor: require("vue2-ace-editor"), DataType, EditorShow},
   props: {
     api: {
       type: Object,
@@ -281,7 +282,7 @@ export default {
     this.initRequestParams();
     this.initResponseCodeParams();
     setTimeout(() => {
-      that.showResponseEditFieldDescription();
+      //that.showResponseEditFieldDescription();
       that.copyApiAddress();
       that.copyApiMarkdown();
     }, 1500);
@@ -410,7 +411,7 @@ export default {
           return b.require - a.require;
         });
       }
-      console.log(data)
+      //console.log(data)
       let reqParameters = [];
       if (data != null && data.length > 0) {
         //console("初始化请求参数----------");
@@ -495,8 +496,8 @@ export default {
           //rootkey代表的JSON的父级path,父级path必须保留
           var rootKeys=[];
           this.deepRootKeys(tmpIncludeKeys,rootKeys);
-          console.log(rootKeys)
-          console.log(tmpIncludeKeys)
+          //console.log(rootKeys)
+          //console.log(tmpIncludeKeys)
           reqParameters.forEach(param=>{
             //判断是否有childrens
             if(rootKeys.includes(param.name)){
@@ -735,8 +736,9 @@ export default {
         });
       }
     },
-    showResponseEditFieldDescription() {
+    showResponseEditFieldDescription(p) {
       //显示说明
+      //console.log("接收emit事件,数据："+p);
       var that = this;
       if (this.api.multipartResponseSchema) {
         //多个
