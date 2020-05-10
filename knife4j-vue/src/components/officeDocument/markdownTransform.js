@@ -108,6 +108,10 @@ function createApiInfo(apiInfo, markdownCollections) {
   markdownLines(markdownCollections);
   markdownCollections.push('**响应数据类型**:`' + KUtils.toString(apiInfo.produces, '*') + '`');
   markdownLines(markdownCollections);
+  if(KUtils.strNotBlank(apiInfo.author)){
+    markdownCollections.push('**开发者**:' + KUtils.toString(apiInfo.author, '暂无') + '');
+    markdownLines(markdownCollections);
+  }
   markdownCollections.push('**接口描述**:' + KUtils.toString(apiInfo.description, '暂无') + '');
   //判断是否有请求示例
   if (KUtils.checkUndefined(apiInfo.requestValue)) {
