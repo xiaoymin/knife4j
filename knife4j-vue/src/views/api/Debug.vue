@@ -571,7 +571,8 @@ export default {
             enums: null, //枚举下拉框
             new: false
           };
-          this.headerData.push(newHeader);
+          //this.headerData.push(newHeader);
+          this.addDebugHeader(newHeader);
         }
       });
       //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
@@ -591,7 +592,8 @@ export default {
               enums: null, //枚举下拉框
               new: false
             };
-            this.headerData.push(newHeader);
+            //this.headerData.push(newHeader);
+            this.addDebugHeader(newHeader);
           });
         }
         this.updateHeaderFromCacheApi(cacheApi);
@@ -858,9 +860,29 @@ export default {
           enums: null, //枚举下拉框
           new: true
         };
-        this.headerData.push(newHeader);
+        //this.headerData.push(newHeader);
+        this.addDebugHeader(newHeader);
       }
       this.hideDynamicParameterTable();
+    },
+    addDebugHeader(newHeader){
+      if(KUtils.strNotBlank(newHeader.name)){
+        //判断新的header的内容是否为空
+        //判断是否当前的header数据中是否已经存在
+        var filterHeaders=this.headerData.filter(header=> header.name==newHeader.name);
+        if(KUtils.strBlank(newHeader.content)){
+          //如果当前newHeader的数据为空,则判断当前的header数据中是否已经存在
+          if(filterHeaders.length==0){
+            //不存在,插入新行
+            this.headerData.push(newHeader);
+          }
+        }else{
+          this.headerData.push(newHeader);
+        }
+      }else{
+        //动态调试,新行
+        this.headerData.push(newHeader);
+      }
     },
     initFirstFormValue() {
       //添加一行初始form的值
@@ -1041,7 +1063,8 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            this.headerData.push(newHeader);
+            //this.headerData.push(newHeader);
+            this.addDebugHeader(newHeader);
           });
         }
       }
@@ -1068,7 +1091,8 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            this.headerData.push(newHeader);
+            //this.headerData.push(newHeader);
+            this.addDebugHeader(newHeader);
           } else {
             var ptype = "text";
             var multipart = false;
@@ -1152,7 +1176,8 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            this.headerData.push(newHeader);
+            //this.headerData.push(newHeader);
+            this.addDebugHeader(newHeader);
           } else {
             var newFormHeader = {
               id: KUtils.randomMd5(),
@@ -1201,7 +1226,8 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            this.headerData.push(newHeader);
+            //this.headerData.push(newHeader);
+            this.addDebugHeader(newHeader);
           } else {
             var newFormHeader = {
               id: KUtils.randomMd5(),

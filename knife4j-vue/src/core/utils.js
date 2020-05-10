@@ -465,6 +465,9 @@ const utils = {
     }
     return flag;
   },
+  strBlank(str){
+    return !this.strNotBlank(str);
+  },
   strNotBlank(str) {
     var flag = false;
     if (
