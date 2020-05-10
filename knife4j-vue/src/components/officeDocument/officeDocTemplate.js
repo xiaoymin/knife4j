@@ -225,6 +225,12 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
                   </a-col>
                 </a-row>
               </a-row>
+              <div v-if="api.author">
+                <div class="api-title">
+                  开发者
+                </div>
+                <div v-if="api.author" v-html="api.author" class="api-body-desc"></div>
+              </div>
               <!--接口描述-->
               <div v-if="api.description">
                 <div class="api-title">
