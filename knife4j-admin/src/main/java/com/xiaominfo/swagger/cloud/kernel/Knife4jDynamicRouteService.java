@@ -22,6 +22,7 @@ import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
 import java.net.URI;
+import java.time.Duration;
 import java.util.Arrays;
 
 /***
@@ -90,16 +91,14 @@ public class Knife4jDynamicRouteService implements ApplicationEventPublisherAwar
             filterDefinition.setName("RewritePath");
             router.setFilters(Arrays.asList(filterDefinition));
             //新增
-            routeDefinitionWriter.save(Mono.just(router)).flatMap(r->{
-                refresh();
-                return Mono.just(Boolean.TRUE);
-            });
+            routeDefinitionWriter.save(Mono.just(router)).block(Duration.ofSeconds(3));
+            this.refresh();
             //刷新
             return true;
         }catch (Exception e){
             logger.error("Add Swagger Route error,message:{}",e.getMessage());
         }
-        return false;
+        return true;
     }
 
     /**
@@ -109,7 +108,7 @@ public class Knife4jDynamicRouteService implements ApplicationEventPublisherAwar
     public boolean delete(String id){
         try{
             logger.info("Delete Route,id:{}",id);
-            routeDefinitionWriter.delete(Mono.just(id));
+            routeDefinitionWriter.delete(Mono.just(id)).block(Duration.ofSeconds(2));
             refresh();
             return true;
         }catch (Exception e){
