@@ -59,6 +59,10 @@ public class Knife4jMonitor {
         }
     }
 
+    public void routes(){
+        logger.info("开始初始化Routes");
+    }
+
     /**
      * 关闭
      */

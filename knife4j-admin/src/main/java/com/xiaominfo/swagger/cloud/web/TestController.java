@@ -7,10 +7,8 @@
 
 package com.xiaominfo.swagger.cloud.web;
 
-import com.xiaominfo.swagger.cloud.domain.User;
 import com.xiaominfo.swagger.cloud.kernel.Knife4jDynamicRouteService;
 import com.xiaominfo.swagger.cloud.pojo.SwaggerRoute;
-import com.xiaominfo.swagger.cloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.actuate.AbstractGatewayControllerEndpoint;
 import org.springframework.cloud.gateway.config.PropertiesRouteDefinitionLocator;
@@ -41,8 +39,6 @@ import java.util.Map;
 @RequestMapping("/test")
 public class TestController {
 
-    @Resource
-    UserRepository userRepository;
 
     @Resource
     InMemoryRouteDefinitionRepository inMemoryRouteDefinitionRepository;
@@ -85,16 +81,6 @@ public class TestController {
         return propertiesRouteDefinitionLocator.getRouteDefinitions();
     }
 
-    @GetMapping("/all")
-    public Flux<User> all(){
-        return userRepository.findAll();
-    }
-
-    @GetMapping("/listByName")
-    public Flux<User> queryByName(@RequestParam("name") String name){
-        return userRepository.findByUsername(name);
-
-    }
 
     @GetMapping("/index")
     public Flux<Map<String,String>> index(@RequestParam("name") String name){
