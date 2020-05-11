@@ -23,7 +23,7 @@
         <a-col :span="12">
           <a-row>
             <a-col class="api-basic-title" :span="6" v-html="$t('doc.produces')">请求数据类型</a-col>
-            {{ api.consumes }}
+            {{ contentType }}
           </a-row>
         </a-col>
         <a-col :span="12">
@@ -260,6 +260,7 @@ export default {
   data() {
     return {
       content: "<span>Hello</span>",
+      contentType:"*/*",//请求数据类型
       columns: requestcolumns,
       responseHeaderColumns: responseHeaderColumns,
       responseStatuscolumns: responseStatuscolumns,
@@ -353,6 +354,12 @@ export default {
       var data = [];
       var that = this;
       var apiInfo = this.api;
+      if(KUtils.strNotBlank(apiInfo.contentType)){
+        this.contentType=apiInfo.contentType;
+      }
+      if(apiInfo.contentType=="application/x-www-form-urlencoded;charset=UTF-8"){
+        this.contentType="application/x-www-form-urlencoded";
+      }
       console.log(apiInfo);
       //针对数组类型的ignore写法,在这里不需要,table树里面是对象点属性
       //忽略数组的写法 name[0]
