@@ -14,4 +14,43 @@ package com.xiaominfo.swagger.cloud.pojo;
  * 2020/05/05 13:34
  */
 public class SwaggerRoute {
+    /**
+     * 编号
+     */
+    private String id;
+    /**
+     * 真实路径
+     */
+    private String uri;
+
+    /**
+     * 前缀
+     */
+    private String prefix;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+
 }

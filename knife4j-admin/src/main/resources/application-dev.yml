@@ -1,13 +1,30 @@
 server:
   port: 17808
+knife4j:
+  # 监听项目目录
+  monitor: F:\putuoqr\knife4j-admin
 spring:
-  r2dbc:
-    url: r2dbc:pool:mysql://127.0.0.1:3306/test
-    username: root
-    password: 123456
+#  r2dbc:
+#    url: r2dbc:pool:mysql://127.0.0.1:3306/test
+#    username: root
+#    password: 123456
   application:
     name: Knife4j-Cloud
   cloud:
-    nacos:
-      discovery:
-        server-addr: 192.168.0.223:8848
+    gateway:
+      enabled: true
+      routes:
+      - id: service1
+        uri: http://knife4j.xiaominfo.com
+        predicates:
+          - Path=/service1/**
+        filters:
+          - RewritePath=/service1/(?<remaining>.*), /$\{remaining}
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"

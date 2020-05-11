@@ -8,15 +8,27 @@
 package com.xiaominfo.swagger.cloud.web;
 
 import com.xiaominfo.swagger.cloud.domain.User;
+import com.xiaominfo.swagger.cloud.kernel.Knife4jDynamicRouteService;
+import com.xiaominfo.swagger.cloud.pojo.SwaggerRoute;
 import com.xiaominfo.swagger.cloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.cloud.gateway.actuate.AbstractGatewayControllerEndpoint;
+import org.springframework.cloud.gateway.config.PropertiesRouteDefinitionLocator;
+import org.springframework.cloud.gateway.filter.FilterDefinition;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
+import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.cloud.gateway.handler.predicate.RoutePredicateFactory;
+import org.springframework.cloud.gateway.route.*;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import javax.annotation.Resource;
+import java.net.URI;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /***
@@ -29,9 +41,49 @@ import java.util.Map;
 @RequestMapping("/test")
 public class TestController {
 
-    @Autowired
+    @Resource
     UserRepository userRepository;
 
+    @Resource
+    InMemoryRouteDefinitionRepository inMemoryRouteDefinitionRepository;
+
+    @Resource
+    PropertiesRouteDefinitionLocator propertiesRouteDefinitionLocator;
+
+    @Resource
+    RouteDefinitionWriter routeDefinitionWriter;
+
+    @Resource
+    Knife4jDynamicRouteService knife4jDynamicRouteService;
+
+    @PostMapping("/create")
+    public Mono<Boolean> create(@RequestBody SwaggerRoute swaggerRoute){
+        return Mono.just(true);
+    }
+
+    @GetMapping("/add")
+    public Mono<Void> add(@RequestParam("id") String id){
+        System.out.printf("aaaa");
+        RouteDefinition router=new RouteDefinition();
+        router.setId(id);
+        router.setUri(URI.create("http://knife4j.xiaominfo.com"));
+        //定义proces
+        PredicateDefinition predicateDefinition=new PredicateDefinition();
+        predicateDefinition.setName("Path");
+        predicateDefinition.addArg("_genkey_0","/"+id+"/**");
+        router.setPredicates(Arrays.asList(predicateDefinition));
+        FilterDefinition filterDefinition=new FilterDefinition();
+        filterDefinition.addArg("_genkey_0","/"+id+"/(?<remaining>.*)");
+        filterDefinition.addArg("_genkey_1","/$\\{remaining}");
+        filterDefinition.setName("RewritePath");
+        router.setFilters(Arrays.asList(filterDefinition));
+        return inMemoryRouteDefinitionRepository.save(Mono.just(router));
+    }
+    @GetMapping("/add1")
+    public Flux<RouteDefinition> add1(){
+        System.out.printf("aaaa");
+        return propertiesRouteDefinitionLocator.getRouteDefinitions();
+    }
 
     @GetMapping("/all")
     public Flux<User> all(){

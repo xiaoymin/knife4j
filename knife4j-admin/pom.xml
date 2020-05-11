@@ -54,15 +54,32 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-starter-alibaba-nacos-discovery -->
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
 		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-			<version>2.2.1.RELEASE</version>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>29.0-jre</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
 		</dependency>
 
-		<!-- 自动化配置响应式的 Spring Data R2DBC -->
+		<!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
 		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>5.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<!-- 自动化配置响应式的 Spring Data R2DBC -->
+		<!--<dependency>
 			<groupId>org.springframework.boot.experimental</groupId>
 			<artifactId>spring-boot-starter-data-r2dbc</artifactId>
 			<version>0.1.0.M2</version>
@@ -71,7 +88,7 @@
 			<groupId>com.github.jasync-sql</groupId>
 			<artifactId>jasync-r2dbc-mysql</artifactId>
 			<version>1.0.14</version>
-		</dependency>
+		</dependency>-->
 		<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-gateway -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
