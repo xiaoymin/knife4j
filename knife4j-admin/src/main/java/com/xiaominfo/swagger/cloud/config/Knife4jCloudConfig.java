@@ -28,11 +28,11 @@ public class Knife4jCloudConfig {
 
     /**
      * 初始化Monitor
-     * @param knife4jDynamicRouteService
+     * @param dynamicRouteService
      * @return
      */
     @Bean(initMethod = "start",destroyMethod = "stop")
-    public RouteFileMonitor knife4jMonitor(@Autowired DynamicRouteService knife4jDynamicRouteService){
-        return new RouteFileMonitor(path,knife4jDynamicRouteService);
+    public RouteFileMonitor knife4jMonitor(@Autowired DynamicRouteService dynamicRouteService){
+        return new RouteFileMonitor(path,dynamicRouteService);
     }
 }
