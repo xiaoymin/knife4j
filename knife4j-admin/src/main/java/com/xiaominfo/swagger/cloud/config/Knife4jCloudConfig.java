@@ -7,8 +7,8 @@
 
 package com.xiaominfo.swagger.cloud.config;
 
-import com.xiaominfo.swagger.cloud.kernel.Knife4jDynamicRouteService;
-import com.xiaominfo.swagger.cloud.kernel.Knife4jMonitor;
+import com.xiaominfo.swagger.cloud.kernel.DynamicRouteService;
+import com.xiaominfo.swagger.cloud.kernel.RouteFileMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +32,7 @@ public class Knife4jCloudConfig {
      * @return
      */
     @Bean(initMethod = "start",destroyMethod = "stop")
-    public Knife4jMonitor knife4jMonitor(@Autowired Knife4jDynamicRouteService knife4jDynamicRouteService){
-        return new Knife4jMonitor(path,knife4jDynamicRouteService);
+    public RouteFileMonitor knife4jMonitor(@Autowired DynamicRouteService knife4jDynamicRouteService){
+        return new RouteFileMonitor(path,knife4jDynamicRouteService);
     }
 }

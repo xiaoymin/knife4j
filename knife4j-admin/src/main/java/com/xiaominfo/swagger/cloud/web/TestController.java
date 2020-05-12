@@ -7,16 +7,11 @@
 
 package com.xiaominfo.swagger.cloud.web;
 
-import com.xiaominfo.swagger.cloud.kernel.Knife4jDynamicRouteService;
+import com.xiaominfo.swagger.cloud.kernel.DynamicRouteService;
 import com.xiaominfo.swagger.cloud.pojo.SwaggerRoute;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gateway.actuate.AbstractGatewayControllerEndpoint;
 import org.springframework.cloud.gateway.config.PropertiesRouteDefinitionLocator;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
-import org.springframework.cloud.gateway.handler.predicate.RoutePredicateFactory;
 import org.springframework.cloud.gateway.route.*;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -26,7 +21,6 @@ import javax.annotation.Resource;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /***
@@ -50,7 +44,7 @@ public class TestController {
     RouteDefinitionWriter routeDefinitionWriter;
 
     @Resource
-    Knife4jDynamicRouteService knife4jDynamicRouteService;
+    DynamicRouteService knife4jDynamicRouteService;
 
     @PostMapping("/create")
     public Mono<Boolean> create(@RequestBody SwaggerRoute swaggerRoute){

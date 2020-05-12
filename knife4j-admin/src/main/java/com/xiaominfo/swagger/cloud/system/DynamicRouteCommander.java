@@ -7,7 +7,7 @@
 
 package com.xiaominfo.swagger.cloud.system;
 
-import com.xiaominfo.swagger.cloud.kernel.Knife4jMonitor;
+import com.xiaominfo.swagger.cloud.kernel.RouteFileMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +24,13 @@ import org.springframework.stereotype.Component;
 public class DynamicRouteCommander implements CommandLineRunner {
 
     @Autowired
-    Knife4jMonitor knife4jMonitor;
+    RouteFileMonitor routeFileMonitor;
 
     Logger logger= LoggerFactory.getLogger(DynamicRouteCommander.class);
 
     @Override
     public void run(String... args) throws Exception {
         logger.info("start init Routers");
-        knife4jMonitor.routes();
+        routeFileMonitor.routes();
     }
 }

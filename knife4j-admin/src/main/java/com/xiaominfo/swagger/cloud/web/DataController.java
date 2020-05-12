@@ -7,7 +7,7 @@
 
 package com.xiaominfo.swagger.cloud.web;
 
-import com.xiaominfo.swagger.cloud.kernel.Knife4jMonitor;
+import com.xiaominfo.swagger.cloud.kernel.RouteFileMonitor;
 import com.xiaominfo.swagger.cloud.pojo.ProjectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +29,7 @@ import java.util.Optional;
 public class DataController {
 
     @Autowired
-    Knife4jMonitor knife4jMonitor;
+    RouteFileMonitor knife4jMonitor;
     /**
      * 更加项目编号查询项目信息
      * @param code

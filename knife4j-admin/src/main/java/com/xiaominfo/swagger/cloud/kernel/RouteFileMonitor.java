@@ -32,15 +32,15 @@ import java.util.*;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2020/05/11 9:31
  */
-public class Knife4jMonitor {
+public class RouteFileMonitor {
 
-    Logger logger= LoggerFactory.getLogger(Knife4jMonitor.class);
+    Logger logger= LoggerFactory.getLogger(RouteFileMonitor.class);
     /**
      * 监听目录
      */
     private final String path;
 
-    private final Knife4jDynamicRouteService knife4jDynamicRouteService;
+    private final DynamicRouteService dynamicRouteService;
 
     private List<ProjectVo> projectVos=new ArrayList<>();
 
@@ -48,9 +48,9 @@ public class Knife4jMonitor {
 
     private FileAlterationMonitor fileAlterationMonitor;
 
-    public Knife4jMonitor(String path, Knife4jDynamicRouteService knife4jDynamicRouteService) {
+    public RouteFileMonitor(String path, DynamicRouteService dynamicRouteService) {
         this.path = path;
-        this.knife4jDynamicRouteService = knife4jDynamicRouteService;
+        this.dynamicRouteService = dynamicRouteService;
     }
 
     /**
@@ -66,7 +66,7 @@ public class Knife4jMonitor {
         //监听JSON文件
         IOFileFilter fileFilter= FileFilterUtils.and(FileFilterUtils.suffixFileFilter(".json"));
         FileAlterationObserver observer=new FileAlterationObserver(directory,fileFilter);
-        observer.addListener(new Knife4jMonitorListener(knife4jDynamicRouteService, this));
+        observer.addListener(new RouteFileListener(dynamicRouteService, this));
         fileAlterationMonitor=new FileAlterationMonitor(5000,observer);
         try {
             fileAlterationMonitor.start();
@@ -99,7 +99,7 @@ public class Knife4jMonitor {
                                 swaggerRoute.setUri(serviceVo.getUri());
                                 if (!routeHashs.contains(id)){
                                     routeHashs.add(id);
-                                    knife4jDynamicRouteService.add(swaggerRoute);
+                                    dynamicRouteService.add(swaggerRoute);
                                 }
                             }
                             //knife4jDynamicRouteService.refresh();

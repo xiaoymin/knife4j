@@ -32,9 +32,9 @@ import java.util.Arrays;
  * 2020/05/05 13:29
  */
 @Component
-public class Knife4jDynamicRouteService implements ApplicationEventPublisherAware {
+public class DynamicRouteService implements ApplicationEventPublisherAware {
 
-    Logger logger= LoggerFactory.getLogger(Knife4jDynamicRouteService.class);
+    Logger logger= LoggerFactory.getLogger(DynamicRouteService.class);
 
     @Resource
     protected RouteDefinitionWriter routeDefinitionWriter;

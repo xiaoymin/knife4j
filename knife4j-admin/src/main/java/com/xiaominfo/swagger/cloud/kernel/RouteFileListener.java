@@ -20,17 +20,17 @@ import java.io.File;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2020/05/11 9:37
  */
-public class Knife4jMonitorListener implements FileAlterationListener {
+public class RouteFileListener implements FileAlterationListener {
 
-    Logger logger= LoggerFactory.getLogger(Knife4jMonitorListener.class);
+    Logger logger= LoggerFactory.getLogger(RouteFileListener.class);
 
-    private final Knife4jDynamicRouteService knife4jDynamicRouteService;
+    private final DynamicRouteService dynamicRouteService;
 
-    private final Knife4jMonitor knife4jMonitor;
+    private final RouteFileMonitor routeFileMonitor;
 
-    public Knife4jMonitorListener(Knife4jDynamicRouteService knife4jDynamicRouteService, Knife4jMonitor knife4jMonitor) {
-        this.knife4jDynamicRouteService = knife4jDynamicRouteService;
-        this.knife4jMonitor = knife4jMonitor;
+    public RouteFileListener(DynamicRouteService dynamicRouteService, RouteFileMonitor routeFileMonitor) {
+        this.dynamicRouteService = dynamicRouteService;
+        this.routeFileMonitor = routeFileMonitor;
     }
 
     @Override
