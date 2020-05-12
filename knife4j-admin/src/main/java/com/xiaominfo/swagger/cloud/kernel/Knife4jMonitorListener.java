@@ -26,8 +26,11 @@ public class Knife4jMonitorListener implements FileAlterationListener {
 
     private final Knife4jDynamicRouteService knife4jDynamicRouteService;
 
-    public Knife4jMonitorListener(Knife4jDynamicRouteService knife4jDynamicRouteService) {
+    private final Knife4jMonitor knife4jMonitor;
+
+    public Knife4jMonitorListener(Knife4jDynamicRouteService knife4jDynamicRouteService, Knife4jMonitor knife4jMonitor) {
         this.knife4jDynamicRouteService = knife4jDynamicRouteService;
+        this.knife4jMonitor = knife4jMonitor;
     }
 
     @Override

@@ -24,8 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /***
  * 文件监听
@@ -41,6 +42,9 @@ public class Knife4jMonitor {
      */
     private final String path;
     private final Knife4jDynamicRouteService knife4jDynamicRouteService;
+
+    private List<ProjectVo> projectVos=new ArrayList<>();
+
     private FileAlterationMonitor fileAlterationMonitor;
 
     public Knife4jMonitor(String path, Knife4jDynamicRouteService knife4jDynamicRouteService) {
@@ -61,7 +65,7 @@ public class Knife4jMonitor {
         //监听JSON文件
         IOFileFilter fileFilter= FileFilterUtils.and(FileFilterUtils.suffixFileFilter(".json"));
         FileAlterationObserver observer=new FileAlterationObserver(directory,fileFilter);
-        observer.addListener(new Knife4jMonitorListener(knife4jDynamicRouteService));
+        observer.addListener(new Knife4jMonitorListener(knife4jDynamicRouteService, this));
         fileAlterationMonitor=new FileAlterationMonitor(5000,observer);
         try {
             fileAlterationMonitor.start();
@@ -82,6 +86,7 @@ public class Knife4jMonitor {
                     String json= FileUtil.readString(file,"UTF-8");
                     if (StrUtil.isNotBlank(json)){
                         ProjectVo projectVo=gson.fromJson(json,ProjectVo.class);
+                        this.addProject(projectVo);
                         //开始添加gateway路由
                         if (CollectionUtil.isNotEmpty(projectVo.getGroups())){
                             for (ServiceVo serviceVo:projectVo.getGroups()){
@@ -102,6 +107,24 @@ public class Knife4jMonitor {
             }
 
         }
+    }
+
+    /**
+     * 添加项目
+     * @param projectVo
+     */
+    public void addProject(ProjectVo projectVo){
+        if (projectVo!=null){
+            projectVos.add(projectVo);
+        }
+    }
+
+    public Optional<ProjectVo> getByCode(String code){
+        if (StrUtil.isNotBlank(code)){
+            Optional<ProjectVo> projectVoOptional=projectVos.stream().filter(projectVo -> StrUtil.equals(projectVo.getCode(),code)).findFirst();
+            return projectVoOptional;
+        }
+        return Optional.empty();
     }
 
     /**
