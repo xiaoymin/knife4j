@@ -82,11 +82,16 @@ public class Knife4jDynamicRouteService implements ApplicationEventPublisherAwar
             router.setUri(URI.create(swaggerRoute.getUri()));
             //定义proces
             PredicateDefinition predicateDefinition=new PredicateDefinition();
-            predicateDefinition.setName("Path");
-            predicateDefinition.addArg("_genkey_0","/"+swaggerRoute.getPrefix()+"/**");
+            //根据路径进行转发
+           /* predicateDefinition.setName("Path");
+            predicateDefinition.addArg("_genkey_0","/"+swaggerRoute.getPrefix()+"/**");*/
+            //根据请求头Header进行转发
+            predicateDefinition.setName("Header");
+            predicateDefinition.addArg("_genkey_0","knfie4j-gateway-request");
+            predicateDefinition.addArg("_genkey_1",swaggerRoute.getHeader());
             router.setPredicates(Arrays.asList(predicateDefinition));
             FilterDefinition filterDefinition=new FilterDefinition();
-            filterDefinition.addArg("_genkey_0","/"+swaggerRoute.getPrefix()+"/(?<remaining>.*)");
+            filterDefinition.addArg("_genkey_0","/(?<remaining>.*)");
             filterDefinition.addArg("_genkey_1","/$\\{remaining}");
             filterDefinition.setName("RewritePath");
             router.setFilters(Arrays.asList(filterDefinition));

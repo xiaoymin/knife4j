@@ -24,9 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /***
  * 文件监听
@@ -41,9 +39,12 @@ public class Knife4jMonitor {
      * 监听目录
      */
     private final String path;
+
     private final Knife4jDynamicRouteService knife4jDynamicRouteService;
 
     private List<ProjectVo> projectVos=new ArrayList<>();
+
+    private Set<String> routeHashs=new HashSet<>();
 
     private FileAlterationMonitor fileAlterationMonitor;
 
@@ -90,13 +91,16 @@ public class Knife4jMonitor {
                         //开始添加gateway路由
                         if (CollectionUtil.isNotEmpty(projectVo.getGroups())){
                             for (ServiceVo serviceVo:projectVo.getGroups()){
-                                String id= MD5.create().digestHex(projectVo.getCode()+serviceVo.toString());
+                                String id= MD5.create().digestHex(serviceVo.getHeader()+serviceVo.getUri());
                                 logger.info("unionId:{}",id);
                                 SwaggerRoute swaggerRoute=new SwaggerRoute();
                                 swaggerRoute.setId(id);
-                                swaggerRoute.setPrefix(serviceVo.getPrefix());
+                                swaggerRoute.setHeader(serviceVo.getHeader());
                                 swaggerRoute.setUri(serviceVo.getUri());
-                                knife4jDynamicRouteService.add(swaggerRoute);
+                                if (!routeHashs.contains(id)){
+                                    routeHashs.add(id);
+                                    knife4jDynamicRouteService.add(swaggerRoute);
+                                }
                             }
                             //knife4jDynamicRouteService.refresh();
                         }
@@ -115,6 +119,7 @@ public class Knife4jMonitor {
      */
     public void addProject(ProjectVo projectVo){
         if (projectVo!=null){
+            logger.info("添加项目,code:{},name:{}",projectVo.getCode(),projectVo.getName());
             projectVos.add(projectVo);
         }
     }

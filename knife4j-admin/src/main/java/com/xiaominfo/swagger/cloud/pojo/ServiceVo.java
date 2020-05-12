@@ -17,7 +17,7 @@ public class ServiceVo {
 
     private String name;
     private String uri;
-    private String prefix;
+    private String header;
     private String url;
     private String swaggerVersion;
 
@@ -37,12 +37,12 @@ public class ServiceVo {
         this.uri = uri;
     }
 
-    public String getPrefix() {
-        return prefix;
+    public String getHeader() {
+        return header;
     }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+    public void setHeader(String header) {
+        this.header = header;
     }
 
     public String getUrl() {
@@ -66,7 +66,7 @@ public class ServiceVo {
         return "ServiceVo{" +
                 "name='" + name + '\'' +
                 ", uri='" + uri + '\'' +
-                ", prefix='" + prefix + '\'' +
+                ", header='" + header + '\'' +
                 ", url='" + url + '\'' +
                 ", swaggerVersion='" + swaggerVersion + '\'' +
                 '}';

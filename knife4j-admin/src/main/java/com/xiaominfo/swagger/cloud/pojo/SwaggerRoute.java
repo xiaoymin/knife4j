@@ -7,6 +7,8 @@
 
 package com.xiaominfo.swagger.cloud.pojo;
 
+import java.util.Objects;
+
 /***
  *
  * @since:knife4j-admin 1.0
@@ -26,7 +28,7 @@ public class SwaggerRoute {
     /**
      * 前缀
      */
-    private String prefix;
+    private String header;
 
     public String getId() {
         return id;
@@ -44,13 +46,24 @@ public class SwaggerRoute {
         this.uri = uri;
     }
 
-    public String getPrefix() {
-        return prefix;
+    public String getHeader() {
+        return header;
     }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+    public void setHeader(String header) {
+        this.header = header;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()){ return false;}
+        SwaggerRoute that = (SwaggerRoute) o;
+        return Objects.equals(id, that.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

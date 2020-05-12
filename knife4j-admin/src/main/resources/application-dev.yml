@@ -17,9 +17,10 @@ spring:
       - id: service1
         uri: http://knife4j.xiaominfo.com
         predicates:
-          - Path=/service1/**
+          #- Path=/service1/**
+          - Header=knife4j-origin,server1
         filters:
-          - RewritePath=/service1/(?<remaining>.*), /$\{remaining}
+          - RewritePath=/(?<remaining>.*), /$\{remaining}
 management:
   endpoint:
     gateway:
