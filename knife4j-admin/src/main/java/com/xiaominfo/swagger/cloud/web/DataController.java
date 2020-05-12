@@ -9,12 +9,13 @@ package com.xiaominfo.swagger.cloud.web;
 
 import com.xiaominfo.swagger.cloud.kernel.RouteFileMonitor;
 import com.xiaominfo.swagger.cloud.pojo.ProjectVo;
+import com.xiaominfo.swagger.cloud.pojo.ServiceVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.util.Optional;
 
@@ -36,9 +37,9 @@ public class DataController {
      * @return
      */
     @GetMapping("/queryByCode")
-    public Mono<ProjectVo> queryByCode(@RequestParam("code") String code){
+    public Flux<ServiceVo> queryByCode(@RequestParam("code") String code){
         Optional<ProjectVo> projectVoOptional=knife4jMonitor.getByCode(code);
-        return projectVoOptional.isPresent()?Mono.just(projectVoOptional.get()):Mono.empty();
+        return projectVoOptional.isPresent()?Flux.fromIterable(projectVoOptional.get().getGroups()):Flux.empty();
     }
 
 

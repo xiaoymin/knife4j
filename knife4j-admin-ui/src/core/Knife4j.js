@@ -62,6 +62,10 @@ marked.setOptions({
 function SwaggerBootstrapUi(options) {
   //swagger请求api地址
   this.url = options.url || 'swagger-resources'
+  //项目code add 2020-5-12 20:02:37
+  this.code=options.code||''
+  this.gatewayurl='knife4j/data/queryByCode'
+
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
   //用于控制是否请求configUrl的配置
   this.configSupport = options.configSupport || false;
@@ -386,9 +390,12 @@ SwaggerBootstrapUi.prototype.configInit = function () {
 SwaggerBootstrapUi.prototype.analysisGroup = function () {
   var that = this
   try {
+    //此处请求地址进行更换,
+    var gatewayUrl=that.gatewayurl+'?code='+that.code;
     that.$Vue
       .$axios({
-        url: that.url,
+        //url: that.url,
+        url: gatewayUrl,
         type: 'get',
         timeout: 20000,
         dataType: 'json'
@@ -431,7 +438,9 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     var g = new SwaggerBootstrapUiInstance(
       group.name,
       group.location,
-      group.swaggerVersion
+      group.swaggerVersion,
+      group.header,
+      group.uri
     )
     g.url = group.url
     var newUrl = ''
@@ -596,7 +605,8 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         url: api,
         dataType: 'json',
         timeout: 20000,
-        type: 'get'
+        type: 'get',
+        headers:{'knfie4j-gateway-request':instance.header}
       }).then(function (data) {
         that.analysisApiSuccess(data);
       }).catch(function (err) {
@@ -3680,9 +3690,9 @@ function SwaggerBootstrapUiParameterLevel() {
  * @param version 版本号
  * @constructor
  */
-function SwaggerBootstrapUiInstance(name, location, version) {
+function SwaggerBootstrapUiInstance(name, location, version,header,uri) {
   //this.id = 'SwaggerBootstrapUiInstance' + Math.round(Math.random() * 1000000)
-  this.id = 'SwaggerBootstrapUiInstance' + md5(name + location + version)
+  this.id = 'SwaggerBootstrapUiInstance' + md5(name + location + version+header+uri)
   //默认未加载
   this.load = false
   //分组名称
@@ -3691,6 +3701,8 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   this.location = location
   //不分组是url地址
   this.url = null
+  this.uri=uri;
+  this.header=header;
   //增强地址
   this.extUrl = null
   this.groupVersion = version

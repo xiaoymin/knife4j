@@ -17,6 +17,10 @@ const routes = [{
       component: () => import('@/views/index/Main')
     },
     {
+      path:'/project/:code',
+      component: () => import('@/views/index/Main')
+    },
+    {
       path: '/Authorize/:groupName',
       component: () => import('@/views/settings/Authorize')
     },

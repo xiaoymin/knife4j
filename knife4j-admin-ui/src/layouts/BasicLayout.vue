@@ -144,6 +144,7 @@ export default {
     initKnife4jSpringUi() {
       //该版本是最终打包到knife4j-spring-ui的模块,默认是调用该方法
       var that = this;
+      let params = this.$route.params;
       //初始化swagger文档
       var url = this.$route.path;
       var plusFlag = false;
@@ -151,7 +152,7 @@ export default {
         //开启增强
         plusFlag = true;
       }
-      this.swagger = new SwaggerBootstrapUi({ Vue: that, plus: plusFlag });
+      this.swagger = new SwaggerBootstrapUi({ Vue: that, plus: plusFlag,code:params.code });
       try {
         this.swagger.main();
       } catch (e) {
