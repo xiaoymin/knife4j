@@ -1,0 +1,578 @@
+@import "~ant-design-vue/dist/antd.less";
+//@import "~ant-design-vue/lib/style/themes/default.less";
+
+@contentHeight: calc(100vh - 64px);
+@DebugContentBodyHeight: calc(100vh - 395px);
+@headerDefaultWidth: calc(100vw - 310px);
+@headerCollapsedWidth: calc(100vw - 80px);
+@contentTabHeight: calc(100vh - 152px);
+/* @GlobalBackgroundColor: #252728; */
+@GlobalBackgroundColor: #1e282c;
+@GlobalSubMenuBackgroundColor: #2c3b41;
+
+.knife4j {
+  padding: 0px;
+}
+
+
+/**
+* -----------------------------
+* 左侧菜单部分样式
+* ------------------------------
+*/
+
+.knife4j-menu {
+  height: @contentHeight;
+  overflow: auto;
+  /* background: #161718; */
+  background: @GlobalBackgroundColor;
+
+  ul {
+    background: @GlobalBackgroundColor;
+  }
+
+  li {
+    /*  background: @GlobalBackgroundColor; */
+    /* background: @GlobalSubMenuBackgroundColor; */
+  }
+
+  .ant-menu-dark .ant-menu-inline.ant-menu-sub {
+    /* background: @GlobalBackgroundColor; */
+    background: @GlobalSubMenuBackgroundColor;
+
+    li {
+      /* background: @GlobalSubMenuBackgroundColor; */
+    }
+  }
+
+
+
+}
+
+.ant-menu-dark,
+.ant-menu-dark .ant-menu-sub {
+  background: @GlobalBackgroundColor;
+}
+
+.knife4j-menu-api-deprecated {
+  text-decoration: line-through;
+}
+
+
+.knife4j-menu::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 6px;
+  /*高宽分别对应横竖滚动条的尺寸*/
+  height: 0.5px;
+}
+
+.knife4j-menu::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #469aed;
+}
+
+.knife4j-menu::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background: #001529;
+}
+
+/**
+* -----------------------------
+* 覆盖antd部分样式
+* ------------------------------
+*/
+
+
+.knife4j-logo {
+  height: 64px;
+  position: relative;
+  line-height: 64px;
+  padding-left: (@menu-collapsed-width - 32px) / 2;
+  transition: all 0.3s;
+  background: @GlobalBackgroundColor;
+  overflow: hidden;
+
+  img {
+    display: inline-block;
+    vertical-align: middle;
+    height: 32px;
+  }
+
+  h1 {
+    color: white;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 20px;
+    margin: 0 0 0 12px;
+    font-family: "Myriad Pro", "Helvetica Neue", Arial, Helvetica,
+      sans-serif;
+    font-weight: 600;
+  }
+}
+
+
+.knife4j-logo-data {
+  height: 64px;
+  position: relative;
+  line-height: 64px;
+  padding-left: (@menu-collapsed-width - 48px) / 2;
+  transition: all 0.3s;
+  background: @GlobalBackgroundColor;
+  overflow: hidden;
+
+  img {
+    display: inline-block;
+    vertical-align: middle;
+    height: 32px;
+  }
+
+  h1 {
+    color: white;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 20px;
+    margin: 0 0 0 12px;
+    font-family: "Myriad Pro", "Helvetica Neue", Arial, Helvetica,
+      sans-serif;
+    font-weight: 600;
+  }
+}
+
+
+/**
+* -----------------------------
+* 顶部Header部分样式
+* ------------------------------
+*/
+.knife4j-header-title {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+
+.knife4j-header-default {
+  position: fixed;
+  z-index: 999;
+}
+
+.knife4j-header-width {
+  width: @headerDefaultWidth;
+  max-width: @headerDefaultWidth;
+}
+
+.knife4j-header-width-collapsed {
+  width: @headerCollapsedWidth;
+  max-width: @headerCollapsedWidth;
+}
+
+
+/**
+* -----------------------------
+* tab选项卡部分样式
+* ------------------------------
+*/
+
+.knife4j-tab {
+  padding: 5px 5px 0;
+  left: 4px;
+  top: 5px;
+  background: white;
+
+  .ant-tabs-nav-container {
+    font-size: 12px;
+  }
+
+  .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {
+    line-height: 35px;
+    border-bottom: 1px;
+  }
+}
+
+
+.knife4j-tab .ant-tabs-bar {
+  margin: 0 0 3px 0
+}
+
+/**
+* -----------------------------
+* 内容部分样式
+* ------------------------------
+*/
+
+.knife4j-body-content {
+  overflow-y: auto;
+  height: @contentTabHeight;
+  min-height: 400px;
+}
+
+/*
+* 内容页滚动条
+*/
+.knife4j-body-content::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 8px;
+  /*高宽分别对应横竖滚动条的尺寸*/
+  height: 0.5px;
+}
+
+.knife4j-body-content::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #469aed;
+}
+
+.knife4j-body-content::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background: #fff;
+}
+
+
+
+.knife4j-router-view {
+  min-height: 480px;
+  margin: 5px 5px 0;
+}
+
+
+.knife4j-btn-danger {
+  color: #fff;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+
+.knife4j-btn-info {
+  color: #fff;
+  background-color: #269abc;
+  border-color: #1b6d85;
+}
+
+.knife4j-request-query {
+  color: #61affe;
+}
+
+.knife4j-request-body {
+  color: #0d5aa7;
+}
+
+.knife4j-request-formData {
+  color: #9012fe;
+}
+
+.knife4j-request-form {
+  color: #9012fe;
+}
+
+.knife4j-request-validate-jsr {
+  color: #10af88;
+  border-bottom: 1px dashed #10af88;
+}
+
+.knife4j-request-header {
+  color: #fca130;
+}
+
+.knife4j-request-path {
+  color: #49cc90;
+}
+
+.knife4j-api-copy-address {
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 100;
+  color: #0b0a0a;
+}
+
+.knife4j-api-title {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #616368;
+  height: 35px;
+  line-height: 35px;
+}
+
+.knife4j-api-row {
+  height: 45px;
+  line-height: 45px;
+}
+
+.knife4j-api-summary {
+  border-color: #49cc90;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.knife4j-api-summary-method {
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 80px;
+  padding: 6px 15px;
+  text-align: center;
+  border-radius: 3px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  font-family: Titillium Web, sans-serif;
+  color: #fff;
+}
+
+.knife4j-api-summary-path {
+  font-size: 14px;
+  display: flex;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 3 auto;
+  flex: 0 3 auto;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  word-break: break-all;
+  padding: 0 32px;
+}
+
+.knife4j-api-post {
+  border-color: #49cc90;
+  background: rgba(73, 204, 144, 0.1);
+
+  .knife4j-api-summary-method {
+    background: #49cc90;
+  }
+}
+
+.knife4j-api-get {
+  border-color: #61affe;
+  background: rgba(97, 175, 254, 0.1);
+
+  .knife4j-api-summary-method {
+    background: #61affe;
+  }
+}
+
+.knife4j-api-head {
+  border-color: #9012fe;
+  background: rgba(144, 18, 254, 0.1);
+
+  .knife4j-api-summary-method {
+    background: #9012fe;
+  }
+}
+
+.knife4j-api-put {
+  border-color: #fca130;
+  background: rgba(252, 161, 48, 0.1);
+
+  .knife4j-api-summary-method {
+    background: #fca130;
+  }
+}
+
+.knife4j-api-delete {
+  border-color: #f93e3e;
+  background: rgba(249, 62, 62, 0.1);
+
+  .knife4j-api-summary-method {
+    background: #f93e3e;
+  }
+}
+
+.knife4j-api-options {
+  border-color: #0d5aa7;
+  background: rgba(13, 90, 167, 0.1);
+
+  .knife4j-api-summary-method {
+    background: #0d5aa7;
+  }
+}
+
+.knife4j-api-patch {
+  border-color: #50e3c2;
+  background: rgba(80, 227, 194, 0.1);
+
+  .knife4j-api-summary-method {
+    background: #50e3c2;
+  }
+}
+
+
+/**Debug调试部分样式**/
+.knife4j-debug {
+  margin: 20px auto;
+  width: 100%;
+}
+
+.knife4j-api-send {
+  width: 10%;
+}
+
+.knife4j-debug-param-count {
+  background-color: red;
+  border-radius: 50%;
+  color: white;
+}
+
+.knife4j-debug-tabs {
+  margin: 10px auto;
+}
+
+.knife4j-api-readonly {
+  margin: 10px auto;
+  width: 98%;
+}
+
+.knife4j-debug-api-post {
+  border-color: #49cc90;
+
+  .knife4j-api-summary-method {
+    background: #49cc90;
+    height: 32px;
+  }
+}
+
+.knife4j-debug-api-get {
+  border-color: #61affe;
+
+  .knife4j-api-summary-method {
+    background: #61affe;
+    height: 32px;
+  }
+}
+
+.knife4j-debug-api-head {
+  border-color: #9012fe;
+
+  .knife4j-api-summary-method {
+    background: #9012fe;
+    height: 32px;
+  }
+}
+
+.knife4j-debug-api-put {
+  border-color: #fca130;
+
+  .knife4j-api-summary-method {
+    background: #fca130;
+    height: 32px;
+  }
+}
+
+.knife4j-debug-api-delete {
+  border-color: #f93e3e;
+
+  .knife4j-api-summary-method {
+    background: #f93e3e;
+    height: 32px;
+  }
+}
+
+.knife4j-debug-api-options {
+  border-color: #0d5aa7;
+
+  .knife4j-api-summary-method {
+    background: #0d5aa7;
+    height: 32px;
+  }
+}
+
+.knife4j-debug-api-patch {
+  border-color: #50e3c2;
+
+  .knife4j-api-summary-method {
+    background: #50e3c2;
+    height: 32px;
+  }
+}
+
+
+
+
+.knife4j-debug-request-type {
+  margin-top: 0px;
+}
+
+.knife4j-debug-request-content-type {
+  width: 360px;
+  height: 35px;
+  line-height: 35px;
+}
+
+.knife4j-debug-request-content-type-float {
+  float: left;
+  width: 360px;
+}
+
+
+.knife4j-debug-request-content-type-raw {
+  width: 360px;
+  height: 35px;
+  line-height: 35px;
+}
+
+.knife4j-debug-raw-span {
+  cursor: pointer;
+}
+
+
+.knife4j-debug-response {
+  min-height: @DebugContentBodyHeight;
+}
+
+.knife4j-debug-response-mt {
+  margin-top: 10px;
+}
+
+.knife4j-debug-response-curl {
+  margin: 10px 0;
+  font: 100 12px/18px monaco, andale mono, courier new;
+  padding: 10px 12px;
+  border: #ccc 1px solid;
+  border-left-width: 4px;
+  background-color: #fefefe;
+  box-shadow: 0 0 4px #eee;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #444;
+}
+
+.knife4j-debug-status {
+  margin-right: 15px;
+
+  .key {
+    color: #919191;
+    padding: 6px;
+  }
+
+  .value {
+    color: #4dc095;
+    font-size: 12px;
+    font-weight: bold;
+  }
+}
+
+.knife4j-debug-ace-editor {
+  overflow-y: hidden;
+
+  .ace_scrollbar-v {
+    overflow-y: hidden;
+  }
+}
+
+.knife4j-debug-param-requiretrue {
+  border: 1px solid #e5b2b1;
+}
+
+.knife4j-debug-editor-field-description {
+  position: absolute;
+  color: #8c8c8c;
+}
