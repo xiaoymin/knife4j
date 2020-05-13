@@ -30,7 +30,14 @@ import java.util.Optional;
 public class DataController {
 
     @Autowired
-    RouteFileMonitor knife4jMonitor;
+    RouteFileMonitor routeFileMonitor;
+
+    @GetMapping("/list")
+    public Flux<ProjectVo> list(){
+        return Flux.fromIterable(routeFileMonitor.getProjectVos());
+    }
+
+
     /**
      * 更加项目编号查询项目信息
      * @param code
@@ -38,7 +45,7 @@ public class DataController {
      */
     @GetMapping("/queryByCode")
     public Flux<ServiceVo> queryByCode(@RequestParam("code") String code){
-        Optional<ProjectVo> projectVoOptional=knife4jMonitor.getByCode(code);
+        Optional<ProjectVo> projectVoOptional=routeFileMonitor.getByCode(code);
         return projectVoOptional.isPresent()?Flux.fromIterable(projectVoOptional.get().getGroups()):Flux.empty();
     }
 

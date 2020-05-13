@@ -133,6 +133,14 @@ public class RouteFileMonitor {
     }
 
     /**
+     * 获取所有项目
+     * @return
+     */
+    public List<ProjectVo> getProjectVos(){
+        return projectVos;
+    }
+
+    /**
      * 关闭
      */
     public void stop(){
