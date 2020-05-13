@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.xiaominfo.swagger.cloud.pojo.ProjectVo;
 import com.xiaominfo.swagger.cloud.pojo.ServiceVo;
 import com.xiaominfo.swagger.cloud.pojo.SwaggerRoute;
+import com.xiaominfo.swagger.cloud.repository.RouteRepository;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
@@ -42,15 +43,16 @@ public class RouteFileMonitor {
 
     private final DynamicRouteService dynamicRouteService;
 
-    private List<ProjectVo> projectVos=new ArrayList<>();
+    private final RouteRepository routeRepository;
 
     private Set<String> routeHashs=new HashSet<>();
 
     private FileAlterationMonitor fileAlterationMonitor;
 
-    public RouteFileMonitor(String path, DynamicRouteService dynamicRouteService) {
+    public RouteFileMonitor(String path, DynamicRouteService dynamicRouteService, RouteRepository routeRepository) {
         this.path = path;
         this.dynamicRouteService = dynamicRouteService;
+        this.routeRepository = routeRepository;
     }
 
     /**
@@ -81,63 +83,41 @@ public class RouteFileMonitor {
         File[] jsons=directory.listFiles((dir,name)-> StrUtil.endWith(name,".json"));
         if (ArrayUtil.isNotEmpty(jsons)){
             logger.info("JSON文件数量:{}",jsons.length);
-            Gson gson=new Gson();
             for (File file:jsons){
                 try{
-                    String json= FileUtil.readString(file,"UTF-8");
-                    if (StrUtil.isNotBlank(json)){
-                        ProjectVo projectVo=gson.fromJson(json,ProjectVo.class);
-                        this.addProject(projectVo);
+                    Optional<ProjectVo> projectVoOptional=routeRepository.resolved(file);
+                    if (projectVoOptional.isPresent()){
+                        ProjectVo projectVo=projectVoOptional.get();
+                        routeRepository.addProject(projectVo);
                         //开始添加gateway路由
-                        if (CollectionUtil.isNotEmpty(projectVo.getGroups())){
-                            for (ServiceVo serviceVo:projectVo.getGroups()){
-                                String id= MD5.create().digestHex(serviceVo.getHeader()+serviceVo.getUri());
-                                logger.info("unionId:{}",id);
-                                SwaggerRoute swaggerRoute=new SwaggerRoute();
-                                swaggerRoute.setId(id);
-                                swaggerRoute.setHeader(serviceVo.getHeader());
-                                swaggerRoute.setUri(serviceVo.getUri());
-                                if (!routeHashs.contains(id)){
-                                    routeHashs.add(id);
-                                    dynamicRouteService.add(swaggerRoute);
-                                }
-                            }
-                            //knife4jDynamicRouteService.refresh();
-                        }
+                        this.mergeServices(projectVo.getGroups());
                     }
                 }catch (Exception e){
                     logger.warn("load File Failed,message:{}",e.getMessage());
                 }
             }
-
         }
     }
 
     /**
-     * 添加项目
-     * @param projectVo
+     * 更新service
+     * @param serviceVos
      */
-    public void addProject(ProjectVo projectVo){
-        if (projectVo!=null){
-            logger.info("添加项目,code:{},name:{}",projectVo.getCode(),projectVo.getName());
-            projectVos.add(projectVo);
+    public void mergeServices(List<ServiceVo> serviceVos){
+        if (CollectionUtil.isNotEmpty(serviceVos)){
+            for (ServiceVo serviceVo:serviceVos){
+                String id= MD5.create().digestHex(serviceVo.getHeader()+serviceVo.getUri());
+                logger.info("unionId:{}",id);
+                SwaggerRoute swaggerRoute=new SwaggerRoute();
+                swaggerRoute.setId(id);
+                swaggerRoute.setHeader(serviceVo.getHeader());
+                swaggerRoute.setUri(serviceVo.getUri());
+                if (!routeHashs.contains(id)){
+                    routeHashs.add(id);
+                    dynamicRouteService.add(swaggerRoute);
+                }
+            }
         }
-    }
-
-    public Optional<ProjectVo> getByCode(String code){
-        if (StrUtil.isNotBlank(code)){
-            Optional<ProjectVo> projectVoOptional=projectVos.stream().filter(projectVo -> StrUtil.equals(projectVo.getCode(),code)).findFirst();
-            return projectVoOptional;
-        }
-        return Optional.empty();
-    }
-
-    /**
-     * 获取所有项目
-     * @return
-     */
-    public List<ProjectVo> getProjectVos(){
-        return projectVos;
     }
 
     /**
@@ -151,5 +131,9 @@ public class RouteFileMonitor {
                 logger.error("monitor stop Faild,message:{}",e.getMessage());
             }
         }
+    }
+
+    public RouteRepository getRouteRepository() {
+        return routeRepository;
     }
 }

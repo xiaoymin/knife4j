@@ -10,6 +10,7 @@ package com.xiaominfo.swagger.cloud.web;
 import com.xiaominfo.swagger.cloud.kernel.RouteFileMonitor;
 import com.xiaominfo.swagger.cloud.pojo.ProjectVo;
 import com.xiaominfo.swagger.cloud.pojo.ServiceVo;
+import com.xiaominfo.swagger.cloud.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +33,12 @@ public class DataController {
     @Autowired
     RouteFileMonitor routeFileMonitor;
 
+    @Autowired
+    RouteRepository routeRepository;
+
     @GetMapping("/list")
     public Flux<ProjectVo> list(){
-        return Flux.fromIterable(routeFileMonitor.getProjectVos());
+        return Flux.fromIterable(routeRepository.listAll());
     }
 
 
@@ -45,7 +49,7 @@ public class DataController {
      */
     @GetMapping("/queryByCode")
     public Flux<ServiceVo> queryByCode(@RequestParam("code") String code){
-        Optional<ProjectVo> projectVoOptional=routeFileMonitor.getByCode(code);
+        Optional<ProjectVo> projectVoOptional=routeRepository.queryByCode(code);
         return projectVoOptional.isPresent()?Flux.fromIterable(projectVoOptional.get().getGroups()):Flux.empty();
     }
 

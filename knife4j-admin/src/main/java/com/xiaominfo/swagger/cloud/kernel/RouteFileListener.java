@@ -7,12 +7,14 @@
 
 package com.xiaominfo.swagger.cloud.kernel;
 
+import com.xiaominfo.swagger.cloud.pojo.ProjectVo;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Optional;
 
 /***
  * 监听器
@@ -54,11 +56,21 @@ public class RouteFileListener implements FileAlterationListener {
     @Override
     public void onFileCreate(File file) {
         logger.info("file {} has created,add route",file.getName());
+        Optional<ProjectVo> projectVoOptional=routeFileMonitor.getRouteRepository().resolved(file);
+        if (projectVoOptional.isPresent()){
+            routeFileMonitor.getRouteRepository().addProject(projectVoOptional.get());
+            routeFileMonitor.mergeServices(projectVoOptional.get().getGroups());
+        }
     }
 
     @Override
     public void onFileChange(File file) {
         logger.info("file {} has changed",file.getName());
+        Optional<ProjectVo> projectVoOptional=routeFileMonitor.getRouteRepository().resolved(file);
+        if (projectVoOptional.isPresent()){
+            routeFileMonitor.getRouteRepository().addProject(projectVoOptional.get());
+            routeFileMonitor.mergeServices(projectVoOptional.get().getGroups());
+        }
     }
 
     @Override
