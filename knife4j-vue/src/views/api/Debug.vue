@@ -2090,12 +2090,16 @@ export default {
           url = checkResult.url;
           formParams = Object.assign(formParams, checkResult.params);
         }
+        //console.log(headers)
         var requestConfig = {
           url: url,
           method: methodType,
           headers: headers,
           params: formParams,
-          timeout: 0
+          timeout: 0,
+          //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
+          //否则axios会忽略请求头Content-Type
+          data:null
         };
         //console.log(requestConfig);
         //需要判断是否是下载请求
@@ -2108,20 +2112,20 @@ export default {
         //https://gitee.com/xiaoym/knife4j/issues/I19C8Y
         debugInstance.interceptors.request.use(config => {
           let url = config.url;
-          // get参数编码
-          if (config.method === "get" && config.params) {
-            url += "?";
-            let keys = Object.keys(config.params);
-            for (let key of keys) {
-              if (KUtils.strNotBlank(config.params[key])) {
-                url += `${encodeURIComponent(key)}=${encodeURIComponent(
-                  config.params[key]
-                )}&`;
+          if (config.method === "get" && config.params){
+              url += "?";
+              let keys = Object.keys(config.params);
+              for (let key of keys) {
+                if (KUtils.strNotBlank(config.params[key])) {
+                  url += `${encodeURIComponent(key)}=${encodeURIComponent(
+                    config.params[key]
+                  )}&`;
+                }
               }
-            }
-            url = url.substring(0, url.length - 1);
-            config.params = {};
+              url = url.substring(0, url.length - 1);
+              config.params = {};
           }
+          // get参数编码
           config.url = url;
           return config;
         });
@@ -2174,7 +2178,10 @@ export default {
           url: url,
           method: methodType,
           headers: headers,
-          timeout: 0
+          timeout: 0,
+          //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
+          //否则axios会忽略请求头Content-Type
+          data:null
         };
         if (fileFlag) {
           requestConfig = { ...requestConfig, data: formParams };
@@ -2191,9 +2198,10 @@ export default {
           //流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
+        let debugInstance=DebugAxios.create();
         //console(headers);
         //console(requestConfig);
-        DebugAxios.create()
+        debugInstance
           .request(requestConfig)
           .then(res => {
             //console("url-form-success");
