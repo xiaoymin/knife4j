@@ -154,96 +154,7 @@ import isObject from 'lodash/isObject'
 import has from 'lodash/has'
 import keys from 'lodash/keys'
 import cloneDeep from 'lodash/cloneDeep'
-//请求参数table-header
-const requestcolumns = [
-  {
-    title: "参数名称",
-    dataIndex: "name",
-    width: "30%"
-  },
-  {
-    title: "参数说明",
-    dataIndex: "description",
-    width: "25%",
-    scopedSlots: { customRender: "descriptionValueTemplate" }
-  },
-  {
-    title: "请求类型",
-    dataIndex: "in",
-    scopedSlots: { customRender: "typeTemplate" }
-  },
-  {
-    title: "是否必须",
-    dataIndex: "require",
-    scopedSlots: { customRender: "requireTemplate" }
-  },
-  {
-    title: "数据类型",
-    dataIndex: "type",
-    scopedSlots: { customRender: "datatypeTemplate" }
-  },
-  {
-    title: "schema",
-    dataIndex: "schemaValue",
-    width: "15%"
-  }
-];
-//响应状态table-header
-const responseStatuscolumns = [
-  {
-    title: "状态码",
-    dataIndex: "code",
-    width: "20%"
-  },
-  {
-    title: "说明",
-    dataIndex: "description",
-    width: "55%",
-    scopedSlots: { customRender: "descriptionTemplate" }
-  },
-  {
-    title: "schema",
-    dataIndex: "schema"
-  }
-];
-//响应头-header
-const responseHeaderColumns = [
-  {
-    title: "参数名称",
-    dataIndex: "name",
-    width: "30%"
-  },
-  {
-    title: "参数说明",
-    dataIndex: "description",
-    width: "55%"
-  },
-  {
-    title: "数据类型",
-    dataIndex: "type"
-  }
-];
-const responseParametersColumns = [
-  {
-    title: "参数名称",
-    dataIndex: "name",
-    width: "35%"
-  },
-  {
-    title: "参数说明",
-    dataIndex: "description",
-    width: "40%"
-  },
-  {
-    title: "类型",
-    dataIndex: "type"
-  },
-  {
-    title: "schema",
-    dataIndex: "schemaValue",
-    width: "15%"
-  }
-];
+
 export default {
   name: "Document",
   components: { editor: require("vue2-ace-editor"), DataType, EditorShow},
@@ -261,10 +172,10 @@ export default {
     return {
       content: "<span>Hello</span>",
       contentType:"*/*",//请求数据类型
-      columns: requestcolumns,
-      responseHeaderColumns: responseHeaderColumns,
-      responseStatuscolumns: responseStatuscolumns,
-      responseParametersColumns: responseParametersColumns,
+      columns: [],
+      responseHeaderColumns: [],
+      responseStatuscolumns: [],
+      responseParametersColumns: [],
       expanRows: true,
       //接收一个响应信息对象,遍历得到树形结构的值
       multipCode: false,
@@ -280,6 +191,7 @@ export default {
     //根据instance的实例初始化model名称
     var treeTableModel = this.swaggerInstance.refTreeTableModels;
     this.$Knife4jModels.setValue(key, treeTableModel);
+    this.initI18n();
     this.initRequestParams();
     this.initResponseCodeParams();
     setTimeout(() => {
@@ -288,7 +200,28 @@ export default {
       that.copyApiMarkdown();
     }, 1500);
   },
+  computed:{
+    language(){
+       return this.$store.state.globals.language;
+    }
+  },
+  watch:{
+    language:function(val,oldval){
+      this.initI18n();
+    }
+  },
   methods: {
+    getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
+    initI18n(){
+      //根据i18n初始化部分参数
+      var inst=this.getCurrentI18nInstance();
+      this.columns=inst.table.documentRequestColumns;
+      this.responseStatuscolumns=inst.table.documentResponseStatusColumns;
+      this.responseHeaderColumns=inst.table.documentResponseHeaderColumns;
+      this.responseParametersColumns=inst.table.documentResponseColumns;
+    },
     copyApiAddress() {
       var that = this;
       var btnId = "btnCopyAddress" + this.api.id;

@@ -62,6 +62,7 @@ marked.setOptions({
 function SwaggerBootstrapUi(options) {
   //swagger请求api地址
   this.url = options.url || 'swagger-resources'
+  this.i18n=options.i18n||'zh-CN'
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
   //用于控制是否请求configUrl的配置
   this.configSupport = options.configSupport || false;

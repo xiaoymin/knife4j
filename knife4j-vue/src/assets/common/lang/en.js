@@ -5,6 +5,100 @@ const langOptions = {
   langText: 'EN',
   settingText: 'Settings',
   cacheText: 'Clear Caches',
+   //文档中各个表格的属性
+  table:{
+    //文档说明-请求参数
+    documentRequestColumns:[
+      {
+        title: 'name',
+        dataIndex: 'name',
+        width: '30%'
+      },
+      {
+        title: 'description',
+        dataIndex: 'description',
+        width: '25%',
+        scopedSlots: { customRender: 'descriptionValueTemplate' }
+      },
+      {
+        title: 'in',
+        dataIndex: 'in',
+        scopedSlots: { customRender: 'typeTemplate' }
+      },
+      {
+        title: 'require',
+        dataIndex: 'require',
+        scopedSlots: { customRender: 'requireTemplate' }
+      },
+      {
+        title: 'type',
+        dataIndex: 'type',
+        scopedSlots: { customRender: 'datatypeTemplate' }
+      },
+      {
+        title: 'schema',
+        dataIndex: 'schemaValue',
+        width: '15%'
+      }
+    ],
+    //文档说明-响应状态
+    documentResponseStatusColumns:[
+      {
+        title: 'code',
+        dataIndex: 'code',
+        width: '20%'
+      },
+      {
+        title: 'description',
+        dataIndex: 'description',
+        width: '55%',
+        scopedSlots: { customRender: 'descriptionTemplate' }
+      },
+      {
+        title: 'schema',
+        dataIndex: 'schema'
+      }
+    ],
+    //文档说明-响应Header
+    documentResponseHeaderColumns:[
+      {
+        title: 'name',
+        dataIndex: 'name',
+        width: '30%'
+      },
+      {
+        title: 'description',
+        dataIndex: 'description',
+        width: '55%'
+      },
+      {
+        title: 'type',
+        dataIndex: 'type'
+      }
+    ],
+    //文档说明-响应参数
+    documentResponseColumns:[
+      {
+        title: 'name',
+        dataIndex: 'name',
+        width: '35%'
+      },
+      {
+        title: 'description',
+        dataIndex: 'description',
+        width: '40%'
+      },
+      {
+        title: 'type',
+        dataIndex: 'type'
+      },
+      {
+        title: 'schema',
+        dataIndex: 'schemaValue',
+        width: '15%'
+      }
+    ]
+  },
   //主页显示
   homePage: {
     description: 'Description',

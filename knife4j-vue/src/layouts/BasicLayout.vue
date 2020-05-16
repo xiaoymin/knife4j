@@ -57,6 +57,7 @@ import { urlToList } from "@/components/utils/pathTools";
 import ThreeMenu from "@/components/SiderMenu/ThreeMenu";
 //右键菜单
 import ContextMenu from "@/components/common/ContextMenu";
+import constant from "@/store/constants";
 
 const constMenuWidth = 310;
 
@@ -117,7 +118,9 @@ export default {
       return this.$store.state.header.userCurrent;
     },
     cacheMenuData() {
-      return this.$store.state.globals.menuData;
+      return this.$store.state.globals.currentMenuData;
+    },currentMenuData(){
+      return this.$store.state.globals.currentMenuData;
     }
   },
   updated() {
@@ -141,9 +144,7 @@ export default {
     }
   },
   methods: {
-    initKnife4jSpringUi() {
-      //该版本是最终打包到knife4j-spring-ui的模块,默认是调用该方法
-      var that = this;
+    getPlusStatus(){
       //初始化swagger文档
       var url = this.$route.path;
       var plusFlag = false;
@@ -151,36 +152,64 @@ export default {
         //开启增强
         plusFlag = true;
       }
-      this.swagger = new SwaggerBootstrapUi({ Vue: that, plus: plusFlag });
-      try {
-        this.swagger.main();
-      } catch (e) {
-        console.error(e);
+      return plusFlag;
+    },
+    getI18nFromUrl(){
+      var param=this.$route.params;
+      var include=false;
+      var i18n="zh-CN";
+      if(KUtils.checkUndefined(param)){
+        var i18nFromUrl=param["i18n"];
+        if(KUtils.checkUndefined(i18nFromUrl)){
+          var langs=["zh-CN","en-US"];
+          if(langs.includes(i18nFromUrl)){
+            include=true;
+            i18n=i18nFromUrl;
+          }
+        }
       }
-      //初始化相关操作
-      //初始化菜单数据
-      //this.MenuData = getMenuData();
-      //数据赋值
-      this.$store.dispatch("header/getCurrentUser");
+      return {
+        include:include,
+        i18n:i18n
+      }
+    },
+    initKnife4jSpringUi() {
+      //该版本是最终打包到knife4j-spring-ui的模块,默认是调用该方法
+      var that = this;
+      var i18nParams=this.getI18nFromUrl();
+      var tmpI18n=i18nParams.i18n;
+      if(i18nParams.include){
+        //写入本地缓存
+        this.$store.dispatch("globals/setLang", tmpI18n);
+        this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
+        this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n })
+      }else{
+        //不包含
+        //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
+        this.$localStore.getItem(constant.globalI18nCache).then(i18n => {
+          if(KUtils.checkUndefined(i18n)){
+            this.$store.dispatch("globals/setLang", i18n);
+            tmpI18n=i18n;
+          }
+          this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n })
+        })
+      }
+     
     },
     initKnife4jFront() {
       //该版本区别于Spring-ui的版本,提供给其它语言来集成knife4j
       var that = this;
-      //初始化swagger文档
-      var url = this.$route.path;
-      var plusFlag = false;
-      if (url == "/plus") {
-        //开启增强
-        plusFlag = true;
-      }
-      this.swagger = new SwaggerBootstrapUi({
+      this.initSwagger({
         Vue: that,
-        plus: plusFlag,
+        plus: this.getPlusStatus(),
         //禁用config的url调用
         configSupport: false,
         //覆盖url地址,多个服务的组合
         url: "/static/services.json"
       });
+    },
+    initSwagger(options){
+      this.swagger = new SwaggerBootstrapUi(options);
       try {
         this.swagger.main();
       } catch (e) {
@@ -199,7 +228,7 @@ export default {
     },
     searchClear() {
       //搜索输入框清空,菜单还原
-      this.MenuData = this.cacheMenuData;
+      this.MenuData = this.currentMenuData;
     },
     searchKey(key) {
       //根据输入搜索
@@ -231,10 +260,13 @@ export default {
                 authority: menu.authority,
                 children: tmpChildrens
               };
-              tmpMenu.push(tmpObj);
+              if(tmpMenu.filter(t=>t.key===tmpObj.key).length==0){
+                tmpMenu.push(tmpObj);
+              }
             }
           }
         });
+        console.log(tmpMenu)
         this.MenuData = tmpMenu;
       }
     },

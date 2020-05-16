@@ -6,6 +6,100 @@ const langOptions = {
   langText: '中',
   settingText: '个性化配置',
   cacheText: '清除缓存',
+  //文档中各个表格的属性
+  table:{
+    //文档说明-请求参数
+    documentRequestColumns:[
+      {
+        title: '参数名称',
+        dataIndex: 'name',
+        width: '30%'
+      },
+      {
+        title: '参数说明',
+        dataIndex: 'description',
+        width: '25%',
+        scopedSlots: { customRender: 'descriptionValueTemplate' }
+      },
+      {
+        title: '请求类型',
+        dataIndex: 'in',
+        scopedSlots: { customRender: 'typeTemplate' }
+      },
+      {
+        title: '是否必须',
+        dataIndex: 'require',
+        scopedSlots: { customRender: 'requireTemplate' }
+      },
+      {
+        title: '数据类型',
+        dataIndex: 'type',
+        scopedSlots: { customRender: 'datatypeTemplate' }
+      },
+      {
+        title: 'schema',
+        dataIndex: 'schemaValue',
+        width: '15%'
+      }
+    ],
+    //文档说明-响应状态
+    documentResponseStatusColumns:[
+      {
+        title: '状态码',
+        dataIndex: 'code',
+        width: '20%'
+      },
+      {
+        title: '说明',
+        dataIndex: 'description',
+        width: '55%',
+        scopedSlots: { customRender: 'descriptionTemplate' }
+      },
+      {
+        title: 'schema',
+        dataIndex: 'schema'
+      }
+    ],
+    //文档说明-响应Header
+    documentResponseHeaderColumns:[
+      {
+        title: '参数名称',
+        dataIndex: 'name',
+        width: '30%'
+      },
+      {
+        title: '参数说明',
+        dataIndex: 'description',
+        width: '55%'
+      },
+      {
+        title: '数据类型',
+        dataIndex: 'type'
+      }
+    ],
+    //文档说明-响应参数
+    documentResponseColumns:[
+      {
+        title: '参数名称',
+        dataIndex: 'name',
+        width: '35%'
+      },
+      {
+        title: '参数说明',
+        dataIndex: 'description',
+        width: '40%'
+      },
+      {
+        title: '类型',
+        dataIndex: 'type'
+      },
+      {
+        title: 'schema',
+        dataIndex: 'schemaValue',
+        width: '15%'
+      }
+    ]
+  },
   //主页显示
   homePage: {
     description: '简介',
