@@ -421,6 +421,7 @@ export default {
   },
   data() {
     return {
+      i18n:null,
       //是否开启缓存
       enableRequestCache: false,
       //是否动态参数
@@ -503,12 +504,12 @@ export default {
     };
   },
   created() {
+    this.initI18n();
     //初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
     this.initDebugUrl();
     //显示表单参数
     //this.initShowFormTable();
-    this.initI18n();
   },
   computed:{
     language(){
@@ -527,6 +528,7 @@ export default {
     initI18n(){
       //根据i18n初始化部分参数
       var inst=this.getCurrentI18nInstance();
+      this.i18n=inst;
       this.headerColumn=inst.table.debugRequestHeaderColumns;
       this.formColumn=inst.table.debugFormDataRequestColumns;
       this.urlFormColumn=inst.table.debugUrlFormRequestColumns;
@@ -1916,7 +1918,8 @@ export default {
               if (header.require) {
                 if (!KUtils.strNotBlank(header.content)) {
                   validate = false;
-                  message = "请求头" + header.name + "不能为空";
+                  //message = "请求头" + header.name + "不能为空";
+                  message=this.i18n.validate.header+header.name+this.i18n.validate.notEmpty;
                   break;
                 }
               }
@@ -1945,14 +1948,16 @@ export default {
                 if (form.type == "text") {
                   if (!KUtils.strNotBlank(form.content)) {
                     validate = false;
-                    message = form.name + "不能为空";
+                    //message = form.name + "不能为空";
+                    message=form.name+this.i18n.validate.notEmpty;
                     break;
                   }
                 } else {
                   //文件
                   if (form.target == null) {
                     validate = false;
-                    message = form.name + "文件不能为空";
+                    //message = form.name + "文件不能为空";
+                    message = form.name +this.i18n.validate.fileNotEmpty;
                     break;
                   }
                 }
@@ -1980,7 +1985,8 @@ export default {
               if (form.require) {
                 if (!KUtils.strNotBlank(form.content)) {
                   validate = false;
-                  message = form.name + "不能为空";
+                  //message = form.name + "不能为空";
+                  message = form.name + this.i18n.validate.notEmpty;
                   break;
                 }
               }
@@ -2007,7 +2013,8 @@ export default {
               if (form.require) {
                 if (!KUtils.strNotBlank(form.content)) {
                   validate = false;
-                  message = form.name + "不能为空";
+                  //message = form.name + "不能为空";
+                  message = form.name + this.i18n.validate.notEmpty;
                   break;
                 }
               }
@@ -2754,9 +2761,9 @@ export default {
         var maxSize = 500;
         if (mbSize > maxSize) {
           //_text = resp.responseText;
-          this.$message.info(
-            "接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看"
-          );
+          //var messageInfo='接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看';
+          var messageInfo=this.i18n.message.debug.contentToBig;
+          this.$message.info(messageInfo);
           mode = "text";
         } else {
           //此处存在空指针异常

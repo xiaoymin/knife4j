@@ -185,6 +185,18 @@ const langOptions = {
           customRender: 'operation'
         }
       }
+    ],
+    //调试-响应Header
+    debugResponseHeaderColumns:[
+      {
+        title: '响应头',
+        dataIndex: 'name',
+        width: '20%'
+      },
+      {
+        title: '值',
+        dataIndex: 'value'
+      }
     ]
   },
   //主页显示
@@ -214,6 +226,14 @@ const langOptions = {
       document:{
         success: '复制文档成功',
         fail: '复制文档失败,您当前浏览器版本不兼容,请手动复制.'
+      },
+      raw:{
+        success: '复制raw成功',
+        fail: '复制raw失败,您当前浏览器版本不兼容,请手动复制.'
+      },
+      curl:{
+        success: '复制curl成功',
+        fail: '复制curl失败,您当前浏览器版本不兼容,请手动复制.'
       }
     },
     layer: {
@@ -244,7 +264,8 @@ const langOptions = {
     debug: {
       urlNotEmpty: '请求url地址不能为空',
       fieldNotEmpty: '不能为空',
-      networkErr: '服务器正在重启或者已经挂了:(~~~~'
+      networkErr: '服务器正在重启或者已经挂了:(~~~~',
+      contentToBig:'接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看'
     },
     sys: {
       loadErr: '请确保swagger资源接口正确.'
@@ -371,11 +392,12 @@ const langOptions = {
     response: {
       content: '响应内容',
       showDes: '显示说明',
-      code: '响应码',
-      cost: '耗时',
-      size: '大小',
+      code: '响应码:',
+      cost: '耗时:',
+      size: '大小:',
       header: '请求头',
-      download: '下载文件'
+      download: '下载文件',
+      copy:'复制'
     }
 
   },
@@ -383,6 +405,11 @@ const langOptions = {
     closeCurrent: '关闭当前标签页',
     closeOther: '关闭其它标签页',
     closeAll: '关闭全部标签页'
+  },
+  validate:{
+    header:'请求头 ',
+    notEmpty:' 不能为空',
+    fileNotEmpty:' 文件不能为空'
   }
 
 }

@@ -5,24 +5,24 @@
         <template slot="tabBarExtraContent">
           <a-row v-if="responseStatus" class="knife4j-debug-status">
             <span>
-              <a-checkbox :defaultChecked="responseFieldDescriptionChecked" @change="showFieldDesChange"><span style="color: #919191;">显示说明</span></a-checkbox>
+              <a-checkbox :defaultChecked="responseFieldDescriptionChecked" @change="showFieldDesChange"><span style="color: #919191;" v-html="$t('debug.response.showDes')">显示说明</span></a-checkbox>
             </span>
-            <span class="key">响应码:</span>
+            <span class="key" v-html="$t('debug.response.code')">响应码:</span>
             <span class="value">{{ responseStatus.code }}</span>
-            <span class="key">耗时:</span>
+            <span class="key" v-html="$t('debug.response.cost')">耗时:</span>
             <span class="value">{{ responseStatus.cost }}</span>
-            <span class="key">大小:</span>
+            <span class="key" v-html="$t('debug.response.size')">大小:</span>
             <span class="value">{{ responseSizeText }} </span>
           </a-row>
         </template>
-        <a-tab-pane tab="响应内容" key="debugResponse">
+        <a-tab-pane :tab="i18n.debug.response.content" key="debugResponse">
           <a-row v-if="responseContent">
             <a-row v-if="responseContent.blobFlag">
               <div v-if="responseContent.imageFlag">
                 <img :src="responseContent.blobUrl" />
               </div>
               <div v-else>
-                <a-button type="link" :href="responseContent.blobUrl" :download="responseContent.blobFileName">下载文件</a-button>
+                <a-button type="link" :href="responseContent.blobUrl" :download="responseContent.blobFileName" v-html="$t('debug.response.download')">下载文件</a-button>
               </div>
             </a-row>
             <a-row :id="'responseEditorContent' + api.id" v-else>
@@ -33,7 +33,7 @@
         <a-tab-pane tab="Raw" key="debugRaw" forceRender>
           <a-row class="knife4j-debug-response-mt">
             <a-button :id="'btnDebugCopyRaw' + api.id" type="primary">
-              <a-icon type="copy" /> 复制</a-button>
+              <a-icon type="copy" /> <span v-html="$t('debug.response.copy')">复制</span></a-button>
           </a-row>
           <a-row class="knife4j-debug-response-mt">
             <a-textarea :rows="10" :value="responseRawText" />
@@ -48,7 +48,7 @@
         <a-tab-pane tab="Curl" key="debugCurl">
           <a-row class="knife4j-debug-response-mt">
             <a-button :id="'btnDebugCopyCurl' + api.id" type="primary">
-              <a-icon type="copy" /> 复制</a-button>
+              <a-icon type="copy" />  <span v-html="$t('debug.response.copy')">复制</span></a-button>
           </a-row>
           <a-row class="knife4j-debug-response-mt">
             <pre class="knife4j-debug-response-curl">{{
@@ -105,21 +105,22 @@ export default {
   data() {
     return {
       pagination: false,
+      i18n:null,
       debugResponse: true,
       responseHeaderColumn: [
-        {
-          title: "响应头",
-          dataIndex: "name",
-          width: "20%"
-        },
-        {
-          title: "值",
-          dataIndex: "value"
-        }
+       
       ]
     };
   },
+  watch:{
+    language:function(val,oldval){
+      this.initI18n();
+    }
+  },
   computed: {
+    language(){
+       return this.$store.state.globals.language;
+    },
     responseSizeText() {
       var str = "0 b";
       var responseStatus = this.responseStatus;
@@ -140,11 +141,20 @@ export default {
   },
   created() {
     //this.resetResponseContent();
+    this.initI18n();
     this.copyRawText();
     this.copyCurlText();
     //this.showEditorFieldDescription();
   },
   methods: {
+    getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
+    initI18n(){
+      //根据i18n初始化部分参数
+      this.i18n=this.getCurrentI18nInstance();
+      this.responseHeaderColumn=this.i18n.table.debugResponseHeaderColumns;
+    },
     copyRawText() {
       //复制raw的文本信息
       var that = this;
@@ -154,11 +164,15 @@ export default {
           return that.responseRawText;
         }
       });
+      //复制Raw成功
+      var successMessage=this.i18n.message.copy.raw.success;
+      //复制Raw失败
+      var failMessage=this.i18n.message.copy.raw.fail;
       clipboard.on("success", function(e) {
-        that.$message.info("复制Raw成功");
+        that.$message.info(successMessage);
       });
       clipboard.on("error", function(e) {
-        that.$message.info("复制Raw失败");
+        that.$message.info(failMessage);
       });
     },
     copyCurlText() {
@@ -170,11 +184,15 @@ export default {
           return that.responseCurlText;
         }
       });
+      //复制Raw成功
+      var successMessage=this.i18n.message.copy.curl.success;
+      //复制Raw失败
+      var failMessage=this.i18n.message.copy.curl.fail;
       clipboard.on("success", function(e) {
-        that.$message.info("复制Curl成功");
+        that.$message.info(successMessage);
       });
       clipboard.on("error", function(e) {
-        that.$message.info("复制Curl失败");
+        that.$message.info(failMessage);
       });
     },
     resetResponseContent() {

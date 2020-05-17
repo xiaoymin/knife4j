@@ -184,6 +184,18 @@ const langOptions = {
           customRender: 'operation'
         }
       }
+    ],
+    //调试-响应Header
+    debugResponseHeaderColumns:[
+      {
+        title: 'name',
+        dataIndex: 'name',
+        width: '20%'
+      },
+      {
+        title: 'value',
+        dataIndex: 'value'
+      }
     ]
   },
   //主页显示
@@ -213,6 +225,14 @@ const langOptions = {
       document:{
         success: 'Copy document successful',
         fail: 'Failed to copy the document, your current browser version is not compatible, please copy it manually.'
+      },
+      raw:{
+        success: 'Copy raw successfully',
+        fail: 'Failed to copy raw, your current browser version is not compatible, please copy manually.'
+      },
+      curl:{
+        success: 'Copy curl successfully',
+        fail: 'Copy curl failed, your current browser version is not compatible, please copy manually.'
       }
     },
     layer: {
@@ -243,7 +263,8 @@ const langOptions = {
     debug: {
       urlNotEmpty: 'Request URL address cannot be empty',
       fieldNotEmpty: 'cannot be empty',
-      networkErr: 'The server is restarting or hanging up:(~~~~'
+      networkErr: 'The server is restarting or hanging up:(~~~~',
+      contentToBig:'The amount of interface response data exceeds the limit and is not displayed in the response content. Please check it in raw'
     },
     sys: {
       loadErr: 'Make sure the swagger resource interface is correct.'
@@ -325,7 +346,7 @@ const langOptions = {
     url: 'url',
     method: 'method',
     des: 'note',
-    params: 'Request Params',
+    params: 'Params',
     requestExample: 'Request Example',
     paramsHeader: {
       name: 'name',
@@ -336,7 +357,7 @@ const langOptions = {
 
     },
     responseHeaderParams: 'Response Header',
-    response: 'Response Status',
+    response: 'Status',
     responseHeader: {
       code: 'code',
       des: 'description'
@@ -380,11 +401,12 @@ const langOptions = {
     response: {
       content: 'Response',
       showDes: 'Show Description',
-      code: 'code',
-      cost: 'cost',
-      size: 'size',
+      code: 'code:',
+      cost: 'cost:',
+      size: 'size:',
       header: 'Request Header',
-      download: 'Download File'
+      download: 'Download File',
+      copy:'copy'
     }
 
   },
@@ -392,6 +414,11 @@ const langOptions = {
     closeCurrent: 'Close Current Tab',
     closeOther: 'Close Other Tab',
     closeAll: 'Close All Tab'
+  },
+  validate:{
+    header:'Request Header ',
+    notEmpty:' cannot be empty',
+    fileNotEmpty:' file cannot be empty'
   }
 };
 
