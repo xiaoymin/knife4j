@@ -147,6 +147,7 @@ import KUtils from "@/core/utils";
 import Constants from "@/store/constants";
 import DataType from "./DataType";
 import markdownSingleText from "@/components/officeDocument/markdownSingleTransform";
+import markdownSingleTextUs from "@/components/officeDocument/markdownSingleTransformUS";
 import EditorShow from "./EditorShow";
 import ClipboardJS from "clipboard";
 import uniqueId from "lodash/uniqueId";
@@ -230,11 +231,16 @@ export default {
           return window.location.href;
         }
       });
+      var inst=this.getCurrentI18nInstance();
+      //"复制地址成功"
+      var successMessage=inst.message.copy.url.success;
+      //"复制地址失败"
+      var failMessage=inst.message.copy.url.fail;
       clipboard.on("success", function(e) {
-        that.$message.info("复制地址成功");
+        that.$message.info(successMessage);
       });
       clipboard.on("error", function(e) {
-        that.$message.info("复制地址失败");
+        that.$message.info(failMessage);
       });
     },
     copyApiMarkdown() {
@@ -247,16 +253,26 @@ export default {
         multipData: that.multipData
       };
       //console.log(api);
+      var inst=this.getCurrentI18nInstance();
+      //"复制文档成功"
+      var successMessage=inst.message.copy.document.success;
+      //"复制文档失败"
+      var failMessage=inst.message.copy.document.fail;
+
       var clipboard = new ClipboardJS("#" + btnId, {
         text() {
-          return markdownSingleText(api);
+          if(inst.lang==='zh'){
+            return markdownSingleText(api);
+          }else if(inst.lang==='us'){
+            return markdownSingleTextUs(api);
+          }
         }
       });
       clipboard.on("success", function(e) {
-        that.$message.info("复制文档成功");
+        that.$message.info(successMessage);
       });
       clipboard.on("error", function(e) {
-        that.$message.info("复制文档失败");
+        that.$message.info(failMessage);
       });
     },
     /**

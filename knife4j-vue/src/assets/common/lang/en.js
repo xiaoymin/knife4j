@@ -1,4 +1,5 @@
 const langOptions = {
+  lang:'us',
   title: 'title',
   searchHolderText: 'Enter keyword search',
   docLinkTip: 'Documentation',
@@ -205,8 +206,14 @@ const langOptions = {
     success: 'Save successfully',
     unsupportstore: 'Current browsers do not support localStorage objects and cannot use this feature',
     copy: {
-      success: 'Copy Success',
-      fail: 'Copy failed. Your current browser version is incompatible. Please copy manually.'
+      url:{
+        success: 'Copy address successfully',
+        fail: 'Failed to copy the address, your current browser version is not compatible, please copy manually.'
+      },
+      document:{
+        success: 'Copy document successful',
+        fail: 'Failed to copy the document, your current browser version is not compatible, please copy it manually.'
+      }
     },
     layer: {
       title: 'message',

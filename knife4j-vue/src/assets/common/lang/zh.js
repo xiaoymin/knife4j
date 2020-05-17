@@ -1,5 +1,6 @@
 const langOptions = {
   //界面显示
+  lang:'zh',
   title: '标题11111',
   searchHolderText: '输入文档关键字搜索',
   docLinkTip: '帮助文档',
@@ -206,8 +207,14 @@ const langOptions = {
     success: '保存成功',
     unsupportstore: '当前浏览器不支持localStorage对象,无法使用该功能',
     copy: {
-      success: '复制成功',
-      fail: '复制失败,您当前浏览器版本不兼容,请手动复制.'
+      url:{
+        success: '复制地址成功',
+        fail: '复制地址失败,您当前浏览器版本不兼容,请手动复制.'
+      },
+      document:{
+        success: '复制文档成功',
+        fail: '复制文档失败,您当前浏览器版本不兼容,请手动复制.'
+      }
     },
     layer: {
       title: '信息',
