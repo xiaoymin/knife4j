@@ -12,7 +12,7 @@
             :value="debugUrl"
             @change="debugUrlChange"
           />
-          <a-button
+          <a-button v-html="$t('debug.send')"
             :loading="debugLoading"
             class="knife4j-api-send"
             type="primary"
@@ -30,7 +30,7 @@
               <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
                 headerCount
               }}</a-tag
-              >请求头部
+              ><span v-html="$t('debug.headers')">请求头部</span>
             </span>
           </template>
           <a-table
@@ -56,12 +56,12 @@
                 :allowClear="allowClear"
                 :dataSource="headerAutoOptions"
                 style="width: 100%"
-                placeholder="请求头名称"
+                :placeholder="$t('debug.tableHeader.holderName')"
               />
             </template>
             <template slot="headerValue" slot-scope="text, record">
               <a-input
-                placeholder="请求头内容"
+                :placeholder="$t('debug.tableHeader.holderValue')"
                 :class="'knife4j-debug-param-require' + record.require"
                 :data-key="record.id"
                 :defaultValue="text"
@@ -69,7 +69,7 @@
               />
             </template>
             <a-row slot="operation" slot-scope="text, record">
-              <a-button
+              <a-button v-html="$t('debug.tableHeader.holderDel')"
                 type="link"
                 v-if="!record.new"
                 @click="headerDelete(record)"
@@ -78,7 +78,7 @@
             </a-row>
           </a-table>
         </a-tab-pane>
-        <a-tab-pane tab="请求参数" key="2" forceRender>
+        <a-tab-pane :tab="$t('debug.params')" key="2" forceRender>
           <a-row class="knife4j-debug-request-type">
             <div class="knife4j-debug-request-content-type-float">
               <a-radio-group
@@ -175,11 +175,10 @@
                   @change="formTypeChange"
                   style="width: 100%;"
                 >
-                  <a-select-option :value="'text-' + record.id"
-                    >文本</a-select-option
+                  <a-select-option :value="'text-' + record.id"><span v-html="$t('debug.form.itemText')">文本</span></a-select-option
                   >
                   <a-select-option :value="'file-' + record.id"
-                    >文件</a-select-option
+                    ><span v-html="$t('debug.form.itemFile')">文件</span></a-select-option
                   >
                 </a-select>
               </template>
@@ -232,12 +231,12 @@
                     </div>
                     <a-input-group compact>
                       <a-input
-                        style="width: 82%"
+                        style="width: 80%"
                         :class="'knife4j-debug-param-require' + record.require"
                         :value="record.content"
                         disabled
                       />
-                      <a-button
+                      <a-button v-html="$t('debug.form.upload')"
                         @click="formFileUploadClick(record)"
                         class="knife4j-api-send"
                         style="width:80px;"
@@ -249,7 +248,7 @@
                 </div>
               </template>
               <a-row slot="operation" slot-scope="text, record">
-                <a-button
+                <a-button v-html="$t('debug.tableHeader.holderDel')"
                   type="link"
                   v-if="!record.new"
                   @click="formDelete(record)"
@@ -304,7 +303,7 @@
                 </a-row>
               </template>
               <a-row slot="operation" slot-scope="text, record">
-                <a-button
+                <a-button  v-html="$t('debug.tableHeader.holderDel')"
                   type="link"
                   v-if="!record.new"
                   @click="urlFormDelete(record)"
@@ -361,7 +360,7 @@
                   </a-row>
                 </template>
                 <a-row slot="operation" slot-scope="text, record">
-                  <a-button
+                  <a-button  v-html="$t('debug.tableHeader.holderDel')"
                     type="link"
                     v-if="!record.new"
                     @click="rawFormDelete(record)"
@@ -426,9 +425,9 @@ export default {
       enableRequestCache: false,
       //是否动态参数
       enableDynamicParameter: false,
-      headerColumn: constant.debugRequestHeaderColumn,
-      formColumn: constant.debugFormRequestHeader,
-      urlFormColumn: constant.debugUrlFormRequestHeader,
+      headerColumn: [],
+      formColumn: [],
+      urlFormColumn: [],
       allowClear: true,
       pagination: false,
       headerAutoOptions: constant.debugRequestHeaders,
@@ -509,8 +508,29 @@ export default {
     this.initDebugUrl();
     //显示表单参数
     //this.initShowFormTable();
+    this.initI18n();
+  },
+  computed:{
+    language(){
+       return this.$store.state.globals.language;
+    }
+  },
+  watch:{
+    language:function(val,oldval){
+      this.initI18n();
+    }
   },
   methods: {
+    getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
+    initI18n(){
+      //根据i18n初始化部分参数
+      var inst=this.getCurrentI18nInstance();
+      this.headerColumn=inst.table.debugRequestHeaderColumns;
+      this.formColumn=inst.table.debugFormDataRequestColumns;
+      this.urlFormColumn=inst.table.debugUrlFormRequestColumns;
+    },
     debugUrlChange(e) {
       this.debugUrl = e.target.value;
     },

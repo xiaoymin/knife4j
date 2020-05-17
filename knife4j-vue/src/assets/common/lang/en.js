@@ -97,6 +97,92 @@ const langOptions = {
         dataIndex: 'schemaValue',
         width: '15%'
       }
+    ],
+    //调试-请求头参数
+    debugRequestHeaderColumns:[
+      {
+        title: 'name',
+        dataIndex: 'name',
+        width: '20%',
+        scopedSlots: {
+          customRender: 'headerName'
+        }
+      },
+      {
+        title: 'value',
+        dataIndex: 'content',
+        scopedSlots: {
+          customRender: 'headerValue'
+        }
+      },
+      {
+        title: 'operation',
+        dataIndex: 'operation',
+        width: '10%',
+        scopedSlots: {
+          customRender: 'operation'
+        }
+      }
+    ],
+    //调试-FormData类型请求头
+    debugFormDataRequestColumns:[
+      {
+        title: 'name',
+        dataIndex: 'name',
+        width: '20%',
+        scopedSlots: {
+          customRender: 'formName'
+        }
+      },
+      {
+        title: 'type',
+        dataIndex: 'type',
+        width: '12%',
+        scopedSlots: {
+          customRender: 'formType'
+        }
+      },
+      {
+        title: 'value',
+        dataIndex: 'content',
+        scopedSlots: {
+          customRender: 'formValue'
+        }
+      },
+      {
+        title: 'operation',
+        dataIndex: 'operation',
+        width: '10%',
+        scopedSlots: {
+          customRender: 'operation'
+        }
+      }
+    ],
+    //调试-url-form类型请求参数头
+    debugUrlFormRequestColumns:[
+      {
+        title: 'name',
+        dataIndex: 'name',
+        width: '20%',
+        scopedSlots: {
+          customRender: 'urlFormName'
+        }
+      },
+      {
+        title: 'value',
+        dataIndex: 'content',
+        scopedSlots: {
+          customRender: 'urlFormValue'
+        }
+      },
+      {
+        title: 'operation',
+        dataIndex: 'operation',
+        width: '10%',
+        scopedSlots: {
+          customRender: 'operation'
+        }
+      }
     ]
   },
   //主页显示
@@ -268,8 +354,17 @@ const langOptions = {
   debug: {
     title: 'Debug',
     send: 'Send',
-    params: 'Request parameter list',
+    headers:'Headers',
+    params: 'Params',
+    form:{
+      upload:'Upload',
+      itemText:'text',
+      itemFile:'file'
+    },
     tableHeader: {
+      holderName:'Name',
+      holderValue:'Value',
+      holderDel:'Delete',
       selectAll: 'Select All',
       type: 'type',
       name: 'name',

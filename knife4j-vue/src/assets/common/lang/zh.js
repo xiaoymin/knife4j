@@ -98,6 +98,92 @@ const langOptions = {
         dataIndex: 'schemaValue',
         width: '15%'
       }
+    ],
+    //调试-请求头参数
+    debugRequestHeaderColumns:[
+      {
+        title: '请求头',
+        dataIndex: 'name',
+        width: '20%',
+        scopedSlots: {
+          customRender: 'headerName'
+        }
+      },
+      {
+        title: '内容',
+        dataIndex: 'content',
+        scopedSlots: {
+          customRender: 'headerValue'
+        }
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        width: '10%',
+        scopedSlots: {
+          customRender: 'operation'
+        }
+      }
+    ],
+    //调试-FormData类型请求头
+    debugFormDataRequestColumns:[
+      {
+        title: '参数名称',
+        dataIndex: 'name',
+        width: '20%',
+        scopedSlots: {
+          customRender: 'formName'
+        }
+      },
+      {
+        title: '类型',
+        dataIndex: 'type',
+        width: '12%',
+        scopedSlots: {
+          customRender: 'formType'
+        }
+      },
+      {
+        title: '参数值',
+        dataIndex: 'content',
+        scopedSlots: {
+          customRender: 'formValue'
+        }
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        width: '10%',
+        scopedSlots: {
+          customRender: 'operation'
+        }
+      }
+    ],
+    //调试-url-form类型请求参数头
+    debugUrlFormRequestColumns:[
+      {
+        title: '参数名称',
+        dataIndex: 'name',
+        width: '20%',
+        scopedSlots: {
+          customRender: 'urlFormName'
+        }
+      },
+      {
+        title: '参数值',
+        dataIndex: 'content',
+        scopedSlots: {
+          customRender: 'urlFormValue'
+        }
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        width: '10%',
+        scopedSlots: {
+          customRender: 'operation'
+        }
+      }
     ]
   },
   //主页显示
@@ -259,8 +345,17 @@ const langOptions = {
   debug: {
     title: '调试',
     send: ' 发 送 ',
-    params: '请求参数列表',
+    headers:'请求头部',
+    params: '请求参数',
+    form:{
+      upload:'选择文件',
+      itemText:'文本',
+      itemFile:'文件'
+    },
     tableHeader: {
+      holderName:'请求头名称',
+      holderValue:'请求头内容',
+      holderDel:'删除',
       selectAll: '全选',
       type: '参数类型',
       name: '参数名称',
