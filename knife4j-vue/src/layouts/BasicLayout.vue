@@ -82,6 +82,7 @@ export default {
       }
     ]; */
     return {
+      i18n:null,
       logo: logo,
       documentTitle: "",
       menuWidth: constMenuWidth,
@@ -112,6 +113,7 @@ export default {
   created() {
     this.initKnife4jSpringUi();
     //this.initKnife4jFront();
+    this.initI18n();
   },
   computed: {
     currentUser() {
@@ -121,6 +123,9 @@ export default {
       return this.$store.state.globals.currentMenuData;
     },currentMenuData(){
       return this.$store.state.globals.currentMenuData;
+    }, 
+    language(){
+       return this.$store.state.globals.language;
     }
   },
   updated() {
@@ -141,9 +146,39 @@ export default {
       }
       this.documentTitle = title;
       window.document.title = title;
+    },
+    language:function(val,oldval){
+      this.initI18n();
+      this.updateMenuI18n();
     }
   },
   methods: {
+    getCurrentI18nInstance(){
+      this.i18n=this.$i18n.messages[this.language];
+      return this.i18n;
+    },
+    initI18n(){
+      //根据i18n初始化部分参数
+      this.getCurrentI18nInstance();
+    },
+    updateMenuI18n(){
+      //根据i18n的切换,更新菜单的显示
+      //console.log("根据i18n的切换,更新菜单的显示")
+      if(KUtils.arrNotEmpty(this.MenuData)){
+        this.MenuData.forEach(m=>{
+          if(KUtils.checkUndefined(m.i18n)){
+            m.name=this.getCurrentI18nInstance().menu[m.i18n];
+            if(KUtils.arrNotEmpty(m.children)){
+              m.children.forEach(cm=>{
+                if(KUtils.checkUndefined(cm.i18n)){
+                  cm.name=this.getCurrentI18nInstance().menu[cm.i18n];
+                }
+              })
+            }
+          }
+        })
+      }
+    },
     getPlusStatus(){
       //初始化swagger文档
       var url = this.$route.path;
@@ -183,7 +218,7 @@ export default {
         this.$store.dispatch("globals/setLang", tmpI18n);
         this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
         this.$i18n.locale = tmpI18n;
-        this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n })
+        this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
       }else{
         //不包含
         //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
@@ -193,7 +228,7 @@ export default {
             tmpI18n=i18n;
           }
           this.$i18n.locale = tmpI18n;
-          this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n })
+          this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
         })
       }
      
@@ -213,6 +248,7 @@ export default {
     initSwagger(options){
       console.log("初始化Swagger")
       console.log(options)
+      this.i18n=options.i18nInstance;
       this.swagger = new SwaggerBootstrapUi(options);
       try {
         this.swagger.main();
@@ -409,7 +445,8 @@ export default {
         const indexSize = this.panels.filter(tab => tab.key == "kmain");
         if (indexSize == 0) {
           panes.push({
-            title: "主页",
+            /* title: "主页", */
+            title: this.getCurrentI18nInstance().menu.home,
             component: "Main",
             content: "Main",
             key: "kmain",

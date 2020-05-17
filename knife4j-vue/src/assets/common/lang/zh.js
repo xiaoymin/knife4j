@@ -322,8 +322,9 @@ const langOptions = {
     home: '主页',
     manager: '文档管理',
     globalsettings: '全局参数设置',
-    officeline: '离线文档(MD)',
-    selfSettings: '个性化设置'
+    officeline: '离线文档',
+    selfSettings: '个性化设置',
+    other:'其他文档'
   },
   offline: {
     des: '简介',

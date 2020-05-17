@@ -63,6 +63,7 @@ function SwaggerBootstrapUi(options) {
   //swagger请求api地址
   this.url = options.url || 'swagger-resources'
   this.i18n=options.i18n||'zh-CN'
+  this.i18nInstance = null
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
   //用于控制是否请求configUrl的配置
   this.configSupport = options.configSupport || false;
@@ -1497,6 +1498,14 @@ SwaggerBootstrapUi.prototype.selectInstanceByGroupId = function (id) {
   })
   return instance;
 }
+
+/**
+ * 从外部VUE对象中获取i18n的实例
+ */
+SwaggerBootstrapUi.prototype.getI18n=function(){
+  return this.$Vue.getCurrentI18nInstance();
+}
+
 /***
  * 创建左侧菜单按钮
  * @param menu
@@ -1508,12 +1517,16 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   that.log(that.currentInstance)
   var groupName = that.currentInstance.name;
   var groupId = that.currentInstance.id;
+  //console.log("----------------createDetailMenu")
+  //console.log(this.i18nInstance);
   //主页
   menuArr.push({
     groupName: groupName,
     groupId: groupId,
     key: 'kmain',
-    name: '主页',
+    /* name: '主页', */
+    name: this.getI18n().menu.home,
+    i18n:'home',
     component: 'Main',
     icon: 'icon-home',
     path: 'home',
@@ -1547,15 +1560,20 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
     groupName: groupName,
     groupId: groupId,
     key: 'documentManager' + md5(groupName),
-    name: '文档管理',
+    i18n:'manager',
+    /* name: '文档管理', */
+    name:this.getI18n().menu.manager,
     icon: 'icon-zdlxb',
     path: 'documentManager',
     children: [{
         groupName: groupName,
         groupId: groupId,
         key: 'globalParameters' + md5(groupName),
-        name: '全局参数设置',
-        tabName: '全局参数设置(' + groupName + ')',
+       /*  name: '全局参数设置',
+        tabName: '全局参数设置(' + groupName + ')', */
+        name: this.getI18n().menu.globalsettings,
+        i18n:'globalsettings',
+        tabName: this.getI18n().menu.globalsettings+'(' + groupName + ')',
         component: 'GlobalParameters',
         path: 'GlobalParameters-' + groupName
       },
@@ -1563,8 +1581,11 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         groupName: groupName,
         groupId: groupId,
         key: 'OfficelineDocument' + md5(groupName),
-        name: '离线文档',
-        tabName: '离线文档(' + groupName + ')',
+       /*  name: '离线文档',
+        tabName: '离线文档(' + groupName + ')', */
+        name: this.getI18n().menu.officeline,
+        i18n:'officeline',
+        tabName: this.getI18n().menu.officeline+'(' + groupName + ')',
         component: 'OfficelineDocument',
         path: 'OfficelineDocument-' + groupName
       },
@@ -1572,7 +1593,9 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         groupName: groupName,
         groupId: groupId,
         key: 'Settings' + md5(groupName),
-        name: '个性化设置',
+        /* name: '个性化设置', */
+        name: this.getI18n().menu.selfSettings,
+        i18n:'selfSettings',
         component: 'Settings',
         path: 'Settings'
         // hideInBreadcrumb: true,
@@ -1591,7 +1614,9 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         groupName: groupName,
         groupId: groupId,
         key: 'otherMarkdowns',
-        name: '其他文档',
+        /* name: '其他文档', */
+        name:this.getI18n().menu.other,
+        i18n:'other',
         icon: 'icon-APIwendang',
         path: 'otherMarkdowns',
         children: []
@@ -1680,6 +1705,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   that.$Vue.MenuData = mdata;
   that.$Vue.swaggerCurrentInstance = that.currentInstance;
   that.$Vue.$store.dispatch("globals/setMenuData", mdata);
+  //根据i18n更新菜单的数据
   //设置菜单选中
   that.selectDefaultMenu(mdata);
   that.log("菜单初始化完成...")

@@ -330,10 +330,11 @@ const langOptions = {
   },
   menu: {
     home: 'Home',
-    manager: 'Doc Manager',
-    globalsettings: 'Global Parameter Settings',
-    officeline: 'Offline document(MD)',
-    selfSettings: 'Settings'
+    manager: 'DocumentHelper',
+    globalsettings: 'GlobalParams',
+    officeline: 'OfflineDocument',
+    selfSettings: 'Settings',
+    other:'Others'
   },
   doc: {
     title: 'Doc',
@@ -345,9 +346,9 @@ const langOptions = {
     author: 'Developer',
     url: 'url',
     method: 'method',
-    des: 'note',
+    des: 'Note',
     params: 'Params',
-    requestExample: 'Request Example',
+    requestExample: 'Example',
     paramsHeader: {
       name: 'name',
       des: 'description',
