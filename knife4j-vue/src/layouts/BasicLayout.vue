@@ -182,6 +182,7 @@ export default {
         //写入本地缓存
         this.$store.dispatch("globals/setLang", tmpI18n);
         this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
+        this.$i18n.locale = tmpI18n;
         this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n })
       }else{
         //不包含
@@ -191,6 +192,7 @@ export default {
             this.$store.dispatch("globals/setLang", i18n);
             tmpI18n=i18n;
           }
+          this.$i18n.locale = tmpI18n;
           this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n })
         })
       }
@@ -209,6 +211,8 @@ export default {
       });
     },
     initSwagger(options){
+      console.log("初始化Swagger")
+      console.log(options)
       this.swagger = new SwaggerBootstrapUi(options);
       try {
         this.swagger.main();
@@ -371,15 +375,33 @@ export default {
     addGlobalParameters(data) {
       this.swaggerCurrentInstance.globalParameters.push(data);
     },
-    openDefaultTabByPath() {
-      //根据地址栏打开Tab选项卡
-      var that = this;
-      const panes = this.panels;
+    getDefaultBrowserPath(){
       var url = this.$route.path;
+      //console.log("打开默认url:"+url)
+      //i18n的情况,忽略掉
+      if(url.startWith("/plus")){
+        url="/plus";
+      }
+      if(url.startWith("/home")){
+        url="/home";
+      }
       if (url == "/plus") {
         //如果是使用的增强地址,替换成主页地址进行查找
         url = "/home";
       }
+      return url;
+    },
+    openDefaultTabByPath() {
+      //根据地址栏打开Tab选项卡
+      var that = this;
+      const panes = this.panels;
+      /* var url = this.$route.path;
+      console.log("打开默认url:"+url)
+      if (url == "/plus") {
+        //如果是使用的增强地址,替换成主页地址进行查找
+        url = "/home";
+      } */
+      var url=this.getDefaultBrowserPath();
       //var menu = findComponentsByPath(url, this.MenuData);
       var menu = findComponentsByPath(url, this.swagger.globalMenuDatas);
       if (menu != null) {
