@@ -1,4 +1,4 @@
-export function getDocumentVueTemplates(title, resumecss, dataStr) {
+export function getDocumentVueTemplatesUS(title, resumecss, dataStr) {
   return `<!DOCTYPE html>
   <html>
   <head>
@@ -23,7 +23,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <div class="knife4j-description">
                 <a-row class="content-line">
                   <a-col :span="5">
-                    <h3>简介</h3>
+                    <h3>Description</h3>
                   </a-col>
                   <a-col :span="19"><span v-html="instance.description" /></a-col>
                 </a-row>
@@ -32,7 +32,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <div class="knife4j-description">
                 <a-row class="content-line">
                   <a-col :span="5">
-                    <h3>作者</h3>
+                    <h3>Author</h3>
                   </a-col>
                   <a-col :span="19"><span v-html="instance.contact" /></a-col>
                 </a-row>
@@ -41,7 +41,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <div class="knife4j-description">
                 <a-row class="content-line">
                   <a-col :span="5">
-                    <h3>版本</h3>
+                    <h3>Version</h3>
                   </a-col>
                   <a-col :span="19"><span v-html="instance.version" /></a-col>
                 </a-row>
@@ -50,7 +50,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <div class="knife4j-description">
                 <a-row class="content-line">
                   <a-col :span="5">
-                    <h3>host</h3>
+                    <h3>Host</h3>
                   </a-col>
                   <a-col :span="19"><span v-html="instance.host" /></a-col>
                 </a-row>
@@ -68,7 +68,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <div class="knife4j-description">
                 <a-row class="content-line">
                   <a-col :span="5">
-                    <h3>服务Url</h3>
+                    <h3>serviceUrl</h3>
                   </a-col>
                   <a-col :span="19"><span v-html="instance.termsOfService" /></a-col>
                 </a-row>
@@ -77,7 +77,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <div class="knife4j-description">
                 <a-row class="content-line">
                   <a-col :span="5">
-                    <h3>分组名称</h3>
+                    <h3>GroupName</h3>
                   </a-col>
                   <a-col :span="19"><span v-html="instance.name" /></a-col>
                 </a-row>
@@ -86,7 +86,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <div class="knife4j-description">
                 <a-row class="content-line">
                   <a-col :span="5">
-                    <h3>分组url</h3>
+                    <h3>GroupUrl</h3>
                   </a-col>
                   <a-col :span="19"><span v-html="instance.url" /></a-col>
                 </a-row>
@@ -95,7 +95,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <div class="description">
                 <a-row class="content-line">
                   <a-col :span="5">
-                    <h3>分组location</h3>
+                    <h3>GroupLocation</h3>
                   </a-col>
                   <a-col :span="19"><span v-html="instance.location" /></a-col>
                 </a-row>
@@ -104,7 +104,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <div class="knife4j-description">
                 <a-row class="content-line">
                   <a-col :span="5">
-                    <h3>接口统计信息</h3>
+                    <h3>count</h3>
                   </a-col>
                   <a-col :span="19">
                     <a-row class="content-line-count" v-for="param in instance.pathArrs" :key="param.method">
@@ -125,11 +125,11 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
           <!--目录-->
           <a-row id="knife4j-doc-m" class="knife4j-doc-m">
             <a-row style="float: right;width: 57px;z-index: 10000;overflow: hidden;">
-              <a-button type="link" id="btnHide">隐藏</a-button>
+              <a-button type="link" id="btnHide">Hide</a-button>
             </a-row>
             <a-row v-if="hideShow" id="knife4jDoc">
               <ul>
-                <li><a href="#knife4jDocument">主页</a></li>
+                <li><a href="#knife4jDocument">Home</a></li>
                 <li v-for="tag in tags" :key="tag.name">
                   <a :href="'#'+tag.name">{{tag.name}}</a>
                   <ul>
@@ -163,13 +163,13 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
                 <a-row class="knife4j-api-row">
                   <a-col :span="12">
                     <a-row>
-                      <a-col class="api-basic-title" :span="6">请求数据类型</a-col>
+                      <a-col class="api-basic-title" :span="6">produces</a-col>
                       {{ api.consumes }}
                     </a-row>
                   </a-col>
                   <a-col :span="12">
                     <a-row>
-                      <a-col class="api-basic-title" :span="6">响应数据类型</a-col>
+                      <a-col class="api-basic-title" :span="6">consumes</a-col>
                       {{ api.produces }}
                     </a-row>
                   </a-col>
@@ -177,14 +177,14 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               </a-row>
               <div v-if="api.author">
                 <div class="api-title">
-                  开发者
+                  Author
                 </div>
                 <div v-if="api.author" v-html="api.author" class="api-body-desc"></div>
               </div>
               <!--接口描述-->
               <div v-if="api.description">
                 <div class="api-title">
-                  接口描述
+                  Note
                 </div>
                 <div
                   v-if="api.description"
@@ -195,7 +195,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               <!--请求示例-->
               <div v-if="api.requestValue">
                 <div class="api-title">
-                  请求示例
+                  Example
                 </div>
                 <pre
                   class="knife4j-api-editor-show"
@@ -203,7 +203,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
                 ></pre>
               </div>
               <div class="api-title">
-              请求参数
+              Params
               </div>
               <a-table default-expand-all-rows :columns="columns" :data-source="api.reqParameters"
                 :row-key="genUnionTableKey"
@@ -224,7 +224,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               </a-table>
               <!--响应状态-->
               <div class="api-title">
-                响应状态
+                Status
               </div>
               <a-table
                 :columns="responseStatuscolumns"
@@ -246,7 +246,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
                     <!--判断响应头-->
                     <div v-if="resp.responseHeaderParameters">
                       <div class="api-title">
-                        响应Header
+                        Response Header
                       </div>
                       <a-table
                         :columns="responseHeaderColumns"
@@ -259,7 +259,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
                     </div>
                     <!--响应参数-->
                     <div class="api-title">
-                      响应参数
+                      Response Params
                     </div>
                     <a-table
                       :columns="responseParametersColumns"
@@ -270,7 +270,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
                     >
                     </a-table>
                     <div class="api-title">
-                      响应示例
+                     Response Example
                     </div>
                     <div class="api-editor-show" v-if="resp.responseBasicType">
                       {{ resp.responseText }}
@@ -289,7 +289,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
                 <!--判断响应头-->
                 <div v-if="api.responseHeaderParameters">
                   <div class="api-title">
-                    响应Header
+                    Response Header
                   </div>
                   <a-table
                     :columns="responseHeaderColumns"
@@ -302,7 +302,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
                 </div>
                 <!--响应参数-->
                 <div class="api-title">
-                  响应参数
+                  Response Params
                 </div>
                 <a-table
                   :columns="responseParametersColumns"
@@ -313,7 +313,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
                 >
                 </a-table>
                 <div class="api-title">
-                  响应示例
+                  Response Example
                 </div>
                 <div class="api-editor-show" v-if="api.multipData.responseBasicType">
                   {{ api.multipData.responseText }}
@@ -513,12 +513,12 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
               var docGlobal=document.getElementById("knife4j-doc-m");
               if(doc.style.display=="none"){
                 doc.style.display="";
-                document.getElementById("btnHide").innerHTML="隐 藏";
+                document.getElementById("btnHide").innerHTML="Hide";
                 docGlobal.style.width="400px";
                 docGlobal.style.height="500px";
               }else{
                 doc.style.display="none";
-                document.getElementById("btnHide").innerHTML="目 录";
+                document.getElementById("btnHide").innerHTML="Home";
                 docGlobal.style.width="52px";
                 docGlobal.style.height="35px";
               }

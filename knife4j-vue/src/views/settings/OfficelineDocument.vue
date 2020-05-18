@@ -32,10 +32,8 @@
 <script>
 import VueMarkdown from "vue-markdown";
 import { resumecss } from "./OfficelineCss";
-import {
-  getDocumentTemplates,
-  getDocumentVueTemplates
-} from "@/components/officeDocument/officeDocTemplate";
+import {getDocumentVueTemplates} from "@/components/officeDocument/officeDocTemplate";
+import {getDocumentVueTemplatesUS} from "@/components/officeDocument/officeDocTemplateUS";
 import markdownText from "@/components/officeDocument/markdownTransform";
 import markdownTextUS from "@/components/officeDocument/markdownTransformUS";
 import OnlineDocument from "@/views/api/OnlineDocument";
@@ -470,13 +468,18 @@ export default {
       //获取html另外一种方式：this.$el.outerHTML
       var domId = "content_views" + this.data.instance.id;
       if (title == undefined || title == null || title == "") {
-        title = "Knife4j-API接口文档";
+        title = "Knife4j-API Documenation";
       }
       //抛弃template
       // const template = document.getElementById(domId).innerHTML;
       var dstr = JSON.stringify(this.getHtmlData());
       //const template = document.getElementById("content_views").innerHTML;
       //return getDocumentTemplates(title, resumecss, template);
+      if(this.getCurrentI18nInstance().lang==='zh'){
+          return getDocumentVueTemplates(title, resumecss, dstr);
+      }else{
+        return getDocumentVueTemplatesUS(title, resumecss, dstr);
+      }
       return getDocumentVueTemplates(title, resumecss, dstr);
     }
   }
