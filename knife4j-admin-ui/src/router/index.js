@@ -9,43 +9,38 @@ const routes = [{
   name: 'home',
   component: BasicLayout,
   redirect: '/home',
-  children: [{
-      path: '/home',
-      component: () => import('@/views/index/Main')
-    },{
-      path: '/home/:i18n',
-      component: () => import('@/views/index/Main')
-    }, {
-      path: '/plus',
-      component: () => import('@/views/index/Main')
-    }, {
-      path: '/plus/:i18n',
+  children: [
+    {
+      path:'/project/:code',
       component: () => import('@/views/index/Main')
     },
     {
-      path: '/Authorize/:groupName',
+      path: '/project/:code/Authorize/:groupName',
       component: () => import('@/views/settings/Authorize')
     },
     {
-      path: '/:groupName/:controller/:summary',
+      path: '/project/:code/:groupName/:controller/:summary',
       component: () => import('@/views/api/index')
     }, {
-      path: '/SwaggerModels/:groupName',
+      path: '/project/:code/SwaggerModels/:groupName',
       component: () => import('@/views/settings/SwaggerModels')
     }, {
-      path: '/documentManager/GlobalParameters-:groupName',
+      path: '/project/:code/documentManager/GlobalParameters-:groupName',
       component: () => import('@/views/settings/GlobalParameters')
     }, {
-      path: '/documentManager/OfficelineDocument-:groupName',
+      path: '/project/:code/documentManager/OfficelineDocument-:groupName',
       component: () => import('@/views/settings/OfficelineDocument')
     }, {
-      path: '/documentManager/Settings',
+      path: '/project/:code/documentManager/Settings',
       component: () => import('@/views/settings/Settings')
     }, {
-      path: '/otherMarkdowns/:id',
+      path: '/project/:code/otherMarkdowns/:id',
       component: () => import('@/views/othermarkdown/index')
     }
   ]
+},{
+  path:'/home',
+  component: () => import('@/views/index/Index')
 }]
 
 const router = new VueRouter({

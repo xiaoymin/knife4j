@@ -62,6 +62,9 @@ marked.setOptions({
 function SwaggerBootstrapUi(options) {
   //swagger请求api地址
   this.url = options.url || 'swagger-resources'
+  //项目code add 2020-5-12 20:02:37
+  this.code=options.code||''
+  this.gatewayurl='knife4j/data/queryByCode'
   this.i18n=options.i18n||'zh-CN'
   this.i18nInstance = null
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
@@ -388,9 +391,11 @@ SwaggerBootstrapUi.prototype.configInit = function () {
 SwaggerBootstrapUi.prototype.analysisGroup = function () {
   var that = this
   try {
+    //此处请求地址进行更换,
+    var gatewayUrl=that.gatewayurl+'?code='+that.code;
     that.$Vue
       .$axios({
-        url: that.url,
+        url: gatewayUrl,
         type: 'get',
         timeout: 20000,
         dataType: 'json'
@@ -433,7 +438,9 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     var g = new SwaggerBootstrapUiInstance(
       group.name,
       group.location,
-      group.swaggerVersion
+      group.swaggerVersion,
+      group.header,
+      group.uri
     )
     g.url = group.url
     var newUrl = ''
@@ -598,7 +605,8 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         url: api,
         dataType: 'json',
         timeout: 20000,
-        type: 'get'
+        type: 'get',
+        headers:{'knfie4j-gateway-request':instance.header}
       }).then(function (data) {
         that.analysisApiSuccess(data);
       }).catch(function (err) {
@@ -1512,6 +1520,7 @@ SwaggerBootstrapUi.prototype.getI18n=function(){
  */
 SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   var that = this;
+  var urlPrefix="project/"+that.code;
   //创建菜单数据
   var menuArr = [];
   that.log(that.currentInstance)
@@ -1529,7 +1538,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
     i18n:'home',
     component: 'Main',
     icon: 'icon-home',
-    path: 'home',
+    path: urlPrefix,
   })
   //是否有全局参数
   if (that.currentInstance.securityArrs != null && that.currentInstance.securityArrs.length > 0) {
@@ -1541,7 +1550,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
       tabName: 'Authorize(' + groupName + ')',
       component: 'Authorize',
       icon: 'icon-authenticationsystem',
-      path: 'Authorize/' + groupName,
+      path: urlPrefix+'/Authorize/' + groupName,
     })
   }
   //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
@@ -1553,7 +1562,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
     component: 'SwaggerModels',
     tabName: 'Swagger Models(' + groupName + ')',
     icon: 'icon-modeling',
-    path: 'SwaggerModels/' + groupName,
+    path: urlPrefix+'/SwaggerModels/' + groupName,
   })
   //文档管理
   menuArr.push({
@@ -1564,7 +1573,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
     /* name: '文档管理', */
     name:this.getI18n().menu.manager,
     icon: 'icon-zdlxb',
-    path: 'documentManager',
+    path: urlPrefix+'/documentManager',
     children: [{
         groupName: groupName,
         groupId: groupId,
@@ -1618,7 +1627,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         name:this.getI18n().menu.other,
         i18n:'other',
         icon: 'icon-APIwendang',
-        path: 'otherMarkdowns',
+        path: urlPrefix+'/otherMarkdowns',
         children: []
       }
       that.currentInstance.markdownFiles.forEach(function (md) {
@@ -1653,7 +1662,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         key: md5(_lititle),
         name: _lititle,
         icon: 'icon-APIwendang',
-        path: groupName + "/" + tag.name
+        path: urlPrefix+"/"+ groupName + "/" + tag.name
       })
     } else {
       if (that.settings.showTagStatus) {
@@ -1667,7 +1676,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         key: md5(_lititle),
         name: _lititle,
         icon: 'icon-APIwendang',
-        path: groupName + "/" + tag.name,
+        path: urlPrefix+"/"+groupName + "/" + tag.name,
         hasNew: tag.hasNew || tag.hasChanged,
         children: []
       }
@@ -3707,9 +3716,9 @@ function SwaggerBootstrapUiParameterLevel() {
  * @param version 版本号
  * @constructor
  */
-function SwaggerBootstrapUiInstance(name, location, version) {
+function SwaggerBootstrapUiInstance(name, location, version,header,uri) {
   //this.id = 'SwaggerBootstrapUiInstance' + Math.round(Math.random() * 1000000)
-  this.id = 'SwaggerBootstrapUiInstance' + md5(name + location + version)
+  this.id = 'SwaggerBootstrapUiInstance' + md5(name + location + version+header+uri)
   //默认未加载
   this.load = false
   //分组名称
@@ -3718,6 +3727,8 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   this.location = location
   //不分组是url地址
   this.url = null
+  this.uri=uri;
+  this.header=header;
   //增强地址
   this.extUrl = null
   this.groupVersion = version

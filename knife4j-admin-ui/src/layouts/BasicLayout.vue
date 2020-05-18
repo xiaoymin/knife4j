@@ -102,6 +102,8 @@ export default {
       selectedKeys: [],
       status: false,
       menuVisible: false,
+      nextUrl:'',
+      nextKey:'',
       menuItemList: [
         { key: "1", icon: "caret-left", text: "关闭左侧" },
         { key: "2", icon: "caret-right", text: "关闭右侧" },
@@ -212,13 +214,14 @@ export default {
       //该版本是最终打包到knife4j-spring-ui的模块,默认是调用该方法
       var that = this;
       var i18nParams=this.getI18nFromUrl();
+      let params = this.$route.params;
       var tmpI18n=i18nParams.i18n;
       if(i18nParams.include){
         //写入本地缓存
         this.$store.dispatch("globals/setLang", tmpI18n);
         this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
         this.$i18n.locale = tmpI18n;
-        this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
+        this.initSwagger({ Vue: that, plus: this.getPlusStatus(),code:params.code,i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
       }else{
         //不包含
         //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
@@ -228,7 +231,7 @@ export default {
             tmpI18n=i18n;
           }
           this.$i18n.locale = tmpI18n;
-          this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
+          this.initSwagger({ Vue: that, plus: this.getPlusStatus(),code:params.code,i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
         })
       }
      
@@ -246,8 +249,6 @@ export default {
       });
     },
     initSwagger(options){
-      console.log("初始化Swagger")
-      console.log(options)
       this.i18n=options.i18nInstance;
       this.swagger = new SwaggerBootstrapUi(options);
       try {
@@ -430,6 +431,7 @@ export default {
     openDefaultTabByPath() {
       //根据地址栏打开Tab选项卡
       var that = this;
+      //console.log("openDefaultTabByPath")
       const panes = this.panels;
       /* var url = this.$route.path;
       console.log("打开默认url:"+url)
@@ -438,45 +440,60 @@ export default {
         url = "/home";
       } */
       var url=this.getDefaultBrowserPath();
-      //var menu = findComponentsByPath(url, this.MenuData);
-      var menu = findComponentsByPath(url, this.swagger.globalMenuDatas);
-      if (menu != null) {
-        //判断是否已经默认打开了主页面板
-        const indexSize = this.panels.filter(tab => tab.key == "kmain");
-        if (indexSize == 0) {
-          panes.push({
-            /* title: "主页", */
-            title: this.getCurrentI18nInstance().menu.home,
-            component: "Main",
-            content: "Main",
-            key: "kmain",
-            instance: this.swaggerCurrentInstance,
-            closable: false
-          });
-          this.linkList.push("kmain");
-        }
-        const tabKeys = panes.map(tab => tab.key);
+      if(this.nextUrl===url){
+         //this.activeKey = this.nextKey;
+         //console.log("已经加载过,无需加载2次")
+      }else{
+        //console.log("url:"+url)
+        //var menu = findComponentsByPath(url, this.MenuData);
+        var menu = findComponentsByPath(url, this.swagger.globalMenuDatas);
+        if (menu != null) {
+          //判断是否已经默认打开了主页面板
+          const indexSize = this.panels.filter(tab => tab.key == "kmain");
+          if (indexSize == 0) {
+            panes.push({
+              /* title: "主页", */
+              title: this.getCurrentI18nInstance().menu.home,
+              component: "Main",
+              content: "Main",
+              key: "kmain",
+              instance: this.swaggerCurrentInstance,
+              closable: false
+            });
+            this.linkList.push("kmain");
+          }
+          const tabKeys = panes.map(tab => tab.key);
+          //console.log(tabKeys)
 
-        //判断tab是否已加载
-        if (tabKeys.indexOf(menu.key) == -1) {
-          //console(menu);
-          //console(this.swaggerCurrentInstance);
-          //不存在,添加，否则直接选中tab即可
-          panes.push({
-            title: menu.tabName ? menu.tabName : menu.name,
-            content: menu.component,
-            key: menu.key,
-            instance: this.swaggerCurrentInstance,
-            closable: menu.key != "kmain"
-          });
-          this.linkList.push(menu.key);
-          this.panels = panes;
+          //判断tab是否已加载
+          if (tabKeys.indexOf(menu.key) == -1) {
+            //console.log("加载-不存在")
+            //console(menu);
+            //console(this.swaggerCurrentInstance);
+            //不存在,添加，否则直接选中tab即可
+            panes.push({
+              title: menu.tabName ? menu.tabName : menu.name,
+              content: menu.component,
+              key: menu.key,
+              instance: this.swaggerCurrentInstance,
+              closable: menu.key != "kmain"
+            });
+            this.linkList.push(menu.key);
+            this.panels = panes;
+          }
+          this.activeKey = menu.key;
+          this.nextUrl=url;
+          this.nextKey=menu.key;
+          console.log("选择menu1")
+        } else {
+          //主页
+          this.activeKey = "kmain";
+          //this.nextUrl=url;
+          this.nextKey="kmain";
+          this.updateMainTabInstance();
+          console.log("选择menu2")
         }
-        this.activeKey = menu.key;
-      } else {
-        //主页
-        this.activeKey = "kmain";
-        this.updateMainTabInstance();
+
       }
       //this.watchPathMenuSelect();
     },
@@ -492,21 +509,22 @@ export default {
     watchPathMenuSelect() {
       var url = this.$route.path;
       const tmpcol = this.collapsed;
-      //console("watch-------------------------");
+      //console.log("watch-------------------------");
       const pathArr = urlToList(url);
       //console(pathArr);
       var m = findComponentsByPath(url, this.MenuData);
       //如果菜单面板已折叠,则不用打开openKeys
       if (!tmpcol) {
-        if (pathArr.length == 2) {
+        if (pathArr.length == 5) {
+          //console.log("二级子菜单："+pathArr[3])
           //二级子菜单
-          var parentM = findComponentsByPath(pathArr[0], this.MenuData);
+          var parentM = findComponentsByPath(pathArr[3], this.MenuData);
           if (parentM != null) {
             this.openKeys = [parentM.key];
           }
-        } else if (pathArr.length == 3) {
+        } else if (pathArr.length == 6) {
           //三级子菜单
-          var parentM = findComponentsByPath(pathArr[1], this.MenuData);
+          var parentM = findComponentsByPath(pathArr[4], this.MenuData);
           if (parentM != null) {
             this.openKeys = [parentM.key];
           }
@@ -525,10 +543,11 @@ export default {
     selectDefaultMenu() {
       var url = this.$route.path;
       const pathArr = urlToList(url);
+      console.log('selectDefaultMenu')
       var m = findComponentsByPath(url, this.MenuData);
-      if (pathArr.length == 2) {
+      if (pathArr.length == 5) {
         //二级子菜单
-        var parentM = findComponentsByPath(pathArr[0], this.MenuData);
+        var parentM = findComponentsByPath(pathArr[3], this.MenuData);
         if (parentM != null) {
           this.openKeys = [parentM.key];
         }
