@@ -197,6 +197,32 @@ const langOptions = {
         title: '值',
         dataIndex: 'value'
       }
+    ],
+    //auth中的header
+    authHeaderColumns:[
+      {
+        title: '参数key',
+        dataIndex: 'key',
+        customRender(text, row, index) {
+          return row.key + '(' + row.type + ')';
+        }
+      },
+      {
+        title: '参数名称',
+        className: 'column-money',
+        dataIndex: 'name'
+      },
+      {
+        title: 'in',
+        dataIndex: 'in'
+      },
+      {
+        title: '参数值',
+        dataIndex: 'value',
+        scopedSlots: {
+          customRender: 'paramIpt'
+        }
+      }
     ]
   },
   //主页显示
@@ -257,6 +283,9 @@ const langOptions = {
       success: '保存成功,请刷新该文档页'
     },
     offline: {
+      imple:'该功能尚未实现...',
+      markdown:'正在下载Markdown文件中,请稍后...',
+      html:'正在下载Html中,请稍后...',
       copy: '拷贝文档',
       toomany: '当前接口数量超出限制,请使用第三方markdown转换软件进行转换以查看效果.',
       note: 'swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.'
@@ -327,7 +356,13 @@ const langOptions = {
     other:'其他文档'
   },
   offline: {
-    des: '简介',
+    des: 'Knife4j提供导出4种格式的离线文档(Html\Markdown\Word\Pdf)',
+    download:{
+      markdown:'下载Markdown',
+      html:'下载Html',
+      word:'下载Word',
+      pdf:'下载Pdf'
+    },
     contact: '联系人',
     url: '接口路径',
     note: '简介',

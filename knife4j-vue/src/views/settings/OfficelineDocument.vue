@@ -2,22 +2,22 @@
   <a-layout-content class="knife4j-body-content">
     <a-row class="markdown-row">
       <a-row class="globalparameters">
-        <a-row class="gptips">
+        <a-row class="gptips" v-html="$t('offline.des')">
           Knife4j提供导出4种格式的离线文档(Html\Markdown\Word\Pdf)
         </a-row>
       </a-row>
       <a-row class="knife4j-download-button">
         <a-button @click="triggerDownloadMarkdown">
-          <a-icon type="file-markdown" />下载Markdown</a-button
+          <a-icon type="file-markdown" /><span v-html="$t('offline.download.markdown')">下载Markdown</span></a-button
         >
         <a-button type="default" @click="triggerDownload">
-          <a-icon type="file-text" />下载Html</a-button
+          <a-icon type="file-text" /><span v-html="$t('offline.download.html')">下载Html</span></a-button
         >
         <a-button type="default" @click="triggerDownloadWord">
-          <a-icon type="file-word" />下载Word</a-button
+          <a-icon type="file-word" /><span v-html="$t('offline.download.word')">下载Word</span></a-button
         >
         <a-button type="default" @click="triggerDownloadPDF">
-          <a-icon type="file-pdf" />下载PDF</a-button
+          <a-icon type="file-pdf" /><span v-html="$t('offline.download.pdf')">下载PDF</span></a-button
         >
       </a-row>
       <!--  <a-modal v-model="downloadHtmlFlag" :footer="null" :maskClosable="false" :keyboard="false" :closable="false">
@@ -31,40 +31,18 @@
 </template>
 <script>
 import VueMarkdown from "vue-markdown";
-import html2canvas from "html2canvas";
 import { resumecss } from "./OfficelineCss";
 import {
   getDocumentTemplates,
   getDocumentVueTemplates
 } from "@/components/officeDocument/officeDocTemplate";
 import markdownText from "@/components/officeDocument/markdownTransform";
+import markdownTextUS from "@/components/officeDocument/markdownTransformUS";
 import OnlineDocument from "@/views/api/OnlineDocument";
 import { Modal } from "ant-design-vue";
 import DownloadHtml from "./DownloadHtml";
 import KUtils from "@/core/utils";
 import Constants from "@/store/constants";
-
-const columns = [
-  {
-    title: "名称",
-    dataIndex: "name",
-    width: "30%"
-  },
-  {
-    title: "类型",
-    dataIndex: "type",
-    width: "15%"
-  },
-  {
-    title: "说明",
-    dataIndex: "description"
-  },
-  {
-    title: "schema",
-    dataIndex: "schemaValue",
-    width: "15%"
-  }
-];
 export default {
   props: {
     data: {
@@ -78,7 +56,6 @@ export default {
   },
   data() {
     return {
-      columns: columns,
       //是否递归遍历过tags
       deepTagFlag: false,
       tags: [],
@@ -111,7 +88,20 @@ export default {
     this.initModels();
     //this.deepTags();
   },
+  watch:{
+    language:function(val,oldval){
+      this.markdownText=null;
+    }
+  },
+  computed:{
+    language(){
+       return this.$store.state.globals.language;
+    }
+  },
   methods: {
+    getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
     initModels() {
       var key = Constants.globalTreeTableModelParams + this.data.instance.id;
       //根据instance的实例初始化model名称
@@ -336,16 +326,21 @@ export default {
       return target;
     },
     triggerDownloadPDF() {
-      this.$message.info("该功能尚未实现...");
+      //var message='该功能尚未实现...'
+      var message=this.getCurrentI18nInstance().message.offline.imple;
+      this.$message.info(message);
     },
     triggerDownloadWord() {
-      this.$message.info("该功能尚未实现...");
+      var message=this.getCurrentI18nInstance().message.offline.imple;
+      this.$message.info(message);
     },
     triggerDownloadMarkdown() {
       //下载markdown
       var that = this;
+      //正在下载Markdown文件中,请稍后...
+      var downloadMessage=this.getCurrentI18nInstance().message.offline.markdown;
       that.$kloading.show({
-        text: "正在下载Markdown文件中,请稍后..."
+        text: downloadMessage
       });
       this.deepTags();
       var instance = {
@@ -368,7 +363,11 @@ export default {
       if (this.markdownText == null || this.markdownText == "") {
         //遍历得到markdown文本
         //this.markdownText = markdownText(this.data.instance);
-        this.markdownText = markdownText(instance);
+        if(this.getCurrentI18nInstance().lang==='zh'){
+          this.markdownText = markdownText(instance);
+        }else{
+          this.markdownText = markdownTextUS(instance);
+        }
       }
       //等待ace-editor渲染,给与充足时间
       setTimeout(() => {
@@ -382,8 +381,10 @@ export default {
       let that = this;
       //html
       that.downloadType = "DownloadHtml";
+      //正在下载Html中,请稍后...
+      var message=this.getCurrentI18nInstance().message.offline.html;
       that.$kloading.show({
-        text: "正在下载Html中,请稍后..."
+        text: message
       });
       that.deepTags();
       setTimeout(() => {

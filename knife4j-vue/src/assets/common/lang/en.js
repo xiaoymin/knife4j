@@ -196,6 +196,32 @@ const langOptions = {
         title: 'value',
         dataIndex: 'value'
       }
+    ],
+    //auth中的header
+    authHeaderColumns:[
+      {
+        title: 'key',
+        dataIndex: 'key',
+        customRender(text, row, index) {
+          return row.key + '(' + row.type + ')';
+        }
+      },
+      {
+        title: 'name',
+        className: 'column-money',
+        dataIndex: 'name'
+      },
+      {
+        title: 'in',
+        dataIndex: 'in'
+      },
+      {
+        title: 'value',
+        dataIndex: 'value',
+        scopedSlots: {
+          customRender: 'paramIpt'
+        }
+      }
     ]
   },
   //主页显示
@@ -256,6 +282,9 @@ const langOptions = {
       success: 'Save successfully, please refresh the document page'
     },
     offline: {
+      imple:'This feature has not been implemented ...',
+      markdown:'Downloading Markdown file, please wait...',
+      html:'Downloading Html file, please wait...',
       copy: 'Copy',
       toomany: 'The current number of interfaces exceeds the limit. Please use the third-party markdown conversion software for conversion to see the effect.',
       note: 'swagger-bootstrap-ui provides markdwon-formatted offline documents that developers can copy and convert to HTML or PDF through other markdown conversion tools..'
@@ -374,7 +403,13 @@ const langOptions = {
 
   },
   offline: {
-    des: 'Description',
+    des: 'Knife4j provides export of offline documents in 4 formats (Html/Markdown/Word/Pdf)',
+    download:{
+      markdown:'Markdown',
+      html:'Html',
+      word:'Word',
+      pdf:'Pdf'
+    },
     contact: 'Contact',
     url: 'api url',
     note: 'Description',
