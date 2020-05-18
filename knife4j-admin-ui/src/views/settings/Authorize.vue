@@ -2,7 +2,7 @@
   <a-layout-content class="knife4j-body-content">
     <div class="authorize">
       <a-row>
-        <a-button type="primary" @click="resetAuth">注销</a-button>
+        <a-button type="primary" @click="resetAuth" v-html="$t('auth.cancel')">注销</a-button>
       </a-row>
       <a-row style="margin-top:15px;">
         <a-table size="small" :columns="columns" :dataSource="securityArr" :pagination="pagination" bordered>
@@ -19,42 +19,27 @@
 <script>
 import constant from "@/store/constants";
 import KUtils from "@/core/utils";
-
-const columns = [
-  {
-    title: "参数key",
-    dataIndex: "key",
-    customRender(text, row, index) {
-      return row.key + "(" + row.type + ")";
-    }
-  },
-  {
-    title: "参数名称",
-    className: "column-money",
-    dataIndex: "name"
-  },
-  {
-    title: "in",
-    dataIndex: "in"
-  },
-  {
-    title: "参数值",
-    dataIndex: "value",
-    scopedSlots: {
-      customRender: "paramIpt"
-    }
-  }
-];
+ 
 export default {
   props: {
     data: {
       type: Object
     }
   },
+  computed:{
+    language(){
+       return this.$store.state.globals.language;
+    }
+  },
+  watch:{
+    language:function(val,oldval){
+      this.initI18n();
+    }
+  },
   data() {
     return {
       pagination: false,
-      columns: columns,
+      columns: [],
       //全局的
       globalSecuritys: [],
       //请求头Authorize参数
@@ -62,6 +47,14 @@ export default {
     };
   },
   methods: {
+     getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
+    initI18n(){
+      //根据i18n初始化部分参数
+      var inst=this.getCurrentI18nInstance();
+      this.columns=inst.table.authHeaderColumns;
+    },
     initLocalSecuritys() {
       //初始化从本地读取
       var that = this;
@@ -168,6 +161,7 @@ export default {
     }
   },
   created() {
+    this.initI18n();
     this.initLocalSecuritys();
   }
 };

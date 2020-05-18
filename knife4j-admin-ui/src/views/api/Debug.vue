@@ -12,7 +12,7 @@
             :value="debugUrl"
             @change="debugUrlChange"
           />
-          <a-button
+          <a-button v-html="$t('debug.send')"
             :loading="debugLoading"
             class="knife4j-api-send"
             type="primary"
@@ -30,7 +30,7 @@
               <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
                 headerCount
               }}</a-tag
-              >请求头部
+              ><span v-html="$t('debug.headers')">请求头部</span>
             </span>
           </template>
           <a-table
@@ -56,12 +56,12 @@
                 :allowClear="allowClear"
                 :dataSource="headerAutoOptions"
                 style="width: 100%"
-                placeholder="请求头名称"
+                :placeholder="$t('debug.tableHeader.holderName')"
               />
             </template>
             <template slot="headerValue" slot-scope="text, record">
               <a-input
-                placeholder="请求头内容"
+                :placeholder="$t('debug.tableHeader.holderValue')"
                 :class="'knife4j-debug-param-require' + record.require"
                 :data-key="record.id"
                 :defaultValue="text"
@@ -69,7 +69,7 @@
               />
             </template>
             <a-row slot="operation" slot-scope="text, record">
-              <a-button
+              <a-button v-html="$t('debug.tableHeader.holderDel')"
                 type="link"
                 v-if="!record.new"
                 @click="headerDelete(record)"
@@ -78,7 +78,7 @@
             </a-row>
           </a-table>
         </a-tab-pane>
-        <a-tab-pane tab="请求参数" key="2" forceRender>
+        <a-tab-pane :tab="$t('debug.params')" key="2" forceRender>
           <a-row class="knife4j-debug-request-type">
             <div class="knife4j-debug-request-content-type-float">
               <a-radio-group
@@ -175,11 +175,10 @@
                   @change="formTypeChange"
                   style="width: 100%;"
                 >
-                  <a-select-option :value="'text-' + record.id"
-                    >文本</a-select-option
+                  <a-select-option :value="'text-' + record.id"><span v-html="$t('debug.form.itemText')">文本</span></a-select-option
                   >
                   <a-select-option :value="'file-' + record.id"
-                    >文件</a-select-option
+                    ><span v-html="$t('debug.form.itemFile')">文件</span></a-select-option
                   >
                 </a-select>
               </template>
@@ -232,12 +231,12 @@
                     </div>
                     <a-input-group compact>
                       <a-input
-                        style="width: 82%"
+                        style="width: 80%"
                         :class="'knife4j-debug-param-require' + record.require"
                         :value="record.content"
                         disabled
                       />
-                      <a-button
+                      <a-button v-html="$t('debug.form.upload')"
                         @click="formFileUploadClick(record)"
                         class="knife4j-api-send"
                         style="width:80px;"
@@ -249,7 +248,7 @@
                 </div>
               </template>
               <a-row slot="operation" slot-scope="text, record">
-                <a-button
+                <a-button v-html="$t('debug.tableHeader.holderDel')"
                   type="link"
                   v-if="!record.new"
                   @click="formDelete(record)"
@@ -304,7 +303,7 @@
                 </a-row>
               </template>
               <a-row slot="operation" slot-scope="text, record">
-                <a-button
+                <a-button  v-html="$t('debug.tableHeader.holderDel')"
                   type="link"
                   v-if="!record.new"
                   @click="urlFormDelete(record)"
@@ -361,7 +360,7 @@
                   </a-row>
                 </template>
                 <a-row slot="operation" slot-scope="text, record">
-                  <a-button
+                  <a-button  v-html="$t('debug.tableHeader.holderDel')"
                     type="link"
                     v-if="!record.new"
                     @click="rawFormDelete(record)"
@@ -422,13 +421,14 @@ export default {
   },
   data() {
     return {
+      i18n:null,
       //是否开启缓存
       enableRequestCache: false,
       //是否动态参数
       enableDynamicParameter: false,
-      headerColumn: constant.debugRequestHeaderColumn,
-      formColumn: constant.debugFormRequestHeader,
-      urlFormColumn: constant.debugUrlFormRequestHeader,
+      headerColumn: [],
+      formColumn: [],
+      urlFormColumn: [],
       allowClear: true,
       pagination: false,
       headerAutoOptions: constant.debugRequestHeaders,
@@ -504,13 +504,35 @@ export default {
     };
   },
   created() {
+    this.initI18n();
     //初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
     this.initDebugUrl();
     //显示表单参数
     //this.initShowFormTable();
   },
+  computed:{
+    language(){
+       return this.$store.state.globals.language;
+    }
+  },
+  watch:{
+    language:function(val,oldval){
+      this.initI18n();
+    }
+  },
   methods: {
+    getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
+    initI18n(){
+      //根据i18n初始化部分参数
+      var inst=this.getCurrentI18nInstance();
+      this.i18n=inst;
+      this.headerColumn=inst.table.debugRequestHeaderColumns;
+      this.formColumn=inst.table.debugFormDataRequestColumns;
+      this.urlFormColumn=inst.table.debugUrlFormRequestColumns;
+    },
     debugUrlChange(e) {
       this.debugUrl = e.target.value;
     },
@@ -1896,7 +1918,8 @@ export default {
               if (header.require) {
                 if (!KUtils.strNotBlank(header.content)) {
                   validate = false;
-                  message = "请求头" + header.name + "不能为空";
+                  //message = "请求头" + header.name + "不能为空";
+                  message=this.i18n.validate.header+header.name+this.i18n.validate.notEmpty;
                   break;
                 }
               }
@@ -1925,14 +1948,16 @@ export default {
                 if (form.type == "text") {
                   if (!KUtils.strNotBlank(form.content)) {
                     validate = false;
-                    message = form.name + "不能为空";
+                    //message = form.name + "不能为空";
+                    message=form.name+this.i18n.validate.notEmpty;
                     break;
                   }
                 } else {
                   //文件
                   if (form.target == null) {
                     validate = false;
-                    message = form.name + "文件不能为空";
+                    //message = form.name + "文件不能为空";
+                    message = form.name +this.i18n.validate.fileNotEmpty;
                     break;
                   }
                 }
@@ -1960,7 +1985,8 @@ export default {
               if (form.require) {
                 if (!KUtils.strNotBlank(form.content)) {
                   validate = false;
-                  message = form.name + "不能为空";
+                  //message = form.name + "不能为空";
+                  message = form.name + this.i18n.validate.notEmpty;
                   break;
                 }
               }
@@ -1987,7 +2013,8 @@ export default {
               if (form.require) {
                 if (!KUtils.strNotBlank(form.content)) {
                   validate = false;
-                  message = form.name + "不能为空";
+                  //message = form.name + "不能为空";
+                  message = form.name + this.i18n.validate.notEmpty;
                   break;
                 }
               }
@@ -2090,12 +2117,16 @@ export default {
           url = checkResult.url;
           formParams = Object.assign(formParams, checkResult.params);
         }
+        //console.log(headers)
         var requestConfig = {
           url: url,
           method: methodType,
           headers: headers,
           params: formParams,
-          timeout: 0
+          timeout: 0,
+          //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
+          //否则axios会忽略请求头Content-Type
+          data:null
         };
         //console.log(requestConfig);
         //需要判断是否是下载请求
@@ -2108,20 +2139,20 @@ export default {
         //https://gitee.com/xiaoym/knife4j/issues/I19C8Y
         debugInstance.interceptors.request.use(config => {
           let url = config.url;
-          // get参数编码
-          if (config.method === "get" && config.params) {
-            url += "?";
-            let keys = Object.keys(config.params);
-            for (let key of keys) {
-              if (KUtils.strNotBlank(config.params[key])) {
-                url += `${encodeURIComponent(key)}=${encodeURIComponent(
-                  config.params[key]
-                )}&`;
+          if (config.method === "get" && config.params){
+              url += "?";
+              let keys = Object.keys(config.params);
+              for (let key of keys) {
+                if (KUtils.strNotBlank(config.params[key])) {
+                  url += `${encodeURIComponent(key)}=${encodeURIComponent(
+                    config.params[key]
+                  )}&`;
+                }
               }
-            }
-            url = url.substring(0, url.length - 1);
-            config.params = {};
+              url = url.substring(0, url.length - 1);
+              config.params = {};
           }
+          // get参数编码
           config.url = url;
           return config;
         });
@@ -2174,7 +2205,10 @@ export default {
           url: url,
           method: methodType,
           headers: headers,
-          timeout: 0
+          timeout: 0,
+          //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
+          //否则axios会忽略请求头Content-Type
+          data:null
         };
         if (fileFlag) {
           requestConfig = { ...requestConfig, data: formParams };
@@ -2191,9 +2225,10 @@ export default {
           //流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
+        let debugInstance=DebugAxios.create();
         //console(headers);
         //console(requestConfig);
-        DebugAxios.create()
+        debugInstance
           .request(requestConfig)
           .then(res => {
             //console("url-form-success");
@@ -2726,9 +2761,9 @@ export default {
         var maxSize = 500;
         if (mbSize > maxSize) {
           //_text = resp.responseText;
-          this.$message.info(
-            "接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看"
-          );
+          //var messageInfo='接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看';
+          var messageInfo=this.i18n.message.debug.contentToBig;
+          this.$message.info(messageInfo);
           mode = "text";
         } else {
           //此处存在空指针异常

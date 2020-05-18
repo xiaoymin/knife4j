@@ -57,6 +57,7 @@ import { urlToList } from "@/components/utils/pathTools";
 import ThreeMenu from "@/components/SiderMenu/ThreeMenu";
 //右键菜单
 import ContextMenu from "@/components/common/ContextMenu";
+import constant from "@/store/constants";
 
 const constMenuWidth = 310;
 
@@ -81,6 +82,7 @@ export default {
       }
     ]; */
     return {
+      i18n:null,
       logo: logo,
       documentTitle: "",
       menuWidth: constMenuWidth,
@@ -111,13 +113,19 @@ export default {
   created() {
     this.initKnife4jSpringUi();
     //this.initKnife4jFront();
+    this.initI18n();
   },
   computed: {
     currentUser() {
       return this.$store.state.header.userCurrent;
     },
     cacheMenuData() {
-      return this.$store.state.globals.menuData;
+      return this.$store.state.globals.currentMenuData;
+    },currentMenuData(){
+      return this.$store.state.globals.currentMenuData;
+    }, 
+    language(){
+       return this.$store.state.globals.language;
     }
   },
   updated() {
@@ -138,13 +146,40 @@ export default {
       }
       this.documentTitle = title;
       window.document.title = title;
+    },
+    language:function(val,oldval){
+      this.initI18n();
+      this.updateMenuI18n();
     }
   },
   methods: {
-    initKnife4jSpringUi() {
-      //该版本是最终打包到knife4j-spring-ui的模块,默认是调用该方法
-      var that = this;
-      let params = this.$route.params;
+    getCurrentI18nInstance(){
+      this.i18n=this.$i18n.messages[this.language];
+      return this.i18n;
+    },
+    initI18n(){
+      //根据i18n初始化部分参数
+      this.getCurrentI18nInstance();
+    },
+    updateMenuI18n(){
+      //根据i18n的切换,更新菜单的显示
+      //console.log("根据i18n的切换,更新菜单的显示")
+      if(KUtils.arrNotEmpty(this.MenuData)){
+        this.MenuData.forEach(m=>{
+          if(KUtils.checkUndefined(m.i18n)){
+            m.name=this.getCurrentI18nInstance().menu[m.i18n];
+            if(KUtils.arrNotEmpty(m.children)){
+              m.children.forEach(cm=>{
+                if(KUtils.checkUndefined(cm.i18n)){
+                  cm.name=this.getCurrentI18nInstance().menu[cm.i18n];
+                }
+              })
+            }
+          }
+        })
+      }
+    },
+    getPlusStatus(){
       //初始化swagger文档
       var url = this.$route.path;
       var plusFlag = false;
@@ -152,36 +187,69 @@ export default {
         //开启增强
         plusFlag = true;
       }
-      this.swagger = new SwaggerBootstrapUi({ Vue: that, plus: plusFlag,code:params.code });
-      try {
-        this.swagger.main();
-      } catch (e) {
-        console.error(e);
+      return plusFlag;
+    },
+    getI18nFromUrl(){
+      var param=this.$route.params;
+      var include=false;
+      var i18n="zh-CN";
+      if(KUtils.checkUndefined(param)){
+        var i18nFromUrl=param["i18n"];
+        if(KUtils.checkUndefined(i18nFromUrl)){
+          var langs=["zh-CN","en-US"];
+          if(langs.includes(i18nFromUrl)){
+            include=true;
+            i18n=i18nFromUrl;
+          }
+        }
       }
-      //初始化相关操作
-      //初始化菜单数据
-      //this.MenuData = getMenuData();
-      //数据赋值
-      this.$store.dispatch("header/getCurrentUser");
+      return {
+        include:include,
+        i18n:i18n
+      }
+    },
+    initKnife4jSpringUi() {
+      //该版本是最终打包到knife4j-spring-ui的模块,默认是调用该方法
+      var that = this;
+      var i18nParams=this.getI18nFromUrl();
+      var tmpI18n=i18nParams.i18n;
+      if(i18nParams.include){
+        //写入本地缓存
+        this.$store.dispatch("globals/setLang", tmpI18n);
+        this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
+        this.$i18n.locale = tmpI18n;
+        this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
+      }else{
+        //不包含
+        //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
+        this.$localStore.getItem(constant.globalI18nCache).then(i18n => {
+          if(KUtils.checkUndefined(i18n)){
+            this.$store.dispatch("globals/setLang", i18n);
+            tmpI18n=i18n;
+          }
+          this.$i18n.locale = tmpI18n;
+          this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
+        })
+      }
+     
     },
     initKnife4jFront() {
       //该版本区别于Spring-ui的版本,提供给其它语言来集成knife4j
       var that = this;
-      //初始化swagger文档
-      var url = this.$route.path;
-      var plusFlag = false;
-      if (url == "/plus") {
-        //开启增强
-        plusFlag = true;
-      }
-      this.swagger = new SwaggerBootstrapUi({
+      this.initSwagger({
         Vue: that,
-        plus: plusFlag,
+        plus: this.getPlusStatus(),
         //禁用config的url调用
         configSupport: false,
         //覆盖url地址,多个服务的组合
         url: "/static/services.json"
       });
+    },
+    initSwagger(options){
+      console.log("初始化Swagger")
+      console.log(options)
+      this.i18n=options.i18nInstance;
+      this.swagger = new SwaggerBootstrapUi(options);
       try {
         this.swagger.main();
       } catch (e) {
@@ -200,7 +268,7 @@ export default {
     },
     searchClear() {
       //搜索输入框清空,菜单还原
-      this.MenuData = this.cacheMenuData;
+      this.MenuData = this.currentMenuData;
     },
     searchKey(key) {
       //根据输入搜索
@@ -232,10 +300,13 @@ export default {
                 authority: menu.authority,
                 children: tmpChildrens
               };
-              tmpMenu.push(tmpObj);
+              if(tmpMenu.filter(t=>t.key===tmpObj.key).length==0){
+                tmpMenu.push(tmpObj);
+              }
             }
           }
         });
+        console.log(tmpMenu)
         this.MenuData = tmpMenu;
       }
     },
@@ -340,15 +411,33 @@ export default {
     addGlobalParameters(data) {
       this.swaggerCurrentInstance.globalParameters.push(data);
     },
-    openDefaultTabByPath() {
-      //根据地址栏打开Tab选项卡
-      var that = this;
-      const panes = this.panels;
+    getDefaultBrowserPath(){
       var url = this.$route.path;
+      //console.log("打开默认url:"+url)
+      //i18n的情况,忽略掉
+      if(url.startWith("/plus")){
+        url="/plus";
+      }
+      if(url.startWith("/home")){
+        url="/home";
+      }
       if (url == "/plus") {
         //如果是使用的增强地址,替换成主页地址进行查找
         url = "/home";
       }
+      return url;
+    },
+    openDefaultTabByPath() {
+      //根据地址栏打开Tab选项卡
+      var that = this;
+      const panes = this.panels;
+      /* var url = this.$route.path;
+      console.log("打开默认url:"+url)
+      if (url == "/plus") {
+        //如果是使用的增强地址,替换成主页地址进行查找
+        url = "/home";
+      } */
+      var url=this.getDefaultBrowserPath();
       //var menu = findComponentsByPath(url, this.MenuData);
       var menu = findComponentsByPath(url, this.swagger.globalMenuDatas);
       if (menu != null) {
@@ -356,7 +445,8 @@ export default {
         const indexSize = this.panels.filter(tab => tab.key == "kmain");
         if (indexSize == 0) {
           panes.push({
-            title: "主页",
+            /* title: "主页", */
+            title: this.getCurrentI18nInstance().menu.home,
             component: "Main",
             content: "Main",
             key: "kmain",

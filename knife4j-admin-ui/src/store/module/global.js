@@ -1,18 +1,31 @@
 const globals = {
   namespaced: true,
   state: {
-    menuData: []
+    menuData: [],
+    language:'zh-CN',
+    currentMenuData:[]
   },
   mutations: {
     setMenuData: (state, menudatas) => {
-      state.menuData = menudatas;
+      let newMenuArrs=state.menuData.concat(menudatas);
+      state.menuData =  newMenuArrs;
+      state.currentMenuData=menudatas;
+    },setCurrentMenuData:(state,menudatas)=>{
+      state.currentMenuData=menudatas;
+    },setLang:(state,lang)=>{
+      state.language=lang;
     }
   },
   actions: {
     setMenuData({
       commit
     }, menudatas) {
-      commit("setMenuData", menudatas);
+      commit('setMenuData', menudatas);
+    },
+    setCurrentMenuData({commit},menudatas){
+      commit('setCurrentMenuData',menudatas);
+    },setLang({commit},lang){
+      commit('setLang',lang)
     }
   }
 
