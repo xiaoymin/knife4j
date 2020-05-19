@@ -4,23 +4,11 @@ knife4j:
   # 监听项目目录
   monitor: F:\putuoqr\knife4j-admin
 spring:
-#  r2dbc:
-#    url: r2dbc:pool:mysql://127.0.0.1:3306/test
-#    username: root
-#    password: 123456
   application:
     name: Knife4j-Cloud
   cloud:
     gateway:
       enabled: true
-      routes:
-      - id: service1
-        uri: http://knife4j.xiaominfo.com
-        predicates:
-          #- Path=/service1/**
-          - Header=knife4j-origin,server1
-        filters:
-          - RewritePath=/(?<remaining>.*), /$\{remaining}
 management:
   endpoint:
     gateway:

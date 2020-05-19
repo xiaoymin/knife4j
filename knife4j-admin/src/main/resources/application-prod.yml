@@ -1,9 +1,19 @@
 server:
   port: 17808
+knife4j:
+  # 监听项目目录
+  monitor: /mnt/application/kadmin/data
 spring:
-  r2dbc:
-    url: r2dbc:pool:mysql://127.0.0.1:3306/test
-    username: root
-    password: 123456
-application:
-    name: Knife4j-Cloud v1.0(Production)
+  application:
+    name: Knife4j-Cloud(Prod)
+  cloud:
+    gateway:
+      enabled: true
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
