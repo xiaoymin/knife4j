@@ -17,10 +17,19 @@ import java.util.List;
  */
 public class ProjectVo {
 
+    private String path;
     private String name;
     private String code;
     private String description;
     private List<ServiceVo> groups;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public String getName() {
         return name;

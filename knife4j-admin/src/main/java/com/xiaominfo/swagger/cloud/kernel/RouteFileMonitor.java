@@ -88,6 +88,7 @@ public class RouteFileMonitor {
                     Optional<ProjectVo> projectVoOptional=routeRepository.resolved(file);
                     if (projectVoOptional.isPresent()){
                         ProjectVo projectVo=projectVoOptional.get();
+                        projectVo.setPath(file.getPath());
                         routeRepository.addProject(projectVo);
                         //开始添加gateway路由
                         this.mergeServices(projectVo.getGroups());
