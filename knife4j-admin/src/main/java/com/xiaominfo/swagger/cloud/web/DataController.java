@@ -75,11 +75,11 @@ public class DataController extends Assert {
             assertArgTrue(optionalProjectVo.isPresent(),"项目编码不存在");
             File file=new File(optionalProjectVo.get().getPath());
             file.delete();
-            /*if (file.delete()){
+            if (file.delete()){
                 routeRepository.deleteProject(optionalProjectVo.get());
                 //删除gateway网关中的服务
                 routeFileMonitor.deleteServices(optionalProjectVo.get().getGroups());
-            }*/
+            }
         }catch (Exception e){
             logger.error("delete Error,message:{}",e.getMessage());
             result.put("code",8500);
@@ -110,6 +110,10 @@ public class DataController extends Assert {
             routeRepository.listAll().forEach(projectVo1 -> serviceVos.addAll(projectVo1.getGroups()));
             //校验每个service的Header唯一性
             for (ServiceVo serviceVo:projectVo.getGroups()){
+                assertArgumentNotEmpty(serviceVo.getName(),"服务名称不能为空");
+                assertArgumentNotEmpty(serviceVo.getUri(),"服务Uri不能为空");
+                assertArgumentNotEmpty(serviceVo.getUrl(),"服务url不能为空");
+                assertArgumentNotEmpty(serviceVo.getHeader(),"服务Header不能为空");
                 Optional<ServiceVo> optionalServiceVo=serviceVos.stream().filter(serviceVo1 -> StrUtil.equalsIgnoreCase(serviceVo1.getHeader(),serviceVo.getHeader())).findFirst();
                 if (optionalServiceVo.isPresent()){
                     String message="服务Header("+optionalServiceVo.get().getHeader()+")已经存在,该值必须唯一";

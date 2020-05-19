@@ -5,6 +5,7 @@
     <div>
       <a-button type="primary" style="margin-left:10px;" @click="showModal" icon="info-circle">规则说明</a-button>
       <a-button type="primary" style="margin-left:10px;" icon="plus" @click="addProject">添加项目</a-button>
+      <a-button type="primary" style="margin-left:10px;" icon="reload" @click="inits">刷新</a-button>
     </div>
     <div style="margin-top:10px;">
       <a-table :columns="columns" size="small" rowKey="code" :data-source="data" :pagination="false">
@@ -27,12 +28,14 @@
     >
        <IndexIntro />
     </a-modal>
-    <a-modal :title="ptitle" 
+    <a-modal  :title="ptitle" 
     :visible="pvisible"
     :confirm-loading="confirmLoading"
     @ok="handleOk"
     @cancel="handleProjectCancel"
     :width="width"
+    okText="确定"
+    cancelText="取消"
     >
       <a-textarea
       v-model="ptext"
@@ -72,6 +75,7 @@ export default {
   data() {
     return {
       data:[],
+      plus:true,
       ptitle:'添加项目',
       width:850,
       ptext:null,
@@ -86,27 +90,70 @@ export default {
   },
   methods:{
     addProject(){
+      this.ptitle="添加项目";
       this.pvisible=true;
       this.ptext=null;
-       
+      this.plus=true;
     },
     showModal() {
       this.visible = true;
     },
     handleOk(e) {
-      console.log(this.ptext)
-      this.confirmLoading = true;
-      setTimeout(() => {
+      var that=this;
+      if(this.plus){
+        if(!this.ptext){
+          that.$message.info("请输入项目JSON内容");
+          return;
+        }
+        var data=this.getData();
+        if(data==null){
+          that.$message.info("项目JSON格式非法");
+          return;
+        }
+        //新增
+        this.confirmLoading = true;
+        that
+            .$axios({
+              url: "/knife4j/data/merge",
+              method: "post",
+              headers:{
+                "Content-Type":"application/json"
+              },
+              data: data
+            })
+            .then(function(resp) {
+              console.log(resp)
+              if(resp.code==8200){
+                that.$message.info("新增成功");
+                that.pvisible = false;
+                that.confirmLoading = false;
+                setTimeout(()=>{
+                  that.inits();
+                },2000)
+              }else{
+                that.confirmLoading = false;
+                that.$message.error(resp.message);
+              }
+             
+            });
+      }else{
         this.pvisible = false;
         this.confirmLoading = false;
-      }, 2000);
+      }
+      
+    },
+    getData(){
+      var data=null;
+      try{
+        data=JSON.parse(this.ptext);
+      }catch(e){
+      }
+      return data;
     },
     handleCancel(e) {
-      console.log('Clicked cancel button');
       this.visible = false;
     },
     handleProjectCancel(e) {
-      console.log('Clicked cancel button');
       this.pvisible = false;
     },
     deletePro(record){
@@ -122,7 +169,7 @@ export default {
           that
             .$axios({
               url: "/knife4j/data/delete",
-              method: "post",
+              method: "get",
               params: {
                 code: record.code
               }
@@ -137,17 +184,19 @@ export default {
       });
     },
     info(record){
+      this.plus=false;
       var nrecord={
         code:record.code,
         name:record.name,
         description:record.description,
         groups:record.groups
-        
       };
+      this.ptitle="项目明细详情(仅可读)";
       this.ptext=JSON.stringify(nrecord, null, 2);
       this.pvisible=true;
     },
     inits(){
+      this.data=[];
       this.$axios({
         url:"knife4j/data/list",
         method:"get"

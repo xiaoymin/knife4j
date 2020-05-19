@@ -80,13 +80,6 @@ public class RouteFileListener implements FileAlterationListener {
     @Override
     public void onFileDelete(File file) {
         logger.info("file{} has deleted",file.getName());
-        Optional<ProjectVo> projectVoOptional=routeFileMonitor.getRouteRepository().resolved(file);
-        if (projectVoOptional.isPresent()){
-            ProjectVo projectVo=projectVoOptional.get();
-            projectVo.setPath(file.getPath());
-            routeFileMonitor.getRouteRepository().deleteProject(projectVo);
-            routeFileMonitor.deleteServices(projectVo.getGroups());
-        }
     }
 
     @Override
