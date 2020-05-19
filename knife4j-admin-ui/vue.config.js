@@ -4,7 +4,7 @@ module.exports = {
   outputDir: "dist",
   lintOnSave: false,
   productionSourceMap: false,
-  indexPath: "doc.html",
+  indexPath: "index.html",
   css: {
     loaderOptions: {
       less: {
