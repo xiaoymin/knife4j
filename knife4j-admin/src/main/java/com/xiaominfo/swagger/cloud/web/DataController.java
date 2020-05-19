@@ -74,7 +74,6 @@ public class DataController extends Assert {
             Optional<ProjectVo> optionalProjectVo=routeRepository.listAll().stream().filter(projectVo -> StrUtil.equalsIgnoreCase(projectVo.getCode(),code)).findFirst();
             assertArgTrue(optionalProjectVo.isPresent(),"项目编码不存在");
             File file=new File(optionalProjectVo.get().getPath());
-            file.delete();
             if (file.delete()){
                 routeRepository.deleteProject(optionalProjectVo.get());
                 //删除gateway网关中的服务
@@ -125,7 +124,7 @@ public class DataController extends Assert {
             logger.info("write knife4j-data json File,path:{}",file.getPath());
             projectVo.setPath(file.getPath());
             FileUtil.writeString(body,file,"UTF-8");
-            //routeRepository.addProject(projectVo);
+            routeRepository.addProject(projectVo);
             //routeFileMonitor.mergeServices(projectVo.getGroups());
         }catch (Exception e){
             logger.error("merge Error,message:{}",e.getMessage());

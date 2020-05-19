@@ -122,14 +122,14 @@ export default {
               data: data
             })
             .then(function(resp) {
-              console.log(resp)
+              //console.log(resp)
               if(resp.code==8200){
                 that.$message.info("新增成功");
                 that.pvisible = false;
                 that.confirmLoading = false;
                 setTimeout(()=>{
                   that.inits();
-                },2000)
+                },300)
               }else{
                 that.confirmLoading = false;
                 that.$message.error(resp.message);
@@ -175,7 +175,12 @@ export default {
               }
             })
             .then(function(resp) {
-              that.$message.info("删除成功");
+              if(resp.code===8200){
+                that.$message.info("删除成功");
+                that.inits();
+              }else{
+                taht.$message.error(resp.message);
+              }
             });
         },
         onCancel() {

@@ -55,10 +55,12 @@ public class RouteInMemoryReposity implements RouteRepository {
     public void addProject(ProjectVo projectVo) {
         if (projectVo!=null) {
             Optional<ProjectVo> optionalProjectVo = queryByCode(projectVo.getCode());
-            if (optionalProjectVo.isPresent()) {
-                this.deleteProject(projectVo);
+            if (!optionalProjectVo.isPresent()){
+                projectVos.add(projectVo);
             }
-            projectVos.add(projectVo);
+            /*if (optionalProjectVo.isPresent()) {
+                this.deleteProject(projectVo);
+            }*/
         }
     }
 
