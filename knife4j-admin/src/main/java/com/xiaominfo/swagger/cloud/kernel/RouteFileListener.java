@@ -58,8 +58,10 @@ public class RouteFileListener implements FileAlterationListener {
         logger.info("file {} has created,add route",file.getName());
         Optional<ProjectVo> projectVoOptional=routeFileMonitor.getRouteRepository().resolved(file);
         if (projectVoOptional.isPresent()){
-            routeFileMonitor.getRouteRepository().addProject(projectVoOptional.get());
-            routeFileMonitor.mergeServices(projectVoOptional.get().getGroups());
+            ProjectVo projectVo=projectVoOptional.get();
+            projectVo.setPath(file.getPath());
+            routeFileMonitor.getRouteRepository().addProject(projectVo);
+            routeFileMonitor.mergeServices(projectVo.getGroups());
         }
     }
 
@@ -68,14 +70,23 @@ public class RouteFileListener implements FileAlterationListener {
         logger.info("file {} has changed",file.getName());
         Optional<ProjectVo> projectVoOptional=routeFileMonitor.getRouteRepository().resolved(file);
         if (projectVoOptional.isPresent()){
-            routeFileMonitor.getRouteRepository().addProject(projectVoOptional.get());
-            routeFileMonitor.mergeServices(projectVoOptional.get().getGroups());
+            ProjectVo projectVo=projectVoOptional.get();
+            projectVo.setPath(file.getPath());
+            routeFileMonitor.getRouteRepository().addProject(projectVo);
+            routeFileMonitor.mergeServices(projectVo.getGroups());
         }
     }
 
     @Override
     public void onFileDelete(File file) {
         logger.info("file{} has deleted",file.getName());
+        Optional<ProjectVo> projectVoOptional=routeFileMonitor.getRouteRepository().resolved(file);
+        if (projectVoOptional.isPresent()){
+            ProjectVo projectVo=projectVoOptional.get();
+            projectVo.setPath(file.getPath());
+            routeFileMonitor.getRouteRepository().deleteProject(projectVo);
+            routeFileMonitor.deleteServices(projectVo.getGroups());
+        }
     }
 
     @Override

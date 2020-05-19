@@ -421,6 +421,7 @@ export default {
   },
   data() {
     return {
+      gatewaycode:null,
       i18n:null,
       //是否开启缓存
       enableRequestCache: false,
@@ -505,6 +506,7 @@ export default {
   },
   created() {
     this.initI18n();
+    this.gatewaycode=this.api.gatewaycode;
     //初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
     this.initDebugUrl();
@@ -1767,6 +1769,8 @@ export default {
           }
         }
       }
+      //增加网关转发请求头
+      headers["knfie4j-gateway-request"]=this.gatewaycode;
       return headers;
     },
     debugRawFormParams() {

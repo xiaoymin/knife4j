@@ -1791,6 +1791,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   var that = this;
 
   var swpinfo = new SwaggerBootstrapUiApiInfo();
+  swpinfo.gatewaycode=that.currentInstance.header;
   //添加basePath
   var basePath = that.currentInstance.basePath;
   var newfullPath = that.currentInstance.host;
@@ -3543,6 +3544,8 @@ var SwaggerBootstrapUiTag = function (name, description) {
  * @constructor
  */
 var SwaggerBootstrapUiApiInfo = function () {
+  //网关调试code
+  this.gatewaycode=null;
   this.url = null;
   this.originalUrl = null;
   this.configurationDebugSupport = true;

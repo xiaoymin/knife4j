@@ -74,11 +74,12 @@ public class DataController extends Assert {
             Optional<ProjectVo> optionalProjectVo=routeRepository.listAll().stream().filter(projectVo -> StrUtil.equalsIgnoreCase(projectVo.getCode(),code)).findFirst();
             assertArgTrue(optionalProjectVo.isPresent(),"项目编码不存在");
             File file=new File(optionalProjectVo.get().getPath());
-            if (file.delete()){
+            file.delete();
+            /*if (file.delete()){
                 routeRepository.deleteProject(optionalProjectVo.get());
                 //删除gateway网关中的服务
                 routeFileMonitor.deleteServices(optionalProjectVo.get().getGroups());
-            }
+            }*/
         }catch (Exception e){
             logger.error("delete Error,message:{}",e.getMessage());
             result.put("code",8500);
@@ -110,15 +111,18 @@ public class DataController extends Assert {
             //校验每个service的Header唯一性
             for (ServiceVo serviceVo:projectVo.getGroups()){
                 Optional<ServiceVo> optionalServiceVo=serviceVos.stream().filter(serviceVo1 -> StrUtil.equalsIgnoreCase(serviceVo1.getHeader(),serviceVo.getHeader())).findFirst();
-                assertArgFalse(optionalServiceVo.isPresent(),"服务Header已经存在,该值必须唯一");
+                if (optionalServiceVo.isPresent()){
+                    String message="服务Header("+optionalServiceVo.get().getHeader()+")已经存在,该值必须唯一";
+                    throw new RuntimeException(message);
+                }
             }
             //校验通过,开始写入文件
             File file=new File(dir+File.separator+projectVo.getCode()+".json");
             logger.info("write knife4j-data json File,path:{}",file.getPath());
             projectVo.setPath(file.getPath());
             FileUtil.writeString(body,file,"UTF-8");
-            routeRepository.addProject(projectVo);
-            routeFileMonitor.mergeServices(projectVo.getGroups());
+            //routeRepository.addProject(projectVo);
+            //routeFileMonitor.mergeServices(projectVo.getGroups());
         }catch (Exception e){
             logger.error("merge Error,message:{}",e.getMessage());
             result.put("code",8500);
