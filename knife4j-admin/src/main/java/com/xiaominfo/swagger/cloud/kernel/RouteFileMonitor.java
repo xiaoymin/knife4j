@@ -122,6 +122,21 @@ public class RouteFileMonitor {
     }
 
     /**
+     * 删除服务
+     * @param serviceVos
+     */
+    public void deleteServices(List<ServiceVo> serviceVos){
+        if (CollectionUtil.isNotEmpty(serviceVos)){
+            for (ServiceVo serviceVo:serviceVos) {
+                String id = MD5.create().digestHex(serviceVo.getHeader() + serviceVo.getUri());
+                routeHashs.remove(id);
+                dynamicRouteService.delete(id);
+            }
+        }
+
+    }
+
+    /**
      * 关闭
      */
     public void stop(){
