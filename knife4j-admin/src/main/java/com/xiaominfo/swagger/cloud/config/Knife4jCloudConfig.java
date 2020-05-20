@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.reactive.function.server.*;
+import reactor.core.publisher.Mono;
 
 /***
  *
@@ -27,6 +30,15 @@ public class Knife4jCloudConfig {
 
     @Value("${knife4j.monitor}")
     private String path;
+
+    /***
+     * 静态static文件
+     * @return
+     */
+    @Bean
+    RouterFunction<ServerResponse> staticRouter(){
+        return RouterFunctions.resources("/**",new ClassPathResource("static/"));
+    }
 
     @Bean
     public RouteRepository routeRepository(){
