@@ -102,6 +102,8 @@ export default {
       selectedKeys: [],
       status: false,
       menuVisible: false,
+      nextUrl:'',
+      nextKey:'',
       menuItemList: [
         { key: "1", icon: "caret-left", text: "关闭左侧" },
         { key: "2", icon: "caret-right", text: "关闭右侧" },
@@ -438,6 +440,12 @@ export default {
         url = "/home";
       } */
       var url=this.getDefaultBrowserPath();
+      //console.log("url 1")
+      if(this.nextUrl===url){
+        //console.log("nextUrl eq--return..")
+        return false;
+      }
+      //console.log("url 2")
       //var menu = findComponentsByPath(url, this.MenuData);
       var menu = findComponentsByPath(url, this.swagger.globalMenuDatas);
       if (menu != null) {
@@ -473,9 +481,12 @@ export default {
           this.panels = panes;
         }
         this.activeKey = menu.key;
+        this.nextUrl=url;
+        this.nextKey=menu.key;
       } else {
         //主页
         this.activeKey = "kmain";
+        this.nextKey="kmain";
         this.updateMainTabInstance();
       }
       //this.watchPathMenuSelect();

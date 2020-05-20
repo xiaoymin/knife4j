@@ -2078,6 +2078,27 @@ export default {
       }
       return checkResult;
     },
+    debugSendHasCookie(headers){
+      //判断请求头中是否包含Cookie
+      var flag=false;
+      console.log("校验请求头是否存在Cookie");
+      console.log(headers);
+      if(KUtils.checkUndefined(headers)){
+        var headerNameArrs=Object.keys(headers);
+        if(KUtils.arrNotEmpty(headerNameArrs)){
+          var cookieArr=headerNameArrs.filter(headerName=> headerName.toLocaleLowerCase()==="cookie").length;
+          if(cookieArr>0){
+            //存在cookie
+            var cookieValue=headers["Cookie"];
+            //前端JS写入
+            document.cookie=cookieValue;
+            flag=true;
+          }
+        }
+      }
+      console.log("校验结果："+flag);
+      return flag;
+    },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
       //console("发送url-form接口");
@@ -2124,6 +2145,8 @@ export default {
           headers: headers,
           params: formParams,
           timeout: 0,
+          //Cookie标志
+          withCredentials:this.debugSendHasCookie(headers),
           //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
           //否则axios会忽略请求头Content-Type
           data:null
@@ -2206,6 +2229,8 @@ export default {
           method: methodType,
           headers: headers,
           timeout: 0,
+          //Cookie标志
+          withCredentials:this.debugSendHasCookie(headers),
           //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
           //否则axios会忽略请求头Content-Type
           data:null
@@ -2297,6 +2322,8 @@ export default {
             headers: headers,
             params: formParams,
             data: data,
+            //Cookie标志
+            withCredentials:this.debugSendHasCookie(headers),
             timeout: 0
           })
           .then(res => {
