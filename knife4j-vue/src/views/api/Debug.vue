@@ -2081,8 +2081,8 @@ export default {
     debugSendHasCookie(headers){
       //判断请求头中是否包含Cookie
       var flag=false;
-      console.log("校验请求头是否存在Cookie");
-      console.log(headers);
+      //console.log("校验请求头是否存在Cookie");
+      //console.log(headers);
       if(KUtils.checkUndefined(headers)){
         var headerNameArrs=Object.keys(headers);
         if(KUtils.arrNotEmpty(headerNameArrs)){
@@ -2090,13 +2090,15 @@ export default {
           if(cookieArr>0){
             //存在cookie
             var cookieValue=headers["Cookie"];
-            //前端JS写入
-            document.cookie=cookieValue;
-            flag=true;
+            if(KUtils.strNotBlank(cookieValue)){
+              //前端JS写入
+              document.cookie=cookieValue;
+              flag=true;
+            }
           }
         }
       }
-      console.log("校验结果："+flag);
+      //console.log("校验结果："+flag);
       return flag;
     },
     debugSendUrlFormRequest() {
