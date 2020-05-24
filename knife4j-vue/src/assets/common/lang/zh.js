@@ -9,6 +9,28 @@ const langOptions = {
   cacheText: '清除缓存',
   //文档中各个表格的属性
   table:{
+    //SwaggerModels
+    swaggerModelsColumns:[
+      {
+        title: '名称',
+        dataIndex: 'name',
+        width: '30%'
+      },
+      {
+        title: '类型',
+        dataIndex: 'type',
+        width: '15%'
+      },
+      {
+        title: '说明',
+        dataIndex: 'description'
+      },
+      {
+        title: 'schema',
+        dataIndex: 'schemaValue',
+        width: '15%'
+      }
+    ],
     //文档说明-请求参数
     documentRequestColumns:[
       {
@@ -311,15 +333,54 @@ const langOptions = {
   global: {
     tab: '全局参数设置',
     add: '添加参数',
-    tableHeader: {
-      name: '参数名称',
-      value: '参数值',
-      type: '参数类型',
-      operator: '操作'
+    model:'新增参数',
+    tableHeader: [{
+        title: '参数名称',
+        dataIndex: 'name',
+        width: '15%',
+        scopedSlots: {
+          customRender: 'name'
+        }
+      },
+      {
+        title: '参数值',
+        className: 'column-money',
+        dataIndex: 'value',
+        width: '65%',
+        scopedSlots: {
+          customRender: 'paramContentLabel'
+        }
+      },
+      {
+        title: '参数类型',
+        dataIndex: 'in',
+        width: '10%',
+        scopedSlots: {
+          customRender: 'paramTypeLable'
+        }
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: {
+          customRender: 'operation'
+        }
+      }
+    ],
+    form:{
+      name:'参数名称',
+      value:'参数值',
+      type:'参数类型',
+      validate:{
+        name:'请输入参数名称',
+        value:'请输入参数值'
+      }
     },
+    ok:'确定',
+    cancel:'取消',
     save: '保存',
     delete: '删除',
-    note: 'swagger-bootstrap-ui 提供全局参数Debug功能,目前默认提供header(请求头)、query(form)两种方式的入参.<br /><br />在此添加全局参数后,默认Debug调试tab页会带上该参数,该全局参数只在该分组下有效,不同的分组需要分别设置'
+    note: 'Knife4j 提供全局参数Debug功能,目前默认提供header(请求头)、query(form)两种方式的入参.<br /><br />在此添加全局参数后,默认Debug调试tab页会带上该参数'
 
   },
   settings: {

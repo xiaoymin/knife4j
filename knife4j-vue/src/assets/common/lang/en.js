@@ -8,6 +8,28 @@ const langOptions = {
   cacheText: 'Clear Caches',
    //文档中各个表格的属性
   table:{
+    //SwaggerModels
+    swaggerModelsColumns:[
+      {
+        title: 'name',
+        dataIndex: 'name',
+        width: '30%'
+      },
+      {
+        title: 'type',
+        dataIndex: 'type',
+        width: '15%'
+      },
+      {
+        title: 'description',
+        dataIndex: 'description'
+      },
+      {
+        title: 'schema',
+        dataIndex: 'schemaValue',
+        width: '15%'
+      }
+    ],
     //文档说明-请求参数
     documentRequestColumns:[
       {
@@ -321,15 +343,54 @@ const langOptions = {
   global: {
     tab: 'Global Parameter Settings',
     add: 'Add',
-    tableHeader: {
-      name: 'name',
-      value: 'value',
-      type: 'type',
-      operator: 'operate'
+    model:'Add Parameter',
+    tableHeader: [{
+        title: 'name',
+        dataIndex: 'name',
+        width: '15%',
+        scopedSlots: {
+          customRender: 'name'
+        }
+      },
+      {
+        title: 'value',
+        className: 'column-money',
+        dataIndex: 'value',
+        width: '65%',
+        scopedSlots: {
+          customRender: 'paramContentLabel'
+        }
+      },
+      {
+        title: 'type',
+        dataIndex: 'in',
+        width: '10%',
+        scopedSlots: {
+          customRender: 'paramTypeLable'
+        }
+      },
+      {
+        title: 'operation',
+        dataIndex: 'operation',
+        scopedSlots: {
+          customRender: 'operation'
+        }
+      }
+    ],
+    form:{
+      name:'name',
+      value:'value',
+      type:'type',
+      validate:{
+        name:'Please enter the parameter name',
+        value:'Please enter the parameter value'
+      }
     },
+    ok:'ok',
+    cancel:'cancel',
     save: 'Save',
     delete: 'Delete',
-    note: 'swagger-bootstrap-ui Provide global parameter Debug function, currently default to provide header (request header), query (form) two ways of entry.<br /><br />After adding the global parameter here, the default Debug debug tab page will take this parameter, which is valid only under this group, and different groups need to be set separately.'
+    note: 'Knife4j Provide global parameter Debug function, currently default to provide header (request header), query (form) two ways of entry.<br /><br />After adding the global parameter here, the default Debug debug tab page will take this parameter.'
 
   },
   settings: {

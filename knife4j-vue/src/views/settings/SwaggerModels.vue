@@ -25,45 +25,42 @@
 <script>
 import KUtils from "@/core/utils";
 import Constants from "@/store/constants";
-const columns = [
-  {
-    title: "名称",
-    dataIndex: "name",
-    width: "30%"
-  },
-  {
-    title: "类型",
-    dataIndex: "type",
-    width: "15%"
-  },
-  {
-    title: "说明",
-    dataIndex: "description"
-  },
-  {
-    title: "schema",
-    dataIndex: "schemaValue",
-    width: "15%"
-  }
-];
+
 export default {
   props: {
     data: {
       type: Object
     }
   },
+  computed:{
+    language(){
+       return this.$store.state.globals.language;
+    }
+  },
+  watch:{
+    language:function(val,oldval){
+      this.initI18n();
+    }
+  },
   created() {
+    this.initI18n();
     this.initModelNames();
   },
   data() {
     return {
-      columns: columns,
+      columns: [],
       expanRows: true,
       page: false,
       modelNames: []
     };
   },
   methods: {
+    getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
+    initI18n(){
+      this.columns=this.getCurrentI18nInstance().table.swaggerModelsColumns;
+    },
     unionKey() {
       return KUtils.randomMd5();
     },

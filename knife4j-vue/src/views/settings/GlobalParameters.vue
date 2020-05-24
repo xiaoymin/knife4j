@@ -1,25 +1,27 @@
 <template>
   <a-layout-content class="knife4j-body-content">
     <a-row class="globalparameters">
-      <a-row class="gptips">
+      <a-row class="gptips" v-html="$t('global.note')">
         Knife4j
         提供全局参数Debug功能,目前默认提供header(请求头)、query(form)两种方式的入参.
         <br /><br />
 
-        在此添加全局参数后,默认Debug调试tab页会带上该参数,该全局参数只在该分组下有效,不同的分组需要分别设置
+        在此添加全局参数后,默认Debug调试tab页会带上该参数
       </a-row>
     </a-row>
     <a-row class="globalparameters">
       <a-button type="primary" @click="addGlobalParameters">
-        <a-icon type="plus" /> 添加参数</a-button>
+        <a-icon type="plus" /> 
+        <span v-html="$t('global.add')">添加参数</span>
+        </a-button>
     </a-row>
     <a-row class="globalparameters">
       <a-table :columns="columns" rowKey="pkid" size="small" :dataSource="globalParameters" :pagination="pagination" bordered>
         <a-row slot="operation" slot-scope="text,record">
-          <a-button icon="delete" type="danger" @click="deleteParam(record)" style="margin-left:10px;">删除</a-button>
+          <a-button icon="delete" type="danger" @click="deleteParam(record)" style="margin-left:10px;"  v-html="$t('global.delete')">删除</a-button>
         </a-row>
         <template slot="paramContentLabel" slot-scope="text,record">
-          <a-textarea @change="headerContentChange" :data-key="record.pkid" :defaultValue="text" :autosize="{ minRows: 2, maxRows: 6 }" allowClear />
+          <a-textarea @change="headerContentChange" :data-key="record.pkid" :defaultValue="text" :autoSize="{ minRows: 2, maxRows: 6 }" allowClear />
         </template>
         <template slot="paramTypeLable" slot-scope="text,record">
           <a-select :defaultValue="text" @change="globalParamTypeChange">
@@ -30,21 +32,21 @@
       </a-table>
     </a-row>
     <!--参数编辑及新增-->
-    <a-modal :title="modelTitle" cancelText="取消" okText="确定" :visible="visible" @ok="handleOk" @cancel="handleCancel">
+    <a-modal :title="modelTitle" :cancelText="$t('global.cancel')" :okText="$t('global.ok')" :visible="visible" @ok="handleOk" @cancel="handleCancel">
       <a-form :form="form">
-        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="参数名称">
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" :label="$t('global.form.name')">
           <a-input v-decorator="[
               'name',
-              { rules: [{ required: true, message: '请输入参数名称' }] }
-            ]" placeholder="请输入参数名称" />
+              { rules: [{ required: true, message: '' }] }
+            ]" :placeholder="$t('global.form.validate.name')" />
         </a-form-item>
-        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="参数值">
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol"  :label="$t('global.form.value')">
           <a-input v-decorator="[
               'value',
-              { rules: [{ required: true, message: '请输入参数值' }] }
-            ]" placeholder="请输入参数值" />
+              { rules: [{ required: true, message: '' }] }
+            ]" :placeholder="$t('global.form.validate.value')" />
         </a-form-item>
-        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="参数类型">
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol"  :label="$t('global.form.type')">
           <a-select v-decorator="[
               'in',
               {
@@ -74,7 +76,7 @@ export default {
   data() {
     return {
       modelTitle: "新增参数",
-      columns: Constants.globalParameterTableColumns,
+      columns: [],
       visible: false,
       pagination: false,
       groupId: "",
@@ -88,6 +90,16 @@ export default {
         sm: { span: 15 }
       }
     };
+  },
+  computed:{
+    language(){
+       return this.$store.state.globals.language;
+    }
+  },
+  watch:{
+    language:function(val,oldval){
+      this.initI18n();
+    }
   },
   beforeCreate() {
     gpInstance = this;
@@ -109,8 +121,17 @@ export default {
         localStore.setItem(Constants.globalParameter, obj);
       }
     });
+    this.initI18n();
   },
   methods: {
+    getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
+    initI18n(){
+      var inst=this.getCurrentI18nInstance();
+      this.modelTitle=inst.global.model;
+      this.columns=inst.global.tableHeader;
+    },
     headerContentChange(e) {
       var globalParamValue = e.target.value;
       var pkid = e.target.getAttribute("data-key");
