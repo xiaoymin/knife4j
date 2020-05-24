@@ -16,7 +16,6 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +77,8 @@ public class MarkdownFiles {
                         }
                     }
                 }
-            } catch (IOException e) {
-                logger.error(e.getMessage(),e);
+            } catch (Exception e) {
+                logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
             }
         }
     }
@@ -112,7 +111,7 @@ public class MarkdownFiles {
                     markdownFile.setContent(new String(CommonUtils.readBytes(resource.getInputStream()),"UTF-8"));
                     return markdownFile;
                 } catch (Exception e) {
-                    logger.error(e.getMessage(),e);
+                    logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
                 }finally {
                     CommonUtils.closeQuiltly(reader);
                 }

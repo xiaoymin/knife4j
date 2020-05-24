@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.spring.web;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSort;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.github.xiaoymin.knife4j.spring.model.SwaggerBootstrapUi;
 import com.github.xiaoymin.knife4j.spring.model.SwaggerBootstrapUiPath;
 import com.github.xiaoymin.knife4j.spring.common.SwaggerBootstrapUiHostNameProvider;
@@ -68,7 +69,7 @@ import static com.google.common.collect.FluentIterable.from;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static springfox.documentation.swagger.common.HostNameProvider.componentsFrom;
 
-/***
+/**
  * Knife4j增强接口
  * @since:swagger-bootstrap-ui 1.8.5
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
@@ -116,12 +117,7 @@ public class Knife4jController {
     }
 
     private Function<RequestHandlerProvider, ? extends Iterable<RequestHandler>> handlers() {
-        return new Function<RequestHandlerProvider, Iterable<RequestHandler>>() {
-            @Override
-            public Iterable<RequestHandler> apply(RequestHandlerProvider input) {
-                return input.requestHandlers();
-            }
-        };
+        return new RequestHandlerFunction();
     }
     @RequestMapping(value = DEFAULT_SORT_URL,
             method = RequestMethod.GET,
@@ -245,22 +241,15 @@ public class Knife4jController {
             }
             if (tagMapping!=null){
                 tag.setOrder(getRestTagOrder(tagMapping.getBeanType(),tagApi));
+                String author=getRestTagAuthor(tagMapping.getBeanType());
+                if (author!=null&&!"".equalsIgnoreCase(author)){
+                    tag.setAuthor(author);
+                }
             }
             targetTagLists.add(tag);
         }
-        Collections.sort(targetTagLists, new Comparator<SwaggerBootstrapUiTag>() {
-            @Override
-            public int compare(SwaggerBootstrapUiTag o1, SwaggerBootstrapUiTag o2) {
-                return o1.getOrder().compareTo(o2.getOrder());
-            }
-        });
-        Collections.sort(targetPathLists, new Comparator<SwaggerBootstrapUiPath>() {
-            @Override
-            public int compare(SwaggerBootstrapUiPath o1, SwaggerBootstrapUiPath o2) {
-                return o1.getOrder().compareTo(o2.getOrder());
-            }
-        });
-
+        Collections.sort(targetTagLists, new Knife4jTagComparator());
+        Collections.sort(targetPathLists, new Knife4jPathComparator());
         swaggerBootstrapUi.setTagSortLists(targetTagLists);
         swaggerBootstrapUi.setPathSortLists(targetPathLists);
         if (markdownFiles!=null){
@@ -365,6 +354,16 @@ public class Knife4jController {
         }
     }
 
+    private String getRestTagAuthor(Class<?> aClass){
+        if (aClass!=null){
+            ApiSupport apiSupport=ClassUtils.getUserClass(aClass).getAnnotation(ApiSupport.class);
+            if (apiSupport!=null){
+                return apiSupport.author();
+            }
+        }
+        return null;
+    }
+
     /***
      * 获取tag排序
      * @param aClass
@@ -373,24 +372,31 @@ public class Knife4jController {
      */
     private int getRestTagOrder(Class<?> aClass,Api api){
         int order=Integer.MAX_VALUE;
+        //优先级ApiSupport>ApiSort>Api
         if (api!=null){
             //优先获取api注解的position属性,如果不等于0,则取此值,否则获取apiSort注解,判断是否为空,如果不为空,则获取apisort的值,优先级:@Api-position>@ApiSort-value
             int post=api.position();
             if (post==0){
-                if (aClass!=null){
-                    ApiSort annotation = ClassUtils.getUserClass(aClass).getAnnotation(ApiSort.class);
-                    if (annotation!=null){
-                        order=annotation.value();
-                    }
-                }
+                order=findOrder(aClass);
             }else{
                 order=post;
             }
         }else{
-            if (aClass!=null){
-                ApiSort annotation = ClassUtils.getUserClass(aClass).getAnnotation(ApiSort.class);
-                if (annotation!=null){
-                    order=annotation.value();
+            order=findOrder(aClass);
+        }
+        return order;
+    }
+
+    private Integer findOrder(Class<?> aClass){
+        int order=Integer.MAX_VALUE;
+        if (aClass!=null){
+            ApiSort annotation = ClassUtils.getUserClass(aClass).getAnnotation(ApiSort.class);
+            if (annotation!=null){
+                order=annotation.value();
+            }else{
+                ApiSupport apiSupport=ClassUtils.getUserClass(aClass).getAnnotation(ApiSupport.class);
+                if (apiSupport!=null){
+                    order=apiSupport.order();
                 }
             }
         }
@@ -457,4 +463,24 @@ public class Knife4jController {
         return hostNameOverride;
     }
 
+    static class Knife4jTagComparator implements Comparator<SwaggerBootstrapUiTag>{
+        @Override
+        public int compare(SwaggerBootstrapUiTag o1, SwaggerBootstrapUiTag o2) {
+            return o1.getOrder().compareTo(o2.getOrder());
+        }
+    }
+
+    static class Knife4jPathComparator implements Comparator<SwaggerBootstrapUiPath>{
+        @Override
+        public int compare(SwaggerBootstrapUiPath o1, SwaggerBootstrapUiPath o2) {
+            return o1.getOrder().compareTo(o2.getOrder());
+        }
+    }
+
+    static class RequestHandlerFunction implements Function<RequestHandlerProvider, Iterable<RequestHandler>>{
+        @Override
+        public Iterable<RequestHandler> apply(RequestHandlerProvider input) {
+            return input.requestHandlers();
+        }
+    }
 }

@@ -1,0 +1,19 @@
+server:
+  port: 17808
+knife4j:
+  # 监听项目目录
+  monitor: F:\putuoqr\knife4j-admin
+spring:
+  application:
+    name: Knife4j-Cloud
+  cloud:
+    gateway:
+      enabled: true
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"

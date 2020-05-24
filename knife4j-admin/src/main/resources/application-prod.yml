@@ -1,0 +1,19 @@
+server:
+  port: 17808
+knife4j:
+  # 监听项目目录
+  monitor: /mnt/application/kadmin/data
+spring:
+  application:
+    name: Knife4j-Cloud(Prod)
+  cloud:
+    gateway:
+      enabled: true
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
