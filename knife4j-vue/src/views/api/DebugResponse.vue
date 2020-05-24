@@ -237,7 +237,7 @@ export default {
       }
     },
     showEditorFieldDescription(p) {
-      console.log("emit事件-"+p)
+      //console.log("emit事件-"+p)
       var that = this;
       //需要延时1s处理
       setTimeout(() => {

@@ -484,14 +484,14 @@ export default {
           this.activeKey = menu.key;
           this.nextUrl=url;
           this.nextKey=menu.key;
-          console.log("选择menu1")
+          //console.log("选择menu1")
         } else {
           //主页
           this.activeKey = "kmain";
           //this.nextUrl=url;
           this.nextKey="kmain";
           this.updateMainTabInstance();
-          console.log("选择menu2")
+          //console.log("选择menu2")
         }
 
       }
@@ -543,7 +543,7 @@ export default {
     selectDefaultMenu() {
       var url = this.$route.path;
       const pathArr = urlToList(url);
-      console.log('selectDefaultMenu')
+      //console.log('selectDefaultMenu')
       var m = findComponentsByPath(url, this.MenuData);
       if (pathArr.length == 5) {
         //二级子菜单

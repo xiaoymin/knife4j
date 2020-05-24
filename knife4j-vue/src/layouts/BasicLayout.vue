@@ -247,8 +247,8 @@ export default {
       });
     },
     initSwagger(options){
-      console.log("初始化Swagger")
-      console.log(options)
+      //console.log("初始化Swagger")
+      //console.log(options)
       this.i18n=options.i18nInstance;
       this.swagger = new SwaggerBootstrapUi(options);
       try {
@@ -482,13 +482,13 @@ export default {
         this.activeKey = menu.key;
         this.nextUrl=url;
         this.nextKey=menu.key;
-        //this.freePanelMemory(this.activeKey);
+        this.freePanelMemory(this.activeKey);
       } else {
         //主页
         this.activeKey = "kmain";
         this.nextKey="kmain";
         this.updateMainTabInstance();
-        //this.freePanelMemory(this.activeKey);
+        this.freePanelMemory(this.activeKey);
       }
       //this.watchPathMenuSelect();
     },
