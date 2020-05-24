@@ -353,7 +353,12 @@ const langOptions = {
     globalsettings: '全局参数设置',
     officeline: '离线文档',
     selfSettings: '个性化设置',
-    other:'其他文档'
+    other:'其他文档',
+    menuItemList:[
+      { key: '1', icon: 'caret-left', text: '关闭左侧' },
+      { key: '2', icon: 'caret-right', text: '关闭右侧' },
+      { key: '3', icon: 'close-circle', text: '关闭其它' }
+    ]
   },
   offline: {
     des: 'Knife4j提供导出4种格式的离线文档(Html\Markdown\Word\Pdf)',

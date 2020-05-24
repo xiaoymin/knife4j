@@ -363,7 +363,12 @@ const langOptions = {
     globalsettings: 'GlobalParams',
     officeline: 'OfflineDocument',
     selfSettings: 'Settings',
-    other:'Others'
+    other:'Others',
+    menuItemList:[
+      { key: '1', icon: 'caret-left', text: 'Close Left' },
+      { key: '2', icon: 'caret-right', text: 'Close Right' },
+      { key: '3', icon: 'close-circle', text: 'Close Other' }
+    ]
   },
   doc: {
     title: 'Doc',

@@ -105,9 +105,7 @@ export default {
       nextUrl:'',
       nextKey:'',
       menuItemList: [
-        { key: "1", icon: "caret-left", text: "关闭左侧" },
-        { key: "2", icon: "caret-right", text: "关闭右侧" },
-        { key: "3", icon: "close-circle", text: "关闭其它" }
+       
       ]
     };
   },
@@ -162,6 +160,7 @@ export default {
     initI18n(){
       //根据i18n初始化部分参数
       this.getCurrentI18nInstance();
+      this.menuItemList=this.i18n.menu.menuItemList;
     },
     updateMenuI18n(){
       //根据i18n的切换,更新菜单的显示
@@ -483,13 +482,25 @@ export default {
         this.activeKey = menu.key;
         this.nextUrl=url;
         this.nextKey=menu.key;
+        //this.freePanelMemory(this.activeKey);
       } else {
         //主页
         this.activeKey = "kmain";
         this.nextKey="kmain";
         this.updateMainTabInstance();
+        //this.freePanelMemory(this.activeKey);
       }
       //this.watchPathMenuSelect();
+    },
+    freePanelMemory(activeKey){
+      this.panels.forEach(panel=>{
+        if(panel.key==activeKey){
+          panel.instance=this.swaggerCurrentInstance;
+        }else{
+          panel.instance=null;
+        }
+      })
+
     },
     updateMainTabInstance() {
       var that = this;
