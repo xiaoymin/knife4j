@@ -11,6 +11,18 @@
 
     <artifactId>knife4j-springdoc-ui</artifactId>
     <description>springdoc-openapi的Ui模块</description>
+    <properties>
+        <!--<destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</destDir>-->
+        <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
+    </properties>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <targetPath>META-INF/resources/</targetPath>
+            </resource>
+        </resources>
+    </build>
 
 </project>

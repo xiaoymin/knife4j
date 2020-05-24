@@ -136,7 +136,11 @@
                 <artifactId>springdoc-openapi-webmvc-core</artifactId>
                 <version>${springdoc-openapi.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-springdoc-ui</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
