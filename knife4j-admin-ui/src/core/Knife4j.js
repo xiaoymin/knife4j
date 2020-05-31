@@ -64,7 +64,7 @@ function SwaggerBootstrapUi(options) {
   this.url = options.url || 'swagger-resources'
   //项目code add 2020-5-12 20:02:37
   this.code=options.code||''
-  this.gatewayurl='knife4j/data/queryByCode'
+  this.gatewayurl='knife4j/swagger/listByCode'
   this.i18n=options.i18n||'zh-CN'
   this.i18nInstance = null
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
@@ -401,9 +401,13 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
         dataType: 'json'
       })
       .then(function (data) {
-        that.analysisGroupSuccess(data)
-        //创建分组元素
-        that.createGroupElement()
+        if(data.code==8200){
+          that.analysisGroupSuccess(data.data)
+          //创建分组元素
+          that.createGroupElement()
+        }else{
+          message.error('Knife4j文档请求异常')
+        }
       })
       .catch(function (err) {
         message.error('Knife4j文档请求异常')
@@ -442,6 +446,9 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       group.header,
       group.uri
     )
+    //是否允许调试
+    g.debug=group.debug;
+    g.local=group.local;
     g.url = group.url
     var newUrl = ''
     //此处需要判断basePath路径的情况
@@ -590,24 +597,27 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         api = instance.location;
       }
       //判断是否开启增强功能
-      if (that.settings.enableSwaggerBootstrapUi) {
+      /* if (that.settings.enableSwaggerBootstrapUi) {
         api = instance.extUrl;
-      }
+      } */
       //这里判断url请求是否已加载过
       //防止出现根路径的情况
       var idx = api.indexOf('/');
       if (idx == 0) {
         api = api.substr(1);
       }
-      //测试
-      //api = "jj2.json";
-      that.$Vue.$axios({
+      var requestConfig={
         url: api,
         dataType: 'json',
         timeout: 20000,
-        type: 'get',
-        headers:{'knfie4j-gateway-request':instance.header}
-      }).then(function (data) {
+        type: 'get'
+      }
+      if(!instance.local){
+        requestConfig['headers']={'knfie4j-gateway-request':instance.header}
+      }
+      //测试
+      //api = "jj2.json";
+      that.$Vue.$axios(requestConfig).then(function (data) {
         that.analysisApiSuccess(data);
       }).catch(function (err) {
         message.error('Knife4j文档请求异常')
@@ -1828,11 +1838,13 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   swpinfo.methodType = mtype.toUpperCase();
   //add by xiaoymin 2020-3-11 20:34:39
   // 判断当前接口是否支持调试
-  if (KUtils.arrNotEmpty(that.configuration.supportedSubmitMethods)) {
+  /* if (KUtils.arrNotEmpty(that.configuration.supportedSubmitMethods)) {
     if (!that.configuration.supportedSubmitMethods.includes(mtype.toLowerCase())) {
       swpinfo.configurationDebugSupport = false;
     }
-  }
+  } */
+  //从配置文件中读取是否允许调试
+  swpinfo.configurationDebugSupport=that.currentInstance.debug;
   //接口id使用MD5策略,缓存整个调试参数到localStorage对象中,供二次调用
   var md5Str = newurl + mtype.toUpperCase();
   swpinfo.id = md5(md5Str);
@@ -3732,6 +3744,8 @@ function SwaggerBootstrapUiInstance(name, location, version,header,uri) {
   this.url = null
   this.uri=uri;
   this.header=header;
+  this.debug=false;
+  this.local=false;
   //增强地址
   this.extUrl = null
   this.groupVersion = version
