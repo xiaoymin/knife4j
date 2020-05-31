@@ -3,11 +3,11 @@
     <div class="content">
       <div class="top">
         <div class="header">
-          <span class="title">Knife4j Admin</span>
+          <span class="title">Knife4jCloud</span>
         </div>
         <div class="desc">动态OpenAPI聚合的管理云平台</div>
       </div>
-      <div class="login">
+      <div v-if="loginStatus" class="login">
         <a-form :form="form">
           <a-tabs size="large" :activeKey="currentKey" @change="tabChange" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;">
             <a-tab-pane tab="账户密码登录" key="1">
@@ -22,6 +22,9 @@
                   <a-icon slot="prefix" type="lock" />
                 </a-input>
               </a-form-item>
+              <div>
+                <a @click="forgetPwd" style="float: right">忘记密码</a>
+              </div>
             </a-tab-pane>
             <a-tab-pane tab="注册新用户" key="2">
               <a-form-item>
@@ -56,6 +59,42 @@
           </a-form-item>
         </a-form>
       </div>
+      <div v-else class="login">
+        <a-form :form="forgetForm">
+          <a-form-item>
+            <a-input  v-decorator="['email',{rules:[{required:true,message:'请输入账户名'}]}]"  size="large" placeholder="请输入邮箱" >
+              <a-icon slot="prefix" type="user" />
+            </a-input>
+          </a-form-item>
+          <a-form-item>
+            <a-input  v-decorator="['pwd',{rules:[{required:true,message:'请输入账户名'}]}]"  size="large" placeholder="请输入密码"  type="password">
+              <a-icon slot="prefix" type="lock" />
+            </a-input>
+          </a-form-item>
+          <a-form-item>
+            <a-row :gutter="8" style="margin: 0 -4px">
+              <a-col :span="15">
+                <a-input  v-decorator="['code',{rules:[{required:true,message:'请输入校验码'}]}]"  size="large" placeholder="校验码">
+                <a-icon slot="prefix" type="mail" />
+              </a-input>
+              </a-col>
+              <a-col :span="9" style="padding-left: 4px">
+                <a-button style="width: 100%"  :disabled="disabled"  class="captcha-button" @click="sendResetCode" size="large">
+                  <span v-if="codeButtonStatus" >获取验证码</span>
+                  <span v-else>{{codeText}}</span>
+                </a-button>
+              </a-col>
+            </a-row>
+          </a-form-item>
+          <a-form-item>
+            <a @click="backLogin" style="float: right;">返回登录</a>
+          </a-form-item>
+           
+          <a-form-item>
+            <a-button :loading="logging" style="width: 100%;" size="large" @click="submitResetForm" type="primary">重置密码</a-button>
+          </a-form-item>
+        </a-form>
+      </div>
     </div>
   </div>
 </template>
@@ -67,6 +106,7 @@ export default {
   name: 'Login',
   data () {
     return {
+      loginStatus:true,
       logging: false,
       loginTitle:'登录',
       disabled:false,
@@ -82,8 +122,18 @@ export default {
   },
   beforeCreate(){
     this.form = this.$form.createForm(this, { name: "Loginform" });
+    this.forgetForm=this.$form.createForm(this, { name: "LoginForgetform" });
   },
   methods: {
+    backLogin(){
+      console.log("返回登录")
+      this.loginStatus=true;
+      this.resetCodeButtonStatus();
+    },
+    forgetPwd(){
+      this.loginStatus=false;
+      this.resetCodeButtonStatus();
+    },
     tabChange(key){
       this.currentKey=key;
       this.tabTitleChange();
@@ -93,6 +143,46 @@ export default {
         this.loginTitle="登录";
       }else{
         this.loginTitle="注册";
+      }
+    },
+    sendResetCode(){
+      var formValues = this.forgetForm.getFieldsValue();
+      console.log(formValues)
+      if(!formValues.email){
+        this.$message.error("请输入账户名");
+        return false;
+      }
+      this.disabled=true;
+      if(!this.codeTimer){
+        this.$axios({
+          url:"/knife4j/user/sendResetCode",
+          params:{account:formValues.email},
+          headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+          },
+          method:"post",
+          data:null
+        }).then(data=>{
+          if(data.code==8200){
+            this.$message.info("发送校验码成功,请登录邮箱查看");
+            this.codeButtonStatus=false;
+            this.count=300;
+            this.codeText="重新发送("+this.count+")";
+            this.codeTimer=setInterval(()=>{
+              if (this.count > 0 && this.count <= 300) {
+                this.count--;
+                this.codeText="重新发送("+this.count+")";
+              } else {
+                this.resetCodeButtonStatus();
+              }
+            },1000)
+          }else{
+            this.disabled=false;
+            this.$message.error(data.message);
+          }
+        })
+      }else{
+        this.$message.info("校验码已发送,请登录邮箱查看");
       }
     },
     sendCode(){
@@ -136,7 +226,9 @@ export default {
     },
     resetCodeButtonStatus(){
       this.codeButtonStatus = true;
-      clearInterval(this.codeTimer);
+      if(this.codeTimer!=null){
+        clearInterval(this.codeTimer);
+      }
       this.codeTimer = null;
       this.disabled=false;
     },
@@ -147,6 +239,46 @@ export default {
        }else{
          this.register();
        }
+    },
+    submitResetForm(){
+      //重置密码
+      var formValues = this.forgetForm.getFieldsValue();
+      if(!formValues.email){
+        this.$message.error("请输入账户名");
+        return false;
+      }
+      if(!formValues.pwd){
+        this.$message.error("请输入密码");
+        return false;
+      }
+      if(!formValues.code){
+        this.$message.error("请输入校验码");
+        return false;
+      }
+      var formdata={
+        account:formValues.email,
+        password:formValues.pwd,
+        code:formValues.code
+      }
+      this.logging=true; 
+      this.$axios({
+        url:"/knife4j/user/resetPassword",
+        method:"post",
+        data:formdata
+      }).then(data=>{
+        this.logging=false;
+        if(data.code==8200){
+          this.$message.info("重置成功,请登录");
+          this.resetCodeButtonStatus();
+          this.currentKey="1";
+          this.forgetForm.resetFields();
+          this.tabTitleChange();
+          this.loginStatus=true;
+        }else{
+          this.$message.error(data.message);
+        }
+      })
+
     },
     login(){
       var formValues = this.form.getFieldsValue();

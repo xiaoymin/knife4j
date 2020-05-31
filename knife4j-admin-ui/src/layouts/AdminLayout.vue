@@ -39,18 +39,18 @@
             <a-dropdown>
               <a-menu slot="overlay" class="menu">
                 <a-menu-item>
-                  <router-link to="/setting">
-                    <a-icon type="setting"/> <span>用户信息</span
+                  <router-link to="/info">
+                    <a-icon type="user"/> <span>用户信息</span
                   ></router-link>
                 </a-menu-item>
                 <a-menu-divider />
                 <a-menu-item>
-                  <router-link to="/unsetPwd">
+                  <router-link to="/resetPwd">
                     <a-icon type="lock"/> <span>重置密码</span></router-link>
                 </a-menu-item>
                 <a-menu-divider />
                 <a-menu-item @click="exit">
-                    <a-icon type="lock"/> <span>退出系统</span> 
+                    <a-icon type="poweroff"/> <span>退出系统</span> 
                 </a-menu-item>
               </a-menu>
               <span class="action account">

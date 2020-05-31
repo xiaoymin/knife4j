@@ -63,6 +63,12 @@ const routes = [{
   },{
     path:'/help',
     component: () => import('@/views/admin/Help')
+  },{
+    path:'/info',
+    component: () => import('@/views/admin/Info')
+  },{
+    path:'/resetPwd',
+    component: () => import('@/views/admin/ResetPwd')
   }]
 },{
   path:'/login',
