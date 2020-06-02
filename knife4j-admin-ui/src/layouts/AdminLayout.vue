@@ -33,7 +33,7 @@
             :type="collapsed ? 'menu-unfold' : 'menu-fold'"
             @click="() => (collapsed = !collapsed)"
           />
-          <span class="knife4j-header-title">Knife4j-Admin云平台</span>
+          <span class="knife4j-header-title">Knife4jCloud云平台</span>
 
           <div class="knife4j-admin-nav-right">
             <a-dropdown>

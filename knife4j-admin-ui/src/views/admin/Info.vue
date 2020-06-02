@@ -20,6 +20,15 @@
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="最后登录IP">
           <span>{{info.lastLoginIp}}</span>
         </a-form-item>
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="AccessKey">
+          <span>{{info.accessKey}}</span>
+        </a-form-item>
+        <a-form-item  :wrapper-col="{ span: 12, offset: 8 }">
+          <a-button type="primary" icon="redo" @click="resetKey">
+            变更AccessKey
+          </a-button>
+          
+        </a-form-item>
       </a-form>
     </a-row>
   </div>
@@ -30,8 +39,8 @@ export default {
    data(){
     return {
       info:null,
-      labelCol: { span: 10 },
-      wrapperCol: { span: 13 }
+      labelCol: { span: 8 },
+      wrapperCol: { span: 15 }
     }
   },
   beforeCreate(){
@@ -41,6 +50,19 @@ export default {
     this.loadInfo();
   },
   methods:{
+    resetKey(){
+      this.$axios({
+        url:"/user/resetAccessKey",
+        method:"get"
+      }).then(data=>{
+        if(data.code==8200){
+          this.loadInfo();
+        }else{
+          this.$message.info("系统异常,请重试")
+        }
+      })
+      
+    },
     loadInfo(){
       this.$axios({
         url:"/user/info",
