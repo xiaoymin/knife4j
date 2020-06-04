@@ -121,6 +121,7 @@ export default {
         if(data.code==8200){
           this.account=data.data.account;
         }else{
+          document.cookie = 'TK_KNIFE4J=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
           local.removeItem("KNIE4J_LOGIN_FLAG");
           this.$router.push({
             path:"/login"

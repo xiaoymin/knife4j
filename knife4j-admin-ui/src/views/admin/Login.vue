@@ -156,12 +156,11 @@ export default {
       if(!this.codeTimer){
         this.$axios({
           url:"/knife4j/user/sendResetCode",
-          params:{account:formValues.email},
+          data:{account:formValues.email},
           headers:{
             "Content-Type":"application/x-www-form-urlencoded"
           },
-          method:"post",
-          data:null
+          method:"post"
         }).then(data=>{
           if(data.code==8200){
             this.$message.info("发送校验码成功,请登录邮箱查看");

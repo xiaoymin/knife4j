@@ -79,26 +79,37 @@ const router = new VueRouter({
   routes
 })
 
+function getCookie(name){
+  var value=null;
+  if(document.cookie.length>0){
+    var cookieArrs=document.cookie.split(";");
+    for(var i=0;i<cookieArrs.length;i++){
+      var cocLists=cookieArrs[i].split("=");
+      if(cocLists[0]==name){
+        value=cocLists[1];
+      }
+    }
+  }
+  return value;
+}
+
 //无需登录界面
 const whiteRouterList = ['/login']
 //const reg = new RegExp('/project/.*', 'g');
 router.beforeEach((to, form, next) => {
+  window.console.log(document.cookie)
   if (new RegExp('/project/.*', 'ig').test(to.path)) {
     //预览页面,不用登录
     next(); 
   } else {
     if (whiteRouterList.indexOf(to.path) < 0) {
-      local.getItem("KNIE4J_LOGIN_FLAG").then(function (flv) {
-        if (flv === null) {
-          next('/login')
-        } else {
-          if (flv.login) {
-            next()
-          } else {
-            next('/login')
-          }
-        }
-      })
+      var tkvalue=getCookie('TK_KNIFE4J');
+      window.console.log("cookieValue:"+tkvalue);
+      if(tkvalue!=null&&tkvalue!=''){
+        next();
+      }else{
+        next('/login');
+      }
     } else {
       next()
     }
