@@ -3,42 +3,42 @@
     <a-row>
       <a-col :span="24">
         <div class="title">
-          <h2>{{ data.instance.title }}</h2>
+          <h2>{{ swaggerCurrentInstance.title }}</h2>
         </div>
         <div class="description">
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.description')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="data.instance.description"/></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.description"/></a-col>
           </a-row>
           <a-divider class="divider" />
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.author')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="data.instance.contact"/></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.contact"/></a-col>
           </a-row>
           <a-divider class="divider" />
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.version')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="data.instance.version"/></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.version"/></a-col>
           </a-row>
           <a-divider class="divider" />
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.host')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="data.instance.host"/></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.host"/></a-col>
           </a-row>
           <a-divider class="divider" />
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.basePath')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="data.instance.basePath"/></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.basePath"/></a-col>
           </a-row>
           <a-divider class="divider" />
           <a-row class="content-line">
@@ -46,7 +46,7 @@
               <h3 v-html="$t('homePage.serviceUrl')"></h3>
             </a-col>
             <a-col :span="19"
-              ><span v-html="data.instance.termsOfService"
+              ><span v-html="swaggerCurrentInstance.termsOfService"
             /></a-col>
           </a-row>
           <a-divider class="divider" />
@@ -54,21 +54,21 @@
             <a-col :span="5">
               <h3 v-html="$t('homePage.groupName')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="data.instance.name"/></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.name"/></a-col>
           </a-row>
           <a-divider class="divider" />
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.groupUrl')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="data.instance.url"/></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.url"/></a-col>
           </a-row>
           <a-divider class="divider" />
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.groupLocation')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="data.instance.location"/></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.location"/></a-col>
           </a-row>
           <a-divider class="divider" />
           <a-row class="content-line">
@@ -78,7 +78,7 @@
             <a-col :span="19">
               <a-row
                 class="content-line-count"
-                v-for="param in data.instance.pathArrs"
+                v-for="param in swaggerCurrentInstance.pathArrs"
                 :key="param.method"
               >
                 <a-col :span="3">
@@ -101,6 +101,11 @@ export default {
   props: {
     data: {
       type: Object
+    }
+  },
+  computed:{
+    swaggerCurrentInstance(){
+      return this.$store.state.globals.swaggerCurrentInstance;
     }
   },
   data() {

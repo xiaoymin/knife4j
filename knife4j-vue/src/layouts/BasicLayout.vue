@@ -88,10 +88,10 @@ export default {
       menuWidth: constMenuWidth,
       headerClass: "knife4j-header-width",
       swagger: null,
-      swaggerCurrentInstance: {},
-      defaultServiceOption: "",
-      serviceOptions: [],
-      MenuData: [],
+      //swaggerCurrentInstance: {},
+      //defaultServiceOption: "",
+      //serviceOptions: [],
+      //MenuData: [],
       collapsed: false,
       linkList: [],
       panels: [],
@@ -126,6 +126,17 @@ export default {
     }, 
     language(){
        return this.$store.state.globals.language;
+    },MenuData(){
+      return this.$store.state.globals.currentMenuData;
+    },
+    swaggerCurrentInstance(){
+      return this.$store.state.globals.swaggerCurrentInstance;
+    },
+    serviceOptions(){
+      return this.$store.state.globals.serviceOptions;
+    },
+    defaultServiceOption(){
+      return this.$store.state.globals.defaultServiceOption;
     }
   },
   updated() {
@@ -209,30 +220,66 @@ export default {
         i18n:i18n
       }
     },
+    getCacheSettings(val){
+      var that=this;
+      var defaultSettings = constant.defaultSettings;
+      var defaultPlusSettings = constant.defaultPlusSettings;
+      var settings=null;
+      if (val != undefined && val != null && val != '') {
+        if (that.plus) {
+          val.enableSwaggerBootstrapUi = defaultPlusSettings.enableSwaggerBootstrapUi
+          val.enableRequestCache = defaultPlusSettings.enableRequestCache;
+        } //如果本地存在,则使用本地的
+        settings = val;
+      } else {
+        if (that.plus) {
+          settings = defaultPlusSettings;
+        } else {
+          //判断是否开启增强
+          settings = defaultSettings;
+        }
+      }
+      return settings;
+    },
+    getCacheGitVersion(gitVal){
+      var cacheApis=[];
+      if (KUtils.strNotBlank(gitVal)) {
+        //存在值
+        cacheApis = gitVal;
+      }
+      return cacheApis;
+    },
     initKnife4jSpringUi() {
       //该版本是最终打包到knife4j-spring-ui的模块,默认是调用该方法
       var that = this;
       var i18nParams=this.getI18nFromUrl();
       var tmpI18n=i18nParams.i18n;
-      if(i18nParams.include){
-        //写入本地缓存
-        this.$store.dispatch("globals/setLang", tmpI18n);
-        this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
-        this.$i18n.locale = tmpI18n;
-        this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
-      }else{
-        //不包含
-        //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
-        this.$localStore.getItem(constant.globalI18nCache).then(i18n => {
-          if(KUtils.checkUndefined(i18n)){
-            this.$store.dispatch("globals/setLang", i18n);
-            tmpI18n=i18n;
+      //读取settings
+      this.$localStore.getItem(constant.globalSettingsKey).then(settingCache=>{
+        var settings=this.getCacheSettings(settingCache);
+        that.$localStore.setItem(constant.globalSettingsKey, settings);
+        this.$localStore.getItem(constant.globalGitApiVersionCaches).then(gitVal=>{
+          var cacheApis=this.getCacheGitVersion(gitVal);
+          if(i18nParams.include){
+            //写入本地缓存
+            this.$store.dispatch("globals/setLang", tmpI18n);
+            this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
+            this.$i18n.locale = tmpI18n;
+            this.initSwagger({store:this.$store,localStore:this.$localStore,settings:settings,cacheApis:cacheApis, routeParams: that.$route.params, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
+          }else{
+            //不包含
+            //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
+            this.$localStore.getItem(constant.globalI18nCache).then(i18n => {
+              if(KUtils.checkUndefined(i18n)){
+                this.$store.dispatch("globals/setLang", i18n);
+                tmpI18n=i18n;
+              }
+              this.$i18n.locale = tmpI18n;
+              this.initSwagger({store:this.$store,localStore:this.$localStore,settings:settings,cacheApis:cacheApis, routeParams: that.$route.params, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
+            })
           }
-          this.$i18n.locale = tmpI18n;
-          this.initSwagger({ Vue: that, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
         })
-      }
-     
+      })
     },
     initKnife4jFront() {
       //该版本区别于Spring-ui的版本,提供给其它语言来集成knife4j
@@ -247,12 +294,18 @@ export default {
       });
     },
     initSwagger(options){
-      //console.log("初始化Swagger")
-      //console.log(options)
+      console.log("初始化Swagger")
+      console.log(options)
       this.i18n=options.i18nInstance;
       this.swagger = new SwaggerBootstrapUi(options);
       try {
         this.swagger.main();
+        //this.MenuData=this.swagger.menuData;
+        //this.swaggerCurrentInstance=this.swagger.currentInstance;
+        //this.$store.dispatch("globals/setMenuData", this.MenuData);
+        //缓存cache
+        //this.$localStore.setItem(constant.globalGitApiVersionCaches, this.swagger.cacheApis);
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa------------------------")
       } catch (e) {
         console.error(e);
       }
@@ -317,7 +370,8 @@ export default {
       //id
       let swaggerIns = this.swagger.selectInstanceByGroupId(value);
       this.swagger.analysisApi(swaggerIns);
-      this.defaultServiceOption = value;
+      this.$store.dispatch('globals/setDefaultService', value);	
+      //this.defaultServiceOption = value;
       //console(value);
       //console(option);
       setTimeout(() => {

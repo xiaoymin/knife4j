@@ -9,7 +9,7 @@ const routes = [{
   path: '/',
   name: 'home',
   component: BasicLayout,
-  redirect: '/index',
+  redirect: '/login',
   children: [
     {
       path:'/project/:code',
@@ -81,11 +81,13 @@ const router = new VueRouter({
 
 function getCookie(name){
   var value=null;
-  if(document.cookie.length>0){
+  if(document.cookie!=null&&document.cookie!=undefined){
     var cookieArrs=document.cookie.split(";");
     for(var i=0;i<cookieArrs.length;i++){
       var cocLists=cookieArrs[i].split("=");
-      if(cocLists[0]==name){
+      var cname=cocLists[0];
+      cname = cname.replace(/\s+/g,''); 
+      if(cname==name){
         value=cocLists[1];
       }
     }
@@ -97,14 +99,14 @@ function getCookie(name){
 const whiteRouterList = ['/login']
 //const reg = new RegExp('/project/.*', 'g');
 router.beforeEach((to, form, next) => {
-  window.console.log(document.cookie)
+  //window.console.log(document.cookie+",path:"+to.path)
   if (new RegExp('/project/.*', 'ig').test(to.path)) {
     //预览页面,不用登录
     next(); 
   } else {
     if (whiteRouterList.indexOf(to.path) < 0) {
       var tkvalue=getCookie('TK_KNIFE4J');
-      window.console.log("cookieValue:"+tkvalue);
+      //window.console.log("cookieValue:"+tkvalue);
       if(tkvalue!=null&&tkvalue!=''){
         next();
       }else{

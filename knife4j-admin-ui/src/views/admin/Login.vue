@@ -297,21 +297,18 @@ export default {
       this.$axios({
         url:"/login",
         headers:{
-            "Content-Type":"application/x-www-form-urlencoded"
+            "Content-Type":"application/json"
         },
         method:"post",
-        data:null,
-        params:formdata
+        data:formdata
       }).then(data=>{
         this.logging=false;
         if(data.code==8200){
           //this.$message.info("登录成功");
           var loginFlag = { login: true };
-          local.setItem("KNIE4J_LOGIN_FLAG", loginFlag).then(()=>{
-            this.$router.push({
+          this.$router.push({
                 path:"/index"
-              }).catch(err => {})
-          });
+          }).catch(err => {})
         }else{
           this.$message.error(data.message);
         }
