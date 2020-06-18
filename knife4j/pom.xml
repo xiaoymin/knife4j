@@ -17,6 +17,8 @@
         <module>knife4j-spring-boot-autoconfigure</module>
         <module>knife4j-dependencies</module>
         <module>knife4j-springdoc-ui</module>
+        <module>knife4j-jfinal</module>
+        <module>knife4j-jfinal-ui</module>
     </modules>
     <packaging>pom</packaging>
     <name>knife4j</name>
@@ -43,6 +45,8 @@
         <servlet.version>3.1.0</servlet.version>
         <slf4j.version>1.7.28</slf4j.version>
         <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
+        <jfinal.version>4.2</jfinal.version>
+        <fastjson.version></fastjson.version>
         <!-- 打包跳过单元测试 -->
         <skipTests>true</skipTests>
     </properties>
@@ -97,6 +101,12 @@
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-spring-boot-autoconfigure</artifactId>
                 <version>${knife4j.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.jfinal/jfinal -->
+            <dependency>
+                <groupId>com.jfinal</groupId>
+                <artifactId>jfinal</artifactId>
+                <version>${jfinal.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
