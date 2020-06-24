@@ -265,7 +265,17 @@ export default {
             this.$store.dispatch("globals/setLang", tmpI18n);
             this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
             this.$i18n.locale = tmpI18n;
-            this.initSwagger({store:this.$store,localStore:this.$localStore,settings:settings,cacheApis:cacheApis, routeParams: that.$route.params, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
+            this.initSwagger({
+              store:this.$store,
+              localStore:this.$localStore,
+              settings:settings,
+              cacheApis:cacheApis, 
+              routeParams: that.$route.params, 
+              plus: this.getPlusStatus(),
+              i18n:tmpI18n,
+              configSupport:true,
+              i18nInstance:this.getCurrentI18nInstance() 
+              })
           }else{
             //不包含
             //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
@@ -275,7 +285,17 @@ export default {
                 tmpI18n=i18n;
               }
               this.$i18n.locale = tmpI18n;
-              this.initSwagger({store:this.$store,localStore:this.$localStore,settings:settings,cacheApis:cacheApis, routeParams: that.$route.params, plus: this.getPlusStatus(),i18n:tmpI18n,i18nInstance:this.getCurrentI18nInstance() })
+              this.initSwagger({
+                store:this.$store,
+                localStore:this.$localStore,
+                settings:settings,
+                cacheApis:cacheApis, 
+                routeParams: that.$route.params, 
+                plus: this.getPlusStatus(),
+                i18n:tmpI18n,
+                configSupport:true,
+                i18nInstance:this.getCurrentI18nInstance() 
+                })
             })
           }
         })
@@ -305,7 +325,7 @@ export default {
         //this.$store.dispatch("globals/setMenuData", this.MenuData);
         //缓存cache
         //this.$localStore.setItem(constant.globalGitApiVersionCaches, this.swagger.cacheApis);
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa------------------------")
+        //console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa------------------------")
       } catch (e) {
         console.error(e);
       }
