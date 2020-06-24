@@ -2,7 +2,7 @@
   <div class="document">
     <a-row>
       <a-row class="knife4j-api-title">
-        <a-col :span="20">
+        <a-col :span="18">
           <span v-if="api.deprecated" class="knife4j-menu-api-deprecated">
             {{ api.summary }}
           </span>
@@ -10,6 +10,7 @@
             {{ api.summary }}
           </span>
         </a-col>
+        <a-col :span="2" :id="'btnCopyMethod' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copyMethod')">复制接口</a-col>
         <a-col :span="2" :id="'btnCopyMarkdown' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copy')">复制文档</a-col>
         <a-col :span="2" :id="'btnCopyAddress' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copyHash')">复制地址</a-col>
       </a-row>
@@ -199,6 +200,7 @@ export default {
       //that.showResponseEditFieldDescription();
       that.copyApiAddress();
       that.copyApiMarkdown();
+      that.copyApiUrl();
     }, 1500);
   },
   computed:{
@@ -223,6 +225,30 @@ export default {
       this.responseHeaderColumns=inst.table.documentResponseHeaderColumns;
       this.responseParametersColumns=inst.table.documentResponseColumns;
     },
+    copyApiUrl(){
+      var that = this;
+      var btnId = "btnCopyMethod" + this.api.id;
+      var copyMethodText=this.api.showUrl;
+      var clipboard = new ClipboardJS("#" + btnId, {
+        text() {
+          return copyMethodText;
+        }
+      });
+     
+      clipboard.on("success",()=>{
+        var inst=that.getCurrentI18nInstance();
+        //"复制地址成功"
+        var successMessage=inst.message.copy.method.success;
+        that.$message.info(successMessage);
+      })
+      clipboard.on("error", function(e) {
+        var inst=that.getCurrentI18nInstance();
+        console.log(inst)
+        //"复制地址失败"
+        var failMessage=inst.message.copy.method.fail;
+        that.$message.info(failMessage);
+      });
+    },
     copyApiAddress() {
       var that = this;
       var btnId = "btnCopyAddress" + this.api.id;
@@ -231,15 +257,18 @@ export default {
           return window.location.href;
         }
       });
-      var inst=this.getCurrentI18nInstance();
-      //"复制地址成功"
-      var successMessage=inst.message.copy.url.success;
-      //"复制地址失败"
-      var failMessage=inst.message.copy.url.fail;
+      
+      
       clipboard.on("success", function(e) {
+        var inst=that.getCurrentI18nInstance();
+        //"复制地址成功"
+        var successMessage=inst.message.copy.url.success;
         that.$message.info(successMessage);
       });
       clipboard.on("error", function(e) {
+        var inst=that.getCurrentI18nInstance();
+        //"复制地址失败"
+        var failMessage=inst.message.copy.url.fail;
         that.$message.info(failMessage);
       });
     },
@@ -253,14 +282,9 @@ export default {
         multipData: that.multipData
       };
       //console.log(api);
-      var inst=this.getCurrentI18nInstance();
-      //"复制文档成功"
-      var successMessage=inst.message.copy.document.success;
-      //"复制文档失败"
-      var failMessage=inst.message.copy.document.fail;
-
       var clipboard = new ClipboardJS("#" + btnId, {
         text() {
+          var inst=that.getCurrentI18nInstance();
           if(inst.lang==='zh'){
             return markdownSingleText(api);
           }else if(inst.lang==='us'){
@@ -269,9 +293,15 @@ export default {
         }
       });
       clipboard.on("success", function(e) {
+        var inst=that.getCurrentI18nInstance();
+        //"复制文档成功"
+        var successMessage=inst.message.copy.document.success;
         that.$message.info(successMessage);
       });
       clipboard.on("error", function(e) {
+        var inst=that.getCurrentI18nInstance();
+        //"复制文档失败"
+        var failMessage=inst.message.copy.document.fail;
         that.$message.info(failMessage);
       });
     },

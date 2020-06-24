@@ -269,6 +269,10 @@ const langOptions = {
       url:{
         success: 'Copy address successfully',
         fail: 'Failed to copy the address, your current browser version is not compatible, please copy manually.'
+      }, 
+      method:{
+        success: 'Copy Url successfully',
+        fail: 'Failed to copy the url, your current browser version is not compatible, please copy manually.'
       },
       document:{
         success: 'Copy document successful',
@@ -435,7 +439,8 @@ const langOptions = {
     title: 'Doc',
     note: 'Description',
     copy: 'Copy',
-    copyHash: 'Copy Url',
+    copyHash: 'Copy Address',
+    copyMethod:'Copy Url',
     produces: 'produces',
     consumes: 'consumes',
     author: 'Developer',

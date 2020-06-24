@@ -270,6 +270,10 @@ const langOptions = {
       url:{
         success: '复制地址成功',
         fail: '复制地址失败,您当前浏览器版本不兼容,请手动复制.'
+      }, 
+      method:{
+        success: '复制接口成功',
+        fail: '复制接口失败,您当前浏览器版本不兼容,请手动复制.'
       },
       document:{
         success: '复制文档成功',
@@ -439,6 +443,7 @@ const langOptions = {
     note: '接口说明',
     copy: '复制文档',
     copyHash: '复制地址',
+    copyMethod:'复制接口',
     produces: '请求数据类型',
     consumes: '响应数据类型',
     author: '开发者',
