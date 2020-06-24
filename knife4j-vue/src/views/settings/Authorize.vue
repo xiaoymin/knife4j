@@ -42,6 +42,7 @@ export default {
       columns: [],
       //全局的
       globalSecuritys: [],
+      globalSecurityObject:{},
       //请求头Authorize参数
       securityArr: []
     };
@@ -64,7 +65,7 @@ export default {
       var key = constant.globalSecurityParamPrefix + this.data.instance.id;
       var tmpGlobalSecuritys = [];
       //var key = constant.globalSecurityParamPrefix;
-      this.$localStore.getItem(constant.globalSecurityParameters).then(gbp => {
+      this.$localStore.getItem(constant.globalSecurityParameterObject).then(gbp => {
         //判断当前分组下的security是否为空
         if (KUtils.arrNotEmpty(backArr)) {
           //读取本分组下的security
@@ -92,22 +93,34 @@ export default {
               that.securityArr = backArr;
             }
             //当前分组下的security不为空，判断全局分组，兼容升级的情况下,gbp可能会存在为空的情况
-            if (KUtils.arrNotEmpty(gbp)) {
+            if (KUtils.checkUndefined(gbp)) {
+              that.globalSecurityObject=gbp;
               tmpGlobalSecuritys = tmpGlobalSecuritys.concat(gbp);
               //从全局参数中更新当前分组下的参数
-              gbp.forEach(globalSeris => {
+              that.securityArr.forEach(selfSecurity => {
+                var globalValueTmp=gbp[selfSecurity.id];
+                if(KUtils.checkUndefined(globalValueTmp)){
+                  //id相等，更新value值
+                  selfSecurity.value = globalValueTmp;
+                }else{
+                  that.globalSecurityObject[selfSecurity.id]=selfSecurity.value;
+                }
+              });
+              /* gbp.forEach(globalSeris => {
                 that.securityArr.forEach(selfSecurity => {
                   if (selfSecurity.id == globalSeris.id) {
                     //id相等，更新value值
                     selfSecurity.value = globalSeris.value;
                   }
                 });
-              });
+              }); */
             } else {
               //为空的情况下,则默认直接新增当前分组下的security
-              tmpGlobalSecuritys = tmpGlobalSecuritys.concat(that.securityArr);
+              //tmpGlobalSecuritys = tmpGlobalSecuritys.concat(that.securityArr);
+              that.securityArr.forEach(sa=>{
+                that.globalSecurityObject[sa.id]=sa.value;
+              })
             }
-            this.globalSecuritys = tmpGlobalSecuritys;
             that.storeToLocalIndexDB();
           });
         }
@@ -119,25 +132,28 @@ export default {
       //更新当前实例下的securitys
       this.$localStore.setItem(key, this.securityArr);
       //更新全局的securitys
+      //console.log("全局---")
+      //console.log(this.globalSecurityObject)
       this.$localStore.setItem(
-        constant.globalSecurityParameters,
-        this.globalSecuritys
+        constant.globalSecurityParameterObject,
+        this.globalSecurityObject
       );
     },
     resetAuth() {
       const tmpArr = this.securityArr;
       if (KUtils.arrNotEmpty(tmpArr)) {
-        tmpArr.forEach(function(security) {
+        tmpArr.forEach(security=>{
           security.value = "";
-        });
+          this.globalSecurityObject[security.id]="";
+        })
         this.securityArr = tmpArr;
         //获取当前分组需要重置的value值
-        var resetIds = tmpArr.map(security => security.id);
+        /* var resetIds = tmpArr.map(security => security.id);
         this.globalSecuritys.forEach(globalSecurity => {
           if (resetIds.includes(globalSecurity.id)) {
             globalSecurity.value = "";
           }
-        });
+        }); */
         this.storeToLocalIndexDB();
       }
       this.$message.info("注销成功");
@@ -146,17 +162,13 @@ export default {
       var target = e.target;
       var pkId = target.getAttribute("data-id");
       var value = target.value;
-      this.securityArr.forEach(function(security) {
+      this.securityArr.forEach(security=>{
         if (security.id == pkId) {
           security.value = value;
+          this.globalSecurityObject[security.id]=value;
         }
-      });
+      })
       //更新全局参数
-      this.globalSecuritys.forEach(globlSeris => {
-        if (globlSeris.id == pkId) {
-          globlSeris.value = value;
-        }
-      });
       this.storeToLocalIndexDB();
     }
   },

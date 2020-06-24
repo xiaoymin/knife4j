@@ -39,6 +39,7 @@ const constants = {
     }
   ],
   globalSecurityParameters: "Knife4jGlobalSecurityParameters",
+  globalSecurityParameterObject: "Knife4jGlobalSecurityParameterObject",
   globalSecurityParamPrefix: "Knife4jSecurityParams",
   globalI18nCache:"Knife4jI18n",
   //缓存api接口,用于判断后端接口是否存在变化
