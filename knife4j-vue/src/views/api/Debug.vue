@@ -2218,9 +2218,11 @@ export default {
             //console("触发url-form-error");
             //console(err);
             this.debugLoading = false;
+            //虽然是错误,但依然有返回值
             if (err.response) {
               this.handleDebugError(startTime, err.response);
             } else {
+              this.$message.error(err.message);
               ////console(err.message);
             }
           });
@@ -2298,6 +2300,7 @@ export default {
             if (err.response) {
               this.handleDebugError(startTime, err.response);
             } else {
+              this.$message.error(err.message);
               ////console(err.message);
             }
           });
@@ -2373,6 +2376,7 @@ export default {
             if (err.response) {
               this.handleDebugError(startTime, err.response);
             } else {
+              this.$message.error(err.message);
             }
           });
       } else {
