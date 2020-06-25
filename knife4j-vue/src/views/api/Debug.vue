@@ -426,6 +426,8 @@ export default {
       enableRequestCache: false,
       //是否动态参数
       enableDynamicParameter: false,
+      enableHost:false,
+      enableHostText:'',
       headerColumn: [],
       formColumn: [],
       urlFormColumn: [],
@@ -560,6 +562,21 @@ export default {
           if (KUtils.checkUndefined(settings["enableDynamicParameter"])) {
             //如果存在,赋值
             this.enableDynamicParameter = settings.enableDynamicParameter;
+          }
+          //读取Host配置
+          if(KUtils.checkUndefined(settings["enableHost"])){
+            this.enableHost=settings.enableHost;
+            //判断Host的值
+            var tmpHostValue=settings.enableHostText;
+            if(KUtils.checkUndefined(tmpHostValue)){
+              if(!tmpHostValue.startWith("http")){
+                tmpHostValue="http://"+tmpHostValue;
+              }
+              this.enableHostText=tmpHostValue;
+            }else{
+              //hostvalue为空,默认取消
+              this.enableHost=false;
+            }
           }
         }
         //初始化读取本地缓存全局参数
@@ -2140,8 +2157,14 @@ export default {
           url = checkResult.url;
           formParams = Object.assign(formParams, checkResult.params);
         }
+        var baseUrl='';
+        //是否启用Host
+        if(this.enableHost){
+          baseUrl=this.enableHostText;
+        }
         //console.log(headers)
         var requestConfig = {
+          baseURL:baseUrl,
           url: url,
           method: methodType,
           headers: headers,
@@ -2226,7 +2249,13 @@ export default {
         url = validateFormd.url;
         //var formParams = this.debugFormDataParams(fileFlag);
         var formParams = validateFormd.params;
+        var baseUrl='';
+        //是否启用Host
+        if(this.enableHost){
+          baseUrl=this.enableHostText;
+        }
         var requestConfig = {
+          baseURL:baseUrl,
           url: url,
           method: methodType,
           headers: headers,
@@ -2315,19 +2344,26 @@ export default {
           url = checkResult.url;
           formParams = Object.assign(formParams, checkResult.params);
         }
+        var baseUrl='';
+        //是否启用Host
+        if(this.enableHost){
+          baseUrl=this.enableHostText;
+        }
+        var requestConfig={
+          baseURL:baseUrl,
+          url: url,
+          method: methodType,
+          headers: headers,
+          params: formParams,
+          data: data,
+          //Cookie标志
+          withCredentials:this.debugSendHasCookie(headers),
+          timeout: 0
+        }
         //console(headers);
         //console(this.rawText);
         DebugAxios.create()
-          .request({
-            url: url,
-            method: methodType,
-            headers: headers,
-            params: formParams,
-            data: data,
-            //Cookie标志
-            withCredentials:this.debugSendHasCookie(headers),
-            timeout: 0
-          })
+          .request(requestConfig)
           .then(res => {
             this.debugLoading = false;
             this.handleDebugSuccess(startTime, res);

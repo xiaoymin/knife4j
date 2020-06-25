@@ -57,6 +57,8 @@ const constants = {
     enableFilterMultipartApiMethodType: "POST", //默认保存类型
     enableRequestCache: true, //是否开启请求参数缓存
     enableCacheOpenApiTable: false, //是否开启缓存已打开的api文档
+    enableHost:false,//是否启用Host
+    enableHostText:"",//启用Host后文本
     language: "zh" //默认语言版本
   },
   //增强配置

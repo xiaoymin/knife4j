@@ -76,7 +76,7 @@ export default {
             );
           } else {
             return (
-              <router-link to={item.path}>
+              <router-link title={item.name} to={item.path}>
                 {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
                 <span>{item.name}</span>
               </router-link>
