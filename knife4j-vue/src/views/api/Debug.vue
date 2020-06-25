@@ -2514,6 +2514,10 @@ export default {
         protocol = "https";
       }
       var fullurl = protocol + "://" + this.api.host;
+      //判断是否开启了Host的配置,如果开启则直接使用Host中的地址
+      if(this.enableHost){
+        fullurl=this.enableHostText;
+      }
       //判断url是否是以/开头
       if (!url.startWith("/")) {
         fullurl += "/";
