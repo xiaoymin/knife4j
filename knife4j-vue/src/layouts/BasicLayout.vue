@@ -15,7 +15,7 @@
         </div>
         <div class="knife4j-menu">
           <a-menu key="Menu" theme="dark" mode="inline" :inlineCollapsed="collapsed" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 16px 0; width: 100%">
-            <ThreeMenu :menuData="MenuData" :collapsed="collapsed" />
+            <ThreeMenu :menuData="localMenuData" :collapsed="collapsed" />
           </a-menu>
         </div>
       </a-layout-sider>
@@ -92,6 +92,7 @@ export default {
       //defaultServiceOption: "",
       //serviceOptions: [],
       //MenuData: [],
+      localMenuData:[],
       collapsed: false,
       linkList: [],
       panels: [],
@@ -127,6 +128,7 @@ export default {
     language(){
        return this.$store.state.globals.language;
     },MenuData(){
+      console.log("menuData--------------------------------")
       return this.$store.state.globals.currentMenuData;
     },
     swaggerCurrentInstance(){
@@ -161,6 +163,9 @@ export default {
     language:function(val,oldval){
       this.initI18n();
       this.updateMenuI18n();
+    },
+    MenuData(){
+      this.localMenuData=this.$store.state.globals.currentMenuData;
     }
   },
   methods: {
@@ -342,7 +347,7 @@ export default {
     },
     searchClear() {
       //搜索输入框清空,菜单还原
-      this.MenuData = this.currentMenuData;
+      this.localMenuData = this.currentMenuData;
     },
     searchKey(key) {
       //根据输入搜索
@@ -381,7 +386,7 @@ export default {
           }
         });
         console.log(tmpMenu)
-        this.MenuData = tmpMenu;
+        this.localMenuData = tmpMenu;
       }
     },
     serviceChange(value, option) {
