@@ -3800,10 +3800,10 @@ function checkFiledExistsAndEqStr(object, filed, eq) {
  * @param msg
  */
 SwaggerBootstrapUi.prototype.log = function (msg) {
-  if (window.console) {
+  /* if (window.console) {
     //正式版不开启console功能
     window.console.log(msg)
-  }
+  } */
 }
 SwaggerBootstrapUi.prototype.ajax=function(config,success,error){
   var ajax=DebugAxios.create();

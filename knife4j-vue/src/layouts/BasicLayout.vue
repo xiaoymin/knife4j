@@ -314,8 +314,8 @@ export default {
       });
     },
     initSwagger(options){
-      console.log("初始化Swagger")
-      console.log(options)
+      //console.log("初始化Swagger")
+      //console.log(options)
       this.i18n=options.i18nInstance;
       this.swagger = new SwaggerBootstrapUi(options);
       try {
