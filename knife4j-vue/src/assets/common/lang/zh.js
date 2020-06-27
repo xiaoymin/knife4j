@@ -265,7 +265,7 @@ const langOptions = {
   },
   message: {
     success: '保存成功',
-    settingTip:'启用个性化配置后,请关闭接口Tab或者刷新当前页面.',
+    settingTip:'启用个性化配置后,接口Tab标签需关闭后重新打开或者刷新当前页面',
     settingHost:'启用Host成功,请关闭接口Tab或者刷新当前页面再进行调试',
     unsupportstore: '当前浏览器不支持localStorage对象,无法使用该功能',
     copy: {
