@@ -51,7 +51,7 @@ public class Knife4jAutoConfiguration {
      */
     @Bean("knife4jCorsFilter")
     @ConditionalOnMissingBean(CorsFilter.class)
-    @ConditionalOnProperty(name = "knife4j.cors",matchIfMissing = true)
+    @ConditionalOnProperty(name = "knife4j.cors")
     public CorsFilter corsFilter(){
         logger.info("init CorsFilter...");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
