@@ -2803,6 +2803,21 @@ export default {
                 }
               });
             }
+            //最后再判断produces
+            var produces=this.api.produces;
+            //判断是否是image
+            var imgProduceFlag=false;
+            if(KUtils.arrNotEmpty(produces)){
+              produces.forEach(prd=>{
+                if(prd.indexOf("image")!=-1){
+                  imgProduceFlag=true;
+                }
+              })
+            }
+            if(!imageFlag){
+              imageFlag=imgProduceFlag;
+            }
+            //console.log(imgProduceFlag);
             var downloadurl = window.URL.createObjectURL(res.data);
             this.responseContent = {
               text: "",

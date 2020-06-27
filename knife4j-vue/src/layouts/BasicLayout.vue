@@ -128,7 +128,7 @@ export default {
     language(){
        return this.$store.state.globals.language;
     },MenuData(){
-      console.log("menuData--------------------------------")
+      //console.log("menuData--------------------------------")
       return this.$store.state.globals.currentMenuData;
     },
     swaggerCurrentInstance(){

@@ -597,7 +597,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         api = api.substr(1);
       }
       //测试
-      //api = "jj2.json";
+      //api = 'run.json';
       that.ajax({
         url: api,
         dataType: 'json',
@@ -793,6 +793,40 @@ SwaggerBootstrapUi.prototype.setInstanceBasicPorperties = function (menu) {
   }
 }
 
+/**
+ * 递归查询additionalProperties中的类型，针对Map类型会存在一直递归下去的情况，程序中则一直递归查询到包含属性additionalProperties的情况，直到找到类则跳出
+ */
+SwaggerBootstrapUi.prototype.deepAdditionalProperties=function(addtionalObject){
+  var definiationName='';
+  //console.log(addtionalObject)
+  if(KUtils.checkUndefined(addtionalObject)){
+    if(addtionalObject.hasOwnProperty('additionalProperties')){
+      var dpAddtional=addtionalObject['additionalProperties'];
+      return this.deepAdditionalProperties(dpAddtional);
+    }else{
+      //不存在了，
+      if (addtionalObject.hasOwnProperty('$ref')) {
+        var adref = addtionalObject['$ref'];
+        var regex = new RegExp('#/definitions/(.*)$', 'ig');
+        if (regex.test(adref)) {
+          definiationName = RegExp.$1;
+        }
+      }else if(addtionalObject.hasOwnProperty('items')){
+        var addItem=addtionalObject['items'];
+        if(addItem.hasOwnProperty('$ref')){
+          var adrefItem = addItem['$ref'];
+          var regexItem = new RegExp('#/definitions/(.*)$', 'ig');
+          if (regexItem.test(adrefItem)) {
+            definiationName = RegExp.$1;
+          }
+        }
+      }
+    }
+  }
+  return definiationName;
+
+}
+
 /***
  * 解析实例属性
  */
@@ -877,8 +911,30 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
                   if (propobj.hasOwnProperty("additionalProperties")) {
                     var addpties = propobj["additionalProperties"];
                     that.log("------解析map-=-----------additionalProperties,defName:" + name);
+                    //判断是否additionalProperties中还包含additionalProperties属性
+                    var addtionalName=this.deepAdditionalProperties(addpties);
+                    //console.log("递归类型---"+addtionalName)
                     //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
-                    if (addpties.hasOwnProperty("$ref")) {
+                    if(KUtils.strNotBlank(addtionalName)){
+                      //console.log("-------------------------addtionalName--------"+addtionalName)
+                      //这里需要递归判断是否是本身,如果是,则退出递归查找
+                      var globalArr = new Array();
+                      //添加类本身
+                      globalArr.push(name);
+                      var addTempValue = null;
+                      if (addtionalName != name) {
+                        addTempValue = that.findRefDefinition(addtionalName, definitions, false, globalArr);
+                      } else {
+                        addTempValue = that.findRefDefinition(addtionalName, definitions, true, name, globalArr);
+                      }
+                      propValue = {
+                        "additionalProperties1": addTempValue
+                      }
+                      //console.log(propValue)
+                      spropObj.type = addtionalName;
+                      spropObj.refType = addtionalName;
+                    }
+                    else if (addpties.hasOwnProperty("$ref")) {
                       var adref = addpties["$ref"];
                       var regex = new RegExp("#/definitions/(.*)$", "ig");
                       if (regex.test(adref)) {
@@ -2812,8 +2868,22 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                   if (type == "object") {
                     if (propobj.hasOwnProperty("additionalProperties")) {
                       var addpties = propobj["additionalProperties"];
+                      var addtionalName=this.deepAdditionalProperties(addpties);
+                      //console.log("递归类型---"+addtionalName)
                       //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
-                      if (addpties.hasOwnProperty("$ref")) {
+                      if(KUtils.strNotBlank(addtionalName)){
+                        //console.log("-------------------------addtionalName--------"+addtionalName)
+                        //添加类本身
+                        if(globalArr.indexOf(addtionalName)==-1){
+                          globalArr.push(addtionalName);
+                          addTempValue = that.findRefDefinition(addtionalName, definitions, false, globalArr);
+                          propValue = {
+                            "additionalProperties1": addTempValue
+                          }
+                        }
+                      }
+                      //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+                      else if (addpties.hasOwnProperty("$ref")) {
                         var adref = addpties["$ref"];
                         var regex = new RegExp("#/definitions/(.*)$", "ig");
                         if (regex.test(adref)) {
@@ -2821,6 +2891,9 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                           var addTempValue = null;
                           if (!flag) {
                             if (globalArr.indexOf(addrefType) == -1) {
+                              //console.log("addrefType:"+addrefType)
+                              //全局类型增加父类型,否则会出现递归死循环
+                              globalArr.push(addrefType);
                               addTempValue = that.findRefDefinition(addrefType, definitions, flag, globalArr);
                               propValue = {
                                 "additionalProperties1": addTempValue
