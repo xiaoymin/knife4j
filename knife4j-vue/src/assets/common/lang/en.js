@@ -264,6 +264,7 @@ const langOptions = {
   },
   message: {
     success: 'Save successfully',
+    settingTip:'When personalization is enabled, close the interface tab or refresh the current page',
     settingHost:'The host is enabled successfully. Please close the interface tab or refresh the current page to enable debuggingThe host is enabled successfully. Please close the interface tab or refresh the current page before debugging',
     unsupportstore: 'Current browsers do not support localStorage objects and cannot use this feature',
     copy: {

@@ -1,6 +1,11 @@
 <template>
   <a-layout-content class="knife4j-body-content">
     <a-row class="settingConfig">
+      <a-row class="gptips" v-html="$t('message.settingTip')">
+        勾选配置后请关闭接口Tab标签或者刷新当前页面保证生效
+      </a-row>
+    </a-row>
+    <a-row class="settingConfig">
       <a-row class="content-line">
         <a-col :span="24">
           <a-checkbox
@@ -201,7 +206,7 @@ export default {
         return false;
       }
       var i18n=this.getCurrentI18nInstance();
-      this.$message.info(i18n.message.settingHost);
+      this.$message.success(i18n.message.settingHost,2);
       this.saveSettingForLocal();
     },
     validateKnife4j() {
@@ -307,7 +312,16 @@ export default {
 <style scoped>
 .settingConfig {
   width: 80%;
-  margin: 40px auto;
+  margin: 20px auto;
+}
+.settingConfig .gptips{
+   color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
 }
 .content-line {
   height: 50px;
