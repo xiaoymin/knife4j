@@ -93,6 +93,8 @@ export default {
   computed:{
     swaggerCurrentInstance(){
       return this.$store.state.globals.swaggerCurrentInstance;
+    },language(){
+       return this.$store.state.globals.language;
     }
   },
   data() {
@@ -148,6 +150,9 @@ export default {
     });
   },
   methods: {
+    getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
     hostChange(e){
       var value=e.target.value;
       this.settings.enableHostText=value;
@@ -193,7 +198,10 @@ export default {
       if(hostValue==null||hostValue==''||hostValue==undefined){
         this.settings.enableHost=false;
         this.$message.error('Please Check Host Value');
+        return false;
       }
+      var i18n=this.getCurrentI18nInstance();
+      this.$message.info(i18n.message.settingHost);
       this.saveSettingForLocal();
     },
     validateKnife4j() {
