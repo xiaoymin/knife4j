@@ -189,7 +189,7 @@ function deepMdTableByResponseParameter(parameters, markdownCollections, level) 
     parameters.forEach(function (param) {
       param.level = level;
       markdownCollections.push('|' + getMdTableByLevel(param) + '|' + KUtils.toString(param.description, '') + '|' + KUtils.toString(param.type, '') + '|' + KUtils.toString(param.schemaValue, '') + '|')
-      deepMdTableByRequestParameter(param.children, markdownCollections, (param.level + 1));
+      deepMdTableByResponseParameter(param.children, markdownCollections, (param.level + 1));
     })
   }
 
