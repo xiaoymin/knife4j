@@ -147,7 +147,7 @@ export default {
     },
     sendResetCode(){
       var formValues = this.forgetForm.getFieldsValue();
-      console.log(formValues)
+      //console.log(formValues)
       if(!formValues.email){
         this.$message.error("请输入账户名");
         return false;
@@ -156,7 +156,7 @@ export default {
       if(!this.codeTimer){
         this.$axios({
           url:"/knife4j/user/sendResetCode",
-          data:{account:formValues.email},
+          params:{account:formValues.email},
           headers:{
             "Content-Type":"application/x-www-form-urlencoded"
           },
