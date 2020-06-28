@@ -13,11 +13,16 @@ import com.github.xiaoymin.knife4j.spring.model.MarkdownFiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 /***
  * Knife4j 基础自动配置类
@@ -38,6 +43,29 @@ public class Knife4jAutoConfiguration {
     @Autowired
     private Environment environment;
     Logger logger= LoggerFactory.getLogger(Knife4jAutoConfiguration.class);
+
+    /**
+     * 配置Cors
+     * @since 2.0.4
+     * @return
+     */
+    @Bean("knife4jCorsFilter")
+    @ConditionalOnMissingBean(CorsFilter.class)
+    @ConditionalOnProperty(name = "knife4j.cors")
+    public CorsFilter corsFilter(){
+        logger.info("init CorsFilter...");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConfiguration=new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.setMaxAge(10000L);
+        //匹配所有API
+        source.registerCorsConfiguration("/**",corsConfiguration);
+        CorsFilter corsFilter=new CorsFilter(source);
+        return corsFilter;
+    }
 
     /**
      * 初始化自定义Markdown特性

@@ -1,6 +1,7 @@
 /* eslint no-useless-escape:0 */
 import md5 from 'js-md5'
 import JSON5 from './json5'
+import isObject from 'lodash/isObject'
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
 const binaryContentType = {
@@ -152,7 +153,7 @@ function isUrl(path) {
 }
 
 const utils = {
-  filterIgnoreParameters(name, ignoreParameters) {
+  filterIgnoreParameters(inType, name, ignoreParameters) {
     //是否过滤参数
     if (ignoreParameters == null) {
       return true;
@@ -181,8 +182,79 @@ const utils = {
         return true;
       }
     } else {
-      return !ignoreParameterAllKeys.includes(name);
+      if (inType == 'query') {
+        return !ignoreParameterAllKeys.some(key =>
+          new RegExp(`^(${key}$|${key}[.[])`).test(name));
+      } else {
+        return !ignoreParameterAllKeys.includes(name);
+      }
     }
+  },
+  filterIncludeParameters(inType, name, includeParameters) {
+    if (includeParameters == null) {
+      return true;
+    }
+    var tmpKeys = Object.keys(includeParameters || {});
+    var includeParameterAllKeys = [];
+    var reg = new RegExp("\\[0\\]", "gm");
+    if (tmpKeys != null && tmpKeys.length > 0) {
+      tmpKeys.forEach(tk => {
+        includeParameterAllKeys.push(tk);
+        if (tk.indexOf("[0]") > -1) {
+          includeParameterAllKeys.push(tk.replace(reg, ""));
+        }
+      });
+    }
+    if (name.indexOf("[0]") > -1) {
+      //存在数组的情况
+      if (includeParameterAllKeys.length > 0) {
+        var containtsKey = includeParameterAllKeys.filter(includeName => name.startsWith(includeName));
+        if (containtsKey.length > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      if (inType == 'query') {
+        /* return includeParameterAllKeys.some(key =>
+          new RegExp(`^(${key}$|${key}[.[])`).test(name)); */
+        return includeParameterAllKeys.includes(name);
+      } else if (inType == 'body') {
+        return true;
+      } else {
+        return includeParameterAllKeys.includes(name);
+      }
+    }
+  },
+  rootKeysPath(rootName, jsonInstance, includeKeys) {
+    //返回一个json对象的key属性集合
+    var keyArrs = [];
+    if (jsonInstance != null && jsonInstance != undefined) {
+      for (var key in jsonInstance) {
+        var tmpRootName = rootName + "." + key;
+        var parentKeyFlag = includeKeys.some(key => key.startsWith(tmpRootName));
+        if (!parentKeyFlag) {
+          keyArrs.push(tmpRootName);
+          //是否对象
+          var tmpJson = jsonInstance[key];
+          //判断是否是数组
+          if (Array.isArray(tmpJson)) {
+            //是
+            var tmpArrName = rootName + "." + key + "[0]";
+            keyArrs = keyArrs.concat(this.rootKeysPath(tmpArrName, tmpJson[0], includeKeys));
+            //keyArrs = keyArrs.concat(this.rootKeysPath(tmpRootName, tmpJson[0]));
+          } else {
+            if (isObject(tmpJson)) {
+              keyArrs = keyArrs.concat(this.rootKeysPath(tmpRootName, tmpJson, includeKeys));
+            }
+          }
+        }
+      }
+    }
+    return keyArrs;
   },
   binaryContentType(produces, contentType) {
     var binary = false;
@@ -393,6 +465,9 @@ const utils = {
     }
     return flag;
   },
+  strBlank(str){
+    return !this.strNotBlank(str);
+  },
   strNotBlank(str) {
     var flag = false;
     if (
@@ -459,6 +534,11 @@ const utils = {
       return ptype;
     }
     return null;
+  },
+  trim(text) {
+    var whitespace = "[\\x20\\t\\r\\n\\f]";
+    var rtrim = new RegExp("^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$", "g");
+    return text == null ? "" : (text + "").replace(rtrim, "");
   },
   getStringValue: function (obj) {
     var str = "";

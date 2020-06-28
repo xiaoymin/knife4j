@@ -12,8 +12,14 @@ const routes = [{
   children: [{
       path: '/home',
       component: () => import('@/views/index/Main')
+    },{
+      path: '/home/:i18n',
+      component: () => import('@/views/index/Main')
     }, {
       path: '/plus',
+      component: () => import('@/views/index/Main')
+    }, {
+      path: '/plus/:i18n',
       component: () => import('@/views/index/Main')
     },
     {

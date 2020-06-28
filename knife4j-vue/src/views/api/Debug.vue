@@ -1,11 +1,24 @@
 <template>
   <div class="knife4j-debug">
     <a-row>
-      <a-col :class="'knife4j-debug-api-' + api.methodType.toLowerCase()" :span="24">
+      <a-col
+        :class="'knife4j-debug-api-' + api.methodType.toLowerCase()"
+        :span="24"
+      >
         <a-input-group compact>
           <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
-          <a-input style="width: 80%" :value="debugUrl" @change="debugUrlChange" />
-          <a-button :loading="debugLoading" class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送</a-button>
+          <a-input
+            style="width: 80%"
+            :value="debugUrl"
+            @change="debugUrlChange"
+          />
+          <a-button v-html="$t('debug.send')"
+            :loading="debugLoading"
+            class="knife4j-api-send"
+            type="primary"
+            @click="sendRestfulApi"
+            >发 送</a-button
+          >
         </a-input-group>
       </a-col>
     </a-row>
@@ -14,29 +27,68 @@
         <a-tab-pane key="1">
           <template slot="tab">
             <span>
-              <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{headerCount}}</a-tag>请求头部
+              <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
+                headerCount
+              }}</a-tag
+              ><span v-html="$t('debug.headers')">请求头部</span>
             </span>
           </template>
-          <a-table v-if="headerTableFlag" bordered size="small" :rowSelection="rowSelection" :columns="headerColumn" :pagination="pagination" :dataSource="headerData" rowKey="id">
+          <a-table
+            v-if="headerTableFlag"
+            bordered
+            size="small"
+            :rowSelection="rowSelection"
+            :columns="headerColumn"
+            :pagination="pagination"
+            :dataSource="headerData"
+            rowKey="id"
+          >
             <!--请求头下拉框-->
-            <template slot="headerName" slot-scope="text,record">
+            <template slot="headerName" slot-scope="text, record">
               <!-- <a-select showSearch :options="headerOptions" placeholder="输入请求头" optionFilterProp="children" style="width: 100%">
               </a-select> -->
-              <a-auto-complete @select="headerSelect" @search="headerSearch" @change="headerNameChange(record)" :value="text" :filterOption="headerNameFilterOption" :allowClear="allowClear" :dataSource="headerAutoOptions" style="width: 100%" placeholder="请求头名称" />
+              <a-auto-complete
+                @select="headerSelect"
+                @search="headerSearch"
+                @change="headerNameChange(record)"
+                :value="text"
+                :filterOption="headerNameFilterOption"
+                :allowClear="allowClear"
+                :dataSource="headerAutoOptions"
+                style="width: 100%"
+                :placeholder="$t('debug.tableHeader.holderName')"
+              />
             </template>
-            <template slot="headerValue" slot-scope="text,record">
-              <a-input placeholder="请求头内容" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="headerContentChnage" />
+            <template slot="headerValue" slot-scope="text, record">
+              <a-input
+                :placeholder="$t('debug.tableHeader.holderValue')"
+                :class="'knife4j-debug-param-require' + record.require"
+                :data-key="record.id"
+                :defaultValue="text"
+                @change="headerContentChnage"
+              />
             </template>
-            <a-row slot="operation" slot-scope="text,record">
-              <a-button type="link" v-if="!record.new" @click="headerDelete(record)">删除</a-button>
+            <a-row slot="operation" slot-scope="text, record">
+              <a-button v-html="$t('debug.tableHeader.holderDel')"
+                type="link"
+                v-if="!record.new"
+                @click="headerDelete(record)"
+                >删除</a-button
+              >
             </a-row>
           </a-table>
         </a-tab-pane>
-        <a-tab-pane tab="请求参数" key="2" forceRender>
+        <a-tab-pane :tab="$t('debug.params')" key="2" forceRender>
           <a-row class="knife4j-debug-request-type">
             <div class="knife4j-debug-request-content-type-float">
-              <a-radio-group @change="requestContentTypeChange" class="knife4j-debug-request-content-type" v-model="requestContentType">
-                <a-radio value="x-www-form-urlencoded">x-www-form-urlencoded</a-radio>
+              <a-radio-group
+                @change="requestContentTypeChange"
+                class="knife4j-debug-request-content-type"
+                v-model="requestContentType"
+              >
+                <a-radio value="x-www-form-urlencoded"
+                  >x-www-form-urlencoded</a-radio
+                >
                 <a-radio value="form-data">form-data</a-radio>
                 <a-radio value="raw">raw</a-radio>
               </a-radio-group>
@@ -44,126 +96,304 @@
             <div class="knife4j-debug-request-content-type-float">
               <div class="knife4j-debug-request-content-type-raw">
                 <a-dropdown v-if="rawTypeFlag" :trigger="['click']">
-                  <span class="knife4j-debug-raw-span"> <span>{{rawDefaultText}}</span>
-                    <a-icon type="down" /> </span>
+                  <span class="knife4j-debug-raw-span">
+                    <span>{{ rawDefaultText }}</span>
+                    <a-icon type="down" />
+                  </span>
                   <a-menu slot="overlay" @click="rawMenuClick">
-                    <a-menu-item data-mode-type="application/json" data-mode="text" key="Auto">Auto</a-menu-item>
-                    <a-menu-item data-mode-type="text/plain" data-mode="text" key="Text(text/plain)">Text(text/plain)</a-menu-item>
-                    <a-menu-item data-mode-type="application/json" data-mode="json" key="JSON(application/json)">JSON(application/json)</a-menu-item>
-                    <a-menu-item data-mode-type="application/javascript" data-mode="javascript" key="Javascript(application/Javascript)">Javascript(application/Javascript)</a-menu-item>
-                    <a-menu-item data-mode-type="application/xml" data-mode="xml" key="XML(application/xml)">XML(application/xml)</a-menu-item>
-                    <a-menu-item data-mode-type="text/xml" data-mode="xml" key="XML(text/xml)">XML(text/xml)</a-menu-item>
-                    <a-menu-item data-mode-type="text/html" data-mode="html" key="HTML(text/html)">HTML(text/html)</a-menu-item>
+                    <a-menu-item
+                      data-mode-type="application/json"
+                      data-mode="text"
+                      key="Auto"
+                      >Auto</a-menu-item
+                    >
+                    <a-menu-item
+                      data-mode-type="text/plain"
+                      data-mode="text"
+                      key="Text(text/plain)"
+                      >Text(text/plain)</a-menu-item
+                    >
+                    <a-menu-item
+                      data-mode-type="application/json"
+                      data-mode="json"
+                      key="JSON(application/json)"
+                      >JSON(application/json)</a-menu-item
+                    >
+                    <a-menu-item
+                      data-mode-type="application/javascript"
+                      data-mode="javascript"
+                      key="Javascript(application/Javascript)"
+                      >Javascript(application/Javascript)</a-menu-item
+                    >
+                    <a-menu-item
+                      data-mode-type="application/xml"
+                      data-mode="xml"
+                      key="XML(application/xml)"
+                      >XML(application/xml)</a-menu-item
+                    >
+                    <a-menu-item
+                      data-mode-type="text/xml"
+                      data-mode="xml"
+                      key="XML(text/xml)"
+                      >XML(text/xml)</a-menu-item
+                    >
+                    <a-menu-item
+                      data-mode-type="text/html"
+                      data-mode="html"
+                      key="HTML(text/html)"
+                      >HTML(text/html)</a-menu-item
+                    >
                   </a-menu>
                 </a-dropdown>
               </div>
             </div>
           </a-row>
           <a-row v-if="formFlag">
-            <a-table v-if="formTableFlag" bordered size="small" :rowSelection="rowFormSelection" :columns="formColumn" :pagination="pagination" :dataSource="formData" rowKey="id">
+            <a-table
+              v-if="formTableFlag"
+              bordered
+              size="small"
+              :rowSelection="rowFormSelection"
+              :columns="formColumn"
+              :pagination="pagination"
+              :dataSource="formData"
+              rowKey="id"
+            >
               <!--参数名称-->
-              <template slot="formName" slot-scope="text,record">
-                <a-input :placeholder="record.description" :data-key="record.id" :defaultValue="text" @change="formNameChange" />
+              <template slot="formName" slot-scope="text, record">
+                <a-input
+                  :placeholder="record.description"
+                  :data-key="record.id"
+                  :defaultValue="text"
+                  @change="formNameChange"
+                />
               </template>
               <!--参数下拉框-->
-              <template slot="formType" slot-scope="text,record">
-                <a-select :defaultValue="text+'-'+record.id" @change="formTypeChange" style="width: 100%;">
-                  <a-select-option :value="'text-'+record.id">文本</a-select-option>
-                  <a-select-option :value="'file-'+record.id">文件</a-select-option>
+              <template slot="formType" slot-scope="text, record">
+                <a-select
+                  :defaultValue="text + '-' + record.id"
+                  @change="formTypeChange"
+                  style="width: 100%;"
+                >
+                  <a-select-option :value="'text-' + record.id"><span v-html="$t('debug.form.itemText')">文本</span></a-select-option
+                  >
+                  <a-select-option :value="'file-' + record.id"
+                    ><span v-html="$t('debug.form.itemFile')">文件</span></a-select-option
+                  >
                 </a-select>
               </template>
               <!--参数名称-->
-              <template slot="formValue" slot-scope="text,record">
-                <div v-if="record.type=='text'">
+              <template slot="formValue" slot-scope="text, record">
+                <div v-if="record.type == 'text'">
                   <!--判断枚举类型-->
-                  <a-row v-if="record.enums!=null">
+                  <a-row v-if="record.enums != null">
                     <!--不为空-->
-                    <a-select :defaultValue="text" :data-key="record.id" :options="record.enums" style="width: 100%" @change="formContentEnumChange">
+                    <a-select
+                      :defaultValue="text"
+                      :data-key="record.id"
+                      :options="record.enums"
+                      style="width: 100%"
+                      @change="formContentEnumChange"
+                    >
                     </a-select>
                   </a-row>
                   <a-row v-else>
-                    <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="formContentChange" />
+                    <a-input
+                      :placeholder="record.description"
+                      :class="'knife4j-debug-param-require' + record.require"
+                      :data-key="record.id"
+                      :defaultValue="text"
+                      @change="formContentChange"
+                    />
                   </a-row>
                 </div>
                 <div v-else>
                   <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
                   <div>
                     <div style="display:none;" v-if="record.multipart">
-                      <input :id="'file'+record.id" multiple style="display:none;" type="file" :data-key="record.id" @change="formFileChange" />
+                      <input
+                        :id="'file' + record.id"
+                        multiple
+                        style="display:none;"
+                        type="file"
+                        :data-key="record.id"
+                        @change="formFileChange"
+                      />
                     </div>
                     <div style="display:none;" v-else>
-                      <input :id="'file'+record.id" style="display:none;" type="file" :data-key="record.id" @change="formFileChange" />
+                      <input
+                        :id="'file' + record.id"
+                        style="display:none;"
+                        type="file"
+                        :data-key="record.id"
+                        @change="formFileChange"
+                      />
                     </div>
                     <a-input-group compact>
-                      <a-input style="width: 82%" :class="'knife4j-debug-param-require'+record.require" :value="record.content" disabled />
-                      <a-button @click="formFileUploadClick(record)" class="knife4j-api-send" style="width:80px;" type="primary">选择文件</a-button>
+                      <a-input
+                        style="width: 80%"
+                        :class="'knife4j-debug-param-require' + record.require"
+                        :value="record.content"
+                        disabled
+                      />
+                      <a-button v-html="$t('debug.form.upload')"
+                        @click="formFileUploadClick(record)"
+                        class="knife4j-api-send"
+                        style="width:80px;"
+                        type="primary"
+                        >选择文件</a-button
+                      >
                     </a-input-group>
                   </div>
                 </div>
               </template>
-              <a-row slot="operation" slot-scope="text,record">
-                <a-button type="link" v-if="!record.new" @click="formDelete(record)">删除</a-button>
+              <a-row slot="operation" slot-scope="text, record">
+                <a-button v-html="$t('debug.tableHeader.holderDel')"
+                  type="link"
+                  v-if="!record.new"
+                  @click="formDelete(record)"
+                  >删除</a-button
+                >
               </a-row>
             </a-table>
           </a-row>
           <a-row v-if="urlFormFlag">
-            <a-table v-if="urlFormTableFlag" bordered size="small" :rowSelection="rowUrlFormSelection" :columns="urlFormColumn" :pagination="pagination" :dataSource="urlFormData" rowKey="id">
+            <a-table
+              v-if="urlFormTableFlag"
+              bordered
+              size="small"
+              :rowSelection="rowUrlFormSelection"
+              :columns="urlFormColumn"
+              :pagination="pagination"
+              :dataSource="urlFormData"
+              rowKey="id"
+            >
               <!--参数名称-->
-              <template slot="urlFormName" slot-scope="text,record">
-                <a-input :placeholder="record.description" :data-key="record.id" :defaultValue="text" @change="urlFormNameChange" />
+              <template slot="urlFormName" slot-scope="text, record">
+                <a-input
+                  :placeholder="record.description"
+                  :data-key="record.id"
+                  :defaultValue="text"
+                  @change="urlFormNameChange"
+                />
               </template>
 
               <!--参数名称-->
-              <template slot="urlFormValue" slot-scope="text,record">
+              <template slot="urlFormValue" slot-scope="text, record">
                 <!--判断枚举类型-->
-                <a-row v-if="record.enums!=null">
+                <a-row v-if="record.enums != null">
                   <!--不为空-->
-                  <a-select :defaultValue="text" :data-key="record.id" :options="record.enums" style="width: 100%" @change="urlFormContentEnumChange">
+                  <a-select
+                    :defaultValue="text"
+                    :data-key="record.id"
+                    :options="record.enums"
+                    style="width: 100%"
+                    @change="urlFormContentEnumChange"
+                  >
                   </a-select>
                 </a-row>
                 <a-row v-else>
-                  <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="urlFormContentChange" />
+                  <a-input
+                    :placeholder="record.description"
+                    :class="'knife4j-debug-param-require' + record.require"
+                    :data-key="record.id"
+                    :defaultValue="text"
+                    @change="urlFormContentChange"
+                  />
                 </a-row>
               </template>
-              <a-row slot="operation" slot-scope="text,record">
-                <a-button type="link" v-if="!record.new" @click="urlFormDelete(record)">删除</a-button>
+              <a-row slot="operation" slot-scope="text, record">
+                <a-button  v-html="$t('debug.tableHeader.holderDel')"
+                  type="link"
+                  v-if="!record.new"
+                  @click="urlFormDelete(record)"
+                  >删除</a-button
+                >
               </a-row>
             </a-table>
           </a-row>
           <a-row v-if="rawFlag">
             <a-row v-if="rawFormFlag">
               <!--如果存在raw类型的参数则显示该表格-->
-              <a-table v-if="rawFormTableFlag" bordered size="small" :rowSelection="rowRawFormSelection" :columns="urlFormColumn" :pagination="pagination" :dataSource="rawFormData" rowKey="id">
+              <a-table
+                v-if="rawFormTableFlag"
+                bordered
+                size="small"
+                :rowSelection="rowRawFormSelection"
+                :columns="urlFormColumn"
+                :pagination="pagination"
+                :dataSource="rawFormData"
+                rowKey="id"
+              >
                 <!--参数名称-->
-                <template slot="urlFormName" slot-scope="text,record">
-                  <a-input :placeholder="record.description" :data-key="record.id" :defaultValue="text" @change="rawFormNameChange" />
+                <template slot="urlFormName" slot-scope="text, record">
+                  <a-input
+                    :placeholder="record.description"
+                    :data-key="record.id"
+                    :defaultValue="text"
+                    @change="rawFormNameChange"
+                  />
                 </template>
 
                 <!--参数名称-->
-                <template slot="urlFormValue" slot-scope="text,record">
+                <template slot="urlFormValue" slot-scope="text, record">
                   <!--判断枚举类型-->
-                  <a-row v-if="record.enums!=null">
+                  <a-row v-if="record.enums != null">
                     <!--不为空-->
-                    <a-select :defaultValue="text" :data-key="record.id" :options="record.enums" style="width: 100%" @change="rawFormContentEnumChange">
+                    <a-select
+                      :defaultValue="text"
+                      :data-key="record.id"
+                      :options="record.enums"
+                      style="width: 100%"
+                      @change="rawFormContentEnumChange"
+                    >
                     </a-select>
                   </a-row>
                   <a-row v-else>
-                    <a-input :placeholder="record.description" :class="'knife4j-debug-param-require'+record.require" :data-key="record.id" :defaultValue="text" @change="rawFormContentChange" />
+                    <a-input
+                      :placeholder="record.description"
+                      :class="'knife4j-debug-param-require' + record.require"
+                      :data-key="record.id"
+                      :defaultValue="text"
+                      @change="rawFormContentChange"
+                    />
                   </a-row>
-
                 </template>
-                <a-row slot="operation" slot-scope="text,record">
-                  <a-button type="link" v-if="!record.new" @click="rawFormDelete(record)">删除</a-button>
+                <a-row slot="operation" slot-scope="text, record">
+                  <a-button  v-html="$t('debug.tableHeader.holderDel')"
+                    type="link"
+                    v-if="!record.new"
+                    @click="rawFormDelete(record)"
+                    >删除</a-button
+                  >
                 </a-row>
               </a-table>
             </a-row>
-            <editor-debug-show style="margin-top:5px;" :value="rawText" :mode="rawMode" @change="rawChange"></editor-debug-show>
+            <editor-debug-show
+              style="margin-top:5px;"
+              :value="rawText"
+              :mode="rawMode"
+              @change="rawChange"
+            ></editor-debug-show>
           </a-row>
         </a-tab-pane>
       </a-tabs>
     </a-row>
     <a-row>
-      <DebugResponse ref="childDebugResponse" :responseFieldDescriptionChecked="responseFieldDescriptionChecked" :swaggerInstance="swaggerInstance" :api="api" @debugShowFieldDescriptionChange="debugShowFieldDescriptionChange" @debugEditorChange="debugEditorChange" :debugSend="debugSend" :responseContent="responseContent" :responseCurlText="responseCurlText" :responseStatus="responseStatus" :responseRawText="responseRawText" :responseHeaders="responseHeaders" />
+      <DebugResponse
+        ref="childDebugResponse"
+        :responseFieldDescriptionChecked="responseFieldDescriptionChecked"
+        :swaggerInstance="swaggerInstance"
+        :api="api"
+        @debugShowFieldDescriptionChange="debugShowFieldDescriptionChange"
+        @debugEditorChange="debugEditorChange"
+        :debugSend="debugSend"
+        :responseContent="responseContent"
+        :responseCurlText="responseCurlText"
+        :responseStatus="responseStatus"
+        :responseRawText="responseRawText"
+        :responseHeaders="responseHeaders"
+      />
     </a-row>
   </div>
 </template>
@@ -174,6 +404,7 @@ import constant from "@/store/constants";
 import EditorDebugShow from "./EditorDebugShow";
 import DebugResponse from "./DebugResponse";
 import DebugAxios from "axios";
+import vkbeautify from "@/components/utils/vkbeautify";
 
 export default {
   name: "Debug",
@@ -190,13 +421,16 @@ export default {
   },
   data() {
     return {
+      i18n:null,
       //是否开启缓存
       enableRequestCache: false,
       //是否动态参数
       enableDynamicParameter: false,
-      headerColumn: constant.debugRequestHeaderColumn,
-      formColumn: constant.debugFormRequestHeader,
-      urlFormColumn: constant.debugUrlFormRequestHeader,
+      enableHost:false,
+      enableHostText:'',
+      headerColumn: [],
+      formColumn: [],
+      urlFormColumn: [],
       allowClear: true,
       pagination: false,
       headerAutoOptions: constant.debugRequestHeaders,
@@ -272,13 +506,35 @@ export default {
     };
   },
   created() {
+    this.initI18n();
     //初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
     this.initDebugUrl();
     //显示表单参数
     //this.initShowFormTable();
   },
+  computed:{
+    language(){
+       return this.$store.state.globals.language;
+    }
+  },
+  watch:{
+    language:function(val,oldval){
+      this.initI18n();
+    }
+  },
   methods: {
+    getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
+    initI18n(){
+      //根据i18n初始化部分参数
+      var inst=this.getCurrentI18nInstance();
+      this.i18n=inst;
+      this.headerColumn=inst.table.debugRequestHeaderColumns;
+      this.formColumn=inst.table.debugFormDataRequestColumns;
+      this.urlFormColumn=inst.table.debugUrlFormRequestColumns;
+    },
     debugUrlChange(e) {
       this.debugUrl = e.target.value;
     },
@@ -306,6 +562,21 @@ export default {
           if (KUtils.checkUndefined(settings["enableDynamicParameter"])) {
             //如果存在,赋值
             this.enableDynamicParameter = settings.enableDynamicParameter;
+          }
+          //读取Host配置
+          if(KUtils.checkUndefined(settings["enableHost"])){
+            this.enableHost=settings.enableHost;
+            //判断Host的值
+            var tmpHostValue=settings.enableHostText;
+            if(KUtils.checkUndefined(tmpHostValue)){
+              if(!tmpHostValue.startWith("http")){
+                tmpHostValue="http://"+tmpHostValue;
+              }
+              this.enableHostText=tmpHostValue;
+            }else{
+              //hostvalue为空,默认取消
+              this.enableHost=false;
+            }
           }
         }
         //初始化读取本地缓存全局参数
@@ -339,7 +610,8 @@ export default {
             enums: null, //枚举下拉框
             new: false
           };
-          this.headerData.push(newHeader);
+          //this.headerData.push(newHeader);
+          this.addDebugHeader(newHeader);
         }
       });
       //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
@@ -359,7 +631,8 @@ export default {
               enums: null, //枚举下拉框
               new: false
             };
-            this.headerData.push(newHeader);
+            //this.headerData.push(newHeader);
+            this.addDebugHeader(newHeader);
           });
         }
         this.updateHeaderFromCacheApi(cacheApi);
@@ -523,12 +796,16 @@ export default {
           var rawQueryParams = showApiParameters.filter(
             param => param.in != "body" && param.in != "header"
           );
+          this.addGlobalParameterToRawForm(showGlobalParameters);
           if (rawQueryParams.length > 0) {
             //存在
             this.rawFormFlag = true;
             //添加参数
-            this.addGlobalParameterToRawForm(showGlobalParameters);
             this.addApiParameterToRawForm(rawQueryParams);
+          }
+          if (KUtils.arrNotEmpty(this.rawFormData)) {
+            //存在
+            this.rawFormFlag = true;
           }
           //raw类型
           //raw类型之中可能有表格参数-待写
@@ -622,9 +899,29 @@ export default {
           enums: null, //枚举下拉框
           new: true
         };
-        this.headerData.push(newHeader);
+        //this.headerData.push(newHeader);
+        this.addDebugHeader(newHeader);
       }
       this.hideDynamicParameterTable();
+    },
+    addDebugHeader(newHeader){
+      if(KUtils.strNotBlank(newHeader.name)){
+        //判断新的header的内容是否为空
+        //判断是否当前的header数据中是否已经存在
+        var filterHeaders=this.headerData.filter(header=> header.name==newHeader.name);
+        if(KUtils.strBlank(newHeader.content)){
+          //如果当前newHeader的数据为空,则判断当前的header数据中是否已经存在
+          if(filterHeaders.length==0){
+            //不存在,插入新行
+            this.headerData.push(newHeader);
+          }
+        }else{
+          this.headerData.push(newHeader);
+        }
+      }else{
+        //动态调试,新行
+        this.headerData.push(newHeader);
+      }
     },
     initFirstFormValue() {
       //添加一行初始form的值
@@ -701,6 +998,9 @@ export default {
       this.urlFormFlag = false;
       //如果是raw类型，则赋值
       this.rawText = KUtils.toString(this.api.requestValue, "");
+      if (this.api.xmlRequest) {
+        this.rawRequestType = "application/xml";
+      }
       this.requestContentType = "raw";
     },
     getEnumOptions(param) {
@@ -802,7 +1102,8 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            this.headerData.push(newHeader);
+            //this.headerData.push(newHeader);
+            this.addDebugHeader(newHeader);
           });
         }
       }
@@ -829,7 +1130,8 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            this.headerData.push(newHeader);
+            //this.headerData.push(newHeader);
+            this.addDebugHeader(newHeader);
           } else {
             var ptype = "text";
             var multipart = false;
@@ -913,7 +1215,8 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            this.headerData.push(newHeader);
+            //this.headerData.push(newHeader);
+            this.addDebugHeader(newHeader);
           } else {
             var newFormHeader = {
               id: KUtils.randomMd5(),
@@ -962,7 +1265,8 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            this.headerData.push(newHeader);
+            //this.headerData.push(newHeader);
+            this.addDebugHeader(newHeader);
           } else {
             var newFormHeader = {
               id: KUtils.randomMd5(),
@@ -1631,7 +1935,8 @@ export default {
               if (header.require) {
                 if (!KUtils.strNotBlank(header.content)) {
                   validate = false;
-                  message = "请求头" + header.name + "不能为空";
+                  //message = "请求头" + header.name + "不能为空";
+                  message=this.i18n.validate.header+header.name+this.i18n.validate.notEmpty;
                   break;
                 }
               }
@@ -1660,14 +1965,16 @@ export default {
                 if (form.type == "text") {
                   if (!KUtils.strNotBlank(form.content)) {
                     validate = false;
-                    message = form.name + "不能为空";
+                    //message = form.name + "不能为空";
+                    message=form.name+this.i18n.validate.notEmpty;
                     break;
                   }
                 } else {
                   //文件
                   if (form.target == null) {
                     validate = false;
-                    message = form.name + "文件不能为空";
+                    //message = form.name + "文件不能为空";
+                    message = form.name +this.i18n.validate.fileNotEmpty;
                     break;
                   }
                 }
@@ -1695,7 +2002,8 @@ export default {
               if (form.require) {
                 if (!KUtils.strNotBlank(form.content)) {
                   validate = false;
-                  message = form.name + "不能为空";
+                  //message = form.name + "不能为空";
+                  message = form.name + this.i18n.validate.notEmpty;
                   break;
                 }
               }
@@ -1722,7 +2030,8 @@ export default {
               if (form.require) {
                 if (!KUtils.strNotBlank(form.content)) {
                   validate = false;
-                  message = form.name + "不能为空";
+                  //message = form.name + "不能为空";
+                  message = form.name + this.i18n.validate.notEmpty;
                   break;
                 }
               }
@@ -1748,6 +2057,65 @@ export default {
           }
         }
       });
+      return flag;
+    },
+    checkUrlParams(url) {
+      //如果开发者自己在url栏添加了后缀参数,则解析动态添加
+      //https://gitee.com/xiaoym/knife4j/issues/I1C5OQ
+      //校验url请求参数是否携带参数
+      //如果开发者自己在url栏添加了后缀参数,则解析动态添加
+      //https://gitee.com/xiaoym/knife4j/issues/I1C5OQ
+      var paramIndex = url.indexOf("?");
+      var checkResult = {
+        result: false, //不包含参数
+        params: {},
+        url: url
+      };
+      if (paramIndex > -1) {
+        //包含参数
+        var subParam = url.substring(paramIndex + 1);
+        //存在
+        //url重新赋值
+        checkResult.url = url.substring(0, paramIndex);
+        checkResult.result = true;
+        //url重新赋值
+        //split
+        if (KUtils.strNotBlank(subParam)) {
+          var subParamArrs = subParam.split("&");
+          subParamArrs.forEach(suba => {
+            if (KUtils.strNotBlank(suba)) {
+              var realpa = suba.split("=");
+              if (realpa.length == 2) {
+                //追加参数
+                checkResult.params[realpa[0]] = realpa[1];
+              }
+            }
+          });
+        }
+      }
+      return checkResult;
+    },
+    debugSendHasCookie(headers){
+      //判断请求头中是否包含Cookie
+      var flag=false;
+      //console.log("校验请求头是否存在Cookie");
+      //console.log(headers);
+      if(KUtils.checkUndefined(headers)){
+        var headerNameArrs=Object.keys(headers);
+        if(KUtils.arrNotEmpty(headerNameArrs)){
+          var cookieArr=headerNameArrs.filter(headerName=> headerName.toLocaleLowerCase()==="cookie").length;
+          if(cookieArr>0){
+            //存在cookie
+            var cookieValue=headers["Cookie"];
+            if(KUtils.strNotBlank(cookieValue)){
+              //前端JS写入
+              document.cookie=cookieValue;
+              flag=true;
+            }
+          }
+        }
+      }
+      //console.log("校验结果："+flag);
       return flag;
     },
     debugSendUrlFormRequest() {
@@ -1784,12 +2152,29 @@ export default {
           //重新赋值
           formParams = realFormParams;
         }
+        var checkResult = this.checkUrlParams(url);
+        if (checkResult.result) {
+          url = checkResult.url;
+          formParams = Object.assign(formParams, checkResult.params);
+        }
+        var baseUrl='';
+        //是否启用Host
+        if(this.enableHost){
+          baseUrl=this.enableHostText;
+        }
+        //console.log(headers)
         var requestConfig = {
+          baseURL:baseUrl,
           url: url,
           method: methodType,
           headers: headers,
           params: formParams,
-          timeout: 0
+          timeout: 0,
+          //Cookie标志
+          withCredentials:this.debugSendHasCookie(headers),
+          //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
+          //否则axios会忽略请求头Content-Type
+          data:null
         };
         //console.log(requestConfig);
         //需要判断是否是下载请求
@@ -1802,18 +2187,20 @@ export default {
         //https://gitee.com/xiaoym/knife4j/issues/I19C8Y
         debugInstance.interceptors.request.use(config => {
           let url = config.url;
-          // get参数编码
-          if (config.method === "get" && config.params) {
-            url += "?";
-            let keys = Object.keys(config.params);
-            for (let key of keys) {
-              url += `${encodeURIComponent(key)}=${encodeURIComponent(
-                config.params[key]
-              )}&`;
-            }
-            url = url.substring(0, url.length - 1);
-            config.params = {};
+          if (config.method === "get" && config.params){
+              url += "?";
+              let keys = Object.keys(config.params);
+              for (let key of keys) {
+                if (KUtils.strNotBlank(config.params[key])) {
+                  url += `${encodeURIComponent(key)}=${encodeURIComponent(
+                    config.params[key]
+                  )}&`;
+                }
+              }
+              url = url.substring(0, url.length - 1);
+              config.params = {};
           }
+          // get参数编码
           config.url = url;
           return config;
         });
@@ -1829,11 +2216,13 @@ export default {
           })
           .catch(err => {
             //console("触发url-form-error");
-            //console(err);
+            //console.info(err);
             this.debugLoading = false;
+            //虽然是错误,但依然有返回值
             if (err.response) {
               this.handleDebugError(startTime, err.response);
             } else {
+              this.$message.error(err.message);
               ////console(err.message);
             }
           });
@@ -1862,15 +2251,31 @@ export default {
         url = validateFormd.url;
         //var formParams = this.debugFormDataParams(fileFlag);
         var formParams = validateFormd.params;
+        var baseUrl='';
+        //是否启用Host
+        if(this.enableHost){
+          baseUrl=this.enableHostText;
+        }
         var requestConfig = {
+          baseURL:baseUrl,
           url: url,
           method: methodType,
           headers: headers,
-          timeout: 0
+          timeout: 0,
+          //Cookie标志
+          withCredentials:this.debugSendHasCookie(headers),
+          //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
+          //否则axios会忽略请求头Content-Type
+          data:null
         };
         if (fileFlag) {
           requestConfig = { ...requestConfig, data: formParams };
         } else {
+          var checkResult = this.checkUrlParams(url);
+          if (checkResult.result) {
+            url = checkResult.url;
+            formParams = Object.assign(formParams, checkResult.params);
+          }
           requestConfig = { ...requestConfig, params: formParams };
         }
         //需要判断是否是下载请求
@@ -1878,9 +2283,10 @@ export default {
           //流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
+        let debugInstance=DebugAxios.create();
         //console(headers);
         //console(requestConfig);
-        DebugAxios.create()
+        debugInstance
           .request(requestConfig)
           .then(res => {
             //console("url-form-success");
@@ -1894,6 +2300,7 @@ export default {
             if (err.response) {
               this.handleDebugError(startTime, err.response);
             } else {
+              this.$message.error(err.message);
               ////console(err.message);
             }
           });
@@ -1935,18 +2342,31 @@ export default {
           //重新赋值
           formParams = realFormParams;
         }
-
+        var checkResult = this.checkUrlParams(url);
+        if (checkResult.result) {
+          url = checkResult.url;
+          formParams = Object.assign(formParams, checkResult.params);
+        }
+        var baseUrl='';
+        //是否启用Host
+        if(this.enableHost){
+          baseUrl=this.enableHostText;
+        }
+        var requestConfig={
+          baseURL:baseUrl,
+          url: url,
+          method: methodType,
+          headers: headers,
+          params: formParams,
+          data: data,
+          //Cookie标志
+          withCredentials:this.debugSendHasCookie(headers),
+          timeout: 0
+        }
         //console(headers);
         //console(this.rawText);
         DebugAxios.create()
-          .request({
-            url: url,
-            method: methodType,
-            headers: headers,
-            params: formParams,
-            data: data,
-            timeout: 0
-          })
+          .request(requestConfig)
           .then(res => {
             this.debugLoading = false;
             this.handleDebugSuccess(startTime, res);
@@ -1956,6 +2376,7 @@ export default {
             if (err.response) {
               this.handleDebugError(startTime, err.response);
             } else {
+              this.$message.error(err.message);
             }
           });
       } else {
@@ -1974,8 +2395,8 @@ export default {
       this.storeApiParams();
     },
     handleDebugError(startTime, resp) {
-      //console("失败情况---");
-      //console(resp);
+      //console.log("失败情况---");
+      //console.log(resp);
       //失败的情况
       this.setResponseBody(resp);
       this.setResponseHeaders(resp.headers);
@@ -2097,6 +2518,10 @@ export default {
         protocol = "https";
       }
       var fullurl = protocol + "://" + this.api.host;
+      //判断是否开启了Host的配置,如果开启则直接使用Host中的地址
+      if(this.enableHost){
+        fullurl=this.enableHostText;
+      }
       //判断url是否是以/开头
       if (!url.startWith("/")) {
         fullurl += "/";
@@ -2300,6 +2725,7 @@ export default {
     setResponseBody(res) {
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
+        //console.log(res);
         var headers = res.headers;
         if (KUtils.checkUndefined(resp)) {
           //判断是否是blob类型
@@ -2377,6 +2803,21 @@ export default {
                 }
               });
             }
+            //最后再判断produces
+            var produces=this.api.produces;
+            //判断是否是image
+            var imgProduceFlag=false;
+            if(KUtils.arrNotEmpty(produces)){
+              produces.forEach(prd=>{
+                if(prd.indexOf("image")!=-1){
+                  imgProduceFlag=true;
+                }
+              })
+            }
+            if(!imageFlag){
+              imageFlag=imgProduceFlag;
+            }
+            //console.log(imgProduceFlag);
             var downloadurl = window.URL.createObjectURL(res.data);
             this.responseContent = {
               text: "",
@@ -2397,7 +2838,7 @@ export default {
       //var _text = resp.responseText;
       var _text = "";
       var mode = this.getContentTypeByHeaders(headers);
-      //console("动态mode-----" + mode);
+      //console.log("动态mode-- ---" + mode);
       //console(res);
       if (mode == "json") {
         //_text = KUtils.json5stringify(KUtils.json5parse(_text));
@@ -2408,12 +2849,28 @@ export default {
         var maxSize = 500;
         if (mbSize > maxSize) {
           //_text = resp.responseText;
-          this.$message.info(
-            "接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看"
-          );
+          //var messageInfo='接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看';
+          var messageInfo=this.i18n.message.debug.contentToBig;
+          this.$message.info(messageInfo);
           mode = "text";
         } else {
-          _text = KUtils.json5stringify(KUtils.json5parse(resp.responseText));
+          //此处存在空指针异常
+          if (KUtils.strNotBlank(resp.responseText)) {
+            try{
+              _text = KUtils.json5stringify(KUtils.json5parse(resp.responseText));
+            }catch(e){
+              //json处理失败,捕获异常,作为text文本处理
+              _text=resp.responseText;
+              mode="text";
+            }
+          }
+        }
+      } else if (mode == "xml") {
+        var tmpXmlText = resp.responseText;
+        if (KUtils.strNotBlank(tmpXmlText)) {
+          _text = new vkbeautify().xml(tmpXmlText);
+        } else {
+          _text = tmpXmlText;
         }
       } else {
         _text = resp.responseText;

@@ -110,6 +110,9 @@ export default {
       }
       //重设高度
       this.resetEditorHeight();
+      this.editor.renderer.on("afterRender", function() {
+        that.$emit("showDescription","232323")
+      });
     }
   }
 };

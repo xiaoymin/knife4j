@@ -39,7 +39,9 @@ const constants = {
     }
   ],
   globalSecurityParameters: "Knife4jGlobalSecurityParameters",
+  globalSecurityParameterObject: "Knife4jGlobalSecurityParameterObject",
   globalSecurityParamPrefix: "Knife4jSecurityParams",
+  globalI18nCache:"Knife4jI18n",
   //缓存api接口,用于判断后端接口是否存在变化
   globalGitApiVersionCaches: "Knife4jGitApiVersionCaches",
   //个性化设置名称
@@ -55,6 +57,8 @@ const constants = {
     enableFilterMultipartApiMethodType: "POST", //默认保存类型
     enableRequestCache: true, //是否开启请求参数缓存
     enableCacheOpenApiTable: false, //是否开启缓存已打开的api文档
+    enableHost:false,//是否启用Host
+    enableHostText:"",//启用Host后文本
     language: "zh" //默认语言版本
   },
   //增强配置

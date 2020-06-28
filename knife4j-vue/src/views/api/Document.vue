@@ -2,7 +2,7 @@
   <div class="document">
     <a-row>
       <a-row class="knife4j-api-title">
-        <a-col :span="20">
+        <a-col :span="18">
           <span v-if="api.deprecated" class="knife4j-menu-api-deprecated">
             {{ api.summary }}
           </span>
@@ -10,6 +10,7 @@
             {{ api.summary }}
           </span>
         </a-col>
+        <a-col :span="2" :id="'btnCopyMethod' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copyMethod')">复制接口</a-col>
         <a-col :span="2" :id="'btnCopyMarkdown' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copy')">复制文档</a-col>
         <a-col :span="2" :id="'btnCopyAddress' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copyHash')">复制地址</a-col>
       </a-row>
@@ -23,7 +24,7 @@
         <a-col :span="12">
           <a-row>
             <a-col class="api-basic-title" :span="6" v-html="$t('doc.produces')">请求数据类型</a-col>
-            {{ api.consumes }}
+            {{ contentType }}
           </a-row>
         </a-col>
         <a-col :span="12">
@@ -53,7 +54,7 @@
       <div class="api-title" v-html="$t('doc.requestExample')">
         请求示例
       </div>
-      <editor-show :value="api.requestValue"></editor-show>
+      <editor-show :value="api.requestValue" :xmlMode="api.xmlRequest"></editor-show>
     </div>
     <div class="api-title" v-html="$t('doc.params')">
       请求参数
@@ -104,7 +105,7 @@
             响应示例
           </div>
           <a-row :id="'knife4jDocumentShowEditor' + api.id + resp.code">
-            <editor-show :value="
+            <editor-show @showDescription="showResponseEditFieldDescription" :value="
                 resp.responseBasicType ? resp.responseText : resp.responseValue
               "></editor-show>
           </a-row>
@@ -132,11 +133,12 @@
         响应示例
       </div>
       <a-row :id="'knife4jDocumentShowEditor' + api.id">
-        <editor-show :value="
+        <editor-show @showDescription="showResponseEditFieldDescription" :value="
             multipData.responseBasicType
               ? multipData.responseText
               : multipData.responseValue
           "></editor-show>
+          
       </a-row>
     </div>
   </div>
@@ -146,102 +148,18 @@ import KUtils from "@/core/utils";
 import Constants from "@/store/constants";
 import DataType from "./DataType";
 import markdownSingleText from "@/components/officeDocument/markdownSingleTransform";
+import markdownSingleTextUs from "@/components/officeDocument/markdownSingleTransformUS";
 import EditorShow from "./EditorShow";
 import ClipboardJS from "clipboard";
 import uniqueId from "lodash/uniqueId";
-//请求参数table-header
-const requestcolumns = [
-  {
-    title: "参数名称",
-    dataIndex: "name",
-    width: "30%"
-  },
-  {
-    title: "参数说明",
-    dataIndex: "description",
-    width: "25%",
-    scopedSlots: { customRender: "descriptionValueTemplate" }
-  },
-  {
-    title: "请求类型",
-    dataIndex: "in",
-    scopedSlots: { customRender: "typeTemplate" }
-  },
-  {
-    title: "是否必须",
-    dataIndex: "require",
-    scopedSlots: { customRender: "requireTemplate" }
-  },
-  {
-    title: "数据类型",
-    dataIndex: "type",
-    scopedSlots: { customRender: "datatypeTemplate" }
-  },
-  {
-    title: "schema",
-    dataIndex: "schemaValue",
-    width: "15%"
-  }
-];
-//响应状态table-header
-const responseStatuscolumns = [
-  {
-    title: "状态码",
-    dataIndex: "code",
-    width: "20%"
-  },
-  {
-    title: "说明",
-    dataIndex: "description",
-    width: "55%",
-    scopedSlots: { customRender: "descriptionTemplate" }
-  },
-  {
-    title: "schema",
-    dataIndex: "schema"
-  }
-];
-//响应头-header
-const responseHeaderColumns = [
-  {
-    title: "参数名称",
-    dataIndex: "name",
-    width: "30%"
-  },
-  {
-    title: "参数说明",
-    dataIndex: "description",
-    width: "55%"
-  },
-  {
-    title: "数据类型",
-    dataIndex: "type"
-  }
-];
-const responseParametersColumns = [
-  {
-    title: "参数名称",
-    dataIndex: "name",
-    width: "35%"
-  },
-  {
-    title: "参数说明",
-    dataIndex: "description",
-    width: "40%"
-  },
-  {
-    title: "类型",
-    dataIndex: "type"
-  },
-  {
-    title: "schema",
-    dataIndex: "schemaValue",
-    width: "15%"
-  }
-];
+import isObject from 'lodash/isObject'
+import has from 'lodash/has'
+import keys from 'lodash/keys'
+import cloneDeep from 'lodash/cloneDeep'
+
 export default {
   name: "Document",
-  components: { editor: require("vue2-ace-editor"), DataType, EditorShow },
+  components: { editor: require("vue2-ace-editor"), DataType, EditorShow},
   props: {
     api: {
       type: Object,
@@ -255,10 +173,11 @@ export default {
   data() {
     return {
       content: "<span>Hello</span>",
-      columns: requestcolumns,
-      responseHeaderColumns: responseHeaderColumns,
-      responseStatuscolumns: responseStatuscolumns,
-      responseParametersColumns: responseParametersColumns,
+      contentType:"*/*",//请求数据类型
+      columns: [],
+      responseHeaderColumns: [],
+      responseStatuscolumns: [],
+      responseParametersColumns: [],
       expanRows: true,
       //接收一个响应信息对象,遍历得到树形结构的值
       multipCode: false,
@@ -274,15 +193,62 @@ export default {
     //根据instance的实例初始化model名称
     var treeTableModel = this.swaggerInstance.refTreeTableModels;
     this.$Knife4jModels.setValue(key, treeTableModel);
+    this.initI18n();
     this.initRequestParams();
     this.initResponseCodeParams();
     setTimeout(() => {
-      that.showResponseEditFieldDescription();
+      //that.showResponseEditFieldDescription();
       that.copyApiAddress();
       that.copyApiMarkdown();
+      that.copyApiUrl();
     }, 1500);
   },
+  computed:{
+    language(){
+       return this.$store.state.globals.language;
+    }
+  },
+  watch:{
+    language:function(val,oldval){
+      this.initI18n();
+    }
+  },
   methods: {
+    getCurrentI18nInstance(){
+      return this.$i18n.messages[this.language];
+    },
+    initI18n(){
+      //根据i18n初始化部分参数
+      var inst=this.getCurrentI18nInstance();
+      this.columns=inst.table.documentRequestColumns;
+      this.responseStatuscolumns=inst.table.documentResponseStatusColumns;
+      this.responseHeaderColumns=inst.table.documentResponseHeaderColumns;
+      this.responseParametersColumns=inst.table.documentResponseColumns;
+    },
+    copyApiUrl(){
+      var that = this;
+      var btnId = "btnCopyMethod" + this.api.id;
+      var copyMethodText=this.api.showUrl;
+      var clipboard = new ClipboardJS("#" + btnId, {
+        text() {
+          return copyMethodText;
+        }
+      });
+     
+      clipboard.on("success",()=>{
+        var inst=that.getCurrentI18nInstance();
+        //"复制地址成功"
+        var successMessage=inst.message.copy.method.success;
+        that.$message.info(successMessage);
+      })
+      clipboard.on("error", function(e) {
+        var inst=that.getCurrentI18nInstance();
+        console.log(inst)
+        //"复制地址失败"
+        var failMessage=inst.message.copy.method.fail;
+        that.$message.info(failMessage);
+      });
+    },
     copyApiAddress() {
       var that = this;
       var btnId = "btnCopyAddress" + this.api.id;
@@ -291,11 +257,19 @@ export default {
           return window.location.href;
         }
       });
+      
+      
       clipboard.on("success", function(e) {
-        that.$message.info("复制地址成功");
+        var inst=that.getCurrentI18nInstance();
+        //"复制地址成功"
+        var successMessage=inst.message.copy.url.success;
+        that.$message.info(successMessage);
       });
       clipboard.on("error", function(e) {
-        that.$message.info("复制地址失败");
+        var inst=that.getCurrentI18nInstance();
+        //"复制地址失败"
+        var failMessage=inst.message.copy.url.fail;
+        that.$message.info(failMessage);
       });
     },
     copyApiMarkdown() {
@@ -310,14 +284,25 @@ export default {
       //console.log(api);
       var clipboard = new ClipboardJS("#" + btnId, {
         text() {
-          return markdownSingleText(api);
+          var inst=that.getCurrentI18nInstance();
+          if(inst.lang==='zh'){
+            return markdownSingleText(api);
+          }else if(inst.lang==='us'){
+            return markdownSingleTextUs(api);
+          }
         }
       });
       clipboard.on("success", function(e) {
-        that.$message.info("复制文档成功");
+        var inst=that.getCurrentI18nInstance();
+        //"复制文档成功"
+        var successMessage=inst.message.copy.document.success;
+        that.$message.info(successMessage);
       });
       clipboard.on("error", function(e) {
-        that.$message.info("复制文档失败");
+        var inst=that.getCurrentI18nInstance();
+        //"复制文档失败"
+        var failMessage=inst.message.copy.document.fail;
+        that.$message.info(failMessage);
       });
     },
     /**
@@ -348,6 +333,12 @@ export default {
       var data = [];
       var that = this;
       var apiInfo = this.api;
+      if(KUtils.strNotBlank(apiInfo.contentType)){
+        this.contentType=apiInfo.contentType;
+      }
+      if(apiInfo.contentType=="application/x-www-form-urlencoded;charset=UTF-8"){
+        this.contentType="application/x-www-form-urlencoded";
+      }
       //console.log(apiInfo);
       //针对数组类型的ignore写法,在这里不需要,table树里面是对象点属性
       //忽略数组的写法 name[0]
@@ -406,6 +397,7 @@ export default {
           return b.require - a.require;
         });
       }
+      //console.log(data)
       let reqParameters = [];
       if (data != null && data.length > 0) {
         //console("初始化请求参数----------");
@@ -481,8 +473,84 @@ export default {
           }
         });
       }
-      that.reqParameters = reqParameters;
+      //此处需要递归去除include之外的parameters
+      if(apiInfo.includeParameters!=null){
+        var tmpIncludeKeys = Object.keys(apiInfo.includeParameters || {});
+        var bodyParam=reqParameters.filter(req=>req.in=="body").length;
+        if(tmpIncludeKeys.length>0&&bodyParam>0){
+          var includeParameters=[];
+          //rootkey代表的JSON的父级path,父级path必须保留
+          var rootKeys=[];
+          this.deepRootKeys(tmpIncludeKeys,rootKeys);
+          //console.log(rootKeys)
+          //console.log(tmpIncludeKeys)
+          reqParameters.forEach(param=>{
+            //判断是否有childrens
+            if(rootKeys.includes(param.name)){
+              var copyParam=cloneDeep(param);
+              copyParam.children=null;
+              if(param.children!=null&&param.children.length>0){
+                copyParam.children=new Array();
+                this.deepIncludeParam(copyParam.name,copyParam,param.children,tmpIncludeKeys,rootKeys);
+              }
+              includeParameters.push(copyParam);
+            }else{
+              if(tmpIncludeKeys.includes(param.name)){
+                var copyParam=cloneDeep(param);
+                copyParam.children=null;
+                if(param.children!=null&&param.children.length>0){
+                  copyParam.children=new Array();
+                  this.deepIncludeParam(copyParam.name,copyParam,param.children,tmpIncludeKeys,rootKeys);
+                }
+                includeParameters.push(copyParam);
+              }
+            }
+          })
+          that.reqParameters=includeParameters;
+        }else{
+          that.reqParameters = reqParameters;
+        }
+      }else{
+        that.reqParameters = reqParameters;
+      }
       //console.log(reqParameters);
+    },
+    deepRootKeys(tmpIncludeKeys,rootKeys){
+      var tmpRooks=[];
+      tmpIncludeKeys.forEach(key=>{
+        var rootKey=key.substring(0,key.lastIndexOf("."));
+        if(rootKey.indexOf(".")>-1){
+          tmpRooks.push(rootKey);
+        }
+        if(!rootKeys.includes(rootKey)){
+          rootKeys.push(rootKey);
+        }
+      })
+      if(tmpRooks.length>0){
+        this.deepRootKeys(tmpRooks,rootKeys);
+      }
+    },
+    deepIncludeParam(parentName,deepParams,children,tmpIncludeKeys,rootKeys){
+      if(children!=null&&children.length>0){
+        children.forEach(childrenParam=>{
+          var jsonPath=parentName+"."+childrenParam.name;
+          //判断root
+          if(rootKeys.includes(jsonPath)){
+            var copyParam=cloneDeep(childrenParam);
+            //初始化children需要判断当前的param.name是否在includes中
+            copyParam.children=null;
+            deepParams.children.push(copyParam)
+            if(KUtils.arrNotEmpty(childrenParam.children)){
+              copyParam.children=new Array();
+              this.deepIncludeParam(jsonPath,copyParam,childrenParam.children,tmpIncludeKeys,rootKeys);
+            }
+          }else{
+            if(tmpIncludeKeys.includes(jsonPath)){
+              deepParams.children.push(childrenParam)
+            }
+          }
+        })
+      }
     },
     copyNewParameter(source) {
       const renewId = arrs => {
@@ -654,8 +722,9 @@ export default {
         });
       }
     },
-    showResponseEditFieldDescription() {
+    showResponseEditFieldDescription(p) {
       //显示说明
+      //console.log("接收emit事件,数据："+p);
       var that = this;
       if (this.api.multipartResponseSchema) {
         //多个

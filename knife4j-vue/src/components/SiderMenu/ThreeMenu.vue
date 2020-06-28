@@ -9,54 +9,79 @@ export default {
       default: () => {
         [];
       }
+    },
+    collapsed: {
+      type: Boolean,
+      default: false
     }
   },
   render(h, context) {
     const { menuData } = context.props;
+    const collapsed = context.props.collapsed;
     const vnodes = [];
     const getMenuItemPath = item => {
       //console.log(item);
       if (item.deprecated) {
-        if (item.hasNew) {
+        if (collapsed) {
+          //收缩后,不显示版本控制的标识
           return (
             <router-link class="knife4j-menu-api-deprecated" to={item.path}>
               {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
-              <a-badge
-                status="processing"
-                title="新接口"
-                style="margin-bottom:3px;"
-              />
               <span>{item.name}</span>
             </router-link>
           );
         } else {
-          return (
-            <router-link class="knife4j-menu-api-deprecated" to={item.path}>
-              {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
-              <span>{item.name}</span>
-            </router-link>
-          );
+          if (item.hasNew) {
+            return (
+              <router-link class="knife4j-menu-api-deprecated" to={item.path}>
+                {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+                <a-badge
+                  status="processing"
+                  title="新接口"
+                  style="margin-bottom:3px;"
+                />
+                <span>{item.name}</span>
+              </router-link>
+            );
+          } else {
+            return (
+              <router-link class="knife4j-menu-api-deprecated" to={item.path}>
+                {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+                <span>{item.name}</span>
+              </router-link>
+            );
+          }
         }
       } else {
-        if (item.hasNew) {
+        if (collapsed) {
+          //收缩后,不显示版本控制的标识
           return (
             <router-link to={item.path}>
               {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
-              <a-badge
-                status="processing"
-                title="新接口"
-                style="margin-bottom:3px;"
-              />
               <span>{item.name}</span>
             </router-link>
           );
         } else {
-          return (
-            <router-link to={item.path}>
-              {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
-              <span>{item.name}</span>
-            </router-link>
-          );
+          if (item.hasNew) {
+            return (
+              <router-link to={item.path}>
+                {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+                <a-badge
+                  status="processing"
+                  title="新接口"
+                  style="margin-bottom:3px;"
+                />
+                <span>{item.name}</span>
+              </router-link>
+            );
+          } else {
+            return (
+              <router-link title={item.name} to={item.path}>
+                {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+                <span>{item.name}</span>
+              </router-link>
+            );
+          }
         }
       }
     };
@@ -66,7 +91,8 @@ export default {
         const childrenItems = getNavMenuItems(item.children); // eslint-disable-line
         // 当无子菜单时就不展示菜单
         if (childrenItems && childrenItems.length > 0) {
-          if (item.hasNew) {
+          if (collapsed) {
+            //收缩后,不显示版本控制的标识
             return (
               <a-sub-menu
                 key={item.key}
@@ -74,11 +100,6 @@ export default {
                   item.icon ? (
                     <span>
                       <my-icon type={item.icon}></my-icon>
-                      <a-badge
-                        status="processing"
-                        title="新接口"
-                        style="margin-bottom:3px;"
-                      />
                       <span>{item.name}</span>
                     </span>
                   ) : (
@@ -90,23 +111,48 @@ export default {
               </a-sub-menu>
             );
           } else {
-            return (
-              <a-sub-menu
-                key={item.key}
-                title={
-                  item.icon ? (
-                    <span>
-                      <my-icon type={item.icon}></my-icon>
+            if (item.hasNew) {
+              return (
+                <a-sub-menu
+                  key={item.key}
+                  title={
+                    item.icon ? (
+                      <span>
+                        <my-icon type={item.icon}></my-icon>
+                        <a-badge
+                          status="processing"
+                          title="新接口"
+                          style="margin-bottom:3px;"
+                        />
+                        <span>{item.name}</span>
+                      </span>
+                    ) : (
                       <span>{item.name}</span>
-                    </span>
-                  ) : (
-                    <span>{item.name}</span>
-                  )
-                }
-              >
-                {childrenItems}
-              </a-sub-menu>
-            );
+                    )
+                  }
+                >
+                  {childrenItems}
+                </a-sub-menu>
+              );
+            } else {
+              return (
+                <a-sub-menu
+                  key={item.key}
+                  title={
+                    item.icon ? (
+                      <span>
+                        <my-icon type={item.icon}></my-icon>
+                        <span>{item.name}</span>
+                      </span>
+                    ) : (
+                      <span>{item.name}</span>
+                    )
+                  }
+                >
+                  {childrenItems}
+                </a-sub-menu>
+              );
+            }
           }
         }
         return null;
