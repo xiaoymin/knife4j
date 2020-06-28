@@ -2395,8 +2395,8 @@ export default {
       this.storeApiParams();
     },
     handleDebugError(startTime, resp) {
-      console.log("失败情况---");
-      console.log(resp);
+      //console.log("失败情况---");
+      //console.log(resp);
       //失败的情况
       this.setResponseBody(resp);
       this.setResponseHeaders(resp.headers);
@@ -2856,7 +2856,13 @@ export default {
         } else {
           //此处存在空指针异常
           if (KUtils.strNotBlank(resp.responseText)) {
-            _text = KUtils.json5stringify(KUtils.json5parse(resp.responseText));
+            try{
+              _text = KUtils.json5stringify(KUtils.json5parse(resp.responseText));
+            }catch(e){
+              //json处理失败,捕获异常,作为text文本处理
+              _text=resp.responseText;
+              mode="text";
+            }
           }
         }
       } else if (mode == "xml") {
