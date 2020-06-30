@@ -19,8 +19,8 @@ module.exports = {
   devServer: {
     proxy: {
       "/": {
-      target: 'http://localhost:8999/', 
-        /* target: 'http://knife4j.xiaominfo.com/', */
+      /* target: 'http://localhost:8999/',  */
+        target: 'http://knife4j.xiaominfo.com/',
         ws: true,
         changeOrigin: true
       }

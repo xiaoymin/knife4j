@@ -15,8 +15,7 @@ module.exports = {
   devServer: {
     proxy: {
       "/": {
-        /* target: "http://localhost:19011/",  */
-        target: "http://cloud.xiaominfo.com/", 
+        target: "http://localhost:19011/", 
         ws: true,
         changeOrigin: true
       }

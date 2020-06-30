@@ -35,6 +35,7 @@ import { resumecss } from "./OfficelineCss";
 import {getDocumentVueTemplates} from "@/components/officeDocument/officeDocTemplate";
 import {getDocumentVueTemplatesUS} from "@/components/officeDocument/officeDocTemplateUS";
 import markdownText from "@/components/officeDocument/markdownTransform";
+import wordText from "@/components/officeDocument/wordTransform";
 import markdownTextUS from "@/components/officeDocument/markdownTransformUS";
 import OnlineDocument from "@/views/api/OnlineDocument";
 import { Modal } from "ant-design-vue";
@@ -329,8 +330,38 @@ export default {
       this.$message.info(message);
     },
     triggerDownloadWord() {
-      var message=this.getCurrentI18nInstance().message.offline.imple;
-      this.$message.info(message);
+       var that = this;
+      //正在下载word文件中,请稍后...
+      var downloadMessage=this.getCurrentI18nInstance().message.offline.word;
+      that.$kloading.show({
+        text: downloadMessage
+      });
+      this.deepTags();
+      var instance = {
+        title: that.data.instance.title,
+        description: that.data.instance.title,
+        contact: that.data.instance.contact,
+        version: that.data.instance.version,
+        host: that.data.instance.host,
+        basePath: that.data.instance.basePath,
+        termsOfService: that.data.instance.termsOfService,
+        name: that.data.instance.name,
+        url: that.data.instance.url,
+        location: that.data.instance.location,
+        pathArrs: that.data.instance.pathArrs,
+        tags: that.tags,
+        markdownFiles: that.data.instance.markdownFiles
+      };
+      var word=wordText(instance);
+      //等待ace-editor渲染,给与充足时间
+      setTimeout(() => {
+        //下载html
+        that.downloadWord(word);
+        //关闭
+        that.$kloading.destroy();
+      }, 1000);
+      /* var message=this.getCurrentI18nInstance().message.offline.imple;
+      this.$message.info(message); */
     },
     triggerDownloadMarkdown() {
       //下载markdown
@@ -389,6 +420,24 @@ export default {
         that.$kloading.destroy();
         that.downloadHtml();
       }, 1000);
+    },
+    downloadWord(content){
+      var a = document.createElement("a");
+      //var content = this.getHtmlContent(this.data.instance.title);
+      var option = {};
+      var fileName = this.data.instance.name + ".doc";
+      var url = window.URL.createObjectURL(
+        new Blob([content], {
+          type:
+            (option.type || "application/msword") +
+            ";charset=" +
+            (option.encoding || "utf-8")
+        })
+      );
+      a.href = url;
+      a.download = fileName || "file";
+      a.click();
+      window.URL.revokeObjectURL(url);
     },
     downloadMarkdown(content) {
       //console("downloadMarkdown");
