@@ -46,7 +46,6 @@
         <slf4j.version>1.7.28</slf4j.version>
         <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
         <jfinal.version>4.2</jfinal.version>
-        <fastjson.version></fastjson.version>
         <!-- 打包跳过单元测试 -->
         <skipTests>true</skipTests>
     </properties>
@@ -109,13 +108,6 @@
                 <version>${jfinal.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>1.2.58</version>
-            </dependency>
-
             <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
             <dependency>
                 <groupId>org.javassist</groupId>
@@ -163,6 +155,16 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${springfox.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-models</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-annotations</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/io.springfox/springfox-bean-validators -->
