@@ -1787,6 +1787,10 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     }
     swpinfo.consumes = apiInfo.consumes;
     swpinfo.description = KUtils.getValue(apiInfo, "description", "", true);
+    //描述支持markdown
+    if(KUtils.strNotBlank(swpinfo.description)){
+      swpinfo.description=marked(swpinfo.description);
+    }
     swpinfo.operationId = apiInfo.operationId;
     swpinfo.summary = apiInfo.summary;
     swpinfo.tags = apiInfo.tags;
