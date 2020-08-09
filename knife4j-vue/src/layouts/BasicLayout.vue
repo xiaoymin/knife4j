@@ -48,7 +48,7 @@ import GlobalFooter from "@/components/GlobalFooter";
 import GlobalHeaderTab from "@/components/GlobalHeaderTab";
 import { getMenuData } from "./menu";
 import KUtils from "@/core/utils";
-import SwaggerBootstrapUi from "@/core/Knife4j.js";
+import SwaggerBootstrapUi from "@/core/Knife4jAsync.js";
 import {
   findComponentsByPath,
   findMenuByKey
@@ -72,15 +72,6 @@ export default {
     ThreeMenu
   },
   data() {
-    /* const panes = [
-      {
-        title: "主页",
-        component: "Main",
-        content: "Main",
-        key: "kmain",
-        closable: false
-      }
-    ]; */
     return {
       i18n:null,
       logo: logo,
@@ -88,10 +79,6 @@ export default {
       menuWidth: constMenuWidth,
       headerClass: "knife4j-header-width",
       swagger: null,
-      //swaggerCurrentInstance: {},
-      //defaultServiceOption: "",
-      //serviceOptions: [],
-      //MenuData: [],
       localMenuData:[],
       collapsed: false,
       linkList: [],
@@ -200,7 +187,7 @@ export default {
       //初始化swagger文档
       var url = this.$route.path;
       var plusFlag = false;
-      if (url == "/plus") {
+      if (url.indexOf("/plus") !=-1) {
         //开启增强
         plusFlag = true;
       }
@@ -262,6 +249,10 @@ export default {
       //读取settings
       this.$localStore.getItem(constant.globalSettingsKey).then(settingCache=>{
         var settings=this.getCacheSettings(settingCache);
+        //重新赋值是否开启增强
+        if(!settings.enableSwaggerBootstrapUi){
+           settings.enableSwaggerBootstrapUi=this.getPlusStatus();
+        }
         that.$localStore.setItem(constant.globalSettingsKey, settings);
         this.$localStore.getItem(constant.globalGitApiVersionCaches).then(gitVal=>{
           var cacheApis=this.getCacheGitVersion(gitVal);
@@ -319,8 +310,8 @@ export default {
       });
     },
     initSwagger(options){
-      //console.log("初始化Swagger")
-      //console.log(options)
+      console.log("初始化Swagger")
+      console.log(options)
       this.i18n=options.i18nInstance;
       this.swagger = new SwaggerBootstrapUi(options);
       try {
