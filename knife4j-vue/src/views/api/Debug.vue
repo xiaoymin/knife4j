@@ -2548,14 +2548,14 @@ export default {
             if (that.debugPathFlag) {
               //确实是，判断该参数是否出现
               if (that.debugPathParams.indexOf(p) == -1) {
-                tmpUrls.push(p + "=" + formParams[p]);
+                tmpUrls.push(p + "=" + KUtils.toString(formParams[p],""));
               } else {
                 var replaceRege = "{" + p + "}";
-                var value = formParams[p];
+                var value = KUtils.toString(formParams[p],"");
                 fullurl = fullurl.replace(replaceRege, value);
               }
             } else {
-              tmpUrls.push(p + "=" + formParams[p]);
+              tmpUrls.push(p + "=" + KUtils.toString(formParams[p],""));
             }
           }
         }
@@ -2594,14 +2594,14 @@ export default {
             if (that.debugPathFlag) {
               //确实是，判断该参数是否出现
               if (that.debugPathParams.indexOf(p) == -1) {
-                tmpUrls.push(p + "=" + urlFormParams[p]);
+                tmpUrls.push(p + "=" + KUtils.toString(urlFormParams[p],''));
               } else {
                 var replaceRege = "{" + p + "}";
-                var value = urlFormParams[p];
+                var value =KUtils.toString(urlFormParams[p],'');
                 fullurl = fullurl.replace(replaceRege, value);
               }
             } else {
-              tmpUrls.push(p + "=" + urlFormParams[p]);
+              tmpUrls.push(p + "=" +KUtils.toString(urlFormParams[p],''));
             }
           }
           var tmpUrlStr = tmpUrls.join("&");
@@ -2665,14 +2665,14 @@ export default {
               if (that.debugPathFlag) {
                 //确实是，判断该参数是否出现
                 if (that.debugPathParams.indexOf(p) == -1) {
-                  tmpUrls.push(p + "=" + params[p]);
+                  tmpUrls.push(p + "=" + KUtils.toString(params[p],''));
                 } else {
                   var replaceRege = "{" + p + "}";
-                  var value = params[p];
+                  var value = KUtils.toString(params[p],'');
                   fullurl = fullurl.replace(replaceRege, value);
                 }
               } else {
-                tmpUrls.push(p + "=" + params[p]);
+                tmpUrls.push(p + "=" + KUtils.toString(params[p],''));
               }
             }
             /* for (var p in params) {

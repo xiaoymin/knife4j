@@ -22,10 +22,11 @@ export default {
     const getMenuItemPath = item => {
       //console.log(item);
       if (item.deprecated) {
+        var depClass="knife4j-menu-api-deprecated "+item.menuClass;
         if (collapsed) {
           //收缩后,不显示版本控制的标识
           return (
-            <router-link class="knife4j-menu-api-deprecated" to={item.path}>
+            <router-link class={depClass} to={item.path}>
               {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
               <span>{item.name}</span>
             </router-link>
@@ -33,20 +34,22 @@ export default {
         } else {
           if (item.hasNew) {
             return (
-              <router-link class="knife4j-menu-api-deprecated" to={item.path}>
+              <router-link class={depClass} to={item.path}>
                 {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
                 <a-badge
                   status="processing"
                   title="新接口"
                   style="margin-bottom:3px;"
                 />
+                {item.method?<span class="knife4j-menu-line">{item.method}</span>:""}
                 <span>{item.name}</span>
               </router-link>
             );
           } else {
             return (
-              <router-link class="knife4j-menu-api-deprecated" to={item.path}>
+              <router-link class={depClass} to={item.path}>
                 {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+                {item.method?<span class="knife4j-menu-line">{item.method}</span>:""}
                 <span>{item.name}</span>
               </router-link>
             );
@@ -64,20 +67,22 @@ export default {
         } else {
           if (item.hasNew) {
             return (
-              <router-link to={item.path}>
+              <router-link class={item.menuClass} to={item.path}>
                 {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
                 <a-badge
                   status="processing"
                   title="新接口"
                   style="margin-bottom:3px;"
                 />
+                {item.method?<span class="knife4j-menu-line">{item.method}</span>:""}
                 <span>{item.name}</span>
               </router-link>
             );
           } else {
             return (
-              <router-link title={item.name} to={item.path}>
+              <router-link class={item.menuClass} title={item.name} to={item.path}>
                 {item.icon ? <my-icon type={item.icon}></my-icon> : ""}
+                {item.method?<span class="knife4j-menu-line">{item.method}</span>:""}
                 <span>{item.name}</span>
               </router-link>
             );
@@ -125,9 +130,13 @@ export default {
                           style="margin-bottom:3px;"
                         />
                         <span>{item.name}</span>
+                        {item.num?<span class='knife4j-menu-badge-num'>{item.num}</span>:""}
                       </span>
                     ) : (
+                      <span>
                       <span>{item.name}</span>
+                       {item.num?<span class='knife4j-menu-badge-num'>{item.num}</span>:""}
+                       </span>
                     )
                   }
                 >
@@ -143,9 +152,13 @@ export default {
                       <span>
                         <my-icon type={item.icon}></my-icon>
                         <span>{item.name}</span>
+                        {item.num?<span class='knife4j-menu-badge-num'>{item.num}</span>:""}
                       </span>
                     ) : (
+                      <span>
                       <span>{item.name}</span>
+                       {item.num?<span class='knife4j-menu-badge-num'>{item.num}</span>:""}
+                       </span>
                     )
                   }
                 >

@@ -4,7 +4,7 @@
       <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider">
         <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
           <a to="/" style="float:left;">
-            <a-select :value="defaultServiceOption" style="width: 280px" :options="serviceOptions" @change="serviceChange">
+            <a-select :value="defaultServiceOption" style="width: 300px" :options="serviceOptions" @change="serviceChange">
             </a-select>
           </a>
         </div>
@@ -59,7 +59,7 @@ import ThreeMenu from "@/components/SiderMenu/ThreeMenu";
 import ContextMenu from "@/components/common/ContextMenu";
 import constant from "@/store/constants";
 
-const constMenuWidth = 310;
+const constMenuWidth = 320;
 
 export default {
   name: "BasicLayout",

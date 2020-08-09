@@ -1649,6 +1649,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         icon: 'icon-APIwendang',
         path: groupName + "/" + tag.name,
         hasNew: tag.hasNew || tag.hasChanged,
+        num:null,
         children: []
       }
       tag.childrens.forEach(function (children) {
@@ -1665,11 +1666,14 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
           hasNew: children.hasNew || children.hasChanged,
           deprecated: children.deprecated,
           //用于搜索
-          url: children.url
+          url: children.url,
+          method:children.methodType.toUpperCase(),
+          menuClass:'knife4j-menu-left-style'
         }
         tagMenu.children.push(tabSubMenu);
-
       })
+      //给接口数量赋值
+      tagMenu.num=tagMenu.children.length;
       menuArr.push(tagMenu);
 
     }
