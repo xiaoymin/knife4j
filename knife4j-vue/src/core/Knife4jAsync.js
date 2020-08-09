@@ -24,7 +24,7 @@
  * modified by xiaoymin on 2019-11-11 16:42:43
  * 
  * v2.0.5
- * 剥离解析OpenAPI规范的逻辑,只解析基础部分,提供页面渲染速度
+ * 剥离解析OpenAPI规范的逻辑,只解析基础部分,提供页面渲染速度,dev分支
  *
  * 基于Vue + Ant Design Vue重构Ui组件
  *
