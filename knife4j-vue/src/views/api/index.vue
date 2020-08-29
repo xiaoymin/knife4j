@@ -20,14 +20,17 @@
   </a-layout-content>
 </template>
 <script>
-import Document from "./Document";
-import Debug from "./Debug";
+/* import Document from "./Document";
+import Debug from "./Debug"; */
 import Constants from "@/store/constants";
 import KUtils from "@/core/utils";
 
 export default {
   name: "APIDoc",
-  components: { Document, Debug },
+  components: { 
+    "Document":()=>import('./Document'),
+    "Debug":()=>import('./Debug')
+  },
   props: {
     data: {
       type: Object

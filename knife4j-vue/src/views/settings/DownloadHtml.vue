@@ -120,10 +120,10 @@
   </a-row>
 </template>
 <script>
-import OnlineDocument from "@/views/api/OnlineDocument";
+/* import OnlineDocument from "@/views/api/OnlineDocument"; */
 export default {
   components: {
-    OnlineDocument
+    'OnlineDocument':()=>import('@/views/api/OnlineDocument')
   },
   props: {
     instance: {

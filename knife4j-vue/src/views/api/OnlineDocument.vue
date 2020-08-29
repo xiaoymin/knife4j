@@ -185,8 +185,8 @@
 <script>
 import KUtils from "@/core/utils";
 import Constants from "@/store/constants";
-import DataType from "./DataType";
-import EditorShow from "./EditorShow";
+/* import DataType from "./DataType";
+import EditorShow from "./EditorShow"; */
 //请求参数table-header
 const requestcolumns = [
   {
@@ -279,7 +279,10 @@ const responseParametersColumns = [
 var instance = null;
 export default {
   name: "Document",
-  components: { editor: require("vue2-ace-editor"), DataType, EditorShow },
+  components: { editor: require("vue2-ace-editor"), 
+     "DataType":()=>import('./DataType'),
+    "EditorShow":()=>import('./EditorShow')
+  },
   props: {
     api: {
       type: Object,

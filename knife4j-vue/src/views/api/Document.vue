@@ -146,10 +146,10 @@
 <script>
 import KUtils from "@/core/utils";
 import Constants from "@/store/constants";
-import DataType from "./DataType";
 import markdownSingleText from "@/components/officeDocument/markdownSingleTransform";
 import markdownSingleTextUs from "@/components/officeDocument/markdownSingleTransformUS";
-import EditorShow from "./EditorShow";
+/* import DataType from "./DataType";
+import EditorShow from "./EditorShow"; */
 import ClipboardJS from "clipboard";
 import uniqueId from "lodash/uniqueId";
 import isObject from 'lodash/isObject'
@@ -159,7 +159,10 @@ import cloneDeep from 'lodash/cloneDeep'
 
 export default {
   name: "Document",
-  components: { editor: require("vue2-ace-editor"), DataType, EditorShow},
+  components: { editor: require("vue2-ace-editor"), 
+    "DataType":()=>import('./DataType'),
+    "EditorShow":()=>import('./EditorShow')
+  },
   props: {
     api: {
       type: Object,

@@ -401,14 +401,17 @@
 import md5 from "js-md5";
 import KUtils from "@/core/utils";
 import constant from "@/store/constants";
-import EditorDebugShow from "./EditorDebugShow";
-import DebugResponse from "./DebugResponse";
+/* import EditorDebugShow from "./EditorDebugShow";
+import DebugResponse from "./DebugResponse"; */
 import DebugAxios from "axios";
 import vkbeautify from "@/components/utils/vkbeautify";
 
 export default {
   name: "Debug",
-  components: { EditorDebugShow, DebugResponse },
+  components: {
+    "EditorDebugShow":()=>import('./EditorDebugShow'),
+    "DebugResponse":()=>import('./DebugResponse') 
+  },
   props: {
     api: {
       type: Object,
