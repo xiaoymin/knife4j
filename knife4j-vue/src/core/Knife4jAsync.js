@@ -336,7 +336,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
   var serviceOptions = [];
   groupData.forEach(function (group) {
     var g = new SwaggerBootstrapUiInstance(
-      group.name,
+      KUtils.toString(group.name,'').replace(/\//g,'-'),
       group.location,
       group.swaggerVersion
     )
@@ -1004,7 +1004,8 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       }
     }
     tags.forEach(function (tag) {
-      var swuTag = new SwaggerBootstrapUiTag(tag.name, tag.description);
+      //此处替换tag.name中的/字符,以避免在ui中因为使用vue-router的问题导致空白页面出现
+      var swuTag = new SwaggerBootstrapUiTag(KUtils.toString(tag.name,"").replace(/\//g,'-'), tag.description);
       if (KUtils.strNotBlank(tag.author)) {
         swuTag.author = tag.author;
       }
@@ -1796,7 +1797,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
       swpinfo.description=marked(swpinfo.description);
     }
     swpinfo.operationId = apiInfo.operationId;
-    swpinfo.summary = apiInfo.summary;
+    swpinfo.summary = KUtils.toString(apiInfo.summary,"").replace(/\//g,"-");
     swpinfo.tags = apiInfo.tags;
     //读取扩展属性x-ignoreParameters
     if (apiInfo.hasOwnProperty("x-ignoreParameters")) {
