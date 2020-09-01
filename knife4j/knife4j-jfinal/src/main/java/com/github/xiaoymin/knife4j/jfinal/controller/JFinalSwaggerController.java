@@ -8,7 +8,10 @@
 package com.github.xiaoymin.knife4j.jfinal.controller;
 
 import com.github.xiaoymin.knife4j.annotations.Ignore;
+import com.github.xiaoymin.knife4j.jfinal.JFinalSwagger;
+import com.jfinal.core.ActionKey;
 import com.jfinal.core.Controller;
+import io.swagger.models.Swagger;
 
 
 /***
@@ -20,5 +23,16 @@ import com.jfinal.core.Controller;
 @Ignore
 public class JFinalSwaggerController extends Controller{
 
+    @ActionKey(value = "/swagger-resouces")
+    public void group(){
+        renderJson(JFinalSwagger.me.getAllDocumentation());
+    }
+
+    @ActionKey(value = "/v2/api-docs")
+    public void swagger(){
+        String group=getPara("group");
+        Swagger swagger= JFinalSwagger.me.getSwagger(group);
+        renderJson(swagger);
+    }
 
 }

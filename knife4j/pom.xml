@@ -95,10 +95,20 @@
                 <artifactId>knife4j-spring-ui</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-spring-boot-autoconfigure</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-jfinal-ui</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-jfinal</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/com.jfinal/jfinal -->
@@ -119,6 +129,12 @@
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-models</artifactId>
+                <version>1.5.22</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.swagger/swagger-core -->
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-core</artifactId>
                 <version>1.5.22</version>
             </dependency>
 
