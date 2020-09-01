@@ -15,7 +15,6 @@ import com.github.xiaoymin.knife4j.jfinal.context.TagContext;
 import com.github.xiaoymin.knife4j.jfinal.extensions.JFinalReaderExtension;
 import com.github.xiaoymin.knife4j.jfinal.plugin.impl.TagPluginImpl;
 import com.jfinal.core.ActionKey;
-import com.jfinal.core.Controller;
 import com.jfinal.core.NotAction;
 import io.swagger.annotations.*;
 import io.swagger.models.*;
@@ -58,18 +57,19 @@ public class Reader {
         final Reader reader = new Reader(swagger, jFinalDocument);
         reader.readInfoConfig();
         for (Class<?> cls : classes) {
-            //非JFinal控制层的类pass
-            if (Controller.class.isAssignableFrom(cls)){
-                final ReaderContext context = new ReaderContext(swagger, cls, "", null, false, new ArrayList<String>(),
-                        new ArrayList<String>(), new ArrayList<String>(), new ArrayList<Parameter>());
-                //构建tag节点
-                final TagContext tagContext=new TagContext(cls);
-                new TagPluginImpl().apply(tagContext);
-                if (swagger.getTag(tagContext.getName())==null){
-                    swagger.addTag(tagContext.build());
-                }
-                reader.read(context);
+            Optional<Ignore> IgnoreOptional=AnnotationUtils.findAnnotation(cls, Ignore.class);
+            if (IgnoreOptional.isPresent()){
+                continue;
             }
+            final ReaderContext context = new ReaderContext(swagger, cls, "", null, false, new ArrayList<String>(),
+                    new ArrayList<String>(), new ArrayList<String>(), new ArrayList<Parameter>());
+            //构建tag节点
+            final TagContext tagContext=new TagContext(cls);
+            new TagPluginImpl().apply(tagContext);
+            if (swagger.getTag(tagContext.getName())==null){
+                swagger.addTag(tagContext.build());
+            }
+            reader.read(context);
         }
     }
 
@@ -84,12 +84,12 @@ public class Reader {
             }
             //忽略该接口
             Optional<NotAction> notActionOptional=AnnotationUtils.findAnnotation(method.getClass(), NotAction.class);
-            if (!notActionOptional.isPresent()){
+            if (notActionOptional.isPresent()){
                 continue;
             }
             //忽略该接口
             Optional<Ignore> IgnoreOptional=AnnotationUtils.findAnnotation(method.getClass(), Ignore.class);
-            if (!IgnoreOptional.isPresent()){
+            if (IgnoreOptional.isPresent()){
                 continue;
             }
             final Operation operation = new Operation();
