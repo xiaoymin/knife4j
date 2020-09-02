@@ -8,11 +8,13 @@
 package com.github.xiaoymin.knife4j.jfinal.core;
 
 import com.github.xiaoymin.knife4j.annotations.Ignore;
+import com.github.xiaoymin.knife4j.core.io.ResourceUtil;
 import com.github.xiaoymin.knife4j.core.util.AnnotationUtils;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.jfinal.JFinalDocument;
 import com.github.xiaoymin.knife4j.jfinal.context.TagContext;
 import com.github.xiaoymin.knife4j.jfinal.extensions.JFinalReaderExtension;
+import com.github.xiaoymin.knife4j.jfinal.model.JFinalControllerKey;
 import com.github.xiaoymin.knife4j.jfinal.plugin.impl.TagPluginImpl;
 import com.jfinal.core.ActionKey;
 import com.jfinal.core.NotAction;
@@ -51,34 +53,58 @@ public class Reader {
      * Scans a set of classes for Swagger annotations.
      *
      * @param swagger is the Swagger instance
-     * @param classes are a set of classes to scan
      */
-    public static void read(Swagger swagger, Set<Class<?>> classes,JFinalDocument jFinalDocument) {
+    public static void read(Swagger swagger,JFinalDocument jFinalDocument) {
         final Reader reader = new Reader(swagger, jFinalDocument);
         reader.readInfoConfig();
-        for (Class<?> cls : classes) {
-            Optional<Ignore> IgnoreOptional=AnnotationUtils.findAnnotation(cls, Ignore.class);
-            if (IgnoreOptional.isPresent()){
-                continue;
+        //判断扫描路径是否为空
+        if (jFinalDocument.getPackagePaths()!=null&&jFinalDocument.getPackagePaths().size()>0){
+            //classes are a set of classes to scan
+            Set<Class<?>> classSet=new ResourceUtil().find(jFinalDocument.getPackagePaths().toArray(new String[]{})).getClasses();
+            if (classSet!=null&&classSet.size()>0){
+                for (Class<?> cls : classSet) {
+                    Optional<Ignore> IgnoreOptional=AnnotationUtils.findAnnotation(cls, Ignore.class);
+                    if (IgnoreOptional.isPresent()){
+                        continue;
+                    }
+                    final ReaderContext context = new ReaderContext(swagger, cls, "", null, false, new ArrayList<String>(),
+                            new ArrayList<String>(), new ArrayList<String>(), new ArrayList<Parameter>());
+                    //构建tag节点
+                    final TagContext tagContext=new TagContext(cls);
+                    new TagPluginImpl().apply(tagContext);
+                    if (swagger.getTag(tagContext.getName())==null){
+                        swagger.addTag(tagContext.build());
+                    }
+                    reader.read(context,null);
+                }
             }
-            final ReaderContext context = new ReaderContext(swagger, cls, "", null, false, new ArrayList<String>(),
-                    new ArrayList<String>(), new ArrayList<String>(), new ArrayList<Parameter>());
-            //构建tag节点
-            final TagContext tagContext=new TagContext(cls);
-            new TagPluginImpl().apply(tagContext);
-            if (swagger.getTag(tagContext.getName())==null){
-                swagger.addTag(tagContext.build());
-            }
-            reader.read(context);
         }
+        if (jFinalDocument.getjFinalControllerKeys()!=null&&jFinalDocument.getjFinalControllerKeys().size()>0){
+            for (JFinalControllerKey jFinalControllerKey:jFinalDocument.getjFinalControllerKeys()){
+                Optional<Ignore> IgnoreOptional=AnnotationUtils.findAnnotation(jFinalControllerKey.getControllerClazz(), Ignore.class);
+                if (IgnoreOptional.isPresent()){
+                    continue;
+                }
+                final ReaderContext context = new ReaderContext(swagger, jFinalControllerKey.getControllerClazz(), "", null, false, new ArrayList<String>(),
+                        new ArrayList<String>(), new ArrayList<String>(), new ArrayList<Parameter>());
+                //构建tag节点
+                final TagContext tagContext=new TagContext(jFinalControllerKey.getControllerClazz());
+                new TagPluginImpl().apply(tagContext);
+                if (swagger.getTag(tagContext.getName())==null){
+                    swagger.addTag(tagContext.build());
+                }
+                reader.read(context,jFinalControllerKey.getKey());
+            }
+        }
+
     }
 
-    private void read(ReaderContext context) {
+    private void read(ReaderContext context,String key) {
         final SwaggerDefinition swaggerDefinition = context.getCls().getAnnotation(SwaggerDefinition.class);
         if (swaggerDefinition != null) {
             readSwaggerConfig(swaggerDefinition);
         }
-        for (Method method : context.getCls().getMethods()) {
+        for (Method method : context.getCls().getDeclaredMethods()) {
             if (ReflectionUtils.isOverriddenMethod(method, context.getCls())) {
                 continue;
             }
@@ -99,7 +125,7 @@ public class Reader {
             final Annotation[][] paramAnnotations = method.getParameterAnnotations();
             JFinalReaderExtension extension=new JFinalReaderExtension();
             //获取JFinal中的接口路径
-            String methodRoute="index".equals(method.getName())?"":"/"+method.getName();
+            String methodRoute="/"+method.getName();
             //判断是否包含actionKey注解
             Optional<ActionKey> actionKeyOptional=AnnotationUtils.findAnnotation(method.getClass(),ActionKey.class);
             if (actionKeyOptional.isPresent()){
@@ -112,16 +138,31 @@ public class Reader {
                 }
             }
             String operationPath = null;
+            StringBuilder pathBuilder=new StringBuilder();
             if (StrUtil.isNotBlank(jFinalDocument.getBasePath())&&!"/".equals(jFinalDocument.getBasePath())){
-                operationPath=jFinalDocument.getBasePath()+methodRoute;
-            }else{
-                operationPath=methodRoute;
+                //追加basePath
+                if(!jFinalDocument.getBasePath().startsWith("/")){
+                    pathBuilder.append("/");
+                }
+                 pathBuilder.append(jFinalDocument.getBasePath());
             }
+            if (StrUtil.isNotBlank(key)&&!"/".equals(key)){
+                if (!key.startsWith("/")){
+                    pathBuilder.append("/");
+                }
+                pathBuilder.append(key);
+            }
+            pathBuilder.append(methodRoute);
+            operationPath=pathBuilder.toString();
             if (operationPath == null) {
                 operationPath = extension.getPath(context, method);
             }
             if (httpMethod == null) {
                 httpMethod = extension.getHttpMethod(context, method);
+                if (StrUtil.isBlank(httpMethod)){
+                    //默认一个POST
+                    httpMethod="post";
+                }
             }
             if (operationPath == null || httpMethod == null) {
                 continue;
@@ -146,7 +187,7 @@ public class Reader {
             }
             if (httpMethod != null) {
                 if (operation.getResponses() == null) {
-                    operation.defaultResponse(new Response().description("successful operation"));
+                    operation.response(200,new Response().description("OK"));
                 }
 
                 final Map<String, String> regexMap = new HashMap<String, String>();

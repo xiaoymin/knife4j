@@ -51,9 +51,9 @@ public class JFinalSwagger {
     public void start(){
         logger.debug("Start--->JFinal项目初始化Swagger文档");
         for (JFinalDocument jFinalDocument:jFinalDocumentList){
-            Swagger swagger=new Swagger();
+            final Swagger swagger=new Swagger();
             Set<Class<?>> classSet=new ResourceUtil().find(jFinalDocument.getPackagePaths().toArray(new String[]{})).getClasses();
-            Reader.read(swagger,classSet,jFinalDocument);
+            Reader.read(swagger,jFinalDocument);
             swaggerMap.put(jFinalDocument.getName(),swagger);
         }
         logger.debug("End--->JFinal项目初始化Swagger文档");
