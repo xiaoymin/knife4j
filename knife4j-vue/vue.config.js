@@ -17,6 +17,9 @@ module.exports = {
     }
   },
   devServer: {
+    watchOptions:{
+      ignored: /node_modules/
+    },
     proxy: {
       "/": {
       target: 'http://localhost:8999/', 

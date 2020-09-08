@@ -64,7 +64,7 @@
 <script>
 import KUtils from "@/core/utils";
 import ClipboardJS from "clipboard";
-import EditorDebugShow from "./EditorDebugShow";
+/* import EditorDebugShow from "./EditorDebugShow"; */
 
 export default {
   props: {
@@ -101,7 +101,7 @@ export default {
       default: true
     }
   },
-  components: { EditorDebugShow },
+  components: { 'EditorDebugShow':()=>import('./EditorDebugShow') },
   data() {
     return {
       pagination: false,
@@ -249,7 +249,8 @@ export default {
       if (this.debugSend) {
         if (this.responseFieldDescriptionChecked) {
           if (this.responseContent.mode == "json") {
-            this.showEditorFieldAnyWay();
+            console.log("数据大小："+this.responseStatus.size)
+            //this.showEditorFieldAnyWay();
           }
         }
       }

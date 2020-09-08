@@ -2130,7 +2130,6 @@ export default {
         this.debugLoading = true;
         //发送状态置为已发送请求
         this.debugSend = true;
-        var startTime = new Date();
         //raw类型的请求需要判断是何种类型
         var headers = this.debugHeaders();
         var url = this.debugUrl;
@@ -2209,13 +2208,15 @@ export default {
         });
         //console(headers);
         //console(requestConfig);
+        //开始时间定义在发送之前
+        var startTime = new Date();
         debugInstance
           .request(requestConfig)
           .then(res => {
             //console("url-form-success");
-            //console(res);
+            console.log(res);
             this.debugLoading = false;
-            this.handleDebugSuccess(startTime, res);
+            this.handleDebugSuccess(startTime,new Date(), res);
           })
           .catch(err => {
             //console("触发url-form-error");
@@ -2223,7 +2224,7 @@ export default {
             this.debugLoading = false;
             //虽然是错误,但依然有返回值
             if (err.response) {
-              this.handleDebugError(startTime, err.response);
+              this.handleDebugError(startTime,new Date(), err.response);
             } else {
               this.$message.error(err.message);
               ////console(err.message);
@@ -2242,7 +2243,6 @@ export default {
         this.debugLoading = true;
         //发送状态置为已发送请求
         this.debugSend = true;
-        var startTime = new Date();
         //raw类型的请求需要判断是何种类型
         var headers = this.debugHeaders();
         var url = this.debugUrl;
@@ -2289,19 +2289,20 @@ export default {
         let debugInstance=DebugAxios.create();
         //console(headers);
         //console(requestConfig);
+         var startTime = new Date();
         debugInstance
           .request(requestConfig)
           .then(res => {
             //console("url-form-success");
             //console(res);
             this.debugLoading = false;
-            this.handleDebugSuccess(startTime, res);
+            this.handleDebugSuccess(startTime,new Date(), res);
           })
           .catch(err => {
             this.debugLoading = false;
             //console("触发url-form-error");
             if (err.response) {
-              this.handleDebugError(startTime, err.response);
+              this.handleDebugError(startTime,new Date(), err.response);
             } else {
               this.$message.error(err.message);
               ////console(err.message);
@@ -2319,7 +2320,6 @@ export default {
         this.debugLoading = true;
         //发送状态置为已发送请求
         this.debugSend = true;
-        var startTime = new Date();
         //raw类型的请求需要判断是何种类型
         var headers = this.debugHeaders();
         var url = this.debugUrl;
@@ -2368,16 +2368,17 @@ export default {
         }
         //console(headers);
         //console(this.rawText);
+        var startTime = new Date();
         DebugAxios.create()
           .request(requestConfig)
           .then(res => {
             this.debugLoading = false;
-            this.handleDebugSuccess(startTime, res);
+            this.handleDebugSuccess(startTime,new Date(), res);
           })
           .catch(err => {
             this.debugLoading = false;
             if (err.response) {
-              this.handleDebugError(startTime, err.response);
+              this.handleDebugError(startTime,new Date(), err.response);
             } else {
               this.$message.error(err.message);
             }
@@ -2386,25 +2387,26 @@ export default {
         this.$message.info(validateForm.message);
       }
     },
-    handleDebugSuccess(startTime, res) {
+    handleDebugSuccess(startTime,endTime, res) {
       //成功的情况
       this.setResponseBody(res);
       this.setResponseHeaders(res.headers);
       this.setResponseRaw(res);
       //console("开始执行status--");
-      this.setResponseStatus(startTime, res);
+      this.setResponseStatus(startTime,endTime, res);
       this.setResponseCurl(res.request);
       this.callChildEditorShow();
       this.storeApiParams();
+      console.log("success")
     },
-    handleDebugError(startTime, resp) {
+    handleDebugError(startTime,endTime, resp) {
       //console.log("失败情况---");
       //console.log(resp);
       //失败的情况
       this.setResponseBody(resp);
       this.setResponseHeaders(resp.headers);
       this.setResponseRaw(resp);
-      this.setResponseStatus(startTime, resp);
+      this.setResponseStatus(startTime,endTime, resp);
       this.setResponseCurl(resp.request);
       this.callChildEditorShow();
       this.storeApiParams();
@@ -2468,13 +2470,13 @@ export default {
         }
       }
     },
-    setResponseStatus(startTime, res) {
+    setResponseStatus(startTime,endTime, res) {
       //console("响应状态------------");
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
         //响应状态
         if (KUtils.checkUndefined(resp)) {
-          var endTime = new Date();
+          //var endTime = new Date();
           var costStr = "";
           var cost = endTime.getTime() - startTime.getTime();
           var code = resp.status;
@@ -2878,6 +2880,7 @@ export default {
       } else {
         _text = resp.responseText;
       }
+      console.log('set value before')
       this.responseContent = {
         text: _text,
         mode: mode,
