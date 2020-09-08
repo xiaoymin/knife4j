@@ -76,7 +76,28 @@ public class JFinalDocument {
             this.jFinalControllerKeys=new ArrayList<>();
         }
     }
+    /**
+     * 增加Controller的路由路径
+     * @param key 路由Prefix
+     * @param clazz Controller类
+     * @return Builder本身
+     */
+    public JFinalDocument addController(String key, Class<? extends Controller> clazz){
+        this.jFinalControllerKeys.add(new JFinalControllerKey(key,clazz));
+        return this;
+    }
 
+    /**
+     * 增加Controller的路由路径
+     * @param jFinalControllerKeys JFinal框架中ControllerKey
+     * @return Builder本身
+     */
+    public JFinalDocument addController(JFinalControllerKey... jFinalControllerKeys){
+        if (jFinalControllerKeys!=null&&jFinalControllerKeys.length>0){
+            this.jFinalControllerKeys.addAll(Arrays.asList(jFinalControllerKeys));
+        }
+        return this;
+    }
     public static final class Builder{
         /**
          * 排序

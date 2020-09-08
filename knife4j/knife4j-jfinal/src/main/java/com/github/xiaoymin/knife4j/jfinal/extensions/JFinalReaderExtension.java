@@ -1,5 +1,6 @@
 package com.github.xiaoymin.knife4j.jfinal.extensions;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.github.xiaoymin.knife4j.jfinal.core.ReaderContext;
@@ -388,11 +389,11 @@ public class JFinalReaderExtension implements ReaderExtension {
     }
 
     private Parameter readImplicitParam(Swagger swagger, ApiImplicitParam param) {
-        final Parameter p = ParameterFactory.createParam(param.paramType());
+        final Parameter p = ParameterFactory.createParam(StrUtil.blankToDefault(param.paramType(),ParameterFactory.QUERY.paramType));
         if (p == null) {
             return null;
         }
-        final Type type = ReflectionUtils.typeFromString(param.dataType());
+        final Type type = ReflectionUtils.typeFromString(StrUtil.blankToDefault(param.dataType(),"java.lang.String"));
         return ParameterProcessor.applyAnnotations(swagger, p, type == null ? String.class : type,
                 Collections.<Annotation>singletonList(param));
     }
