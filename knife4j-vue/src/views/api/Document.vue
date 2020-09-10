@@ -105,6 +105,7 @@
             响应示例
           </div>
           <a-row :id="'knife4jDocumentShowEditor' + api.id + resp.code">
+            {{resp.responseValue}}
             <editor-show @showDescription="showResponseEditFieldDescription" :value="
                 resp.responseBasicType ? resp.responseText : resp.responseValue
               "></editor-show>
@@ -192,6 +193,8 @@ export default {
   },
   created() {
     var that = this;
+    console.log("Document")
+    console.log(this.api.responseValue);
     var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
     //根据instance的实例初始化model名称
     var treeTableModel = this.swaggerInstance.refTreeTableModels;

@@ -322,6 +322,8 @@ export default {
         //缓存cache
         //this.$localStore.setItem(constant.globalGitApiVersionCaches, this.swagger.cacheApis);
         //console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa------------------------")
+        //赋值
+        this.$store.dispatch("globals/setSwagger", this.swagger);
       } catch (e) {
         console.error(e);
       }

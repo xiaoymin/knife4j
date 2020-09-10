@@ -43,7 +43,18 @@ export default {
       debugSupport: false
     };
   },
+  computed:{
+    swagger(){
+       return this.$store.state.globals.swagger;
+    }
+  },
   mounted() {},
+  beforeCreate(){
+    let params = this.$route.params;
+    console.log("before")
+    console.log(params);
+    
+  },
   created() {
     //根据地址栏得到api详情
     let params = this.$route.params;
@@ -57,10 +68,19 @@ export default {
         apiInfo = path;
       }
     });
+    console.log("初始化前")
+    console.log(apiInfo)
+    if(!apiInfo.init){
+      console.log("inited")
+      this.swagger.initApiInfoAsync(apiInfo);
+    }
+    console.log("初始化后")
+    console.log(apiInfo)
     this.storeCacheApiAddApiInfo(apiInfo, instance.groupId);
     this.swaggerInstance = instance;
     this.api = apiInfo;
     this.debugSupport = this.api.configurationDebugSupport;
+    
   },
   methods: {
     onTabChange(key, type) {

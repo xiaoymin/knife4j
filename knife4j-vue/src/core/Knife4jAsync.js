@@ -65,6 +65,7 @@ marked.setOptions({
 })
 
 function SwaggerBootstrapUi(options) {
+  this.swaggerData=null;
   //swagger请求api地址
   this.url = options.url || 'swagger-resources'
   this.i18n=options.i18n||'zh-CN'
@@ -734,186 +735,213 @@ SwaggerBootstrapUi.prototype.deepAdditionalProperties=function(addtionalObject){
 
 }
 /**
- * 解析类
+ * 异步解析类
  */
-SwaggerBootstrapUi.prototype.analysisDefinitionRef=function(menu){
+SwaggerBootstrapUi.prototype.analysisDefinitionAsync=function(menu,swud){
   var that = this;
+  var modelName=swud.name;
   //解析definition
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("definitions")) {
     var definitions = menu["definitions"];
     //改用async的for循环
     for (var name in definitions) {
-      var swud = new SwaggerBootstrapUiDefinition();
-      swud.name = name;
-      swud.ignoreFilterName = name;
-      //that.log("开始解析Definition:"+name);
-      //获取value
-      var value = definitions[name];
-      if (KUtils.checkUndefined(value)) {
-        swud.description = KUtils.propValue("description", value, "");
-        swud.type = KUtils.propValue("type", value, "");
-        swud.title = KUtils.propValue("title", value, "");
-        //判断是否有required属性
-        if (value.hasOwnProperty("required")) {
-          swud.required = value["required"];
-        }
-        //是否有properties
-        if (value.hasOwnProperty("properties")) {
-          var properties = value["properties"];
-          var defiTypeValue = {};
-          for (var property in properties) {
-            var propobj = properties[property];
-            //判断是否包含readOnly属性
-            if (!propobj.hasOwnProperty("readOnly") || !propobj["readOnly"]) {}
-            var spropObj = new SwaggerBootstrapUiProperty();
-            //赋值readOnly属性
-            if (propobj.hasOwnProperty("readOnly")) {
-              spropObj.readOnly = propobj["readOnly"];
-            }
-            spropObj.name = property;
-            spropObj.originProperty = propobj;
-            spropObj.type = KUtils.propValue("type", propobj, "string");
-            spropObj.description = KUtils.propValue("description", propobj, "");
-            //判断是否包含枚举
-            if (propobj.hasOwnProperty("enum")) {
-              spropObj.enum = propobj["enum"];
-              if (spropObj.description != "") {
-                spropObj.description += ",";
+      if(name==modelName){
+        /* swud = new SwaggerBootstrapUiDefinition();
+        swud.name = name;
+        swud.ignoreFilterName = name; */
+        //that.log("开始解析Definition:"+name);
+        //获取value
+        var value = definitions[name];
+        if (KUtils.checkUndefined(value)) {
+          swud.description = KUtils.propValue("description", value, "");
+          swud.type = KUtils.propValue("type", value, "");
+          swud.title = KUtils.propValue("title", value, "");
+          //判断是否有required属性
+          if (value.hasOwnProperty("required")) {
+            swud.required = value["required"];
+          }
+          //是否有properties
+          if (value.hasOwnProperty("properties")) {
+            var properties = value["properties"];
+            var defiTypeValue = {};
+            for (var property in properties) {
+              var propobj = properties[property];
+              //判断是否包含readOnly属性
+              if (!propobj.hasOwnProperty("readOnly") || !propobj["readOnly"]) {}
+              var spropObj = new SwaggerBootstrapUiProperty();
+              //赋值readOnly属性
+              if (propobj.hasOwnProperty("readOnly")) {
+                spropObj.readOnly = propobj["readOnly"];
               }
-              spropObj.description = spropObj.description + "可用值:" + spropObj.enum.join(",");
-            }
-            if (spropObj.type == "string") {
-              spropObj.example = String(KUtils.propValue("example", propobj, ""));
-            } else {
-              spropObj.example = KUtils.propValue("example", propobj, "");
-            }
-
-            spropObj.format = KUtils.propValue("format", propobj, "");
-            spropObj.required = KUtils.propValue("required", propobj, false);
-            if (swud.required.length > 0) {
-              //有required属性,需要再判断一次
-              if (swud.required.indexOf(spropObj.name) > -1) {
-                //if($.inArray(spropObj.name,swud.required)>-1){
-                //存在
-                spropObj.required = true;
-              }
-            }
-            //默认string类型
-            var propValue = "";
-            //判断是否有类型
-            if (propobj.hasOwnProperty("type")) {
-              var type = propobj["type"];
-              //判断是否有example
-              if (propobj.hasOwnProperty("example")) {
-                if (type == "string") {
-                  propValue = String(KUtils.propValue("example", propobj, ""));
-                } else {
-                  propValue = propobj["example"];
+              spropObj.name = property;
+              spropObj.originProperty = propobj;
+              spropObj.type = KUtils.propValue("type", propobj, "string");
+              spropObj.description = KUtils.propValue("description", propobj, "");
+              //判断是否包含枚举
+              if (propobj.hasOwnProperty("enum")) {
+                spropObj.enum = propobj["enum"];
+                if (spropObj.description != "") {
+                  spropObj.description += ",";
                 }
-              } else if (KUtils.checkIsBasicType(type)) {
-                propValue = KUtils.getBasicTypeValue(type);
-                //此处如果是object情况,需要判断additionalProperties属性的情况
-                if (type == "object") {
-                  if (propobj.hasOwnProperty("additionalProperties")) {
-                    var addpties = propobj["additionalProperties"];
-                    that.log("------解析map-=-----------additionalProperties,defName:" + name);
-                    //判断是否additionalProperties中还包含additionalProperties属性
-                    var addtionalName=this.deepAdditionalProperties(addpties);
-                    //console.log("递归类型---"+addtionalName)
-                    //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
-                    if(KUtils.strNotBlank(addtionalName)){
-                      //console.log("-------------------------addtionalName--------"+addtionalName)
-                      //这里需要递归判断是否是本身,如果是,则退出递归查找
-                      var globalArr = new Array();
-                      //添加类本身
-                      globalArr.push(name);
-                      var addTempValue = null;
-                      if (addtionalName != name) {
-                        addTempValue = that.findRefDefinition(addtionalName, definitions, false, globalArr);
-                      } else {
-                        addTempValue = that.findRefDefinition(addtionalName, definitions, true, name, globalArr);
-                      }
-                      propValue = {
-                        "additionalProperties1": addTempValue
-                      }
-                      //console.log(propValue)
-                      spropObj.type = addtionalName;
-                      spropObj.refType = addtionalName;
-                    }
-                    else if (addpties.hasOwnProperty("$ref")) {
-                      var adref = addpties["$ref"];
-                      var regex = new RegExp("#/definitions/(.*)$", "ig");
-                      if (regex.test(adref)) {
-                        var addrefType = RegExp.$1;
-                        var addTempValue = null;
+                spropObj.description = spropObj.description + "可用值:" + spropObj.enum.join(",");
+              }
+              if (spropObj.type == "string") {
+                spropObj.example = String(KUtils.propValue("example", propobj, ""));
+              } else {
+                spropObj.example = KUtils.propValue("example", propobj, "");
+              }
+  
+              spropObj.format = KUtils.propValue("format", propobj, "");
+              spropObj.required = KUtils.propValue("required", propobj, false);
+              if (swud.required.length > 0) {
+                //有required属性,需要再判断一次
+                if (swud.required.indexOf(spropObj.name) > -1) {
+                  //if($.inArray(spropObj.name,swud.required)>-1){
+                  //存在
+                  spropObj.required = true;
+                }
+              }
+              //默认string类型
+              var propValue = "";
+              //判断是否有类型
+              if (propobj.hasOwnProperty("type")) {
+                var type = propobj["type"];
+                //判断是否有example
+                if (propobj.hasOwnProperty("example")) {
+                  if (type == "string") {
+                    propValue = String(KUtils.propValue("example", propobj, ""));
+                  } else {
+                    propValue = propobj["example"];
+                  }
+                } else if (KUtils.checkIsBasicType(type)) {
+                  propValue = KUtils.getBasicTypeValue(type);
+                  //此处如果是object情况,需要判断additionalProperties属性的情况
+                  if (type == "object") {
+                    if (propobj.hasOwnProperty("additionalProperties")) {
+                      var addpties = propobj["additionalProperties"];
+                      that.log("------解析map-=-----------additionalProperties,defName:" + name);
+                      //判断是否additionalProperties中还包含additionalProperties属性
+                      var addtionalName=this.deepAdditionalProperties(addpties);
+                      //console.log("递归类型---"+addtionalName)
+                      //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+                      if(KUtils.strNotBlank(addtionalName)){
+                        //console.log("-------------------------addtionalName--------"+addtionalName)
                         //这里需要递归判断是否是本身,如果是,则退出递归查找
                         var globalArr = new Array();
                         //添加类本身
                         globalArr.push(name);
-
-                        if (addrefType != name) {
-                          addTempValue = that.findRefDefinition(addrefType, definitions, false, globalArr);
+                        var addTempValue = null;
+                        if (addtionalName != name) {
+                          addTempValue = that.findRefDefinition(addtionalName, definitions, false, globalArr);
                         } else {
-                          addTempValue = that.findRefDefinition(addrefType, definitions, true, name, globalArr);
+                          addTempValue = that.findRefDefinition(addtionalName, definitions, true, name, globalArr);
                         }
                         propValue = {
                           "additionalProperties1": addTempValue
                         }
-                        that.log("解析map-=完毕：")
-                        that.log(propValue);
-                        spropObj.type = addrefType;
-                        spropObj.refType = addrefType;
+                        //console.log(propValue)
+                        spropObj.type = addtionalName;
+                        spropObj.refType = addtionalName;
                       }
-                    } else if (addpties.hasOwnProperty("items")) {
-                      //数组
-                      var addPropItems = addpties["items"];
-
-                      var adref = addPropItems["$ref"];
-                      var regex = new RegExp("#/definitions/(.*)$", "ig");
-                      if (regex.test(adref)) {
-                        var addrefType = RegExp.$1;
-                        var addTempValue = null;
-                        //这里需要递归判断是否是本身,如果是,则退出递归查找
-                        var globalArr = new Array();
-                        //添加类本身
-                        globalArr.push(name);
-
-                        if (addrefType != name) {
-                          addTempValue = that.findRefDefinition(addrefType, definitions, false, globalArr);
-                        } else {
-                          addTempValue = that.findRefDefinition(addrefType, definitions, true, name, globalArr);
+                      else if (addpties.hasOwnProperty("$ref")) {
+                        var adref = addpties["$ref"];
+                        var regex = new RegExp("#/definitions/(.*)$", "ig");
+                        if (regex.test(adref)) {
+                          var addrefType = RegExp.$1;
+                          var addTempValue = null;
+                          //这里需要递归判断是否是本身,如果是,则退出递归查找
+                          var globalArr = new Array();
+                          //添加类本身
+                          globalArr.push(name);
+  
+                          if (addrefType != name) {
+                            addTempValue = that.findRefDefinition(addrefType, definitions, false, globalArr);
+                          } else {
+                            addTempValue = that.findRefDefinition(addrefType, definitions, true, name, globalArr);
+                          }
+                          propValue = {
+                            "additionalProperties1": addTempValue
+                          }
+                          that.log("解析map-=完毕：")
+                          that.log(propValue);
+                          spropObj.type = addrefType;
+                          spropObj.refType = addrefType;
                         }
-                        var tempAddValue = new Array();
-                        tempAddValue.push(addTempValue);
-                        propValue = {
-                          "additionalProperties1": tempAddValue
+                      } else if (addpties.hasOwnProperty("items")) {
+                        //数组
+                        var addPropItems = addpties["items"];
+  
+                        var adref = addPropItems["$ref"];
+                        var regex = new RegExp("#/definitions/(.*)$", "ig");
+                        if (regex.test(adref)) {
+                          var addrefType = RegExp.$1;
+                          var addTempValue = null;
+                          //这里需要递归判断是否是本身,如果是,则退出递归查找
+                          var globalArr = new Array();
+                          //添加类本身
+                          globalArr.push(name);
+  
+                          if (addrefType != name) {
+                            addTempValue = that.findRefDefinition(addrefType, definitions, false, globalArr);
+                          } else {
+                            addTempValue = that.findRefDefinition(addrefType, definitions, true, name, globalArr);
+                          }
+                          var tempAddValue = new Array();
+                          tempAddValue.push(addTempValue);
+                          propValue = {
+                            "additionalProperties1": tempAddValue
+                          }
+                          that.log("解析map-=完毕：")
+                          that.log(propValue);
+                          spropObj.type = "array";
+                          spropObj.refType = addrefType;
                         }
-                        that.log("解析map-=完毕：")
-                        that.log(propValue);
-                        spropObj.type = "array";
-                        spropObj.refType = addrefType;
                       }
+                    }
+                  }
+                } else {
+                  if (type == "array") {
+                    propValue = new Array();
+                    var items = propobj["items"];
+                    var ref = items["$ref"];
+                    //此处有可能items是array
+                    if (items.hasOwnProperty("type")) {
+                      if (items["type"] == "array") {
+                        ref = items["items"]["$ref"];
+                      }
+                    }
+                    //判断是否存在枚举
+                    if (items.hasOwnProperty("enum")) {
+                      if (spropObj.description != "") {
+                        spropObj.description += ",";
+                      }
+                      spropObj.description = spropObj.description + "可用值:" + items["enum"].join(",");
+                    }
+                    var regex = new RegExp("#/definitions/(.*)$", "ig");
+                    if (regex.test(ref)) {
+                      var refType = RegExp.$1;
+                      spropObj.refType = refType;
+                      //这里需要递归判断是否是本身,如果是,则退出递归查找
+                      var globalArr = new Array();
+                      //添加类本身
+                      globalArr.push(name);
+                      if (refType != name) {
+                        propValue.push(that.findRefDefinition(refType, definitions, false, globalArr));
+                      } else {
+                        propValue.push(that.findRefDefinition(refType, definitions, true, name, globalArr));
+                      }
+                    } else {
+                      //schema基础类型显示
+                      spropObj.refType = items["type"];
                     }
                   }
                 }
+  
               } else {
-                if (type == "array") {
-                  propValue = new Array();
-                  var items = propobj["items"];
-                  var ref = items["$ref"];
-                  //此处有可能items是array
-                  if (items.hasOwnProperty("type")) {
-                    if (items["type"] == "array") {
-                      ref = items["items"]["$ref"];
-                    }
-                  }
-                  //判断是否存在枚举
-                  if (items.hasOwnProperty("enum")) {
-                    if (spropObj.description != "") {
-                      spropObj.description += ",";
-                    }
-                    spropObj.description = spropObj.description + "可用值:" + items["enum"].join(",");
-                  }
+                //that.log("解析属性："+property);
+                //that.log(propobj);
+                if (propobj.hasOwnProperty("$ref")) {
+                  var ref = propobj["$ref"];
                   var regex = new RegExp("#/definitions/(.*)$", "ig");
                   if (regex.test(ref)) {
                     var refType = RegExp.$1;
@@ -923,71 +951,69 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRef=function(menu){
                     //添加类本身
                     globalArr.push(name);
                     if (refType != name) {
-                      propValue.push(that.findRefDefinition(refType, definitions, false, globalArr));
+                      propValue = that.findRefDefinition(refType, definitions, false, globalArr);
                     } else {
-                      propValue.push(that.findRefDefinition(refType, definitions, true, name, globalArr));
+                      propValue = that.findRefDefinition(refType, definitions, true, globalArr);
                     }
-                  } else {
-                    //schema基础类型显示
-                    spropObj.refType = items["type"];
+  
                   }
+                } else {
+                  propValue = {};
                 }
               }
-
-            } else {
-              //that.log("解析属性："+property);
-              //that.log(propobj);
-              if (propobj.hasOwnProperty("$ref")) {
-                var ref = propobj["$ref"];
-                var regex = new RegExp("#/definitions/(.*)$", "ig");
-                if (regex.test(ref)) {
-                  var refType = RegExp.$1;
-                  spropObj.refType = refType;
-                  //这里需要递归判断是否是本身,如果是,则退出递归查找
-                  var globalArr = new Array();
-                  //添加类本身
-                  globalArr.push(name);
-                  if (refType != name) {
-                    propValue = that.findRefDefinition(refType, definitions, false, globalArr);
-                  } else {
-                    propValue = that.findRefDefinition(refType, definitions, true, globalArr);
-                  }
-
+              spropObj.value = propValue;
+              //判断是否有format,如果是integer,判断是64位还是32位
+              if (spropObj.format != null && spropObj.format != undefined && spropObj.format != "") {
+                //spropObj.type=spropObj.format;
+                spropObj.type += "(" + spropObj.format + ")";
+              }
+              //判断最终类型
+              if (spropObj.refType != null && spropObj.refType != "") {
+                //判断基础类型,非数字类型
+                if (spropObj.type == "string") {
+                  spropObj.type = spropObj.refType;
                 }
-              } else {
-                propValue = {};
+              }
+              //addprop
+              //这里判断去重
+              if (!that.checkPropertiesExists(swud.properties, spropObj)) {
+                swud.properties.push(spropObj);
+                //如果当前属性readOnly=true，则实体类value排除此属性的值
+                if (!spropObj.readOnly) {
+                  defiTypeValue[property] = propValue;
+                }
               }
             }
-            spropObj.value = propValue;
-            //判断是否有format,如果是integer,判断是64位还是32位
-            if (spropObj.format != null && spropObj.format != undefined && spropObj.format != "") {
-              //spropObj.type=spropObj.format;
-              spropObj.type += "(" + spropObj.format + ")";
-            }
-            //判断最终类型
-            if (spropObj.refType != null && spropObj.refType != "") {
-              //判断基础类型,非数字类型
-              if (spropObj.type == "string") {
-                spropObj.type = spropObj.refType;
-              }
-            }
-            //addprop
-            //这里判断去重
-            if (!that.checkPropertiesExists(swud.properties, spropObj)) {
-              swud.properties.push(spropObj);
-              //如果当前属性readOnly=true，则实体类value排除此属性的值
-              if (!spropObj.readOnly) {
-                defiTypeValue[property] = propValue;
-              }
-            }
+            swud.value = defiTypeValue;
           }
-          swud.value = defiTypeValue;
         }
+        ////console("开始递归---------------deepTreeTableRefParameter")
+        deepTreeTableRefParameter(swud, that, swud, swud);
+        ////console(swud)
+        //that.currentInstance.difArrs.push(swud);
+        break;
       }
-      ////console("开始递归---------------deepTreeTableRefParameter")
-      deepTreeTableRefParameter(swud, that, swud, swud);
-      ////console(swud)
-      that.currentInstance.difArrs.push(swud);
+    }
+  }
+  //return swud;
+}
+
+/**
+ * 解析所有的Model,但是不解析属性
+ * @param {SwaggerJson对象实体} menu 
+ */
+SwaggerBootstrapUi.prototype.analysisDefinitionRefModel=function(menu){
+  var that = this;
+  var swud=null;
+  //解析definition
+  if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("definitions")) {
+    var definitions = menu["definitions"];
+    //改用async的for循环
+    for (var name in definitions) {
+        swud = new SwaggerBootstrapUiDefinition();
+        swud.name = name;
+        swud.ignoreFilterName = name;
+        that.currentInstance.difArrs.push(swud);
     }
   }
 }
@@ -997,9 +1023,10 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRef=function(menu){
  */
 SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   var that = this;
+  this.currentInstance.swaggerData=menu;
   //解析definition
   //放弃解析所有的Model结构
-  //that.analysisDefinitionRef(menu);
+  that.analysisDefinitionRefModel(menu);
   //解析tags标签
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("tags")) {
     var tags = menu["tags"];
@@ -1743,6 +1770,7 @@ SwaggerBootstrapUi.prototype.storeCacheApis = function () {
 
 //二次解析
 SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
+  var that=this;
   var apiInfo=swpinfo.originalApiInfo;
   if(!swpinfo.init){
     //如果当前对象未初始化,进行初始化
@@ -1878,6 +1906,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
                   defiTypeValue[property] = propValue;
                 }
                 swud.value = defiTypeValue;
+                swud.init=true;
                 that.currentInstance.difArrs.push(swud);
               } else {
                 //判断是否是基础类型
@@ -1898,6 +1927,10 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
           //查询
           for (var i = 0; i < that.currentInstance.difArrs.length; i++) {
             var ref = that.currentInstance.difArrs[i];
+            if(!ref.init){
+              //如果该类没有加载,则进行加载
+              that.analysisDefinitionAsync(that.currentInstance.swaggerData,ref);
+            }
             if (ref.name == rptype) {
               if (arr) {
                 var na = new Array();
@@ -2009,6 +2042,10 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
       //查询
       for (var i = 0; i < that.currentInstance.difArrs.length; i++) {
         var ref = that.currentInstance.difArrs[i];
+        if(!ref.init){
+          //如果该类没有加载,则进行加载
+          that.analysisDefinitionAsync(that.currentInstance.swaggerData,ref);
+        }
         if (ref.name == definitionType) {
           if (arr) {
             var na = new Array();
@@ -2759,6 +2796,11 @@ SwaggerBootstrapUi.prototype.getDefinitionByName = function (name) {
       return;
     }
   })
+  //改为异步加载后,异步初始化class
+  if(!def.init){
+    //如果在difArr中没有找到,初始化
+    def=that.analysisDefinitionAsync(this.currentInstance.swaggerData,def);
+  }
   return def;
 }
 
@@ -3440,6 +3482,8 @@ function SwaggerBootstrapUiCacheApis(options) {
  * @constructor
  */
 var SwaggerBootstrapUiDefinition = function () {
+  //是否初始化过,作为异步加载的条件
+  this.init=false;
   //类型名称
   this.name = "";
   this.ignoreFilterName = null;
@@ -3706,6 +3750,8 @@ function SwaggerBootstrapUiParameterLevel() {
  * @constructor
  */
 function SwaggerBootstrapUiInstance(name, location, version) {
+  //当前Swagger的json
+  this.swaggerData=null;
   //this.id = 'SwaggerBootstrapUiInstance' + Math.round(Math.random() * 1000000)
   this.id = 'SwaggerBootstrapUiInstance' + md5(name + location + version)
   //默认未加载
@@ -3793,7 +3839,61 @@ SwaggerBootstrapUiInstance.prototype.getDefinitionByName = function (name) {
       return;
     }
   })
+  //改为异步加载后,异步初始化class
+   if(!def.init){
+    //如果在difArr中没有找到,初始化
+    def=that.analysisDefinitionAsync(this.currentInstance.swaggerData,def);
+
+  }
   return def;
+}
+/**
+ * 释放内存,当分组切换时,置空，放弃全局搜索功能
+ */
+SwaggerBootstrapUiInstance.prototype.freeMemory=function(){
+  //当前definistion数组
+  // SwaggerBootstrapUiDefinition 集合
+  this.difArrs = []
+  //difinition的请求value缓存值
+  //key-definiationName  -value :requestValue
+  // add 2019-12-11 15:06:30
+  this.definitionValues = {};
+  //针对Swagger Models功能,再存一份SwaggerBootstrapUiDefinition集合
+  this.swaggerModelsDifinitions = []
+  //add 2019-12-11 20:08:51
+  //存放treeTable已经递归查询过的schema值
+  this.refTreeTableModels = {};
+  //标签分类信息组
+  //SwaggerBootstrapUiTag 集合
+  this.tags = []
+  //接口url信息
+  //存储SwaggerBootstrapUiApiInfo 集合
+  this.paths = []
+  //字典
+  this.pathsDictionary = {}
+  //全局参数,存放SwaggerBootstrapUiParameter集合
+  this.globalParameters = []
+  //参数统计信息，存放SwaggerBootstrapUiPathCountDownLatch集合
+  this.pathArrs = []
+  //key-value方式存放
+  //key-存放接口地址
+  //value:存放实际值
+  this.pathFilters = {}
+  //权限信息
+  this.securityArrs = []
+  //Models
+  this.models = []
+  this.modelNames = []
+  //新版本的models 适配antd的属性表格
+  this.modelArrs = []
+  this.firstLoad = true
+  this.groupApis = []
+  //缓存对象
+  //this.cacheInstance=new SwaggerBootstrapUiCacheApis({id:this.groupId,name:this.name});
+  this.cacheInstance = null
+  //自定义文档
+  this.markdownFiles = []
+  this.i18n = null
 }
 
 function checkFiledExistsAndEqStr(object, filed, eq) {
