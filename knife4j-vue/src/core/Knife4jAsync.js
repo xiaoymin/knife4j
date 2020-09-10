@@ -991,6 +991,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsync=function(menu,swud){
         deepTreeTableRefParameter(swud, that, swud, swud);
         ////console(swud)
         //that.currentInstance.difArrs.push(swud);
+        swud.init=true;
         break;
       }
     }
@@ -1925,13 +1926,13 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
         }
         if (rptype != null) {
           //查询
-          for (var i = 0; i < that.currentInstance.difArrs.length; i++) {
+         /*  for (var i = 0; i < that.currentInstance.difArrs.length; i++) {
             var ref = that.currentInstance.difArrs[i];
-            if(!ref.init){
-              //如果该类没有加载,则进行加载
-              that.analysisDefinitionAsync(that.currentInstance.swaggerData,ref);
-            }
             if (ref.name == rptype) {
+              if(!ref.init){
+                //如果该类没有加载,则进行加载
+                that.analysisDefinitionAsync(that.currentInstance.swaggerData,ref);
+              }
               if (arr) {
                 var na = new Array();
                 na.push(ref.value);
@@ -1942,10 +1943,19 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
                 swaggerResp.responseJson = ref.value;
               }
             }
-          }
+          } */
           //响应参数
           var def = that.getDefinitionByName(rptype);
           if (def != null) {
+            if (arr) {
+              var na = new Array();
+              na.push(def.value);
+              swaggerResp.responseValue = JSON.stringify(na, null, "\t");
+              swaggerResp.responseJson = na;
+            } else {
+              swaggerResp.responseValue = JSON.stringify(def.value, null, "\t");
+              swaggerResp.responseJson = def.value;
+            }
             if (def.hasOwnProperty("properties")) {
               var props = def["properties"];
               props.forEach(function (p) {
@@ -2042,11 +2052,11 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
       //查询
       for (var i = 0; i < that.currentInstance.difArrs.length; i++) {
         var ref = that.currentInstance.difArrs[i];
-        if(!ref.init){
-          //如果该类没有加载,则进行加载
-          that.analysisDefinitionAsync(that.currentInstance.swaggerData,ref);
-        }
         if (ref.name == definitionType) {
+          if(!ref.init){
+            //如果该类没有加载,则进行加载
+            that.analysisDefinitionAsync(that.currentInstance.swaggerData,ref);
+          }
           if (arr) {
             var na = new Array();
             na.push(ref.value);
@@ -2234,7 +2244,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
       }
     }
     swpinfo.init=true;
-
+    console.log("异步初始化ApiInfo完成")
+    console.log(swpinfo);
   }
 }
 /***
@@ -2792,15 +2803,15 @@ SwaggerBootstrapUi.prototype.getDefinitionByName = function (name) {
   var def = null;
   that.currentInstance.difArrs.forEach(function (d) {
     if (d.name == name) {
+      if(!d.init){
+        that.analysisDefinitionAsync(that.currentInstance.swaggerData,d);
+        d.init=true;
+      }
       def = d;
       return;
     }
   })
   //改为异步加载后,异步初始化class
-  if(!def.init){
-    //如果在difArr中没有找到,初始化
-    def=that.analysisDefinitionAsync(this.currentInstance.swaggerData,def);
-  }
   return def;
 }
 
@@ -3835,16 +3846,14 @@ SwaggerBootstrapUiInstance.prototype.getDefinitionByName = function (name) {
   var def = null;
   that.difArrs.forEach(function (d) {
     if (d.name == name) {
+      if(!d.init){
+        that.analysisDefinitionAsync(this.currentInstance.swaggerData,d);
+        d.init=true;
+      }
       def = d;
       return;
     }
   })
-  //改为异步加载后,异步初始化class
-   if(!def.init){
-    //如果在difArr中没有找到,初始化
-    def=that.analysisDefinitionAsync(this.currentInstance.swaggerData,def);
-
-  }
   return def;
 }
 /**

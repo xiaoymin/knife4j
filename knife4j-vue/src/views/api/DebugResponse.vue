@@ -250,7 +250,7 @@ export default {
         if (this.responseFieldDescriptionChecked) {
           if (this.responseContent.mode == "json") {
             console.log("数据大小："+this.responseStatus.size)
-            //this.showEditorFieldAnyWay();
+            this.showEditorFieldAnyWay();
           }
         }
       }

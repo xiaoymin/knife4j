@@ -105,7 +105,6 @@
             响应示例
           </div>
           <a-row :id="'knife4jDocumentShowEditor' + api.id + resp.code">
-            {{resp.responseValue}}
             <editor-show @showDescription="showResponseEditFieldDescription" :value="
                 resp.responseBasicType ? resp.responseText : resp.responseValue
               "></editor-show>
@@ -193,11 +192,13 @@ export default {
   },
   created() {
     var that = this;
-    console.log("Document")
-    console.log(this.api.responseValue);
+    //console.log("Document")
+    //console.log(this.api.responseValue);
     var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
     //根据instance的实例初始化model名称
     var treeTableModel = this.swaggerInstance.refTreeTableModels;
+    //console.log("treeTableModel")
+    //console.log(treeTableModel);
     this.$Knife4jModels.setValue(key, treeTableModel);
     this.initI18n();
     this.initRequestParams();
@@ -659,6 +660,8 @@ export default {
       //这里不
       that.multipData = {};
       let rcodes = this.api.responseCodes;
+      //console.log("rcodes")
+      //console.log(rcodes)
       if (rcodes != null && rcodes != undefined) {
         rcodes.forEach(function(rc) {
           //遍历
@@ -688,6 +691,7 @@ export default {
                   if (param.schema) {
                     //判断当前缓存是否存在
                     var schemaName = param.schemaValue;
+                   // console.log("schemaName:"+schemaName)
                     if (KUtils.checkUndefined(schemaName)) {
                       // //console("schemaValue--checkUndefined");
                       if (that.$Knife4jModels.exists(key, schemaName)) {
@@ -727,6 +731,7 @@ export default {
           }
         });
       }
+      //console.log(that.multipData);
     },
     showResponseEditFieldDescription(p) {
       //显示说明
