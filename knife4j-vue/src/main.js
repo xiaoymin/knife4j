@@ -15,10 +15,11 @@ import {Menu,Input,Select,Table,Tabs,
   Radio,Layout,Button,
   Tag,Divider,Tree,Dropdown,
   Col,Row,AutoComplete,Tooltip,Spin,
-  Checkbox,message
+  Collapse,Checkbox,message
 } from 'ant-design-vue'
 Vue.prototype.$message=message;
 //Vue.use(message)
+Vue.use(Collapse)
 Vue.use(Checkbox)
 Vue.use(Tooltip)
 Vue.use(Spin)

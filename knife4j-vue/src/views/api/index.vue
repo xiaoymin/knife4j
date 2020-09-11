@@ -68,13 +68,9 @@ export default {
         apiInfo = path;
       }
     });
-    console.log("初始化前")
-    console.log(apiInfo)
     if(!apiInfo.init){
-      console.log("inited")
       this.swagger.initApiInfoAsync(apiInfo);
     }
-    console.log("初始化后")
     console.log(apiInfo)
     this.storeCacheApiAddApiInfo(apiInfo, instance.groupId);
     this.swaggerInstance = instance;

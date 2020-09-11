@@ -999,22 +999,302 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsync=function(menu,swud){
   //return swud;
 }
 
+
 /**
  * 解析所有的Model,但是不解析属性
  * @param {SwaggerJson对象实体} menu 
  */
 SwaggerBootstrapUi.prototype.analysisDefinitionRefModel=function(menu){
   var that = this;
-  var swud=null;
   //解析definition
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("definitions")) {
     var definitions = menu["definitions"];
     //改用async的for循环
     for (var name in definitions) {
-        swud = new SwaggerBootstrapUiDefinition();
-        swud.name = name;
-        swud.ignoreFilterName = name;
-        that.currentInstance.difArrs.push(swud);
+      //所有的类classModel
+      var swud=swud = new SwaggerBootstrapUiDefinition();
+      swud.name = name;
+      swud.ignoreFilterName = name;
+      that.currentInstance.difArrs.push(swud);
+      //所有类classModel的treeTable参数
+      var swudTree=new SwaggerBootstrapUiTreeTableRefParameter();
+      swudTree.name=name;
+      swudTree.id=md5(name);
+      //存放值
+      that.currentInstance.swaggerTreeTableModels[name] = swudTree;
+    }
+  }
+}
+/**
+ * 异步解析Model的名称-SwaggerModel功能需要
+ * @param {当前swagger实例对象id} instanceId
+ * @param {model对象} treeTableModel 
+ */
+SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel=function(instanceId,treeTableModel){
+  console.log("analysisDefinitionRefTableModel-异步解析Model的名称-SwaggerModel功能需要");
+  console.log(treeTableModel);
+  var that=this;
+  var originalTreeTableModel=treeTableModel;
+  if(!treeTableModel.init){
+    var instance=null;
+    this.instances.forEach(ins=>{
+      if(ins.id==instanceId){
+        instance=ins;
+      }
+    })
+    console.log("当前实例")
+    console.log(instance)
+    for(name in instance.swaggerTreeTableModels){
+      if(name==treeTableModel.name){
+        originalTreeTableModel=instance.swaggerTreeTableModels[name];
+        if(!originalTreeTableModel.init){
+          //开始加载属性
+          originalTreeTableModel.init=true;
+          var definitions=instance.swaggerData["definitions"];
+          if(KUtils.checkUndefined(definitions)){
+            for(var key in definitions){
+              if(key==originalTreeTableModel.name){
+                var def=definitions[key];
+                console.log("def");
+                //根据def的properties解析
+                if(KUtils.checkUndefined(def)){
+                  if (def.hasOwnProperty("properties")) {
+                    var props = def["properties"];
+                    console.log(props);
+                    for(var pkey in props){
+                      var p=props[pkey];
+                      p.refType=that.getSwaggerModelRefType(p);
+                      var refp = new SwaggerBootstrapUiParameter();
+                      refp.pid = originalTreeTableModel.id;
+                      refp.readOnly = p.readOnly;
+                      refp.parentTypes.push(def.name)
+                      //refp.level = minfo.level + 1;
+                      refp.name = pkey;
+                      refp.type = p.type;
+                      //判断非array
+                      if (p.type != "array") {
+                        if (p.refType != null && p.refType != undefined && p.refType != "") {
+                          //修复针对schema类型的参数,显示类型为schema类型
+                          refp.type = p.refType;
+                        }
+                      }
+                      //refp.in = minfo.in;
+                      refp.require = p.required;
+                      refp.example = p.example;
+                      var description = KUtils.propValue("description", p, "");
+                      //判断是否包含枚举
+                      if (p.hasOwnProperty("enum")) {
+                        if (p.description != "") {
+                          description += ",";
+                        }
+                        description = p.description + "可用值:" + p.enum.join(",");
+                      }
+                      refp.description = KUtils.replaceMultipLineStr(description);
+                      //KUtils.validateJSR303(refp, p);
+                      //models添加所有属性
+                      originalTreeTableModel.params.push(refp);
+                      //判断类型是否基础类型
+                      if (KUtils.checkUndefined(p.refType) && !KUtils.checkIsBasicType(p.refType)) {
+                        ////console("schema类型--------------" + p.refType)
+                        refp.schemaValue = p.refType;
+                        refp.schema = true;
+                        //属性名称不同,或者ref类型不同
+                        var deepDef = that.getDefinitionByName(p.refType);
+                        if(KUtils.checkUndefined(deepDef)){
+                          if(!refp.parentTypes.includes(p.refType)){
+                            deepSwaggerModelsTreeTableRefParameter(refp, definitions, deepDef, originalTreeTableModel,that);
+                          }
+                        }
+                        
+                         /*  if (!checkDeepTypeAppear(refp.parentTypes, p.refType)) {
+                            deepTreeTableRefParameter(refp, that, deepDef, apiInfo);
+                          } */
+                      } else {
+                        if (p.type == "array") {
+                          if (p.refType != null && p.refType != undefined && p.refType != "") {
+                            //修复针对schema类型的参数,显示类型为schema类型
+                            refp.schemaValue = p.refType;
+                             //属性名称不同,或者ref类型不同
+                            var deepDef = that.getDefinitionByName(p.refType);
+                            if(KUtils.checkUndefined(deepDef)){
+                              if(!refp.parentTypes.includes(p.refType)){
+                                deepSwaggerModelsTreeTableRefParameter(refp, definitions, deepDef, originalTreeTableModel,that);
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          instance.refTreeTableModels[name]=originalTreeTableModel;
+        }
+      }
+    }
+  }
+  return originalTreeTableModel;
+}
+
+/**
+ * 获取当前属性的refType类型
+ * @param {*} property 
+ */
+SwaggerBootstrapUi.prototype.getSwaggerModelRefType=function(propobj){
+  var refType=null;
+  if (propobj.hasOwnProperty("type")) {
+    var type = propobj["type"];
+    //判断是否有example
+   if (KUtils.checkIsBasicType(type)) {
+      //此处如果是object情况,需要判断additionalProperties属性的情况
+      if (type == "object") {
+        if (propobj.hasOwnProperty("additionalProperties")) {
+          var addpties = propobj["additionalProperties"];
+          //判断是否additionalProperties中还包含additionalProperties属性
+          var addtionalName=this.deepAdditionalProperties(addpties);
+          //console.log("递归类型---"+addtionalName)
+          //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
+          if(KUtils.strNotBlank(addtionalName)){
+             refType = addtionalName;
+          }
+          else if (addpties.hasOwnProperty("$ref")) {
+            var adref = addpties["$ref"];
+            var regex = new RegExp("#/definitions/(.*)$", "ig");
+            if (regex.test(adref)) {
+              refType= RegExp.$1;
+            }
+          } else if (addpties.hasOwnProperty("items")) {
+            //数组
+            var addPropItems = addpties["items"];
+
+            var adref = addPropItems["$ref"];
+            var regex = new RegExp("#/definitions/(.*)$", "ig");
+            if (regex.test(adref)) {
+              refType = RegExp.$1;
+            }
+          }
+        }
+      }
+    } else {
+      if (type == "array") {
+        var items = propobj["items"];
+        if(KUtils.checkUndefined(items)){
+          var ref = items["$ref"];
+          //此处有可能items是array
+          if (items.hasOwnProperty("type")) {
+            if (items["type"] == "array") {
+              ref = items["items"]["$ref"];
+            }
+          }
+          var regex = new RegExp("#/definitions/(.*)$", "ig");
+          if (regex.test(ref)) {
+            refType = RegExp.$1;
+          } else {
+            //schema基础类型显示
+            refType = items["type"];
+          }
+        }
+      }
+    }
+  } else {
+    if (propobj.hasOwnProperty("$ref")) {
+      var ref = propobj["$ref"];
+      var regex = new RegExp("#/definitions/(.*)$", "ig");
+      if (regex.test(ref)) {
+        refType = RegExp.$1;
+      }
+    }
+  }
+  return refType;
+
+}
+/**
+ * 
+ * @param {*} parentRefp 
+ * @param {*} definitions 
+ * @param {*} deepDef 
+ * @param {*} originalTreeTableModel 
+ */
+function deepSwaggerModelsTreeTableRefParameter(parentRefp,definitions, deepDef,originalTreeTableModel,that){
+  if(KUtils.checkUndefined(definitions)){
+    for(var key in definitions){
+      if(key==deepDef.name){
+        var def=definitions[key];
+        //根据def的properties解析
+        if(KUtils.checkUndefined(def)){
+          if (def.hasOwnProperty("properties")) {
+            var props = def["properties"];
+            for(var pkey in props){
+              var p=props[pkey]
+              p.refType=that.getSwaggerModelRefType(p);
+              var refp = new SwaggerBootstrapUiParameter();
+              refp.pid = parentRefp.id;
+              refp.readOnly = p.readOnly;
+              parentRefp.parentTypes.forEach(function (pt) {
+                refp.parentTypes.push(pt);
+              })
+              refp.parentTypes.push(def.name)
+              refp.level = parentRefp.level + 1;
+              refp.name = pkey;
+              refp.type = p.type;
+              //判断非array
+              if (p.type != "array") {
+                if (p.refType != null && p.refType != undefined && p.refType != "") {
+                  //修复针对schema类型的参数,显示类型为schema类型
+                  refp.type = p.refType;
+                }
+              }
+              //refp.in = minfo.in;
+              refp.require = p.required;
+              refp.example = p.example;
+              var description = KUtils.propValue("description", p, "");
+              //判断是否包含枚举
+              if (p.hasOwnProperty("enum")) {
+                if (p.description != "") {
+                  description += ",";
+                }
+                description = p.description + "可用值:" + p.enum.join(",");
+              }
+              refp.description = KUtils.replaceMultipLineStr(description);
+              //KUtils.validateJSR303(refp, p);
+              //models添加所有属性
+              if(parentRefp.children==null){
+                parentRefp.children=new Array();
+              }
+              parentRefp.children.push(refp);
+              //originalTreeTableModel.params.push(refp);
+              //判断类型是否基础类型
+              if (KUtils.checkUndefined(p.refType) && !KUtils.checkIsBasicType(p.refType)) {
+                ////console("schema类型--------------" + p.refType)
+                refp.schemaValue = p.refType;
+                refp.schema = true;
+                //属性名称不同,或者ref类型不同
+                var childdeepDef = that.getDefinitionByName(p.refType);
+                if(!refp.parentTypes.includes(p.refType)){
+                  deepSwaggerModelsTreeTableRefParameter(refp, definitions, childdeepDef,originalTreeTableModel,that);
+                }
+                 /*  if (!checkDeepTypeAppear(refp.parentTypes, p.refType)) {
+                    deepTreeTableRefParameter(refp, that, deepDef, apiInfo);
+                  } */
+              } else {
+                if (p.type == "array") {
+                  if (p.refType != null && p.refType != undefined && p.refType != "") {
+                    //修复针对schema类型的参数,显示类型为schema类型
+                    refp.schemaValue = p.refType;
+                    //属性名称不同,或者ref类型不同
+                    var childdeepDef = that.getDefinitionByName(p.refType);
+                    if(!refp.parentTypes.includes(p.refType)){
+                      deepSwaggerModelsTreeTableRefParameter(refp, definitions, childdeepDef,originalTreeTableModel,that);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -2804,8 +3084,8 @@ SwaggerBootstrapUi.prototype.getDefinitionByName = function (name) {
   that.currentInstance.difArrs.forEach(function (d) {
     if (d.name == name) {
       if(!d.init){
-        that.analysisDefinitionAsync(that.currentInstance.swaggerData,d);
         d.init=true;
+        that.analysisDefinitionAsync(that.currentInstance.swaggerData,d);
       }
       def = d;
       return;
@@ -3695,6 +3975,8 @@ var SwaggerBootstrapUiRefParameter = function () {
 }
 
 var SwaggerBootstrapUiTreeTableRefParameter = function () {
+  //是否已经加载
+  this.init=false;
   this.id = "";
   this.name = null;
   //存放SwaggerBootstrapUiParameter集合
@@ -3735,7 +4017,6 @@ var SwaggerBootstrapUiParameter = function () {
   //this.id = "param" + Math.round(Math.random() * 1000000);
   this.id = uniqueId('param'); // "param" + KUtils.randomMd5(); 使用 uniqueId 方法替代
   this.pid = "-1";
-
   this.level = 1;
   //参数是否显示在debug中
   this.show = true;
@@ -3745,6 +4026,7 @@ var SwaggerBootstrapUiParameter = function () {
 
 
   this.childrenTypes = new Array();
+  this.children=null;
   this.parentTypes = new Array();
 }
 
@@ -3797,6 +4079,8 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   //针对Swagger Models功能,再存一份SwaggerBootstrapUiDefinition集合
   this.swaggerModelsDifinitions = []
   //add 2019-12-11 20:08:51
+  //该属性针对SwaggerModels功能,避免和refTreeTableModels属性功能重叠
+  this.swaggerTreeTableModels={};
   //存放treeTable已经递归查询过的schema值
   this.refTreeTableModels = {};
   //标签分类信息组
@@ -3847,8 +4131,8 @@ SwaggerBootstrapUiInstance.prototype.getDefinitionByName = function (name) {
   that.difArrs.forEach(function (d) {
     if (d.name == name) {
       if(!d.init){
-        that.analysisDefinitionAsync(this.currentInstance.swaggerData,d);
         d.init=true;
+        that.analysisDefinitionAsync(this.currentInstance.swaggerData,d);
       }
       def = d;
       return;

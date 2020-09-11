@@ -450,6 +450,35 @@ const utils = {
     }
     return flag;
   },
+  validateJSR303:function(parameter, origin){
+    var max = origin["maximum"],
+    min = origin["minimum"],
+    emin = origin["exclusiveMinimum"],
+    emax = origin["exclusiveMaximum"];
+    var pattern = origin["pattern"];
+    var maxLength = origin["maxLength"],
+      minLength = origin["minLength"];
+    if (max || min || emin || emax) {
+      parameter.validateStatus = true;
+      parameter.validateInstance = {
+        minimum: min,
+        maximum: max,
+        exclusiveMaximum: emax,
+        exclusiveMinimum: emin
+      };
+    } else if (pattern) {
+      parameter.validateStatus = true;
+      parameter.validateInstance = {
+        "pattern": origin["pattern"]
+      };
+    } else if (maxLength || minLength) {
+      parameter.validateStatus = true;
+      parameter.validateInstance = {
+        maxLength: maxLength,
+        minLength: minLength
+      };
+    }
+  },
   checkUndefined: function (obj) {
     var flag = false;
     if (obj != undefined && obj != null && typeof (obj) != "undefined") {
