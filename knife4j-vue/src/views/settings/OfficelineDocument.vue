@@ -95,6 +95,12 @@ export default {
   computed:{
     language(){
        return this.$store.state.globals.language;
+    }, 
+    swagger(){
+       return this.$store.state.globals.swagger;
+    },
+    swaggerCurrentInstance(){
+      return this.$store.state.globals.swaggerCurrentInstance;
     }
   },
   methods: {
@@ -104,7 +110,8 @@ export default {
     initModels() {
       var key = Constants.globalTreeTableModelParams + this.data.instance.id;
       //根据instance的实例初始化model名称
-      var treeTableModel = this.data.instance.refTreeTableModels;
+      //var treeTableModel = this.data.instance.refTreeTableModels;
+      var treeTableModel = this.data.instance.swaggerTreeTableModels;
       this.$Knife4jModels.setValue(key, treeTableModel);
       //console("初始化Models");
       //this.$Knife4jModels.setTags(key, this.data.instance.tags);
@@ -125,6 +132,10 @@ export default {
               //存在接口,遍历接口的参数
               tag.childrens.forEach(function(apiInfo) {
                 ////console("接口地址:" + apiInfo.showUrl);
+                if(!apiInfo.init){
+                  //是否初始化过
+                  that.swagger.initApiInfoAsync(apiInfo);
+                }
                 //获取接口的参数
                 var data = [];
                 if (
@@ -169,6 +180,7 @@ export default {
                               key,
                               schemaName
                             );
+                            model=that.swagger.analysisDefinitionRefTableModel(that.data.instance.id,model);
                             if (KUtils.checkUndefined(model)) {
                               var children = model.params;
                               if (KUtils.arrNotEmpty(children)) {

@@ -2602,8 +2602,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
       }
     }
     swpinfo.init=true;
-    console.log("异步初始化ApiInfo完成")
-    console.log(swpinfo);
+    //console.log("异步初始化ApiInfo完成")
+    //console.log(swpinfo);
   }
 }
 /***
