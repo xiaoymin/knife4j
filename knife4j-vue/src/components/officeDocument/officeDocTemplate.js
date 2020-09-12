@@ -276,7 +276,7 @@ export function getDocumentVueTemplates(title, resumecss, dataStr) {
                       {{ resp.responseText }}
                     </div>
                     <pre
-                      class="api-editor-show"
+                      class="knife4j-api-editor-show"
                       v-else
                       v-html="formaterJson(resp.responseValue)"
                     ></pre>

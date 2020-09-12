@@ -520,6 +520,24 @@ export default {
           })
       }
       return tmpChildParams;
+    },
+    deepResponseStaticParameters(parameter){
+      var tmpChildParams=null;
+      if(KUtils.arrNotEmpty(parameter.children)){
+          tmpChildParams=new Array();
+          parameter.children.forEach(tmpParam=>{
+            var children=this.deepResponseStaticParameters(tmpParam);
+            tmpChildParams.push({
+                  "name":tmpParam.name
+                  ,"children":children
+                  ,"description":tmpParam.description
+                  ,"id":tmpParam.id
+                  ,"type":tmpParam.type
+                  ,"schemaValue":tmpParam.schemaValue
+                })
+          })
+      }
+      return tmpChildParams;
     }
     ,getHtmlData() {
       //获取导出网页的Html数据结构,用于在单页面渲染
@@ -565,8 +583,87 @@ export default {
             //处理响应参数,缩减不必要的属性
             //1.针对多schema的情况
             var tmpMultiResponseParameters=null;
-            
-
+            if(KUtils.arrNotEmpty(tmpApi.multipCodeDatas)){
+              tmpMultiResponseParameters=new Array();
+              tmpApi.multipCodeDatas.forEach(multipcd=>{
+                //1.1 处理多Header的情况
+                var tmpMultipHeaders=null;
+                if(KUtils.arrNotEmpty(multipcd.responseHeaderParameters)){
+                  tmpMultipHeaders=new Array();
+                  multipcd.responseHeaderParameters.forEach(multipHeader=>{
+                    tmpMultipHeaders.push({
+                      "id":multipHeader.id,
+                      "name":multipHeader.name,
+                      "description":multipHeader.description,
+                      "type":multipHeader.type
+                    })
+                  })
+                }
+                //1.2处理响应参数data
+                var tmpMultipData=null;
+                if(KUtils.arrNotEmpty(multipcd.data)){
+                  tmpMultipData=new Array();
+                  multipcd.data.forEach(multipdata=>{
+                    var tmpResponseChildParams=this.deepResponseStaticParameters(multipdata);  
+                    tmpMultipData.push({
+                      "name":multipdata.name
+                      ,"children":tmpResponseChildParams
+                      ,"description":multipdata.description
+                      ,"id":multipdata.in
+                      ,"type":multipdata.type
+                      ,"schemaValue":multipdata.schemaValue
+                    })
+                  })
+                }
+                tmpMultiResponseParameters.push({
+                  "code":multipcd.code,
+                  "responseHeaderParameters":tmpMultipHeaders,
+                  "data":tmpMultipData,
+                  "responseBasicType":multipcd.responseBasicType,
+                  "responseText":multipcd.responseText,
+                  "responseValue":multipcd.responseValue
+                })
+              })
+            }
+            //2.针对单schema的情况
+            //2.1 header
+            var tmpSingleResponseHeader=null;
+            if(KUtils.arrNotEmpty(tmpApi.responseHeaderParameters)){
+              tmpSingleResponseHeader=new Array();
+              tmpApi.responseHeaderParameters.forEach(singleHeader=>{
+                tmpSingleResponseHeader.push({
+                  "id":singleHeader.id,
+                  "name":singleHeader.name,
+                  "description":singleHeader.description,
+                  "type":singleHeader.type
+                })
+              })
+            }
+            //2.2 响应参数
+            var tmpMultipData=null;
+            if(KUtils.checkUndefined(tmpApi.multipData)){
+              var tmpDataArr=null;
+              if(KUtils.checkUndefined(tmpApi.multipData.data)&&KUtils.arrNotEmpty(tmpApi.multipData.data)){
+                tmpDataArr=new Array();
+                tmpApi.multipData.data.forEach(md=>{
+                   var tmpMdChildren=this.deepResponseStaticParameters(md);  
+                    tmpDataArr.push({
+                      "name":md.name
+                      ,"children":tmpMdChildren
+                      ,"description":md.description
+                      ,"id":md.in
+                      ,"type":md.type
+                      ,"schemaValue":md.schemaValue
+                    })
+                })
+              }
+              tmpMultipData={
+                "responseBasicType":tmpApi.multipData.responseBasicType,
+                "responseText":tmpApi.multipData.responseText,
+                "responseValue":tmpApi.multipData.responseValue,
+                "data":tmpDataArr
+              }
+            }
             tmpChildrens.push({
               "id":tmpApi.id
               ,"operationId":tmpApi.operationId
@@ -582,7 +679,8 @@ export default {
               ,"reqParameters":tmpRequestParameters
               ,"responseCodes":tmpResponseCodes
               ,"multipartResponseSchema":tmpApi.multipartResponseSchema
-              ,"responseHeaderParameters":tmpApi.responseHeaderParameters
+              ,"multipCodeDatas":tmpMultiResponseParameters
+              ,"responseHeaderParameters":tmpSingleResponseHeader
               ,"multipData":tmpApi.multipData
             })
           })
