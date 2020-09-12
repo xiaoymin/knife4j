@@ -111,7 +111,7 @@ export default {
           this.modelNames.push(modelInfo);
         }
       }
-      console.log(this.modelNames)
+      //console.log(this.modelNames)
    },
     modelChange(key) {
       var that = this;
@@ -144,8 +144,8 @@ export default {
                 model.name
               );
               originalModel=that.swagger.analysisDefinitionRefTableModel(that.data.instance.id,originalModel);
-              console.log("初始化完成")
-              console.log(originalModel);
+              //console.log("初始化完成")
+              //console.log(originalModel);
               //console("查找原始model:" + model.name);
               if (KUtils.checkUndefined(originalModel)) {
                 //存在
