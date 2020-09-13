@@ -431,8 +431,8 @@ export default {
                     schemaName
                   );
                   model=that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id,model);
-                  console.log("findmodel")
-                  console.log(model)
+                  //console.log("findmodel")
+                  //console.log(model)
                   if (model && model.params) {
                     const childrens = model.params
                       .filter(({ name }) => {

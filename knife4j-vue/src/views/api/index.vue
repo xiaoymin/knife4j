@@ -67,7 +67,7 @@ export default {
     if(!apiInfo.init){
       this.swagger.initApiInfoAsync(apiInfo);
     }
-    console.log(apiInfo)
+    //console.log(apiInfo)
     this.storeCacheApiAddApiInfo(apiInfo, instance.groupId);
     this.swaggerInstance = instance;
     this.api = apiInfo;
