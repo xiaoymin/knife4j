@@ -19,6 +19,7 @@
         <module>knife4j-springdoc-ui</module>
         <module>knife4j-jfinal</module>
         <module>knife4j-jfinal-ui</module>
+        <module>knife4j-spring-mvc</module>
     </modules>
     <packaging>pom</packaging>
     <name>knife4j</name>
