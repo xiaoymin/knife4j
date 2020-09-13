@@ -183,7 +183,8 @@ function createWordBasicInfo(instance, markdownCollections) {
  */
 function createWordPlusInfo(instance, markdownCollections) {
   if (KUtils.checkUndefined(instance.markdownFiles)) {
-    if (instance.markdownFiles.length > 0) {
+    if(KUtils.arrNotEmpty(instance.markdownFiles)){
+    //if (instance.markdownFiles.length > 0) {
       wordLines(markdownCollections);
       //markdownCollections.push('# 附录');
       markdownCollections.push('<h1>3.附录</h1>')
@@ -328,7 +329,8 @@ function createWordApiResponseStatus(apiInfo, markdownCollections) {
  */
 function createWordApiResponseHeaderParams(responseHeaderParameters, markdownCollections) {
   if (KUtils.checkUndefined(responseHeaderParameters)) {
-    if (responseHeaderParameters.length > 0) {
+    if(KUtils.arrNotEmpty(responseHeaderParameters)){
+    //if (responseHeaderParameters.length > 0) {
       wordLines(markdownCollections);
       markdownCollections.push('<div class="knife4j-word-title">响应Header</div>')
       wordLines(markdownCollections);
@@ -446,7 +448,8 @@ function createWordApiRequestParameters(apiInfo, markdownCollections) {
   markdownCollections.push('<thead><tr><th>参数名称</th><th>参数说明</th><th>请求类型</th><th>必须</th><th>数据类型</th><th>schema</th></tr></thead>');
   markdownCollections.push('<tbody>');
   //判断是否拥有请求参数
-  if (reqParameters.length > 0) {
+  if(KUtils.arrNotEmpty(reqParameters)){
+  //if (reqParameters.length > 0) {
     //级联表格，在表格需要最佳空格缩进符号
     deepWordTableByRequestParameter(reqParameters, markdownCollections, 1);
   }else{

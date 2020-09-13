@@ -50,7 +50,7 @@
       <!-- <editor-show :value="api.requestValue"></editor-show> -->
     </div>
     <div class="api-title">
-      请求参数1111111111111
+      请求参数
     </div>
     <a-table
       defaultExpandAllRows

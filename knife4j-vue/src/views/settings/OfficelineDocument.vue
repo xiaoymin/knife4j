@@ -3,7 +3,7 @@
     <a-row class="markdown-row">
       <a-row class="globalparameters">
         <a-row class="gptips" v-html="$t('offline.des')">
-          Knife4j提供导出4种格式的离线文档(Html\Markdown\Word\Pdf)
+          Knife4j提供导出4种格式的离线文档(Html/Markdown/Word/Pdf)
         </a-row>
       </a-row>
       <a-row class="knife4j-download-button">
@@ -23,7 +23,11 @@
       <!--  <a-modal v-model="downloadHtmlFlag" :footer="null" :maskClosable="false" :keyboard="false" :closable="false">
         <p>正在下载中...</p>
       </a-modal> -->
-      <div class="htmledit_views" :id="'content_views' + data.instance.id">
+
+      <!-- <div v-if="data.instance" class="htmledit_views" :id="'content_views' + data.instance.id">
+        <component :is="downloadType" :instance="data.instance" :tags="tags" />
+      </div> -->
+      <div v-if="data.instance" class="htmledit_views" :id="'content_views' + data.instance.id">
         <component :is="downloadType" :instance="data.instance" :tags="tags" />
       </div>
     </a-row>
@@ -109,6 +113,7 @@ export default {
     },
     initModels() {
       var key = Constants.globalTreeTableModelParams + this.data.instance.id;
+      //console.log("ofofkey---"+key)
       //根据instance的实例初始化model名称
       //var treeTableModel = this.data.instance.refTreeTableModels;
       var treeTableModel = this.data.instance.swaggerTreeTableModels;
@@ -270,6 +275,7 @@ export default {
                           key,
                           schemaName
                         );
+                        model=that.swagger.analysisDefinitionRefTableModel(that.data.instance.id,model);
                         if (KUtils.checkUndefined(model)) {
                           var children = model.params;
                           if (KUtils.arrNotEmpty(children)) {
@@ -399,6 +405,8 @@ export default {
         tags: that.tags,
         markdownFiles: that.data.instance.markdownFiles
       };
+      //console.info("下载markdown")
+      //console.log(instance)
 
       //遍历得到markdown语法
       if (this.markdownText == null || this.markdownText == "") {
@@ -543,7 +551,7 @@ export default {
       //获取导出网页的Html数据结构,用于在单页面渲染
       var that = this;
       var tempTags=[].concat(that.tags);
-      console.log(that.tags);
+      //console.log(that.tags);
       tempTags.forEach(tmpTag=>{
         tmpTag.description=null;
         if(KUtils.checkUndefined(tmpTag.childrens)&&KUtils.arrNotEmpty(tmpTag.childrens)){
@@ -609,7 +617,7 @@ export default {
                       "name":multipdata.name
                       ,"children":tmpResponseChildParams
                       ,"description":multipdata.description
-                      ,"id":multipdata.in
+                      ,"id":multipdata.id
                       ,"type":multipdata.type
                       ,"schemaValue":multipdata.schemaValue
                     })
@@ -651,7 +659,7 @@ export default {
                       "name":md.name
                       ,"children":tmpMdChildren
                       ,"description":md.description
-                      ,"id":md.in
+                      ,"id":md.id
                       ,"type":md.type
                       ,"schemaValue":md.schemaValue
                     })
@@ -687,8 +695,8 @@ export default {
           tmpTag.childrens=tmpChildrens;
         }
       })
-      console.log("新")
-      console.log(tempTags);
+      //console.log("新")
+      //console.log(tempTags);
       var htmlData = {
         //接口基本信息
         instance: {
@@ -707,8 +715,8 @@ export default {
         hideShow: true,
         tags: tempTags
       };
-      console.log("html数据源")
-      console.log(htmlData)
+      //console.log("html数据源")
+      //console.log(htmlData)
       return htmlData;
     },
     getHtmlContent(title) {

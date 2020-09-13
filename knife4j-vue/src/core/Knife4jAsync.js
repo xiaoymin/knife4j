@@ -1080,7 +1080,9 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel=function(instanceId
                         }
                       }
                       //refp.in = minfo.in;
-                      refp.require = p.required;
+                      if(KUtils.checkUndefined(p.require)){
+                        refp.require = p.required;
+                      }
                       refp.example = p.example;
                       var description = KUtils.propValue("description", p, "");
                       //判断是否包含枚举
@@ -1296,7 +1298,9 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp,definitions, deepDef,
                 }
               }
               //refp.in = minfo.in;
-              refp.require = p.required;
+              if(KUtils.checkUndefined(p.require)){
+                refp.require = p.required;
+              }
               refp.example = p.example;
               var description = KUtils.propValue("description", p, "");
               //判断是否包含枚举
@@ -4073,7 +4077,8 @@ var SwaggerBootstrapUiParameter = function () {
   this.name = null;
   //该属性用于过滤参数使用
   this.ignoreFilterName = null;
-  this.require = null;
+  //默认false
+  this.require = false;
   this.type = null;
   this.in = null;
   this.schema = false;
