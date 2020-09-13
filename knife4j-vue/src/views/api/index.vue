@@ -50,10 +50,6 @@ export default {
   },
   mounted() {},
   beforeCreate(){
-    let params = this.$route.params;
-    console.log("before")
-    console.log(params);
-    
   },
   created() {
     //根据地址栏得到api详情

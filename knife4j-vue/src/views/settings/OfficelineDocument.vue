@@ -738,6 +738,7 @@ export default {
       return getDocumentVueTemplates(title, resumecss, dstr);
     }
   }
+  
 };
 </script>
 

@@ -78,7 +78,7 @@ export default {
       documentTitle: "",
       menuWidth: constMenuWidth,
       headerClass: "knife4j-header-width",
-      swagger: null,
+      //swagger: null,
       localMenuData:[],
       collapsed: false,
       linkList: [],
@@ -117,6 +117,8 @@ export default {
     },MenuData(){
       //console.log("menuData--------------------------------")
       return this.$store.state.globals.currentMenuData;
+    },swagger(){
+       return this.$store.state.globals.swagger;
     },
     swaggerCurrentInstance(){
       return this.$store.state.globals.swaggerCurrentInstance;
@@ -300,22 +302,26 @@ export default {
     initKnife4jFront() {
       //该版本区别于Spring-ui的版本,提供给其它语言来集成knife4j
       var that = this;
-      this.initSwagger({
-        Vue: that,
+      var swaggerOptions={ 
+        store:this.$store,
+        localStore:this.$localStore,
+        routeParams: that.$route.params, 
         plus: this.getPlusStatus(),
-        //禁用config的url调用
-        configSupport: false,
+        i18n:tmpI18n,
+        configSupport:false,
+        i18nInstance:this.getCurrentI18nInstance() ,
         //覆盖url地址,多个服务的组合
         url: "/static/services.json"
-      });
+      };
+      this.initSwagger(swaggerOptions);
     },
     initSwagger(options){
       //console.log("初始化Swagger")
       //console.log(options)
       this.i18n=options.i18nInstance;
-      this.swagger = new SwaggerBootstrapUi(options);
+      var swagger = new SwaggerBootstrapUi(options);
       try {
-        this.swagger.main();
+        swagger.main();
         //this.MenuData=this.swagger.menuData;
         //this.swaggerCurrentInstance=this.swagger.currentInstance;
         //this.$store.dispatch("globals/setMenuData", this.MenuData);
@@ -323,7 +329,7 @@ export default {
         //this.$localStore.setItem(constant.globalGitApiVersionCaches, this.swagger.cacheApis);
         //console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa------------------------")
         //赋值
-        this.$store.dispatch("globals/setSwagger", this.swagger);
+        this.$store.dispatch("globals/setSwagger", swagger);
       } catch (e) {
         console.error(e);
       }
