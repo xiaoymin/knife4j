@@ -189,6 +189,7 @@
                   <a-row v-if="record.enums != null">
                     <!--不为空-->
                     <a-select
+                      :mode="record.enumsMode"
                       :defaultValue="text"
                       :data-key="record.id"
                       :options="record.enums"
@@ -284,6 +285,7 @@
                 <a-row v-if="record.enums != null">
                   <!--不为空-->
                   <a-select
+                    :mode="record.enumsMode"
                     :defaultValue="text"
                     :data-key="record.id"
                     :options="record.enums"
@@ -341,6 +343,7 @@
                   <a-row v-if="record.enums != null">
                     <!--不为空-->
                     <a-select
+                      :mode="record.enumsMode"
                       :defaultValue="text"
                       :data-key="record.id"
                       :options="record.enums"
@@ -399,6 +402,7 @@
 </template>
 <script>
 import md5 from "js-md5";
+import qs from "qs"
 import KUtils from "@/core/utils";
 import constant from "@/store/constants";
 /* import EditorDebugShow from "./EditorDebugShow";
@@ -611,6 +615,8 @@ export default {
             require: false,
             description: "",
             enums: null, //枚举下拉框
+            //枚举是否支持多选('default' | 'multiple' )
+            enumsMode:"default",
             new: false
           };
           //this.headerData.push(newHeader);
@@ -632,6 +638,8 @@ export default {
               require: false,
               description: "",
               enums: null, //枚举下拉框
+              //枚举是否支持多选('default' | 'multiple' )
+              enumsMode:"default",
               new: false
             };
             //this.headerData.push(newHeader);
@@ -900,6 +908,8 @@ export default {
           require: false,
           description: "",
           enums: null, //枚举下拉框
+          //枚举是否支持多选('default' | 'multiple' )
+          enumsMode:"default",
           new: true
         };
         //this.headerData.push(newHeader);
@@ -1032,6 +1042,8 @@ export default {
           content: "",
           description: "",
           enums: null, //枚举下拉框
+          //枚举是否支持多选('default' | 'multiple' )
+          enumsMode:"default",
           new: true
         };
         this.formData.push(newFormHeader);
@@ -1054,6 +1066,8 @@ export default {
             content: global.value,
             description: "",
             enums: null, //枚举下拉框
+            //枚举是否支持多选('default' | 'multiple' )
+            enumsMode:"default",
             new: false
           };
           this.rawFormData.push(newFormHeader);
@@ -1075,6 +1089,8 @@ export default {
             content: global.value,
             description: "",
             enums: null, //枚举下拉框
+            //枚举是否支持多选('default' | 'multiple' )
+            enumsMode:"default",
             new: false
           };
           this.formData.push(newFormHeader);
@@ -1095,6 +1111,8 @@ export default {
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
               enums: this.getEnumOptions(param), //枚举下拉框
+              //枚举是否支持多选('default' | 'multiple' )
+              enumsMode:"default",
               new: false
             };
             //判断枚举类型是否为空
@@ -1123,6 +1141,8 @@ export default {
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
               enums: this.getEnumOptions(param), //枚举下拉框
+              //枚举是否支持多选('default' | 'multiple' )
+              enumsMode:"default",
               new: false
             };
             //判断枚举类型是否为空
@@ -1163,6 +1183,8 @@ export default {
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
               enums: this.getEnumOptions(param), //枚举下拉框
+              //枚举是否支持多选('default' | 'multiple' )
+              enumsMode:"default",
               new: false
             };
             //判断枚举类型是否为空
@@ -1191,6 +1213,8 @@ export default {
             content: global.value,
             description: "",
             enums: null, //枚举下拉框
+            //枚举是否支持多选('default' | 'multiple' )
+            enumsMode:"default",
             new: false
           };
           this.urlFormData.push(newFormHeader);
@@ -1208,6 +1232,8 @@ export default {
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
               enums: this.getEnumOptions(param), //枚举下拉框
+              //枚举是否支持多选('default' | 'multiple' )
+              enumsMode:"default",
               new: false
             };
             //判断枚举类型是否为空
@@ -1232,6 +1258,8 @@ export default {
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
               enums: this.getEnumOptions(param), //枚举下拉框
+              //枚举是否支持多选('default' | 'multiple' )
+              enumsMode:"default",
               new: false
             };
             //判断枚举类型是否为空
@@ -1258,6 +1286,8 @@ export default {
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
               enums: this.getEnumOptions(param), //枚举下拉框
+              //枚举是否支持多选('default' | 'multiple' )
+              enumsMode:"default",
               new: false
             };
             //判断枚举类型是否为空
@@ -1271,6 +1301,15 @@ export default {
             //this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
+            //console.log(param)
+            //判断该参数是否是枚举
+            var enumsMode="default";
+            if(KUtils.arrNotEmpty(param.enum)){
+              //枚举类型，判断是否是数组
+              if(param.type=="array"){
+                enumsMode="multiple";
+              }
+            }
             var newFormHeader = {
               id: KUtils.randomMd5(),
               name: param.name,
@@ -1282,6 +1321,8 @@ export default {
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
               enums: this.getEnumOptions(param), //枚举下拉框
+              //枚举是否支持多选('default' | 'multiple' )
+              enumsMode:enumsMode,
               new: false
             };
             //判断枚举类型是否为空
@@ -1310,6 +1351,8 @@ export default {
           content: "",
           description: "",
           enums: null, //枚举下拉框
+          //枚举是否支持多选('default' | 'multiple' )
+          enumsMode:"default",
           new: true
         };
         this.urlFormData.push(newFormHeader);
@@ -1330,6 +1373,8 @@ export default {
           content: "",
           description: "",
           enums: null, //枚举下拉框
+          //枚举是否支持多选('default' | 'multiple' )
+          enumsMode:"default",
           new: true
         };
         this.rawFormData.push(newFormHeader);
@@ -1695,8 +1740,24 @@ export default {
       this.initUrlFormSelections(record.id);
     },
     urlFormContentEnumChange(formValue, option) {
-      var formId = option.context.$attrs["data-key"];
-      this.urlFormContentUpdate(formValue, formId);
+      if(KUtils.checkUndefined(option)){
+        //支持枚举下拉多选
+        var formId="";
+        //判断formValue是否是数组,如果是数组代表多选
+        console.log(typeof(option))
+        if(Array.isArray(option)){
+          //任取1个
+          formId = option[0].context.$attrs["data-key"];
+        }else{
+          formId = option.context.$attrs["data-key"];
+        }
+        console.log("枚举选择")
+        console.log(formValue);
+        console.log(option)
+        console.log(formId)
+        //var formId = option.context.$attrs["data-key"];
+        this.urlFormContentUpdate(formValue, formId);
+      }
     },
     urlFormContentChange(e) {
       var formValue = e.target.value;
@@ -2121,6 +2182,20 @@ export default {
       //console.log("校验结果："+flag);
       return flag;
     },
+    applyRequestParams(formParams,methodType){
+        var requestData=null;
+        var requestParams=null;
+        if(["post","put","patch"].includes(methodType.toLowerCase())){
+          if(KUtils.checkUndefined(formParams)){
+            requestData=qs.stringify(formParams);
+          }
+        }else{
+          requestParams=formParams;
+        }
+        return {
+          data:requestData,params:requestParams
+        }
+    },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
       //console("发送url-form接口");
@@ -2165,18 +2240,20 @@ export default {
           baseUrl=this.enableHostText;
         }
         //console.log(headers)
+        var applyReuqest=this.applyRequestParams(formParams,methodType);
+        //console.log(applyReuqest)
         var requestConfig = {
           baseURL:baseUrl,
           url: url,
           method: methodType,
           headers: headers,
-          params: formParams,
+          params: applyReuqest.params,
           timeout: 0,
           //Cookie标志
           withCredentials:this.debugSendHasCookie(headers),
           //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
           //否则axios会忽略请求头Content-Type
-          data:null
+          data:applyReuqest.data
         };
         //console.log(requestConfig);
         //需要判断是否是下载请求
@@ -2214,7 +2291,7 @@ export default {
           .request(requestConfig)
           .then(res => {
             //console("url-form-success");
-            console.log(res);
+            //console.log(res);
             this.debugLoading = false;
             this.handleDebugSuccess(startTime,new Date(), res);
           })
@@ -2387,6 +2464,8 @@ export default {
         this.$message.info(validateForm.message);
       }
     },
+    
+    
     handleDebugSuccess(startTime,endTime, res) {
       //成功的情况
       this.setResponseBody(res);
@@ -2397,7 +2476,6 @@ export default {
       this.setResponseCurl(res.request);
       this.callChildEditorShow();
       this.storeApiParams();
-      console.log("success")
     },
     handleDebugError(startTime,endTime, resp) {
       //console.log("失败情况---");
@@ -2880,7 +2958,7 @@ export default {
       } else {
         _text = resp.responseText;
       }
-      console.log('set value before')
+      //console.log('set value before')
       this.responseContent = {
         text: _text,
         mode: mode,

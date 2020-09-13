@@ -249,7 +249,7 @@ export default {
       if (this.debugSend) {
         if (this.responseFieldDescriptionChecked) {
           if (this.responseContent.mode == "json") {
-            console.log("数据大小："+this.responseStatus.size)
+            //console.log("数据大小："+this.responseStatus.size)
             this.showEditorFieldAnyWay();
           }
         }
@@ -267,9 +267,12 @@ export default {
       var aceJsonText = editorContainer.getElementsByClassName(
         "ace_text-layer"
       );
-      var acePrintMarginLeft = editorContainer.querySelector(
-        ".ace_print-margin"
-      ).style.left;
+      var acePrintMarginLeft = 0;
+      var acePrintMarginObject=editorContainer.querySelector(".ace_print-margin")
+      if(KUtils.checkUndefined(acePrintMarginObject)&&KUtils.checkUndefined(acePrintMarginObject.style)){
+        acePrintMarginLeft=acePrintMarginObject.style.left;
+      }
+      //editorContainer.querySelector(".ace_print-margin").style.left;
       if (aceJsonText.length > 0) {
         var aceLineDoms = aceJsonText[0].getElementsByClassName("ace_line");
         for (var i = 0; i < aceLineDoms.length; i++) {
