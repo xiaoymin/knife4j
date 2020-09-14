@@ -2655,7 +2655,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   swpinfo.methodType = mtype.toUpperCase();
   //add by xiaoymin 2020-3-11 20:34:39
   // 判断当前接口是否支持调试
-  if (KUtils.arrNotEmpty(that.configuration.supportedSubmitMethods)) {
+  if (KUtils.checkUndefined(that.configuration.supportedSubmitMethods)) {
     if (!that.configuration.supportedSubmitMethods.includes(mtype.toLowerCase())) {
       swpinfo.configurationDebugSupport = false;
     }
