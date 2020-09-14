@@ -122,18 +122,18 @@ export default {
        return this.$store.state.globals.language;
     },
     responseSizeText() {
-      var str = "0 b";
+      var str = "0 B";
       var responseStatus = this.responseStatus;
       if (responseStatus != null && responseStatus != undefined) {
         var responseSize = responseStatus.size;
         var kbSize = (responseSize / 1024).toFixed(2);
         var mbSize = (responseSize / 1024 / 1024).toFixed(2);
         if (kbSize > 1) {
-          str = kbSize + " kb";
+          str = kbSize + " KB";
         } else if (mbSize > 1) {
-          str = mbSize + " mb";
+          str = mbSize + " MB";
         } else {
-          str = responseSize + " b";
+          str = responseSize + " B";
         }
       }
       return str;
@@ -239,10 +239,16 @@ export default {
     showEditorFieldDescription(p) {
       //console.log("emit事件-"+p)
       var that = this;
-      //需要延时1s处理
-      setTimeout(() => {
-        that.showEditorFieldWait();
-      }, 100);
+      if(KUtils.checkUndefined(p)){
+        if(parseInt(p)<=200){
+          //如果超过200行,不显示属性的字段说明
+          //需要延时1s处理
+          setTimeout(() => {
+            that.showEditorFieldWait();
+          }, 100);
+        }
+      }
+      
     },
     showEditorFieldWait() {
       //显示editor字段说明
