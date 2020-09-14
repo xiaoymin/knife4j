@@ -60,8 +60,9 @@
       请求参数
     </div>
     <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small" :pagination="page">
-      <template slot="descriptionValueTemplate" slot-scope="text">
+      <template slot="descriptionValueTemplate" slot-scope="text,record">
         {{ text }}
+        <span v-if="record.example">,示例值({{record.example}})</span>
       </template>
       <template slot="requireTemplate" slot-scope="text">
         <span v-if="text" style="color:red">{{ text.toLocaleString() }}</span>

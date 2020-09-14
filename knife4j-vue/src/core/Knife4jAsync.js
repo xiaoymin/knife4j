@@ -2801,6 +2801,9 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
   //swagger 2.9.2版本默认值响应X-EXAMPLE的值为2.9.2
   if (m.hasOwnProperty("x-example")) {
     minfo.txtValue = m["x-example"];
+    if(KUtils.checkUndefined(minfo.txtValue)){
+      minfo.example=minfo.txtValue;
+    }
   }
   if (m.hasOwnProperty("schema")) {
     //存在schema属性,请求对象是实体类
