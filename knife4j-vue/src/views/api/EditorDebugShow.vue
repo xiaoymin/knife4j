@@ -67,6 +67,10 @@ export default {
           }
         }
         var rows_editor = length_editor * 16;
+        if(rows_editor>2000){
+          rows_editor=2000;
+        }
+        //console.log(rows_editor)
         that.editorHeight = rows_editor;
       }, 10);
     },
@@ -111,7 +115,8 @@ export default {
       //重设高度
       this.resetEditorHeight();
       this.editor.renderer.on("afterRender", function() {
-        that.$emit("showDescription","232323")
+        var length_editor = that.editor.session.getLength();
+        that.$emit("showDescription",length_editor)
       });
     }
   }

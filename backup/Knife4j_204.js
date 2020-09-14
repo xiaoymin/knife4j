@@ -1952,7 +1952,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
         swaggerResp.code = status;
         swaggerResp.description = rescrobj["description"];
         var rptype = null;
-        if (rescrobj.hasOwnProperty("schema")) {
+        if (rescrobj.hasOwnProperty("schema")&&KUtils.checkUndefined(rescrobj["schema"])) {
           var schema = rescrobj["schema"];
           //单引用类型
           //判断是否是数组类型

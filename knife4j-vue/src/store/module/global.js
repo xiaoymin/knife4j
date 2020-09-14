@@ -3,6 +3,7 @@ const globals = {
   state: {
     menuData: [],
     language:'zh-CN',
+    swagger:null,
     swaggerCurrentInstance:null,
     currentMenuData:[],
     serviceOptions:[],
@@ -17,6 +18,9 @@ const globals = {
       state.currentMenuData=menudatas;
     },setLang:(state,lang)=>{
       state.language=lang;
+    },
+    setSwagger:(state,swagger)=>{
+      state.swagger=swagger;
     },
     setSwaggerInstance:(state,instance)=>{
       state.swaggerCurrentInstance=instance;
@@ -39,6 +43,9 @@ const globals = {
     },
     setLang({commit},lang){
       commit('setLang',lang);
+    },
+    setSwagger({commit},swagger){
+      commit('setSwagger',swagger);
     },
     setSwaggerInstance({commit},instance){
       commit('setSwaggerInstance',instance);

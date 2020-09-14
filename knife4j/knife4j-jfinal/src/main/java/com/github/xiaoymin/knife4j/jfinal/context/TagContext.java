@@ -7,6 +7,8 @@
 
 package com.github.xiaoymin.knife4j.jfinal.context;
 
+import io.swagger.models.Tag;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -57,6 +59,16 @@ public class TagContext {
 
     public Class<?> getControllerClass() {
         return controllerClass;
+    }
+
+    public Tag build(){
+        Tag tag=new Tag();
+        tag.setName(this.name);
+        tag.setDescription(this.description);
+        if (vendorExtensions.size()>0){
+            tag.setVendorExtensions(vendorExtensions);
+        }
+        return tag;
     }
 
 }

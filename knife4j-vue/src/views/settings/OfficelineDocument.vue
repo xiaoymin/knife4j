@@ -3,14 +3,14 @@
     <a-row class="markdown-row">
       <a-row class="globalparameters">
         <a-row class="gptips" v-html="$t('offline.des')">
-          Knife4j提供导出4种格式的离线文档(Html\Markdown\Word\Pdf)
+          Knife4j提供导出4种格式的离线文档(Html/Markdown/Word/Pdf)
         </a-row>
       </a-row>
       <a-row class="knife4j-download-button">
         <a-button @click="triggerDownloadMarkdown">
           <a-icon type="file-markdown" /><span v-html="$t('offline.download.markdown')">下载Markdown</span></a-button
         >
-        <a-button type="default" @click="triggerDownload">
+        <a-button type="default" @click="triggerDownloadHtml">
           <a-icon type="file-text" /><span v-html="$t('offline.download.html')">下载Html</span></a-button
         >
         <a-button type="default" @click="triggerDownloadWord">
@@ -23,7 +23,11 @@
       <!--  <a-modal v-model="downloadHtmlFlag" :footer="null" :maskClosable="false" :keyboard="false" :closable="false">
         <p>正在下载中...</p>
       </a-modal> -->
-      <div class="htmledit_views" :id="'content_views' + data.instance.id">
+
+      <!-- <div v-if="data.instance" class="htmledit_views" :id="'content_views' + data.instance.id">
+        <component :is="downloadType" :instance="data.instance" :tags="tags" />
+      </div> -->
+      <div v-if="data.instance" class="htmledit_views" :id="'content_views' + data.instance.id">
         <component :is="downloadType" :instance="data.instance" :tags="tags" />
       </div>
     </a-row>
@@ -95,6 +99,12 @@ export default {
   computed:{
     language(){
        return this.$store.state.globals.language;
+    }, 
+    swagger(){
+       return this.$store.state.globals.swagger;
+    },
+    swaggerCurrentInstance(){
+      return this.$store.state.globals.swaggerCurrentInstance;
     }
   },
   methods: {
@@ -103,8 +113,10 @@ export default {
     },
     initModels() {
       var key = Constants.globalTreeTableModelParams + this.data.instance.id;
+      //console.log("ofofkey---"+key)
       //根据instance的实例初始化model名称
-      var treeTableModel = this.data.instance.refTreeTableModels;
+      //var treeTableModel = this.data.instance.refTreeTableModels;
+      var treeTableModel = this.data.instance.swaggerTreeTableModels;
       this.$Knife4jModels.setValue(key, treeTableModel);
       //console("初始化Models");
       //this.$Knife4jModels.setTags(key, this.data.instance.tags);
@@ -125,6 +137,10 @@ export default {
               //存在接口,遍历接口的参数
               tag.childrens.forEach(function(apiInfo) {
                 ////console("接口地址:" + apiInfo.showUrl);
+                if(!apiInfo.init){
+                  //是否初始化过
+                  that.swagger.initApiInfoAsync(apiInfo);
+                }
                 //获取接口的参数
                 var data = [];
                 if (
@@ -169,6 +185,7 @@ export default {
                               key,
                               schemaName
                             );
+                            model=that.swagger.analysisDefinitionRefTableModel(that.data.instance.id,model);
                             if (KUtils.checkUndefined(model)) {
                               var children = model.params;
                               if (KUtils.arrNotEmpty(children)) {
@@ -258,6 +275,7 @@ export default {
                           key,
                           schemaName
                         );
+                        model=that.swagger.analysisDefinitionRefTableModel(that.data.instance.id,model);
                         if (KUtils.checkUndefined(model)) {
                           var children = model.params;
                           if (KUtils.arrNotEmpty(children)) {
@@ -387,6 +405,8 @@ export default {
         tags: that.tags,
         markdownFiles: that.data.instance.markdownFiles
       };
+      //console.info("下载markdown")
+      //console.log(instance)
 
       //遍历得到markdown语法
       if (this.markdownText == null || this.markdownText == "") {
@@ -406,7 +426,7 @@ export default {
         that.$kloading.destroy();
       }, 1000);
     },
-    triggerDownload() {
+    triggerDownloadHtml() {
       let that = this;
       //html
       that.downloadType = "DownloadHtml";
@@ -490,9 +510,193 @@ export default {
         a.click()
       }) */
     },
-    getHtmlData() {
+    deepRequestParameters(parameter){
+      var tmpChildParams=null;
+      if(KUtils.arrNotEmpty(parameter.children)){
+          tmpChildParams=new Array();
+          parameter.children.forEach(tmpParam=>{
+            var children=this.deepRequestParameters(tmpParam);
+            tmpChildParams.push({
+                  "name":tmpParam.name
+                  ,"children":children
+                  ,"description":tmpParam.description
+                  ,"in":tmpParam.in
+                  ,"require":tmpParam.require
+                  ,"type":tmpParam.type
+                  ,"schemaValue":tmpParam.schemaValue
+                })
+          })
+      }
+      return tmpChildParams;
+    },
+    deepResponseStaticParameters(parameter){
+      var tmpChildParams=null;
+      if(KUtils.arrNotEmpty(parameter.children)){
+          tmpChildParams=new Array();
+          parameter.children.forEach(tmpParam=>{
+            var children=this.deepResponseStaticParameters(tmpParam);
+            tmpChildParams.push({
+                  "name":tmpParam.name
+                  ,"children":children
+                  ,"description":tmpParam.description
+                  ,"id":tmpParam.id
+                  ,"type":tmpParam.type
+                  ,"schemaValue":tmpParam.schemaValue
+                })
+          })
+      }
+      return tmpChildParams;
+    }
+    ,getHtmlData() {
       //获取导出网页的Html数据结构,用于在单页面渲染
       var that = this;
+      var tempTags=[].concat(that.tags);
+      //console.log(that.tags);
+      tempTags.forEach(tmpTag=>{
+        tmpTag.description=null;
+        if(KUtils.checkUndefined(tmpTag.childrens)&&KUtils.arrNotEmpty(tmpTag.childrens)){
+          var tmpChildrens=[];
+          tmpTag.childrens.forEach(tmpApi=>{
+            //处理接口的请求参数,缩减不必要的属性
+            var tmpRequestParameters=null;
+            if(KUtils.arrNotEmpty(tmpApi.reqParameters)){
+              tmpRequestParameters=new Array();
+              tmpApi.reqParameters.forEach(tmpParam=>{
+                var tmpChildParams=this.deepRequestParameters(tmpParam);  
+                tmpRequestParameters.push({
+                  "name":tmpParam.name
+                  ,"children":tmpChildParams
+                  ,"description":tmpParam.description
+                  ,"in":tmpParam.in
+                  ,"require":tmpParam.require
+                  ,"type":tmpParam.type
+                  ,"schemaValue":tmpParam.schemaValue
+                })
+
+              })
+
+            }
+            //处理响应状态码,缩减不必要的属性
+            var tmpResponseCodes=null;
+            if(KUtils.arrNotEmpty(tmpApi.responseCodes)){
+              tmpResponseCodes=new Array();
+              tmpApi.responseCodes.forEach(responseCode=>{
+                tmpResponseCodes.push({
+                  "code":responseCode.code
+                  ,"description":responseCode.description
+                  ,"schema":responseCode.schema
+                })
+              })
+            }
+            //处理响应参数,缩减不必要的属性
+            //1.针对多schema的情况
+            var tmpMultiResponseParameters=null;
+            if(KUtils.arrNotEmpty(tmpApi.multipCodeDatas)){
+              tmpMultiResponseParameters=new Array();
+              tmpApi.multipCodeDatas.forEach(multipcd=>{
+                //1.1 处理多Header的情况
+                var tmpMultipHeaders=null;
+                if(KUtils.arrNotEmpty(multipcd.responseHeaderParameters)){
+                  tmpMultipHeaders=new Array();
+                  multipcd.responseHeaderParameters.forEach(multipHeader=>{
+                    tmpMultipHeaders.push({
+                      "id":multipHeader.id,
+                      "name":multipHeader.name,
+                      "description":multipHeader.description,
+                      "type":multipHeader.type
+                    })
+                  })
+                }
+                //1.2处理响应参数data
+                var tmpMultipData=null;
+                if(KUtils.arrNotEmpty(multipcd.data)){
+                  tmpMultipData=new Array();
+                  multipcd.data.forEach(multipdata=>{
+                    var tmpResponseChildParams=this.deepResponseStaticParameters(multipdata);  
+                    tmpMultipData.push({
+                      "name":multipdata.name
+                      ,"children":tmpResponseChildParams
+                      ,"description":multipdata.description
+                      ,"id":multipdata.id
+                      ,"type":multipdata.type
+                      ,"schemaValue":multipdata.schemaValue
+                    })
+                  })
+                }
+                tmpMultiResponseParameters.push({
+                  "code":multipcd.code,
+                  "responseHeaderParameters":tmpMultipHeaders,
+                  "data":tmpMultipData,
+                  "responseBasicType":multipcd.responseBasicType,
+                  "responseText":multipcd.responseText,
+                  "responseValue":multipcd.responseValue
+                })
+              })
+            }
+            //2.针对单schema的情况
+            //2.1 header
+            var tmpSingleResponseHeader=null;
+            if(KUtils.arrNotEmpty(tmpApi.responseHeaderParameters)){
+              tmpSingleResponseHeader=new Array();
+              tmpApi.responseHeaderParameters.forEach(singleHeader=>{
+                tmpSingleResponseHeader.push({
+                  "id":singleHeader.id,
+                  "name":singleHeader.name,
+                  "description":singleHeader.description,
+                  "type":singleHeader.type
+                })
+              })
+            }
+            //2.2 响应参数
+            var tmpMultipData=null;
+            if(KUtils.checkUndefined(tmpApi.multipData)){
+              var tmpDataArr=null;
+              if(KUtils.checkUndefined(tmpApi.multipData.data)&&KUtils.arrNotEmpty(tmpApi.multipData.data)){
+                tmpDataArr=new Array();
+                tmpApi.multipData.data.forEach(md=>{
+                   var tmpMdChildren=this.deepResponseStaticParameters(md);  
+                    tmpDataArr.push({
+                      "name":md.name
+                      ,"children":tmpMdChildren
+                      ,"description":md.description
+                      ,"id":md.id
+                      ,"type":md.type
+                      ,"schemaValue":md.schemaValue
+                    })
+                })
+              }
+              tmpMultipData={
+                "responseBasicType":tmpApi.multipData.responseBasicType,
+                "responseText":tmpApi.multipData.responseText,
+                "responseValue":tmpApi.multipData.responseValue,
+                "data":tmpDataArr
+              }
+            }
+            tmpChildrens.push({
+              "id":tmpApi.id
+              ,"operationId":tmpApi.operationId
+              ,"deprecated":tmpApi.deprecated
+              ,"summary":tmpApi.summary
+              ,"methodType":tmpApi.methodType
+              ,"showUrl":tmpApi.showUrl
+              ,"consumes":tmpApi.consumes
+              ,"produces":tmpApi.produces
+              ,"author":tmpApi.author
+              ,"description":tmpApi.description
+              ,"requestValue":tmpApi.requestValue
+              ,"reqParameters":tmpRequestParameters
+              ,"responseCodes":tmpResponseCodes
+              ,"multipartResponseSchema":tmpApi.multipartResponseSchema
+              ,"multipCodeDatas":tmpMultiResponseParameters
+              ,"responseHeaderParameters":tmpSingleResponseHeader
+              ,"multipData":tmpApi.multipData
+            })
+          })
+          tmpTag.childrens=tmpChildrens;
+        }
+      })
+      //console.log("新")
+      //console.log(tempTags);
       var htmlData = {
         //接口基本信息
         instance: {
@@ -509,8 +713,10 @@ export default {
           pathArrs: that.data.instance.pathArrs
         },
         hideShow: true,
-        tags: that.tags
+        tags: tempTags
       };
+      //console.log("html数据源")
+      //console.log(htmlData)
       return htmlData;
     },
     getHtmlContent(title) {
@@ -532,6 +738,7 @@ export default {
       return getDocumentVueTemplates(title, resumecss, dstr);
     }
   }
+  
 };
 </script>
 

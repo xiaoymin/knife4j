@@ -35,6 +35,9 @@ export default {
   computed:{
     language(){
        return this.$store.state.globals.language;
+    }, 
+    swagger(){
+       return this.$store.state.globals.swagger;
     }
   },
   watch:{
@@ -67,7 +70,7 @@ export default {
     initModelNames() {
       var key = Constants.globalTreeTableModelParams + this.data.instance.id;
       //根据instance的实例初始化model名称
-      var treeTableModel = this.data.instance.refTreeTableModels;
+      var treeTableModel = this.data.instance.swaggerTreeTableModels;
       this.$Knife4jModels.setValue(key, treeTableModel);
       if (KUtils.checkUndefined(treeTableModel)) {
         for (var name in treeTableModel) {
@@ -108,7 +111,8 @@ export default {
           this.modelNames.push(modelInfo);
         }
       }
-    },
+      //console.log(this.modelNames)
+   },
     modelChange(key) {
       var that = this;
       //console("当前激活面板key:" + that.activeKey);
@@ -139,6 +143,9 @@ export default {
                 instanceKey,
                 model.name
               );
+              originalModel=that.swagger.analysisDefinitionRefTableModel(that.data.instance.id,originalModel);
+              //console.log("初始化完成")
+              //console.log(originalModel);
               //console("查找原始model:" + model.name);
               if (KUtils.checkUndefined(originalModel)) {
                 //存在

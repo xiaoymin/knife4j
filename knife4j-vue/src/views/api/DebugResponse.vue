@@ -64,7 +64,7 @@
 <script>
 import KUtils from "@/core/utils";
 import ClipboardJS from "clipboard";
-import EditorDebugShow from "./EditorDebugShow";
+/* import EditorDebugShow from "./EditorDebugShow"; */
 
 export default {
   props: {
@@ -101,7 +101,7 @@ export default {
       default: true
     }
   },
-  components: { EditorDebugShow },
+  components: { 'EditorDebugShow':()=>import('./EditorDebugShow') },
   data() {
     return {
       pagination: false,
@@ -122,18 +122,18 @@ export default {
        return this.$store.state.globals.language;
     },
     responseSizeText() {
-      var str = "0 b";
+      var str = "0 B";
       var responseStatus = this.responseStatus;
       if (responseStatus != null && responseStatus != undefined) {
         var responseSize = responseStatus.size;
         var kbSize = (responseSize / 1024).toFixed(2);
         var mbSize = (responseSize / 1024 / 1024).toFixed(2);
         if (kbSize > 1) {
-          str = kbSize + " kb";
+          str = kbSize + " KB";
         } else if (mbSize > 1) {
-          str = mbSize + " mb";
+          str = mbSize + " MB";
         } else {
-          str = responseSize + " b";
+          str = responseSize + " B";
         }
       }
       return str;
@@ -239,16 +239,23 @@ export default {
     showEditorFieldDescription(p) {
       //console.log("emit事件-"+p)
       var that = this;
-      //需要延时1s处理
-      setTimeout(() => {
-        that.showEditorFieldWait();
-      }, 100);
+      if(KUtils.checkUndefined(p)){
+        if(parseInt(p)<=200){
+          //如果超过200行,不显示属性的字段说明
+          //需要延时1s处理
+          setTimeout(() => {
+            that.showEditorFieldWait();
+          }, 100);
+        }
+      }
+      
     },
     showEditorFieldWait() {
       //显示editor字段说明
       if (this.debugSend) {
         if (this.responseFieldDescriptionChecked) {
           if (this.responseContent.mode == "json") {
+            //console.log("数据大小："+this.responseStatus.size)
             this.showEditorFieldAnyWay();
           }
         }
@@ -266,9 +273,12 @@ export default {
       var aceJsonText = editorContainer.getElementsByClassName(
         "ace_text-layer"
       );
-      var acePrintMarginLeft = editorContainer.querySelector(
-        ".ace_print-margin"
-      ).style.left;
+      var acePrintMarginLeft = 0;
+      var acePrintMarginObject=editorContainer.querySelector(".ace_print-margin")
+      if(KUtils.checkUndefined(acePrintMarginObject)&&KUtils.checkUndefined(acePrintMarginObject.style)){
+        acePrintMarginLeft=acePrintMarginObject.style.left;
+      }
+      //editorContainer.querySelector(".ace_print-margin").style.left;
       if (aceJsonText.length > 0) {
         var aceLineDoms = aceJsonText[0].getElementsByClassName("ace_line");
         for (var i = 0; i < aceLineDoms.length; i++) {

@@ -60,8 +60,9 @@
       请求参数
     </div>
     <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small" :pagination="page">
-      <template slot="descriptionValueTemplate" slot-scope="text">
+      <template slot="descriptionValueTemplate" slot-scope="text,record">
         {{ text }}
+        <span v-if="record.example">,示例值({{record.example}})</span>
       </template>
       <template slot="requireTemplate" slot-scope="text">
         <span v-if="text" style="color:red">{{ text.toLocaleString() }}</span>
@@ -146,10 +147,10 @@
 <script>
 import KUtils from "@/core/utils";
 import Constants from "@/store/constants";
-import DataType from "./DataType";
 import markdownSingleText from "@/components/officeDocument/markdownSingleTransform";
 import markdownSingleTextUs from "@/components/officeDocument/markdownSingleTransformUS";
-import EditorShow from "./EditorShow";
+/* import DataType from "./DataType";
+import EditorShow from "./EditorShow"; */
 import ClipboardJS from "clipboard";
 import uniqueId from "lodash/uniqueId";
 import isObject from 'lodash/isObject'
@@ -159,7 +160,10 @@ import cloneDeep from 'lodash/cloneDeep'
 
 export default {
   name: "Document",
-  components: { editor: require("vue2-ace-editor"), DataType, EditorShow},
+  components: { editor: require("vue2-ace-editor"), 
+    "DataType":()=>import('./DataType'),
+    "EditorShow":()=>import('./EditorShow')
+  },
   props: {
     api: {
       type: Object,
@@ -189,9 +193,15 @@ export default {
   },
   created() {
     var that = this;
+    //console.log("Document")
+    //console.log(this.api.responseValue);
     var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
     //根据instance的实例初始化model名称
-    var treeTableModel = this.swaggerInstance.refTreeTableModels;
+    //var treeTableModel = this.swaggerInstance.refTreeTableModels;
+    //
+    var treeTableModel = this.swaggerInstance.swaggerTreeTableModels;
+    //console.log("treeTableModel")
+    //console.log(treeTableModel);
     this.$Knife4jModels.setValue(key, treeTableModel);
     this.initI18n();
     this.initRequestParams();
@@ -206,6 +216,9 @@ export default {
   computed:{
     language(){
        return this.$store.state.globals.language;
+    }, 
+    swagger(){
+       return this.$store.state.globals.swagger;
     }
   },
   watch:{
@@ -418,6 +431,9 @@ export default {
                     key,
                     schemaName
                   );
+                  model=that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id,model);
+                  //console.log("findmodel")
+                  //console.log(model)
                   if (model && model.params) {
                     const childrens = model.params
                       .filter(({ name }) => {
@@ -653,6 +669,8 @@ export default {
       //这里不
       that.multipData = {};
       let rcodes = this.api.responseCodes;
+      //console.log("rcodes")
+      //console.log(rcodes)
       if (rcodes != null && rcodes != undefined) {
         rcodes.forEach(function(rc) {
           //遍历
@@ -682,6 +700,7 @@ export default {
                   if (param.schema) {
                     //判断当前缓存是否存在
                     var schemaName = param.schemaValue;
+                   // console.log("schemaName:"+schemaName)
                     if (KUtils.checkUndefined(schemaName)) {
                       // //console("schemaValue--checkUndefined");
                       if (that.$Knife4jModels.exists(key, schemaName)) {
@@ -691,6 +710,7 @@ export default {
                           key,
                           schemaName
                         );
+                        model=that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id,model);
                         if (model && model.params) {
                           param.children = model.params.map(child => {
                             const newObj = that.copyNewParameter(child);
@@ -721,6 +741,7 @@ export default {
           }
         });
       }
+      //console.log(that.multipData);
     },
     showResponseEditFieldDescription(p) {
       //显示说明
