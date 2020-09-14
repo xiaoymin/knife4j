@@ -2292,6 +2292,8 @@ export default {
           .then(res => {
             //console("url-form-success");
             //console.log(res);
+           // console.log("响应成功")
+            //console.log(res);
             this.debugLoading = false;
             this.handleDebugSuccess(startTime,new Date(), res);
           })
@@ -2442,6 +2444,12 @@ export default {
           //Cookie标志
           withCredentials:this.debugSendHasCookie(headers),
           timeout: 0
+        }
+        //需要判断是否是下载请求
+        //https://gitee.com/xiaoym/knife4j/issues/I1U4LA
+        if (this.debugStreamFlag()) {
+          //流请求
+          requestConfig = { ...requestConfig, responseType: "blob" };
         }
         //console(headers);
         //console(this.rawText);
