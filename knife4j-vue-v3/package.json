@@ -20,7 +20,7 @@
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "localforage": "^1.7.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "markdown-loader": "^5.1.0",
     "marked": "^0.7.0",
     "vue": "^2.6.10",
