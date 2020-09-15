@@ -51,7 +51,7 @@ public class Knife4jAutoConfiguration {
      */
     @Bean("knife4jCorsFilter")
     @ConditionalOnMissingBean(CorsFilter.class)
-    @ConditionalOnProperty(name = "knife4j.cors")
+    @ConditionalOnProperty(name = "knife4j.cors",havingValue = "true")
     public CorsFilter corsFilter(){
         logger.info("init CorsFilter...");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -73,6 +73,8 @@ public class Knife4jAutoConfiguration {
      * @return markdownFiles
      */
     @Bean(initMethod = "init")
+    @ConditionalOnMissingBean(MarkdownFiles.class)
+    @ConditionalOnProperty(name = "knife4j.markdowns")
     public MarkdownFiles markdownFiles(Knife4jProperties knife4jProperties){
         MarkdownFiles markdownFiles=null;
         if (knife4jProperties==null){
@@ -84,6 +86,8 @@ public class Knife4jAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean(SecurityBasicAuthFilter.class)
+    @ConditionalOnProperty(name = "knife4j.basic.enable",havingValue = "true")
     public SecurityBasicAuthFilter securityBasicAuthFilter(Knife4jProperties knife4jProperties){
         boolean enableSwaggerBasicAuth=false;
         String dftUserName="admin",dftPass="123321";
@@ -118,6 +122,8 @@ public class Knife4jAutoConfiguration {
 
 
     @Bean
+    @ConditionalOnMissingBean(ProductionSecurityFilter.class)
+    @ConditionalOnProperty(name = "knife4j.production",havingValue = "true")
     public ProductionSecurityFilter productionSecurityFilter(Knife4jProperties knife4jProperties){
         boolean prod=false;
         ProductionSecurityFilter p=null;

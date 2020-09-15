@@ -313,6 +313,7 @@ const langOptions = {
       imple:'This feature has not been implemented ...',
       markdown:'Downloading Markdown file, please wait...',
       html:'Downloading Html file, please wait...',
+      word:'Downloading Word file, please wait...',
       copy: 'Copy',
       toomany: 'The current number of interfaces exceeds the limit. Please use the third-party markdown conversion software for conversion to see the effect.',
       note: 'swagger-bootstrap-ui provides markdwon-formatted offline documents that developers can copy and convert to HTML or PDF through other markdown conversion tools..'

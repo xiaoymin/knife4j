@@ -5,11 +5,44 @@ import store from './store'
 //import './registerServiceWorker'
 //import 'ant-design-vue/dist/antd.css'
 import '@/assets/iconfonts/iconfont.css'
-import Antd from 'ant-design-vue'
+/* import Antd from 'ant-design-vue' */
 import axios from 'axios'
 import {
   Icon
 } from 'ant-design-vue'
+
+import {Menu,Input,Select,Table,Tabs,
+  Radio,Layout,Button,
+  Tag,Divider,Tree,Dropdown,Form,Modal,
+  Col,Row,AutoComplete,Tooltip,Spin,Badge,
+  Collapse,Checkbox,message
+} from 'ant-design-vue'
+Vue.prototype.$message=message;
+//Vue.use(message)
+Vue.use(Badge);
+Vue.use(Modal)
+Vue.use(Form)
+Vue.use(Collapse)
+Vue.use(Checkbox)
+Vue.use(Tooltip)
+Vue.use(Spin)
+Vue.use(AutoComplete)
+Vue.use(Col)
+Vue.use(Row)
+Vue.use(Icon)
+Vue.use(Menu)
+Vue.use(Input)
+Vue.use(Select)
+Vue.use(Table)
+Vue.use(Tabs)
+Vue.use(Radio)
+Vue.use(Layout)
+Vue.use(Button)
+Vue.use(Tag)
+Vue.use(Divider)
+Vue.use(Tree)
+Vue.use(Dropdown) 
+
 
 import kloading from '@/components/loading'
 import VueI18n from 'vue-i18n'
@@ -109,7 +142,7 @@ const i18n = new VueI18n({
 })
 
 //Vue.use(localStore)
-Vue.use(Antd)
+//Vue.use(Antd)
 new Vue({
   router,
   store,

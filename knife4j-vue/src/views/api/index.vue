@@ -20,14 +20,17 @@
   </a-layout-content>
 </template>
 <script>
-import Document from "./Document";
-import Debug from "./Debug";
+/* import Document from "./Document";
+import Debug from "./Debug"; */
 import Constants from "@/store/constants";
 import KUtils from "@/core/utils";
 
 export default {
   name: "APIDoc",
-  components: { Document, Debug },
+  components: { 
+    "Document":()=>import('./Document'),
+    "Debug":()=>import('./Debug')
+  },
   props: {
     data: {
       type: Object
@@ -40,7 +43,14 @@ export default {
       debugSupport: false
     };
   },
+  computed:{
+    swagger(){
+       return this.$store.state.globals.swagger;
+    }
+  },
   mounted() {},
+  beforeCreate(){
+  },
   created() {
     //根据地址栏得到api详情
     let params = this.$route.params;
@@ -54,10 +64,15 @@ export default {
         apiInfo = path;
       }
     });
+    if(!apiInfo.init){
+      this.swagger.initApiInfoAsync(apiInfo);
+    }
+    //console.log(apiInfo)
     this.storeCacheApiAddApiInfo(apiInfo, instance.groupId);
     this.swaggerInstance = instance;
     this.api = apiInfo;
     this.debugSupport = this.api.configurationDebugSupport;
+    
   },
   methods: {
     onTabChange(key, type) {

@@ -239,12 +239,14 @@ function createApiResponseSingleParam(resp, markdownCollections) {
  * @param {*} markdownCollections 
  */
 function createApiRequestParameters(apiInfo, markdownCollections) {
+  //window.console.log(apiInfo)
 
   let reqParameters = apiInfo.reqParameters;
   markdownLines(markdownCollections);
   markdownCollections.push('**请求参数**:');
   //判断是否拥有请求参数
-  if (reqParameters.length > 0) {
+  if(KUtils.arrNotEmpty(reqParameters)){
+  //if (reqParameters.length > 0) {
     markdownLines(markdownCollections);
     //拥有参数
     markdownCollections.push('| 参数名称 | 参数说明 | in    | 是否必须 | 数据类型 | schema |');

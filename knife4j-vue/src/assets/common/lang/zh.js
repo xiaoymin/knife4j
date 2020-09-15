@@ -314,6 +314,7 @@ const langOptions = {
       imple:'该功能尚未实现...',
       markdown:'正在下载Markdown文件中,请稍后...',
       html:'正在下载Html中,请稍后...',
+      word:'正在下载Word中,请稍后...',
       copy: '拷贝文档',
       toomany: '当前接口数量超出限制,请使用第三方markdown转换软件进行转换以查看效果.',
       note: 'swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.'
@@ -428,7 +429,7 @@ const langOptions = {
     ]
   },
   offline: {
-    des: 'Knife4j提供导出4种格式的离线文档(Html\Markdown\Word\Pdf)',
+    des: 'Knife4j提供导出4种格式的离线文档(Html/Markdown/Word/Pdf)',
     download:{
       markdown:'下载Markdown',
       html:'下载Html',

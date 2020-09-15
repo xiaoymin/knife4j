@@ -244,7 +244,7 @@ function createApiRequestParameters(apiInfo, markdownCollections) {
   markdownLines(markdownCollections);
   markdownCollections.push('**Params**:');
   //判断是否拥有请求参数
-  if (reqParameters.length > 0) {
+  if (KUtils.arrNotEmpty(reqParameters)) {
     markdownLines(markdownCollections);
     //拥有参数
     markdownCollections.push('| name | description | in    | require | type | schema |');

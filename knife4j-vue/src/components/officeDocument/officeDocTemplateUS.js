@@ -276,7 +276,7 @@ export function getDocumentVueTemplatesUS(title, resumecss, dataStr) {
                       {{ resp.responseText }}
                     </div>
                     <pre
-                      class="api-editor-show"
+                      class="knife4j-api-editor-show"
                       v-else
                       v-html="formaterJson(resp.responseValue)"
                     ></pre>
@@ -348,27 +348,27 @@ export function getDocumentVueTemplatesUS(title, resumecss, dataStr) {
         //请求参数table-header
         const requestcolumns = [
           {
-            title: "参数名称",
+            title: "name",
             dataIndex: "name",
             width: "30%"
           },
           {
-            title: "参数说明",
+            title: "description",
             dataIndex: "description",
             width: "25%"
           },
           {
-            title: "请求类型",
+            title: "in",
             dataIndex: "in",
             scopedSlots: { customRender: "typeTemplate" }
           },
           {
-            title: "是否必须",
+            title: "require",
             dataIndex: "require",
             scopedSlots: { customRender: "requireTemplate" }
           },
           {
-            title: "数据类型",
+            title: "type",
             dataIndex: "type",
             scopedSlots: { customRender: "datatypeTemplate" }
           },
@@ -381,12 +381,12 @@ export function getDocumentVueTemplatesUS(title, resumecss, dataStr) {
         //响应状态table-header
         const responseStatuscolumns = [
           {
-            title: "状态码",
+            title: "code",
             dataIndex: "code",
             width: "20%"
           },
           {
-            title: "说明",
+            title: "description",
             dataIndex: "description",
             width: "55%",
             scopedSlots: { customRender: "descriptionTemplate" }
@@ -399,33 +399,33 @@ export function getDocumentVueTemplatesUS(title, resumecss, dataStr) {
         //响应头-header
         const responseHeaderColumns = [
           {
-            title: "参数名称",
+            title: "name",
             dataIndex: "name",
             width: "30%"
           },
           {
-            title: "参数说明",
+            title: "description",
             dataIndex: "description",
             width: "55%"
           },
           {
-            title: "数据类型",
+            title: "type",
             dataIndex: "type"
           }
         ];
         const responseParametersColumns = [
           {
-            title: "参数名称",
+            title: "name",
             dataIndex: "name",
             width: "35%"
           },
           {
-            title: "参数说明",
+            title: "description",
             dataIndex: "description",
             width: "40%"
           },
           {
-            title: "类型",
+            title: "type",
             dataIndex: "type"
           },
           {

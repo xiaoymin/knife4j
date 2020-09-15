@@ -4,7 +4,7 @@
       <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider">
         <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
           <a to="/" style="float:left;">
-            <a-select :value="defaultServiceOption" style="width: 280px" :options="serviceOptions" @change="serviceChange">
+            <a-select show-search :value="defaultServiceOption" style="width: 300px" :options="serviceOptions" @change="serviceChange">
             </a-select>
           </a>
         </div>
@@ -48,7 +48,7 @@ import GlobalFooter from "@/components/GlobalFooter";
 import GlobalHeaderTab from "@/components/GlobalHeaderTab";
 import { getMenuData } from "./menu";
 import KUtils from "@/core/utils";
-import SwaggerBootstrapUi from "@/core/Knife4j.js";
+import SwaggerBootstrapUi from "@/core/Knife4jAsync.js";
 import {
   findComponentsByPath,
   findMenuByKey
@@ -59,7 +59,7 @@ import ThreeMenu from "@/components/SiderMenu/ThreeMenu";
 import ContextMenu from "@/components/common/ContextMenu";
 import constant from "@/store/constants";
 
-const constMenuWidth = 310;
+const constMenuWidth = 320;
 
 export default {
   name: "BasicLayout",
@@ -72,26 +72,13 @@ export default {
     ThreeMenu
   },
   data() {
-    /* const panes = [
-      {
-        title: "主页",
-        component: "Main",
-        content: "Main",
-        key: "kmain",
-        closable: false
-      }
-    ]; */
     return {
       i18n:null,
       logo: logo,
       documentTitle: "",
       menuWidth: constMenuWidth,
       headerClass: "knife4j-header-width",
-      swagger: null,
-      //swaggerCurrentInstance: {},
-      //defaultServiceOption: "",
-      //serviceOptions: [],
-      //MenuData: [],
+      //swagger: null,
       localMenuData:[],
       collapsed: false,
       linkList: [],
@@ -130,6 +117,8 @@ export default {
     },MenuData(){
       //console.log("menuData--------------------------------")
       return this.$store.state.globals.currentMenuData;
+    },swagger(){
+       return this.$store.state.globals.swagger;
     },
     swaggerCurrentInstance(){
       return this.$store.state.globals.swaggerCurrentInstance;
@@ -200,7 +189,7 @@ export default {
       //初始化swagger文档
       var url = this.$route.path;
       var plusFlag = false;
-      if (url == "/plus") {
+      if (url.indexOf("/plus") !=-1) {
         //开启增强
         plusFlag = true;
       }
@@ -262,6 +251,10 @@ export default {
       //读取settings
       this.$localStore.getItem(constant.globalSettingsKey).then(settingCache=>{
         var settings=this.getCacheSettings(settingCache);
+        //重新赋值是否开启增强
+        if(!settings.enableSwaggerBootstrapUi){
+           settings.enableSwaggerBootstrapUi=this.getPlusStatus();
+        }
         that.$localStore.setItem(constant.globalSettingsKey, settings);
         this.$localStore.getItem(constant.globalGitApiVersionCaches).then(gitVal=>{
           var cacheApis=this.getCacheGitVersion(gitVal);
@@ -309,28 +302,34 @@ export default {
     initKnife4jFront() {
       //该版本区别于Spring-ui的版本,提供给其它语言来集成knife4j
       var that = this;
-      this.initSwagger({
-        Vue: that,
+      var swaggerOptions={ 
+        store:this.$store,
+        localStore:this.$localStore,
+        routeParams: that.$route.params, 
         plus: this.getPlusStatus(),
-        //禁用config的url调用
-        configSupport: false,
+        i18n:tmpI18n,
+        configSupport:false,
+        i18nInstance:this.getCurrentI18nInstance() ,
         //覆盖url地址,多个服务的组合
         url: "/static/services.json"
-      });
+      };
+      this.initSwagger(swaggerOptions);
     },
     initSwagger(options){
       //console.log("初始化Swagger")
       //console.log(options)
       this.i18n=options.i18nInstance;
-      this.swagger = new SwaggerBootstrapUi(options);
+      var swagger = new SwaggerBootstrapUi(options);
       try {
-        this.swagger.main();
+        swagger.main();
         //this.MenuData=this.swagger.menuData;
         //this.swaggerCurrentInstance=this.swagger.currentInstance;
         //this.$store.dispatch("globals/setMenuData", this.MenuData);
         //缓存cache
         //this.$localStore.setItem(constant.globalGitApiVersionCaches, this.swagger.cacheApis);
         //console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa------------------------")
+        //赋值
+        this.$store.dispatch("globals/setSwagger", swagger);
       } catch (e) {
         console.error(e);
       }
