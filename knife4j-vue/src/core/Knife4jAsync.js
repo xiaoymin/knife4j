@@ -1060,6 +1060,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel=function(instanceId
                 if(KUtils.checkUndefined(def)){
                   if (def.hasOwnProperty("properties")) {
                     var props = def["properties"];
+                    //获取required属性
+                    var requiredArrs=def.hasOwnProperty("required")?def["required"]:new Array();
                     //console.log(props);
                     for(var pkey in props){
                       var p=props[pkey];
@@ -1082,6 +1084,10 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel=function(instanceId
                       //refp.in = minfo.in;
                       if(KUtils.checkUndefined(p.require)){
                         refp.require = p.required;
+                      }else{
+                        if(requiredArrs.includes(pkey)){
+                          refp.require=true;
+                        }
                       }
                       refp.example = p.example;
                       var description = KUtils.propValue("description", p, "");
@@ -1277,6 +1283,8 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp,definitions, deepDef,
         if(KUtils.checkUndefined(def)){
           if (def.hasOwnProperty("properties")) {
             var props = def["properties"];
+            //获取required属性
+            var requiredArrs=def.hasOwnProperty("required")?def["required"]:new Array();
             for(var pkey in props){
               var p=props[pkey]
               p.refType=that.getSwaggerModelRefType(p);
@@ -1300,6 +1308,10 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp,definitions, deepDef,
               //refp.in = minfo.in;
               if(KUtils.checkUndefined(p.require)){
                 refp.require = p.required;
+              }else{
+                if(requiredArrs.includes(pkey)){
+                  refp.require=true;
+                }
               }
               refp.example = p.example;
               var description = KUtils.propValue("description", p, "");
