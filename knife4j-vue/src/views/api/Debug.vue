@@ -860,13 +860,20 @@ export default {
           }
         }
       } else {
-        //url-form类型
-        this.showTabUrlForm();
-        this.addGlobalParameterToUrlForm(showGlobalParameters);
-        this.addApiParameterToUrlForm(showApiParameters);
-        this.updateUrlFormCacheApi(cacheApi);
-        //url-form-data表单
-        this.initUrlFormValue();
+        //判断类型
+        if(this.api.contentValue=="raw"){
+          this.showTabRaw();
+          this.initFirstRawFormValue();
+        }else{
+          //url-form类型
+          this.showTabUrlForm();
+          this.addGlobalParameterToUrlForm(showGlobalParameters);
+          this.addApiParameterToUrlForm(showApiParameters);
+          this.updateUrlFormCacheApi(cacheApi);
+          //url-form-data表单
+          this.initUrlFormValue();
+        }
+       
       }
       //console.log(this.urlFormData);
     },

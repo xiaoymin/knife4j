@@ -220,7 +220,8 @@ SwaggerBootstrapUi.prototype.initApis = function () {
     var store = window.localStorage
     var cacheApis = store['SwaggerBootstrapUiCacheApis']
     if (cacheApis != undefined && cacheApis != null && cacheApis != '') {
-      var settings = JSON.parse(cacheApis)
+      //var settings = JSON.parse(cacheApis)
+      var settings = KUtils.json5parse(cacheApis)
       that.cacheApis = settings
     } else {
       that.cacheApis = []
@@ -328,7 +329,8 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
   var t = typeof data
   var groupData = null
   if (t == 'string') {
-    groupData = JSON.parse(data)
+    //groupData = JSON.parse(data)
+    groupData = KUtils.json5parse(data)
   } else {
     groupData = data
   }
@@ -577,7 +579,8 @@ SwaggerBootstrapUi.prototype.initOpenTable = function () {
   if (window.localStorage) {
     var store = window.localStorage;
     var cacheApis = store["SwaggerBootstrapUiCacheOpenApiTableApis"] || "{}";
-    var settings = JSON.parse(cacheApis);
+    //var settings = JSON.parse(cacheApis);
+    var settings = KUtils.json5parse(cacheApis);
     var insid = that.currentInstance.groupId;
     var cacheApis = settings[insid] || [];
 
@@ -599,10 +602,12 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
   var that = this;
   that.hasLoad = true;
   that.log(data);
+  //console.log(data);
   var t = typeof (data);
   var menu = null;
   if (t == 'string') {
-    menu = JSON.parse(data);
+    //menu = JSON.parse(data);
+    menu = KUtils.json5parse(data);
   } else {
     menu = data;
   }
@@ -657,7 +662,8 @@ SwaggerBootstrapUi.prototype.getSecurityStores = function () {
     var store = window.localStorage;
     var cacheSecuritys = store["SwaggerBootstrapUiCacheSecuritys"];
     if (cacheSecuritys != undefined && cacheSecuritys != null && cacheSecuritys != "") {
-      var settings = JSON.parse(cacheApis);
+      //var settings = JSON.parse(cacheApis);
+      var settings = KUtils.json5parse(cacheApis);
       csys = settings;
     }
   }
@@ -2324,10 +2330,12 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
             if (arr) {
               var na = new Array();
               na.push(def.value);
-              swaggerResp.responseValue = JSON.stringify(na, null, "\t");
+              //swaggerResp.responseValue = JSON.stringify(na, null, "\t");
+              swaggerResp.responseValue = KUtils.json5stringifyFormat(na, null, "\t");
               swaggerResp.responseJson = na;
             } else {
-              swaggerResp.responseValue = JSON.stringify(def.value, null, "\t");
+              //swaggerResp.responseValue = JSON.stringify(def.value, null, "\t");
+              swaggerResp.responseValue = KUtils.json5stringifyFormat(def.value, null, "\t");
               swaggerResp.responseJson = def.value;
             }
             if (def.hasOwnProperty("properties")) {
@@ -2434,10 +2442,12 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
           if (arr) {
             var na = new Array();
             na.push(ref.value);
-            swpinfo.responseValue = JSON.stringify(na, null, "\t");
+            //swpinfo.responseValue = JSON.stringify(na, null, "\t");
+            swpinfo.responseValue = KUtils.json5stringifyFormat(na, null, "\t");
             swpinfo.responseJson = na;
           } else {
-            swpinfo.responseValue = JSON.stringify(ref.value, null, "\t");
+            //swpinfo.responseValue = JSON.stringify(ref.value, null, "\t");
+            swpinfo.responseValue = KUtils.json5stringifyFormat(ref.value, null, "\t");
             swpinfo.responseJson = ref.value;
           }
         }
@@ -2546,47 +2556,66 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync=function(swpinfo){
       //判断consumes请求类型
       if (apiInfo.consumes != undefined && apiInfo.consumes != null && apiInfo.consumes.length > 0) {
         var ctp = apiInfo.consumes[0];
-        if (ctp == "multipart/form-data") {
+        //if (ctp == "multipart/form-data") {
+          //console.log("consumes:"+ctp)
+        if (ctp.indexOf("multipart/form-data")>=0) {
           swpinfo.contentType = ctp;
           swpinfo.contentValue = "form-data";
-        } else if (ctp == "text/plain") {
+        } else if (ctp.indexOf("text/plain")>=0) {
           swpinfo.contentType = ctp;
           swpinfo.contentValue = "raw";
           swpinfo.contentShowValue = "Text(text/plain)";
           swpinfo.contentMode = "text";
-        } else if (ctp == "application/xml") {
+        } else if (ctp.indexOf("application/xml")>=0) {
           swpinfo.contentType = ctp;
           swpinfo.contentValue = "raw";
           swpinfo.contentShowValue = "XML(application/xml)";
           swpinfo.contentMode = "xml";
-        } else {
+        }else {
           //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
           var defaultType = "application/x-www-form-urlencoded;charset=UTF-8";
           var defaultValue = "x-www-form-urlencoded";
-          for (var i = 0; i < swpinfo.parameters.length; i++) {
-            var pt = swpinfo.parameters[i];
-            if (pt.in == "body") {
-              if (pt.schemaValue == "MultipartFile") {
-                defaultType = "multipart/form-data";
-                defaultValue = "form-data";
-                break;
+          //解决springfox的默认bug，存在form参数，接口consumes却是json请求类型
+          if(KUtils.arrNotEmpty(swpinfo.parameters)){
+            //参数不为空,从参数判断
+            for (var i = 0; i < swpinfo.parameters.length; i++) {
+              var pt = swpinfo.parameters[i];
+              if (pt.in == "body") {
+                if (pt.schemaValue == "MultipartFile") {
+                  defaultType = "multipart/form-data";
+                  defaultValue = "form-data";
+                  break;
+                } else {
+                  defaultValue = "raw";
+                  defaultType = "application/json";
+                  if(ctp.indexOf("application/json")>=0){
+                    defaultType=ctp;
+                  }
+                  swpinfo.contentMode = "json";
+                  break;
+                }
               } else {
-                defaultValue = "raw";
-                defaultType = "application/json";
-                swpinfo.contentMode = "json";
-                break;
-              }
-            } else {
-              if (pt.schemaValue == "MultipartFile") {
-                defaultType = "multipart/form-data";
-                defaultValue = "form-data";
-                break;
+                if (pt.schemaValue == "MultipartFile") {
+                  defaultType = "multipart/form-data";
+                  defaultValue = "form-data";
+                  break;
+                }
               }
             }
-  
+            swpinfo.contentType = defaultType;
+            swpinfo.contentValue = defaultValue;
+          }else{
+             //如果开发者有指明consumes，则默认取开发者的
+            if(ctp.indexOf("application/json")>=0){
+              swpinfo.contentType = ctp;
+              swpinfo.contentValue = "raw";
+              swpinfo.contentShowValue = "JSON(application/json)";
+              swpinfo.contentMode = "json";
+            }else{
+              swpinfo.contentType = ctp;
+              swpinfo.contentValue = defaultValue;
+            }
           }
-          swpinfo.contentType = defaultType;
-          swpinfo.contentValue = defaultValue;
         }
       } else {
         //根据参数遍历,否则默认是表单x-www-form-urlencoded类型
@@ -2965,7 +2994,8 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
       const newValue = (() => {
         if (isObject(minfo.value)) {
           let cloneValue = null;
-          var tmpJson=JSON.parse(JSON.stringify(minfo.value)); // 深拷贝对象或数组
+          //var tmpJson=JSON.parse(JSON.stringify(minfo.value)); // 深拷贝对象或数组
+          var tmpJson=KUtils.json5parse(KUtils.json5stringify(minfo.value)); // 深拷贝对象或数组
           //判断include是否不为空
           if (swpinfo.includeParameters != null) {
             cloneValue=new IncludeAssemble(tmpJson,swpinfo.includeParameters).result();
@@ -2994,7 +3024,8 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
         }
       } else {
         //如果type是发array类型,判断撒地方是否是integer
-        minfo.txtValue = JSON.stringify(minfo.type === 'array' ? [newValue] : newValue, null, "\t");
+        //minfo.txtValue = JSON.stringify(minfo.type === 'array' ? [newValue] : newValue, null, "\t");
+        minfo.txtValue = KUtils.json5stringify(minfo.type === 'array' ? [newValue] : newValue, null, "\t");
       }
     }
   }
@@ -3078,7 +3109,8 @@ IncludeAssemble.prototype={
           return r;
       }else{
           const pathArr=path.split(".");
-          const r=JSON.parse(JSON.stringify(srcObj));
+          //const r=JSON.parse(JSON.stringify(srcObj));
+          const r=KUtils.json5parse(KUtils.json5stringify(srcObj));
           let tempObj=r;
           const len=pathArr.length;
           for (let i = 0; i < len; i++) {
@@ -3093,7 +3125,8 @@ IncludeAssemble.prototype={
               }
               if(this.isObjInArray(tempObj[pathComp])){
                   let t=this.getByPath(tempObj[pathComp],pathArr.slice(i+1).join('.'));
-                  tempObj[pathComp]=JSON.parse(JSON.stringify(t));
+                  //tempObj[pathComp]=JSON.parse(JSON.stringify(t));
+                  tempObj[pathComp]=KUtils.json5parse(KUtils.json5stringify(t));
                   break;
               }
               tempObj=tempObj[pathComp];
@@ -3368,7 +3401,8 @@ SwaggerBootstrapUi.prototype.getGlobalSecurityInfos = function () {
     var store = window.localStorage;
     var globalparams = store["SwaggerBootstrapUiSecuritys"];
     if (globalparams != undefined && globalparams != null && globalparams != "") {
-      var gpJson = JSON.parse(globalparams);
+      //var gpJson = JSON.parse(globalparams);
+      var gpJson = KUtils.json5parse(globalparams);
       gpJson.forEach(function (j) {
         //})
         //$.each(gpJson, function (i, j) {

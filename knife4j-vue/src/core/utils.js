@@ -363,6 +363,17 @@ const utils = {
     }
     return ret;
   },
+  json5stringifyFormat:function(rtext,format,num){
+    var ret = null;
+    try {
+      ret = JSON5.stringify(rtext, format, num);
+    } catch (err) {
+      //console(err)
+      ret = JSON.stringify(rtext, format, num);
+    }
+    return ret;
+
+  },
   json5parse: function (rtext) {
     var ret = null;
     try {
