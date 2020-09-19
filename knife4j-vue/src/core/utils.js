@@ -153,6 +153,14 @@ function isUrl(path) {
 }
 
 const utils = {
+  oasmodel(oas2){
+    //获取oas的definitions解析正则
+    if(oas2){
+      return "#/definitions/(.*)$";
+    }else{
+      return "#/components/schemas/(.*)$";
+    }
+  },
   filterIgnoreParameters(inType, name, ignoreParameters) {
     //是否过滤参数
     if (ignoreParameters == null) {
