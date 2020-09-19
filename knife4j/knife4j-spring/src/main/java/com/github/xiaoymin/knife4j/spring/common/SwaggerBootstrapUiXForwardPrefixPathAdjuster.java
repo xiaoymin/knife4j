@@ -7,12 +7,12 @@
 
 package com.github.xiaoymin.knife4j.spring.common;
 
-import org.springframework.core.SpringVersion;
+import springfox.documentation.common.SpringVersion;
 import springfox.documentation.service.PathAdjuster;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static springfox.documentation.swagger.common.SpringVersionCapability.supportsXForwardPrefixHeader;
+import static springfox.documentation.common.SpringVersionCapability.*;
 
 /***
  *
@@ -25,16 +25,19 @@ public class SwaggerBootstrapUiXForwardPrefixPathAdjuster implements PathAdjuste
     static final String X_FORWARDED_PREFIX = "X-Forwarded-Prefix";
 
     private final HttpServletRequest request;
+    private final SpringVersion springVersion;
+
 
     public SwaggerBootstrapUiXForwardPrefixPathAdjuster(HttpServletRequest request) {
         this.request = request;
+        this.springVersion=new SpringVersion();
     }
 
     @Override
     public String adjustedPath(String path) {
         String prefix = request.getHeader(X_FORWARDED_PREFIX);
         if (prefix != null) {
-            if (!supportsXForwardPrefixHeader(SpringVersion.getVersion())) {
+            if (!supportsXForwardPrefixHeader(springVersion.getVersion())) {
                 return prefix + path;
             } else {
                 return prefix;

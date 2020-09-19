@@ -35,9 +35,9 @@
     </scm>
     <properties>
         <java.version>1.8</java.version>
-        <knife4j.version>2.0.5</knife4j.version>
+        <knife4j.version>2.0.6</knife4j.version>
         <swagger-models.version>1.5.22</swagger-models.version>
-        <springfox.version>2.9.2</springfox.version>
+        <springfox.version>3.0.0</springfox.version>
         <springdoc-openapi.version>1.3.4</springdoc-openapi.version>
         <javassist.version>3.25.0-GA</javassist.version>
     </properties>
@@ -112,27 +112,30 @@
                 <artifactId>knife4j-spring-mvc</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${springfox.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>io.swagger</groupId>
-                        <artifactId>swagger-models</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>io.swagger</groupId>
-                        <artifactId>swagger-annotations</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
-
-            <!-- https://mvnrepository.com/artifact/io.springfox/springfox-bean-validators -->
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-bean-validators</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-oas</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
                 <version>${springfox.version}</version>
             </dependency>
             <!--springdoc-openapi的Jar包引用-->

@@ -7,7 +7,6 @@
 
 package com.github.xiaoymin.knife4j.spring.plugin;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSort;
@@ -18,6 +17,8 @@ import org.springframework.stereotype.Component;
 import springfox.documentation.service.StringVendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.OperationContext;
+
+import java.util.Optional;
 
 /***
  *

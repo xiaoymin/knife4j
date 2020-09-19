@@ -14,7 +14,7 @@ import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 import com.github.xiaoymin.knife4j.core.conf.Consts;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
-import com.google.common.base.Optional;
+import com.github.xiaoymin.knife4j.spring.util.TypeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -24,16 +24,18 @@ import springfox.documentation.schema.ModelReference;
 import springfox.documentation.schema.TypeNameExtractor;
 import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.schema.EnumTypeDeterminer;
 import springfox.documentation.spi.schema.contexts.ModelContext;
 import springfox.documentation.spi.service.OperationBuilderPlugin;
 import springfox.documentation.spi.service.contexts.OperationContext;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static springfox.documentation.schema.ResolvedTypes.modelRefFactory;
-import static springfox.documentation.schema.Types.isVoid;
 import static springfox.documentation.spring.web.readers.operation.ResponseMessagesReader.httpStatusCode;
 import static springfox.documentation.spring.web.readers.operation.ResponseMessagesReader.message;
 
@@ -52,14 +54,17 @@ import static springfox.documentation.spring.web.readers.operation.ResponseMessa
 public class DynamicResponseModelReader  implements OperationBuilderPlugin {
 
     private final TypeNameExtractor typeNameExtractor;
+    private final EnumTypeDeterminer enumTypeDeterminer;
+
 
     private final Map<String,String> cacheGenModelMaps=new HashMap<>();
     @Autowired
     private TypeResolver typeResolver;
 
     @Autowired
-    public DynamicResponseModelReader(TypeNameExtractor typeNameExtractor) {
+    public DynamicResponseModelReader(TypeNameExtractor typeNameExtractor, EnumTypeDeterminer enumTypeDeterminer) {
         this.typeNameExtractor = typeNameExtractor;
+        this.enumTypeDeterminer = enumTypeDeterminer;
     }
 
     @Override
@@ -114,15 +119,17 @@ public class DynamicResponseModelReader  implements OperationBuilderPlugin {
                     int httpStatusCode = httpStatusCode(operationContext);
                     String message = message(operationContext);
                     ModelReference modelRef = null;
-                    if (!isVoid(returnType)) {
+                    if (!TypeUtils.isVoid(returnType)) {
                         ModelContext modelContext = ModelContext.returnValue(
+                                UUID.randomUUID().toString(),
                                 operationContext.getGroupName(),
                                 returnType,
+                                Optional.of(returnType),
                                 operationContext.getDocumentationType(),
                                 operationContext.getAlternateTypeProvider(),
                                 operationContext.getGenericsNamingStrategy(),
                                 operationContext.getIgnorableParameterTypes());
-                        modelRef = modelRefFactory(modelContext, typeNameExtractor).apply(returnType);
+                        modelRef = modelRefFactory(modelContext,enumTypeDeterminer, typeNameExtractor).apply(returnType);
                     }
                     ResponseMessage built = new ResponseMessageBuilder()
                             .code(httpStatusCode)

@@ -11,7 +11,6 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameters;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
-import com.google.common.base.Optional;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -23,6 +22,7 @@ import springfox.documentation.spi.service.contexts.ParameterContext;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /***
  *

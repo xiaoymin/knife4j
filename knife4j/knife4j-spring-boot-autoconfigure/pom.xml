@@ -5,7 +5,7 @@
     <parent>
         <artifactId>knife4j</artifactId>
         <groupId>com.github.xiaoymin</groupId>
-        <version>2.0.5</version>
+        <version>2.0.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,7 +28,16 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.springfox</groupId>
+                    <artifactId>springfox-swagger-ui</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
 

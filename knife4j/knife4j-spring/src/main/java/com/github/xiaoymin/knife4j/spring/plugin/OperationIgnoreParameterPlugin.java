@@ -7,7 +7,6 @@
 
 package com.github.xiaoymin.knife4j.spring.plugin;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import org.springframework.core.Ordered;
@@ -17,10 +16,7 @@ import springfox.documentation.service.ListVendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.OperationContext;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /***
  * 忽略接口某个参数,避免编写过多的实体类,该插件通过给Open API v2.0 的Path节点添加扩展属性x-ignoreParameters扩展属性,结合前端ui自定义实现过滤规则.
