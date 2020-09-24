@@ -20,6 +20,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "knife4j")
 public class Knife4jProperties {
 
+    /**
+     * Basic基础验证
+     */
     private Knife4jHttpBasic basic;
 
     /**
