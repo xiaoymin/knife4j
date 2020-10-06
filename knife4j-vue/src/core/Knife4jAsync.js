@@ -1401,8 +1401,11 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel=function(instanceId
           //开始加载属性
           originalTreeTableModel.init=true;
           //var definitions=instance.swaggerData["definitions"];
+          console.log(instance)
           var definitions=instance.getOASDefinitions();
           var oas2=instance.oas2();
+          console.log("analysisDefinitionRefTableModel:----------------"+oas2);
+          console.log(definitions)
           if(KUtils.checkUndefined(definitions)){
             for(var key in definitions){
               if(key==originalTreeTableModel.name){
@@ -1546,6 +1549,22 @@ SwaggerBootstrapUi.prototype.getOriginalDefinitionByName=function(name,definitio
     }
   }
   return def;
+}
+
+/**
+ * 判断当前类型是否是Array数组
+ * @param {*} propobj 
+ * @param {*} oas2 
+ */
+SwaggerBootstrapUi.prototype.getSwaggerModelRefArray=function(propobj,oas2){
+  var arrayFlag=false;
+  if (propobj.hasOwnProperty("type")) {
+    var type = propobj["type"];
+    if (type == "array") {
+      arrayFlag=true;
+    }
+  }
+  return arrayFlag;
 }
 /**
  * 获取当前属性的refType类型
@@ -3056,6 +3075,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
             if(KUtils.checkUndefined(consumeBody)&&consumeBody.hasOwnProperty("schema")){
               //判断是否包含schema
               var schema=consumeBody["schema"];
+              //此处有可能是array类型
+              var arrFlag=that.getSwaggerModelRefArray(schema,swpinfo.oas2);
               var type=that.getSwaggerModelRefType(schema,swpinfo.oas2);
               if(KUtils.checkUndefined(type)){
                 //此时，创建请求参数
@@ -3070,6 +3091,9 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                   //存在format
                   var _rtype = minfo.type + "(" + _format + ")";
                   minfo.type = _rtype;
+                }
+                if(arrFlag){
+                  minfo.type="array";
                 }
                 //存在schema属性,请求对象是实体类
                 minfo.schema = true;
@@ -5459,7 +5483,7 @@ SwaggerBootstrapUiInstance.prototype.oas2=function(){
 SwaggerBootstrapUiInstance.prototype.getOASDefinitions=function(){
   var definitions={};
   var swaggerData=this.swaggerData;
-  if(this.oas2){
+  if(this.oas2()){
     if(KUtils.checkUndefined(swaggerData)&&swaggerData.hasOwnProperty("definitions")){
       if(KUtils.checkUndefined(swaggerData["definitions"])){
         definitions=swaggerData["definitions"];

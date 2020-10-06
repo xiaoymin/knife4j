@@ -200,8 +200,8 @@ export default {
     //var treeTableModel = this.swaggerInstance.refTreeTableModels;
     //
     var treeTableModel = this.swaggerInstance.swaggerTreeTableModels;
-    //console.log("treeTableModel")
-    //console.log(treeTableModel);
+    console.log("treeTableModel")
+    console.log(treeTableModel);
     this.$Knife4jModels.setValue(key, treeTableModel);
     this.initI18n();
     this.initRequestParams();
@@ -432,8 +432,8 @@ export default {
                     schemaName
                   );
                   model=that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id,model);
-                  //console.log("findmodel")
-                  //console.log(model)
+                  console.log("findmodel")
+                  console.log(model)
                   if (model && model.params) {
                     const childrens = model.params
                       .filter(({ name }) => {
