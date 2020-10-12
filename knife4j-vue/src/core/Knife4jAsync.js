@@ -3075,66 +3075,77 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
             if(KUtils.checkUndefined(consumeBody)&&consumeBody.hasOwnProperty("schema")){
               //判断是否包含schema
               var schema=consumeBody["schema"];
-              //此处有可能是array类型
-              var arrFlag=that.getSwaggerModelRefArray(schema,swpinfo.oas2);
-              var type=that.getSwaggerModelRefType(schema,swpinfo.oas2);
-              if(KUtils.checkUndefined(type)){
-                //此时，创建请求参数
-                var minfo = new SwaggerBootstrapUiParameter();
-                minfo.name = type;
-                minfo.type = type;
-                minfo.in = "body";
-                minfo.require = true;
-                minfo.description = KUtils.replaceMultipLineStr(KUtils.propValue("description", schema, ""));
-                var _format = KUtils.propValue("format", schema, "");
-                if (KUtils.strNotBlank(_format)) {
-                  //存在format
-                  var _rtype = minfo.type + "(" + _format + ")";
-                  minfo.type = _rtype;
+              //此处判断properties,如果有properties,说明有属性,非ref
+              if(schema.hasOwnProperty("properties")&&KUtils.checkUndefined(schema["properties"])){
+                //有值,此处可能是application/x-www-form-urlencoded的请求类型
+                var requestProperties=schema["properties"];
+                for(var prop in requestProperties){
+                  var parameterInfo=requestProperties[prop];
+                  parameterInfo["name"]=prop;
+                  parameterInfo["in"]="query";
+                  that.assembleParameterOAS3(parameterInfo,swpinfo);
                 }
-                if(arrFlag){
-                  minfo.type="array";
-                }
-                //存在schema属性,请求对象是实体类
-                minfo.schema = true;
-                minfo.schemaValue = type;
-                var def = that.getDefinitionByName(type,swpinfo.oas2);
-                if (def != null) {
-                  minfo.def = def;
-                  minfo.value = def.value;
-                  if (def.description != undefined && def.description != null && def.description != "") {
-                    minfo.description = KUtils.replaceMultipLineStr(def.description);
+              }else{
+                //此处有可能是array类型
+                var arrFlag=that.getSwaggerModelRefArray(schema,swpinfo.oas2);
+                var type=that.getSwaggerModelRefType(schema,swpinfo.oas2);
+                if(KUtils.checkUndefined(type)){
+                  //此时，创建请求参数
+                  var minfo = new SwaggerBootstrapUiParameter();
+                  minfo.name = type;
+                  minfo.type = type;
+                  minfo.in = "body";
+                  minfo.require = true;
+                  minfo.description = KUtils.replaceMultipLineStr(KUtils.propValue("description", schema, ""));
+                  var _format = KUtils.propValue("format", schema, "");
+                  if (KUtils.strNotBlank(_format)) {
+                    //存在format
+                    var _rtype = minfo.type + "(" + _format + ")";
+                    minfo.type = _rtype;
                   }
-                } else {
-                  //此处判断Array的类型,如果
-                  if (type == "string") {
-                    minfo.value = "";
+                  if(arrFlag){
+                    minfo.type="array";
                   }
-                  if (type == "integer") {
-                    //判断format
-                    if (schema["format"] != undefined && schema["format"] != null && schema["format"] == "int32") {
-                      minfo.value = 0;
-                    } else {
-                      minfo.value = 1054661322597744642;
+                  //存在schema属性,请求对象是实体类
+                  minfo.schema = true;
+                  minfo.schemaValue = type;
+                  var def = that.getDefinitionByName(type,swpinfo.oas2);
+                  if (def != null) {
+                    minfo.def = def;
+                    minfo.value = def.value;
+                    if (def.description != undefined && def.description != null && def.description != "") {
+                      minfo.description = KUtils.replaceMultipLineStr(def.description);
+                    }
+                  } else {
+                    //此处判断Array的类型,如果
+                    if (type == "string") {
+                      minfo.value = "";
+                    }
+                    if (type == "integer") {
+                      //判断format
+                      if (schema["format"] != undefined && schema["format"] != null && schema["format"] == "int32") {
+                        minfo.value = 0;
+                      } else {
+                        minfo.value = 1054661322597744642;
+                      }
+                    }
+                    if (type == "number") {
+                      if (schema["format"] != undefined && schema["format"] != null && schema["format"] == "double") {
+                        minfo.value = 0.5;
+                      } else {
+                        minfo.value = 0;
+                      }
                     }
                   }
-                  if (type == "number") {
-                    if (schema["format"] != undefined && schema["format"] != null && schema["format"] == "double") {
-                      minfo.value = 0.5;
-                    } else {
-                      minfo.value = 0;
+                  if (!KUtils.checkParamArrsExists(swpinfo.parameters, minfo)) {
+                    swpinfo.parameters.push(minfo);
+                    //判断当前属性是否是schema
+                    if (minfo.schema) {
+                      minfo.parentTypes.push(minfo.schemaValue);
                     }
-                  }
-                }
-                if (!KUtils.checkParamArrsExists(swpinfo.parameters, minfo)) {
-                  swpinfo.parameters.push(minfo);
-                  //判断当前属性是否是schema
-                  if (minfo.schema) {
-                    minfo.parentTypes.push(minfo.schemaValue);
                   }
                 }
               }
-              
             }
           }
         }
