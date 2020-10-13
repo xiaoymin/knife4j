@@ -3735,7 +3735,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     if (!apiInfo.tags) {
       apiInfo.tags = ['default'];
     }
-    swpinfo.consumes = apiInfo.consumes;
+    //swpinfo.consumes = apiInfo.consumes;
+    swpinfo.consumes = KUtils.getValue(apiInfo,"consumes","application/json",true);
     swpinfo.description = KUtils.getValue(apiInfo, "description", "", true);
     //描述支持markdown
     if(KUtils.strNotBlank(swpinfo.description)){
@@ -3775,7 +3776,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
       var _hashUrl = "#/" + _groupName + "/" + tag + "/" + swpinfo.operationId;
       swpinfo.hashCollections.push(_hashUrl);
     })
-    swpinfo.produces = apiInfo.produces;
+    //swpinfo.produces = apiInfo.produces;
+    swpinfo.produces = KUtils.getValue(apiInfo,"produces","[\"*/*\"]",true);
     //二次解析截取start
     
     //二次解析截取end
