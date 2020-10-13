@@ -3791,8 +3791,12 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
       var _hashUrl = "#/" + _groupName + "/" + tag + "/" + swpinfo.operationId;
       swpinfo.hashCollections.push(_hashUrl);
     })
-    //swpinfo.produces = apiInfo.produces;
-    swpinfo.produces = KUtils.getValue(apiInfo,"produces","[\"*/*\"]",true);
+    if(KUtils.checkUndefined(apiInfo.produces)){
+      swpinfo.produces = apiInfo.produces;
+    }else{
+      swpinfo.produces = [].concat("*/*");
+    }
+    //swpinfo.produces = KUtils.getValue(apiInfo,"produces","[\"*/*\"]",true);
     //二次解析截取start
     
     //二次解析截取end
