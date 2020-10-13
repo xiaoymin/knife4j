@@ -682,6 +682,19 @@ SwaggerBootstrapUi.prototype.getSecurityStores = function () {
  * @param menu
  */
 SwaggerBootstrapUi.prototype.setInstanceBasicPorperties = function (menu) {
+  if(this.currentInstance.oas2()){
+    this.basicInfoOAS2(menu);
+  }else{
+    this.basicInfoOAS3(menu);
+  }
+  
+}
+
+/**
+ * 解析OAS2.0的基础配置信息
+ * @param {*} menu 
+ */
+SwaggerBootstrapUi.prototype.basicInfoOAS2=function(menu){
   var that = this;
   var title = '',
     description = '',
@@ -689,6 +702,7 @@ SwaggerBootstrapUi.prototype.setInstanceBasicPorperties = function (menu) {
     version = '',
     termsOfService = '';
   var host = KUtils.getValue(menu, "host", "", true);
+  that.currentInstance.host = host;
   if (menu != null && menu != undefined) {
     if (menu.hasOwnProperty("info")) {
       var info = menu.info;
@@ -701,16 +715,61 @@ SwaggerBootstrapUi.prototype.setInstanceBasicPorperties = function (menu) {
       version = KUtils.getValue(info, "version", "", true);
       termsOfService = KUtils.getValue(info, "termsOfService", "", true);
     }
-    that.currentInstance.host = host;
+    //that.currentInstance.host = host;
     that.currentInstance.title = title;
     //impl markdown syntax
     that.currentInstance.description = marked(description);
     that.currentInstance.contact = name;
     that.currentInstance.version = version;
     that.currentInstance.termsOfService = termsOfService;
-    that.currentInstance.basePath = menu["basePath"];
+    //that.currentInstance.basePath = menu["basePath"];
+    that.currentInstance.basePath = KUtils.getValue(menu,'basePath','/',true);;
   } else {
     title = that.currentInstance.title;
+  }
+}
+/**
+ * 解析OAS3.0的基础配置
+ * @param {*} menu 
+ */
+SwaggerBootstrapUi.prototype.basicInfoOAS3=function(menu){
+  var that = this;
+  var title = '',
+    description = '',
+    name = '',
+    version = '',
+    termsOfService = '';
+  var host = KUtils.getValue(menu, "host", "", true);
+  if(KUtils.checkUndefined(menu)){
+    if(menu.hasOwnProperty("servers")&&KUtils.checkUndefined(menu["servers"])){
+      var servers=menu["servers"];
+      if(KUtils.arrNotEmpty(servers)){
+        host=servers[0]["url"];
+      }
+    }
+    that.currentInstance.host = host;
+    if(menu.hasOwnProperty("info")&&KUtils.checkUndefined(menu["info"])){
+      var info = menu.info;
+      title = KUtils.getValue(info, "title", '', true);
+      description = KUtils.getValue(info, "description", "", true);
+      if (info.hasOwnProperty("contact")) {
+        var contact = info["contact"];
+        name = KUtils.getValue(contact, "name", "", true);
+      }
+      version = KUtils.getValue(info, "version", "", true);
+      termsOfService = KUtils.getValue(info, "termsOfService", "", true);
+      
+      that.currentInstance.title = title;
+      //impl markdown syntax
+      that.currentInstance.description = marked(description);
+      that.currentInstance.contact = name;
+      that.currentInstance.version = version;
+      that.currentInstance.termsOfService = termsOfService;
+      //that.currentInstance.basePath = menu["basePath"];
+      that.currentInstance.basePath = KUtils.getValue(menu,'basePath','/',true);
+    }else{
+      title = that.currentInstance.title;
+    }
   }
 }
 
@@ -3622,7 +3681,10 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   swpinfo.originalApiInfo=apiInfo;
   //添加basePath
   var basePath = that.currentInstance.basePath;
-  var newfullPath = that.currentInstance.host;
+  //此处标注host是因为host中可能存在basePath的情况
+  //例如,Host:http://192.168.0.1:8080/abc ?
+  //var newfullPath = that.currentInstance.host;
+  var newfullPath = "";
   var basePathFlag = false;
   //basePath="/addd/";
   if (basePath != "" && basePath != "/") {
@@ -3632,13 +3694,14 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   }
   newfullPath += path;
   //截取字符串
-  var newurl = newfullPath.substring(newfullPath.indexOf("/"));
+  //var newurl = newfullPath.substring(newfullPath.indexOf("/"));
   //that.log("新的url:"+newurl)
-  newurl = newurl.replace("//", "/");
+  //newurl = newurl.replace("//", "/");
+  var newurl=newfullPath;
   //判断应用实例的baseurl
-  if (that.currentInstance.baseUrl != "" && that.currentInstance.baseUrl != "/") {
+  /* if (that.currentInstance.baseUrl != "" && that.currentInstance.baseUrl != "/") {
     newurl = that.currentInstance.baseUrl + newurl;
-  }
+  } */
   var startApiTime = new Date().getTime();
   swpinfo.showUrl = newurl;
   //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);

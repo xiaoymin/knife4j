@@ -2615,7 +2615,14 @@ export default {
       if (proRegex.test(href)) {
         protocol = "https";
       }
-      var fullurl = protocol + "://" + this.api.host;
+      var httpReg=new RegExp("^(http|https):.*","ig");
+      var fullurl="";
+      if(httpReg.test(this.api.host)){
+        //如果包含,则不追究
+        fullurl=this.api.host;
+      }else{
+        fullurl = protocol + "://" + this.api.host;
+      }
       //判断是否开启了Host的配置,如果开启则直接使用Host中的地址
       if(this.enableHost){
         fullurl=this.enableHostText;
