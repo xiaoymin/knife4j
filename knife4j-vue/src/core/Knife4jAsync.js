@@ -3156,6 +3156,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                 if(KUtils.checkUndefined(type)){
                   //在此处构造openAPI2.0的结构,复用原来的解析方法
                   var originalSchema=null;
+                  var originalParameterName=KUtils.camelCase(type);
                   if(arrFlag){
                     originalSchema={
                       "type":"array",
@@ -3164,6 +3165,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                         "$ref":"#/components/schemas/"+type
                       }
                     }
+                    originalParameterName=originalParameterName+"s";
                   }else{
                     originalSchema={
                       "originalRef":type,
@@ -3173,7 +3175,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                   var originalOpenApiParameter={
                     "in":"body",
                     "description":type,
-                    "name":KUtils.camelCase(type),
+                    "name":originalParameterName,
                     "required":true,
                     "schema":originalSchema
                   };
@@ -4201,12 +4203,6 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
   minfo.description = KUtils.replaceMultipLineStr(KUtils.propValue("description", m, ""));
   //add at 2019-12-10 09:20:08  判断请求参数类型是否包含format
   //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/161
-  var _format = KUtils.propValue("format", m, "");
-  if (KUtils.strNotBlank(_format)) {
-    //存在format
-    var _rtype = minfo.type + "(" + _format + ")";
-    minfo.type = _rtype;
-  }
   //判断是否有枚举类型
   if (m.hasOwnProperty("enum")) {
     //that.log("包括枚举类型...")
@@ -4238,6 +4234,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
     minfo.schema = true;
     var schemaObject = m["schema"];
     var schemaType = schemaObject["type"];
+    minfo.type=schemaType;
     if (schemaType == "array") {
       minfo.type = schemaType;
       var schItem = schemaObject["items"];
@@ -4274,7 +4271,29 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
           }
         }
       }
-    } else {
+    }else if(KUtils.checkIsBasicType(schemaType)){
+      //是否基础类型
+      //1.判断整型的format
+      var _format = KUtils.propValue("format", schemaObject, "");
+      if (KUtils.strNotBlank(_format)) {
+        //存在format
+        var _rtype = schemaType + "(" + _format + ")";
+        minfo.type = _rtype;
+      }
+      //2.判断是否包含枚举
+      var _enumArray=KUtils.propValue("enum",schemaObject,[]);
+      if(KUtils.arrNotEmpty(_enumArray)){
+        //枚举不为空
+        minfo.enum = _enumArray;
+        //枚举类型,描述显示可用值
+        var avaiableArrStr = _enumArray.join(",");
+        if (m.description != null && m.description != undefined && m.description != "") {
+          minfo.description = m.description + ",可用值:" + avaiableArrStr;
+        } else {
+          minfo.description = "枚举类型,可用值:" + avaiableArrStr;
+        }
+      }
+    }else {
       if (schemaObject.hasOwnProperty("$ref")) {
         var ref = m["schema"]["$ref"];
         var className = KUtils.getClassName(ref,swpinfo.oas2);
@@ -4386,6 +4405,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
           //判断include是否不为空
           if (swpinfo.includeParameters != null) {
             cloneValue=new IncludeAssemble(tmpJson,swpinfo.includeParameters).result();
+            console.log(cloneValue);
           } else {
             cloneValue = tmpJson;
             if (swpinfo.ignoreParameters && isObject(minfo.value)) {
@@ -4423,6 +4443,10 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
     // 处理请求参数表格依然展示忽略参数
     if (!ignoreParameterKeys.includes(originalName)) {
       swpinfo.parameters.push(minfo);
+    }
+    if(swpinfo.url=="/api/nxew202/exc2"){
+      console.log("----------------------/api/nxew202/exc2")
+      console.log(swpinfo)
     }
     //判断当前属性是否是schema
     if (minfo.schema) {
