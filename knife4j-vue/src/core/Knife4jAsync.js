@@ -3154,8 +3154,33 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                 var arrFlag=that.getSwaggerModelRefArray(schema,swpinfo.oas2);
                 var type=that.getSwaggerModelRefType(schema,swpinfo.oas2);
                 if(KUtils.checkUndefined(type)){
+                  //在此处构造openAPI2.0的结构,复用原来的解析方法
+                  var originalSchema=null;
+                  if(arrFlag){
+                    originalSchema={
+                      "type":"array",
+                      "items":{
+                        "originalRef":type,
+                        "$ref":"#/components/schemas/"+type
+                      }
+                    }
+                  }else{
+                    originalSchema={
+                      "originalRef":type,
+                      "$ref":"#/components/schemas/"+type
+                    }
+                  }
+                  var originalOpenApiParameter={
+                    "in":"body",
+                    "description":type,
+                    "name":type,
+                    "required":true,
+                    "schema":originalSchema
+                  };
+                  that.assembleParameterOAS3(originalOpenApiParameter,swpinfo,[]);
+
                   //此时，创建请求参数
-                  var minfo = new SwaggerBootstrapUiParameter();
+                  /* var minfo = new SwaggerBootstrapUiParameter();
                   minfo.name = type;
                   minfo.type = type;
                   minfo.in = "body";
@@ -3207,7 +3232,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                     if (minfo.schema) {
                       minfo.parentTypes.push(minfo.schemaValue);
                     }
-                  }
+                  } */
                 }
               }
             }
@@ -3755,7 +3780,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
       apiInfo.tags = ['default'];
     }
     //swpinfo.consumes = apiInfo.consumes;
-    swpinfo.consumes = KUtils.getValue(apiInfo,"consumes","application/json",true);
+    swpinfo.consumes = KUtils.getValue(apiInfo,"consumes",[].concat("application/json"),true);
     swpinfo.description = KUtils.getValue(apiInfo, "description", "", true);
     //描述支持markdown
     if(KUtils.strNotBlank(swpinfo.description)){
@@ -3960,7 +3985,7 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
       minfo.type = schemaType;
       var schItem = schemaObject["items"];
       var ref = schItem["$ref"];
-      var className = KUtils.getClassName(ref);
+      var className = KUtils.getClassName(ref,swpinfo.oas2);
       minfo.schemaValue = className;
       var def = that.getDefinitionByName(className,swpinfo.oas2);
       if (def != null) {
@@ -3995,7 +4020,7 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
     } else {
       if (schemaObject.hasOwnProperty("$ref")) {
         var ref = m["schema"]["$ref"];
-        var className = KUtils.getClassName(ref);
+        var className = KUtils.getClassName(ref,swpinfo.oas2);
         if (minfo.type != "array") {
           minfo.type = className;
         }
@@ -4015,7 +4040,7 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
           var addProp = schemaObject["additionalProperties"];
           if (addProp.hasOwnProperty("$ref")) {
             //object
-            var className = KUtils.getClassName(addProp["$ref"]);
+            var className = KUtils.getClassName(addProp["$ref"],swpinfo.oas2);
             if (className != null) {
               var def = that.getDefinitionByName(className,swpinfo.oas2);
               if (def != null) {
@@ -4031,7 +4056,7 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
           } else if (addProp.hasOwnProperty("items")) {
             //数组
             var addItems = addProp["items"];
-            var className = KUtils.getClassName(addItems["$ref"]);
+            var className = KUtils.getClassName(addItems["$ref"],swpinfo.oas2);
             if (className != null) {
               var def = that.getDefinitionByName(className,swpinfo.oas2);
               if (def != null) {
@@ -4063,7 +4088,7 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
     var items = m["items"];
     if (items.hasOwnProperty("$ref")) {
       var ref = items["$ref"];
-      var className = KUtils.getClassName(ref);
+      var className = KUtils.getClassName(ref,swpinfo.oas2);
       //minfo.type=className;
       minfo.schemaValue = className;
       var def = that.getDefinitionByName(className,swpinfo.oas2);
@@ -4217,7 +4242,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
       minfo.type = schemaType;
       var schItem = schemaObject["items"];
       var ref = schItem["$ref"];
-      var className = KUtils.getClassName(ref);
+      var className = KUtils.getClassName(ref,swpinfo.oas2);
       minfo.schemaValue = className;
       var def = that.getDefinitionByName(className,swpinfo.oas2);
       if (def != null) {
@@ -4252,7 +4277,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
     } else {
       if (schemaObject.hasOwnProperty("$ref")) {
         var ref = m["schema"]["$ref"];
-        var className = KUtils.getClassName(ref);
+        var className = KUtils.getClassName(ref,swpinfo.oas2);
         if (minfo.type != "array") {
           minfo.type = className;
         }
@@ -4272,7 +4297,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
           var addProp = schemaObject["additionalProperties"];
           if (addProp.hasOwnProperty("$ref")) {
             //object
-            var className = KUtils.getClassName(addProp["$ref"]);
+            var className = KUtils.getClassName(addProp["$ref"],swpinfo.oas2);
             if (className != null) {
               var def = that.getDefinitionByName(className,swpinfo.oas2);
               if (def != null) {
@@ -4288,7 +4313,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
           } else if (addProp.hasOwnProperty("items")) {
             //数组
             var addItems = addProp["items"];
-            var className = KUtils.getClassName(addItems["$ref"]);
+            var className = KUtils.getClassName(addItems["$ref"],swpinfo.oas2);
             if (className != null) {
               var def = that.getDefinitionByName(className,swpinfo.oas2);
               if (def != null) {
@@ -4320,7 +4345,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
     var items = m["items"];
     if (items.hasOwnProperty("$ref")) {
       var ref = items["$ref"];
-      var className = KUtils.getClassName(ref);
+      var className = KUtils.getClassName(ref,swpinfo.oas2);
       //minfo.type=className;
       minfo.schemaValue = className;
       var def = that.getDefinitionByName(className,swpinfo.oas2);

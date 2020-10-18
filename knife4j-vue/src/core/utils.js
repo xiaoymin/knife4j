@@ -575,12 +575,21 @@ const utils = {
     }
     return val;
   },
-  getClassName: function (item) {
-    var regex = new RegExp("#/definitions/(.*)$", "ig");
-    if (regex.test(item)) {
-      var ptype = RegExp.$1;
-      return ptype;
+  getClassName: function (item,oas2) {
+    if(oas2){
+      var regex = new RegExp("#/definitions/(.*)$", "ig");
+      if (regex.test(item)) {
+        var ptype = RegExp.$1;
+        return ptype;
+      }
+    }else{
+      var regex = new RegExp("#/components/schemas/(.*)$", "ig");
+      if (regex.test(item)) {
+        var ptype = RegExp.$1;
+        return ptype;
+      }
     }
+    
     return null;
   },
   trim(text) {
