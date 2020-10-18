@@ -3113,11 +3113,11 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
         if(swpinfo.includeParameters!=null){
           //直接判断include的参数即可
           if (KUtils.filterIncludeParameters(inType, originalName, swpinfo.includeParameters)) {
-            that.assembleParameterOAS3(m,swpinfo);
+            that.assembleParameterOAS3(m,swpinfo,[]);
           }
         }else{
           if (KUtils.filterIgnoreParameters(inType, originalName, swpinfo.ignoreParameters)) {
-            that.assembleParameterOAS3(m,swpinfo);
+            that.assembleParameterOAS3(m,swpinfo,[]);
           }
         }
         
@@ -3139,11 +3139,15 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
               if(schema.hasOwnProperty("properties")&&KUtils.checkUndefined(schema["properties"])){
                 //有值,此处可能是application/x-www-form-urlencoded的请求类型
                 var requestProperties=schema["properties"];
+                var requireArray=[];
+                if(schema.hasOwnProperty("required")&&KUtils.checkUndefined(schema["required"])){
+                  requireArray=schema["required"];
+                }
                 for(var prop in requestProperties){
                   var parameterInfo=requestProperties[prop];
                   parameterInfo["name"]=prop;
                   parameterInfo["in"]="query";
-                  that.assembleParameterOAS3(parameterInfo,swpinfo);
+                  that.assembleParameterOAS3(parameterInfo,swpinfo,requireArray);
                 }
               }else{
                 //此处有可能是array类型
@@ -3760,29 +3764,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     swpinfo.operationId = apiInfo.operationId;
     swpinfo.summary = KUtils.toString(apiInfo.summary,"").replace(/\//g,"-");
     swpinfo.tags = apiInfo.tags;
-    //读取扩展属性x-ignoreParameters
-    if (apiInfo.hasOwnProperty("x-ignoreParameters")) {
-      var ignoArr = apiInfo["x-ignoreParameters"];
-      //忽略参数对象
-      swpinfo.ignoreParameters = ignoArr[0];
-    }
-    //读取扩展属性x-includeParameters
-    if (apiInfo.hasOwnProperty("x-includeParameters")) {
-      var includeArr = apiInfo["x-includeParameters"];
-      //包含参数
-      swpinfo.includeParameters = includeArr[0];
-    }
-    //读取扩展属性x-order值
-    if (apiInfo.hasOwnProperty("x-order")) {
-      swpinfo.order = parseInt(apiInfo["x-order"]);
-    }
-    //读取扩展属性x-author
-    if (apiInfo.hasOwnProperty("x-author")) {
-      var xauthor = apiInfo["x-author"];
-      if (KUtils.strNotBlank(xauthor)) {
-        swpinfo.author = xauthor;
-      }
-    }
+    //读取扩展属性
+    this.readApiInfoInstanceExt(swpinfo,apiInfo);
     //operationId
     swpinfo.operationId = KUtils.getValue(apiInfo, "operationId", "", true);
     var _groupName = that.currentInstance.name;
@@ -3838,6 +3821,84 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     }
   }
   return swpinfo;
+}
+
+/**
+ * 读取API接口的扩展属性
+ * @param {*} swpinfo 
+ * @param {*} apiInfo 
+ */
+SwaggerBootstrapUi.prototype.readApiInfoInstanceExt=function(swpinfo,apiInfo){
+  if(swpinfo.oas2){
+    this.readApiInfoInstanceExtOAS2(swpinfo,apiInfo);
+  }else{
+    this.readApiInfoInstanceExtOAS3(swpinfo,apiInfo);
+  }
+}
+/**
+ * OAS2.0
+ * @param {} swpinfo 
+ * @param {*} apiInfo 
+ */
+SwaggerBootstrapUi.prototype.readApiInfoInstanceExtOAS2=function(swpinfo,apiInfo){
+  //读取扩展属性x-ignoreParameters
+  if (apiInfo.hasOwnProperty("x-ignoreParameters")) {
+    var ignoArr = apiInfo["x-ignoreParameters"];
+    //忽略参数对象
+    swpinfo.ignoreParameters = ignoArr[0];
+  }
+  //读取扩展属性x-includeParameters
+  if (apiInfo.hasOwnProperty("x-includeParameters")) {
+    var includeArr = apiInfo["x-includeParameters"];
+    //包含参数
+    swpinfo.includeParameters = includeArr[0];
+  }
+  //读取扩展属性x-order值
+  if (apiInfo.hasOwnProperty("x-order")) {
+    swpinfo.order = parseInt(apiInfo["x-order"]);
+  }
+  //读取扩展属性x-author
+  if (apiInfo.hasOwnProperty("x-author")) {
+    var xauthor = apiInfo["x-author"];
+    if (KUtils.strNotBlank(xauthor)) {
+      swpinfo.author = xauthor;
+    }
+  }
+}
+
+/**
+ * OAS3.0
+ * @param {*} swpinfo 
+ * @param {*} apiInfo 
+ */
+SwaggerBootstrapUi.prototype.readApiInfoInstanceExtOAS3=function(swpinfo,apiInfo){
+  //获取扩展属性
+  if(apiInfo.hasOwnProperty("extensions")&&KUtils.checkUndefined(apiInfo["extensions"])){
+    var extensions=apiInfo["extensions"];
+    //读取扩展属性x-ignoreParameters
+    if (extensions.hasOwnProperty("x-ignoreParameters")) {
+      var ignoArr = extensions["x-ignoreParameters"];
+      //忽略参数对象
+      swpinfo.ignoreParameters = ignoArr[0];
+    }
+    //读取扩展属性x-includeParameters
+    if (extensions.hasOwnProperty("x-includeParameters")) {
+      var includeArr = extensions["x-includeParameters"];
+      //包含参数
+      swpinfo.includeParameters = includeArr[0];
+    }
+    //读取扩展属性x-order值
+    if (extensions.hasOwnProperty("x-order")) {
+      swpinfo.order = parseInt(extensions["x-order"]);
+    }
+    //读取扩展属性x-author
+    if (extensions.hasOwnProperty("x-author")) {
+      var xauthor = extensions["x-author"];
+      if (KUtils.strNotBlank(xauthor)) {
+        swpinfo.author = xauthor;
+      }
+    }
+  }
 }
 
 /**
@@ -4097,8 +4158,9 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
  * 处理Open API v3的请求参数，获取SwaggerBootstrapUiParameter的对象
  * @param {*} m 
  * @param {*} swpinfo 
+ * @param {*} requireArray 必须数组
  */
-SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo){
+SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArray){
   var that=this;
   var originalName = KUtils.propValue("name", m, "");
   var inType = KUtils.propValue("in", m, "");
@@ -4108,6 +4170,9 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo){
   minfo.type = KUtils.propValue("type", m, "");
   minfo.in = inType;
   minfo.require = KUtils.propValue("required", m, false);
+  if(KUtils.arrNotEmpty(requireArray)){
+    minfo.require=requireArray.includes(minfo.name);
+  }
   minfo.description = KUtils.replaceMultipLineStr(KUtils.propValue("description", m, ""));
   //add at 2019-12-10 09:20:08  判断请求参数类型是否包含format
   //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/161
