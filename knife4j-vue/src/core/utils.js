@@ -153,6 +153,19 @@ function isUrl(path) {
 }
 
 const utils = {
+  groupName(url,defaultName){
+    var gname=defaultName;
+    var reg=new RegExp(".*?group=(.*?)(&.*?)?$");
+    if(reg.test(url)){
+      var tmpGroupName=RegExp.$1;
+      if(this.strNotBlank(tmpGroupName)){
+        if(tmpGroupName!=defaultName){
+          gname=tmpGroupName;
+        }
+      }
+    }
+    return gname;
+  },
   oasmodel(oas2){
     //获取oas的definitions解析正则
     if(oas2){

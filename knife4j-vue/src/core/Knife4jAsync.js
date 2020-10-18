@@ -362,9 +362,10 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     that.log('增强basePath地址：' + extBasePath)
     //赋值增强地址
     if(g.oas2()){
-      g.extUrl = extBasePath + that.extUrl + '?group=' + group.name
+      g.extUrl = extBasePath + that.extUrl + '?group=' +KUtils.groupName(newUrl,group.name)
+      //根据原地址获取group参数,如果group参数不存在,则获取分组name
     }else{
-      g.extUrl = extBasePath + that.ext3Url + '?group=' + group.name
+      g.extUrl = extBasePath + that.ext3Url + '?group=' +KUtils.groupName(newUrl,group.name)
     }
     
     if (that.validateExtUrl == '') {
