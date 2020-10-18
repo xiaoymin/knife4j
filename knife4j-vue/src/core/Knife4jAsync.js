@@ -3798,7 +3798,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
       apiInfo.tags = ['default'];
     }
     //swpinfo.consumes = apiInfo.consumes;
-    swpinfo.consumes = KUtils.getValue(apiInfo,"consumes",[].concat("application/json"),true);
+    swpinfo.consumes = KUtils.getValue(apiInfo,"consumes",[].concat("application/x-www-form-urlencoded"),true);
     swpinfo.description = KUtils.getValue(apiInfo, "description", "", true);
     //描述支持markdown
     if(KUtils.strNotBlank(swpinfo.description)){
@@ -4286,6 +4286,19 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
             minfo.value = 0;
           }
         }
+        //2.判断是否包含枚举
+        var _enumArray=KUtils.propValue("enum",schemaObject,[]);
+        if(KUtils.arrNotEmpty(_enumArray)){
+          //枚举不为空
+          minfo.enum = _enumArray;
+          //枚举类型,描述显示可用值
+          var avaiableArrStr = _enumArray.join(",");
+          if (m.description != null && m.description != undefined && m.description != "") {
+            minfo.description = m.description + ",可用值:" + avaiableArrStr;
+          } else {
+            minfo.description = "枚举类型,可用值:" + avaiableArrStr;
+          }
+        }
       }
     }else if(KUtils.checkIsBasicType(schemaType)){
       //是否基础类型
@@ -4463,10 +4476,6 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
     // 处理请求参数表格依然展示忽略参数
     if (!ignoreParameterKeys.includes(originalName)) {
       swpinfo.parameters.push(minfo);
-    }
-    if(swpinfo.url=="/api/nxew202/exc2"){
-      console.log("----------------------/api/nxew202/exc2")
-      console.log(swpinfo)
     }
     //判断当前属性是否是schema
     if (minfo.schema) {
