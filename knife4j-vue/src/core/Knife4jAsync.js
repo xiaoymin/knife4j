@@ -1460,11 +1460,11 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel=function(instanceId
           //开始加载属性
           originalTreeTableModel.init=true;
           //var definitions=instance.swaggerData["definitions"];
-          console.log(instance)
+          //console.log(instance)
           var definitions=instance.getOASDefinitions();
           var oas2=instance.oas2();
-          console.log("analysisDefinitionRefTableModel:----------------"+oas2);
-          console.log(definitions)
+          //console.log("analysisDefinitionRefTableModel:----------------"+oas2);
+          //console.log(definitions)
           if(KUtils.checkUndefined(definitions)){
             for(var key in definitions){
               if(key==originalTreeTableModel.name){
@@ -3135,6 +3135,15 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
             if(KUtils.checkUndefined(consumeBody)&&consumeBody.hasOwnProperty("schema")){
               //判断是否包含schema
               var schema=consumeBody["schema"];
+              if(KUtils.arrNotEmpty(swpinfo.consumes)){
+                if(!swpinfo.consumes.includes(consume)){
+                  swpinfo.consumes.push(consume);
+                }
+              }else{
+                var _defaultConsumeArr=[];
+                _defaultConsumeArr.push(consume);
+                swpinfo.consumes=_defaultConsumeArr;
+              }
               //此处判断properties,如果有properties,说明有属性,非ref
               if(schema.hasOwnProperty("properties")&&KUtils.checkUndefined(schema["properties"])){
                 //有值,此处可能是application/x-www-form-urlencoded的请求类型
@@ -3237,6 +3246,13 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                   } */
                 }
               }
+            }
+          }
+          //判断是否xml请求,openapiv3中没有consumes，此处也只能强加一个判断
+          if(KUtils.arrNotEmpty(swpinfo.consumes)){
+            var xmlConsume=swpinfo.consumes.filter(consume=> consume.indexOf("xml")>-1);
+            if(KUtils.arrNotEmpty(xmlConsume)){
+              swpinfo.consumes=["application/xml"];
             }
           }
         }
@@ -3613,8 +3629,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
       }
       //此处判断接口的请求参数类型
       //判断consumes请求类型
-      if (apiInfo.consumes != undefined && apiInfo.consumes != null && apiInfo.consumes.length > 0) {
-        var ctp = apiInfo.consumes[0];
+      if (swpinfo.consumes != undefined && swpinfo.consumes != null && swpinfo.consumes.length > 0) {
+        var ctp = swpinfo.consumes[0];
         //if (ctp == "multipart/form-data") {
           //console.log("consumes:"+ctp)
         if (ctp.indexOf("multipart/form-data")>=0) {
@@ -4279,6 +4295,10 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
         //存在format
         var _rtype = schemaType + "(" + _format + ")";
         minfo.type = _rtype;
+        if(_format=="binary"){
+          //文件上传
+          minfo.type="file";
+        }
       }
       //2.判断是否包含枚举
       var _enumArray=KUtils.propValue("enum",schemaObject,[]);
