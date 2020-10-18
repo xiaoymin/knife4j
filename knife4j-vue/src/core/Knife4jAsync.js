@@ -3083,6 +3083,9 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2=function(swpinfo){
         swpinfo.contentType = defaultType;
         swpinfo.contentValue = defaultValue;
       }
+    }else{
+      swpinfo.contentType = "application/x-www-form-urlencoded";
+      swpinfo.contentValue = "x-www-form-urlencoded";
     }
     swpinfo.init=true;
     //console.log("异步初始化ApiInfo完成")
