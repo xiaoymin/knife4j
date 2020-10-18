@@ -636,6 +636,16 @@ const utils = {
     }
     return "";
   },
+  camelCase:function(str){
+    if(str!=null&&str!=undefined&&str!=""){
+      if(str.length==1){
+        return str.toLocaleLowerCase();
+      }else{
+        return str.substr(0,1).toLocaleLowerCase()+str.substr(1);
+      }
+    }
+    return "";
+  },
   generUUID: function () {
     return (utils.randomNumber() + utils.randomNumber() + "-" + utils.randomNumber() + "-" + utils.randomNumber() + "-" + utils.randomNumber() + "-" + utils.randomNumber() + utils.randomNumber() + utils.randomNumber());
   },

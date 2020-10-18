@@ -3173,7 +3173,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                   var originalOpenApiParameter={
                     "in":"body",
                     "description":type,
-                    "name":type,
+                    "name":KUtils.camelCase(type),
                     "required":true,
                     "schema":originalSchema
                   };
