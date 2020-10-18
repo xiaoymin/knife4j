@@ -1623,9 +1623,9 @@ export default {
       this.initFormSelections(record.id);
     },
     formContentEnumChange(formValue, option) {
-      console.log(option);
+      //console.log(option);
       var formId = option.context.$attrs["data-key"];
-      console.log("value:" + formValue + ",formId:" + formId);
+      //console.log("value:" + formValue + ",formId:" + formId);
       this.formContentUpdate(formValue, formId);
     },
     formContentChange(e) {
@@ -1751,17 +1751,17 @@ export default {
         //支持枚举下拉多选
         var formId="";
         //判断formValue是否是数组,如果是数组代表多选
-        console.log(typeof(option))
+        //console.log(typeof(option))
         if(Array.isArray(option)){
           //任取1个
           formId = option[0].context.$attrs["data-key"];
         }else{
           formId = option.context.$attrs["data-key"];
         }
-        console.log("枚举选择")
-        console.log(formValue);
-        console.log(option)
-        console.log(formId)
+        //console.log("枚举选择")
+        //console.log(formValue);
+        //console.log(option)
+        //console.log(formId)
         //var formId = option.context.$attrs["data-key"];
         this.urlFormContentUpdate(formValue, formId);
       }
