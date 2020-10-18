@@ -153,6 +153,14 @@ function isUrl(path) {
 }
 
 const utils = {
+  oasmodel(oas2){
+    //获取oas的definitions解析正则
+    if(oas2){
+      return "#/definitions/(.*)$";
+    }else{
+      return "#/components/schemas/(.*)$";
+    }
+  },
   filterIgnoreParameters(inType, name, ignoreParameters) {
     //是否过滤参数
     if (ignoreParameters == null) {
@@ -363,6 +371,17 @@ const utils = {
     }
     return ret;
   },
+  json5stringifyFormat:function(rtext,format,num){
+    var ret = null;
+    try {
+      ret = JSON5.stringify(rtext, format, num);
+    } catch (err) {
+      //console(err)
+      ret = JSON.stringify(rtext, format, num);
+    }
+    return ret;
+
+  },
   json5parse: function (rtext) {
     var ret = null;
     try {
@@ -556,12 +575,21 @@ const utils = {
     }
     return val;
   },
-  getClassName: function (item) {
-    var regex = new RegExp("#/definitions/(.*)$", "ig");
-    if (regex.test(item)) {
-      var ptype = RegExp.$1;
-      return ptype;
+  getClassName: function (item,oas2) {
+    if(oas2){
+      var regex = new RegExp("#/definitions/(.*)$", "ig");
+      if (regex.test(item)) {
+        var ptype = RegExp.$1;
+        return ptype;
+      }
+    }else{
+      var regex = new RegExp("#/components/schemas/(.*)$", "ig");
+      if (regex.test(item)) {
+        var ptype = RegExp.$1;
+        return ptype;
+      }
     }
+    
     return null;
   },
   trim(text) {
@@ -605,6 +633,16 @@ const utils = {
         return newDes;
       }
       return str;
+    }
+    return "";
+  },
+  camelCase:function(str){
+    if(str!=null&&str!=undefined&&str!=""){
+      if(str.length==1){
+        return str.toLocaleLowerCase();
+      }else{
+        return str.substr(0,1).toLocaleLowerCase()+str.substr(1);
+      }
     }
     return "";
   },

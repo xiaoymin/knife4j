@@ -860,13 +860,20 @@ export default {
           }
         }
       } else {
-        //url-form类型
-        this.showTabUrlForm();
-        this.addGlobalParameterToUrlForm(showGlobalParameters);
-        this.addApiParameterToUrlForm(showApiParameters);
-        this.updateUrlFormCacheApi(cacheApi);
-        //url-form-data表单
-        this.initUrlFormValue();
+        //判断类型
+        if(this.api.contentValue=="raw"){
+          this.showTabRaw();
+          this.initFirstRawFormValue();
+        }else{
+          //url-form类型
+          this.showTabUrlForm();
+          this.addGlobalParameterToUrlForm(showGlobalParameters);
+          this.addApiParameterToUrlForm(showApiParameters);
+          this.updateUrlFormCacheApi(cacheApi);
+          //url-form-data表单
+          this.initUrlFormValue();
+        }
+       
       }
       //console.log(this.urlFormData);
     },
@@ -1616,9 +1623,9 @@ export default {
       this.initFormSelections(record.id);
     },
     formContentEnumChange(formValue, option) {
-      console.log(option);
+      //console.log(option);
       var formId = option.context.$attrs["data-key"];
-      console.log("value:" + formValue + ",formId:" + formId);
+      //console.log("value:" + formValue + ",formId:" + formId);
       this.formContentUpdate(formValue, formId);
     },
     formContentChange(e) {
@@ -1744,17 +1751,17 @@ export default {
         //支持枚举下拉多选
         var formId="";
         //判断formValue是否是数组,如果是数组代表多选
-        console.log(typeof(option))
+        //console.log(typeof(option))
         if(Array.isArray(option)){
           //任取1个
           formId = option[0].context.$attrs["data-key"];
         }else{
           formId = option.context.$attrs["data-key"];
         }
-        console.log("枚举选择")
-        console.log(formValue);
-        console.log(option)
-        console.log(formId)
+        //console.log("枚举选择")
+        //console.log(formValue);
+        //console.log(option)
+        //console.log(formId)
         //var formId = option.context.$attrs["data-key"];
         this.urlFormContentUpdate(formValue, formId);
       }
@@ -2608,7 +2615,14 @@ export default {
       if (proRegex.test(href)) {
         protocol = "https";
       }
-      var fullurl = protocol + "://" + this.api.host;
+      var httpReg=new RegExp("^(http|https):.*","ig");
+      var fullurl="";
+      if(httpReg.test(this.api.host)){
+        //如果包含,则不追究
+        fullurl=this.api.host;
+      }else{
+        fullurl = protocol + "://" + this.api.host;
+      }
       //判断是否开启了Host的配置,如果开启则直接使用Host中的地址
       if(this.enableHost){
         fullurl=this.enableHostText;
