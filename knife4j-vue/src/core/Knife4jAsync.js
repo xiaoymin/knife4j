@@ -3992,6 +3992,7 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
   //判断你是否有默认值(后台)
   if (m.hasOwnProperty("default")) {
     minfo.txtValue = m["default"];
+    minfo.example=m["default"];
   }
   //swagger 2.9.2版本默认值响应X-EXAMPLE的值为2.9.2
   if (m.hasOwnProperty("x-example")) {

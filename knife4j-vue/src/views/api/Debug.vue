@@ -60,13 +60,28 @@
               />
             </template>
             <template slot="headerValue" slot-scope="text, record">
-              <a-input
-                :placeholder="$t('debug.tableHeader.holderValue')"
-                :class="'knife4j-debug-param-require' + record.require"
-                :data-key="record.id"
-                :defaultValue="text"
-                @change="headerContentChnage"
-              />
+              <!--判断枚举类型-->
+              <a-row v-if="record.enums != null">
+                <!--不为空-->
+                <a-select
+                  :mode="record.enumsMode"
+                  :defaultValue="text"
+                  :data-key="record.id"
+                  :options="record.enums"
+                  style="width: 100%"
+                  @change="headerContentEnumChnage"
+                >
+                </a-select>
+              </a-row>
+              <a-row v-else>
+                <a-input
+                  :placeholder="$t('debug.tableHeader.holderValue')"
+                  :class="'knife4j-debug-param-require' + record.require"
+                  :data-key="record.id"
+                  :defaultValue="text"
+                  @change="headerContentChnage"
+                />
+              </a-row>
             </template>
             <a-row slot="operation" slot-scope="text, record">
               <a-button v-html="$t('debug.tableHeader.holderDel')"
@@ -605,6 +620,8 @@ export default {
       });
     },
     initHeaderParameter(cacheApi) {
+      //console.log("initHeaderParameter")
+      //console.log(this.globalParameters)
       //本都缓存读取到参数，初始化header参数
       this.globalParameters.forEach(param => {
         if (param.in == "header") {
@@ -1430,9 +1447,18 @@ export default {
         });
       }
     },
+    headerContentEnumChnage(value,option){
+      var headerId = option.context.$attrs["data-key"];
+      this.headerContentChnageUpdate(value,headerId);
+
+    },
     headerContentChnage(e) {
       var headerValue = e.target.value;
       var headerId = e.target.getAttribute("data-key");
+      this.headerContentChnageUpdate(headerValue,headerId);
+      
+    },
+    headerContentChnageUpdate(headerValue,headerId){
       var record = this.headerData.filter(header => header.id == headerId)[0];
       if (record.new) {
         this.headerData.forEach(header => {
@@ -2507,6 +2533,7 @@ export default {
     storeApiParams() {
       //对于开启请求参数缓存的配置,在接口发送后,缓存配置
       if (this.enableRequestCache) {
+        //console.log("开启缓存--")
         var cacheApi = {
           headerData: [],
           formData: [],
