@@ -345,6 +345,8 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       group.swaggerVersion
     )
     g.url = group.url
+    //g.url="/test/json";
+    
     var newUrl = ''
     //此处需要判断basePath路径的情况
     if (group.url != null && group.url != undefined && group.url != '') {
@@ -4178,6 +4180,15 @@ SwaggerBootstrapUi.prototype.assembleParameter=function(m,swpinfo){
         //如果type是发array类型,判断撒地方是否是integer
         //minfo.txtValue = JSON.stringify(minfo.type === 'array' ? [newValue] : newValue, null, "\t");
         minfo.txtValue = KUtils.json5stringify(minfo.type === 'array' ? [newValue] : newValue, null, "\t");
+      }
+    }
+  }
+  //https://gitee.com/xiaoym/knife4j/issues/I1VLHH
+  if(minfo.in=='query'||minfo.in=='formData'){
+    if(minfo.schema){
+      //如果出現query类型的schema,解析txtValue
+      if(KUtils.checkUndefined(minfo.value)&&KUtils.strBlank(minfo.txtValue)){
+        minfo.txtValue = KUtils.json5stringify(minfo.type === 'array' ? [minfo.value] : minfo.value, null, "\t");
       }
     }
   }
