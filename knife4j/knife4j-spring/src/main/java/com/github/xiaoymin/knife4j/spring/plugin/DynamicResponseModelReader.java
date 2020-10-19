@@ -14,7 +14,6 @@ import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 import com.github.xiaoymin.knife4j.core.conf.Consts;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
-import com.google.common.base.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -22,16 +21,17 @@ import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.ModelReference;
 import springfox.documentation.schema.TypeNameExtractor;
+import springfox.documentation.schema.plugins.SchemaPluginsManager;
 import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.schema.EnumTypeDeterminer;
+import springfox.documentation.spi.schema.ViewProviderPlugin;
 import springfox.documentation.spi.schema.contexts.ModelContext;
 import springfox.documentation.spi.service.OperationBuilderPlugin;
 import springfox.documentation.spi.service.contexts.OperationContext;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static springfox.documentation.schema.ResolvedTypes.modelRefFactory;
 import static springfox.documentation.schema.Types.isVoid;
 import static springfox.documentation.spring.web.readers.operation.ResponseMessagesReader.httpStatusCode;
@@ -52,14 +52,18 @@ import static springfox.documentation.spring.web.readers.operation.ResponseMessa
 public class DynamicResponseModelReader  implements OperationBuilderPlugin {
 
     private final TypeNameExtractor typeNameExtractor;
+    private final EnumTypeDeterminer typeDeterminer;
+    private final SchemaPluginsManager pluginsManager;
 
     private final Map<String,String> cacheGenModelMaps=new HashMap<>();
     @Autowired
     private TypeResolver typeResolver;
 
     @Autowired
-    public DynamicResponseModelReader(TypeNameExtractor typeNameExtractor) {
+    public DynamicResponseModelReader(TypeNameExtractor typeNameExtractor, EnumTypeDeterminer typeDeterminer, SchemaPluginsManager pluginsManager) {
         this.typeNameExtractor = typeNameExtractor;
+        this.typeDeterminer = typeDeterminer;
+        this.pluginsManager = pluginsManager;
     }
 
     @Override
@@ -105,31 +109,33 @@ public class DynamicResponseModelReader  implements OperationBuilderPlugin {
                 name=operationContext.getGroupName().replaceAll("[_-]","")+"."+name+"Response";
                 String classPath= Consts.BASE_PACKAGE_PREFIX+name;
                 Class<?> loadClass= ByteUtils.load(classPath);
-               /* if (loadClass==null){
-                    loadClass= CommonUtils.createDynamicModelClass(name,parameters);
-                }*/
                 if (loadClass!=null) {
-
                     ResolvedType returnType = operationContext.alternateFor(typeResolver.resolve(loadClass));
                     int httpStatusCode = httpStatusCode(operationContext);
                     String message = message(operationContext);
                     ModelReference modelRef = null;
                     if (!isVoid(returnType)) {
+                        ViewProviderPlugin viewProvider =
+                                pluginsManager.viewProvider(operationContext.getDocumentationContext().getDocumentationType());
                         ModelContext modelContext = ModelContext.returnValue(
+                                "",
                                 operationContext.getGroupName(),
                                 returnType,
+                                viewProvider.viewFor(returnType,operationContext),
                                 operationContext.getDocumentationType(),
                                 operationContext.getAlternateTypeProvider(),
                                 operationContext.getGenericsNamingStrategy(),
                                 operationContext.getIgnorableParameterTypes());
-                        modelRef = modelRefFactory(modelContext, typeNameExtractor).apply(returnType);
+                        modelRef = modelRefFactory(modelContext,typeDeterminer, typeNameExtractor).apply(returnType);
                     }
                     ResponseMessage built = new ResponseMessageBuilder()
                             .code(httpStatusCode)
                             .message(message)
                             .responseModel(modelRef)
                             .build();
-                    operationContext.operationBuilder().responseMessages(newHashSet(built));
+                    Set<ResponseMessage> sets=new HashSet<>();
+                    sets.add(built);
+                    operationContext.operationBuilder().responseMessages(sets);
                 }
 
             }

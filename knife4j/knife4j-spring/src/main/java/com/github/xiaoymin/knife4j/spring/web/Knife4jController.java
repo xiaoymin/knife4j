@@ -10,6 +10,8 @@ package com.github.xiaoymin.knife4j.spring.web;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSort;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
+import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.spring.model.SwaggerBootstrapUi;
 import com.github.xiaoymin.knife4j.spring.model.SwaggerBootstrapUiPath;
 import com.github.xiaoymin.knife4j.spring.common.SwaggerBootstrapUiHostNameProvider;
@@ -17,10 +19,6 @@ import com.github.xiaoymin.knife4j.spring.model.MarkdownFiles;
 import com.github.xiaoymin.knife4j.spring.model.RestHandlerMapping;
 import com.github.xiaoymin.knife4j.spring.model.SwaggerBootstrapUiTag;
 import com.github.xiaoymin.knife4j.spring.model.SwaggerExt;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.Swagger;
@@ -53,9 +51,9 @@ import springfox.documentation.service.Documentation;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.service.RequestHandlerProvider;
 import springfox.documentation.spring.web.DocumentationCache;
-import springfox.documentation.spring.web.WebMvcRequestHandler;
 import springfox.documentation.spring.web.json.Json;
 import springfox.documentation.spring.web.json.JsonSerializer;
+import springfox.documentation.spring.web.plugins.CombinedRequestHandler;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;
 
@@ -63,9 +61,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.FluentIterable.from;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static springfox.documentation.swagger.common.HostNameProvider.componentsFrom;
 
@@ -116,15 +113,13 @@ public class Knife4jController {
         this.markdownFiles=markdownFilesObjectProvider.getIfAvailable();
     }
 
-    private Function<RequestHandlerProvider, ? extends Iterable<RequestHandler>> handlers() {
-        return new RequestHandlerFunction();
-    }
     @RequestMapping(value = DEFAULT_SORT_URL,
             method = RequestMethod.GET,
             produces = { APPLICATION_JSON_VALUE, HAL_MEDIA_TYPE })
     @ResponseBody
     public ResponseEntity<Json> apiSorts(@RequestParam(value = "group", required = false) String swaggerGroup,HttpServletRequest request) {
-        String groupName = Optional.fromNullable(swaggerGroup).or(Docket.DEFAULT_GROUP_NAME);
+        String groupName = Optional.ofNullable(swaggerGroup).orElse(Docket.DEFAULT_GROUP_NAME);
+        //String groupName = Optional.fromNullable(swaggerGroup).or(Docket.DEFAULT_GROUP_NAME);
         Documentation documentation = documentationCache.documentationByGroup(groupName);
         if (documentation == null) {
             LOGGER.warn("Unable to find specification for group {},use default", groupName);
@@ -155,8 +150,10 @@ public class Knife4jController {
                 }
             }
         }
-        swagger.basePath(Strings.isNullOrEmpty(uriComponents.getPath()) ? "/" : uriComponents.getPath());
-        if (isNullOrEmpty(swagger.getHost())) {
+        //swagger.basePath(Strings.isNullOrEmpty(uriComponents.getPath()) ? "/" : uriComponents.getPath());
+        swagger.basePath(StrUtil.isBlank(uriComponents.getPath()) ? "/" : uriComponents.getPath());
+        //if (isNullOrEmpty(swagger.getHost())) {
+        if (StrUtil.isBlank(swagger.getHost())) {
             swagger.host(hostName(uriComponents));
         }
         SwaggerExt swaggerExt =new SwaggerExt(swagger);
@@ -184,8 +181,8 @@ public class Knife4jController {
         //since 1.9.0 SpringMvc增强失败的情况
         initGlobalRequestMappingArray(swaggerExt);
         //1.8.7
-        List<SwaggerBootstrapUiTag> targetTagLists=Lists.newArrayList();
-        List<SwaggerBootstrapUiPath> targetPathLists=Lists.newArrayList();
+        List<SwaggerBootstrapUiTag> targetTagLists=new ArrayList<>();
+        List<SwaggerBootstrapUiPath> targetPathLists=new ArrayList<>();
 
         while (tags.hasNext()) {
             Tag sourceTag = tags.next();
@@ -201,7 +198,8 @@ public class Knife4jController {
                 if (api!=null){
                     //首先判断api是否存在tags属性
                     if (api.tags()!=null&&api.tags().length>0){
-                        if (Lists.newArrayList(api.tags()).contains(tagName)) {
+                        //if (Lists.newArrayList(api.tags()).contains(tagName)) {
+                        if (CollectionUtils.newArrayList(api.tags()).contains(tagName)) {
                             tagApi=api;
                             tagMapping=rhm;
                             createPathInstance(rhm,targetPathLists);
@@ -271,12 +269,19 @@ public class Knife4jController {
                 parentPath += swaggerExt.getBasePath();
             }
             try{
-                List<RequestHandler> requestHandlers = from(handlerProviders).transformAndConcat(handlers()).toList();
+                List<RequestHandler> requestHandlers =new ArrayList<>();
+                handlerProviders.stream().map(RequestHandlerProvider::requestHandlers).filter(requestHandlers1 -> !requestHandlers1.isEmpty())
+                        .collect(Collectors.toList()).forEach(requestHandlers1 -> {
+                            if (!CollectionUtils.isEmpty(requestHandlers1)){
+                                requestHandlers.addAll(requestHandlers1);
+                            }
+                });
+                //List<RequestHandler> requestHandlers = from(handlerProviders).transformAndConcat(handlers()).toList();
                 for (RequestHandler requestHandler:requestHandlers){
-                    if (requestHandler instanceof WebMvcRequestHandler){
-                        WebMvcRequestHandler webMvcRequestHandler=(WebMvcRequestHandler)requestHandler;
-                        Set<String> patterns =webMvcRequestHandler.getRequestMapping().getPatternsCondition().getPatterns();
-                        Set<RequestMethod> restMethods=webMvcRequestHandler.getRequestMapping().getMethodsCondition().getMethods();
+                    if (requestHandler instanceof CombinedRequestHandler){
+                        CombinedRequestHandler webMvcRequestHandler=(CombinedRequestHandler)requestHandler;
+                        Set<String> patterns =webMvcRequestHandler.getPatternsCondition().getPatterns();
+                        Set<RequestMethod> restMethods=webMvcRequestHandler.supportedMethods();
                         HandlerMethod handlerMethod=webMvcRequestHandler.getHandlerMethod();
                         Class<?> controllerClazz=ClassUtils.getUserClass(handlerMethod.getBeanType());
                         Method method = ClassUtils.getMostSpecificMethod(handlerMethod.getMethod(),controllerClazz);
@@ -477,10 +482,4 @@ public class Knife4jController {
         }
     }
 
-    static class RequestHandlerFunction implements Function<RequestHandlerProvider, Iterable<RequestHandler>>{
-        @Override
-        public Iterable<RequestHandler> apply(RequestHandlerProvider input) {
-            return input.requestHandlers();
-        }
-    }
 }

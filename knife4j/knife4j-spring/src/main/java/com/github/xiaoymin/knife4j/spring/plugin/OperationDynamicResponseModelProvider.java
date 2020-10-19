@@ -13,7 +13,6 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
-import com.google.common.base.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -24,6 +23,7 @@ import springfox.documentation.spi.service.contexts.RequestMappingContext;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /***
  * 动态添加响应类

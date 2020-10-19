@@ -7,7 +7,10 @@
 
 package com.github.xiaoymin.knife4j.core.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /***
  *
@@ -39,6 +42,20 @@ public abstract class CollectionUtils {
             return true;
         }
         return false;
+    }
+
+    /**
+     *  根据数组对象初始化集合
+     * @param ts 数组
+     * @param <T> 泛型
+     * @return 返回ArrayList对象
+     */
+    public static <T> List<T> newArrayList(T...ts){
+        List<T> list=new ArrayList<>();
+        if (ts!=null&&ts.length>0){
+            list.addAll(Arrays.asList(ts));
+        }
+        return list;
     }
 
 }
