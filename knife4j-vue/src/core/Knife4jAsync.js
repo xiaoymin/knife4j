@@ -338,6 +338,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
   that.log('响应分组json数据')
   that.log(groupData)
   var serviceOptions = [];
+  var allGroupIds=[];
   groupData.forEach(function (group) {
     var g = new SwaggerBootstrapUiInstance(
       KUtils.toString(group.name,'').replace(/\//g,'-'),
@@ -420,8 +421,17 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       label: g.name,
       value: g.id
     })
+    //增加所有分组id，为afterScript特性
+    allGroupIds.push(g.id);
     that.instances.push(g)
   })
+  //赋值分组id
+  if(KUtils.arrNotEmpty(that.instances)){
+    that.instances.forEach(inst=>{
+      inst.allGroupIds=allGroupIds;
+    })
+  }
+  //初始化所有
   this.serviceOptions=serviceOptions;
   this.store.dispatch('globals/setServiceOptions', serviceOptions);
   //that.$Vue.serviceOptions = serviceOptions;
@@ -5660,6 +5670,8 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   //增强地址
   this.extUrl = null
   this.groupVersion = version
+  //所有实例的分组id
+  this.allGroupIds=null;
   //分组url请求实例
   this.basePath = ''
   //使用nginx,反向代理服务名称

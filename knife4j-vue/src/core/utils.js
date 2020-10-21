@@ -526,6 +526,9 @@ const utils = {
     }
     return flag;
   },
+  arrEmpty(arr){
+    return !this.arrNotEmpty(arr);
+  },
   strBlank(str){
     return !this.strNotBlank(str);
   },

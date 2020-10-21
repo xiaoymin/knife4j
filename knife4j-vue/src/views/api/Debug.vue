@@ -395,6 +395,18 @@
             ></editor-debug-show>
           </a-row>
         </a-tab-pane>
+        <a-tab-pane key="3" tab="AfterScript">
+          <a-row style="height:25px;line-height:25px;">
+            关于AfterScript更详细的使用方法及介绍,请<a href="https://gitee.com/xiaoym/knife4j/wikis/AfterScript" target="_blank">参考文档</a>
+          </a-row>
+          <a-row>
+            <editor-script
+              style="margin-top:5px;"
+              :value="rawScript" 
+              @change="rawScriptChange"
+            ></editor-script>
+          </a-row>
+        </a-tab-pane>
       </a-tabs>
     </a-row>
     <a-row>
@@ -419,6 +431,7 @@
 import md5 from "js-md5";
 import qs from "qs"
 import KUtils from "@/core/utils";
+import KEnvironment from "@/core/Environment"
 import constant from "@/store/constants";
 /* import EditorDebugShow from "./EditorDebugShow";
 import DebugResponse from "./DebugResponse"; */
@@ -428,6 +441,7 @@ import vkbeautify from "@/components/utils/vkbeautify";
 export default {
   name: "Debug",
   components: {
+    "EditorScript":()=>import('./EditorScript'),
     "EditorDebugShow":()=>import('./EditorDebugShow'),
     "DebugResponse":()=>import('./DebugResponse') 
   },
@@ -516,6 +530,8 @@ export default {
       rawFlag: false,
       rawTypeFlag: false,
       rawText: "",
+      rawScript:"",
+      rawScriptMode:"javascript",
       rawMode: "text",
       rawRequestType: "application/json",
       requestContentType: "x-www-form-urlencoded",
@@ -892,7 +908,14 @@ export default {
         }
        
       }
+      this.updateScriptFromCache(cacheApi);
       //console.log(this.urlFormData);
+    },
+    updateScriptFromCache(cacheApi){
+      //更新script脚本功能,add by xiaoyumin 2020年10月21日
+      if(KUtils.checkUndefined(cacheApi)&&KUtils.strNotBlank(cacheApi.rawScript)){
+        this.rawScript=cacheApi.rawScript;
+      }
     },
     hideDynamicParameterTable() {
       //如果当前确定未开启动态参数调试,且参数为0的情况下,关闭table 的参数显示
@@ -1802,6 +1825,9 @@ export default {
       this.rawRequestType = item.$el.getAttribute("data-mode-type");
       this.rawDefaultText = key;
     },
+    rawScriptChange(value){
+      this.rawScript=value;
+    },
     rawChange(value) {
       this.rawText = value;
     },
@@ -2505,8 +2531,32 @@ export default {
         this.$message.info(validateForm.message);
       }
     },
-    
-    
+    executeAfterScript(res){
+      console.log("executeAfterScript");
+      console.log(res);
+      if(KUtils.strNotBlank(this.rawScript)){
+        var groupid=this.swaggerInstance.id;
+        var allgroupid=this.swaggerInstance.allGroupIds;
+        console.log("groupid:"+groupid);
+        //script不为空
+        var settings={
+          allgroupids:allgroupid,
+          groupid:groupid,
+          response:{
+             data:res.data,
+            headers:res.headers
+          }
+        }
+        var ke=new KEnvironment(settings);
+        try{
+          var func=new Function('ke',this.rawScript);
+          //执行
+          func(ke);
+        }catch(e){
+          console.error(e);
+        }
+      }
+    },
     handleDebugSuccess(startTime,endTime, res) {
       //成功的情况
       this.setResponseBody(res);
@@ -2516,6 +2566,8 @@ export default {
       this.setResponseStatus(startTime,endTime, res);
       this.setResponseCurl(res.request);
       this.callChildEditorShow();
+      //执行成功后,执行afterScript中的脚本
+      this.executeAfterScript(res);
       this.storeApiParams();
     },
     handleDebugError(startTime,endTime, resp) {
@@ -2557,6 +2609,8 @@ export default {
           form => form.new == false
         );
         cacheApi.rawText = this.rawText;
+        //增加script功能 2020年10月21日
+        cacheApi.rawScript=this.rawScript;
         //console("缓存请求参数");
         //console(cacheApi);
         this.$localStore.setItem(cacheApiKey, cacheApi);
