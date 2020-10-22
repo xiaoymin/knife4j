@@ -288,6 +288,10 @@ const langOptions = {
       curl:{
         success: '复制curl成功',
         fail: '复制curl失败,您当前浏览器版本不兼容,请手动复制.'
+      },
+      open:{
+        success: '复制OpenAPI成功',
+        fail: '复制OpenAPI失败,您当前浏览器版本不兼容,请手动复制.'
       }
     },
     layer: {
@@ -510,6 +514,10 @@ const langOptions = {
       copy:'复制'
     }
 
+  },
+  open:{
+    copy:' 复 制 ',
+    download:' 下 载 '
   },
   tab: {
     closeCurrent: '关闭当前标签页',

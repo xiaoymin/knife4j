@@ -47,7 +47,7 @@ import Constants from '@/store/constants'
 import uniqueId from 'lodash/uniqueId'
 import isObject from 'lodash/isObject'
 import has from 'lodash/has'
-import keys from 'lodash/keys'
+import cloneDeep from 'lodash/cloneDeep'
 import unset from 'lodash/unset'
 import isNull from 'lodash/isNull'
 import isUndefined from 'lodash/isUndefined'
@@ -736,7 +736,18 @@ SwaggerBootstrapUi.prototype.basicInfoOAS2=function(menu){
     that.currentInstance.version = version;
     that.currentInstance.termsOfService = termsOfService;
     //that.currentInstance.basePath = menu["basePath"];
-    that.currentInstance.basePath = KUtils.getValue(menu,'basePath','/',true);;
+    that.currentInstance.basePath = KUtils.getValue(menu,'basePath','/',true);
+    //赋值OpenAPI基础属性
+    var openApiBaseInfo={
+      swagger:menu['swagger']||'2.0',
+      info:menu['info']||{},
+      host:menu['host']||'',
+      basePath:menu['basePath']||'/',
+      schemes:menu['schemes']||[],
+      consumes:menu['consumes']||['*/*'],
+      produces:menu['produces']||['*/*']
+    }
+    that.currentInstance.openApiBaseInfo=openApiBaseInfo;
   } else {
     title = that.currentInstance.title;
   }
@@ -783,6 +794,13 @@ SwaggerBootstrapUi.prototype.basicInfoOAS3=function(menu){
     }else{
       title = that.currentInstance.title;
     }
+    //赋值OpenAPI基础属性
+    var openApiBaseInfo={
+      openapi:menu['openapi']||'3.0.3',
+      info:menu['info']||{},
+      servers:menu['servers']||[]
+    }
+    that.currentInstance.openApiBaseInfo=openApiBaseInfo;
   }
 }
 
@@ -3807,6 +3825,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   swpinfo.id = md5(md5Str);
   swpinfo.versionId = KUtils.md5Id(apiInfo);
   if (apiInfo != null) {
+    this.readOpenApiSpeci(path,swpinfo,apiInfo,that.currentInstance.swaggerData,that.currentInstance.openApiBaseInfo);
     if (apiInfo.hasOwnProperty("deprecated")) {
       swpinfo.deprecated = apiInfo["deprecated"];
     }
@@ -3882,6 +3901,43 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   return swpinfo;
 }
 
+/**
+ * 读取原始OpenAPI数据
+ * @param {*} swpinfo 
+ * @param {*} apiInfo 
+ * @param {*} swaggerData 
+ */
+SwaggerBootstrapUi.prototype.readOpenApiSpeci=function(path,swpinfo,apiInfo,swaggerData,openApiBaseInfo){
+  try{
+    var copyOpenApi=cloneDeep(openApiBaseInfo||{});
+    var methodTypeApi=swpinfo.methodType.toLowerCase();
+    var methodObject={};
+    methodObject[methodTypeApi]=apiInfo;
+    var paths={};
+    paths[path]=methodObject;
+    copyOpenApi['paths']=paths;
+    var def={};
+    if(swpinfo.oas2){
+      def=this.readOpenApiSpeciOAS2(path,swpinfo,apiInfo,swaggerData,openApiBaseInfo);
+      copyOpenApi['definitions']=def;
+    }else{
+      def=this.readOpenApiSpeciOAS3(path,swpinfo,apiInfo,swaggerData,openApiBaseInfo);
+      copyOpenApi['components']=def;
+    }
+    swpinfo.openApiRaw=copyOpenApi;
+    //查询definitions节点
+  }catch(e){
+    if(window.console){
+      window.console.error(e);
+    }
+  }
+
+}
+SwaggerBootstrapUi.prototype.readOpenApiSpeciOAS2=function(path,swpinfo,apiInfo,swaggerData,openApiBaseInfo){
+
+}
+SwaggerBootstrapUi.prototype.readOpenApiSpeciOAS3=function(path,swpinfo,apiInfo,swaggerData,openApiBaseInfo){
+}
 /**
  * 读取API接口的扩展属性
  * @param {*} swpinfo 
@@ -5476,6 +5532,8 @@ var SwaggerBootstrapUiApiInfo = function () {
   this.init=false;
   //是否是oas2的接口
   this.oas2=true;
+  //2020年10月22日,增加OpenAPI原始数据,方便POSTMAN导入测试
+  this.openApiRaw="";
   //原始对象
   this.originalApiInfo=null;
   this.url = null;
@@ -5657,6 +5715,8 @@ function SwaggerBootstrapUiParameterLevel() {
 function SwaggerBootstrapUiInstance(name, location, version) {
   //当前Swagger的json
   this.swaggerData=null;
+  //OpenAPI基础信息
+  this.openApiBaseInfo={};
   //this.id = 'SwaggerBootstrapUiInstance' + Math.round(Math.random() * 1000000)
   this.id = 'SwaggerBootstrapUiInstance' + md5(name + location + version)
   //默认未加载

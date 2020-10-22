@@ -7,6 +7,7 @@
       theme="eclipse"
       width="100%"
       :height="editorHeight"
+      @input="change" 
     ></editor>
   </div>
 </template>
@@ -35,6 +36,9 @@ export default {
     };
   },
   methods: {
+    change(value){
+      this.$emit("change", value);
+    },
     resetEditorHeight() {
       var that = this;
       //重设高度
