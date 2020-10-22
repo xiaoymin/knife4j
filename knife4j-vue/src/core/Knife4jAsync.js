@@ -3918,10 +3918,10 @@ SwaggerBootstrapUi.prototype.readOpenApiSpeci=function(path,swpinfo,apiInfo,swag
     copyOpenApi['paths']=paths;
     var def={};
     if(swpinfo.oas2){
-      def=this.readOpenApiSpeciOAS2(path,swpinfo,apiInfo,swaggerData,openApiBaseInfo);
+      def=this.readOpenApiSpeciOAS2(apiInfo,swaggerData);
       copyOpenApi['definitions']=def;
     }else{
-      def=this.readOpenApiSpeciOAS3(path,swpinfo,apiInfo,swaggerData,openApiBaseInfo);
+      def=this.readOpenApiSpeciOAS3(apiInfo,swaggerData);
       copyOpenApi['components']=def;
     }
     swpinfo.openApiRaw=copyOpenApi;
@@ -3933,10 +3933,93 @@ SwaggerBootstrapUi.prototype.readOpenApiSpeci=function(path,swpinfo,apiInfo,swag
   }
 
 }
-SwaggerBootstrapUi.prototype.readOpenApiSpeciOAS2=function(path,swpinfo,apiInfo,swaggerData,openApiBaseInfo){
-
+/**
+ * OAS2结构
+ * @param {*} apiInfo 
+ * @param {*} swaggerData 
+ */
+SwaggerBootstrapUi.prototype.readOpenApiSpeciOAS2=function(apiInfo,swaggerData){
+  var definitionCopy={};
+  var apiStr=KUtils.json5stringify(apiInfo);
+  var reg=new RegExp("\"#/definitions/(.*?)\"","ig");
+  let result;
+  var definitions=swaggerData["definitions"];
+  var modelArrays=new Array();
+  while((result=reg.exec(apiStr))!=null){
+    var model=result[1];
+    if(KUtils.checkUndefined(model)){
+      if(!modelArrays.includes(model)){
+        modelArrays.push(model);
+      }
+    }
+  }
+  if(modelArrays.length>0){
+    //不为空,找model的子属性是否包含model
+    modelArrays.forEach(model=>{
+      readOpenAPIModel(model,modelArrays,definitions,true);
+    })
+    modelArrays.forEach(model=>{
+      definitionCopy[model]=definitions[model];
+    })
+  }
+  return definitionCopy;
 }
-SwaggerBootstrapUi.prototype.readOpenApiSpeciOAS3=function(path,swpinfo,apiInfo,swaggerData,openApiBaseInfo){
+
+function readOpenAPIModel(model,modelArrays,definitions,oas2){
+  if(KUtils.checkUndefined(model)&&KUtils.strNotBlank(model)){
+    var def=definitions[model];
+    if(KUtils.checkUndefined(def)){
+      var defStr=KUtils.json5stringify(def);
+      //找子属性的model
+      var reg;
+      if(oas2){
+        reg=new RegExp("\"#/definitions/(.*?)\"","ig");
+      }else{
+        reg=new RegExp("\"#/components/schemas/(.*?)\"","ig");
+      }
+      let result;
+      while((result=reg.exec(defStr))!=null){
+        var cmodel=result[1];
+        if(KUtils.checkUndefined(cmodel)){
+          if(!modelArrays.includes(cmodel)){
+            modelArrays.push(cmodel);
+            readOpenAPIModel(cmodel,modelArrays,definitions,oas2);
+          }
+        }
+      }
+    }
+  }
+}
+/**
+ * OAS3
+ * @param {*} apiInfo 
+ * @param {*} swaggerData 
+ */
+SwaggerBootstrapUi.prototype.readOpenApiSpeciOAS3=function(apiInfo,swaggerData){
+  var definitionCopy={};
+  var apiStr=KUtils.json5stringify(apiInfo);
+  var reg=new RegExp("\"#/components/schemas/(.*?)\"","ig");
+  let result;
+  var definitions=swaggerData["components"];
+  var modelArrays=new Array();
+  while((result=reg.exec(apiStr))!=null){
+    var model=result[1];
+    if(KUtils.checkUndefined(model)){
+      if(!modelArrays.includes(model)){
+        modelArrays.push(model);
+      }
+    }
+  }
+  if(modelArrays.length>0){
+    //不为空,找model的子属性是否包含model
+    modelArrays.forEach(model=>{
+      readOpenAPIModel(model,modelArrays,definitions,false);
+    })
+    modelArrays.forEach(model=>{
+      definitionCopy[model]=definitions[model];
+    })
+  }
+  return definitionCopy;
 }
 /**
  * 读取API接口的扩展属性
