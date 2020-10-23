@@ -7,8 +7,12 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
+import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
+import com.github.xiaoymin.knife4j.core.model.MarkdownProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /***
  * 配置文件
@@ -20,6 +24,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "knife4j")
 public class Knife4jProperties {
 
+    /**
+     * 是否开启BasicHttp验证
+     */
     private Knife4jHttpBasic basic;
 
     /**
@@ -28,9 +35,14 @@ public class Knife4jProperties {
     private boolean production;
 
     /**
-     * markdown路径
+     * 个性化配置
      */
-    private String markdowns;
+    private OpenApiExtendSetting setting;
+
+    /**
+     * 分组文档集合
+     */
+    private List<MarkdownProperty> markdownFiles;
 
     public Knife4jHttpBasic getBasic() {
         return basic;
@@ -48,11 +60,19 @@ public class Knife4jProperties {
         this.production = production;
     }
 
-    public String getMarkdowns() {
-        return markdowns;
+    public List<MarkdownProperty> getMarkdownFiles() {
+        return markdownFiles;
     }
 
-    public void setMarkdowns(String markdowns) {
-        this.markdowns = markdowns;
+    public void setMarkdownFiles(List<MarkdownProperty> markdownFiles) {
+        this.markdownFiles = markdownFiles;
+    }
+
+    public OpenApiExtendSetting getSetting() {
+        return setting;
+    }
+
+    public void setSetting(OpenApiExtendSetting setting) {
+        this.setting = setting;
     }
 }
