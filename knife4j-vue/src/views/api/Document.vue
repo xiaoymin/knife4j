@@ -799,7 +799,7 @@ export default {
             var sfd = item.getElementsByClassName(
               "knife4j-debug-editor-field-description"
             );
-            if (!KUtils.arrNotEmpty(sfd)) {
+            if (!KUtils.arrNotEmpty(sfd)&&responseCode!=null) {
               var fieldSpan = document.createElement("span");
               fieldSpan.className = "knife4j-debug-editor-field-description";
               fieldSpan.innerHTML = responseCode.responseDescriptionFind(
