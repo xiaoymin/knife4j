@@ -16,7 +16,7 @@ public class OpenApiExtendSetting {
     /**
      * Ui语言版本
      */
-    private String language="zh";
+    private String language="zh-CN";
     /**
      * 是否显示界面中SwaggerModel功能
      */

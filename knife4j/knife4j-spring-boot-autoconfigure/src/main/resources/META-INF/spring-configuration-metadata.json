@@ -60,7 +60,7 @@
       "name": "knife4j.setting.language",
       "type": "java.lang.String",
       "description": "i18n",
-      "defaultValue": "zh"
+      "defaultValue": "zh-CN"
     },
     {
       "name": "knife4j.setting.enableSwaggerModels",
@@ -226,11 +226,11 @@
       "name": "knife4j.setting.language",
       "values": [
         {
-          "value": "zh",
+          "value": "zh-CN",
           "description": "Display Ui in Chinese"
         },
         {
-          "value": "en",
+          "value": "en-US",
           "description": "Display Ui in English"
         }
       ]
