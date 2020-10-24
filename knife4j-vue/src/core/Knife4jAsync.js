@@ -129,7 +129,7 @@ function SwaggerBootstrapUi(options) {
   }
   //SwaggerBootstrapUi增强注解地址
   this.extUrl = '/v2/api-docs'
-  this.ext3Url='/v3/api-docst'
+  this.ext3Url='/v3/api-docs'
   //验证增强有效地址
   this.validateExtUrl = ''
   //缓存api对象,以区分是否是新的api,存储SwaggerBootstapUiCacheApi对象
@@ -355,7 +355,9 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     } else {
       newUrl = group.location
     }
-    var extBasePath = ''
+    g.extUrl=newUrl;
+    //去除增强地址
+    /* var extBasePath = ''
     var idx = newUrl.indexOf('/v2/api-docs')
     var idx3 =newUrl.indexOf('/v3/api-docs');
     if (idx >= 0 || idx3>=0) {
@@ -370,7 +372,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     }else{
       g.extUrl = extBasePath + that.ext3Url + '?group=' +KUtils.groupName(newUrl,group.name)
     }
-    
+     */
     if (that.validateExtUrl == '') {
       that.validateExtUrl = g.extUrl
     }
@@ -1868,22 +1870,36 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("tags")) {
     var tags = menu["tags"];
     //判断是否开启增强配置
-    if (that.settings.enableSwaggerBootstrapUi) {
+    /*  if (that.settings.enableSwaggerBootstrapUi) {
       var sbu = menu["swaggerBootstrapUi"]
       if (KUtils.checkUndefined(sbu)) {
         if (KUtils.checkUndefined(sbu.tagSortLists)) {
           tags = sbu["tagSortLists"];
         }
       }
-    }
+    } */
+    var tmpTags=[];
     tags.forEach(function (tag) {
       //此处替换tag.name中的/字符,以避免在ui中因为使用vue-router的问题导致空白页面出现
-      var swuTag = new SwaggerBootstrapUiTag(KUtils.toString(tag.name,"").replace(/\//g,'-'), tag.description);
-      if (KUtils.strNotBlank(tag.author)) {
-        swuTag.author = tag.author;
+      var tagdes=KUtils.getValue(tag,"description","",true);
+      var tagauth=KUtils.getValue(tag,"x-author","",true);
+      var tagorder=KUtils.getValue(tag,"x-order","",true);;
+      var swuTag = new SwaggerBootstrapUiTag(KUtils.toString(tag.name,"").replace(/\//g,'-'), tagdes);
+      if (KUtils.strNotBlank(tagauth)) {
+        swuTag.author = tagauth;
       }
-      that.currentInstance.tags.push(swuTag);
+      if(KUtils.strNotBlank(tagorder)){
+        swuTag.order=parseInt(tagorder);
+      }
+      tmpTags.push(swuTag);
     })
+    if(KUtils.arrNotEmpty(tmpTags)){
+      //排序
+      tmpTags.sort(function (a, b) {
+        return a.order - b.order;
+      })
+    }
+    that.currentInstance.tags=tmpTags;
   }
   //解析paths属性
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("paths")) {
@@ -2118,12 +2134,16 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       })
     }
 
-    if (that.settings.enableSwaggerBootstrapUi) {
+    /* if (that.settings.enableSwaggerBootstrapUi) {
       //排序childrens
       tag.childrens.sort(function (a, b) {
         return a.order - b.order;
       })
-    }
+    } */
+    //排序childrens
+    tag.childrens.sort(function (a, b) {
+      return a.order - b.order;
+    })
   });
 
   if (that.currentInstance.firstLoad) {
@@ -5598,6 +5618,8 @@ var SwaggerBootstrapUiProperty = function () {
 var SwaggerBootstrapUiTag = function (name, description) {
   this.name = name;
   this.description = description;
+  //增加order
+  this.order=2147483647;
   //add by xiaoymin 2020-4-5 11:03:07 分组作者
   this.author = null;
   this.childrens = new Array();
