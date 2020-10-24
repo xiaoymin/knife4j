@@ -37,7 +37,7 @@ import static springfox.documentation.service.Tags.emptyTags;
  * @since:knife4j 2.0.6
  */
 @Component
-@Order(value = Ordered.HIGHEST_PRECEDENCE+300)
+@Order(value = Ordered.HIGHEST_PRECEDENCE+2000)
 public class ApiListingOrderReader implements ApiListingBuilderPlugin {
 
     @Override
