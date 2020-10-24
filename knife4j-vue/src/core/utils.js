@@ -2,6 +2,7 @@
 import md5 from 'js-md5'
 import JSON5 from './json5'
 import isObject from 'lodash/isObject'
+import isNumber from 'lodash/isNumber'
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
 const binaryContentType = {
@@ -552,8 +553,13 @@ const utils = {
   },
   getExample(key, obj, defaultValue){
     var v=this.propValue(key, obj, defaultValue);
-    if(typeof(v)=='object'){
-      v=this.json5stringify(v);
+    //判断是否是双精度64位，如果是，直接返回
+    if(isNumber(v)){
+      return v;
+    }else{
+      if(typeof(v)=='object'){
+        v=this.json5stringify(v);
+      }
     }
     return v;
   },

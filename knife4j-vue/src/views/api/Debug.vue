@@ -2532,8 +2532,8 @@ export default {
       }
     },
     executeAfterScript(res){
-      console.log("executeAfterScript");
-      console.log(res);
+      //console.log("executeAfterScript");
+      //console.log(res);
       if(KUtils.strNotBlank(this.rawScript)){
         var groupid=this.swaggerInstance.id;
         var allgroupid=this.swaggerInstance.allGroupIds;

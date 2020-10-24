@@ -628,7 +628,7 @@ export default {
       if (m != null) {
         this.selectedKeys = [m.key];
       }
-      console.log(this.openKeys)
+      //console.log(this.openKeys)
     },
     selectDefaultMenu() {
       var url = this.$route.path;

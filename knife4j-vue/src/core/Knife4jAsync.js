@@ -536,11 +536,16 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       }
       //测试
       //api = 'run.json';
+      //此处加上transformResponse参数,防止Long类型在前端丢失精度
+      //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/269
       that.ajax({
         url: api,
         dataType: 'json',
         timeout: 20000,
-        type: 'get'
+        type: 'get',
+        transformResponse:[function(data){
+          return KUtils.json5parse(data);
+        }]
       },data=>{
         that.analysisApiSuccess(data);
       },err=>{
