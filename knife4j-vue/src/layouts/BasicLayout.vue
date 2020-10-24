@@ -597,10 +597,12 @@ export default {
     watchPathMenuSelect() {
       var url = this.$route.path;
       const tmpcol = this.collapsed;
-      //console("watch-------------------------");
+      //console.log("watch-------------------------");
       const pathArr = urlToList(url);
-      //console(pathArr);
+      //console.log(pathArr);
+      //console.log(this.MenuData)
       var m = findComponentsByPath(url, this.MenuData);
+      //console.log(m);
       //如果菜单面板已折叠,则不用打开openKeys
       if (!tmpcol) {
         if (pathArr.length == 2) {
@@ -626,10 +628,12 @@ export default {
       if (m != null) {
         this.selectedKeys = [m.key];
       }
+      console.log(this.openKeys)
     },
     selectDefaultMenu() {
       var url = this.$route.path;
       const pathArr = urlToList(url);
+      //console.log("pathArr:"+pathArr)
       var m = findComponentsByPath(url, this.MenuData);
       if (pathArr.length == 2) {
         //二级子菜单

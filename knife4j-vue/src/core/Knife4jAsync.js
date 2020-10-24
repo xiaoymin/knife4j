@@ -2563,6 +2563,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   //since2.0.6后直接判断,不用管增强配置
   if(KUtils.arrNotEmpty(that.currentInstance.markdownFiles)){
     that.currentInstance.markdownFiles.forEach(mdTag=>{
+      var mdid=mdTag.id.substr(0,10);
       var mdfolder={
         groupName: groupName,
         groupId: groupId,
@@ -2570,7 +2571,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         name:mdTag.name,
         i18n:'other',
         icon: 'icon-APIwendang',
-        path: 'otherMarkdowns',
+        path: groupName+'-'+mdid+'-omd',
         children: []
       }
       if(KUtils.arrNotEmpty(mdTag.children)){
@@ -2585,6 +2586,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
           })
         })
       }
+      //console.log(mdfolder)
       menuArr.push(mdfolder);
     })
   }
