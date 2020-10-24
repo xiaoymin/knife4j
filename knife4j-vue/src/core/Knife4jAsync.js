@@ -984,11 +984,12 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2=function(menu,swud,oas2
                 spropObj.description = spropObj.description + "可用值:" + spropObj.enum.join(",");
               }
               if (spropObj.type == "string") {
-                spropObj.example = String(KUtils.propValue("example", propobj, ""));
+                //spropObj.example = String(KUtils.propValue("example", propobj, ""));
+                spropObj.example = KUtils.getExample("example", propobj, "");
+                
               } else {
                 spropObj.example = KUtils.propValue("example", propobj, "");
               }
-  
               spropObj.format = KUtils.propValue("format", propobj, "");
               spropObj.required = KUtils.propValue("required", propobj, false);
               if (swud.required.length > 0) {
@@ -1007,7 +1008,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2=function(menu,swud,oas2
                 //判断是否有example
                 if (propobj.hasOwnProperty("example")) {
                   if (type == "string") {
-                    propValue = String(KUtils.propValue("example", propobj, ""));
+                    //propValue = String(KUtils.propValue("example", propobj, ""));
+                    propValue = KUtils.getExample("example", propobj, "");
                   } else {
                     propValue = propobj["example"];
                   }
@@ -1260,7 +1262,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3=function(menu,swud,oas2
                 spropObj.description = spropObj.description + "可用值:" + spropObj.enum.join(",");
               }
               if (spropObj.type == "string") {
-                spropObj.example = String(KUtils.propValue("example", propobj, ""));
+                //spropObj.example = String(KUtils.propValue("example", propobj, ""));
+                spropObj.example = KUtils.getExample("example", propobj, "");
               } else {
                 spropObj.example = KUtils.propValue("example", propobj, "");
               }
@@ -1283,7 +1286,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3=function(menu,swud,oas2
                 //判断是否有example
                 if (propobj.hasOwnProperty("example")) {
                   if (type == "string") {
-                    propValue = String(KUtils.propValue("example", propobj, ""));
+                    //propValue = String(KUtils.propValue("example", propobj, ""));
+                    propValue = KUtils.getExample("example", propobj, "");
                   } else {
                     propValue = propobj["example"];
                   }
@@ -2845,7 +2849,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2=function(swpinfo){
                   spropObj.originProperty = propobj;
                   spropObj.type = KUtils.propValue("type", propobj, "string");
                   spropObj.description = KUtils.propValue("description", propobj, "");
-                  spropObj.example = KUtils.propValue("example", propobj, "");
+                  //spropObj.example = KUtils.propValue("example", propobj, "");
+                  spropObj.example = KUtils.getExample("example", propobj, "");
                   spropObj.format = KUtils.propValue("format", propobj, "");
                   spropObj.required = KUtils.propValue("required", propobj, false);
                   if (swud.required.length > 0) {
@@ -2864,7 +2869,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2=function(swpinfo){
                     //判断是否有example
                     if (propobj.hasOwnProperty("example")) {
                       if (type == "string") {
-                        propValue = String(KUtils.propValue("example", propobj, ""));
+                        //propValue = String(KUtils.propValue("example", propobj, ""));
+                        propValue = KUtils.getExample("example", propobj, "");
                       } else {
                         propValue = propobj["example"];
                       }
@@ -3496,7 +3502,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                       spropObj.originProperty = propobj;
                       spropObj.type = KUtils.propValue("type", propobj, "string");
                       spropObj.description = KUtils.propValue("description", propobj, "");
-                      spropObj.example = KUtils.propValue("example", propobj, "");
+                      //spropObj.example = KUtils.propValue("example", propobj, "");
+                      spropObj.example = KUtils.getExample("example", propobj, "");
                       spropObj.format = KUtils.propValue("format", propobj, "");
                       spropObj.required = KUtils.propValue("required", propobj, false);
                       if (swud.required.length > 0) {
@@ -3515,7 +3522,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                         //判断是否有example
                         if (propobj.hasOwnProperty("example")) {
                           if (type == "string") {
-                            propValue = String(KUtils.propValue("example", propobj, ""));
+                            //propValue = String(KUtils.propValue("example", propobj, ""));
+                            propValue = KUtils.getExample("example", propobj, "");
                           } else {
                             propValue = propobj["example"];
                           }
@@ -4999,7 +5007,8 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                 var type = propobj["type"];
                 //判断是否有example
                 if (propobj.hasOwnProperty("example")) {
-                  propValue = propobj["example"];
+                  //propValue = propobj["example"];
+                  propValue = KUtils.getExample("example",propobj,"");
                 } else if (KUtils.checkIsBasicType(type)) {
                   propValue = KUtils.getBasicTypeValue(type);
                   //此处如果是object情况,需要判断additionalProperties属性的情况

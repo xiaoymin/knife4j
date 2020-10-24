@@ -550,6 +550,13 @@ const utils = {
     }
     return t;
   },
+  getExample(key, obj, defaultValue){
+    var v=this.propValue(key, obj, defaultValue);
+    if(typeof(v)=='object'){
+      v=this.json5stringify(v);
+    }
+    return v;
+  },
   checkIsBasicType: function (type) {
     var basicTypes = ["string", "integer", "number", "object", "boolean", "int32", "int64", "float", "double"];
     var flag = false;
