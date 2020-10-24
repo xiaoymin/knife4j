@@ -642,6 +642,7 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
   that.setInstanceBasicPorperties(menu);
   //since2.0.6
   that.openSettings(menu);
+  that.openDocuments(menu);
   that.analysisDefinition(menu);
   //DApiUI.definitions(menu);
   that.log(menu);
@@ -686,6 +687,42 @@ SwaggerBootstrapUi.prototype.openSettings=function(data){
     }
   }
 
+}
+
+/**
+ * 扩展其他文档
+ * @since:knife4j 2.0.6
+ * @param {*} data 
+ */
+SwaggerBootstrapUi.prototype.openDocuments=function(data){
+  var that=this;
+  //判断是否包含x-openapi的增强
+  var openapi=data['x-openapi'];
+  if(KUtils.checkUndefined(openapi)){
+    //判断是否包含markdown文档
+    if(KUtils.arrNotEmpty(openapi['x-markdownFiles'])){
+      var mkdFiles=openapi['x-markdownFiles'];
+      var currentInstanceMarkdownFileMap={};
+      mkdFiles.forEach(mdTag=>{
+        var swuFileTag=new SwaggerBootstrapUiMarkdownTag(mdTag.name);
+        //判断是否包含
+        if(KUtils.arrNotEmpty(mdTag['children'])){
+          var swuFileChildrens=mdTag['children'];
+          swuFileChildrens.forEach(mdFile=>{
+            var mdf=new SwaggerBootstrapUiMarkdownFile(mdFile.title);
+            swuFileTag.children.push(mdf);
+            //缓存对象
+            currentInstanceMarkdownFileMap[mdf.id]=KUtils.getValue(mdFile,'content','',true);
+          })
+        }
+        that.currentInstance.markdownFiles.push(swuFileTag);
+      })
+      //离线文件缓存到本地local,先删除后更新
+      var currentCacheFilesKey=that.currentInstance.id+'markdownFiles';
+      that.localStore.removeItem(currentCacheFilesKey);
+      that.localStore.setItem(currentCacheFilesKey,currentInstanceMarkdownFileMap);
+    }
+  }
 }
 /***
  * 更新当前实例的security对象
@@ -2523,19 +2560,42 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
 
   } 
   //自定义文档
-  if (that.settings.enableSwaggerBootstrapUi) {
-    //如果是启用
-    //判断自定义文档是否不为空
+  //since2.0.6后直接判断,不用管增强配置
+  if(KUtils.arrNotEmpty(that.currentInstance.markdownFiles)){
+    that.currentInstance.markdownFiles.forEach(mdTag=>{
+      var mdfolder={
+        groupName: groupName,
+        groupId: groupId,
+        key: mdTag.id,
+        name:mdTag.name,
+        i18n:'other',
+        icon: 'icon-APIwendang',
+        path: 'otherMarkdowns',
+        children: []
+      }
+      if(KUtils.arrNotEmpty(mdTag.children)){
+        mdTag.children.forEach(mdfile=>{
+          mdfolder.children.push({
+            groupName: groupName,
+            groupId: groupId,
+            key: mdfile.id,
+            component: 'OtherMarkdown',
+            name: mdfile.title,
+            path: mdfile.id
+          })
+        })
+      }
+      menuArr.push(mdfolder);
+    })
+  }
+  /* if (that.settings.enableSwaggerBootstrapUi) {
     if (that.currentInstance.markdownFiles != null && that.currentInstance.markdownFiles.length > 0) {
       var mdlength = that.currentInstance.markdownFiles.length;
-      //存在自定义文档
       var otherMarkdowns = {
         groupName: groupName,
         groupId: groupId,
         key: 'otherMarkdowns',
-        /* name: '其他文档', */
         name:this.getI18n().menu.other,
-        i18n:'other',
         icon: 'icon-APIwendang',
         path: 'otherMarkdowns',
         children: []
@@ -2553,7 +2613,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
       })
       menuArr.push(otherMarkdowns);
     }
-  }
+  } */
   //接口文档
   that.currentInstance.tags.forEach(function (tag) {
     //})
@@ -5865,6 +5925,7 @@ function SwaggerBootstrapUiParameterLevel() {
 function SwaggerBootstrapUiInstance(name, location, version) {
   //当前Swagger的json
   this.swaggerData=null;
+  //其他文档
   //OpenAPI基础信息
   this.openApiBaseInfo={};
   //this.id = 'SwaggerBootstrapUiInstance' + Math.round(Math.random() * 1000000)
@@ -5940,9 +6001,26 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   //this.cacheInstance=new SwaggerBootstrapUiCacheApis({id:this.groupId,name:this.name});
   this.cacheInstance = null
   //自定义文档
+  //存放SwaggerBootstarpUiMarkdownTag的集合
   this.markdownFiles = []
 
   this.i18n = null
+}
+
+/**
+ * 其他文件分组
+ * @param {*} name 
+ */
+function SwaggerBootstrapUiMarkdownTag(name){
+  this.id='mdtag'+md5(name);
+  this.name=name;
+  //存放SwaggerBootstrapUiMarkdownFile的集合
+  this.children=[];
+}
+
+function SwaggerBootstrapUiMarkdownFile(title){
+  this.id='document-' + md5(title)
+  this.title=title;
 }
 
 /**
