@@ -10,12 +10,14 @@ package com.github.xiaoymin.knife4j.spring.plugin;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
+import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import io.swagger.annotations.Api;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import springfox.documentation.service.StringVendorExtension;
 import springfox.documentation.service.Tag;
+import springfox.documentation.service.VendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.ApiListingBuilderPlugin;
 import springfox.documentation.spi.service.contexts.ApiListingContext;
@@ -61,13 +63,25 @@ public class ApiListingOrderReader implements ApiListingBuilderPlugin {
             //根据tagSet构建tags
             Set<Tag> tagsSet=new HashSet<>();
             Integer order=applyOrder(controller);
+            String author=applyAuthor(controller);
             for (String tagName:tagSet){
-                Tag tag=new Tag(tagName,description, CollectionUtils.newArrayList(new StringVendorExtension("x-order",Objects.toString(order))));
+                List<VendorExtension> vendorExtensions=CollectionUtils.newArrayList(new StringVendorExtension("x-order",Objects.toString(order)));
+                if (StrUtil.isNotBlank(author)){
+                    vendorExtensions.add(new StringVendorExtension("x-author",author));
+                }
+                Tag tag=new Tag(tagName,description, vendorExtensions);
                 tagsSet.add(tag);
             }
             apiListingContext.apiListingBuilder().tags(tagsSet);
         }
 
+    }
+    private String applyAuthor( Optional<? extends Class<?>> controller){
+        Optional<ApiSupport> apiSupportAnnotation = ofNullable(findAnnotation(controller.get(), ApiSupport.class));
+        if (apiSupportAnnotation.isPresent()){
+            return apiSupportAnnotation.get().author();
+        }
+        return null;
     }
     private Integer applyOrder( Optional<? extends Class<?>> controller){
         //排序注解
