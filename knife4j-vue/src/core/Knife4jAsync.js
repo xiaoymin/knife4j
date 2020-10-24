@@ -118,15 +118,20 @@ function SwaggerBootstrapUi(options) {
   this.requestParameter = {} //浏览器请求参数
   //个性化配置
   this.settings = options.settings|| {
+    enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
+    enableDocumentManage:true,//是否显示界面中"文档管理"功能
     showApiUrl: false, //接口api地址不显示
     showTagStatus: false, //分组tag显示description属性,针对@Api注解没有tags属性值的情况
     enableSwaggerBootstrapUi: false, //是否开启swaggerBootstrapUi增强
     treeExplain: true,
+    enableDynamicParameter: false, //开启动态参数
     enableFilterMultipartApis: false, //针对RequestMapping的接口请求类型,在不指定参数类型的情况下,如果不过滤,默认会显示7个类型的接口地址参数,如果开启此配置,默认展示一个Post类型的接口地址
-    enableFilterMultipartApiMethodType: 'POST', //默认保存类型
+    enableFilterMultipartApiMethodType: "POST", //默认保存类型
     enableRequestCache: true, //是否开启请求参数缓存
     enableCacheOpenApiTable: false, //是否开启缓存已打开的api文档
-    language: 'zh' //默认语言版本
+    enableHost:false,//是否启用Host
+    enableHostText:'',//启用Host后文本
+    language: 'zh-CN' //默认语言版本
   }
   //SwaggerBootstrapUi增强注解地址
   this.extUrl = '/v2/api-docs'
@@ -664,37 +669,20 @@ SwaggerBootstrapUi.prototype.openSettings=function(data){
     //包含，判断settings
     if(KUtils.checkUndefined(openapi['x-setting'])){
       var setting=openapi['x-setting'];
+      //存在，进行合并
       //与当前缓存在local本地的进行对比与合并
-      this.localStore.getItem(Constants.globalSettingsKey).then(settingCache=>{
-        if(KUtils.checkUndefined(settingCache)){
-          //存在，进行合并
-          var mergeSetting=Object.assign({},settingCache,setting);
-          //console.log('mergeSetting');
-          //console.log(mergeSetting)
-          that.localStore.setItem(Constants.globalSettingsKey,mergeSetting);
-          //设置i18n
-          var i18n=KUtils.getValue(mergeSetting,'language','zh-CN',true);
-          this.localStore.setItem(Constants.globalI18nCache, i18n);
-          setTimeout(()=>{
-            if(KUtils.checkUndefined(that.i18nVue)){
-              that.i18nVue.locale = i18n;
-            }
-            that.store.dispatch('globals/setLang', i18n);
-          },500)
-        }else{
-          //直接保存
-          that.localStore.setItem(Constants.globalSettingsKey,setting);
-          //设置i18n
-          var i18nn=KUtils.getValue(setting,'language','zh-CN',true);
-          this.localStore.setItem(Constants.globalI18nCache, i18nn);
-          setTimeout(()=>{
-            if(KUtils.checkUndefined(that.i18nVue)){
-              that.i18nVue.locale =i18nn;
-            }
-            that.store.dispatch('globals/setLang', i18nn);
-          },500)
+      var mergeSetting=Object.assign({},that.settings,setting);
+      that.settings=mergeSetting;
+      that.localStore.setItem(Constants.globalSettingsKey,mergeSetting);
+      //设置i18n
+      var i18n=KUtils.getValue(mergeSetting,'language','zh-CN',true);
+      this.localStore.setItem(Constants.globalI18nCache, i18n);
+      setTimeout(()=>{
+        if(KUtils.checkUndefined(that.i18nVue)){
+          that.i18nVue.locale = i18n;
         }
-      })
+        that.store.dispatch('globals/setLang', i18n);
+      },500)
     }
   }
 
@@ -2469,64 +2457,71 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
     })
   }
   //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
-  menuArr.push({
-    groupName: groupName,
-    groupId: groupId,
-    key: 'swaggerModel' + md5(groupName),
-    name: 'Swagger Models',
-    component: 'SwaggerModels',
-    tabName: 'Swagger Models(' + groupName + ')',
-    icon: 'icon-modeling',
-    path: 'SwaggerModels/' + groupName,
-  })
-  //文档管理
-  menuArr.push({
-    groupName: groupName,
-    groupId: groupId,
-    key: 'documentManager' + md5(groupName),
-    i18n:'manager',
-    /* name: '文档管理', */
-    name:this.getI18n().menu.manager,
-    icon: 'icon-zdlxb',
-    path: 'documentManager',
-    children: [{
-        groupName: groupName,
-        groupId: groupId,
-        key: 'globalParameters' + md5(groupName),
-       /*  name: '全局参数设置',
-        tabName: '全局参数设置(' + groupName + ')', */
-        name: this.getI18n().menu.globalsettings,
-        i18n:'globalsettings',
-        tabName: this.getI18n().menu.globalsettings+'(' + groupName + ')',
-        component: 'GlobalParameters',
-        path: 'GlobalParameters-' + groupName
-      },
-      {
-        groupName: groupName,
-        groupId: groupId,
-        key: 'OfficelineDocument' + md5(groupName),
-       /*  name: '离线文档',
-        tabName: '离线文档(' + groupName + ')', */
-        name: this.getI18n().menu.officeline,
-        i18n:'officeline',
-        tabName: this.getI18n().menu.officeline+'(' + groupName + ')',
-        component: 'OfficelineDocument',
-        path: 'OfficelineDocument-' + groupName
-      },
-      {
-        groupName: groupName,
-        groupId: groupId,
-        key: 'Settings' + md5(groupName),
-        /* name: '个性化设置', */
-        name: this.getI18n().menu.selfSettings,
-        i18n:'selfSettings',
-        component: 'Settings',
-        path: 'Settings'
-        // hideInBreadcrumb: true,
-        // hideInMenu: true,
-      }
-    ]
-  })
+  //是否显示SwaggerModels
+  if(that.settings.enableSwaggerModels){
+    menuArr.push({
+      groupName: groupName,
+      groupId: groupId,
+      key: 'swaggerModel' + md5(groupName),
+      name: 'Swagger Models',
+      component: 'SwaggerModels',
+      tabName: 'Swagger Models(' + groupName + ')',
+      icon: 'icon-modeling',
+      path: 'SwaggerModels/' + groupName,
+    })
+  }
+  //是否显示文档管理
+  if(that.settings.enableDocumentManage){
+    //文档管理
+    menuArr.push({
+      groupName: groupName,
+      groupId: groupId,
+      key: 'documentManager' + md5(groupName),
+      i18n:'manager',
+      /* name: '文档管理', */
+      name:this.getI18n().menu.manager,
+      icon: 'icon-zdlxb',
+      path: 'documentManager',
+      children: [{
+          groupName: groupName,
+          groupId: groupId,
+          key: 'globalParameters' + md5(groupName),
+        /*  name: '全局参数设置',
+          tabName: '全局参数设置(' + groupName + ')', */
+          name: this.getI18n().menu.globalsettings,
+          i18n:'globalsettings',
+          tabName: this.getI18n().menu.globalsettings+'(' + groupName + ')',
+          component: 'GlobalParameters',
+          path: 'GlobalParameters-' + groupName
+        },
+        {
+          groupName: groupName,
+          groupId: groupId,
+          key: 'OfficelineDocument' + md5(groupName),
+        /*  name: '离线文档',
+          tabName: '离线文档(' + groupName + ')', */
+          name: this.getI18n().menu.officeline,
+          i18n:'officeline',
+          tabName: this.getI18n().menu.officeline+'(' + groupName + ')',
+          component: 'OfficelineDocument',
+          path: 'OfficelineDocument-' + groupName
+        },
+        {
+          groupName: groupName,
+          groupId: groupId,
+          key: 'Settings' + md5(groupName),
+          /* name: '个性化设置', */
+          name: this.getI18n().menu.selfSettings,
+          i18n:'selfSettings',
+          component: 'Settings',
+          path: 'Settings'
+          // hideInBreadcrumb: true,
+          // hideInMenu: true,
+        }
+      ]
+    })
+
+  } 
   //自定义文档
   if (that.settings.enableSwaggerBootstrapUi) {
     //如果是启用
