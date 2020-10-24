@@ -69,7 +69,8 @@ function SwaggerBootstrapUi(options) {
   //swagger请求api地址
   this.url = options.url || 'swagger-resources'
   this.i18n=options.i18n||'zh-CN'
-  this.i18nInstance = null
+  this.i18nVue=options.i18nVue||null;
+  //this.i18nInstance = null
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
   //用于控制是否请求configUrl的配置
   this.configSupport = options.configSupport || false;
@@ -634,6 +635,8 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
     menu = data;
   }
   that.setInstanceBasicPorperties(menu);
+  //since2.0.6
+  that.openSettings(menu);
   that.analysisDefinition(menu);
   //DApiUI.definitions(menu);
   that.log(menu);
@@ -648,7 +651,54 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
   this.store.dispatch('globals/setSwaggerInstance', this.currentInstance);
 
 }
+/**
+ * 读取扩展属性Setting配置,后端直接开启增强
+ * @since:knife4j 2.0.6
+ * @param {*} data 
+ */
+SwaggerBootstrapUi.prototype.openSettings=function(data){
+  var that=this;
+  //判断是否包含x-openapi的增强
+  var openapi=data['x-openapi'];
+  if(KUtils.checkUndefined(openapi)){
+    //包含，判断settings
+    if(KUtils.checkUndefined(openapi['x-setting'])){
+      var setting=openapi['x-setting'];
+      //与当前缓存在local本地的进行对比与合并
+      this.localStore.getItem(Constants.globalSettingsKey).then(settingCache=>{
+        if(KUtils.checkUndefined(settingCache)){
+          //存在，进行合并
+          var mergeSetting=Object.assign({},settingCache,setting);
+          //console.log('mergeSetting');
+          //console.log(mergeSetting)
+          that.localStore.setItem(Constants.globalSettingsKey,mergeSetting);
+          //设置i18n
+          var i18n=KUtils.getValue(mergeSetting,'language','zh-CN',true);
+          this.localStore.setItem(Constants.globalI18nCache, i18n);
+          setTimeout(()=>{
+            if(KUtils.checkUndefined(that.i18nVue)){
+              that.i18nVue.locale = i18n;
+            }
+            that.store.dispatch('globals/setLang', i18n);
+          },500)
+        }else{
+          //直接保存
+          that.localStore.setItem(Constants.globalSettingsKey,setting);
+          //设置i18n
+          var i18nn=KUtils.getValue(setting,'language','zh-CN',true);
+          this.localStore.setItem(Constants.globalI18nCache, i18nn);
+          setTimeout(()=>{
+            if(KUtils.checkUndefined(that.i18nVue)){
+              that.i18nVue.locale =i18nn;
+            }
+            that.store.dispatch('globals/setLang', i18nn);
+          },500)
+        }
+      })
+    }
+  }
 
+}
 /***
  * 更新当前实例的security对象
  */

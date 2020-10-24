@@ -248,9 +248,12 @@ export default {
       var that = this;
       var i18nParams=this.getI18nFromUrl();
       var tmpI18n=i18nParams.i18n;
+      //console.log(tmpI18n)
       //读取settings
       this.$localStore.getItem(constant.globalSettingsKey).then(settingCache=>{
         var settings=this.getCacheSettings(settingCache);
+        //console.log("layout---")
+        //console.log(settings)
         //重新赋值是否开启增强
         if(!settings.enableSwaggerBootstrapUi){
            settings.enableSwaggerBootstrapUi=this.getPlusStatus();
@@ -271,6 +274,7 @@ export default {
               routeParams: that.$route.params, 
               plus: this.getPlusStatus(),
               i18n:tmpI18n,
+              i18nVue:this.$i18n,
               configSupport:true,
               i18nInstance:this.getCurrentI18nInstance() 
               })
@@ -291,6 +295,7 @@ export default {
                 routeParams: that.$route.params, 
                 plus: this.getPlusStatus(),
                 i18n:tmpI18n,
+                i18nVue:this.$i18n,
                 configSupport:true,
                 i18nInstance:this.getCurrentI18nInstance() 
                 })
