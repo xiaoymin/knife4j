@@ -23,6 +23,14 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "knife4j")
 public class Knife4jProperties {
+    /**
+     * 是否开启Knife4j增强模式
+     */
+    private boolean enable=false;
+    /**
+     * 是否开启默认跨域
+     */
+    private boolean cors=false;
 
     /**
      * 是否开启BasicHttp验证
@@ -32,7 +40,7 @@ public class Knife4jProperties {
     /**
      * 是否生产环境
      */
-    private boolean production;
+    private boolean production=false;
 
     /**
      * 个性化配置
@@ -42,7 +50,7 @@ public class Knife4jProperties {
     /**
      * 分组文档集合
      */
-    private List<MarkdownProperty> markdownFiles;
+    private List<MarkdownProperty> documents;
 
     public Knife4jHttpBasic getBasic() {
         return basic;
@@ -60,12 +68,12 @@ public class Knife4jProperties {
         this.production = production;
     }
 
-    public List<MarkdownProperty> getMarkdownFiles() {
-        return markdownFiles;
+    public List<MarkdownProperty> getDocuments() {
+        return documents;
     }
 
-    public void setMarkdownFiles(List<MarkdownProperty> markdownFiles) {
-        this.markdownFiles = markdownFiles;
+    public void setDocuments(List<MarkdownProperty> documents) {
+        this.documents = documents;
     }
 
     public OpenApiExtendSetting getSetting() {
@@ -74,5 +82,21 @@ public class Knife4jProperties {
 
     public void setSetting(OpenApiExtendSetting setting) {
         this.setting = setting;
+    }
+
+    public boolean isCors() {
+        return cors;
+    }
+
+    public void setCors(boolean cors) {
+        this.cors = cors;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

@@ -39,6 +39,7 @@ import org.springframework.web.filter.CorsFilter;
                 "com.github.xiaoymin.knife4j.spring.web"
         }
 )
+@ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
 public class Knife4jAutoConfiguration {
 
     @Autowired
@@ -71,13 +72,13 @@ public class Knife4jAutoConfiguration {
 
     @Bean(initMethod = "start")
     @ConditionalOnMissingBean(OpenApiExtensionResolver.class)
-    @ConditionalOnProperty(name = "knife4j.enable",havingValue = "true",matchIfMissing = true)
+    @ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
     public OpenApiExtensionResolver markdownResolver(Knife4jProperties knife4jProperties){
         OpenApiExtendSetting setting=knife4jProperties.getSetting();
         if (setting==null){
             setting=new OpenApiExtendSetting();
         }
-        return new OpenApiExtensionResolver(setting, knife4jProperties.getMarkdownFiles());
+        return new OpenApiExtensionResolver(setting, knife4jProperties.getDocuments());
     }
 
     @Bean

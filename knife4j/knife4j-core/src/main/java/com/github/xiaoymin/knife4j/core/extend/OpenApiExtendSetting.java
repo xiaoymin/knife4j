@@ -17,6 +17,15 @@ public class OpenApiExtendSetting {
      * Ui语言版本
      */
     private String language="zh";
+    /**
+     * 是否显示界面中SwaggerModel功能
+     */
+    private boolean enableSwaggerModels=true;
+
+    /**
+     * 是否显示界面中"文档管理"功能
+     */
+    private boolean enableDocumentManage=true;
 
     /**
      * 是否开启请求参数缓存
@@ -90,5 +99,21 @@ public class OpenApiExtendSetting {
 
     public void setEnableHostText(String enableHostText) {
         this.enableHostText = enableHostText;
+    }
+
+    public boolean isEnableSwaggerModels() {
+        return enableSwaggerModels;
+    }
+
+    public void setEnableSwaggerModels(boolean enableSwaggerModels) {
+        this.enableSwaggerModels = enableSwaggerModels;
+    }
+
+    public boolean isEnableDocumentManage() {
+        return enableDocumentManage;
+    }
+
+    public void setEnableDocumentManage(boolean enableDocumentManage) {
+        this.enableDocumentManage = enableDocumentManage;
     }
 }
