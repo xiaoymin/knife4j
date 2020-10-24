@@ -114,7 +114,8 @@ public class CommonUtils {
             try {
                 ins.close();
             } catch (IOException e) {
-                logger.error(e.getMessage(),e);
+                //logger.error(e.getMessage(),e);
+                logger.warn("(Ignores) Failed to closeQuiltly,message:{}",e.getMessage());
             }
         }
     }
@@ -124,7 +125,7 @@ public class CommonUtils {
             try {
                 reader.close();
             } catch (IOException e) {
-                logger.error(e.getMessage(),e);
+                logger.warn("(Ignores) Failed to closeQuiltly,message:{}",e.getMessage());
             }
         }
     }

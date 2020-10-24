@@ -21,7 +21,7 @@ public class MarkdownProperty {
     /**
      * 在接口文档中的分组名称,类似于Controller
      */
-    private String title;
+    private String name;
     /**
      * markdown文件路径
      */
@@ -35,12 +35,12 @@ public class MarkdownProperty {
         this.group = group;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getLocations() {

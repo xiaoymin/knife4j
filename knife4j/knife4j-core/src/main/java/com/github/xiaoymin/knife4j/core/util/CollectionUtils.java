@@ -32,6 +32,15 @@ public abstract class CollectionUtils {
         return false;
     }
 
+    /**
+     * 判断集合是否非空
+     * @param collection 集合
+     * @return  非空返回true,空为false
+     */
+    public static boolean isNotEmpty(Collection<?> collection){
+        return !isEmpty(collection);
+    }
+
     /***
      * 是否为空
      * @param arrs 对象数组

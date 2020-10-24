@@ -10,7 +10,7 @@
     {
       "name": "knife4j.enable",
       "type": "java.lang.Boolean",
-      "description": "Whether to enable Knife4j enhanced mode",
+      "description": "Enable Knife4j enhanced mode",
       "defaultValue": false
     },
     {
@@ -21,7 +21,7 @@
     },{
       "name": "knife4j.basic.enable",
       "type": "java.lang.Boolean",
-      "description": "Whether to enable Basic Http authentication.default false",
+      "description": "Enable Basic Http authentication.default false",
       "defaultValue": false
     },{
       "name": "knife4j.basic.username",
@@ -35,25 +35,25 @@
     {
       "name": "knife4j.documents",
       "type": "java.util.List<com.github.xiaoymin.knife4j.core.model.MarkdownProperty>",
-      "description": "other documents"
+      "description": "Other documents"
     },
     {
       "name": "knife4j.production",
       "type": "java.lang.Boolean",
-      "description": "Whether to open the production environmental protection document strategy",
+      "description": "Open the production environmental protection document strategy",
       "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
       "defaultValue": false
     },
     {
       "name": "knife4j.cors",
       "type": "java.lang.Boolean",
-      "description": "Whether to enable cross-domain",
+      "description": "Enable cross-domain",
       "defaultValue": false
     },
     {
       "name": "knife4j.setting",
       "type": "com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting",
-      "description": "setting",
+      "description": "Setting",
       "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties"
     },
     {
@@ -65,25 +65,25 @@
     {
       "name": "knife4j.setting.enableSwaggerModels",
       "type": "java.lang.Boolean",
-      "description": "Whether to display the (Swagger Models) function",
+      "description": "Display the (Swagger Models) function",
       "defaultValue": true
     },
     {
       "name": "knife4j.setting.enableDocumentManage",
       "type": "java.lang.Boolean",
-      "description": "Whether to display the (document management) function",
+      "description": "Display the (document management) function",
       "defaultValue": true
     },
     {
       "name": "knife4j.setting.enableRequestCache",
       "type": "java.lang.Boolean",
-      "description": "Whether to enable request parameter caching",
+      "description": "Enable request parameter caching",
       "defaultValue": true
     },
     {
       "name": "knife4j.setting.enableFilterMultipartApis",
       "type": "java.lang.Boolean",
-      "description": "Whether to enable filtering for the request type of @RequestMapping",
+      "description": "Enable filtering for the request type of @RequestMapping",
       "defaultValue": false
     },
     {
@@ -95,7 +95,7 @@
     {
       "name": "knife4j.setting.enableHost",
       "type": "java.lang.Boolean",
-      "description": "Whether to enable RESTful API debugging",
+      "description": "Enable RESTful API Cross-domain debugging",
       "defaultValue": false
     },
     {
