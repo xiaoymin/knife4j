@@ -128,8 +128,8 @@ function SwaggerBootstrapUi(options) {
     language: 'zh' //默认语言版本
   }
   //SwaggerBootstrapUi增强注解地址
-  this.extUrl = '/v2/api-docs-ext'
-  this.ext3Url='/v3/api-docs-ext'
+  this.extUrl = '/v2/api-docs'
+  this.ext3Url='/v3/api-docst'
   //验证增强有效地址
   this.validateExtUrl = ''
   //缓存api对象,以区分是否是新的api,存储SwaggerBootstapUiCacheApi对象
