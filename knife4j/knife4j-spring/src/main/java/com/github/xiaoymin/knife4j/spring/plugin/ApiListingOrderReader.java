@@ -45,7 +45,7 @@ public class ApiListingOrderReader implements ApiListingBuilderPlugin {
         //设计思路
         //1.springfox在构建ApiListing对象时，tags是根据tagName来进行初始化
         //2.该Plugin首先将tagNames设为空,然后自己重写一份解析规则添加至tags
-        apiListingContext.apiListingBuilder().tagNames(new HashSet<>());
+        //apiListingContext.apiListingBuilder().tagNames(new HashSet<>());
         //解析tags
         Optional<? extends Class<?>> controller = apiListingContext.getResourceGroup().getControllerClass();
         if (controller.isPresent()) {
