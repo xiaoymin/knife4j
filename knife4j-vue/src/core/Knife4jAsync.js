@@ -2132,13 +2132,9 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       //var cacheSecurityData=that.getSecurityInfos();
       var cacheSecurityData = that.getGlobalSecurityInfos();
       var securityArr = new Array();
-      console.log(securityDefinitions)
       for (var j in securityDefinitions) {
         var sdobj = securityDefinitions[j];
-        console.log(j)
-        console.log(sdobj)
         if(j=="oauth2"){
-          console.log("oauth2")
           //oauth2认证
           var oauth=new SwaggerBootstrapUiOAuth2(
             KUtils.getValue(sdobj,"flow","",true),
@@ -2149,7 +2145,6 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
           oauth.sync();
           that.currentInstance.oauths=oauth;
         }else{
-          console.log("oauth2--ull")
           var sdf = new SwaggerBootstrapUiSecurityDefinition();
           sdf.key = j;
           sdf.type = sdobj.type;
@@ -2376,7 +2371,7 @@ SwaggerBootstrapUiOAuth2.prototype.syncOAuth=function(){
  * 保存自己
  */
 SwaggerBootstrapUiOAuth2.prototype.sync=function(){
-  console.log("saveOAuthMySELF")
+  //console.log("saveOAuthMySELF")
   this.syncOAuth();
   if(window.localStorage){
     var key="SELF"+this.state;

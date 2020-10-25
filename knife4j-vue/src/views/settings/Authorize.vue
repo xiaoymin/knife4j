@@ -37,7 +37,7 @@
             <a-col :span="4">clientId</a-col>
             <a-col :span="18"><a-input :value="oauth.clientId" @change="clientChage"  /></a-col>
           </a-row>
-          <a-row v-if="oauth.grantType=='accessCode' || oauth.grantType=='password'" style="margin-top:15px;">
+          <a-row v-if="oauth.grantType=='accessCode' || oauth.grantType=='password'||this.oauth.grantType=='application'||this.oauth.grantType=='client_credentials'" style="margin-top:15px;">
             <a-col :span="4">clientSecret</a-col>
             <a-col :span="18"><a-input :value="oauth.clientSecret" @change="clientSecretChage"  /></a-col>
           </a-row>
@@ -118,9 +118,6 @@ export default {
       this.columns=inst.table.authHeaderColumns;
     },
     auth(){
-      console.log("OAUTH2认证")
-      console.log(this.oauth)
-      console.log(this.clientId);
       if(this.oauth.grantType=="password"){
         if(KUtils.strBlank(this.oauth.username)){
           this.$message.info('username can\'t empty!!!');
@@ -135,7 +132,7 @@ export default {
         this.$message.info('clientId can\'t empty!!!');
         return false;
       }
-      if(this.oauth.grantType=="accessCode"||this.oauth.grantType=="password"){
+      if(this.oauth.grantType=="accessCode"||this.oauth.grantType=="password"||this.oauth.grantType=="application"||this.oauth.grantType=="client_credentials"){
         if(KUtils.strBlank(this.oauth.clientSecret)){
           this.$message.info('clientSecret can\'t empty!!!');
           return false;
@@ -221,7 +218,40 @@ export default {
               ////console(err.message);
             }
           });
-
+      }else if(this.oauth.grantType=="application"||this.oauth.grantType=="client_credentials"){
+        //客户端模式
+        const debugInstance = DebugAxios.create();
+        var formData = new FormData();
+        formData.append("grant_type","client_credentials");
+        var requestConfig = {
+          url: this.oauth.tokenUrl,
+          method: "post",
+          auth:{
+             username: this.oauth.clientId,
+              password: this.oauth.clientSecret
+          },
+          params: null,
+          timeout: 0,
+          data:formData
+        };
+        debugInstance
+          .request(requestConfig)
+          .then(res => {
+            var data=res.data;
+            this.oauth.accessToken=data.token_type+" "+data.access_token;
+            this.oauth.tokenType=data.token_type
+            this.oauth.granted=true;
+            this.oauth.sync();
+            this.$message.info("SUCCESS");
+          })
+          .catch(err => {
+            if (err.response) {
+              console.log(err);
+            } else {
+              this.$message.error(err.message);
+              ////console(err.message);
+            }
+          });
       }
     },
     initLocalOAuth(){

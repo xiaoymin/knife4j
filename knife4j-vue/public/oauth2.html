@@ -59,6 +59,7 @@ $(function(){
         this.cacheValue.tokenType=this.tokenType;
         this.cacheValue.granted=true;
         window.localStorage.setItem(this.state,JSON.stringify(this.cacheValue))
+        window.close();
     }
     OAuth2.prototype.authorizationCode=function(){
         var that=this;
@@ -77,17 +78,14 @@ $(function(){
                 that.cacheValue.tokenType=data.token_type;
                 that.cacheValue.granted=true;
                 window.localStorage.setItem(that.state,JSON.stringify(that.cacheValue))
+                window.close();
             }
-            console.log(data);
         })
     }
     var oauth=new OAuth2(window.location.href);
     oauth.init();
     oauth.auth();
 })
-    //window.close();
-
-    
 </script>
 
 </body>
