@@ -1990,14 +1990,15 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp,definitions, deepDef,
             var refp = new SwaggerBootstrapUiParameter();
             refp.pid = originalTreeTableModel.id;
             refp.readOnly = true;
-            refp.parentTypes.push(treeTableModel.name)
+            //refp.parentTypes.push(treeTableModel.name)
+            refp.parentTypes.push(originalTreeTableModel.name)
             //refp.level = minfo.level + 1;
             refp.name = "additionalProperty1";
             refp.type = KUtils.propValue("title", def, "");
             if(KUtils.checkUndefined(refType)){
               refp.type = refType;
             }
-            refp.parentTypes.push(treeTableModel.name)
+            //refp.parentTypes.push(treeTableModel.name)
             //models添加所有属性
             if(parentRefp.children==null){
               parentRefp.children=new Array();
