@@ -2342,6 +2342,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
 function SwaggerBootstrapUiOAuth2(grantType,tokenUrl,authUrl,instanceId){
   this.grantType=grantType;
   this.name="Authorization";
+  this.redirectUri=null;
   //是否已经授权
   this.granted=false;
   this.tokenUrl=tokenUrl;
@@ -2392,6 +2393,9 @@ SwaggerBootstrapUiOAuth2.prototype.sync=function(){
         if(KUtils.strBlank(this.clientSecret)){
           this.clientSecret=cacheObject.clientSecret;
         }
+        if(KUtils.strBlank(this.redirectUri)){
+          this.redirectUri=cacheObject.redirectUri;
+        }
         //授权后返回值
         if(KUtils.strBlank(this.accessToken)){
           this.accessToken=cacheObject.accessToken;
@@ -2412,6 +2416,7 @@ SwaggerBootstrapUiOAuth2.prototype.sync=function(){
  */
 SwaggerBootstrapUiOAuth2.prototype.clear=function(){
   this.accessToken=null;
+  this.redirectUri=null;
   this.granted=false;
   this.clientId="";
   this.clientSecret="";

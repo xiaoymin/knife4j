@@ -23,8 +23,12 @@
             <a-col :span="18"><a-input id="authorizeUrl"  read-only="read-only" :defaultValue="oauth.authorizeUrl" /></a-col>
           </a-row>
           <a-row style="margin-top:15px;">
-            <a-col :span="4">client_id</a-col>
+            <a-col :span="4">clientId</a-col>
             <a-col :span="18"><a-input :value="oauth.clientId" @change="clientChage"  /></a-col>
+          </a-row>
+          <a-row v-if="oauth.grantType=='accessCode'" style="margin-top:15px;">
+            <a-col :span="4">clientSecret</a-col>
+            <a-col :span="18"><a-input :value="oauth.clientSecret" @change="clientSecretChage"  /></a-col>
           </a-row>
            <a-row style="margin-top:15px;">
             <a-col :span="4"></a-col>
@@ -88,6 +92,9 @@ export default {
     clientChage(e){
       this.oauth.clientId=e.target.value;
     },
+    clientSecretChage(e){
+      this.oauth.clientSecret=e.target.value;
+    },
     initI18n(){
       //根据i18n初始化部分参数
       var inst=this.getCurrentI18nInstance();
@@ -100,6 +107,12 @@ export default {
       if(KUtils.strBlank(this.oauth.clientId)){
         this.$message.info('clientId can\'t empty!!!');
         return false;
+      }
+      if(this.oauth.grantType=="accessCode"){
+        if(KUtils.strBlank(this.oauth.clientSecret)){
+          this.$message.info('clientSecret can\'t empty!!!');
+        return false;
+        }
       }
       //判断类型
       var openUrl=this.oauth.authorizeUrl;
@@ -114,12 +127,23 @@ export default {
         //orig=orig+"/doc.html#/oauth2";
         orig=orig+"/"+KUtils.getOAuth2Html(false);
       }
-      
       var redirectUri=encodeURIComponent(orig);
-      console.log(redirectUri);
+      this.oauth.redirectUri=redirectUri;
       if(this.oauth.grantType=="implicit"){
-        //前端模式,拼装参数
+        //简化模式,拼装参数
         params.push("response_type=token");
+        params.push("client_id="+this.oauth.clientId);
+        params.push("redirect_uri="+redirectUri);
+        params.push("state=SELF"+this.oauth.state);
+        var paramUrl=params.join("&");
+        if(openUrl.indexOf("?")>=0){
+          openUrl=openUrl+"&"+paramUrl;
+        }else{
+          openUrl=openUrl+"?"+paramUrl;
+        }
+      }else if(this.oauth.grantType=="accessCode"){
+        //授权码模式
+        params.push("response_type=code");
         params.push("client_id="+this.oauth.clientId);
         params.push("redirect_uri="+redirectUri);
         params.push("state=SELF"+this.oauth.state);
