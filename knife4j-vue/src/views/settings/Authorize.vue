@@ -142,9 +142,11 @@ export default {
         //判断类型
         var openUrl=this.oauth.authorizeUrl;
         var params=new Array();
-        console.log(this.$route)
+        //console.log(this.$route)
         var location=window.location;
         var orig=location.origin+location.pathname;
+        //替换掉doc.html
+        orig=orig.replace("/doc.html");
         if(orig.endsWith("/")){
           //orig=orig+"doc.html#/oauth2";
           orig=orig+KUtils.getOAuth2Html(true);
