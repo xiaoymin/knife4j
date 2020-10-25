@@ -55,7 +55,7 @@
         </a-col>
       </a-row>
       <a-divider class="divider" /> -->
-      <a-row class="content-line">
+      <!-- <a-row class="content-line">
         <a-col :span="24">
           <a-checkbox
             @change="checkboxChange('enableSwaggerBootstrapUi')"
@@ -63,7 +63,7 @@
             ><span v-html="$t('settings.plus')"></span
           ></a-checkbox>
         </a-col>
-      </a-row>
+      </a-row> -->
       <a-divider class="divider" />
       <a-row class="content-line">
         <a-col :span="24">
