@@ -21,7 +21,7 @@
             <a-col :span="4">Authorization URL</a-col>
             <a-col :span="18"><a-input id="authorizeUrl"  read-only="read-only" :defaultValue="oauth.authorizeUrl" /></a-col>
           </a-row>
-          <a-row v-if="oauth.grantType=='password'" style="margin-top:15px;">
+          <a-row v-if="oauth.grantType=='password'||this.oauth.grantType=='application'||this.oauth.grantType=='client_credentials'" style="margin-top:15px;">
             <a-col :span="4">Token URL</a-col>
             <a-col :span="18"><a-input id="tokenUrl"  read-only="read-only" :defaultValue="oauth.tokenUrl" /></a-col>
           </a-row>
