@@ -13,6 +13,7 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 import com.github.xiaoymin.knife4j.core.conf.Consts;
+import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
@@ -69,9 +70,19 @@ public class DynamicResponseModelReader  implements OperationBuilderPlugin {
     @Override
     public void apply(OperationContext context) {
         Optional<ApiOperationSupport> optional= context.findAnnotation(ApiOperationSupport.class);
+        //两个动态响应取1个
+        boolean flag=false;
         if (optional.isPresent()){
-            changeResponseModel(optional.get().responses(),context);
-        }else{
+            DynamicResponseParameters dynamicResponseParameters=optional.get().responses();
+            if (dynamicResponseParameters!=null&&dynamicResponseParameters.properties()!=null&&dynamicResponseParameters.properties().length>0){
+                long count=Arrays.asList(dynamicResponseParameters.properties()).stream().filter(dynamicParameter -> StrUtil.isNotBlank(dynamicParameter.name())).count();
+                if (count>0){
+                    flag=true;
+                    changeResponseModel(optional.get().responses(),context);
+                }
+            }
+        }
+        if(!flag){
             Optional<DynamicResponseParameters> parametersOptional=context.findAnnotation(DynamicResponseParameters.class);
             if (parametersOptional.isPresent()){
                 changeResponseModel(parametersOptional.get(),context);
