@@ -515,6 +515,7 @@ export default {
       debugPathParams: [],
       //loading效果
       debugLoading: false,
+      oAuthApi:false,
       debugSend: false,
       //form参数值对象
       formData: [],
@@ -667,6 +668,7 @@ export default {
     initHeaderParameter(cacheApi) {
       var oauth=this.syncFromOAuth2();
       if(KUtils.checkUndefined(oauth)){
+        this.oAuthApi=true;
         var oAuthHeader = {
             id: KUtils.randomMd5(),
             name: oauth.name,
@@ -747,8 +749,15 @@ export default {
                 ch => ch.name == header.name
               );
               if (cacheHeaderArr.length > 0) {
-                //update
-                header.content = cacheHeaderArr[0].content;
+                if(!this.oAuthApi){
+                  //非auth请求
+                  //update
+                  header.content = cacheHeaderArr[0].content;
+                }else{
+                  if(header.name!="Authorization"){
+                    header.content = cacheHeaderArr[0].content;
+                  }
+                }
               }
             }
           });
@@ -799,10 +808,10 @@ export default {
     syncFromOAuth2(){
       var instanceId=this.swaggerInstance.id;
       var key="SELFOAuth"+instanceId;
-      console.log("syncFromOAuth2")
+      //console.log("syncFromOAuth2")
       if(window.localStorage){
         var value=window.localStorage.getItem(key);
-        console.log(value)
+        //console.log(value)
         if(KUtils.strNotBlank(value)){
           //包含OAuth2参数
           var oauth=KUtils.json5parse(value);
