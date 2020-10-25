@@ -146,7 +146,7 @@ export default {
         var location=window.location;
         var orig=location.origin+location.pathname;
         //替换掉doc.html
-        orig=orig.replace("/doc.html");
+        orig=orig.replace("/doc.html","");
         if(orig.endsWith("/")){
           //orig=orig+"doc.html#/oauth2";
           orig=orig+KUtils.getOAuth2Html(true);
