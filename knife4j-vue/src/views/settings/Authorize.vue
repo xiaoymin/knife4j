@@ -147,10 +147,10 @@ export default {
         var orig=location.origin+location.pathname;
         if(orig.endsWith("/")){
           //orig=orig+"doc.html#/oauth2";
-          orig=orig+KUtils.getOAuth2Html(false);
+          orig=orig+KUtils.getOAuth2Html(true);
         }else{
           //orig=orig+"/doc.html#/oauth2";
-          orig=orig+"/"+KUtils.getOAuth2Html(false);
+          orig=orig+"/"+KUtils.getOAuth2Html(true);
         }
         var redirectUri=encodeURIComponent(orig);
         this.oauth.redirectUri=redirectUri;
