@@ -640,11 +640,12 @@ export default {
                 //不为空
                 val.forEach(security => {
                   if(security.in=='query'){
-                    console.log(security)
+                    //console.log(security)
                     var newquery = {
                       id: KUtils.randomMd5(),
                       name: security.name,
                       content: security.value,
+                      value:security.value,
                       require: true,
                       description: "",
                       enums: null, //枚举下拉框
@@ -664,6 +665,21 @@ export default {
       });
     },
     initHeaderParameter(cacheApi) {
+      var oauth=this.syncFromOAuth2();
+      if(KUtils.checkUndefined(oauth)){
+        var oAuthHeader = {
+            id: KUtils.randomMd5(),
+            name: oauth.name,
+            content: oauth.accessToken,
+            require: true,
+            description: "",
+            enums: null, //枚举下拉框
+            //枚举是否支持多选('default' | 'multiple' )
+            enumsMode:"default",
+            new: false
+          };
+          this.addDebugHeader(oAuthHeader);
+      }
       //console.log("initHeaderParameter")
       //console.log(this.globalParameters)
       //本都缓存读取到参数，初始化header参数
@@ -779,6 +795,21 @@ export default {
           this.rawText = cacheApi.rawText;
         }
       }
+    },
+    syncFromOAuth2(){
+      var instanceId=this.swaggerInstance.id;
+      var key="SELFOAuth"+instanceId;
+      console.log("syncFromOAuth2")
+      if(window.localStorage){
+        var value=window.localStorage.getItem(key);
+        console.log(value)
+        if(KUtils.strNotBlank(value)){
+          //包含OAuth2参数
+          var oauth=KUtils.json5parse(value);
+          return oauth;
+        }
+      }
+      return null;
     },
     updateFormCacheApi(cacheApi) {
       //console("从缓存中更新Form参数");

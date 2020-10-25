@@ -4,13 +4,33 @@
       <a-row>
         <a-button type="primary" @click="resetAuth" v-html="$t('auth.cancel')">注销</a-button>
       </a-row>
-      <a-row style="margin-top:15px;">
+      <a-row v-if="securityKeyFlag" style="margin-top:15px;">
         <a-table size="small" :columns="columns" :dataSource="securityArr" :pagination="pagination" bordered>
           <template slot="paramIpt" slot-scope="text, record">
             <a-input :value="text" :data-id="record.id" @change="authParamChange" />
           </template>
         </a-table>
-
+      </a-row>
+      <a-row v-if="oauthFlag" style="margin-top:15px;">
+        <a-card title="OAuth2">
+          <a-row>
+            <a-col :span="4">Flow</a-col>
+            <a-col :span="18"><a-input id="grant"   read-only="read-only"  :defaultValue="oauth.grantType" /></a-col>
+          </a-row>
+          
+          <a-row style="margin-top:15px;">
+            <a-col :span="4">Authorization URL</a-col>
+            <a-col :span="18"><a-input id="authorizeUrl"  read-only="read-only" :defaultValue="oauth.authorizeUrl" /></a-col>
+          </a-row>
+          <a-row style="margin-top:15px;">
+            <a-col :span="4">client_id</a-col>
+            <a-col :span="18"><a-input :value="oauth.clientId" @change="clientChage"  /></a-col>
+          </a-row>
+           <a-row style="margin-top:15px;">
+            <a-col :span="4"></a-col>
+            <a-col :span="18"><a-button type="primary" @click="auth">Authorize</a-button></a-col>
+          </a-row>
+        </a-card>
       </a-row>
     </div>
   </a-layout-content>
@@ -36,11 +56,23 @@ export default {
       this.initI18n();
     }
   },
+  beforeCreate(){
+    this.form = this.$form.createForm(this, { name: "oauth_form" });
+  },
   data() {
     return {
       pagination: false,
+      labelCol: {
+        xs: { span: 26 },
+        sm: { span: 5 }
+      },
+      wrapperCol: {
+        xs: { span: 26 },
+        sm: { span: 18 }
+      },
       securityKeyFlag:false,
       oauthFlag:false,
+      oauth:null,
       columns: [],
       //全局的
       globalSecuritys: [],
@@ -50,18 +82,76 @@ export default {
     };
   },
   methods: {
-     getCurrentI18nInstance(){
+    getCurrentI18nInstance(){
       return this.$i18n.messages[this.language];
+    },
+    clientChage(e){
+      this.oauth.clientId=e.target.value;
     },
     initI18n(){
       //根据i18n初始化部分参数
       var inst=this.getCurrentI18nInstance();
       this.columns=inst.table.authHeaderColumns;
     },
+    auth(){
+      console.log("OAUTH2认证")
+      console.log(this.oauth)
+      console.log(this.clientId);
+      if(KUtils.strBlank(this.oauth.clientId)){
+        this.$message.info('clientId can\'t empty!!!');
+        return false;
+      }
+      //判断类型
+      var openUrl=this.oauth.authorizeUrl;
+      var params=new Array();
+      console.log(this.$route)
+      var location=window.location;
+      var orig=location.origin+location.pathname;
+      if(orig.endsWith("/")){
+        //orig=orig+"doc.html#/oauth2";
+        orig=orig+KUtils.getOAuth2Html(false);
+      }else{
+        //orig=orig+"/doc.html#/oauth2";
+        orig=orig+"/"+KUtils.getOAuth2Html(false);
+      }
+      
+      var redirectUri=encodeURIComponent(orig);
+      console.log(redirectUri);
+      if(this.oauth.grantType=="implicit"){
+        //前端模式,拼装参数
+        params.push("response_type=token");
+        params.push("client_id="+this.oauth.clientId);
+        params.push("redirect_uri="+redirectUri);
+        params.push("state=SELF"+this.oauth.state);
+        var paramUrl=params.join("&");
+        if(openUrl.indexOf("?")>=0){
+          openUrl=openUrl+"&"+paramUrl;
+        }else{
+          openUrl=openUrl+"?"+paramUrl;
+        }
+      }
+      console.log(openUrl)
+      this.oauth.sync();
+      window.open(openUrl)
+    },
+    initLocalOAuth(){
+      var that=this;
+      var oauths=that.data.instance.oauths;
+      console.log(oauths)
+      if(KUtils.checkUndefined(oauths)){
+        this.oauthFlag=true;
+        this.oauth=oauths;
+      }
+    },
     initLocalSecuritys() {
       //初始化从本地读取
       var that = this;
+      that.initLocalOAuth();
       var backArr = that.data.instance.securityArrs;
+      if(KUtils.arrNotEmpty(backArr)){
+        this.securityKeyFlag=true;
+      }
+
       //前缀+实例id
       //全局通用
       var key = constant.globalSecurityParamPrefix + this.data.instance.id;
@@ -142,6 +232,20 @@ export default {
       );
     },
     resetAuth() {
+      if(this.oauthFlag){
+        this.resetOAuth2();
+      }
+      if(this.securityKeyFlag){
+        this.resetCommonSecurtyAuth();
+      }
+      this.$message.info("SUCCESS");
+      
+    },
+    resetOAuth2(){
+      this.oauth.clear();
+
+    },
+    resetCommonSecurtyAuth(){
       const tmpArr = this.securityArr;
       if (KUtils.arrNotEmpty(tmpArr)) {
         tmpArr.forEach(security=>{
@@ -158,8 +262,8 @@ export default {
         }); */
         this.storeToLocalIndexDB();
       }
-      this.$message.info("注销成功");
-    },
+    }
+    ,
     authParamChange(e) {
       var target = e.target;
       var pkId = target.getAttribute("data-id");

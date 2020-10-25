@@ -154,6 +154,12 @@ function isUrl(path) {
 }
 
 const utils = {
+  getOAuth2Html(production){
+    if(production){
+      return "webjars/oauth2.html";
+    }
+    return "oauth2.html";
+  },
   groupName(url,defaultName){
     var gname=defaultName;
     var reg=new RegExp(".*?group=(.*?)(&.*?)?$");

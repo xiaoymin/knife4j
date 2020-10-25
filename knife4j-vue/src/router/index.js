@@ -46,6 +46,11 @@ const routes = [{
       component: () => import('@/views/othermarkdown/index')
     }
   ]
+},
+{
+  path: '/oauth2',
+  name:'oauth2',
+  component: () => import('@/views/settings/OAuth2')
 }]
 
 const router = new VueRouter({

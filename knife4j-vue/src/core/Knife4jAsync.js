@@ -734,6 +734,8 @@ SwaggerBootstrapUi.prototype.mergeLocalSecurityContext=function(){
           //console.log(this.globalSecurityObject)
           that.localStore.setItem(Constants.globalSecurityParameterObject,globalSecurityObject);
         });
+      }else{
+        this.localStore.removeItem(key);
       }
     });
 }
@@ -2138,12 +2140,14 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
         if(j=="oauth2"){
           console.log("oauth2")
           //oauth2认证
-          that.currentInstance.oauths.push(
-          new SwaggerBootstrapUiOAuth2(
+          var oauth=new SwaggerBootstrapUiOAuth2(
             KUtils.getValue(sdobj,"flow","",true),
-          KUtils.getValue(sdobj,"tokenUrl","",true),
-          KUtils.getValue(sdobj,"authorizationUrl","",true)
-          ));
+            KUtils.getValue(sdobj,"tokenUrl","",true),
+            KUtils.getValue(sdobj,"authorizationUrl","",true),
+            that.currentInstance.id
+          );
+          oauth.sync();
+          that.currentInstance.oauths=oauth;
         }else{
           console.log("oauth2--ull")
           var sdf = new SwaggerBootstrapUiSecurityDefinition();
@@ -2187,6 +2191,8 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       that.clearSecuritys();
     }
   }
+  //当前实例不存在OAuth2验证的情况下需要clear
+  that.currentInstance.clearOAuth2();
   //console.log("分组------------")
   //console.log(that.currentInstance.cacheInstance)
   //tag分组
@@ -2333,10 +2339,87 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
  * @param {*} tokenUrl  请求touken地址
  * @param {*} authUrl 授权地址
  */
-function SwaggerBootstrapUiOAuth2(grantType,tokenUrl,authUrl){
+function SwaggerBootstrapUiOAuth2(grantType,tokenUrl,authUrl,instanceId){
   this.grantType=grantType;
+  this.name="Authorization";
+  //是否已经授权
+  this.granted=false;
   this.tokenUrl=tokenUrl;
-  this.authUrl=authUrl;
+  this.authorizeUrl=authUrl;
+  this.clientId="";
+  this.clientSecret="";
+  //授权后返回值
+  this.accessToken=null;
+  this.tokenType=null;
+  this.state="OAuth"+instanceId;
+}
+/**
+ * 授权过后从本地LocalStorage同步
+ */
+SwaggerBootstrapUiOAuth2.prototype.syncOAuth=function(){
+  var that=this;
+  if(window.localStorage){
+    var key=that.state;
+    var value=window.localStorage.getItem(key);
+    if(KUtils.strNotBlank(value)){
+      var storageObject=KUtils.json5parse(value);
+      this.accessToken=KUtils.getValue(storageObject,"tokenType","Bearer",true)+" "+storageObject.accessToken;
+      this.tokenType=storageObject.tokenType;
+      this.granted=true;
+    }
+  }
+}
+/**
+ * 保存自己
+ */
+SwaggerBootstrapUiOAuth2.prototype.sync=function(){
+  console.log("saveOAuthMySELF")
+  this.syncOAuth();
+  if(window.localStorage){
+    var key="SELF"+this.state;
+    var cacheValue=window.localStorage.getItem(key);
+    if(KUtils.strNotBlank(cacheValue)){
+      //缓存中存在
+      var cacheObject=KUtils.json5parse(cacheValue);
+      //判断授权形式是否相同
+      if(this.grantType==cacheObject.grantType){
+        //相等
+        //是否已经授权
+        this.granted=cacheObject.granted;
+        if(KUtils.strBlank(this.clientId)){
+          this.clientId=cacheObject.clientId;
+        }
+        if(KUtils.strBlank(this.clientSecret)){
+          this.clientSecret=cacheObject.clientSecret;
+        }
+        //授权后返回值
+        if(KUtils.strBlank(this.accessToken)){
+          this.accessToken=cacheObject.accessToken;
+        }
+        if(KUtils.strBlank(this.tokenType)){
+          this.tokenType=cacheObject.tokenType;
+        }
+      }
+      window.localStorage.setItem(key,KUtils.json5stringify(this));
+    }else{
+      window.localStorage.setItem(key,KUtils.json5stringify(this));
+    }
+  }
+
+}
+/**
+ * 注销退出
+ */
+SwaggerBootstrapUiOAuth2.prototype.clear=function(){
+  this.accessToken=null;
+  this.granted=false;
+  this.clientId="";
+  this.clientSecret="";
+  //授权后返回值
+  this.accessToken=null;
+  this.tokenType=null;
+  var key="SELF"+this.state;
+  window.localStorage.setItem(key,KUtils.json5stringify(this));
 }
 /***
  * 清空security
@@ -2545,7 +2628,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
     path: 'home',
   })
   //是否有全局参数
-  if(KUtils.arrNotEmpty(that.currentInstance.securityArrs)||KUtils.arrNotEmpty(that.currentInstance.oauths)){
+  if(KUtils.arrNotEmpty(that.currentInstance.securityArrs)||KUtils.checkUndefined(that.currentInstance.oauths)){
   /* if (that.currentInstance.securityArrs != null && that.currentInstance.securityArrs.length > 0) { */
     menuArr.push({
       groupName: groupName,
@@ -5998,7 +6081,7 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   //当前Swagger的json
   this.swaggerData=null;
   //oatuth认证,存放Oauth2认证的参数类型
-  this.oauths=[];
+  this.oauths=null;
   //其他文档
   //OpenAPI基础信息
   this.openApiBaseInfo={};
@@ -6080,7 +6163,15 @@ function SwaggerBootstrapUiInstance(name, location, version) {
 
   this.i18n = null
 }
-
+SwaggerBootstrapUiInstance.prototype.clearOAuth2=function(){
+  if(!KUtils.checkUndefined(this.oauths)){
+    //移除
+    if(window.localStorage){
+      var key="SELFOAuth"+this.id;
+      window.localStorage.removeItem(key);
+    }
+  }
+}
 /**
  * 其他文件分组
  * @param {*} name 
