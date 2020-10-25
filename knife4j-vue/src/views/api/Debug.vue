@@ -464,6 +464,7 @@ export default {
       enableDynamicParameter: false,
       enableHost:false,
       enableHostText:'',
+      authorizeQueryParameters:[],
       headerColumn: [],
       formColumn: [],
       urlFormColumn: [],
@@ -629,8 +630,35 @@ export default {
           this.$localStore.getItem(cacheApiKey).then(cacheApi => {
             //开始同步执行其他方法-初始化请求头参数
             this.initHeaderParameter(cacheApi);
-            //请求体参数初始化
-            this.initBodyParameter(cacheApi);
+            //判断是否authorize中包含query
+            //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
+            //读取Author的参数情况
+            var securitykey = constant.globalSecurityParamPrefix + this.api.instanceId;
+            this.$localStore.getItem(securitykey).then(val => {
+              //console("读取本都Auth请");
+              if (KUtils.arrNotEmpty(val)) {
+                //不为空
+                val.forEach(security => {
+                  if(security.in=='query'){
+                    console.log(security)
+                    var newquery = {
+                      id: KUtils.randomMd5(),
+                      name: security.name,
+                      content: security.value,
+                      require: true,
+                      description: "",
+                      enums: null, //枚举下拉框
+                      //枚举是否支持多选('default' | 'multiple' )
+                      enumsMode:"default",
+                      new: false
+                    };
+                    this.authorizeQueryParameters.push(newquery);
+                  }
+                });
+              }
+              //请求体参数初始化
+              this.initBodyParameter(cacheApi);
+            });
           });
         });
       });
@@ -664,19 +692,22 @@ export default {
         if (KUtils.arrNotEmpty(val)) {
           //不为空
           val.forEach(security => {
+            //console.log(security)
             var newHeader = {
               id: KUtils.randomMd5(),
               name: security.name,
               content: security.value,
-              require: false,
+              require: true,
               description: "",
               enums: null, //枚举下拉框
               //枚举是否支持多选('default' | 'multiple' )
               enumsMode:"default",
               new: false
             };
-            //this.headerData.push(newHeader);
-            this.addDebugHeader(newHeader);
+            if(security.in=='header'){
+              //this.headerData.push(newHeader);
+              this.addDebugHeader(newHeader);
+            }
           });
         }
         this.updateHeaderFromCacheApi(cacheApi);
@@ -825,6 +856,12 @@ export default {
           }
         });
       }
+      if(KUtils.arrNotEmpty(this.authorizeQueryParameters)){
+        this.authorizeQueryParameters.forEach(aqp=>{
+          showGlobalParameters.push(aqp);
+        })
+      }
+      //console.log(showGlobalParameters)
       //根据参数列表、参数类型,开始自动判断接口的请求类型
       //如果是单个@RequestBody类型,则参数只有一个,且只有一个，类型必须是body类型
       var paramSize = showGlobalParameters.length + showApiParameters.length;
@@ -2537,7 +2574,7 @@ export default {
       if(KUtils.strNotBlank(this.rawScript)){
         var groupid=this.swaggerInstance.id;
         var allgroupid=this.swaggerInstance.allGroupIds;
-        console.log("groupid:"+groupid);
+        //console.log("groupid:"+groupid);
         //script不为空
         var settings={
           allgroupids:allgroupid,

@@ -39,6 +39,8 @@ export default {
   data() {
     return {
       pagination: false,
+      securityKeyFlag:false,
+      oauthFlag:false,
       columns: [],
       //全局的
       globalSecuritys: [],

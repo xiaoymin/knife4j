@@ -650,6 +650,7 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
   that.openDocuments(menu);
   that.analysisDefinition(menu);
   //DApiUI.definitions(menu);
+  that.mergeLocalSecurityContext();
   that.log(menu);
   that.createDescriptionElement();
   //当前实例已加载
@@ -662,6 +663,81 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
   this.store.dispatch('globals/setSwaggerInstance', this.currentInstance);
 
 }
+
+/**
+ * https://gitee.com/xiaoym/knife4j/issues/I1VC4I
+ * 更新本地全局authorize变量
+ */
+SwaggerBootstrapUi.prototype.mergeLocalSecurityContext=function(){
+    //初始化从本地读取
+    var that = this;
+    var backArr = that.currentInstance.securityArrs;
+    //前缀+实例id
+    //全局通用
+    var key = Constants.globalSecurityParamPrefix + that.currentInstance.id;
+    var tmpGlobalSecuritys = [];
+    var globalSecurityObject={};
+    var securityArr=[];
+    //var key = constant.globalSecurityParamPrefix;
+    that.localStore.getItem(Constants.globalSecurityParameterObject).then(gbp => {
+      //判断当前分组下的security是否为空
+      if (KUtils.arrNotEmpty(backArr)) {
+        //读取本分组下的security
+        that.localStore.getItem(key).then(currentSecurity => {
+          if (KUtils.checkUndefined(currentSecurity)) {
+            //当前分组不为空
+            //需要对比后端最新的参数情况,后端有可能已经删除参数
+            var tmpSecuritys = [];
+            backArr.forEach(security => {
+              //判断当前的key在缓存中是否存在
+              var caches = currentSecurity.filter(se => se.id == security.id);
+              if (caches.length > 0) {
+                //存在
+                if (KUtils.strNotBlank(security.value)) {
+                  tmpSecuritys.push(security);
+                } else {
+                  tmpSecuritys.push(caches[0]);
+                }
+              } else {
+                tmpSecuritys.push(security);
+              }
+            });
+            securityArr = tmpSecuritys;
+          } else {
+            securityArr = backArr;
+          }
+          //当前分组下的security不为空，判断全局分组，兼容升级的情况下,gbp可能会存在为空的情况
+          if (KUtils.checkUndefined(gbp)) {
+            globalSecurityObject=gbp;
+            tmpGlobalSecuritys = tmpGlobalSecuritys.concat(gbp);
+            //从全局参数中更新当前分组下的参数
+            securityArr.forEach(selfSecurity => {
+              var globalValueTmp=gbp[selfSecurity.id];
+              if(KUtils.checkUndefined(globalValueTmp)){
+                //id相等，更新value值
+                selfSecurity.value = globalValueTmp;
+              }else{
+                globalSecurityObject[selfSecurity.id]=selfSecurity.value;
+              }
+            });
+          } else {
+            //为空的情况下,则默认直接新增当前分组下的security
+            //tmpGlobalSecuritys = tmpGlobalSecuritys.concat(that.securityArr);
+            securityArr.forEach(sa=>{
+              globalSecurityObject[sa.id]=sa.value;
+            })
+          }
+          //更新当前实例下的securitys
+          that.localStore.setItem(key, securityArr);
+          //更新全局的securitys
+          //console.log("全局---")
+          //console.log(this.globalSecurityObject)
+          that.localStore.setItem(Constants.globalSecurityParameterObject,globalSecurityObject);
+        });
+      }
+    });
+}
+
 /**
  * 读取扩展属性Setting配置,后端直接开启增强
  * @since:knife4j 2.0.6
@@ -2054,86 +2130,54 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       //var cacheSecurityData=that.getSecurityInfos();
       var cacheSecurityData = that.getGlobalSecurityInfos();
       var securityArr = new Array();
+      console.log(securityDefinitions)
       for (var j in securityDefinitions) {
-        var sdf = new SwaggerBootstrapUiSecurityDefinition();
         var sdobj = securityDefinitions[j];
-        sdf.key = j;
-        sdf.type = sdobj.type;
-        sdf.name = sdobj.name;
-        sdf.in = sdobj.in;
-        var flag = false;
-        if (cacheSecurityData != null && cacheSecurityData != undefined) {
-          //存在缓存值,更新当前值,无需再次授权
-          cacheSecurityData.forEach(function (sa) {
-            //})
-            //$.each(cacheSecurityData, function (i, sa) {
-            if (sa.key == sdf.key && sa.name == sdf.name) {
-              flag = true;
-              sdf.value = sa.value;
-            }
-          })
-        }
-        /* if (!flag){
+        console.log(j)
+        console.log(sdobj)
+        if(j=="oauth2"){
+          console.log("oauth2")
+          //oauth2认证
+          that.currentInstance.oauths.push(
+          new SwaggerBootstrapUiOAuth2(
+            KUtils.getValue(sdobj,"flow","",true),
+          KUtils.getValue(sdobj,"tokenUrl","",true),
+          KUtils.getValue(sdobj,"authorizationUrl","",true)
+          ));
+        }else{
+          console.log("oauth2--ull")
+          var sdf = new SwaggerBootstrapUiSecurityDefinition();
+          sdf.key = j;
+          sdf.type = sdobj.type;
+          sdf.name = sdobj.name;
+          sdf.in = sdobj.in;
+          var flag = false;
+          if (cacheSecurityData != null && cacheSecurityData != undefined) {
+            //存在缓存值,更新当前值,无需再次授权
+            cacheSecurityData.forEach(function (sa) {
+              //})
+              //$.each(cacheSecurityData, function (i, sa) {
+              if (sa.key == sdf.key && sa.name == sdf.name) {
+                flag = true;
+                sdf.value = sa.value;
+              }
+            })
+          }
+          /* if (!flag){
             //如果cache不存在,存储
             that.storeGlobalParam(sdf,"securityArrs");
-        }*/
-        //at 2019-12-7 18:22:01
-        //得到主键id端
-        var md5StrBefore = sdf.key + sdf.type + sdf.in + sdf.name;
-        sdf.id = md5(md5StrBefore);
-        securityArr.push(sdf);
+          }*/
+          //at 2019-12-7 18:22:01
+          //得到主键id端
+          var md5StrBefore = sdf.key + sdf.type + sdf.in + sdf.name;
+          sdf.id = md5(md5StrBefore);
+          securityArr.push(sdf);
+        }
         //that.currentInstance.securityArrs.push(sdf);
       }
       if (securityArr.length > 0) {
         that.currentInstance.securityArrs = securityArr;
         that.log("解析securityDefinitions属性--------------------------------------------------------------->")
-        /* if (window.localStorage) {
-          var store = window.localStorage;
-          var storeKey = "SwaggerBootstrapUiSecuritys";
-          var _securityValue = store[storeKey];
-          that.log(that.currentInstance.name)
-          //初始化
-          var _secArr = new Array();
-          var _key = md5(that.currentInstance.name);
-          that.log(_securityValue)
-          if (_securityValue != undefined && _securityValue != null && _securityValue != "") {
-            that.log("判断：" + _key)
-            //有值
-            var _secTempArr = JSON.parse(_securityValue);
-            var flag = false;
-            //判断值是否存在
-            _secTempArr.forEach(function (sta) {
-              //})
-              //$.each(_secTempArr, function (i, sta) {
-              if (sta.key == _key) {
-                that.log("exists")
-                flag = true;
-                _secArr.push({
-                  key: _key,
-                  value: securityArr
-                })
-              } else {
-                _secArr.push(sta)
-              }
-            })
-            if (!flag) {
-              _secArr.push({
-                key: _key,
-                value: securityArr
-              })
-            }
-          } else {
-            var _secObject = {
-              key: _key,
-              value: securityArr
-            };
-            _secArr.push(_secObject);
-
-          }
-          that.log(_secArr)
-          //store.setItem("securityArrs",JSON.stringify(securityArr))
-          store.setItem(storeKey, JSON.stringify(_secArr))
-        } */
       } else {
         //清空缓存
         that.clearSecuritys();
@@ -2282,6 +2326,17 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   that.log("解析refTreetableparameters结束,耗时：" + (new Date().getTime() - pathStartTime));
   that.log(new Date().toTimeString());
 
+}
+/**
+ * OAuth2认证的支持
+ * @param {*} grantType  oauth2的授权类型
+ * @param {*} tokenUrl  请求touken地址
+ * @param {*} authUrl 授权地址
+ */
+function SwaggerBootstrapUiOAuth2(grantType,tokenUrl,authUrl){
+  this.grantType=grantType;
+  this.tokenUrl=tokenUrl;
+  this.authUrl=authUrl;
 }
 /***
  * 清空security
@@ -2490,7 +2545,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
     path: 'home',
   })
   //是否有全局参数
-  if (that.currentInstance.securityArrs != null && that.currentInstance.securityArrs.length > 0) {
+  if(KUtils.arrNotEmpty(that.currentInstance.securityArrs)||KUtils.arrNotEmpty(that.currentInstance.oauths)){
+  /* if (that.currentInstance.securityArrs != null && that.currentInstance.securityArrs.length > 0) { */
     menuArr.push({
       groupName: groupName,
       groupId: groupId,
@@ -5941,6 +5997,8 @@ function SwaggerBootstrapUiParameterLevel() {
 function SwaggerBootstrapUiInstance(name, location, version) {
   //当前Swagger的json
   this.swaggerData=null;
+  //oatuth认证,存放Oauth2认证的参数类型
+  this.oauths=[];
   //其他文档
   //OpenAPI基础信息
   this.openApiBaseInfo={};
