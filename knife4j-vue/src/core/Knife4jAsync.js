@@ -2342,6 +2342,8 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
 function SwaggerBootstrapUiOAuth2(grantType,tokenUrl,authUrl,instanceId){
   this.grantType=grantType;
   this.name="Authorization";
+  this.username=null;
+  this.password=null;
   this.redirectUri=null;
   //是否已经授权
   this.granted=false;
@@ -2396,6 +2398,12 @@ SwaggerBootstrapUiOAuth2.prototype.sync=function(){
         if(KUtils.strBlank(this.redirectUri)){
           this.redirectUri=cacheObject.redirectUri;
         }
+        if(KUtils.strBlank(this.username)){
+          this.username=cacheObject.username;
+        }
+        if(KUtils.strBlank(this.password)){
+          this.password=cacheObject.password;
+        }
         //授权后返回值
         if(KUtils.strBlank(this.accessToken)){
           this.accessToken=cacheObject.accessToken;
@@ -2415,6 +2423,8 @@ SwaggerBootstrapUiOAuth2.prototype.sync=function(){
  * 注销退出
  */
 SwaggerBootstrapUiOAuth2.prototype.clear=function(){
+  this.username=null;
+  this.password=null;
   this.accessToken=null;
   this.redirectUri=null;
   this.granted=false;

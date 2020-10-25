@@ -17,16 +17,27 @@
             <a-col :span="4">Flow</a-col>
             <a-col :span="18"><a-input id="grant"   read-only="read-only"  :defaultValue="oauth.grantType" /></a-col>
           </a-row>
-          
-          <a-row style="margin-top:15px;">
+          <a-row v-if="oauth.grantType=='accessCode' || oauth.grantType=='implicit'" style="margin-top:15px;">
             <a-col :span="4">Authorization URL</a-col>
             <a-col :span="18"><a-input id="authorizeUrl"  read-only="read-only" :defaultValue="oauth.authorizeUrl" /></a-col>
+          </a-row>
+          <a-row v-if="oauth.grantType=='password'" style="margin-top:15px;">
+            <a-col :span="4">Token URL</a-col>
+            <a-col :span="18"><a-input id="tokenUrl"  read-only="read-only" :defaultValue="oauth.tokenUrl" /></a-col>
+          </a-row>
+          <a-row v-if="oauth.grantType=='password'" style="margin-top:15px;">
+            <a-col :span="4">username</a-col>
+            <a-col :span="18"><a-input id="username"  :value="oauth.username" @change="userChange" /></a-col>
+          </a-row>
+          <a-row v-if="oauth.grantType=='password'" style="margin-top:15px;">
+            <a-col :span="4">password</a-col>
+            <a-col :span="18"><a-input id="password" type="password"  :value="oauth.password" @change="pwdChange"/></a-col>
           </a-row>
           <a-row style="margin-top:15px;">
             <a-col :span="4">clientId</a-col>
             <a-col :span="18"><a-input :value="oauth.clientId" @change="clientChage"  /></a-col>
           </a-row>
-          <a-row v-if="oauth.grantType=='accessCode'" style="margin-top:15px;">
+          <a-row v-if="oauth.grantType=='accessCode' || oauth.grantType=='password'" style="margin-top:15px;">
             <a-col :span="4">clientSecret</a-col>
             <a-col :span="18"><a-input :value="oauth.clientSecret" @change="clientSecretChage"  /></a-col>
           </a-row>
@@ -43,7 +54,7 @@
 <script>
 import constant from "@/store/constants";
 import KUtils from "@/core/utils";
- 
+import DebugAxios from "axios";
 export default {
   props: {
     data: {
@@ -89,6 +100,12 @@ export default {
     getCurrentI18nInstance(){
       return this.$i18n.messages[this.language];
     },
+    userChange(e){
+      this.oauth.username=e.target.value;
+    },
+    pwdChange(e){
+      this.oauth.password=e.target.value;
+    },
     clientChage(e){
       this.oauth.clientId=e.target.value;
     },
@@ -104,59 +121,108 @@ export default {
       console.log("OAUTH2认证")
       console.log(this.oauth)
       console.log(this.clientId);
+      if(this.oauth.grantType=="password"){
+        if(KUtils.strBlank(this.oauth.username)){
+          this.$message.info('username can\'t empty!!!');
+          return false;
+        }
+        if(KUtils.strBlank(this.oauth.password)){
+          this.$message.info('password can\'t empty!!!');
+          return false;
+        }
+      }
       if(KUtils.strBlank(this.oauth.clientId)){
         this.$message.info('clientId can\'t empty!!!');
         return false;
       }
-      if(this.oauth.grantType=="accessCode"){
+      if(this.oauth.grantType=="accessCode"||this.oauth.grantType=="password"){
         if(KUtils.strBlank(this.oauth.clientSecret)){
           this.$message.info('clientSecret can\'t empty!!!');
-        return false;
+          return false;
         }
       }
-      //判断类型
-      var openUrl=this.oauth.authorizeUrl;
-      var params=new Array();
-      console.log(this.$route)
-      var location=window.location;
-      var orig=location.origin+location.pathname;
-      if(orig.endsWith("/")){
-        //orig=orig+"doc.html#/oauth2";
-        orig=orig+KUtils.getOAuth2Html(false);
-      }else{
-        //orig=orig+"/doc.html#/oauth2";
-        orig=orig+"/"+KUtils.getOAuth2Html(false);
-      }
-      var redirectUri=encodeURIComponent(orig);
-      this.oauth.redirectUri=redirectUri;
-      if(this.oauth.grantType=="implicit"){
-        //简化模式,拼装参数
-        params.push("response_type=token");
-        params.push("client_id="+this.oauth.clientId);
-        params.push("redirect_uri="+redirectUri);
-        params.push("state=SELF"+this.oauth.state);
-        var paramUrl=params.join("&");
-        if(openUrl.indexOf("?")>=0){
-          openUrl=openUrl+"&"+paramUrl;
+      if(this.oauth.grantType=="implicit"||this.oauth.grantType=="accessCode"){
+        //判断类型
+        var openUrl=this.oauth.authorizeUrl;
+        var params=new Array();
+        console.log(this.$route)
+        var location=window.location;
+        var orig=location.origin+location.pathname;
+        if(orig.endsWith("/")){
+          //orig=orig+"doc.html#/oauth2";
+          orig=orig+KUtils.getOAuth2Html(false);
         }else{
-          openUrl=openUrl+"?"+paramUrl;
+          //orig=orig+"/doc.html#/oauth2";
+          orig=orig+"/"+KUtils.getOAuth2Html(false);
         }
-      }else if(this.oauth.grantType=="accessCode"){
-        //授权码模式
-        params.push("response_type=code");
-        params.push("client_id="+this.oauth.clientId);
-        params.push("redirect_uri="+redirectUri);
-        params.push("state=SELF"+this.oauth.state);
-        var paramUrl=params.join("&");
-        if(openUrl.indexOf("?")>=0){
-          openUrl=openUrl+"&"+paramUrl;
-        }else{
-          openUrl=openUrl+"?"+paramUrl;
+        var redirectUri=encodeURIComponent(orig);
+        this.oauth.redirectUri=redirectUri;
+        if(this.oauth.grantType=="implicit"){
+          //简化模式,拼装参数
+          params.push("response_type=token");
+          params.push("client_id="+this.oauth.clientId);
+          params.push("redirect_uri="+redirectUri);
+          params.push("state=SELF"+this.oauth.state);
+          var paramUrl=params.join("&");
+          if(openUrl.indexOf("?")>=0){
+            openUrl=openUrl+"&"+paramUrl;
+          }else{
+            openUrl=openUrl+"?"+paramUrl;
+          }
+        }else if(this.oauth.grantType=="accessCode"){
+          //授权码模式
+          params.push("response_type=code");
+          params.push("client_id="+this.oauth.clientId);
+          params.push("redirect_uri="+redirectUri);
+          params.push("state=SELF"+this.oauth.state);
+          var paramUrl=params.join("&");
+          if(openUrl.indexOf("?")>=0){
+            openUrl=openUrl+"&"+paramUrl;
+          }else{
+            openUrl=openUrl+"?"+paramUrl;
+          }
         }
+        console.log(openUrl)
+        this.oauth.sync();
+        window.open(openUrl)
+      }else if(this.oauth.grantType=="password"){
+        //密码模式
+        const debugInstance = DebugAxios.create();
+        var formData = new FormData();
+        formData.append("grant_type","password");
+        formData.append("username",this.oauth.username);
+        formData.append("password",this.oauth.password);
+        var requestConfig = {
+          url: this.oauth.tokenUrl,
+          method: "post",
+          auth:{
+             username: this.oauth.clientId,
+              password: this.oauth.clientSecret
+          },
+          params: null,
+          timeout: 0,
+          data:formData
+        };
+        debugInstance
+          .request(requestConfig)
+          .then(res => {
+            var data=res.data;
+            this.oauth.accessToken=data.token_type+" "+data.access_token;
+            this.oauth.tokenType=data.token_type
+            this.oauth.granted=true;
+            this.oauth.sync();
+            this.$message.info("SUCCESS");
+          })
+          .catch(err => {
+            if (err.response) {
+              console.log(err);
+            } else {
+              this.$message.error(err.message);
+              ////console(err.message);
+            }
+          });
+
       }
-      console.log(openUrl)
-      this.oauth.sync();
-      window.open(openUrl)
     },
     initLocalOAuth(){
       var that=this;
