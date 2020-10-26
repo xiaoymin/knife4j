@@ -646,8 +646,13 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
   }
   that.setInstanceBasicPorperties(menu);
   //since2.0.6
-  that.openSettings(menu);
-  that.openDocuments(menu);
+  if(this.currentInstance.oas2()){
+    that.openSettings(menu);
+    that.openDocuments(menu);
+  }else{
+    that.openV3Settings(menu);
+    that.openV3Documents(menu);
+  }
   that.analysisDefinition(menu);
   //DApiUI.definitions(menu);
   that.mergeLocalSecurityContext();
@@ -771,6 +776,35 @@ SwaggerBootstrapUi.prototype.openSettings=function(data){
   }
 
 }
+SwaggerBootstrapUi.prototype.openV3Settings=function(data){
+  var that=this;
+  //判断是否包含extensions的增强
+  var openapi=data['extensions'];
+  if(KUtils.checkUndefined(openapi)){
+    //包含，判断settings
+    if(KUtils.checkUndefined(openapi['x-setting'])){
+      var settings=openapi['x-setting'];
+      if(KUtils.arrNotEmpty(settings)){
+        var setting=settings[0];
+        //存在，进行合并
+        //与当前缓存在local本地的进行对比与合并
+        var mergeSetting=Object.assign({},that.settings,setting);
+        that.settings=mergeSetting;
+        that.localStore.setItem(Constants.globalSettingsKey,mergeSetting);
+        //设置i18n
+        var i18n=KUtils.getValue(mergeSetting,'language','zh-CN',true);
+        this.localStore.setItem(Constants.globalI18nCache, i18n);
+        setTimeout(()=>{
+          if(KUtils.checkUndefined(that.i18nVue)){
+            that.i18nVue.locale = i18n;
+          }
+          that.store.dispatch('globals/setLang', i18n);
+        },500)
+      }
+    }
+  }
+
+}
 
 /**
  * 扩展其他文档
@@ -781,6 +815,43 @@ SwaggerBootstrapUi.prototype.openDocuments=function(data){
   var that=this;
   //判断是否包含x-openapi的增强
   var openapi=data['x-openapi'];
+  if(KUtils.checkUndefined(openapi)){
+    //判断是否包含markdown文档
+    if(KUtils.arrNotEmpty(openapi['x-markdownFiles'])){
+      var mkdFiles=openapi['x-markdownFiles'];
+      var currentInstanceMarkdownFileMap={};
+      mkdFiles.forEach(mdTag=>{
+        var swuFileTag=new SwaggerBootstrapUiMarkdownTag(mdTag.name);
+        //判断是否包含
+        if(KUtils.arrNotEmpty(mdTag['children'])){
+          var swuFileChildrens=mdTag['children'];
+          swuFileChildrens.forEach(mdFile=>{
+            var mdf=new SwaggerBootstrapUiMarkdownFile(mdFile.title);
+            swuFileTag.children.push(mdf);
+            //缓存对象
+            currentInstanceMarkdownFileMap[mdf.id]=KUtils.getValue(mdFile,'content','',true);
+          })
+        }
+        that.currentInstance.markdownFiles.push(swuFileTag);
+      })
+      //离线文件缓存到本地local,先删除后更新
+      var currentCacheFilesKey=that.currentInstance.id+'markdownFiles';
+      that.localStore.removeItem(currentCacheFilesKey);
+      that.localStore.setItem(currentCacheFilesKey,currentInstanceMarkdownFileMap);
+    }
+  }
+}
+
+
+/**
+ * 扩展其他文档
+ * @since:knife4j 2.0.6
+ * @param {*} data 
+ */
+SwaggerBootstrapUi.prototype.openV3Documents=function(data){
+  var that=this;
+  //判断是否包含x-openapi的增强
+  var openapi=data['extensions'];
   if(KUtils.checkUndefined(openapi)){
     //判断是否包含markdown文档
     if(KUtils.arrNotEmpty(openapi['x-markdownFiles'])){
@@ -2045,8 +2116,20 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
     tags.forEach(function (tag) {
       //此处替换tag.name中的/字符,以避免在ui中因为使用vue-router的问题导致空白页面出现
       var tagdes=KUtils.getValue(tag,"description","",true);
-      var tagauth=KUtils.getValue(tag,"x-author","",true);
-      var tagorder=KUtils.getValue(tag,"x-order","",true);;
+      var tagauth=null;
+      var tagorder=null;
+      if(that.currentInstance.oas2()){
+        tagauth=KUtils.getValue(tag,"x-author","",true);
+        tagorder=KUtils.getValue(tag,"x-order","",true);
+      }else{
+        //v3
+        if(KUtils.checkUndefined(tag["extensions"])){
+          var tagexte=tag["extensions"];
+          tagauth=KUtils.getValue(tagexte,"x-author","",true);
+          tagorder=KUtils.getValue(tagexte,"x-order","",true);
+        }
+      }
+      
       var swuTag = new SwaggerBootstrapUiTag(KUtils.toString(tag.name,"").replace(/\//g,'-'), tagdes);
       if (KUtils.strNotBlank(tagauth)) {
         swuTag.author = tagauth;
