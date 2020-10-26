@@ -44,6 +44,10 @@
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
+            <artifactId>springfox-spring-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
             <artifactId>springfox-oas</artifactId>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.springfox/springfox-bean-validators -->
