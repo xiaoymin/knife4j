@@ -164,12 +164,13 @@ public class OpenApiExtensionResolver {
      */
     public List<VendorExtension> buildExtensions(String groupName){
         String swaggerGroupName=StrUtil.isNotBlank(groupName)?groupName:"default";
-        OpenApiExtension openApiExtension=new OpenApiExtension(OpenApiExtension.EXTENSION_NAME);
+        //OpenApiExtension openApiExtension=new OpenApiExtension(OpenApiExtension.EXTENSION_NAME);
         //增加Markdown和setting
-        openApiExtension.addProperty(new OpenApiSettingExtension(this.setting));
-        openApiExtension.addProperty(new OpenApiMarkdownExtension(markdownFileMaps.get(swaggerGroupName)));
+        //openApiExtension.addProperty(new OpenApiSettingExtension(this.setting));
+        //openApiExtension.addProperty(new OpenApiMarkdownExtension(markdownFileMaps.get(swaggerGroupName)));
         List<VendorExtension> vendorExtensions=new ArrayList<>();
-        vendorExtensions.add(openApiExtension);
+        vendorExtensions.add(new OpenApiSettingExtension(OpenApiSettingExtension.SETTING_EXTENSION_NAME,CollectionUtils.newArrayList(this.setting)));
+        vendorExtensions.add(new OpenApiMarkdownExtension(OpenApiMarkdownExtension.MARKDOWN_EXTENSION_NAME,markdownFileMaps.get(swaggerGroupName)));
         return vendorExtensions;
     }
 

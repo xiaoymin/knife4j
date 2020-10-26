@@ -8,27 +8,18 @@
 package com.github.xiaoymin.knife4j.spring.extension;
 
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
-import springfox.documentation.service.VendorExtension;
+import springfox.documentation.service.ListVendorExtension;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/10/24 7:24
  * @since:knife4j 1.0
  */
-public class OpenApiSettingExtension implements VendorExtension<OpenApiExtendSetting> {
-    private final OpenApiExtendSetting openApiExtendSetting;
-
-    public OpenApiSettingExtension(OpenApiExtendSetting openApiExtendSetting) {
-        this.openApiExtendSetting = openApiExtendSetting;
-    }
-
-    @Override
-    public String getName() {
-        return "x-setting";
-    }
-
-    @Override
-    public OpenApiExtendSetting getValue() {
-        return this.openApiExtendSetting;
+public class OpenApiSettingExtension extends ListVendorExtension<OpenApiExtendSetting> {
+    public final static String SETTING_EXTENSION_NAME="x-setting";
+    public OpenApiSettingExtension(String name, List<OpenApiExtendSetting> values) {
+        super(name, values);
     }
 }

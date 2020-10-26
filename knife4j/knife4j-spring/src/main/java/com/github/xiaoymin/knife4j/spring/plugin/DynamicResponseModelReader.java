@@ -33,8 +33,8 @@ import springfox.documentation.spi.service.contexts.OperationContext;
 
 import java.util.*;
 
+import static springfox.documentation.schema.ResolvedTypes.isVoid;
 import static springfox.documentation.schema.ResolvedTypes.modelRefFactory;
-import static springfox.documentation.schema.Types.isVoid;
 import static springfox.documentation.spring.web.readers.operation.ResponseMessagesReader.httpStatusCode;
 import static springfox.documentation.spring.web.readers.operation.ResponseMessagesReader.message;
 
@@ -132,7 +132,7 @@ public class DynamicResponseModelReader  implements OperationBuilderPlugin {
                                 "",
                                 operationContext.getGroupName(),
                                 returnType,
-                                viewProvider.viewFor(returnType,operationContext),
+                                viewProvider.viewFor(operationContext),
                                 operationContext.getDocumentationType(),
                                 operationContext.getAlternateTypeProvider(),
                                 operationContext.getGenericsNamingStrategy(),

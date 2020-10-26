@@ -8,7 +8,7 @@
 package com.github.xiaoymin.knife4j.spring.extension;
 
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendMarkdownFile;
-import springfox.documentation.service.VendorExtension;
+import springfox.documentation.service.ListVendorExtension;
 
 import java.util.List;
 
@@ -17,21 +17,10 @@ import java.util.List;
  * 2020/10/23 21:22
  * @since:knife4j 1.0
  */
-public class OpenApiMarkdownExtension implements VendorExtension<List<OpenApiExtendMarkdownFile>> {
+public class OpenApiMarkdownExtension extends ListVendorExtension<OpenApiExtendMarkdownFile> {
+    public final static String MARKDOWN_EXTENSION_NAME="x-markdownFiles";
 
-    private final List<OpenApiExtendMarkdownFile> openApiExtendMarkdownFiles;
-
-    public OpenApiMarkdownExtension(List<OpenApiExtendMarkdownFile> openApiExtendMarkdownFiles) {
-        this.openApiExtendMarkdownFiles = openApiExtendMarkdownFiles;
-    }
-
-    @Override
-    public String getName() {
-        return "x-markdownFiles";
-    }
-
-    @Override
-    public List<OpenApiExtendMarkdownFile> getValue() {
-        return this.openApiExtendMarkdownFiles;
+    public OpenApiMarkdownExtension(String name, List<OpenApiExtendMarkdownFile> values) {
+        super(name, values);
     }
 }
