@@ -7,6 +7,7 @@
 </template>
 <script>
 import "@/assets/css/editormd.css";
+import KUtils from "@/core/utils";
 import VueMarkdown from "vue-markdown";
 export default {
   props: {
@@ -26,11 +27,17 @@ export default {
     //获取当前地址的id
     var that = this;
     var id = this.$route.params.id;
-    this.data.instance.markdownFiles.forEach(function(md) {
-      if (md.id == id) {
-        that.markdown = md;
+    var key= this.data.instance.id+'markdownFiles';
+    this.$localStore.getItem(key).then(mdfileMap=>{
+      if(KUtils.checkUndefined(mdfileMap)){
+        var content=mdfileMap[id];
+        if(KUtils.strNotBlank(content)){
+          that.markdown={
+            content:content
+          };
+        }
       }
-    });
+    })
   }
 };
 </script>

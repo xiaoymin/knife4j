@@ -99,14 +99,14 @@ export default {
   methods: {
     changeZh() {
       //中文
-      console.log(this);
+      //console.log(this);
       this.$i18n.locale = "zh-CN";
       this.$store.dispatch("globals/setLang", "zh-CN");
       this.$localStore.setItem(constant.globalI18nCache, "zh-CN");
     },
     changeEn() {
       //英文
-      console.log(this);
+      //console.log(this);
       this.$i18n.locale = "en-US";
       this.$store.dispatch("globals/setLang", "en-US");
       this.$localStore.setItem(constant.globalI18nCache, "en-US");

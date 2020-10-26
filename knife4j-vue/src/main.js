@@ -14,11 +14,12 @@ import {
 import {Menu,Input,Select,Table,Tabs,
   Radio,Layout,Button,
   Tag,Divider,Tree,Dropdown,Form,Modal,
-  Col,Row,AutoComplete,Tooltip,Spin,Badge,
+  Col,Row,AutoComplete,Tooltip,Spin,Badge,Card,
   Collapse,Checkbox,message
 } from 'ant-design-vue'
 Vue.prototype.$message=message;
 //Vue.use(message)
+Vue.use(Card)
 Vue.use(Badge);
 Vue.use(Modal)
 Vue.use(Form)

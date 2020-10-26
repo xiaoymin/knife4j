@@ -287,6 +287,10 @@ const langOptions = {
       curl:{
         success: 'Copy curl successfully',
         fail: 'Copy curl failed, your current browser version is not compatible, please copy manually.'
+      },
+      open:{
+        success: 'Copy OpenAPI successfully',
+        fail: 'Copy OpenAPI failed, your current browser version is not compatible, please copy manually.'
       }
     },
     layer: {
@@ -519,6 +523,10 @@ const langOptions = {
       copy:'copy'
     }
 
+  },
+  open:{
+    copy:' Copy ',
+    download:' Download '
   },
   tab: {
     closeCurrent: 'Close Current Tab',

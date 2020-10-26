@@ -12,8 +12,8 @@ import com.fasterxml.classmate.TypeResolver;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
+import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
-import com.google.common.base.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -22,8 +22,10 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.OperationModelsProviderPlugin;
 import springfox.documentation.spi.service.contexts.RequestMappingContext;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /***
  * 动态添加响应类
@@ -43,9 +45,19 @@ public class OperationDynamicResponseModelProvider implements OperationModelsPro
     @Override
     public void apply(RequestMappingContext context) {
         Optional<ApiOperationSupport> supportOptional=context.findAnnotation(ApiOperationSupport.class);
+        //两个动态响应取1个
+        boolean flag=false;
         if(supportOptional.isPresent()){
-            collectDynamicParameter(supportOptional.get().responses(),context);
-        }else{
+            DynamicResponseParameters dynamicResponseParameters=supportOptional.get().responses();
+            if (dynamicResponseParameters!=null&&dynamicResponseParameters.properties()!=null&&dynamicResponseParameters.properties().length>0){
+                long count= Arrays.asList(dynamicResponseParameters.properties()).stream().filter(dynamicParameter -> StrUtil.isNotBlank(dynamicParameter.name())).count();
+                if (count>0){
+                    flag=true;
+                    collectDynamicParameter(supportOptional.get().responses(),context);
+                }
+            }
+        }
+        if (!flag){
             Optional<DynamicResponseParameters> dynamicParametersOptional=context.findAnnotation(DynamicResponseParameters.class);
             if (dynamicParametersOptional.isPresent()){
                 collectDynamicParameter(dynamicParametersOptional.get(),context);
