@@ -7,12 +7,12 @@
 
 package com.github.xiaoymin.knife4j.spring.plugin;
 
-import com.google.common.collect.Lists;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import springfox.documentation.service.ListVendorExtension;
+import springfox.documentation.service.VendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.OperationContext;
 
@@ -66,7 +66,10 @@ public class OperationIgnoreParameterPlugin  extends AbstractOperationBuilderPlu
                 List<Map<String,Boolean>> maps=new ArrayList<>();
                 maps.add(map);
                 ListVendorExtension<Map<String,Boolean>> listVendorExtension=new ListVendorExtension<>(extensionName,maps);
-                context.operationBuilder().extensions(Lists.newArrayList(listVendorExtension));
+                List<VendorExtension> vendorExtensions=new ArrayList<>();
+                vendorExtensions.add(listVendorExtension);
+                //context.operationBuilder().extensions(Lists.newArrayList(listVendorExtension));
+                context.operationBuilder().extensions(vendorExtensions);
             }
         }
     }

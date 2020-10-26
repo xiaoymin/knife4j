@@ -13,8 +13,8 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 import com.github.xiaoymin.knife4j.core.conf.Consts;
+import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
-import com.github.xiaoymin.knife4j.spring.util.TypeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -22,20 +22,19 @@ import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.ModelReference;
 import springfox.documentation.schema.TypeNameExtractor;
+import springfox.documentation.schema.plugins.SchemaPluginsManager;
 import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.schema.EnumTypeDeterminer;
+import springfox.documentation.spi.schema.ViewProviderPlugin;
 import springfox.documentation.spi.schema.contexts.ModelContext;
 import springfox.documentation.spi.service.OperationBuilderPlugin;
 import springfox.documentation.spi.service.contexts.OperationContext;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static springfox.documentation.schema.ResolvedTypes.modelRefFactory;
+import static springfox.documentation.schema.Types.isVoid;
 import static springfox.documentation.spring.web.readers.operation.ResponseMessagesReader.httpStatusCode;
 import static springfox.documentation.spring.web.readers.operation.ResponseMessagesReader.message;
 
@@ -54,25 +53,36 @@ import static springfox.documentation.spring.web.readers.operation.ResponseMessa
 public class DynamicResponseModelReader  implements OperationBuilderPlugin {
 
     private final TypeNameExtractor typeNameExtractor;
-    private final EnumTypeDeterminer enumTypeDeterminer;
-
+    private final EnumTypeDeterminer typeDeterminer;
+    private final SchemaPluginsManager pluginsManager;
 
     private final Map<String,String> cacheGenModelMaps=new HashMap<>();
     @Autowired
     private TypeResolver typeResolver;
 
     @Autowired
-    public DynamicResponseModelReader(TypeNameExtractor typeNameExtractor, EnumTypeDeterminer enumTypeDeterminer) {
+    public DynamicResponseModelReader(TypeNameExtractor typeNameExtractor, EnumTypeDeterminer typeDeterminer, SchemaPluginsManager pluginsManager) {
         this.typeNameExtractor = typeNameExtractor;
-        this.enumTypeDeterminer = enumTypeDeterminer;
+        this.typeDeterminer = typeDeterminer;
+        this.pluginsManager = pluginsManager;
     }
 
     @Override
     public void apply(OperationContext context) {
         Optional<ApiOperationSupport> optional= context.findAnnotation(ApiOperationSupport.class);
+        //两个动态响应取1个
+        boolean flag=false;
         if (optional.isPresent()){
-            changeResponseModel(optional.get().responses(),context);
-        }else{
+            DynamicResponseParameters dynamicResponseParameters=optional.get().responses();
+            if (dynamicResponseParameters!=null&&dynamicResponseParameters.properties()!=null&&dynamicResponseParameters.properties().length>0){
+                long count=Arrays.asList(dynamicResponseParameters.properties()).stream().filter(dynamicParameter -> StrUtil.isNotBlank(dynamicParameter.name())).count();
+                if (count>0){
+                    flag=true;
+                    changeResponseModel(optional.get().responses(),context);
+                }
+            }
+        }
+        if(!flag){
             Optional<DynamicResponseParameters> parametersOptional=context.findAnnotation(DynamicResponseParameters.class);
             if (parametersOptional.isPresent()){
                 changeResponseModel(parametersOptional.get(),context);
@@ -110,33 +120,33 @@ public class DynamicResponseModelReader  implements OperationBuilderPlugin {
                 name=operationContext.getGroupName().replaceAll("[_-]","")+"."+name+"Response";
                 String classPath= Consts.BASE_PACKAGE_PREFIX+name;
                 Class<?> loadClass= ByteUtils.load(classPath);
-               /* if (loadClass==null){
-                    loadClass= CommonUtils.createDynamicModelClass(name,parameters);
-                }*/
                 if (loadClass!=null) {
-
                     ResolvedType returnType = operationContext.alternateFor(typeResolver.resolve(loadClass));
                     int httpStatusCode = httpStatusCode(operationContext);
                     String message = message(operationContext);
                     ModelReference modelRef = null;
-                    if (!TypeUtils.isVoid(returnType)) {
+                    if (!isVoid(returnType)) {
+                        ViewProviderPlugin viewProvider =
+                                pluginsManager.viewProvider(operationContext.getDocumentationContext().getDocumentationType());
                         ModelContext modelContext = ModelContext.returnValue(
-                                UUID.randomUUID().toString(),
+                                "",
                                 operationContext.getGroupName(),
                                 returnType,
-                                Optional.of(returnType),
+                                viewProvider.viewFor(returnType,operationContext),
                                 operationContext.getDocumentationType(),
                                 operationContext.getAlternateTypeProvider(),
                                 operationContext.getGenericsNamingStrategy(),
                                 operationContext.getIgnorableParameterTypes());
-                        modelRef = modelRefFactory(modelContext,enumTypeDeterminer, typeNameExtractor).apply(returnType);
+                        modelRef = modelRefFactory(modelContext,typeDeterminer, typeNameExtractor).apply(returnType);
                     }
                     ResponseMessage built = new ResponseMessageBuilder()
                             .code(httpStatusCode)
                             .message(message)
                             .responseModel(modelRef)
                             .build();
-                    operationContext.operationBuilder().responseMessages(newHashSet(built));
+                    Set<ResponseMessage> sets=new HashSet<>();
+                    sets.add(built);
+                    operationContext.operationBuilder().responseMessages(sets);
                 }
 
             }

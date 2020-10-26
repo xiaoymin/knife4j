@@ -8,14 +8,16 @@
 package com.github.xiaoymin.knife4j.spring.plugin;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.google.common.collect.Lists;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import springfox.documentation.service.StringVendorExtension;
+import springfox.documentation.service.VendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.OperationContext;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /***
@@ -39,7 +41,9 @@ public class OperationAuthorBuilderPlugin extends AbstractOperationBuilderPlugin
             String author=apiOperationSupportOptional.get().author();
             //判断非空
             if (author!=null&&!"".equals(author)&&!"null".equals(author)){
-                context.operationBuilder().extensions(Lists.newArrayList(new StringVendorExtension("x-author",author)));
+                List<VendorExtension> vendorExtensions=new ArrayList<>();
+                vendorExtensions.add(new StringVendorExtension("x-author",author));
+                context.operationBuilder().extensions(vendorExtensions);
             }
         }
     }

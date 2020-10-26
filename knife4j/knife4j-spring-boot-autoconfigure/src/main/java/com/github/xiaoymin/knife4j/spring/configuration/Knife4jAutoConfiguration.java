@@ -7,15 +7,15 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
+import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
+import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.filter.SecurityBasicAuthFilter;
-import com.github.xiaoymin.knife4j.spring.model.MarkdownFiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -39,7 +39,7 @@ import org.springframework.web.filter.CorsFilter;
                 "com.github.xiaoymin.knife4j.spring.web"
         }
 )
-@ConditionalOnWebApplication
+@ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
 public class Knife4jAutoConfiguration {
 
     @Autowired
@@ -69,22 +69,16 @@ public class Knife4jAutoConfiguration {
         return corsFilter;
     }
 
-    /**
-     * 初始化自定义Markdown特性
-     * @param knife4jProperties 配置文件
-     * @return markdownFiles
-     */
-    @Bean(initMethod = "init")
-    @ConditionalOnMissingBean(MarkdownFiles.class)
-    @ConditionalOnProperty(name = "knife4j.markdowns")
-    public MarkdownFiles markdownFiles(Knife4jProperties knife4jProperties){
-        MarkdownFiles markdownFiles=null;
-        if (knife4jProperties==null){
-            markdownFiles=new MarkdownFiles(environment!=null?environment.getProperty("knife4j.markdowns"):"");
-        }else{
-            markdownFiles=new MarkdownFiles(knife4jProperties.getMarkdowns()==null?"":knife4jProperties.getMarkdowns());
+
+    @Bean(initMethod = "start")
+    @ConditionalOnMissingBean(OpenApiExtensionResolver.class)
+    @ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
+    public OpenApiExtensionResolver markdownResolver(Knife4jProperties knife4jProperties){
+        OpenApiExtendSetting setting=knife4jProperties.getSetting();
+        if (setting==null){
+            setting=new OpenApiExtendSetting();
         }
-        return markdownFiles;
+        return new OpenApiExtensionResolver(setting, knife4jProperties.getDocuments());
     }
 
     @Bean
