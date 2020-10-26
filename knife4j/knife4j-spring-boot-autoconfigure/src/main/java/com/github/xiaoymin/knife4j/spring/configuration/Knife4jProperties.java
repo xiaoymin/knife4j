@@ -7,8 +7,12 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
+import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
+import com.github.xiaoymin.knife4j.core.model.MarkdownProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /***
  * 配置文件
@@ -19,18 +23,34 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "knife4j")
 public class Knife4jProperties {
+    /**
+     * 是否开启Knife4j增强模式
+     */
+    private boolean enable=false;
+    /**
+     * 是否开启默认跨域
+     */
+    private boolean cors=false;
 
+    /**
+     * 是否开启BasicHttp验证
+     */
     private Knife4jHttpBasic basic;
 
     /**
      * 是否生产环境
      */
-    private boolean production;
+    private boolean production=false;
 
     /**
-     * markdown路径
+     * 个性化配置
      */
-    private String markdowns;
+    private OpenApiExtendSetting setting;
+
+    /**
+     * 分组文档集合
+     */
+    private List<MarkdownProperty> documents;
 
     public Knife4jHttpBasic getBasic() {
         return basic;
@@ -48,11 +68,35 @@ public class Knife4jProperties {
         this.production = production;
     }
 
-    public String getMarkdowns() {
-        return markdowns;
+    public List<MarkdownProperty> getDocuments() {
+        return documents;
     }
 
-    public void setMarkdowns(String markdowns) {
-        this.markdowns = markdowns;
+    public void setDocuments(List<MarkdownProperty> documents) {
+        this.documents = documents;
+    }
+
+    public OpenApiExtendSetting getSetting() {
+        return setting;
+    }
+
+    public void setSetting(OpenApiExtendSetting setting) {
+        this.setting = setting;
+    }
+
+    public boolean isCors() {
+        return cors;
+    }
+
+    public void setCors(boolean cors) {
+        this.cors = cors;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

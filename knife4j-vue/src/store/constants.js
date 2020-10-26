@@ -48,6 +48,8 @@ const constants = {
   globalSettingsKey: "Knife4jGlobalSettings",
   globalTreeTableModelParams: "Knife4jGlobalTreeTableModelParams",
   defaultSettings: {
+    enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
+    enableDocumentManage:true,//是否显示界面中"文档管理"功能
     showApiUrl: false, //接口api地址不显示
     showTagStatus: false, //分组tag显示description属性,针对@Api注解没有tags属性值的情况
     enableSwaggerBootstrapUi: false, //是否开启swaggerBootstrapUi增强
@@ -59,7 +61,7 @@ const constants = {
     enableCacheOpenApiTable: false, //是否开启缓存已打开的api文档
     enableHost:false,//是否启用Host
     enableHostText:"",//启用Host后文本
-    language: "zh" //默认语言版本
+    language: "zh-CN" //默认语言版本
   },
   //增强配置
   defaultPlusSettings: {

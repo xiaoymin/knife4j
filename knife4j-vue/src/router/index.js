@@ -42,10 +42,15 @@ const routes = [{
       path: '/documentManager/Settings',
       component: () => import('@/views/settings/Settings')
     }, {
-      path: '/otherMarkdowns/:id',
+      path: '/:groupName-:mdid-omd/:id',
       component: () => import('@/views/othermarkdown/index')
     }
   ]
+},
+{
+  path: '/oauth2',
+  name:'oauth2',
+  component: () => import('@/views/settings/OAuth2')
 }]
 
 const router = new VueRouter({

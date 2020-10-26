@@ -14,7 +14,7 @@
           </a>
         </div>
         <div class="knife4j-menu">
-          <a-menu key="Menu" theme="dark" mode="inline" :inlineCollapsed="collapsed" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 16px 0; width: 100%">
+          <a-menu key="Menu" theme="dark" mode="inline" :inlineCollapsed="collapsed" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 2px 0; width: 100%">
             <ThreeMenu :menuData="localMenuData" :collapsed="collapsed" />
           </a-menu>
         </div>
@@ -248,9 +248,12 @@ export default {
       var that = this;
       var i18nParams=this.getI18nFromUrl();
       var tmpI18n=i18nParams.i18n;
+      //console.log(tmpI18n)
       //读取settings
       this.$localStore.getItem(constant.globalSettingsKey).then(settingCache=>{
         var settings=this.getCacheSettings(settingCache);
+        //console.log("layout---")
+        //console.log(settings)
         //重新赋值是否开启增强
         if(!settings.enableSwaggerBootstrapUi){
            settings.enableSwaggerBootstrapUi=this.getPlusStatus();
@@ -271,6 +274,7 @@ export default {
               routeParams: that.$route.params, 
               plus: this.getPlusStatus(),
               i18n:tmpI18n,
+              i18nVue:this.$i18n,
               configSupport:true,
               i18nInstance:this.getCurrentI18nInstance() 
               })
@@ -291,6 +295,7 @@ export default {
                 routeParams: that.$route.params, 
                 plus: this.getPlusStatus(),
                 i18n:tmpI18n,
+                i18nVue:this.$i18n,
                 configSupport:true,
                 i18nInstance:this.getCurrentI18nInstance() 
                 })
@@ -592,10 +597,12 @@ export default {
     watchPathMenuSelect() {
       var url = this.$route.path;
       const tmpcol = this.collapsed;
-      //console("watch-------------------------");
+      //console.log("watch-------------------------");
       const pathArr = urlToList(url);
-      //console(pathArr);
+      //console.log(pathArr);
+      //console.log(this.MenuData)
       var m = findComponentsByPath(url, this.MenuData);
+      //console.log(m);
       //如果菜单面板已折叠,则不用打开openKeys
       if (!tmpcol) {
         if (pathArr.length == 2) {
@@ -621,10 +628,12 @@ export default {
       if (m != null) {
         this.selectedKeys = [m.key];
       }
+      //console.log(this.openKeys)
     },
     selectDefaultMenu() {
       var url = this.$route.path;
       const pathArr = urlToList(url);
+      //console.log("pathArr:"+pathArr)
       var m = findComponentsByPath(url, this.MenuData);
       if (pathArr.length == 2) {
         //二级子菜单

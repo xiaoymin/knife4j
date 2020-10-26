@@ -13,7 +13,6 @@ import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameters;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
-import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,7 @@ import springfox.documentation.spi.service.contexts.RequestMappingContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /***
  *

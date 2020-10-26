@@ -275,8 +275,9 @@ public class Knife4jController {
                 for (RequestHandler requestHandler:requestHandlers){
                     if (requestHandler instanceof WebMvcRequestHandler){
                         WebMvcRequestHandler webMvcRequestHandler=(WebMvcRequestHandler)requestHandler;
-                        Set<String> patterns =webMvcRequestHandler.getRequestMapping().getPatternsCondition().getPatterns();
-                        Set<RequestMethod> restMethods=webMvcRequestHandler.getRequestMapping().getMethodsCondition().getMethods();
+                        RequestMappingInfo requestMappingInfo= (RequestMappingInfo) webMvcRequestHandler.getRequestMapping().getOriginalInfo();
+                        Set<RequestMethod> restMethods=requestMappingInfo.getMethodsCondition().getMethods();
+                        Set<String> patterns =requestMappingInfo.getPatternsCondition().getPatterns();
                         HandlerMethod handlerMethod=webMvcRequestHandler.getHandlerMethod();
                         Class<?> controllerClazz=ClassUtils.getUserClass(handlerMethod.getBeanType());
                         Method method = ClassUtils.getMostSpecificMethod(handlerMethod.getMethod(),controllerClazz);

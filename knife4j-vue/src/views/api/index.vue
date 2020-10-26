@@ -12,6 +12,12 @@
             <my-icon type="icon-debug" /><span v-html="$t('debug.title')">调试</span></span>
           <Debug :api="api" :swaggerInstance="swaggerInstance" />
         </a-tab-pane>
+        <a-tab-pane key="openapi">
+          <span slot="tab">
+            <a-icon type="file-text" /><span>Open</span>
+          </span>
+          <OpenApi :api="api" :swaggerInstance="swaggerInstance" />
+        </a-tab-pane>
       </a-tabs>
     </a-row>
     <a-row class="knife4j-api-readonly" v-else>
@@ -29,7 +35,8 @@ export default {
   name: "APIDoc",
   components: { 
     "Document":()=>import('./Document'),
-    "Debug":()=>import('./Debug')
+    "Debug":()=>import('./Debug'),
+    "OpenApi":()=>import('./OpenApi')
   },
   props: {
     data: {

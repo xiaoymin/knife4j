@@ -2,6 +2,7 @@
 import md5 from 'js-md5'
 import JSON5 from './json5'
 import isObject from 'lodash/isObject'
+import isNumber from 'lodash/isNumber'
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
 const binaryContentType = {
@@ -153,6 +154,33 @@ function isUrl(path) {
 }
 
 const utils = {
+  getOAuth2Html(production){
+    if(production){
+      return "webjars/oauth/oauth2.html";
+    }
+    return "oauth/oauth2.html";
+  },
+  groupName(url,defaultName){
+    var gname=defaultName;
+    var reg=new RegExp(".*?group=(.*?)(&.*?)?$");
+    if(reg.test(url)){
+      var tmpGroupName=RegExp.$1;
+      if(this.strNotBlank(tmpGroupName)){
+        if(tmpGroupName!=defaultName){
+          gname=tmpGroupName;
+        }
+      }
+    }
+    return gname;
+  },
+  oasmodel(oas2){
+    //获取oas的definitions解析正则
+    if(oas2){
+      return "#/definitions/(.*)$";
+    }else{
+      return "#/components/schemas/(.*)$";
+    }
+  },
   filterIgnoreParameters(inType, name, ignoreParameters) {
     //是否过滤参数
     if (ignoreParameters == null) {
@@ -363,6 +391,17 @@ const utils = {
     }
     return ret;
   },
+  json5stringifyFormat:function(rtext,format,num){
+    var ret = null;
+    try {
+      ret = JSON5.stringify(rtext, format, num);
+    } catch (err) {
+      //console(err)
+      ret = JSON.stringify(rtext, format, num);
+    }
+    return ret;
+
+  },
   json5parse: function (rtext) {
     var ret = null;
     try {
@@ -494,6 +533,9 @@ const utils = {
     }
     return flag;
   },
+  arrEmpty(arr){
+    return !this.arrNotEmpty(arr);
+  },
   strBlank(str){
     return !this.strNotBlank(str);
   },
@@ -514,6 +556,18 @@ const utils = {
       t = obj[key];
     }
     return t;
+  },
+  getExample(key, obj, defaultValue){
+    var v=this.propValue(key, obj, defaultValue);
+    //判断是否是双精度64位，如果是，直接返回
+    if(isNumber(v)){
+      return v;
+    }else{
+      if(typeof(v)=='object'){
+        v=this.json5stringify(v);
+      }
+    }
+    return v;
   },
   checkIsBasicType: function (type) {
     var basicTypes = ["string", "integer", "number", "object", "boolean", "int32", "int64", "float", "double"];
@@ -556,12 +610,21 @@ const utils = {
     }
     return val;
   },
-  getClassName: function (item) {
-    var regex = new RegExp("#/definitions/(.*)$", "ig");
-    if (regex.test(item)) {
-      var ptype = RegExp.$1;
-      return ptype;
+  getClassName: function (item,oas2) {
+    if(oas2){
+      var regex = new RegExp("#/definitions/(.*)$", "ig");
+      if (regex.test(item)) {
+        var ptype = RegExp.$1;
+        return ptype;
+      }
+    }else{
+      var regex = new RegExp("#/components/schemas/(.*)$", "ig");
+      if (regex.test(item)) {
+        var ptype = RegExp.$1;
+        return ptype;
+      }
     }
+    
     return null;
   },
   trim(text) {
@@ -605,6 +668,16 @@ const utils = {
         return newDes;
       }
       return str;
+    }
+    return "";
+  },
+  camelCase:function(str){
+    if(str!=null&&str!=undefined&&str!=""){
+      if(str.length==1){
+        return str.toLocaleLowerCase();
+      }else{
+        return str.substr(0,1).toLocaleLowerCase()+str.substr(1);
+      }
     }
     return "";
   },

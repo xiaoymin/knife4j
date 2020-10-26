@@ -16,6 +16,9 @@
         <a-button type="default" @click="triggerDownloadWord">
           <a-icon type="file-word" /><span v-html="$t('offline.download.word')">下载Word</span></a-button
         >
+        <a-button type="default" @click="triggerDownloadOpenAPI">
+          <a-icon type="file-text" /><span>OpenAPI</span></a-button
+        >
         <a-button type="default" @click="triggerDownloadPDF">
           <a-icon type="file-pdf" /><span v-html="$t('offline.download.pdf')">下载PDF</span></a-button
         >
@@ -341,6 +344,28 @@ export default {
         value: source.value
       };
       return target;
+    },
+    triggerDownloadOpenAPI(){
+      //console.log(this.swaggerCurrentInstance);
+      var name=this.swaggerCurrentInstance.name;
+      var openApi=this.swaggerCurrentInstance.swaggerData;
+      var content=KUtils.json5stringify(openApi);
+      var a = document.createElement("a");
+      //var content = this.getHtmlContent(this.data.instance.title);
+      var option = {};
+      var fileName = name + "_OpenAPI.json";
+      var url = window.URL.createObjectURL(
+        new Blob([content], {
+          type:
+            (option.type || "text/plain") +
+            ";charset=" +
+            (option.encoding || "utf-8")
+        })
+      );
+      a.href = url;
+      a.download = fileName || "file";
+      a.click();
+      window.URL.revokeObjectURL(url);
     },
     triggerDownloadPDF() {
       //var message='该功能尚未实现...'
