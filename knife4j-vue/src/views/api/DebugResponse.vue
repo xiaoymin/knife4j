@@ -56,6 +56,11 @@
             }}</pre>
           </a-row>
         </a-tab-pane>
+        <a-tab-pane tab="Base64Img" key="debugBase64Img">
+          <a-row class="knife4j-debug-response-mt">
+            <img :src="responseContent.base64" />
+          </a-row>
+        </a-tab-pane>
       </a-tabs>
     </a-row>
     <a-row v-else> </a-row>

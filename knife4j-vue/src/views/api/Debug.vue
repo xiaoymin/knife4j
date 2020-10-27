@@ -3100,6 +3100,7 @@ export default {
       //判断响应的类型
       //var _text = resp.responseText;
       var _text = "";
+      var _base64 = "";
       var mode = this.getContentTypeByHeaders(headers);
       //console.log("动态mode-- ---" + mode);
       //console(res);
@@ -3128,6 +3129,10 @@ export default {
             }
           }
         }
+        if(_text.indexOf("data:image/jpg;base64") > -1) {
+            let newStr = _text.substring(_text.indexOf("data:image/jpg;base64"));
+            _base64 = newStr.substring(0, newStr.indexOf("\","))
+        }
       } else if (mode == "xml") {
         var tmpXmlText = resp.responseText;
         if (KUtils.strNotBlank(tmpXmlText)) {
@@ -3145,7 +3150,8 @@ export default {
         blobFlag: false,
         imageFlag: false,
         blobFileName: "",
-        blobUrl: ""
+        blobUrl: "",
+        base64: _base64
       };
     },
     debugEditorChange(value) {
