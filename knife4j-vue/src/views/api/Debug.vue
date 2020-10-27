@@ -844,7 +844,6 @@ export default {
       var bodyParameters = this.globalParameters.filter(
         param => param.in != "header"
       );
-      //console.log(bodyParameters);
       var bodyData = [];
       //接口本身的参数对象
       var tmpApiParameters = this.api.parameters;
@@ -896,6 +895,7 @@ export default {
           }
         });
       }
+     
       if(KUtils.arrNotEmpty(this.authorizeQueryParameters)){
         this.authorizeQueryParameters.forEach(aqp=>{
           showGlobalParameters.push(aqp);
@@ -1250,12 +1250,16 @@ export default {
             //this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           });
+          this.initSelectionHeaders();
+          //计算heaer数量
+          this.headerResetCalc();
         }
       }
     },
     addApiParameterToForm(apiParameters) {
       //form-data类型
       if (KUtils.arrNotEmpty(apiParameters)) {
+        var headerflag=false;
         apiParameters.forEach(param => {
           if (param.in == "header") {
             var newHeader = {
@@ -1277,6 +1281,7 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
+            headerflag=true;
             //this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
@@ -1322,6 +1327,11 @@ export default {
             this.formData.push(newFormHeader);
           }
         });
+        if(headerflag){
+          this.initSelectionHeaders();
+          //计算heaer数量
+          this.headerResetCalc();
+        }
       }
     },
     addGlobalParameterToUrlForm(globalParameters) {
@@ -1347,6 +1357,7 @@ export default {
     },
     addApiParameterToRawForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
+        var headerflag=false;
         apiParameters.forEach(param => {
           if (param.in == "header") {
             var newHeader = {
@@ -1368,6 +1379,7 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
+            headerflag=true;
             //this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
@@ -1397,10 +1409,16 @@ export default {
             this.rawFormData.push(newFormHeader);
           }
         });
+        if(headerflag){
+          this.initSelectionHeaders();
+          //计算heaer数量
+          this.headerResetCalc();
+        }
       }
     },
     addApiParameterToUrlForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
+        var headerflag=false;
         apiParameters.forEach(param => {
           if (param.in == "header") {
             var newHeader = {
@@ -1422,6 +1440,7 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
+            headerflag=true;
             //this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
@@ -1460,6 +1479,11 @@ export default {
             this.urlFormData.push(newFormHeader);
           }
         });
+        if(headerflag){
+          this.initSelectionHeaders();
+          //计算heaer数量
+          this.headerResetCalc();
+        }
       }
     },
     addNewLineUrlFormValue() {
