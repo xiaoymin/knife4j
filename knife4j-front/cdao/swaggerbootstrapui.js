@@ -3061,6 +3061,14 @@
                 aceValue=JSON.stringify(xhr["responseJSON"],null,2);
                 //that.log(JSON.stringify(xhr["responseJSON"],null,2))
                 //jsondiv.html(JSON.stringify(xhr["responseJSON"],null,2));
+                // 如果返回的json中包含 data:image/jpg;base64 ， 说明返回的是图片，这个时候需要显示图片
+                if(aceValue.indexOf("data:image/jpg;base64") > -1) {
+                    $("#perviewTab"+apiKeyId).css('display', 'block');
+                    $("#perview"+apiKeyId).css('display', 'block');
+                    let newStr = aceValue.substring(aceValue.indexOf("data:image/jpg;base64"));
+                    $("#perview"+apiKeyId).html('<img src="'+ newStr.substring(0, newStr.indexOf("\",")) +'">');
+                    $("#perview"+apiKeyId).css('height', '300px');
+                }
             }else{
                 aceValue=JSON.stringify(data,null,2);
                 //针对表单提交,error的情况,会产生data
