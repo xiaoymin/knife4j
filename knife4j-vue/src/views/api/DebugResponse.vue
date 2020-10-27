@@ -56,7 +56,7 @@
             }}</pre>
           </a-row>
         </a-tab-pane>
-        <a-tab-pane tab="Base64Img" key="debugBase64Img">
+        <a-tab-pane v-if="responseContent!=null&&responseContent.base64!=null&&responseContent.base64!=''" tab="Base64Img" key="debugBase64Img">
           <a-row class="knife4j-debug-response-mt">
             <img :src="responseContent.base64" />
           </a-row>
@@ -111,6 +111,7 @@ export default {
     return {
       pagination: false,
       i18n:null,
+      base64Image:false,
       debugResponse: true,
       responseHeaderColumn: [
        
@@ -146,6 +147,7 @@ export default {
   },
   created() {
     //this.resetResponseContent();
+    //this.base64Init();
     this.initI18n();
     this.copyRawText();
     this.copyCurlText();
@@ -154,6 +156,13 @@ export default {
   methods: {
     getCurrentI18nInstance(){
       return this.$i18n.messages[this.language];
+    },
+    base64Init(){
+      var bimg=KUtils.getValue(this.responseContent,"base64","",true);
+      console.log(this.responseContent)
+      if(KUtils.strNotBlank(bimg)){
+        this.base64Image=true;
+      }
     },
     initI18n(){
       //根据i18n初始化部分参数

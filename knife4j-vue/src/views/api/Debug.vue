@@ -737,7 +737,6 @@ export default {
       });
     },
     updateHeaderFromCacheApi(cacheApi) {
-      //console("从缓存中更新header参数");
       //从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
@@ -784,7 +783,6 @@ export default {
       }
     },
     updateRawFormCacheApi(cacheApi) {
-      //console("从缓存中更新rawForm参数");
       //从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
@@ -911,7 +909,6 @@ export default {
         var bodySize = showApiParameters.filter(param => param.in == "body")
           .length;
         if (bodySize == 1) {
-          //console("显示raw类型");
           //console(showApiParameters);
           //判断raw类型是否还存在query类型的参数,如果存在,加入rawFormdata集合中
           var rawQueryParams = showApiParameters.filter(
@@ -986,6 +983,8 @@ export default {
        
       }
       this.updateScriptFromCache(cacheApi);
+      this.updateHeaderFromCacheApi(cacheApi);
+      this.hideDynamicParameterTable();
       //console.log(this.urlFormData);
     },
     updateScriptFromCache(cacheApi){
@@ -1022,6 +1021,9 @@ export default {
           this.rawFormTableFlag = true;
         }
       }
+      this.initSelectionHeaders();
+      //计算heaer数量
+      this.headerResetCalc();
     },
     addNewLineHeader() {
       if (this.enableDynamicParameter) {
@@ -1250,16 +1252,12 @@ export default {
             //this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           });
-          this.initSelectionHeaders();
-          //计算heaer数量
-          this.headerResetCalc();
         }
       }
     },
     addApiParameterToForm(apiParameters) {
       //form-data类型
       if (KUtils.arrNotEmpty(apiParameters)) {
-        var headerflag=false;
         apiParameters.forEach(param => {
           if (param.in == "header") {
             var newHeader = {
@@ -1281,7 +1279,6 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            headerflag=true;
             //this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
@@ -1327,11 +1324,6 @@ export default {
             this.formData.push(newFormHeader);
           }
         });
-        if(headerflag){
-          this.initSelectionHeaders();
-          //计算heaer数量
-          this.headerResetCalc();
-        }
       }
     },
     addGlobalParameterToUrlForm(globalParameters) {
@@ -1357,7 +1349,6 @@ export default {
     },
     addApiParameterToRawForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
-        var headerflag=false;
         apiParameters.forEach(param => {
           if (param.in == "header") {
             var newHeader = {
@@ -1379,7 +1370,6 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            headerflag=true;
             //this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
@@ -1409,16 +1399,10 @@ export default {
             this.rawFormData.push(newFormHeader);
           }
         });
-        if(headerflag){
-          this.initSelectionHeaders();
-          //计算heaer数量
-          this.headerResetCalc();
-        }
       }
     },
     addApiParameterToUrlForm(apiParameters) {
       if (KUtils.arrNotEmpty(apiParameters)) {
-        var headerflag=false;
         apiParameters.forEach(param => {
           if (param.in == "header") {
             var newHeader = {
@@ -1440,7 +1424,6 @@ export default {
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            headerflag=true;
             //this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
@@ -1479,11 +1462,6 @@ export default {
             this.urlFormData.push(newFormHeader);
           }
         });
-        if(headerflag){
-          this.initSelectionHeaders();
-          //计算heaer数量
-          this.headerResetCalc();
-        }
       }
     },
     addNewLineUrlFormValue() {
@@ -3112,7 +3090,8 @@ export default {
               blobFlag: true,
               imageFlag: imageFlag,
               blobFileName: fileName,
-              blobUrl: downloadurl
+              blobUrl: downloadurl,
+              base64:""
             };
           } else {
             this.setResponseJsonBody(resp, headers);
@@ -3153,10 +3132,17 @@ export default {
             }
           }
         }
-        if(_text.indexOf("data:image/jpg;base64") > -1) {
+       if (KUtils.strNotBlank(resp.responseText)) {
+        var base64ImageRegex=new RegExp(".*?\"(data:image.*?base64.*?)\".*","ig");
+        if(base64ImageRegex.test(resp.responseText)){
+          var s=RegExp.$1;
+          _base64=s;
+        }
+       }
+        /* if(_text.indexOf("data:image/jpg;base64") > -1) {
             let newStr = _text.substring(_text.indexOf("data:image/jpg;base64"));
             _base64 = newStr.substring(0, newStr.indexOf("\","))
-        }
+        } */
       } else if (mode == "xml") {
         var tmpXmlText = resp.responseText;
         if (KUtils.strNotBlank(tmpXmlText)) {
