@@ -267,6 +267,7 @@ export default {
             this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
             this.$i18n.locale = tmpI18n;
             this.initSwagger({
+              baseSpringFox:true,
               store:this.$store,
               localStore:this.$localStore,
               settings:settings,
@@ -288,6 +289,7 @@ export default {
               }
               this.$i18n.locale = tmpI18n;
               this.initSwagger({
+                baseSpringFox:true,
                 store:this.$store,
                 localStore:this.$localStore,
                 settings:settings,

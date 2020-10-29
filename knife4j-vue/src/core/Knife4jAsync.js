@@ -25,6 +25,9 @@
  * 
  * v2.0.5
  * 剥离解析OpenAPI规范的逻辑,只解析基础部分,提供页面渲染速度,dev分支
+ * 
+ * v2.0.6 
+ * 同时支持v2以及v3,v2版本支持OAuth2.0认证
  *
  * 基于Vue + Ant Design Vue重构Ui组件
  *
@@ -70,6 +73,9 @@ function SwaggerBootstrapUi(options) {
   this.url = options.url || 'swagger-resources'
   this.i18n=options.i18n||'zh-CN'
   this.i18nVue=options.i18nVue||null;
+  //服务端版本是否依赖springfox2.10.5版本
+  //该版本会自动追加basePath,因为Knife4j在以前的版本中帮忙追加了basePath所以导致重复
+  this.baseSpringFox=options.baseSpringFox||false;
   //this.i18nInstance = null
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
   //用于控制是否请求configUrl的配置
@@ -4157,7 +4163,11 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   var basePathFlag = false;
   //basePath="/addd/";
   if (basePath != "" && basePath != "/") {
-    newfullPath += basePath;
+    if(!that.baseSpringFox){
+      //springfox2.10.5版本不在追加basePath
+      //https://gitee.com/xiaoym/knife4j/issues/I230K8
+      newfullPath += basePath;
+    }
     //如果非空,非根目录
     basePathFlag = true;
   }
