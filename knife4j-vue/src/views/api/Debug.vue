@@ -2337,6 +2337,26 @@ export default {
           data:requestData,params:requestParams
         }
     },
+    debugCheckUrl(url){
+      //如果服务端开启了enableUrlTemplating，正常参数会出现在url中
+      //比如：/api/nxew205/reqEnumArr{?errorCodes,name}
+      //https://gitee.com/xiaoym/knife4j/issues/I22J5Q
+      //针对这种形式，直接去除地址栏后面的{?errorCodes,name}模板参数，因为axios在发送的时候会直接带上参数地址,这样也避免参数丢失和访问接口出现404
+      var checkUrl=url;
+      try{
+        var reg=new RegExp('.*?(\{.*?\})$',"ig");
+        if(reg.test(url)){
+          var rr=RegExp.$1;
+          checkUrl=url.replace(rr,"");
+        }
+      }catch(e){
+        //ignore
+        if(window.console){
+          console.error(e);
+        }
+      }
+      return checkUrl;
+    },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
       //console("发送url-form接口");
@@ -2357,7 +2377,8 @@ export default {
           //是path类型的接口,需要对地址、参数进行replace处理
           this.debugPathParams.forEach(pathKey => {
             var replaceRege = "{" + pathKey + "}";
-            var value = formParams[pathKey];
+            //var value = formParams[pathKey];
+            var value=KUtils.getValue(formParams,pathKey,"",true);
             url = url.replace(replaceRege, value);
           });
           for (var key in formParams) {
@@ -2385,7 +2406,7 @@ export default {
         //console.log(applyReuqest)
         var requestConfig = {
           baseURL:baseUrl,
-          url: url,
+          url: this.debugCheckUrl(url),
           method: methodType,
           headers: headers,
           params: applyReuqest.params,
@@ -2481,7 +2502,7 @@ export default {
         }
         var requestConfig = {
           baseURL:baseUrl,
-          url: url,
+          url: this.debugCheckUrl(url),
           method: methodType,
           headers: headers,
           timeout: 0,
@@ -2552,7 +2573,8 @@ export default {
           //是path类型的接口,需要对地址、参数进行replace处理
           this.debugPathParams.forEach(pathKey => {
             var replaceRege = "{" + pathKey + "}";
-            var value = formParams[pathKey];
+            //var value = formParams[pathKey];
+            var value=KUtils.getValue(formParams,pathKey,"",true);
             url = url.replace(replaceRege, value);
           });
           for (var key in formParams) {
@@ -2577,7 +2599,7 @@ export default {
         }
         var requestConfig={
           baseURL:baseUrl,
-          url: url,
+          url: this.debugCheckUrl(url),
           method: methodType,
           headers: headers,
           params: formParams,
@@ -2767,7 +2789,8 @@ export default {
     },
     setResponseCurl(resp) {
       var that = this;
-      var url = this.debugUrl;
+      var url = this.debugCheckUrl(this.debugUrl);
+      //console.log("setResponseCurl:"+url)
       //构建请求响应CURL
       var curlified = new Array();
       var protocol = "http";
