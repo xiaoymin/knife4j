@@ -27,6 +27,11 @@ public class OpenApiExtendSetting {
     private String swaggerModelName="Swagger Models";
 
     /**
+     * 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
+     */
+    private boolean enableReloadCacheParameter=false;
+
+    /**
      * 调试Tab是否显示AfterScript功能,默认开启
      */
     private boolean enableAfterScript=true;
@@ -152,5 +157,13 @@ public class OpenApiExtendSetting {
 
     public void setEnableAfterScript(boolean enableAfterScript) {
         this.enableAfterScript = enableAfterScript;
+    }
+
+    public boolean isEnableReloadCacheParameter() {
+        return enableReloadCacheParameter;
+    }
+
+    public void setEnableReloadCacheParameter(boolean enableReloadCacheParameter) {
+        this.enableReloadCacheParameter = enableReloadCacheParameter;
     }
 }

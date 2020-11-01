@@ -75,6 +75,12 @@
       "defaultValue": "Swagger Models"
     },
     {
+      "name": "knife4j.setting.enableReloadCacheParameter",
+      "type": "java.lang.Boolean",
+      "description": "Display the Debug Reload Parameter Button function",
+      "defaultValue": false
+    },
+    {
       "name": "knife4j.setting.enableAfterScript",
       "type": "java.lang.Boolean",
       "description": "Display the Debug AfterScript function",
@@ -185,6 +191,19 @@
         {
           "value": false,
           "description": "Hidden Swagger Model Functions"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableReloadCacheParameter",
+      "values":[
+        {
+          "value": true,
+          "description": "Display the Debug Reload Parameter Button function"
+        },
+        {
+          "value": false,
+          "description": "Hidden the Debug Reload Parameter Button function"
         }
       ]
     },
