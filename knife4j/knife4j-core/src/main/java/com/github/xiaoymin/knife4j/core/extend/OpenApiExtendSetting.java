@@ -26,6 +26,10 @@ public class OpenApiExtendSetting {
      * 是否显示界面中"文档管理"功能
      */
     private boolean enableDocumentManage=true;
+    /**
+     * 是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
+     */
+    private boolean enableVersion=false;
 
     /**
      * 是否开启请求参数缓存
@@ -115,5 +119,13 @@ public class OpenApiExtendSetting {
 
     public void setEnableDocumentManage(boolean enableDocumentManage) {
         this.enableDocumentManage = enableDocumentManage;
+    }
+
+    public boolean isEnableVersion() {
+        return enableVersion;
+    }
+
+    public void setEnableVersion(boolean enableVersion) {
+        this.enableVersion = enableVersion;
     }
 }
