@@ -69,6 +69,18 @@
       "defaultValue": true
     },
     {
+      "name": "knife4j.setting.swaggerModelName",
+      "type": "java.lang.String",
+      "description": "Display Swagger Model Name",
+      "defaultValue": "Swagger Models"
+    },
+    {
+      "name": "knife4j.setting.enableAfterScript",
+      "type": "java.lang.Boolean",
+      "description": "Display the Debug AfterScript function",
+      "defaultValue": true
+    },
+    {
       "name": "knife4j.setting.enableDocumentManage",
       "type": "java.lang.Boolean",
       "description": "Display the (document management) function",
@@ -173,6 +185,19 @@
         {
           "value": false,
           "description": "Hidden Swagger Model Functions"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableAfterScript",
+      "values":[
+        {
+          "value": true,
+          "description": "Display AfterScript Functions"
+        },
+        {
+          "value": false,
+          "description": "Hidden AfterScript Functions"
         }
       ]
     },

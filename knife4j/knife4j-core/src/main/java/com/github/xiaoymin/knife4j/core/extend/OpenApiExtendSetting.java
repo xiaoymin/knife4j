@@ -21,6 +21,15 @@ public class OpenApiExtendSetting {
      * 是否显示界面中SwaggerModel功能
      */
     private boolean enableSwaggerModels=true;
+    /**
+     * 重命名SwaggerModel名称,默认
+     */
+    private String swaggerModelName="Swagger Models";
+
+    /**
+     * 调试Tab是否显示AfterScript功能,默认开启
+     */
+    private boolean enableAfterScript=true;
 
     /**
      * 是否显示界面中"文档管理"功能
@@ -127,5 +136,21 @@ public class OpenApiExtendSetting {
 
     public void setEnableVersion(boolean enableVersion) {
         this.enableVersion = enableVersion;
+    }
+
+    public String getSwaggerModelName() {
+        return swaggerModelName;
+    }
+
+    public void setSwaggerModelName(String swaggerModelName) {
+        this.swaggerModelName = swaggerModelName;
+    }
+
+    public boolean isEnableAfterScript() {
+        return enableAfterScript;
+    }
+
+    public void setEnableAfterScript(boolean enableAfterScript) {
+        this.enableAfterScript = enableAfterScript;
     }
 }
