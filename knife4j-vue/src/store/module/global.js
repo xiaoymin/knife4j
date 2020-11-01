@@ -5,6 +5,7 @@ const globals = {
     language:'zh-CN',
     swagger:null,
     swaggerCurrentInstance:null,
+    enableVersion:false,
     currentMenuData:[],
     serviceOptions:[],
     defaultServiceOption: ''
@@ -30,9 +31,15 @@ const globals = {
     },
     setDefaultService:(state,defaultOption)=>{
       state.defaultServiceOption=defaultOption;
+    },
+    setGitVersion:(state,gitVersion)=>{
+      state.enableVersion=gitVersion;
     }
   },
   actions: {
+    setGitVersion({commit},gitVersion){
+      commit('setGitVersion',gitVersion);
+    },
     setMenuData({
       commit
     }, menudatas) {

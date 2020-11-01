@@ -50,6 +50,7 @@ const constants = {
   defaultSettings: {
     enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
     enableDocumentManage:true,//是否显示界面中"文档管理"功能
+    enableVersion:false,//是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
     showApiUrl: false, //接口api地址不显示
     showTagStatus: false, //分组tag显示description属性,针对@Api注解没有tags属性值的情况
     enableSwaggerBootstrapUi: false, //是否开启swaggerBootstrapUi增强
@@ -65,6 +66,9 @@ const constants = {
   },
   //增强配置
   defaultPlusSettings: {
+    enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
+    enableDocumentManage:true,//是否显示界面中"文档管理"功能
+    enableVersion:false,//是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
     showApiUrl: false, //接口api地址不显示
     showTagStatus: false, //分组tag显示description属性,针对@Api注解没有tags属性值的情况
     enableSwaggerBootstrapUi: true, //是否开启swaggerBootstrapUi增强
