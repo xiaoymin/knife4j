@@ -125,6 +125,7 @@ function SwaggerBootstrapUi(options) {
   //个性化配置
   this.settings = options.settings|| {
     enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
+    swaggerModelName:'Swagger Models',//重命名界面Swagger Model的显示名称
     enableDocumentManage:true,//是否显示界面中"文档管理"功能
     enableVersion:false,//是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
     showApiUrl: false, //接口api地址不显示
@@ -2745,13 +2746,17 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
   //是否显示SwaggerModels
   if(that.settings.enableSwaggerModels){
+    //重命名model
+    var swaggerModelName=KUtils.getValue(that.settings,"swaggerModelName","Swagger Models",true);
     menuArr.push({
       groupName: groupName,
       groupId: groupId,
       key: 'swaggerModel' + md5(groupName),
-      name: 'Swagger Models',
+      //name: 'Swagger Models',
+      name:swaggerModelName,
       component: 'SwaggerModels',
-      tabName: 'Swagger Models(' + groupName + ')',
+      //tabName: 'Swagger Models(' + groupName + ')',
+      tabName: swaggerModelName+'('+groupName+')',
       icon: 'icon-modeling',
       path: 'SwaggerModels/' + groupName,
     })

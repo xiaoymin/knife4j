@@ -15,10 +15,6 @@ export default {
     collapsed: {
       type: Boolean,
       default: false
-    },
-    enableVersion:{
-      type: Boolean,
-      default: false
     }
   },
   render(h, context) {

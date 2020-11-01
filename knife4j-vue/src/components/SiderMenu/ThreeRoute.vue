@@ -7,7 +7,7 @@
     :to="item.path"
   >
     <my-icon v-if="item.icon" :type="item.icon"></my-icon>
-    <a-badge v-if="item.hasNew" status="processing" title="新接口" style="margin-bottom:3px;" />
+    <a-badge v-if="enableVersion&&item.hasNew" status="processing" title="新接口" style="margin-bottom:3px;" />
     <span v-if="item.method" class="knife4j-menu-line">{{item.method}}</span>
     <span>{{item.name}}</span>
   </router-link>
@@ -16,11 +16,16 @@
 <script>
 export default {
   props: {
-    item: Object,
+    item: Object
   },
   data() {
     return {};
   },
+  computed:{
+    enableVersion(){
+        return this.$store.state.globals.enableVersion;
+    }
+  }
 };
 </script>
 

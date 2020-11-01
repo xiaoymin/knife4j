@@ -15,7 +15,7 @@
         </div>
         <div class="knife4j-menu">
           <a-menu key="Menu" theme="dark" mode="inline" :inlineCollapsed="collapsed" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 2px 0; width: 100%">
-            <ThreeMenu :menuData="localMenuData" :collapsed="collapsed" :enableVersion="enableVersion"/>
+            <ThreeMenu :menuData="localMenuData" :collapsed="collapsed"/>
           </a-menu>
         </div>
       </a-layout-sider>
@@ -74,7 +74,6 @@ export default {
   data() {
     return {
       i18n:null,
-      enableVersion:false,
       logo: logo,
       documentTitle: "",
       menuWidth: constMenuWidth,
