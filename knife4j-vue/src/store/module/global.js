@@ -6,6 +6,7 @@ const globals = {
     swagger:null,
     swaggerCurrentInstance:null,
     enableVersion:false,
+    enableAfterScript:true,
     currentMenuData:[],
     serviceOptions:[],
     defaultServiceOption: ''
@@ -34,9 +35,16 @@ const globals = {
     },
     setGitVersion:(state,gitVersion)=>{
       state.enableVersion=gitVersion;
+    },
+    setAfterScript:(state,afterScript)=>{
+      state.enableAfterScript=afterScript;
+
     }
   },
   actions: {
+    setAfterScript({commit},afterScript){
+      commit('setAfterScript',afterScript);
+    },
     setGitVersion({commit},gitVersion){
       commit('setGitVersion',gitVersion);
     },

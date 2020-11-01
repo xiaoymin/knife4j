@@ -50,6 +50,7 @@ const constants = {
   defaultSettings: {
     enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
     swaggerModelName:"Swagger Models",//重命名界面Swagger Model的显示名称
+    enableAfterScript:true,//调试Tab是否显示AfterScript功能,默认开启
     enableDocumentManage:true,//是否显示界面中"文档管理"功能
     enableVersion:false,//是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
     showApiUrl: false, //接口api地址不显示
@@ -69,6 +70,7 @@ const constants = {
   defaultPlusSettings: {
     enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
     swaggerModelName:"Swagger Models",//重命名界面Swagger Model的显示名称
+    enableAfterScript:true,//调试Tab是否显示AfterScript功能,默认开启
     enableDocumentManage:true,//是否显示界面中"文档管理"功能
     enableVersion:false,//是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
     showApiUrl: false, //接口api地址不显示
