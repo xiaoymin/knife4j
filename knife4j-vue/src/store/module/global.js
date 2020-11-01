@@ -7,6 +7,7 @@ const globals = {
     swaggerCurrentInstance:null,
     enableVersion:false,
     enableAfterScript:true,
+    enableReloadCacheParameter:false,
     currentMenuData:[],
     serviceOptions:[],
     defaultServiceOption: ''
@@ -38,10 +39,15 @@ const globals = {
     },
     setAfterScript:(state,afterScript)=>{
       state.enableAfterScript=afterScript;
-
+    },
+    setReloadCacheParameter:(state,reloadCacheParameter)=>{
+      state.enableReloadCacheParameter=reloadCacheParameter;
     }
   },
   actions: {
+    setReloadCacheParameter({commit},reloadCacheParameter){
+      commit('setReloadCacheParameter',reloadCacheParameter);
+    },
     setAfterScript({commit},afterScript){
       commit('setAfterScript',afterScript);
     },

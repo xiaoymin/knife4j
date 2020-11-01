@@ -126,6 +126,7 @@ function SwaggerBootstrapUi(options) {
   this.settings = options.settings|| {
     enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
     swaggerModelName:'Swagger Models',//重命名界面Swagger Model的显示名称
+    enableReloadCacheParameter:false,// 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
     enableAfterScript:true,//调试Tab是否显示AfterScript功能,默认开启
     enableDocumentManage:true,//是否显示界面中"文档管理"功能
     enableVersion:false,//是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
@@ -684,6 +685,7 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
  */
 SwaggerBootstrapUi.prototype.dispatchSettings=function(){
   this.store.dispatch('globals/setAfterScript', this.settings.enableAfterScript);
+  this.store.dispatch('globals/setReloadCacheParameter', this.settings.enableReloadCacheParameter);
 }
 
 /**
@@ -2224,69 +2226,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       //that.log(that.currentInstance.paths)
     }
   }
-  //解析securityDefinitions属性
-  if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("securityDefinitions")) {
-    var securityDefinitions = menu["securityDefinitions"];
-    if (securityDefinitions != null) {
-      //判断是否有缓存cache值
-      //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
-      //var cacheSecurityData=that.getSecurityInfos();
-      var cacheSecurityData = that.getGlobalSecurityInfos();
-      var securityArr = new Array();
-      for (var j in securityDefinitions) {
-        var sdobj = securityDefinitions[j];
-        if(j=="oauth2"){
-          //oauth2认证
-          var oauth=new SwaggerBootstrapUiOAuth2(
-            KUtils.getValue(sdobj,"flow","",true),
-            KUtils.getValue(sdobj,"tokenUrl","",true),
-            KUtils.getValue(sdobj,"authorizationUrl","",true),
-            that.currentInstance.id
-          );
-          oauth.sync();
-          that.currentInstance.oauths=oauth;
-        }else{
-          var sdf = new SwaggerBootstrapUiSecurityDefinition();
-          sdf.key = j;
-          sdf.type = sdobj.type;
-          sdf.name = sdobj.name;
-          sdf.in = sdobj.in;
-          var flag = false;
-          if (cacheSecurityData != null && cacheSecurityData != undefined) {
-            //存在缓存值,更新当前值,无需再次授权
-            cacheSecurityData.forEach(function (sa) {
-              //})
-              //$.each(cacheSecurityData, function (i, sa) {
-              if (sa.key == sdf.key && sa.name == sdf.name) {
-                flag = true;
-                sdf.value = sa.value;
-              }
-            })
-          }
-          /* if (!flag){
-            //如果cache不存在,存储
-            that.storeGlobalParam(sdf,"securityArrs");
-          }*/
-          //at 2019-12-7 18:22:01
-          //得到主键id端
-          var md5StrBefore = sdf.key + sdf.type + sdf.in + sdf.name;
-          sdf.id = md5(md5StrBefore);
-          securityArr.push(sdf);
-        }
-        //that.currentInstance.securityArrs.push(sdf);
-      }
-      if (securityArr.length > 0) {
-        that.currentInstance.securityArrs = securityArr;
-        that.log("解析securityDefinitions属性--------------------------------------------------------------->")
-      } else {
-        //清空缓存
-        that.clearSecuritys();
-      }
-    } else {
-      //清空缓存security
-      that.clearSecuritys();
-    }
-  }
+  that.readSecurityContextSchemes(menu);
   //当前实例不存在OAuth2验证的情况下需要clear
   that.currentInstance.clearOAuth2();
   //console.log("分组------------")
@@ -2428,6 +2368,95 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   that.log("解析refTreetableparameters结束,耗时：" + (new Date().getTime() - pathStartTime));
   that.log(new Date().toTimeString());
 
+}
+
+/**
+ * 读取security参数，例如oauth2
+ * @param {*} menu 
+ */
+SwaggerBootstrapUi.prototype.readSecurityContextSchemes=function(menu){
+  if(this.currentInstance.oas2()){
+    if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("securityDefinitions")) {
+      var securityDefinitions = menu["securityDefinitions"];
+      this.readSecurityContextSchemesCommon(securityDefinitions);
+    }
+  }else{
+    if(KUtils.checkUndefined(menu)&&menu.hasOwnProperty("components")){
+      var components=menu["components"];
+      if(KUtils.checkUndefined(components)&&components.hasOwnProperty("securitySchemes")){
+        var securityDefinitions = components["securitySchemes"];
+        this.readSecurityContextSchemesCommon(securityDefinitions);
+      }
+    }
+  }
+}
+
+/**
+ * oas2
+ * @param {*} menu 
+ */
+SwaggerBootstrapUi.prototype.readSecurityContextSchemesCommon=function(securityDefinitions){
+  var that=this;
+  //解析securityDefinitions属性
+  if (KUtils.checkUndefined(securityDefinitions)) {
+    //判断是否有缓存cache值
+    //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+    //var cacheSecurityData=that.getSecurityInfos();
+    var cacheSecurityData = that.getGlobalSecurityInfos();
+    var securityArr = new Array();
+    for (var j in securityDefinitions) {
+      var sdobj = securityDefinitions[j];
+      if(j=="oauth2"){
+        //oauth2认证
+        var oauth=new SwaggerBootstrapUiOAuth2(
+          KUtils.getValue(sdobj,"flow","",true),
+          KUtils.getValue(sdobj,"tokenUrl","",true),
+          KUtils.getValue(sdobj,"authorizationUrl","",true),
+          that.currentInstance.id
+        );
+        oauth.sync();
+        that.currentInstance.oauths=oauth;
+      }else{
+        var sdf = new SwaggerBootstrapUiSecurityDefinition();
+        sdf.key = j;
+        sdf.type = sdobj.type;
+        sdf.name = sdobj.name;
+        sdf.in = sdobj.in;
+        var flag = false;
+        if (cacheSecurityData != null && cacheSecurityData != undefined) {
+          //存在缓存值,更新当前值,无需再次授权
+          cacheSecurityData.forEach(function (sa) {
+            //})
+            //$.each(cacheSecurityData, function (i, sa) {
+            if (sa.key == sdf.key && sa.name == sdf.name) {
+              flag = true;
+              sdf.value = sa.value;
+            }
+          })
+        }
+        /* if (!flag){
+          //如果cache不存在,存储
+          that.storeGlobalParam(sdf,"securityArrs");
+        }*/
+        //at 2019-12-7 18:22:01
+        //得到主键id端
+        var md5StrBefore = sdf.key + sdf.type + sdf.in + sdf.name;
+        sdf.id = md5(md5StrBefore);
+        securityArr.push(sdf);
+      }
+      //that.currentInstance.securityArrs.push(sdf);
+    }
+    if (securityArr.length > 0) {
+      that.currentInstance.securityArrs = securityArr;
+      that.log("解析securityDefinitions属性--------------------------------------------------------------->")
+    } else {
+      //清空缓存
+      that.clearSecuritys();
+    }
+  } else {
+    //清空缓存security
+    that.clearSecuritys();
+  }
 }
 /**
  * OAuth2认证的支持

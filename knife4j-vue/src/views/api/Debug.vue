@@ -8,7 +8,7 @@
         <a-input-group compact>
           <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
           <a-input
-            style="width: 80%"
+            :style="debugUrlStyle"
             :value="debugUrl"
             @change="debugUrlChange"
           />
@@ -19,6 +19,7 @@
             @click="sendRestfulApi"
             >发 送</a-button
           >
+          <a-button v-if="enableReloadCacheParameter" @click="reloadCacheParameter">刷新变量</a-button>
         </a-input-group>
       </a-col>
     </a-row>
@@ -459,6 +460,7 @@ export default {
     return {
       i18n:null,
       //是否开启缓存
+      debugUrlStyle:"width: 80%",
       enableRequestCache: false,
       //是否动态参数
       enableDynamicParameter: false,
@@ -552,6 +554,11 @@ export default {
     this.initDebugUrl();
     //显示表单参数
     //this.initShowFormTable();
+    if(this.enableReloadCacheParameter){
+      this.debugUrlStyle="width: 70%;"
+    }else{
+      this.debugUrlStyle="width: 80%;"
+    }
   },
   computed:{
     language(){
@@ -559,6 +566,9 @@ export default {
     },
     enableAfterScript(){
         return this.$store.state.globals.enableAfterScript;
+    },
+    enableReloadCacheParameter(){
+        return this.$store.state.globals.enableReloadCacheParameter;
     }
   },
   watch:{
@@ -567,6 +577,152 @@ export default {
     }
   },
   methods: {
+    reloadCacheParameter(){
+      console.log("刷新变量,从缓存中重新读取变量值")
+      //刷新变量,从缓存中重新读取变量值
+      //初始化读取本地缓存全局参数
+      //this.initLocalGlobalParameters();
+      //只更新变量,不做增加等任何处理
+      var tempglobalParameters=[];
+      const key = this.api.instanceId;
+      console.log(this.headerData);
+      //初始化读取本地缓存全局参数
+      this.$localStore.getItem(constant.globalParameter).then(val => {
+        if (val != null) {
+          if (val[key] != undefined && val[key] != null) {
+            tempglobalParameters = val[key];
+          }
+        }
+        if(KUtils.arrNotEmpty(tempglobalParameters)){
+          //更新header
+          this.reloadUpdateHeader(tempglobalParameters);
+          //根据不同的请求类型,更新不同的请求参数
+          if (this.rawFlag) {
+            //更新rawForm
+            this.reloadUpdateRawForm(tempglobalParameters);
+          } else if (this.formFlag) {
+            //更新form
+            this.reloadUpdateForm(tempglobalParameters);
+          } else if (this.urlFormFlag) {
+            //更新url-form
+            this.reloadUpdateUrlForm(tempglobalParameters);
+          }
+        }
+      });
+    },
+    /**
+     * 根据原始数据得到最终要更新的数据和更新标志
+     * @originalDatas 原始数据
+     * @type 类型，主要 ：header\query
+     */
+    reloadUpdateCommons(tempglobalParameters,originalDatas,type){
+      var tempArrays=[];
+      var tempUpdateFlag=false;
+      var add=false;
+      //1、判断原始数据中是否存在要更新的值
+      if(KUtils.arrNotEmpty(originalDatas)){
+        originalDatas.forEach(tempData=>{
+          //查找是否存在
+          var tempId=tempData.name+type;
+          var tempFilterArr=tempglobalParameters.filter(t=>t.pkid==tempId);
+          if(KUtils.arrNotEmpty(tempFilterArr)){
+            var tempCache=tempFilterArr[0];
+            var teampValue=KUtils.getValue(tempCache,"value","",true);
+            //更新
+            tempData.content=teampValue;
+            tempUpdateFlag=true;
+          }
+          tempArrays.push(tempData);
+        })
+      }
+      //第2种情况，判断是否有新增的值
+      var tempFilterArr=tempglobalParameters.filter(tp=>tp.in==type);
+      if(KUtils.arrNotEmpty(tempFilterArr)){
+        //查找是否有新增的值
+        tempFilterArr.forEach(tpdata=>{
+          //判断是否存在,如果不存在，代表新增
+          var addDateArr=tempArrays.filter(th=>th.name==tpdata.name);
+          if(!KUtils.arrNotEmpty(addDateArr)){
+            //存在新增的值
+            var newData = {
+              id: KUtils.randomMd5(),
+              name: tpdata.name,
+              content: tpdata.value,
+              require: true,
+              description: "",
+              enums: null, //枚举下拉框
+              //枚举是否支持多选('default' | 'multiple' )
+              enumsMode:"default",
+              new: false
+            };
+            tempArrays.push(newData);
+            tempUpdateFlag=true;
+            add=true;
+          }
+        })
+      }
+      console.log(tempArrays)
+      return {
+        update:tempUpdateFlag,
+        data:tempArrays,
+        add:add
+      }
+    },
+    reloadUpdateHeader(tempglobalParameters){
+      var newDataObject=this.reloadUpdateCommons(tempglobalParameters,this.headerData,"header");
+      //如果两种情况只需要1种情况存在更新,那么重新更新当前Header
+      if(newDataObject.update){
+        this.headerData=[];
+        setTimeout(()=>{
+          this.headerData=newDataObject.data;
+          if(newDataObject.add){
+            //如果有新增，刷新选中
+            this.initSelectionHeaders();
+            //计算heaer数量
+            this.headerResetCalc();
+          }
+        },10)
+      }
+    },
+    reloadUpdateUrlForm(tempglobalParameters){
+      var newDataObject=this.reloadUpdateCommons(tempglobalParameters,this.urlFormData,"query");
+      //判断是否需要更新
+      if(newDataObject.update){
+        this.urlFormData=[];
+        setTimeout(()=>{
+          this.urlFormData=newDataObject.data;
+          if(newDataObject.add){
+            this.initUrlFormSelections();
+          }
+        },10)
+      }
+    },
+    reloadUpdateForm(tempglobalParameters){
+      var newDataObject=this.reloadUpdateCommons(tempglobalParameters,this.formData,"query");
+      if(newDataObject.update){
+        this.formData=[];
+        setTimeout(()=>{
+          this.formData=newDataObject.data;
+          if(newDataObject.add){
+            this.initFormSelections();
+          }
+        },10)
+      }
+    },
+    reloadUpdateRawForm(tempglobalParameters){
+      var newDataObject=this.reloadUpdateCommons(tempglobalParameters,this.rawFormData,"query");
+      if(newDataObject.update){
+        this.rawFormData=[];
+        setTimeout(()=>{
+            this.rawFormData=newDataObject.data;
+            if(newDataObject.add){
+              this.rawFormFlag=true;
+              this.rawFormTableFlag=true;
+              this.initRawFormSelections();
+            }
+        },10)
+      }
+    },
     getCurrentI18nInstance(){
       return this.$i18n.messages[this.language];
     },
