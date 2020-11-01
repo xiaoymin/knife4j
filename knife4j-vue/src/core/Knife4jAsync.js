@@ -69,8 +69,17 @@ marked.setOptions({
 
 function SwaggerBootstrapUi(options) {
   this.swaggerData=null;
+  //默认false
+  this.springdoc=options.springdoc||false;
+  //此处判断底层springfox版本
+  //1、springfox提供的分组地址/swagger-resources
+  //2、springdoc-open提供的分组地址：v3/api-docs/swagger-config
   //swagger请求api地址
-  this.url = options.url || 'swagger-resources'
+  if(this.springdoc){
+    this.url = options.url || 'v3/api-docs/swagger-config'
+  }else{
+    this.url = options.url || 'swagger-resources'
+  }
   this.i18n=options.i18n||'zh-CN'
   this.i18nVue=options.i18nVue||null;
   //服务端版本是否依赖springfox2.10.5版本
@@ -321,15 +330,136 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
       timeout: 20000,
       dataType: 'json'
     },data=>{
-      that.analysisGroupSuccess(data)
-        //创建分组元素
-        that.createGroupElement()
+      if(that.springdoc){
+        that.analysisSpringDocOpenApiGroupSuccess(data);
+      }else{
+        that.analysisGroupSuccess(data)
+      }
+      //创建分组元素
+      that.createGroupElement()
     },err=>{
       message.error('Knife4j文档请求异常')
         that.error(err)
     })
   } catch (err) {
     that.error(err)
+  }
+}
+/**
+ * 解析springdoc-OpenAPI
+ * @param {*} data 
+ */
+SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess=function(data){
+  var that = this
+  var t = typeof data
+  var groupData = null
+  if (t == 'string') {
+    //groupData = JSON.parse(data)
+    groupData = KUtils.json5parse(data)
+  } else {
+    groupData = data
+  }
+  that.log('响应分组json数据')
+  that.log(groupData)
+  var serviceOptions = [];
+  var allGroupIds=[];
+  var groupUrls=KUtils.getValue(groupData,'urls',[],true);
+  var newGroupData=[];
+  if(KUtils.arrNotEmpty(groupUrls)){
+    groupUrls.forEach(gu=>{
+      var newGroup={
+        name:KUtils.getValue(gu,'name','knife4j',true),
+        url:KUtils.getValue(gu,'url','',true),
+        location:KUtils.getValue(gu,'url','',true),
+        swaggerVersion:'3.0.3'
+      }
+      newGroupData.push(newGroup);
+    })
+  }
+  newGroupData.forEach(function (group) {
+    var g = new SwaggerBootstrapUiInstance(
+      KUtils.toString(group.name,'').replace(/\//g,'-'),
+      group.location,
+      group.swaggerVersion
+    )
+    g.url = group.url
+    //g.url="/test/json";
+    var newUrl = ''
+    //此处需要判断basePath路径的情况
+    if (group.url != null && group.url != undefined && group.url != '') {
+      newUrl = group.url
+    } else {
+      newUrl = group.location
+    }
+    g.extUrl=newUrl;
+    if (that.validateExtUrl == '') {
+      that.validateExtUrl = g.extUrl
+    }
+    //判断当前分组url是否存在basePath
+    if (
+      group.basePath != null &&
+      group.basePath != undefined &&
+      group.basePath != ''
+    ) {
+      g.baseUrl = group.basePath
+    }
+    //赋值查找缓存的id
+    if (that.cacheApis.length > 0) {
+      var cainstance = null
+      that.cacheApis.forEach(ca => {
+        if (ca.id == g.groupId) {
+          cainstance = ca
+        }
+      })
+      /*  $.each(that.cacheApis, function (x, ca) {
+         if (ca.id == g.groupId) {
+           cainstance = ca
+         }
+       }) */
+      if (cainstance != null) {
+        g.firstLoad = false
+        //判断旧版本是否包含updatesApi属性
+        if (!cainstance.hasOwnProperty('updateApis')) {
+          cainstance['updateApis'] = {}
+        }
+        g.cacheInstance = cainstance
+        that.log(g)
+        //g.groupApis=cainstance.cacheApis;
+      } else {
+        g.cacheInstance = new SwaggerBootstrapUiCacheApis({
+          id: g.groupId,
+          name: g.name
+        })
+      }
+    } else {
+      g.cacheInstance = new SwaggerBootstrapUiCacheApis({
+        id: g.groupId,
+        name: g.name
+      })
+    }
+    //双向绑定
+    serviceOptions.push({
+      label: g.name,
+      value: g.id
+    })
+    //增加所有分组id，为afterScript特性
+    allGroupIds.push(g.id);
+    that.instances.push(g)
+  })
+  //赋值分组id
+  if(KUtils.arrNotEmpty(that.instances)){
+    that.instances.forEach(inst=>{
+      inst.allGroupIds=allGroupIds;
+    })
+  }
+  //初始化所有
+  this.serviceOptions=serviceOptions;
+  this.store.dispatch('globals/setServiceOptions', serviceOptions);
+  //that.$Vue.serviceOptions = serviceOptions;
+  if (serviceOptions.length > 0) {
+    //that.$Vue.defaultServiceOption = serviceOptions[0].value;
+    this.defaultServiceOption=serviceOptions[0].value;
+    this.store.dispatch('globals/setDefaultService', serviceOptions[0].value);
   }
 }
 
@@ -339,10 +469,6 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
  */
 SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
   var that = this
-  that.log('done---------------------------')
-  that.log(data)
-  that.log('请求成功')
-  that.log(data)
   var t = typeof data
   var groupData = null
   if (t == 'string') {
@@ -4217,6 +4343,17 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     }
     //如果非空,非根目录
     basePathFlag = true;
+  }
+  //此处追加springdoc-openapi的逻辑
+  //springdoc-openapi版本中对于接口不会再paths节点追加basePath,所以Knife4j自动化处理
+  if(that.springdoc){
+    var pathname=window.location.pathname;
+    var reg=new RegExp("(.*?)/doc\.html.*$","ig");
+    var tempPath="";
+    if(reg.test(pathname)){
+      tempPath=RegExp.$1;
+    }
+    newfullPath += tempPath;
   }
   newfullPath += path;
   //截取字符串
