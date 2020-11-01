@@ -75,6 +75,12 @@
       "defaultValue": true
     },
     {
+      "name": "knife4j.setting.enableVersion",
+      "type": "java.lang.Boolean",
+      "description": "Display the GitVersion function",
+      "defaultValue": true
+    },
+    {
       "name": "knife4j.setting.enableRequestCache",
       "type": "java.lang.Boolean",
       "description": "Enable request parameter caching",
@@ -180,6 +186,19 @@
         {
           "value": false,
           "description": "Hidden DocumentManage Functions"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableVersion",
+      "values":[
+        {
+          "value": true,
+          "description": "Display GitVersion Functions"
+        },
+        {
+          "value": false,
+          "description": "Hidden GitVersion Functions"
         }
       ]
     },
