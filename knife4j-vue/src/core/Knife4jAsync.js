@@ -666,9 +666,12 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       }
       //这里判断url请求是否已加载过
       //防止出现根路径的情况
-      var idx = api.indexOf('/');
-      if (idx == 0) {
-        api = api.substr(1);
+      //如果是springdoc-openapi,无需判断,因为springdoc-openapi会把basePath带上
+      if(!that.springdoc){
+        var idx = api.indexOf('/');
+        if (idx == 0) {
+          api = api.substr(1);
+        }
       }
       //测试
       //api = 'run.json';
