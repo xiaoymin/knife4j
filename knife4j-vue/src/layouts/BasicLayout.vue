@@ -99,8 +99,8 @@ export default {
   },
   beforeCreate() {},
   created() {
-    this.initSpringDocOpenApi();
-    //this.initKnife4jSpringUi();
+    //this.initSpringDocOpenApi();
+    this.initKnife4jSpringUi();
     //this.initKnife4jFront();
     this.initI18n();
   },
@@ -225,7 +225,9 @@ export default {
           val.enableSwaggerBootstrapUi = defaultPlusSettings.enableSwaggerBootstrapUi
           val.enableRequestCache = defaultPlusSettings.enableRequestCache;
         } //如果本地存在,则使用本地的
-        settings = val;
+        //这里有问题
+         var mergeSetting=Object.assign({},defaultSettings,val);
+        settings = mergeSetting;
       } else {
         if (that.plus) {
           settings = defaultPlusSettings;

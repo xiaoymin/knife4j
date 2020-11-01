@@ -22,7 +22,7 @@ module.exports = {
     },
     proxy: {
       "/": {
-      target: 'http://localhost:8999/', 
+      target: 'http://localhost:17812/', 
       /*   target: 'http://knife4j.xiaominfo.com/', */
         ws: true,
         changeOrigin: true
