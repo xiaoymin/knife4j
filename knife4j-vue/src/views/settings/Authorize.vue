@@ -259,7 +259,7 @@ export default {
     initLocalOAuth(){
       var that=this;
       var oauths=that.data.instance.oauths;
-      console.log(oauths)
+      //console.log(oauths)
       if(KUtils.checkUndefined(oauths)){
         this.oauthFlag=true;
         this.oauth=oauths;

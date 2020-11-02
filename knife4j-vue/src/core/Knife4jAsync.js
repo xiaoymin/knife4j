@@ -25,6 +25,9 @@
  * 
  * v2.0.5
  * 剥离解析OpenAPI规范的逻辑,只解析基础部分,提供页面渲染速度,dev分支
+ * 
+ * v2.0.6 
+ * 同时支持v2以及v3,v2版本支持OAuth2.0认证
  *
  * 基于Vue + Ant Design Vue重构Ui组件
  *
@@ -66,10 +69,22 @@ marked.setOptions({
 
 function SwaggerBootstrapUi(options) {
   this.swaggerData=null;
+  //默认false
+  this.springdoc=options.springdoc||false;
+  //此处判断底层springfox版本
+  //1、springfox提供的分组地址/swagger-resources
+  //2、springdoc-open提供的分组地址：v3/api-docs/swagger-config
   //swagger请求api地址
-  this.url = options.url || 'swagger-resources'
+  if(this.springdoc){
+    this.url = options.url || 'v3/api-docs/swagger-config'
+  }else{
+    this.url = options.url || 'swagger-resources'
+  }
   this.i18n=options.i18n||'zh-CN'
   this.i18nVue=options.i18nVue||null;
+  //服务端版本是否依赖springfox2.10.5版本
+  //该版本会自动追加basePath,因为Knife4j在以前的版本中帮忙追加了basePath所以导致重复
+  this.baseSpringFox=options.baseSpringFox||false;
   //this.i18nInstance = null
   this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
   //用于控制是否请求configUrl的配置
@@ -119,7 +134,11 @@ function SwaggerBootstrapUi(options) {
   //个性化配置
   this.settings = options.settings|| {
     enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
+    swaggerModelName:'Swagger Models',//重命名界面Swagger Model的显示名称
+    enableReloadCacheParameter:false,// 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
+    enableAfterScript:true,//调试Tab是否显示AfterScript功能,默认开启
     enableDocumentManage:true,//是否显示界面中"文档管理"功能
+    enableVersion:false,//是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
     showApiUrl: false, //接口api地址不显示
     showTagStatus: false, //分组tag显示description属性,针对@Api注解没有tags属性值的情况
     enableSwaggerBootstrapUi: false, //是否开启swaggerBootstrapUi增强
@@ -311,15 +330,136 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
       timeout: 20000,
       dataType: 'json'
     },data=>{
-      that.analysisGroupSuccess(data)
-        //创建分组元素
-        that.createGroupElement()
+      if(that.springdoc){
+        that.analysisSpringDocOpenApiGroupSuccess(data);
+      }else{
+        that.analysisGroupSuccess(data)
+      }
+      //创建分组元素
+      that.createGroupElement()
     },err=>{
       message.error('Knife4j文档请求异常')
         that.error(err)
     })
   } catch (err) {
     that.error(err)
+  }
+}
+/**
+ * 解析springdoc-OpenAPI
+ * @param {*} data 
+ */
+SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess=function(data){
+  var that = this
+  var t = typeof data
+  var groupData = null
+  if (t == 'string') {
+    //groupData = JSON.parse(data)
+    groupData = KUtils.json5parse(data)
+  } else {
+    groupData = data
+  }
+  that.log('响应分组json数据')
+  that.log(groupData)
+  var serviceOptions = [];
+  var allGroupIds=[];
+  var groupUrls=KUtils.getValue(groupData,'urls',[],true);
+  var newGroupData=[];
+  if(KUtils.arrNotEmpty(groupUrls)){
+    groupUrls.forEach(gu=>{
+      var newGroup={
+        name:KUtils.getValue(gu,'name','knife4j',true),
+        url:KUtils.getValue(gu,'url','',true),
+        location:KUtils.getValue(gu,'url','',true),
+        swaggerVersion:'3.0.3'
+      }
+      newGroupData.push(newGroup);
+    })
+  }
+  newGroupData.forEach(function (group) {
+    var g = new SwaggerBootstrapUiInstance(
+      KUtils.toString(group.name,'').replace(/\//g,'-'),
+      group.location,
+      group.swaggerVersion
+    )
+    g.url = group.url
+    //g.url="/test/json";
+    var newUrl = ''
+    //此处需要判断basePath路径的情况
+    if (group.url != null && group.url != undefined && group.url != '') {
+      newUrl = group.url
+    } else {
+      newUrl = group.location
+    }
+    g.extUrl=newUrl;
+    if (that.validateExtUrl == '') {
+      that.validateExtUrl = g.extUrl
+    }
+    //判断当前分组url是否存在basePath
+    if (
+      group.basePath != null &&
+      group.basePath != undefined &&
+      group.basePath != ''
+    ) {
+      g.baseUrl = group.basePath
+    }
+    //赋值查找缓存的id
+    if (that.cacheApis.length > 0) {
+      var cainstance = null
+      that.cacheApis.forEach(ca => {
+        if (ca.id == g.groupId) {
+          cainstance = ca
+        }
+      })
+      /*  $.each(that.cacheApis, function (x, ca) {
+         if (ca.id == g.groupId) {
+           cainstance = ca
+         }
+       }) */
+      if (cainstance != null) {
+        g.firstLoad = false
+        //判断旧版本是否包含updatesApi属性
+        if (!cainstance.hasOwnProperty('updateApis')) {
+          cainstance['updateApis'] = {}
+        }
+        g.cacheInstance = cainstance
+        that.log(g)
+        //g.groupApis=cainstance.cacheApis;
+      } else {
+        g.cacheInstance = new SwaggerBootstrapUiCacheApis({
+          id: g.groupId,
+          name: g.name
+        })
+      }
+    } else {
+      g.cacheInstance = new SwaggerBootstrapUiCacheApis({
+        id: g.groupId,
+        name: g.name
+      })
+    }
+    //双向绑定
+    serviceOptions.push({
+      label: g.name,
+      value: g.id
+    })
+    //增加所有分组id，为afterScript特性
+    allGroupIds.push(g.id);
+    that.instances.push(g)
+  })
+  //赋值分组id
+  if(KUtils.arrNotEmpty(that.instances)){
+    that.instances.forEach(inst=>{
+      inst.allGroupIds=allGroupIds;
+    })
+  }
+  //初始化所有
+  this.serviceOptions=serviceOptions;
+  this.store.dispatch('globals/setServiceOptions', serviceOptions);
+  //that.$Vue.serviceOptions = serviceOptions;
+  if (serviceOptions.length > 0) {
+    //that.$Vue.defaultServiceOption = serviceOptions[0].value;
+    this.defaultServiceOption=serviceOptions[0].value;
+    this.store.dispatch('globals/setDefaultService', serviceOptions[0].value);
   }
 }
 
@@ -329,10 +469,6 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
  */
 SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
   var that = this
-  that.log('done---------------------------')
-  that.log(data)
-  that.log('请求成功')
-  that.log(data)
   var t = typeof data
   var groupData = null
   if (t == 'string') {
@@ -530,9 +666,12 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       }
       //这里判断url请求是否已加载过
       //防止出现根路径的情况
-      var idx = api.indexOf('/');
-      if (idx == 0) {
-        api = api.substr(1);
+      //如果是springdoc-openapi,无需判断,因为springdoc-openapi会把basePath带上
+      if(!that.springdoc){
+        var idx = api.indexOf('/');
+        if (idx == 0) {
+          api = api.substr(1);
+        }
       }
       //测试
       //api = 'run.json';
@@ -653,6 +792,7 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
     that.openV3Settings(menu);
     that.openV3Documents(menu);
   }
+  that.dispatchSettings();
   that.analysisDefinition(menu);
   //DApiUI.definitions(menu);
   that.mergeLocalSecurityContext();
@@ -667,6 +807,14 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
   //that.afterApiInitSuccess();
   this.store.dispatch('globals/setSwaggerInstance', this.currentInstance);
 
+}
+
+/**
+ * 全局配置set操作
+ */
+SwaggerBootstrapUi.prototype.dispatchSettings=function(){
+  this.store.dispatch('globals/setAfterScript', this.settings.enableAfterScript);
+  this.store.dispatch('globals/setReloadCacheParameter', this.settings.enableReloadCacheParameter);
 }
 
 /**
@@ -2207,69 +2355,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       //that.log(that.currentInstance.paths)
     }
   }
-  //解析securityDefinitions属性
-  if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("securityDefinitions")) {
-    var securityDefinitions = menu["securityDefinitions"];
-    if (securityDefinitions != null) {
-      //判断是否有缓存cache值
-      //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
-      //var cacheSecurityData=that.getSecurityInfos();
-      var cacheSecurityData = that.getGlobalSecurityInfos();
-      var securityArr = new Array();
-      for (var j in securityDefinitions) {
-        var sdobj = securityDefinitions[j];
-        if(j=="oauth2"){
-          //oauth2认证
-          var oauth=new SwaggerBootstrapUiOAuth2(
-            KUtils.getValue(sdobj,"flow","",true),
-            KUtils.getValue(sdobj,"tokenUrl","",true),
-            KUtils.getValue(sdobj,"authorizationUrl","",true),
-            that.currentInstance.id
-          );
-          oauth.sync();
-          that.currentInstance.oauths=oauth;
-        }else{
-          var sdf = new SwaggerBootstrapUiSecurityDefinition();
-          sdf.key = j;
-          sdf.type = sdobj.type;
-          sdf.name = sdobj.name;
-          sdf.in = sdobj.in;
-          var flag = false;
-          if (cacheSecurityData != null && cacheSecurityData != undefined) {
-            //存在缓存值,更新当前值,无需再次授权
-            cacheSecurityData.forEach(function (sa) {
-              //})
-              //$.each(cacheSecurityData, function (i, sa) {
-              if (sa.key == sdf.key && sa.name == sdf.name) {
-                flag = true;
-                sdf.value = sa.value;
-              }
-            })
-          }
-          /* if (!flag){
-            //如果cache不存在,存储
-            that.storeGlobalParam(sdf,"securityArrs");
-          }*/
-          //at 2019-12-7 18:22:01
-          //得到主键id端
-          var md5StrBefore = sdf.key + sdf.type + sdf.in + sdf.name;
-          sdf.id = md5(md5StrBefore);
-          securityArr.push(sdf);
-        }
-        //that.currentInstance.securityArrs.push(sdf);
-      }
-      if (securityArr.length > 0) {
-        that.currentInstance.securityArrs = securityArr;
-        that.log("解析securityDefinitions属性--------------------------------------------------------------->")
-      } else {
-        //清空缓存
-        that.clearSecuritys();
-      }
-    } else {
-      //清空缓存security
-      that.clearSecuritys();
-    }
-  }
+  that.readSecurityContextSchemes(menu);
   //当前实例不存在OAuth2验证的情况下需要clear
   that.currentInstance.clearOAuth2();
   //console.log("分组------------")
@@ -2411,6 +2497,95 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   that.log("解析refTreetableparameters结束,耗时：" + (new Date().getTime() - pathStartTime));
   that.log(new Date().toTimeString());
 
+}
+
+/**
+ * 读取security参数，例如oauth2
+ * @param {*} menu 
+ */
+SwaggerBootstrapUi.prototype.readSecurityContextSchemes=function(menu){
+  if(this.currentInstance.oas2()){
+    if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("securityDefinitions")) {
+      var securityDefinitions = menu["securityDefinitions"];
+      this.readSecurityContextSchemesCommon(securityDefinitions);
+    }
+  }else{
+    if(KUtils.checkUndefined(menu)&&menu.hasOwnProperty("components")){
+      var components=menu["components"];
+      if(KUtils.checkUndefined(components)&&components.hasOwnProperty("securitySchemes")){
+        var securityDefinitions = components["securitySchemes"];
+        this.readSecurityContextSchemesCommon(securityDefinitions);
+      }
+    }
+  }
+}
+
+/**
+ * oas2
+ * @param {*} menu 
+ */
+SwaggerBootstrapUi.prototype.readSecurityContextSchemesCommon=function(securityDefinitions){
+  var that=this;
+  //解析securityDefinitions属性
+  if (KUtils.checkUndefined(securityDefinitions)) {
+    //判断是否有缓存cache值
+    //var cacheSecurityData=$("#sbu-header").data("cacheSecurity");
+    //var cacheSecurityData=that.getSecurityInfos();
+    var cacheSecurityData = that.getGlobalSecurityInfos();
+    var securityArr = new Array();
+    for (var j in securityDefinitions) {
+      var sdobj = securityDefinitions[j];
+      if(j=="oauth2"){
+        //oauth2认证
+        var oauth=new SwaggerBootstrapUiOAuth2(
+          KUtils.getValue(sdobj,"flow","",true),
+          KUtils.getValue(sdobj,"tokenUrl","",true),
+          KUtils.getValue(sdobj,"authorizationUrl","",true),
+          that.currentInstance.id
+        );
+        oauth.sync();
+        that.currentInstance.oauths=oauth;
+      }else{
+        var sdf = new SwaggerBootstrapUiSecurityDefinition();
+        sdf.key = j;
+        sdf.type = sdobj.type;
+        sdf.name = sdobj.name;
+        sdf.in = sdobj.in;
+        var flag = false;
+        if (cacheSecurityData != null && cacheSecurityData != undefined) {
+          //存在缓存值,更新当前值,无需再次授权
+          cacheSecurityData.forEach(function (sa) {
+            //})
+            //$.each(cacheSecurityData, function (i, sa) {
+            if (sa.key == sdf.key && sa.name == sdf.name) {
+              flag = true;
+              sdf.value = sa.value;
+            }
+          })
+        }
+        /* if (!flag){
+          //如果cache不存在,存储
+          that.storeGlobalParam(sdf,"securityArrs");
+        }*/
+        //at 2019-12-7 18:22:01
+        //得到主键id端
+        var md5StrBefore = sdf.key + sdf.type + sdf.in + sdf.name;
+        sdf.id = md5(md5StrBefore);
+        securityArr.push(sdf);
+      }
+      //that.currentInstance.securityArrs.push(sdf);
+    }
+    if (securityArr.length > 0) {
+      that.currentInstance.securityArrs = securityArr;
+      that.log("解析securityDefinitions属性--------------------------------------------------------------->")
+    } else {
+      //清空缓存
+      that.clearSecuritys();
+    }
+  } else {
+    //清空缓存security
+    that.clearSecuritys();
+  }
 }
 /**
  * OAuth2认证的支持
@@ -2738,13 +2913,17 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
   //是否显示SwaggerModels
   if(that.settings.enableSwaggerModels){
+    //重命名model
+    var swaggerModelName=KUtils.getValue(that.settings,"swaggerModelName","Swagger Models",true);
     menuArr.push({
       groupName: groupName,
       groupId: groupId,
       key: 'swaggerModel' + md5(groupName),
-      name: 'Swagger Models',
+      //name: 'Swagger Models',
+      name:swaggerModelName,
       component: 'SwaggerModels',
-      tabName: 'Swagger Models(' + groupName + ')',
+      //tabName: 'Swagger Models(' + groupName + ')',
+      tabName: swaggerModelName+'('+groupName+')',
       icon: 'icon-modeling',
       path: 'SwaggerModels/' + groupName,
     })
@@ -2929,9 +3108,12 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   }
   ////console(JSON.stringify(mdata))
   //双向绑定
+  //console.log(mdata)
   
   this.menuData=mdata;
   this.store.dispatch("globals/setMenuData", mdata);
+  //setGitVersion
+  this.store.dispatch("globals/setGitVersion",this.settings.enableVersion);
   /* that.$Vue.MenuData = mdata;
   that.$Vue.swaggerCurrentInstance = that.currentInstance;
   that.$Vue.$store.dispatch("globals/setMenuData", mdata); */
@@ -4157,9 +4339,24 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   var basePathFlag = false;
   //basePath="/addd/";
   if (basePath != "" && basePath != "/") {
-    newfullPath += basePath;
+    if(!that.baseSpringFox){
+      //springfox2.10.5版本不在追加basePath
+      //https://gitee.com/xiaoym/knife4j/issues/I230K8
+      newfullPath += basePath;
+    }
     //如果非空,非根目录
     basePathFlag = true;
+  }
+  //此处追加springdoc-openapi的逻辑
+  //springdoc-openapi版本中对于接口不会再paths节点追加basePath,所以Knife4j自动化处理
+  if(that.springdoc){
+    var pathname=window.location.pathname;
+    var reg=new RegExp("(.*?)/doc\.html.*$","ig");
+    var tempPath="";
+    if(reg.test(pathname)){
+      tempPath=RegExp.$1;
+    }
+    newfullPath += tempPath;
   }
   newfullPath += path;
   //截取字符串

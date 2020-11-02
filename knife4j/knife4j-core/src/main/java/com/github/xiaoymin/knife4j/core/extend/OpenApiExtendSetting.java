@@ -21,11 +21,29 @@ public class OpenApiExtendSetting {
      * 是否显示界面中SwaggerModel功能
      */
     private boolean enableSwaggerModels=true;
+    /**
+     * 重命名SwaggerModel名称,默认
+     */
+    private String swaggerModelName="Swagger Models";
+
+    /**
+     * 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
+     */
+    private boolean enableReloadCacheParameter=false;
+
+    /**
+     * 调试Tab是否显示AfterScript功能,默认开启
+     */
+    private boolean enableAfterScript=true;
 
     /**
      * 是否显示界面中"文档管理"功能
      */
     private boolean enableDocumentManage=true;
+    /**
+     * 是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
+     */
+    private boolean enableVersion=false;
 
     /**
      * 是否开启请求参数缓存
@@ -115,5 +133,37 @@ public class OpenApiExtendSetting {
 
     public void setEnableDocumentManage(boolean enableDocumentManage) {
         this.enableDocumentManage = enableDocumentManage;
+    }
+
+    public boolean isEnableVersion() {
+        return enableVersion;
+    }
+
+    public void setEnableVersion(boolean enableVersion) {
+        this.enableVersion = enableVersion;
+    }
+
+    public String getSwaggerModelName() {
+        return swaggerModelName;
+    }
+
+    public void setSwaggerModelName(String swaggerModelName) {
+        this.swaggerModelName = swaggerModelName;
+    }
+
+    public boolean isEnableAfterScript() {
+        return enableAfterScript;
+    }
+
+    public void setEnableAfterScript(boolean enableAfterScript) {
+        this.enableAfterScript = enableAfterScript;
+    }
+
+    public boolean isEnableReloadCacheParameter() {
+        return enableReloadCacheParameter;
+    }
+
+    public void setEnableReloadCacheParameter(boolean enableReloadCacheParameter) {
+        this.enableReloadCacheParameter = enableReloadCacheParameter;
     }
 }

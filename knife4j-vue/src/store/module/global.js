@@ -5,6 +5,9 @@ const globals = {
     language:'zh-CN',
     swagger:null,
     swaggerCurrentInstance:null,
+    enableVersion:false,
+    enableAfterScript:true,
+    enableReloadCacheParameter:false,
     currentMenuData:[],
     serviceOptions:[],
     defaultServiceOption: ''
@@ -30,9 +33,27 @@ const globals = {
     },
     setDefaultService:(state,defaultOption)=>{
       state.defaultServiceOption=defaultOption;
+    },
+    setGitVersion:(state,gitVersion)=>{
+      state.enableVersion=gitVersion;
+    },
+    setAfterScript:(state,afterScript)=>{
+      state.enableAfterScript=afterScript;
+    },
+    setReloadCacheParameter:(state,reloadCacheParameter)=>{
+      state.enableReloadCacheParameter=reloadCacheParameter;
     }
   },
   actions: {
+    setReloadCacheParameter({commit},reloadCacheParameter){
+      commit('setReloadCacheParameter',reloadCacheParameter);
+    },
+    setAfterScript({commit},afterScript){
+      commit('setAfterScript',afterScript);
+    },
+    setGitVersion({commit},gitVersion){
+      commit('setGitVersion',gitVersion);
+    },
     setMenuData({
       commit
     }, menudatas) {

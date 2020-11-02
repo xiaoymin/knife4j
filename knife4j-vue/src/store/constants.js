@@ -49,7 +49,11 @@ const constants = {
   globalTreeTableModelParams: "Knife4jGlobalTreeTableModelParams",
   defaultSettings: {
     enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
+    swaggerModelName:"Swagger Models",//重命名界面Swagger Model的显示名称
+    enableReloadCacheParameter:false,// 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
+    enableAfterScript:true,//调试Tab是否显示AfterScript功能,默认开启
     enableDocumentManage:true,//是否显示界面中"文档管理"功能
+    enableVersion:false,//是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
     showApiUrl: false, //接口api地址不显示
     showTagStatus: false, //分组tag显示description属性,针对@Api注解没有tags属性值的情况
     enableSwaggerBootstrapUi: false, //是否开启swaggerBootstrapUi增强
@@ -65,6 +69,12 @@ const constants = {
   },
   //增强配置
   defaultPlusSettings: {
+    enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
+    swaggerModelName:"Swagger Models",//重命名界面Swagger Model的显示名称
+    enableReloadCacheParameter:false,// 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
+    enableAfterScript:true,//调试Tab是否显示AfterScript功能,默认开启
+    enableDocumentManage:true,//是否显示界面中"文档管理"功能
+    enableVersion:false,//是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
     showApiUrl: false, //接口api地址不显示
     showTagStatus: false, //分组tag显示description属性,针对@Api注解没有tags属性值的情况
     enableSwaggerBootstrapUi: true, //是否开启swaggerBootstrapUi增强
@@ -74,7 +84,9 @@ const constants = {
     enableFilterMultipartApiMethodType: "POST", //默认保存类型
     enableRequestCache: true, //是否开启请求参数缓存
     enableCacheOpenApiTable: false, //是否开启缓存已打开的api文档
-    language: "zh" //默认语言版本
+    enableHost:false,//是否启用Host
+    enableHostText:"",//启用Host后文本
+    language: "zh-CN" //默认语言版本
   },
   debugRequestHeaders: ["Accept",
     "Accept-Charset",
