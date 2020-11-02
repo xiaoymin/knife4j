@@ -23,7 +23,8 @@ const langOptions = {
       },
       {
         title: '说明',
-        dataIndex: 'description'
+        dataIndex: 'description',
+        scopedSlots: { customRender: 'descriptionValueTemplate' }
       },
       {
         title: 'schema',
@@ -110,6 +111,7 @@ const langOptions = {
       {
         title: '参数说明',
         dataIndex: 'description',
+        scopedSlots: { customRender: 'descriptionTemplate' },
         width: '40%'
       },
       {

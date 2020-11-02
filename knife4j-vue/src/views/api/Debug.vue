@@ -8,7 +8,7 @@
         <a-input-group compact>
           <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
           <a-input
-            style="width: 80%"
+            :style="debugUrlStyle"
             :value="debugUrl"
             @change="debugUrlChange"
           />
@@ -19,6 +19,7 @@
             @click="sendRestfulApi"
             >发 送</a-button
           >
+          <a-button v-if="enableReloadCacheParameter" @click="reloadCacheParameter">刷新变量</a-button>
         </a-input-group>
       </a-col>
     </a-row>
@@ -395,7 +396,7 @@
             ></editor-debug-show>
           </a-row>
         </a-tab-pane>
-        <a-tab-pane key="3" tab="AfterScript">
+        <a-tab-pane v-if="enableAfterScript" key="3" tab="AfterScript">
           <a-row style="height:25px;line-height:25px;">
             关于AfterScript更详细的使用方法及介绍,请<a href="https://gitee.com/xiaoym/knife4j/wikis/AfterScript" target="_blank">参考文档</a>
           </a-row>
@@ -459,6 +460,7 @@ export default {
     return {
       i18n:null,
       //是否开启缓存
+      debugUrlStyle:"width: 80%",
       enableRequestCache: false,
       //是否动态参数
       enableDynamicParameter: false,
@@ -552,10 +554,21 @@ export default {
     this.initDebugUrl();
     //显示表单参数
     //this.initShowFormTable();
+    if(this.enableReloadCacheParameter){
+      this.debugUrlStyle="width: 70%;"
+    }else{
+      this.debugUrlStyle="width: 80%;"
+    }
   },
   computed:{
     language(){
        return this.$store.state.globals.language;
+    },
+    enableAfterScript(){
+        return this.$store.state.globals.enableAfterScript;
+    },
+    enableReloadCacheParameter(){
+        return this.$store.state.globals.enableReloadCacheParameter;
     }
   },
   watch:{
@@ -564,6 +577,152 @@ export default {
     }
   },
   methods: {
+    reloadCacheParameter(){
+      console.log("刷新变量,从缓存中重新读取变量值")
+      //刷新变量,从缓存中重新读取变量值
+      //初始化读取本地缓存全局参数
+      //this.initLocalGlobalParameters();
+      //只更新变量,不做增加等任何处理
+      var tempglobalParameters=[];
+      const key = this.api.instanceId;
+      console.log(this.headerData);
+      //初始化读取本地缓存全局参数
+      this.$localStore.getItem(constant.globalParameter).then(val => {
+        if (val != null) {
+          if (val[key] != undefined && val[key] != null) {
+            tempglobalParameters = val[key];
+          }
+        }
+        if(KUtils.arrNotEmpty(tempglobalParameters)){
+          //更新header
+          this.reloadUpdateHeader(tempglobalParameters);
+          //根据不同的请求类型,更新不同的请求参数
+          if (this.rawFlag) {
+            //更新rawForm
+            this.reloadUpdateRawForm(tempglobalParameters);
+          } else if (this.formFlag) {
+            //更新form
+            this.reloadUpdateForm(tempglobalParameters);
+          } else if (this.urlFormFlag) {
+            //更新url-form
+            this.reloadUpdateUrlForm(tempglobalParameters);
+          }
+        }
+      });
+    },
+    /**
+     * 根据原始数据得到最终要更新的数据和更新标志
+     * @originalDatas 原始数据
+     * @type 类型，主要 ：header\query
+     */
+    reloadUpdateCommons(tempglobalParameters,originalDatas,type){
+      var tempArrays=[];
+      var tempUpdateFlag=false;
+      var add=false;
+      //1、判断原始数据中是否存在要更新的值
+      if(KUtils.arrNotEmpty(originalDatas)){
+        originalDatas.forEach(tempData=>{
+          //查找是否存在
+          var tempId=tempData.name+type;
+          var tempFilterArr=tempglobalParameters.filter(t=>t.pkid==tempId);
+          if(KUtils.arrNotEmpty(tempFilterArr)){
+            var tempCache=tempFilterArr[0];
+            var teampValue=KUtils.getValue(tempCache,"value","",true);
+            //更新
+            tempData.content=teampValue;
+            tempUpdateFlag=true;
+          }
+          tempArrays.push(tempData);
+        })
+      }
+      //第2种情况，判断是否有新增的值
+      var tempFilterArr=tempglobalParameters.filter(tp=>tp.in==type);
+      if(KUtils.arrNotEmpty(tempFilterArr)){
+        //查找是否有新增的值
+        tempFilterArr.forEach(tpdata=>{
+          //判断是否存在,如果不存在，代表新增
+          var addDateArr=tempArrays.filter(th=>th.name==tpdata.name);
+          if(!KUtils.arrNotEmpty(addDateArr)){
+            //存在新增的值
+            var newData = {
+              id: KUtils.randomMd5(),
+              name: tpdata.name,
+              content: tpdata.value,
+              require: true,
+              description: "",
+              enums: null, //枚举下拉框
+              //枚举是否支持多选('default' | 'multiple' )
+              enumsMode:"default",
+              new: false
+            };
+            tempArrays.push(newData);
+            tempUpdateFlag=true;
+            add=true;
+          }
+        })
+      }
+      console.log(tempArrays)
+      return {
+        update:tempUpdateFlag,
+        data:tempArrays,
+        add:add
+      }
+    },
+    reloadUpdateHeader(tempglobalParameters){
+      var newDataObject=this.reloadUpdateCommons(tempglobalParameters,this.headerData,"header");
+      //如果两种情况只需要1种情况存在更新,那么重新更新当前Header
+      if(newDataObject.update){
+        this.headerData=[];
+        setTimeout(()=>{
+          this.headerData=newDataObject.data;
+          if(newDataObject.add){
+            //如果有新增，刷新选中
+            this.initSelectionHeaders();
+            //计算heaer数量
+            this.headerResetCalc();
+          }
+        },10)
+      }
+    },
+    reloadUpdateUrlForm(tempglobalParameters){
+      var newDataObject=this.reloadUpdateCommons(tempglobalParameters,this.urlFormData,"query");
+      //判断是否需要更新
+      if(newDataObject.update){
+        this.urlFormData=[];
+        setTimeout(()=>{
+          this.urlFormData=newDataObject.data;
+          if(newDataObject.add){
+            this.initUrlFormSelections();
+          }
+        },10)
+      }
+    },
+    reloadUpdateForm(tempglobalParameters){
+      var newDataObject=this.reloadUpdateCommons(tempglobalParameters,this.formData,"query");
+      if(newDataObject.update){
+        this.formData=[];
+        setTimeout(()=>{
+          this.formData=newDataObject.data;
+          if(newDataObject.add){
+            this.initFormSelections();
+          }
+        },10)
+      }
+    },
+    reloadUpdateRawForm(tempglobalParameters){
+      var newDataObject=this.reloadUpdateCommons(tempglobalParameters,this.rawFormData,"query");
+      if(newDataObject.update){
+        this.rawFormData=[];
+        setTimeout(()=>{
+            this.rawFormData=newDataObject.data;
+            if(newDataObject.add){
+              this.rawFormFlag=true;
+              this.rawFormTableFlag=true;
+              this.initRawFormSelections();
+            }
+        },10)
+      }
+    },
     getCurrentI18nInstance(){
       return this.$i18n.messages[this.language];
     },
@@ -737,7 +896,6 @@ export default {
       });
     },
     updateHeaderFromCacheApi(cacheApi) {
-      //console("从缓存中更新header参数");
       //从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
@@ -784,7 +942,6 @@ export default {
       }
     },
     updateRawFormCacheApi(cacheApi) {
-      //console("从缓存中更新rawForm参数");
       //从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
@@ -844,7 +1001,6 @@ export default {
       var bodyParameters = this.globalParameters.filter(
         param => param.in != "header"
       );
-      //console.log(bodyParameters);
       var bodyData = [];
       //接口本身的参数对象
       var tmpApiParameters = this.api.parameters;
@@ -896,6 +1052,7 @@ export default {
           }
         });
       }
+     
       if(KUtils.arrNotEmpty(this.authorizeQueryParameters)){
         this.authorizeQueryParameters.forEach(aqp=>{
           showGlobalParameters.push(aqp);
@@ -911,7 +1068,6 @@ export default {
         var bodySize = showApiParameters.filter(param => param.in == "body")
           .length;
         if (bodySize == 1) {
-          //console("显示raw类型");
           //console(showApiParameters);
           //判断raw类型是否还存在query类型的参数,如果存在,加入rawFormdata集合中
           var rawQueryParams = showApiParameters.filter(
@@ -986,6 +1142,8 @@ export default {
        
       }
       this.updateScriptFromCache(cacheApi);
+      this.updateHeaderFromCacheApi(cacheApi);
+      this.hideDynamicParameterTable();
       //console.log(this.urlFormData);
     },
     updateScriptFromCache(cacheApi){
@@ -1022,6 +1180,9 @@ export default {
           this.rawFormTableFlag = true;
         }
       }
+      this.initSelectionHeaders();
+      //计算heaer数量
+      this.headerResetCalc();
     },
     addNewLineHeader() {
       if (this.enableDynamicParameter) {
@@ -2332,6 +2493,26 @@ export default {
           data:requestData,params:requestParams
         }
     },
+    debugCheckUrl(url){
+      //如果服务端开启了enableUrlTemplating，正常参数会出现在url中
+      //比如：/api/nxew205/reqEnumArr{?errorCodes,name}
+      //https://gitee.com/xiaoym/knife4j/issues/I22J5Q
+      //针对这种形式，直接去除地址栏后面的{?errorCodes,name}模板参数，因为axios在发送的时候会直接带上参数地址,这样也避免参数丢失和访问接口出现404
+      var checkUrl=url;
+      try{
+        var reg=new RegExp('.*?(\{.*?\})$',"ig");
+        if(reg.test(url)){
+          var rr=RegExp.$1;
+          checkUrl=url.replace(rr,"");
+        }
+      }catch(e){
+        //ignore
+        if(window.console){
+          console.error(e);
+        }
+      }
+      return checkUrl;
+    },
     debugSendUrlFormRequest() {
       //发送url-form类型的请求
       //console("发送url-form接口");
@@ -2352,7 +2533,8 @@ export default {
           //是path类型的接口,需要对地址、参数进行replace处理
           this.debugPathParams.forEach(pathKey => {
             var replaceRege = "{" + pathKey + "}";
-            var value = formParams[pathKey];
+            //var value = formParams[pathKey];
+            var value=KUtils.getValue(formParams,pathKey,"",true);
             url = url.replace(replaceRege, value);
           });
           for (var key in formParams) {
@@ -2380,7 +2562,7 @@ export default {
         //console.log(applyReuqest)
         var requestConfig = {
           baseURL:baseUrl,
-          url: url,
+          url: this.debugCheckUrl(url),
           method: methodType,
           headers: headers,
           params: applyReuqest.params,
@@ -2476,7 +2658,7 @@ export default {
         }
         var requestConfig = {
           baseURL:baseUrl,
-          url: url,
+          url: this.debugCheckUrl(url),
           method: methodType,
           headers: headers,
           timeout: 0,
@@ -2547,7 +2729,8 @@ export default {
           //是path类型的接口,需要对地址、参数进行replace处理
           this.debugPathParams.forEach(pathKey => {
             var replaceRege = "{" + pathKey + "}";
-            var value = formParams[pathKey];
+            //var value = formParams[pathKey];
+            var value=KUtils.getValue(formParams,pathKey,"",true);
             url = url.replace(replaceRege, value);
           });
           for (var key in formParams) {
@@ -2572,7 +2755,7 @@ export default {
         }
         var requestConfig={
           baseURL:baseUrl,
-          url: url,
+          url: this.debugCheckUrl(url),
           method: methodType,
           headers: headers,
           params: formParams,
@@ -2762,7 +2945,8 @@ export default {
     },
     setResponseCurl(resp) {
       var that = this;
-      var url = this.debugUrl;
+      var url = this.debugCheckUrl(this.debugUrl);
+      //console.log("setResponseCurl:"+url)
       //构建请求响应CURL
       var curlified = new Array();
       var protocol = "http";
@@ -3088,7 +3272,8 @@ export default {
               blobFlag: true,
               imageFlag: imageFlag,
               blobFileName: fileName,
-              blobUrl: downloadurl
+              blobUrl: downloadurl,
+              base64:""
             };
           } else {
             this.setResponseJsonBody(resp, headers);
@@ -3100,6 +3285,7 @@ export default {
       //判断响应的类型
       //var _text = resp.responseText;
       var _text = "";
+      var _base64 = "";
       var mode = this.getContentTypeByHeaders(headers);
       //console.log("动态mode-- ---" + mode);
       //console(res);
@@ -3128,6 +3314,17 @@ export default {
             }
           }
         }
+       if (KUtils.strNotBlank(resp.responseText)) {
+        var base64ImageRegex=new RegExp(".*?\"(data:image.*?base64.*?)\".*","ig");
+        if(base64ImageRegex.test(resp.responseText)){
+          var s=RegExp.$1;
+          _base64=s;
+        }
+       }
+        /* if(_text.indexOf("data:image/jpg;base64") > -1) {
+            let newStr = _text.substring(_text.indexOf("data:image/jpg;base64"));
+            _base64 = newStr.substring(0, newStr.indexOf("\","))
+        } */
       } else if (mode == "xml") {
         var tmpXmlText = resp.responseText;
         if (KUtils.strNotBlank(tmpXmlText)) {
@@ -3145,7 +3342,8 @@ export default {
         blobFlag: false,
         imageFlag: false,
         blobFileName: "",
-        blobUrl: ""
+        blobUrl: "",
+        base64: _base64
       };
     },
     debugEditorChange(value) {

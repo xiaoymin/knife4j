@@ -3,7 +3,7 @@ import constant from '@/store/constants'
 import KUtils from '@/core/utils';
 
 var KEnvironment =function(settings){
-  window.console.log(settings)
+  //window.console.log(settings)
   this.groupid=settings.groupid||'afterScriptGroup';
   this.allgroupids=settings.allgroupids||[];
   this.response=settings.response||{
@@ -86,6 +86,8 @@ var KEnvironment =function(settings){
                 }
                 tmpVal[gid]=tmpValue;
               }
+              window.console.log("更新value")
+              window.console.log(tmpVal)
             })
             //存储
             localStore.setItem(constant.globalParameter, tmpVal);

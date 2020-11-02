@@ -3,7 +3,7 @@ import md5 from 'js-md5'
 import JSON5 from './json5'
 import isObject from 'lodash/isObject'
 import isNumber from 'lodash/isNumber'
-
+ 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
 const binaryContentType = {
   "application/octet-stream": true,

@@ -16,7 +16,11 @@
             :rowKey="unionKey"
             size="middle"
             :pagination="page"
-          />
+          >
+          <template slot="descriptionValueTemplate" slot-scope="text">
+            <span v-html="text"></span>
+          </template>
+          </a-table>
         </a-collapse-panel>
       </a-collapse>
     </div>

@@ -62,7 +62,7 @@ function createApiRequestParameters(apiInfo, markdownCollections) {
   if (reqParameters.length > 0) {
     markdownLines(markdownCollections);
     //拥有参数
-    markdownCollections.push('| 参数名称 | 参数说明 | in    | 是否必须 | 数据类型 | schema |');
+    markdownCollections.push('| 参数名称 | 参数说明 | 请求类型    | 是否必须 | 数据类型 | schema |');
     markdownCollections.push('| -------- | -------- | ----- | -------- | -------- | ------ |');
     //级联表格，在表格需要最佳空格缩进符号
     deepMdTableByRequestParameter(reqParameters, markdownCollections, 1);

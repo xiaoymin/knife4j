@@ -15,7 +15,7 @@
         </div>
         <div class="knife4j-menu">
           <a-menu key="Menu" theme="dark" mode="inline" :inlineCollapsed="collapsed" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 2px 0; width: 100%">
-            <ThreeMenu :menuData="localMenuData" :collapsed="collapsed" />
+            <ThreeMenu :menuData="localMenuData" :collapsed="collapsed"/>
           </a-menu>
         </div>
       </a-layout-sider>
@@ -99,6 +99,7 @@ export default {
   },
   beforeCreate() {},
   created() {
+    //this.initSpringDocOpenApi();
     this.initKnife4jSpringUi();
     //this.initKnife4jFront();
     this.initI18n();
@@ -224,7 +225,9 @@ export default {
           val.enableSwaggerBootstrapUi = defaultPlusSettings.enableSwaggerBootstrapUi
           val.enableRequestCache = defaultPlusSettings.enableRequestCache;
         } //如果本地存在,则使用本地的
-        settings = val;
+        //这里有问题
+         var mergeSetting=Object.assign({},defaultSettings,val);
+        settings = mergeSetting;
       } else {
         if (that.plus) {
           settings = defaultPlusSettings;
@@ -242,6 +245,73 @@ export default {
         cacheApis = gitVal;
       }
       return cacheApis;
+    },
+    initSpringDocOpenApi(){
+      //该版本是最终打包到knife4j-springdoc-ui的模块
+      var that = this;
+      var i18nParams=this.getI18nFromUrl();
+      var tmpI18n=i18nParams.i18n;
+      //console.log(tmpI18n)
+      //读取settings
+      this.$localStore.getItem(constant.globalSettingsKey).then(settingCache=>{
+        var settings=this.getCacheSettings(settingCache);
+        //console.log("layout---")
+        //console.log(settings)
+        //重新赋值是否开启增强
+        if(!settings.enableSwaggerBootstrapUi){
+           settings.enableSwaggerBootstrapUi=this.getPlusStatus();
+        }
+        that.$localStore.setItem(constant.globalSettingsKey, settings);
+        this.$localStore.getItem(constant.globalGitApiVersionCaches).then(gitVal=>{
+          var cacheApis=this.getCacheGitVersion(gitVal);
+          if(i18nParams.include){
+            //写入本地缓存
+            this.$store.dispatch("globals/setLang", tmpI18n);
+            this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
+            this.$i18n.locale = tmpI18n;
+            this.enableVersion=settings.enableVersion;
+            this.initSwagger({
+              springdoc:true,
+              baseSpringFox:true,
+              store:this.$store,
+              localStore:this.$localStore,
+              settings:settings,
+              cacheApis:cacheApis, 
+              routeParams: that.$route.params, 
+              plus: this.getPlusStatus(),
+              i18n:tmpI18n,
+              i18nVue:this.$i18n,
+              configSupport:false,
+              i18nInstance:this.getCurrentI18nInstance() 
+              })
+          }else{
+            //不包含
+            //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
+            this.$localStore.getItem(constant.globalI18nCache).then(i18n => {
+              if(KUtils.checkUndefined(i18n)){
+                this.$store.dispatch("globals/setLang", i18n);
+                tmpI18n=i18n;
+              }
+              this.$i18n.locale = tmpI18n;
+              this.enableVersion=settings.enableVersion;
+              this.initSwagger({
+                springdoc:true,
+                baseSpringFox:true,
+                store:this.$store,
+                localStore:this.$localStore,
+                settings:settings,
+                cacheApis:cacheApis, 
+                routeParams: that.$route.params, 
+                plus: this.getPlusStatus(),
+                i18n:tmpI18n,
+                i18nVue:this.$i18n,
+                configSupport:false,
+                i18nInstance:this.getCurrentI18nInstance() 
+                })
+            })
+          }
+        })
+      })
     },
     initKnife4jSpringUi() {
       //该版本是最终打包到knife4j-spring-ui的模块,默认是调用该方法
@@ -266,7 +336,9 @@ export default {
             this.$store.dispatch("globals/setLang", tmpI18n);
             this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
             this.$i18n.locale = tmpI18n;
+            this.enableVersion=settings.enableVersion;
             this.initSwagger({
+              baseSpringFox:true,
               store:this.$store,
               localStore:this.$localStore,
               settings:settings,
@@ -287,7 +359,9 @@ export default {
                 tmpI18n=i18n;
               }
               this.$i18n.locale = tmpI18n;
+              this.enableVersion=settings.enableVersion;
               this.initSwagger({
+                baseSpringFox:true,
                 store:this.$store,
                 localStore:this.$localStore,
                 settings:settings,

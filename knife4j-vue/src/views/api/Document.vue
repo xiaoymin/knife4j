@@ -61,7 +61,7 @@
     </div>
     <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small" :pagination="page">
       <template slot="descriptionValueTemplate" slot-scope="text,record">
-        {{ text }}
+        <span v-html="text"></span>
         <span v-if="record.example">,示例值({{record.example}})</span>
       </template>
       <template slot="requireTemplate" slot-scope="text">
@@ -101,6 +101,9 @@
             响应参数
           </div>
           <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data" rowKey="id" size="small" :pagination="page">
+            <template slot="descriptionTemplate" slot-scope="text">
+              <span v-html="text"></span>
+            </template>
           </a-table>
           <div class="api-title" v-html="$t('doc.responseExample')">
             响应示例
@@ -129,6 +132,9 @@
         响应参数
       </div>
       <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data" rowKey="id" size="small" :pagination="page">
+        <template slot="descriptionTemplate" slot-scope="text">
+          <span v-html="text"></span>
+        </template>
       </a-table>
       <div class="api-title" v-html="$t('doc.responseExample')">
         响应示例
