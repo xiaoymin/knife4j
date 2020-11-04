@@ -37,7 +37,6 @@
         <p>{{ feature.details }}</p>
       </div>
     </div>
-
     <Content custom/>
 
     <div
