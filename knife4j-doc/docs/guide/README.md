@@ -68,12 +68,12 @@
 
 ## UI效果图
 
-![接口说明](/static/des.png)
+![接口说明](/knife4j/static/des.png)
 
-![接口调试](/static/debug.png)
+![接口调试](/knife4j/static/debug.png)
 
-![个性化设置](/static/settings.png)
+![个性化设置](/knife4j/static/settings.png)
 
-![接口离线文档](/static/markdown.png)
+![接口离线文档](/knife4j/static/markdown.png)
 
-![SwaggerModels](/static/models.png)
+![SwaggerModels](/knife4j/static/models.png)
