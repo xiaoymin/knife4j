@@ -101,7 +101,7 @@ public class UptModel {
 
 此时，最终过过滤掉`UptModel`的属性id和属性`orderDate`类中的id属性,不在界面显示.
 
-![](/images/ignore1.png)
+![](/knife4j/images/ignore1.png)
 
 ## JSON参数
 
@@ -124,5 +124,5 @@ public Rest<UptModel> insertModel(@RequestBody UptModel uptModel){
 
 最终忽略的值为`ignoreParameters = {"uptModel.id","uptModel.name","uptModel.orderDate.id"}`
 
-![](/images/ignore2.png)
+![](/knife4j/images/ignore2.png)
 

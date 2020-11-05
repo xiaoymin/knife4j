@@ -59,7 +59,7 @@ After all the above background settings are completed, you need to check the Ena
 
 Function Directory: **Document Management -> Personalization**
 
-![](images/ehn-fun.png)
+![](/knife4j/images/ehn-fun.png)
 
 
  

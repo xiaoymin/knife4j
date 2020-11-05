@@ -38,7 +38,7 @@ When this property is configured, all resources are disabled.
 
 like：
 
-![](/images/ac.png)
+![](/knife4j/images/ac.png)
 
 ## Access page weighting control
 
@@ -53,7 +53,7 @@ But in ` 1.9.0 ` version, in view of the resource interface Swagger, ` SwaggerBo
 
 like ：
 
-![](/images/ac-pwd.png)
+![](/knife4j/images/ac-pwd.png)
 
 Allows developers in the configuration file to configure a static user name and password, when docking access Swagger page, enter the configuration of a user name and password to access Swagger document page, if you use SpringBoot development, simply in the corresponding ` application.properties ` or ` application.yml ` configuration is as follows:
 

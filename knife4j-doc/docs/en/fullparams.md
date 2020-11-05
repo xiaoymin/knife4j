@@ -8,4 +8,4 @@ This feature is a temporary configuration feature that does not support global p
 
 Function Directory: **Document Management -> Global Parameter Settings**
 
-![](images/fullparams.png)
+![](/knife4j/images/fullparams.png)

@@ -10,7 +10,7 @@ swagger-bootstrap-ui 1.8.4 主要更新如下：
 
 3、fixed 两个list里放同一个bean，一个显示一个不显示[issue #IMXOY @Gitee](https://gitee.com/xiaoym/swagger-bootstrap-ui/issues/IMXOY)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.4-issue/list-bean.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.4-issue/list-bean.png)
 
 4、fixed 同时传输文本信息和文件时，值重复[issue #IMXDT @Gitee](https://gitee.com/xiaoym/swagger-bootstrap-ui/issues/IMXDT)
 
@@ -30,7 +30,7 @@ swagger-bootstrap-ui 1.8.4 主要更新如下：
 
 12、fixed curl响应参数,针对中文urlencode处理
 
-![](/images/blog/swagger-bootstrap-ui-1.8.4-issue/urlencode.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.4-issue/urlencode.png)
 
 
 

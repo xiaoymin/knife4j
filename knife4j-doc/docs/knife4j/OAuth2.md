@@ -29,7 +29,7 @@ public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
 界面效果如下：
 
-![](/images/knife4j/oauth2/oauth-implicit.png)
+![](/knife4j/images/knife4j/oauth2/oauth-implicit.png)
 
 使用者直接输入`clientId`，点击授权,此时进行调整授权界面,开发者授权即可
 
@@ -96,7 +96,7 @@ public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 ```
 界面效果如下：
 
-![](/images/knife4j/oauth2/oauth-authorization.png)
+![](/knife4j/images/knife4j/oauth2/oauth-authorization.png)
 
 使用者直接输入`clientId`及`clientSecret`后，点击授权,此时进行调整授权界面,开发者授权即可
 
@@ -148,7 +148,7 @@ public Docket defaultApi2() {
 
 界面效果如下：
 
-![](/images/knife4j/oauth2/oauth-client.png)
+![](/knife4j/images/knife4j/oauth2/oauth-client.png)
 
 使用者直接输入`clientId`及`clientSecret`后，点击授权即可
 
@@ -199,7 +199,7 @@ public Docket defaultApi2() {
 
 界面效果如下：
 
-![](/images/knife4j/oauth2/oauth-password.png)
+![](/knife4j/images/knife4j/oauth2/oauth-password.png)
 
 使用者直接输入`username`,`password`,`clientId`及`clientSecret`后，点击授权即可
 

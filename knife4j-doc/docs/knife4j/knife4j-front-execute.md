@@ -3,7 +3,7 @@
 
 `knife4j`的整个执行初始化过程如下图：
 
-![](/images/knife4j/execute.png)
+![](/knife4j/images/knife4j/execute.png)
 
 上图中的蓝色接口(全部是springfox框架提供)说明如下：
 

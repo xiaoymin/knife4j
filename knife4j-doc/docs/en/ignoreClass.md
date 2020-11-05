@@ -18,7 +18,7 @@ public Rest<Order> createOrdetr(@RequestBody Order order, HttpSession httpSessio
 
 我们在我们的方法上接收了一个`HttpSession`的参数对象,此时,我们来看我们的文档页面效果
 
-![](/images/springfox/springfox-ignore-class.png)
+![](/knife4j/images/springfox/springfox-ignore-class.png)
 
 在我们的文档介绍页面中,多出了很多我们自认为不必要的参数,因为`HttpSession`对象我们并不需要传参处理,该对象我们是直接拿来使用对session进行操作的
 
@@ -128,4 +128,4 @@ public Docket groupRestApi() {
 
 最终的效果如下：
 
-![](/images/springfox/springfox-ignore-class1.png)
+![](/knife4j/images/springfox/springfox-ignore-class1.png)

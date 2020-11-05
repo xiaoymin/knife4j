@@ -31,10 +31,10 @@ Swagger-Bootstrap-Ui 1.8.9 主要更新如下：
 ## UI效果展示
 
 ![header-json.png](/images/blog/swagger-bootstrap-ui-1.8.9-issue/1.png)
-![](/images/blog/swagger-bootstrap-ui-1.8.9-issue/2.png)
-![](/images/blog/swagger-bootstrap-ui-1.8.9-issue/3.png)
-![](/images/blog/swagger-bootstrap-ui-1.8.9-issue/4.png)
-![](/images/blog/swagger-bootstrap-ui-1.8.9-issue/5.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.9-issue/2.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.9-issue/3.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.9-issue/4.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.9-issue/5.png)
 
 ## 项目地址
 

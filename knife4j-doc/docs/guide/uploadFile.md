@@ -43,9 +43,9 @@ public RestMessage uploadMaterial(@RequestParam(value="file[]",required = true) 
 
 在Ui的界面中,显示效果如下：
 
-![](/images/multipartUpload1.png)
+![](/knife4j/images/multipartUpload1.png)
 
-![](/images/multipartUpload2.png)
+![](/knife4j/images/multipartUpload2.png)
 
 ## 多文件File类型上传
 
@@ -63,9 +63,9 @@ public RestMessage uploadMaterial1(@RequestParam(value="file[]",required = true)
 }
 ```
 
-![](/images/multipartFile2.png)
+![](/knife4j/images/multipartFile2.png)
 
-![](/images/multipartFile1.png)
+![](/knife4j/images/multipartFile1.png)
 
 ## 单文件File类型上传
 
@@ -83,8 +83,8 @@ public RestMessage uploadMaterial2(@RequestParam(value="file",required = true) M
 }
 ```
 
-![](/images/upfile1.png)
+![](/knife4j/images/upfile1.png)
 
-![](/images/upfile2.png)
+![](/knife4j/images/upfile2.png)
 
 以上三种情况示例可参考demo代码[**UploadController.java**](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/blob/master/swagger-bootstrap-ui-demo/src/main/java/com/swagger/bootstrap/ui/demo/controller/UploadController.java)

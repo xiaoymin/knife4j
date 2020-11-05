@@ -108,5 +108,5 @@ c、所以排序的取值规则是：position>@ApiOperationSort
 
 功能目录：**文档管理 -> 个性化设置**
 
-![](/images/ehn-fun.png)
+![](/knife4j/images/ehn-fun.png)
 

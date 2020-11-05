@@ -3,7 +3,7 @@ Whether in the previous version of SwaggerBootstrapUi, or in the 1.8.9 version o
 
 The function of 1.8.9 is shown below.：
 
-![](images/nf2.png)
+![](/knife4j/images/nf2.png)
 
 Under normal circumstances, the above field description will be displayed whether it is debugging or documentation (unless you have not written an explanation)
 
@@ -18,7 +18,7 @@ Do not display the effect may be as shown below：
 
 Return Object does not display field properties
 
-![](images/nf3.png)
+![](/knife4j/images/nf3.png)
 
 
 
@@ -56,7 +56,7 @@ public T getData(){
 
 The most important step, the above steps are completely correct, the code is no problem, but ui still does not display attributes, you must strongly specify the generic type in the interface layer (may be Swagger requires us to write code to be standardized ~~~), as follows：
 
-![](images/nf4.png)
+![](/knife4j/images/nf4.png)
 
 If the above situation is ok, or do not show instructions, congratulations you found a bug in SwaggerBootstrapUi, welcome to mention the [issue](https://gitee.com/xiaoym/swagger-bootstrap-ui/issues) feedback, I will get it ~~!
 

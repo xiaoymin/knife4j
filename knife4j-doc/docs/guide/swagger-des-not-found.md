@@ -4,7 +4,7 @@
 
 1.8.9的功能展示如下图：
 
-![](/images/nf2.png)
+![](/knife4j/images/nf2.png)
 
 正常情况下,不管是调试还是文档说明都会显示以上字段说明(除非你没写注解说明)
 
@@ -19,7 +19,7 @@
 
 返回Object不显示字段属性
 
-![](/images/nf3.png)
+![](/knife4j/images/nf3.png)
 
 
 
@@ -57,7 +57,7 @@ public T getData(){
 
 最重要的一步,以上步骤完全正确,代码也没有问题,可是ui还是不显示属性，必须在接口层强指定泛型类型(可能是Swagger要求我们写代码要规范吧~~~),如下：
 
-![](/images/nf4.png)
+![](/knife4j/images/nf4.png)
 
 如果以上情况都ok，还是不显示说明,恭喜你发现了SwaggerBootstrapUi的一个bug，欢迎提[issue](https://gitee.com/xiaoym/swagger-bootstrap-ui/issues)反馈给我,我会搞定它的~~！
 

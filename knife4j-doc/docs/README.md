@@ -94,15 +94,15 @@ Java开发使用`Knife4j`目前有一些不同的版本变化，主要如下：
 
 ### 效果预览
 
-![](img/k2/1.png)
-![](img/k2/5.png)
-![](img/k2/6.png)
-![](img/k2/8.png)
+![](/knife4j/img/k2/1.png)
+![](/knife4j/img/k2/5.png)
+![](/knife4j/img/k2/6.png)
+![](/knife4j/img/k2/8.png)
 
 ### 关注 & 交流
 
 关注我的微信公众号,实时了解`swagger-bootstrap-ui`的最新资讯~~~~
 
-![](img/wechat.png)
+![](/knife4j/img/wechat.png)
 
 

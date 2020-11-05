@@ -86,7 +86,7 @@ swagger.production=true
 
 效果图如下：
 
-![](/images/ac.png)
+![](/knife4j/images/ac.png)
 
 ## 访问页面加权控制
 
@@ -98,7 +98,7 @@ swagger.production=true
 
 效果图如下：
 
-![](/images/ac-pwd.png)
+![](/knife4j/images/ac-pwd.png)
 
 允许开发者在配置文件中配置一个静态的用户名和密码,当对接者访问Swagger页面时,输入此配置的用户名和密码后才能访问Swagger文档页面,如果您使用SpringBoot开发,则只需在相应的`application.properties`或者`application.yml`中配置如下：
 

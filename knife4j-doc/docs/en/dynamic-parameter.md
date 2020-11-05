@@ -68,8 +68,8 @@ public Rest<Map> createOrder12232(@RequestBody Map map){
 
 最终,页面效果呈现如下：
 
-![](/images/1-9-4/dynamic-map.png)
-![](/images/1-9-4/dynamic-json.png)
+![](/knife4j/images/1-9-4/dynamic-map.png)
+![](/knife4j/images/1-9-4/dynamic-json.png)
 
 
 **注意**

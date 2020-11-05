@@ -19,7 +19,7 @@
 
 1、首先,在Gitee的仓库[https://gitee.com/xiaoym/knife4j](https://gitee.com/xiaoym/knife4j)下载,主要是`knife4j-vue`这个文件夹,如下图：
 
-![](/img/knife4j/test-pre1.png)
+![](/knife4j/img/knife4j/test-pre1.png)
 
 
 `knife4j`在2.x系列的版本后,使用Vue技术栈真正的前后端分离开发,`knife4j-vue`是前端的源码
@@ -59,7 +59,7 @@ devServer: {
 
 微服务架构比较麻烦,目前比较好的方式只能是将仓库源码下载下来后,项目代码下图中：
 
-![](/img/knife4j/test-pre2.png)
+![](/knife4j/img/knife4j/test-pre2.png)
 
 然后进入该目录,在本地执行`mvn install`命令将knife4j的包在本地安装一份副本
 

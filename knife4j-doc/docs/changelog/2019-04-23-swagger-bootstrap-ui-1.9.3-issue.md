@@ -40,10 +40,10 @@ swagger-bootstrap-ui 1.9.3 发布了。swagger-bootstrap-ui是 Swagger 的增强
 ## UI效果展示
 
 ![header-json.png](/images/blog/swagger-bootstrap-ui-1.9.3-issue/1.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.3-issue/2.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.3-issue/3.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.3-issue/4.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.3-issue/5.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.3-issue/2.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.3-issue/3.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.3-issue/4.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.3-issue/5.png)
 
 ## 项目地址
 
@@ -65,4 +65,4 @@ swagger-bootstrap-ui 1.9.3 发布了。swagger-bootstrap-ui是 Swagger 的增强
 
 关注我的微信公众号,实时了解`swagger-bootstrap-ui`的最新资讯~~~~
 
-![](/images/blog/swagger-bootstrap-ui-1.9.3-issue/us.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.3-issue/us.png)

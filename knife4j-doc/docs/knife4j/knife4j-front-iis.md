@@ -12,7 +12,7 @@
 
 接下来,我们在同目录中创建该文件,如下图：
 
-![](/images/knife4j/knife4j-front-group.png)
+![](/knife4j/images/knife4j/knife4j-front-group.png)
 
 `services.json`文件的内容参考java技术体系接口返回的结构即可,如下：
 ```json
@@ -36,11 +36,11 @@
 
 该JSON结构返回的是真正的Swagger结构,结构如下图：
 
-![](/images/knife4j/knife4j-front-instance.png)
+![](/knife4j/images/knife4j/knife4j-front-instance.png)
 
 构造虚拟的JSON结构完成后,接下来启动IIS服务,在浏览器访问地址(`http://localhost:port/doc.html`),效果如下：
 
-![](/images/knife4j/knife4j-front-efffect.png)
+![](/knife4j/images/knife4j/knife4j-front-efffect.png)
 
 
 

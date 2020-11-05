@@ -13,4 +13,4 @@
 
 效果图:
 
-![](/images/1-9-3/version-control.png)
+![](/knife4j/images/1-9-3/version-control.png)

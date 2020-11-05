@@ -12,17 +12,17 @@ swagger-bootstrap-ui 1.7.7 主要更新如下：
 
 3、响应json属性太多，文档太长,不利于查看,使用jsonview插件格式化,可收缩,便于查看
 
-![](/images/blog/swagger-bootstrap-ui-1.7.7-issue/json.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.7-issue/json.png)
 
 4、fixed 对象属性值存在required属性时,值显示不对bug
 
 5、兼容firefox,文档菜单换行显示异常问题
 
-![](/images/blog/swagger-bootstrap-ui-1.7.7-issue/firefox.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.7-issue/firefox.png)
 
 6、新增枚举请求参数类型支持,调试页面枚举类型为下拉框
 
-![](/images/blog/swagger-bootstrap-ui-1.7.7-issue/enum.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.7-issue/enum.png)
 
 7、fixed 请求swagger-resources接口响应为string类型，文档无法展示,格式化json展示文档
 

@@ -6,8 +6,8 @@ But SwaggerBootstrapUi in the later development, drawing on the views of develop
 
 **Field description**：
 
-![](/images/fieldsort.png)
+![](/knife4j/images/fieldsort.png)
 
 **Debug**
 
-![](/images/fieldsort-debug.png)
+![](/knife4j/images/fieldsort-debug.png)

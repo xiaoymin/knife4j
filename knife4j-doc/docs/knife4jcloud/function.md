@@ -12,17 +12,17 @@
 
 `Knife4jCloud`通过个人邮箱的方式进行登录注册,所以在系统数据是完全隔离的,每个人只能看到自己的数据
 
-![](/images/knife4jcloud/login1.png)
+![](/knife4j/images/knife4jcloud/login1.png)
 
 注册界面：
 
-![](/images/knife4jcloud/login.png)
+![](/knife4j/images/knife4jcloud/login.png)
 
 ## 2.2工作台
 
 在项目主页工作台,会显示当前用户的项目数量、服务数量、服务分类情况
 
-![](/images/knife4jcloud/workplan.png)
+![](/knife4j/images/knife4jcloud/workplan.png)
 
 ## 2.3项目管理
 
@@ -32,9 +32,9 @@
 
 项目编号是全局唯一,并且只能是数字或英文或者是英文+数字+下划线等方式组成
 
-![](/images/knife4jcloud/product.png)
+![](/knife4j/images/knife4jcloud/product.png)
 
-![](/images/knife4jcloud/product1.png)
+![](/knife4j/images/knife4jcloud/product1.png)
 
 ## 2.4服务管理
 
@@ -43,21 +43,21 @@
 - API:微服务在线的方式,获取得到当前的OPenAPIv2的实例,通过Knife4j的Ui进行接口渲染
 - LOCAL:本地化的方式,使用者提供Swagger的JSON来创建服务实例
 
-![](/images/knife4jcloud/item.png)
+![](/knife4j/images/knife4jcloud/item.png)
 
 通过在线API的方式来创建服务实例：
 
-![](/images/knife4jcloud/item1.png)
+![](/knife4j/images/knife4jcloud/item1.png)
 
 通过本地LOCAL的方式创建
 
-![](/images/knife4jcloud/item2.png)
+![](/knife4j/images/knife4jcloud/item2.png)
 
 ## 2.5预览文档
 
 通过项目管理列表中的操作按钮,可以选择预览文档查看文档
 
-![](/images/knife4jcloud/product2.png)
+![](/knife4j/images/knife4jcloud/product2.png)
 
 ## 2.6个人中心
 
@@ -65,4 +65,4 @@
 
 其中用户信息中包含了开放注册API接口中的accessKey信息,如下图：
 
-![](/images/knife4jcloud/user1.png)
+![](/knife4j/images/knife4jcloud/user1.png)

@@ -4,7 +4,7 @@
 
 > 如果你不喜欢在调试的时候对参数进行缓存,可以在个性化设置中将该选项取消
 
-![](/images/knife4j/plus/cacheparameter.png)
+![](/knife4j/images/knife4j/plus/cacheparameter.png)
 
 
 缓存的情况只会在后端没有给属性`example`的情况下产生,如果后端在写Swagger的注解的时候,给每个字段赋予了example的值,那么,`Knife4j`不会使用调试时缓存的值,而是会一直使用后端的example值

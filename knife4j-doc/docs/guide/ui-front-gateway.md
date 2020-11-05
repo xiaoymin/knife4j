@@ -351,9 +351,9 @@ public class ServiceDocApplication {
 
 查看文档效果如下：
 
-![](/images/k-g-1.png)
+![](/knife4j/images/k-g-1.png)
 
-![](/images/k-g-2.png)
+![](/knife4j/images/k-g-2.png)
 
 ## 注意点
 

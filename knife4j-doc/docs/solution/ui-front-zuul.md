@@ -25,7 +25,7 @@ eureka注册服务中心以及微服务模块Swagger的配置集成使用这里�
 
 我们在eureka服务中心可以看到整个微服务模块,如下图：
 
-![](/images/front/eureka.png)
+![](/knife4j/images/front/eureka.png)
 
 
 ## 微服务模块
@@ -169,7 +169,7 @@ public class SwaggerResourceConfig implements SwaggerResourcesProvider {
 
 最终效果如下：
 
-![](/images/front/sbu.png)
+![](/knife4j/images/front/sbu.png)
 
 
 ## 示例源码

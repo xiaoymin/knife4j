@@ -18,7 +18,7 @@ swagger-bootstrap-ui 1.6更新如下：
   //......
 }
 ```
-![](/images/blog/swagger-bootstrap-ui-1.6-issue/upload.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.6-issue/upload.png)
 2、`ResponseBody<String>`类型的string展示
 
 3、布局溢出的问题.bycdao-main样式调整，修改margin-left:270px;
@@ -27,7 +27,7 @@ swagger-bootstrap-ui 1.6更新如下：
 
 5、菜单名称调整，展示接口方法类型、接口地址、接口说明三个参数
 
-![](/images/blog/swagger-bootstrap-ui-1.6-issue/menu.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.6-issue/menu.png)
 
 **Maven坐标**
 ```xml

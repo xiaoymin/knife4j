@@ -47,7 +47,7 @@ initKnife4jFront(){
 
 `SwaggerBootstrapUi`是`Knife4j`封装的核心JS对象,位于文件`/src/core/Knife4j.js`中,定义如下图：
 
-![](/images/knife4j/knife4j-const.png)
+![](/knife4j/images/knife4j/knife4j-const.png)
 
 option核心参数的意义说明如下：
 
@@ -85,7 +85,7 @@ option核心参数的意义说明如下：
 ```
 `knife4j`目前只对属性`supportedSubmitMethods`做了支持,即对不支持的HTTP类型不显示调试栏进行调试,仅显示文档页,效果如下图：
 
-![](/images/knife4j/debug-1.png)
+![](/knife4j/images/knife4j/debug-1.png)
 
 所以如果你在构造front版本的时候,仅仅只是希望别人查看文档,而不希望调试文档,则则可以构建一个config的静态JSON,将`supportedSubmitMethods`属性返回一个空数组即可
 
@@ -143,7 +143,7 @@ yarn build
 
 以上命令会在dist目录生成编译好的文件,文件结构如下：
 
-![](/images/knife4j/front-dist.png)
+![](/knife4j/images/knife4j/front-dist.png)
 
 接下来如何运行呢?，你需要参考：
 

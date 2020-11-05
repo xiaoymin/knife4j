@@ -6,11 +6,11 @@
 
 **字段说明效果如下图**：
 
-![](/images/fieldsort.png)
+![](/knife4j/images/fieldsort.png)
 
 **调试效果如下图：**
 
-![](/images/fieldsort-debug.png)
+![](/knife4j/images/fieldsort-debug.png)
  
 
  

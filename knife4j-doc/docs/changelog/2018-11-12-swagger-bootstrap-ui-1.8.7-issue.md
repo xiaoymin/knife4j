@@ -42,9 +42,9 @@ Swagger-Bootstrap-Ui 1.8.7 主要更新如下：
 
 ![header-json.png](/images/blog/swagger-bootstrap-ui-1.8.6-issue/header-json.png)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.6-issue/debug-require.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.6-issue/debug-require.png)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.6-issue/more-params.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.6-issue/more-params.png)
 
 ## 项目地址
 

@@ -12,4 +12,4 @@
 
 如下图：
 
-![](/images/1-9-3/cache.png)
+![](/knife4j/images/1-9-3/cache.png)

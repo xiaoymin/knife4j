@@ -8,17 +8,17 @@ swagger-bootstrap-ui 1.7.6 主要更新如下：
 
 1、fixed 全局默认参数，设置值无效问题
 
-![](/images/blog/swagger-bootstrap-ui-1.7.6-issue/n3.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.6-issue/n3.png)
 
-![](/images/blog/swagger-bootstrap-ui-1.7.6-issue/n4.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.6-issue/n4.png)
 
 2、add 简介页添加basePath属性
 
-![](/images/blog/swagger-bootstrap-ui-1.7.6-issue/n2.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.6-issue/n2.png)
 
 3、fixed 响应类型是Ref引用属性，在响应json中未列出属性
 
-![](/images/blog/swagger-bootstrap-ui-1.7.6-issue/n1.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.6-issue/n1.png)
 
 4、fixed 默认值未显示,swagger 2.9.2版本响应json的默认值为x-example属性
 
@@ -26,11 +26,11 @@ swagger-bootstrap-ui 1.7.6 主要更新如下：
 
 6、fixed 相同url地址，不同method类型，接口未展示bug
 
-![](/images/blog/swagger-bootstrap-ui-1.7.6-issue/n5.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.6-issue/n5.png)
 
 7、fixed 请求参数为ref引用类型时，文档列出请求类型和schema类型一致，显示schema类型
 
-![](/images/blog/swagger-bootstrap-ui-1.7.6-issue/n6.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.6-issue/n6.png)
 
 8、tip:推荐使用chrome浏览器，别的浏览器可能有js、css兼容问题，文档效果未到最佳
 

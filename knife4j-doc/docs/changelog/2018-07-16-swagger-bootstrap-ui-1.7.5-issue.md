@@ -9,25 +9,25 @@ swagger-bootstrap-ui 1.7.5 主要更新如下：
 - 重构DApiUI.js功能,新版本使用SwaggerBootstrapUi.js，方便后期扩展,同时删除无效js、css、html文件,新版本jar包由原760kb缩小至295kb
 
 - 重构文档页面，剔除原来table展现方式，新版本使用markdown格式展现文档,单个文档页可复制
-  ![](/images/blog/swagger-bootstrap-ui-1.7.5-issue/n1.png)
-  ![](/images/blog/swagger-bootstrap-ui-1.7.5-issue/n2.png)
-  ![](/images/blog/swagger-bootstrap-ui-1.7.5-issue/n3.png)
+  ![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.5-issue/n1.png)
+  ![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.5-issue/n2.png)
+  ![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.5-issue/n3.png)
 
 - 新增全局参数配置功能，针对请求参数有全局参数情况下，方便在线调试
 
-  ![](/images/blog/swagger-bootstrap-ui-1.7.5-issue/n4.png)
+  ![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.5-issue/n4.png)
 
 - 支持离线文档格式,生成markdown格式文档,供开发者对外生成静态文档
 
-  ![](/images/blog/swagger-bootstrap-ui-1.7.5-issue/n5.png)
+  ![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.5-issue/n5.png)
 
   通过markdown转换工具Typora预览效果
 
-  ![](/images/blog/swagger-bootstrap-ui-1.7.5-issue/n6.png)
+  ![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.5-issue/n6.png)
 
   Typora导出pdf预览效果
 
-  ![](/images/blog/swagger-bootstrap-ui-1.7.5-issue/n7.png)
+  ![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.5-issue/n7.png)
 
 - 添加clipboard插件,离线文档可复制功能
 

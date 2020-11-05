@@ -12,14 +12,14 @@
 
 在前端Ui界面中的`文档管理 => 离线文档` 菜单栏,我们点击后可以看到如下界面：
 
-![](/images/knife4j/plus/exportDocument.png)
+![](/knife4j/images/knife4j/plus/exportDocument.png)
 
 
 直接点击下载Markdown,`Knife4j`就会为我们生成一份精细的MD文档,效果图如下：
 
-![](/images/knife4j/3.png)
+![](/knife4j/images/knife4j/3.png)
 
 
 导出的Html效果,[点击我预览在线效果](https://doc.xiaominfo.com/Knife4j-Offline-Html.html)，如下图：
 
-![](/images/knife4j/5.png)
+![](/knife4j/images/knife4j/5.png)

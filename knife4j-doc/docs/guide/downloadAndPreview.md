@@ -16,9 +16,9 @@
 
 `SwaggerBootstrapUi`在`1.8.9`版本中添加了`application/octet-stream`下载类型的支持,并在`1.9.0`版本中完善,只需要配置相应接口的produces,即可在`doc.html`页面中查看效果，如下图：
 
-![](/images/filedownload1.png)
+![](/knife4j/images/filedownload1.png)
 
-![](/images/filedownload2.png)
+![](/knife4j/images/filedownload2.png)
 
 点击下载文件即可下载当前接口响应的二进制流.示例代码可参考[**Api190Controller.java**](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/blob/master/swagger-bootstrap-ui-demo/src/main/java/com/swagger/bootstrap/ui/demo/group/Api190Controller.java)
 
@@ -39,9 +39,9 @@ public void postRequest3AndParam(@RequestHeader(value = "uud") String uud,@Reque
 
 图片预览一般用在验证码等场景中,很多时候,需要直接展示出验证码的情况，如下图：
 
-![](/images/preview1.png)
+![](/knife4j/images/preview1.png)
 
-![](/images/preview2.png)
+![](/knife4j/images/preview2.png)
 
 验证码预览的后端代码可参考[**ImageController.java**](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/blob/master/swagger-bootstrap-ui-demo/src/main/java/com/swagger/bootstrap/ui/demo/group/ImageController.java)
 

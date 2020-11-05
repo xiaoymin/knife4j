@@ -9,4 +9,4 @@
 因此,后端新增接口或者接口编辑后,在ui界面显示更新标志,在菜单上会出现一个蓝色的徽标,如下图：
 
 
-![](/images/knife4j/plus/debug-1.png)
+![](/knife4j/images/knife4j/plus/debug-1.png)

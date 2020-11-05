@@ -4,5 +4,5 @@ SwaggerBootstrapUi提供了全局搜索功能,当开发者不清楚某一接口�
 
 搜索关键字主要包括：**URL地址、接口说明、方法类型、接口描述**
 
-![](/images/fullsearch.png)
+![](/knife4j/images/fullsearch.png)
 

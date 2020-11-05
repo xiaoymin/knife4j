@@ -39,10 +39,10 @@ swagger-bootstrap-ui 1.9.2 发布了。swagger-bootstrap-ui是 Swagger 的增强
 
 
 ![header-json.png](/images/blog/swagger-bootstrap-ui-1.9.2-issue/1.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.2-issue/2.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.2-issue/3.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.2-issue/4.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.2-issue/5.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.2-issue/2.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.2-issue/3.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.2-issue/4.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.2-issue/5.png)
 
 
 ## 项目地址

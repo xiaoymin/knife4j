@@ -37,7 +37,7 @@ public class SwaggerConfiguration {
 
 后端开启增强注解后,还需要再前端个性化配置中勾选启用增强,整个配置才生效，如下图：
 
-![](/images/knife4j/enableknife4j.png)
+![](/knife4j/images/knife4j/enableknife4j.png)
 
 
 ## 效果说明
@@ -52,7 +52,7 @@ public class SwaggerConfiguration {
 
 例如项目结构如下：
 
-![](/images/1-9-3/construct.png)
+![](/knife4j/images/1-9-3/construct.png)
 
 每个`.md`文件中，`swagger-bootstrap-ui`允许一级(h1)、二级(h2)、三级(h3)标题作为最终的文档标题
 
@@ -76,7 +76,7 @@ public class SwaggerConfiguration {
 
 整个文档效果如下：
 
-![](/images/knife4j/self-doc1.png)
+![](/knife4j/images/knife4j/self-doc1.png)
 
 如果没有按照一级(h1)、二级(h2)、三级(h3)来设置标题,默认标题会是文件名称，如图上的`api2.md`
 

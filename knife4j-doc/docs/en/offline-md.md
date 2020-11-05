@@ -6,4 +6,4 @@ Developers can save and convert to pdf, word, html and other offline files using
 
 Function Directory: **Document Management** -> **Offline Document (MD)**
 
-![](images/offline-md.png)
+![](/knife4j/images/offline-md.png)

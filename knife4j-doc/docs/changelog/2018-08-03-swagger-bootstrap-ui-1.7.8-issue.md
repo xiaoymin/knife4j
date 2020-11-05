@@ -8,17 +8,17 @@ swagger-bootstrap-ui 1.7.8 主要更新如下：
 
 2、fixed 针对文件上传,使用allowMultiple = true,上传按钮不显示bug,推荐使用@ApiImplicitParam注解,并且指定dataType = "MultipartFile"
 
-![](/images/blog/swagger-bootstrap-ui-1.7.8-issue/upload.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.8-issue/upload.png)
 
 3、分组接口移动至顶部,菜单列表添加icon图标,移除简介页的软件介绍信息,丰富简介页信息,新增各类型接口统计信息,菜单简介名称更名为主页
 
-![](/images/blog/swagger-bootstrap-ui-1.7.8-issue/main.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.8-issue/main.png)
 
 4、增加调试参数记忆功能,下次点击该接口时,上次输入的参数会保存继续可使用
 
 5、优化 针对@RequestBody注解,参数使用默认description的问题,将使用@ApiModel注解实体类上的description属性
 
-![](/images/blog/swagger-bootstrap-ui-1.7.8-issue/des.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.8-issue/des.png)
 
 **Maven坐标**
 

@@ -85,7 +85,7 @@ The detailed instance interface dynamically obtains all interface descriptions o
 
 Response json is as follows：
 
-![](images/apidef.png)
+![](/knife4j/images/apidef.png)
 
 | attr                | intro                                                        |
 | ------------------- | ------------------------------------------------------------ |

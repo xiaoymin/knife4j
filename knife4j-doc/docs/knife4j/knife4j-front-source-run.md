@@ -10,11 +10,11 @@
 
 本篇博客主要是讲解`knife4j-vue`模块的调试开发过程,目前工程结构如下图：
 
-![](/images/knife4j/construct.png)
+![](/knife4j/images/knife4j/construct.png)
 
 如果你想基于该源码方式进行调试,在下载下来该文件夹后,首先需要更改`vue.config.js`文件中的的接口代理地址,因为源码中使用的是localhost,为了方便,你可以更改为目前`knife4j`线上部署的接口进行调试，如下图：
 
-![](/images/knife4j/proxy-url.png)
+![](/knife4j/images/knife4j/proxy-url.png)
 
 
 将以上`target`地址更改为`http://knife4j.xiaominfo.com/`

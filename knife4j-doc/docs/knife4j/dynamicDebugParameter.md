@@ -12,12 +12,12 @@
 
 在`Knife4j`的前端页面中,个性化设置功能里,可以开启对参数的动态调试(`该选项默认是关闭状态`)，如下图：
 
-![](/images/knife4j/plus/debugDynamic.png)
+![](/knife4j/images/knife4j/plus/debugDynamic.png)
 
 
 当在配置中勾选该选项后,我们的接口栏会有变化,如下图：
 
-![](/images/knife4j/plus/debugDynamic1.png)
+![](/knife4j/images/knife4j/plus/debugDynamic1.png)
 
 
 在原本已存在的参数栏下会出现一栏空的参数栏,开发者可以输入参数名称、参数值对参数进行添加

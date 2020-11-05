@@ -6,11 +6,11 @@ swagger-bootstrap-ui 1.8.3 主要更新如下：
 
 1、新增tab选项卡,各个api接口详情通过新开选项卡来展现
 
-![](/images/blog/swagger-bootstrap-ui-1.8.3-issue/tabs.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.3-issue/tabs.png)
 
 2、去除原schema表格形式展示，请求参数、响应参数改由treetable组件(树组件)展示
 
-![](/images/blog/swagger-bootstrap-ui-1.8.3-issue/treetable.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.3-issue/treetable.png)
 
 3、fixed 请求参数有array类型,显示为schema类型的bug
 
@@ -18,13 +18,13 @@ swagger-bootstrap-ui 1.8.3 主要更新如下：
 
 5、响应内容去除cookies选项卡，响应示例、响应内容使用ace-editor展示响应内容，方便复制
 
-![](/images/blog/swagger-bootstrap-ui-1.8.3-issue/samples.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.3-issue/samples.png)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.3-issue/response.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.3-issue/response.png)
 
 6、优化(全局参数&Authorize)加入浏览器缓存问题,使用localStorage对象全局存储[issue #IMH77 @Gitee](https://gitee.com/xiaoym/swagger-bootstrap-ui/issues/IMH77)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.3-issue/store.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.3-issue/store.png)
 
 7、fixed 泛型数据接口返回list类型时，不能解析[issue #26 @GitHub](https://github.com/xiaoymin/Swagger-Bootstrap-UI/issues/26)
 
@@ -32,7 +32,7 @@ swagger-bootstrap-ui 1.8.3 主要更新如下：
 
 9、优化请求参数是否必填样式,如果该参数必填,则以红色标注显示[issue #22 @Github](https://github.com/xiaoymin/Swagger-Bootstrap-UI/issues/22)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.3-issue/require.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.3-issue/require.png)
 
 10、fixed DELETE请求不能正确处理Query参数 [issue #19 @GitHub](https://github.com/xiaoymin/Swagger-Bootstrap-UI/issues/19)
 
@@ -40,11 +40,11 @@ swagger-bootstrap-ui 1.8.3 主要更新如下：
 
 12、优化离线文档多行，换行、多空格显示问题
 
-![](/images/blog/swagger-bootstrap-ui-1.8.3-issue/md-2.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.3-issue/md-2.png)
 
 预览效果如下：
 
-![](/images/blog/swagger-bootstrap-ui-1.8.3-issue/md-1.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.3-issue/md-1.png)
 
 **Maven坐标**
 

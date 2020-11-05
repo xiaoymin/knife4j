@@ -2,7 +2,7 @@
 
 Authorize 功能是后端配置类似JWT等权限配置而设置的,可以全局配置token等参数
 
-![](/images/auth.png)
+![](/knife4j/images/auth.png)
 
 当后台通过代码设置后,UI会自动识别,生成Authorize菜单功能,供开发者填相关auth参数等
 

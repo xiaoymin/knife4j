@@ -29,7 +29,7 @@ public Rest<RealDescription> getRealDoc(){
 
 在文档中显示效果如下：
 
-![](/images/2-0-2/debug-3.png)
+![](/knife4j/images/2-0-2/debug-3.png)
 
 
 在2.0.3版本中,收到开发者反馈希望能在Controller上增加作者的注解
@@ -49,10 +49,10 @@ public class Api203Constroller {
     
 }
 ```
-![](/images/knife4j/plus/author.png)
+![](/knife4j/images/knife4j/plus/author.png)
 
 **注意**：如果使用@ApiSupport注解则前端在访问文档时也必须开启增强模式,具体可以参考[前端默认开启增强模式](autoEnableKnife4j.md)
 
 在文档中显示效果如下：
 
-![](/images/2-0-2/debug-3.png)
+![](/knife4j/images/2-0-2/debug-3.png)

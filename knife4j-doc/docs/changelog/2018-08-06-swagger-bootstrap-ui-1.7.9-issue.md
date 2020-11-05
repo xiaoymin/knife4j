@@ -6,31 +6,31 @@ swagger-bootstrap-ui 1.7.9 主要更新如下：
 
 1、fixed 针对Integer、double、float等类型参数,有format参数则显示format属性,以区分准确类型,如：int64|int32等
 
-![](/images/blog/swagger-bootstrap-ui-1.7.9-issue/type.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.9-issue/type.png)
 
 2、fixed 滚动条出现底部部分内容不显示bug
 
 3、优化菜单接口根据不同接口类型,颜色调整
 
-![](/images/blog/swagger-bootstrap-ui-1.7.9-issue/method.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.9-issue/method.png)
 
 4、优化文档响应数据jsonview字体,优化间距,更显紧促,优化菜单,接口及接口类型加粗
 
-![](/images/blog/swagger-bootstrap-ui-1.7.9-issue/r1.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.9-issue/r1.png)
 
-![](/images/blog/swagger-bootstrap-ui-1.7.9-issue/r2.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.9-issue/r2.png)
 
 5、add 顶部加搜索功能、可根据api地址、api介绍、api类型、分组名称实现模糊搜索,默认搜索当前已加载的分组api,如果其他分组未加载则搜索不到.
 
-![](/images/blog/swagger-bootstrap-ui-1.7.9-issue/search.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.9-issue/search.png)
 
 6、add 针对Security-JWT等权限验证,显示Authorize菜单授权
 
-![](/images/blog/swagger-bootstrap-ui-1.7.9-issue/auth.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.9-issue/auth.png)
 
 7、add 左侧菜单栏可自由拖动长度大小
 
-![](/images/blog/swagger-bootstrap-ui-1.7.9-issue/drag.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.9-issue/drag.png)
 
 **Maven坐标**
 

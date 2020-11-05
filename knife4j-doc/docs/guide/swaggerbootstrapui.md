@@ -46,7 +46,7 @@ var SwaggerBootstrapUi=function () {
 
 包括swagger的响应的属性，也重新在js中定义函数，使用面向对象的方式来操作
 
-![](/images/sbudef.png)
+![](/knife4j/images/sbudef.png)
 
 2、初始化工作，sbu的入口即main方法,类似于SpringBoot的main方法，读源码的朋友可以从这个方法进入
 

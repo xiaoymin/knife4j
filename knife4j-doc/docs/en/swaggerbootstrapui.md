@@ -46,7 +46,7 @@ var SwaggerBootstrapUi=function () {
 
 Include the properties of the swagger's response, and also re-define the function in js, using an object-oriented approach
 
-![](images/sbudef.png)
+![](/knife4j/images/sbudef.png)
 
 2、Initialization work, the main method of the sbu is the main method, similar to the main method of SpringBoot, the source code reader can enter from this method
 

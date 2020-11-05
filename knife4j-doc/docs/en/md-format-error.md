@@ -4,4 +4,4 @@ Even if the document format is garbled, it can still be used normally in the rel
 
 Markdown software recommended[Typora](https://www.typora.io/),I have been using it, it is quite easy to use, suitable for programmers who will not type the word.
 
-![](images/tp.png)
+![](/knife4j/images/tp.png)

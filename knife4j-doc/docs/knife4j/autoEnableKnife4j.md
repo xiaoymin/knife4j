@@ -21,7 +21,7 @@
 
 同时也保留了一些个性化的配置特性,用于`knife4j`的文档调试使用,如下图：
 
-![](/images/knife4j/set.png)
+![](/knife4j/images/knife4j/set.png)
 
 
 在以前的做法,开发者是先访问`doc.html`,然后在个性化配置中勾选 启用Knife4j提供的增强功能

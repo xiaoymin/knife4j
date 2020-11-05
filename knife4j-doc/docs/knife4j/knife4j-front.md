@@ -6,7 +6,7 @@
 
 同时他也提供了`springfox-swagger-ui`这个前端Ui包,这就是我们目前大家目前较熟悉的在用的Swagger界面,如下图：
 
-![](/images/knife4j/swagger-ui.png)
+![](/knife4j/images/knife4j/swagger-ui.png)
 
 
 随着`Knife4j`的发展,越来越多的开发者们也关注到了`Knife4j`,在QQ群交流中,也和同行们进行了深入的交流,对knife4j的结构进行了详细的阐述

@@ -21,11 +21,11 @@
 
 - 项目管理:查看项目列表,新增项目文档
 
-  ![](/images/knife4j/admin/1.png)
+  ![](/knife4j/images/knife4j/admin/1.png)
 
 - 文档预览：通过项目的JSON结构,解析动态添加至Spring Cloud Gateway网关进行文档聚合,并且可以在线调试
 
-  ![](/images/knife4j/admin/2.png)
+  ![](/knife4j/images/knife4j/admin/2.png)
 
 ## 项目新增
 

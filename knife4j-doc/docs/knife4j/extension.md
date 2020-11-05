@@ -15,13 +15,13 @@
 
 提供根据输入的Swagger标准JSON文件进行ui渲染
 
-![](/img/solution/json-1.png)
+![](/knife4j/img/solution/json-1.png)
 
 ### RESTFul API
 
 提供根据请求Swagger资源接口的方式进行UI渲染
 
-![](/img/solution/api-1.png)
+![](/knife4j/img/solution/api-1.png)
 
 
 
@@ -39,16 +39,16 @@
 
 功能效果图菜单:
 
-![](/img/solution/menu.png)
+![](/knife4j/img/solution/menu.png)
 
 ### JSON
 
 提供根据输入的Swagger标准JSON文件进行ui渲染
 
-![](/img/solution/json.png)
+![](/knife4j/img/solution/json.png)
 
 ### RESTFul API
 
 提供根据请求Swagger资源接口的方式进行UI渲染
 
-![](/img/solution/api-2.png)
+![](/knife4j/img/solution/api-2.png)

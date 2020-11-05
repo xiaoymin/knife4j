@@ -10,19 +10,19 @@ swagger-bootstrap-ui 1.8.0 主要更新如下：
 
 3、调整菜单url各方法配色、接口配色,文档介绍、调试返回响应数据json配色
 
-![](/images/blog/swagger-bootstrap-ui-1.8.0-issue/methodJson.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.0-issue/methodJson.png)
 
 4、响应模块添加http响应码、接口耗时、大小,参数栏添加全选按钮,调试页面针对响应内容tab选项卡去除灰色背景色,为默认白色底色
 
-![](/images/blog/swagger-bootstrap-ui-1.8.0-issue/rcode.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.0-issue/rcode.png)
 
 5、调试响应模块增加raw、curl两个子tab选项卡,实现curl功能,方便远程调试
 
-![](/images/blog/swagger-bootstrap-ui-1.8.0-issue/curl.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.0-issue/curl.png)
 
 6、针对接口二进制返回,提供下载按钮,可点击弹出下载功能
 
-![](/images/blog/swagger-bootstrap-ui-1.8.0-issue/download.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.0-issue/download.png)
 
 7、fixed 针对图片返回时报DApiUI is not defined错误
 
@@ -30,19 +30,19 @@ swagger-bootstrap-ui 1.8.0 主要更新如下：
 
 9、发送中增加loading效果
 
-![](/images/blog/swagger-bootstrap-ui-1.8.0-issue/loading.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.0-issue/loading.png)
 
 10、调整菜单顶部分组接口位置,移动到最左侧,添加可隐藏/显示MENU元素
 
-![](/images/blog/swagger-bootstrap-ui-1.8.0-issue/m1.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.0-issue/m1.png)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.0-issue/m2.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.0-issue/m2.png)
 
 11、fixed 针对schema类型的参数,显示类型为string类型,按schema类型展示
 
 12、文件上传支持文件多选
 
-![](/images/blog/swagger-bootstrap-ui-1.8.0-issue/upload.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.0-issue/upload.png)
 
 **Maven坐标**
 

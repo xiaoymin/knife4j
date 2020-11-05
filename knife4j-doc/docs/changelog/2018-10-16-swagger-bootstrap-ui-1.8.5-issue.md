@@ -14,7 +14,7 @@ swagger-bootstrap-ui 1.8.5 主要更新如下：
 
 3、多选项卡文档介绍、在线调试position位置引起的不适改动,由竖变横.
 
-![](/images/blog/swagger-bootstrap-ui-1.8.5-issue/tab-position.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.5-issue/tab-position.png)
 
 4、增强排序功能，添加个性化配置管理功能,可开启个性化配置
 
@@ -74,7 +74,7 @@ c、所以排序的取值规则是：position>@ApiOperationSort
 
 8、如果请求参数是json参数body类型，文档说明中添加**请求示例**json展示,方便查看
 
-![](/images/blog/swagger-bootstrap-ui-1.8.5-issue/request-json.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.5-issue/request-json.png)
 
 9、请求示例、响应示例json自动适配高度
 
@@ -82,15 +82,15 @@ c、所以排序的取值规则是：position>@ApiOperationSort
 
 11、fixed 离线文档markdown格式错乱问题(table标题换行导致显示异常)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.5-issue/md.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.5-issue/md.png)
 
 12、离线文档已预览html的方式展现,复制文档功能依然是复制markdown语法
 
-![](/images/blog/swagger-bootstrap-ui-1.8.5-issue/md-copy.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.5-issue/md-copy.png)
 
 13、请求参数及响应参数说明改为多行显示,超出长度不以省略号显示,防止出现浮层一直显示的bug
 
-![](/images/blog/swagger-bootstrap-ui-1.8.5-issue/br.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.5-issue/br.png)
 
 **Maven坐标**
 

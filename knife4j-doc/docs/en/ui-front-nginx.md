@@ -94,5 +94,5 @@ In this way, we can aggregate all back-end Swagger service interfaces in the `gr
 
 effect：
 
-![](/images/front-1.png)
+![](/knife4j/images/front-1.png)
 

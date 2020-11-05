@@ -2,7 +2,7 @@
 
 The Authorize function is set by the backend configuration similar to the JWT and other permission configurations. You can configure parameters such as tokens globally.
 
-![](images/auth.png)
+![](/knife4j/images/auth.png)
 
 When the background is set by the code, the UI will automatically recognize and generate the Authorize menu function for developers to fill in relevant auth parameters, etc.
 

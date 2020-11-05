@@ -6,7 +6,7 @@ SwaggerBootstrapUi提供根据Swagger标准JSON文件生成一份详细的Markdo
 
 功能目录：**文档管理 -> 离线文档(MD)**
 
-![](/images/offline-md.png)
+![](/knife4j/images/offline-md.png)
  
  <icp/> 
  comment/> 

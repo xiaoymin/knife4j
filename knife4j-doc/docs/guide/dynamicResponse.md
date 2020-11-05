@@ -84,4 +84,4 @@ public Object api(){
 
 最终效果
 
-![](/images/dynamicResponse.png)
+![](/knife4j/images/dynamicResponse.png)

@@ -9,11 +9,11 @@ swagger-bootstrap-ui 1.8.2 主要更新如下：
 
 2、fixed 关于在线调试界面显示的优化,调试栏新增参数类型列,区分数据参数请求类型 [issue #IM7TV @GITEE](https://gitee.com/xiaoym/swagger-bootstrap-ui/issues/IM7TV)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.2-issue/param_type.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.2-issue/param_type.png)
 
 3、fixed 在springcloud下 整合到zuul时 测试路径不正确[issue #IM69X @GITEE](https://gitee.com/xiaoym/swagger-bootstrap-ui/issues/IM69X)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.2-issue/zuul-basePath.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.2-issue/zuul-basePath.png)
 
 4、属性介绍说明，表格栏统一使用中文
 
@@ -21,9 +21,9 @@ swagger-bootstrap-ui 1.8.2 主要更新如下：
 
 6、fixed `List<String>`和String[]类型解析不正确，应该为array，实际为String并且不能增加[issue #IM2ZI @GITEE](https://gitee.com/xiaoym/swagger-bootstrap-ui/issues/IM2ZI)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.2-issue/strarr.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.2-issue/strarr.png)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.2-issue/strarr1.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.2-issue/strarr1.png)
 
 7、fixed 类型及引用类在出现array类型时不一致的问题[issue #7 @GitHub](https://github.com/xiaoymin/Swagger-Bootstrap-UI/issues/17)
 
@@ -43,9 +43,9 @@ swagger-bootstrap-ui 1.8.2 主要更新如下：
 
 15、优化，返回raw文本标签页添加复制文本功能,方便开发者调用，复制按钮增加icon
 
-![](/images/blog/swagger-bootstrap-ui-1.8.2-issue/rawCopy.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.2-issue/rawCopy.png)
 
-![](/images/blog/swagger-bootstrap-ui-1.8.2-issue/curlCopy.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.2-issue/curlCopy.png)
 
 16、fixed 文件上传的bug[issue #IM4RG @GITEE](https://gitee.com/xiaoym/swagger-bootstrap-ui/issues/IM4RG)
 

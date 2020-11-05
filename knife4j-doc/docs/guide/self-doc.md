@@ -63,7 +63,7 @@ public class SwaggerConfiguration {
 
 例如项目结构如下：
 
-![](/images/1-9-3/construct.png)
+![](/knife4j/images/1-9-3/construct.png)
 
 每个`.md`文件中，`swagger-bootstrap-ui`允许一级(h1)、二级(h2)、三级(h3)标题作为最终的文档标题
 
@@ -87,7 +87,7 @@ public class SwaggerConfiguration {
 
 整个文档效果如下：
 
-![](/images/1-9-3/ef.png)
+![](/knife4j/images/1-9-3/ef.png)
 
 如果没有按照一级(h1)、二级(h2)、三级(h3)来设置标题,默认标题会是文件名称，如图上的`api2.md`
 
@@ -124,7 +124,7 @@ public class SwaggerConfiguration {
 
 除了在后端开启注解功能,在`doc.html`中,个性化配置里面还需要设置开启增强功能
 
-![](/images/1-9-3/en-fun.png)
+![](/knife4j/images/1-9-3/en-fun.png)
 
 当然,在确保后端增强无误的情况下,你可以直接使用快速访问设置功能来直接启用增强
 

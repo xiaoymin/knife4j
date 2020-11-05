@@ -18,19 +18,19 @@ swagger-bootstrap-ui 1.8.1 主要更新如下：
 
 7、优化菜单做成接口方法类型和接口类型左对齐
 
-![](/images/blog/swagger-bootstrap-ui-1.8.1-issue/left.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.1-issue/left.png)
 
 8、fixed 左侧接口列表滚条无法完全滚动到底部 
 
 9、优化 针对枚举类型,参数说明显示可用值列表
 
-![](/images/blog/swagger-bootstrap-ui-1.8.1-issue/enum.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.1-issue/enum.png)
 
 10、表单类型显示header、可提交header信息
 
 11、fixed 基础类型响应数据为空的情况
 
-![](/images/blog/swagger-bootstrap-ui-1.8.1-issue/basic.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.8.1-issue/basic.png)
 
 
 

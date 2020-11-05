@@ -57,10 +57,10 @@ swagger-bootstrap-ui的所有特性都会集中在`knife4j-spring-ui`包中,并�
 ## UI效果展示
 
 ![header-json.png](/images/blog/swagger-bootstrap-ui-1.9.5-issue/1.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.5-issue/2.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.5-issue/3.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.5-issue/4.png)
-![](/images/blog/swagger-bootstrap-ui-1.9.5-issue/5.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.5-issue/2.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.5-issue/3.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.5-issue/4.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.5-issue/5.png)
 
 ## 项目地址
 
@@ -84,4 +84,4 @@ swagger-bootstrap-ui的所有特性都会集中在`knife4j-spring-ui`包中,并�
 
 关注我的微信公众号,实时了解`swagger-bootstrap-ui`的最新资讯~~~~
 
-![](/images/blog/swagger-bootstrap-ui-1.9.4-issue/us.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.9.4-issue/us.png)

@@ -85,7 +85,7 @@ public Docket groupRestApi() {
 
 响应json如下：
 
-![](/images/apidef.png)
+![](/knife4j/images/apidef.png)
 
 | 属性                | 说明                                                         |
 | ------------------- | ------------------------------------------------------------ |

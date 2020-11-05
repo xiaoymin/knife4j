@@ -8,11 +8,11 @@ swagger-bootstrap-ui 1.7.3更新如下：
 
 2、响应参数解析集合类型不展示属性bug
 
-![](/images/blog/swagger-bootstrap-ui-1.7.3-issue/model.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.3-issue/model.png)
 
 3、响应参数、请求参数使用treegrid-table组件
 
-![](/images/blog/swagger-bootstrap-ui-1.7.3-issue/tree.png)
+![](/knife4j/images/blog/swagger-bootstrap-ui-1.7.3-issue/tree.png)
 
 **相关链接**
 

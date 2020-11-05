@@ -6,7 +6,7 @@
 
 在文档的右上角,`Knife4j`提供了文档检索的功能，如下图：
 
-![](/images/knife4j/plus/search.png)
+![](/knife4j/images/knife4j/plus/search.png)
 
 针对文档检索,主要有一些注意点
 

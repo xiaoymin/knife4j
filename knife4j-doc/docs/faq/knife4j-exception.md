@@ -1,7 +1,7 @@
 # Knife4j文档请求异常
 
 很多朋友在集成Knife4j文档的时候会弹出该异常,效果图如下:
-![](/images/faq/knife4j-error.png)
+![](/knife4j/images/faq/knife4j-error.png)
 
 首先,先申明一点,如果你在你的项目中已经成功集成了`springfox-swagger2`组件,并且可以访问`swagger-ui.html`页面,那么可以100%确定不会出现以上问题
 
@@ -10,7 +10,7 @@
 
 
 首先,可以使用Chrome浏览器的F12功能,查看该接口文档的network选项,选择XHR选项栏进行访问接口的查看,如下图：
-![](/images/faq/network.png)
+![](/knife4j/images/faq/network.png)
 
 首先确保文档访问的接口能够正确响应200成功状态码
 
@@ -43,7 +43,7 @@
 
 
 第三步是查看swagger的响应实例接口`/v2/api-docs`响应的结构是否正确，如下图：
-![](/images/faq/v2api.png)
+![](/knife4j/images/faq/v2api.png)
 
 和分组接口一样,不能有封装信息,必须保证和以上的格式一致.
 

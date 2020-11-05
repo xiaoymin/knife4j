@@ -94,5 +94,5 @@ server {
 
 效果如下：
 
-![](/images/front-1.png)
+![](/knife4j/images/front-1.png)
 
