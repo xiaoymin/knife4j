@@ -139,7 +139,7 @@ function genDocumentationSideBar() {
             children: ["enhance.md","i18n.md","author.md","selfdocument.md","accessControl.md",
                 "apiSort.md","tagSort.md","requestCache.md","dynamicRequestParameter.md","exportDocument.md",
                 "filterRequestParameter.md","includeRequestParameter.md","search.md","clearCache.md","dynamicRequestDescription.md",
-                "dynamicResponseDescription.md","host.md","afterScript.md"]
+                "dynamicResponseDescription.md","host.md","afterScript.md","oauth2.md","postman.md","globalParameter.md"]
 
         },{
             title: "4.生态衍生",
