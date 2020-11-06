@@ -3,7 +3,7 @@ home: true
 heroText: knife4j
 tagline: knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案
 actionText: 快速开始 →
-actionLink: /guide/
+actionLink: /documentation/
 features:
 - title: 简洁
   details: 基于左右菜单式的布局方式,是更符合国人的操作习惯吧.文档更清晰...
@@ -106,3 +106,7 @@ Java开发使用`Knife4j`目前有一些不同的版本变化，主要如下：
 ![](/knife4j/img/wechat.png)
 
 
+
+ 
+ 
+ 

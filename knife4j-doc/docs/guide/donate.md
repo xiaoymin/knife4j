@@ -10,3 +10,7 @@
     <img src="http://www.xiaominfo.com/images/website/pay_wechat.jpg" width="300">
 </figure>
 
+
+ 
+ 
+ 

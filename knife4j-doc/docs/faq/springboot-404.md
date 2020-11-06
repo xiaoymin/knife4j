@@ -52,3 +52,6 @@ public class SwaggerBootstrapUiDemoApplication  implements WebMvcConfigurer{
 同理，在使用SpringMvc或者shiro等权限框架时，如果页面无法访问，配置doc.html属性即可
 
 关于SpringBoot的代码示例可参考[swagger-bootstrap-ui-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/swagger-bootstrap-ui-demo)
+ 
+ 
+ 

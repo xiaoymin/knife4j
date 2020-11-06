@@ -94,3 +94,7 @@ public Rest<UptModel> insertModel(@RequestBody UptModel uptModel){
 
 ![](/knife4j/images/ignore2.png)
 
+
+ 
+ 
+ 

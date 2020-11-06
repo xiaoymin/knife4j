@@ -46,3 +46,6 @@ knife4j目前的项目结构
 | knife4j-vue | 该模块是knife4j前端的源码模块,基于Vue框架开发,knife4j-spring-ui中的文件是使用该模块进行打包构建的                            |
 | swagger-bootstrap-ui | knife4j的前身,最后发布版本是1.9.6                            |
 | swagger-bootstrap-ui-front | swagger-bootstrap-ui的纯前端版本,基于1.9.3的分支改造而成,其他开发语言体系可以使用,改造后一直未更新                            |
+ 
+ 
+ 

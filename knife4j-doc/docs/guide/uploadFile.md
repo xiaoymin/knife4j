@@ -88,3 +88,6 @@ public RestMessage uploadMaterial2(@RequestParam(value="file",required = true) M
 ![](/knife4j/images/upfile2.png)
 
 以上三种情况示例可参考demo代码[**UploadController.java**](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/blob/master/swagger-bootstrap-ui-demo/src/main/java/com/swagger/bootstrap/ui/demo/controller/UploadController.java)
+ 
+ 
+ 

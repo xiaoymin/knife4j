@@ -52,3 +52,6 @@
 提供根据请求Swagger资源接口的方式进行UI渲染
 
 ![](/knife4j/img/solution/api-2.png)
+ 
+ 
+ 

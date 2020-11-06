@@ -54,3 +54,6 @@ public RestMessage uploadMaterial(@RequestParam(value="file[]",required = true) 
 ```
 
 关于多文件上传，设置allowMultiple=true即可,在UI界面端,按住Ctrl键即可多选文件.
+ 
+ 
+ 

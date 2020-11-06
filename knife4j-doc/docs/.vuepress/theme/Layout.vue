@@ -58,7 +58,6 @@
 
 <script>
 import Vue from 'vue'
-import Antd from 'ant-design-vue';
 import nprogress from 'nprogress'
 import Home from './Home.vue'
 import Navbar from './Navbar.vue'

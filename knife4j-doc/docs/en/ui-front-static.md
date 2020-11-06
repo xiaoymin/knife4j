@@ -85,3 +85,6 @@ Specific path：
 Control Panel - > Management Tool - > Internet Information Services (IIS) Manager - > Add Website - > Select Static Directory - > Browse
 
 If there is no IIS manager, you need to install the service by yourself first. As for how to install IIS and search for solutions by yourself, I will not elaborate here.
+ 
+ 
+ 

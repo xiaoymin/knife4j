@@ -94,3 +94,6 @@ public Docket groupRestApi() {
 | paths               | 接口示例数组，每个实例包含了接口的入参、出参、响应码等基础信息 |
 | securityDefinitions | 权限配置验证，一般JWT等配置的权限配置会在该节点属性出现      |
 | definitions         | 该属性定义了所有响应的类属性说明                             |
+ 
+ 
+ 

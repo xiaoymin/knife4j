@@ -85,3 +85,6 @@ public Object api(){
 最终效果
 
 ![](/knife4j/images/dynamicResponse.png)
+ 
+ 
+ 

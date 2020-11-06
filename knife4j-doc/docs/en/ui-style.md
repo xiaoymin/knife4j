@@ -19,3 +19,6 @@ as follows：
 **Online Debug**：The developer can debug the interface based on this document. ui will automatically list the request parameters, request address and other information according to the interface information. The developer only needs to fill in the corresponding field value to coordinate the test.
 
 ![](/knife4j/images/debug-online.png)
+ 
+ 
+ 

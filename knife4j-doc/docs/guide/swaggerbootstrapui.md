@@ -70,3 +70,6 @@ SwaggerBootstrapUi.prototype.main=function () {
 ```
 
 3、数据和页面分离，使用art-template模板渲染,这样保持js的独立性
+ 
+ 
+ 

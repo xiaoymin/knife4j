@@ -142,3 +142,7 @@ public class SwaggerBootstrapUiDemoApplication  implements WebMvcConfigurer{
 ## 其他语言
 
 如果使用的是其他语言的话,想使用swagger-bootstrap-ui,建议使用她的前端分离版本`swagger-bootstrap-ui-front`,具体可参考[前端分离的文档说明](ui-front.md)
+
+ 
+ 
+ 

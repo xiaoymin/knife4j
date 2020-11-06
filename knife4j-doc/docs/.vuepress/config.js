@@ -17,11 +17,6 @@ module.exports = {
             lang: 'zh-CN',
             title: 'knife4j',
             description: 'knife4j 指南'
-        },
-        '/en/': {
-            lang: 'en-US', // 将会被设置为 <html> 的 lang 属性
-            title: 'knife4j',
-            description: 'knife4j Guide'
         }
 
     },
@@ -49,32 +44,15 @@ module.exports = {
                   // 单项 text：显示文字，link：指向链接
                   // 这里的'/' 指的是 docs文件夹路径
                   // [以 '/' 结尾的默认指向该路径下README.md文件]
-                  { text: '指南', link: '/guide/' },
-                  { text: 'knife4j', link: '/knife4j/' },
-                  { text: 'Knife4jCloud', link: '/knife4jcloud/' },
-                  { text: '解决方案', link: '/solution/' },
-                  { text: 'Gitter', link: 'https://gitter.im/knife4j/knife4j' },
+                  { text: '用户指南', link: '/documentation/' },
+                  { text: '实战指南', link: '/action/' },
                   { text: '更新日志', link: '/changelog/' },
-                  { text: 'FAQ', link: '/faq/' },
-                  { text: '源码分析', link: 'https://www.xiaominfo.com/2019/05/20/springfox-0/' },
-                  {
-                      text: '代码托管',
-                      items: [
-                          { text: 'GitHub', link: 'https://github.com/xiaoymin/swagger-bootstrap-ui' },
-                          { text: 'Gitee', link: 'https://gitee.com/xiaoym/knife4j' }
-                      ]
-                  },
-                  {
-                      text:'赞助',link:'/donate/'
-                  }
+                  { text: 'FAQ', link: '/faq/' }
               ],
               // 侧边栏菜单( 一个模块对应一个菜单形式 )
               sidebar:{
                   // 打开guide主页链接时生成下面这个菜单
-                  '/guide/':genGuideSideBar(true),
-                  '/knife4j/':genKnife4jFront(),
-                  '/knife4jcloud/':genKnife4jCloudFront(),
-                  '/solution/':genSolutionFront(),
+                  '/documentation/':genDocumentationSideBar(),
                   "/changelog/":genChangeLogSideBar(),
                   "/faq/":genFaqSideBar()
               }
@@ -114,6 +92,27 @@ module.exports = {
         }
 
     }
+}
+
+function genDocumentationSideBar() {
+    return [
+        {
+            title: "1.序章",
+            collapsable: false,
+            children: ["description","background","support","ui","gvp","get_start"]
+        },{
+            title: "2.社区",
+            collapsable: false,
+            children: ["help","joinus","sourcecode","apache","community","changelog","donate"]
+        },{
+            title: "3.增强特性",
+            collapsable: false,
+            children: ["enhance.md","i18n.md","author.md","selfdocument.md","accessControl.md",
+                "apiSort.md","tagSort.md","requestCache.md","dynamicRequestParameter.md","exportDocument.md",
+                "filterRequestParameter.md","includeRequestParameter.md","search.md","clearCache.md","dynamicRequestDescription.md",
+                "dynamicResponseDescription.md","host.md"]
+        }
+    ]
 }
 
 /***

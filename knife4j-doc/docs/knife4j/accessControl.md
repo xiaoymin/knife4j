@@ -151,3 +151,6 @@ admin/123321
 [ProductionSecurityFilter](https://gitee.com/xiaoym/knife4j/blob/master/knife4j/knife4j-spring/src/main/java/com/github/xiaoymin/knife4j/spring/filter/ProductionSecurityFilter.java):开启生产环境,屏蔽所有Swagger资源,不可访问,production配置为true时,basic认证功能不可用
 
 [SecurityBasicAuthFilter](https://gitee.com/xiaoym/knife4j/blob/master/knife4j/knife4j-spring/src/main/java/com/github/xiaoymin/knife4j/spring/filter/SecurityBasicAuthFilter.java)：开启HTTP Basic认证,访问Swagger资源需要提供服务端配置的用户名以及密码
+ 
+ 
+ 

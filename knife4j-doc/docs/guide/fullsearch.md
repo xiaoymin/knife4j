@@ -6,3 +6,7 @@ SwaggerBootstrapUi提供了全局搜索功能,当开发者不清楚某一接口�
 
 ![](/knife4j/images/fullsearch.png)
 
+
+ 
+ 
+ 

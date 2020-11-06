@@ -54,3 +54,6 @@ public RestMessage uploadMaterial(@RequestParam(value="file[]",required = true) 
 ```
 
 For multi-file upload, set allowMultiple=true. On the UI interface, hold down the Ctrl key to select multiple files.
+ 
+ 
+ 

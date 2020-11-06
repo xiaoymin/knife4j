@@ -122,3 +122,7 @@ Nginx的环境配置好后,启动Nginx即可
 [root@izbt nginx]# sbin/nginx
 ```
 
+
+ 
+ 
+ 

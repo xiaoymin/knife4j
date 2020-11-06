@@ -176,3 +176,7 @@ public class SwaggerResourceConfig implements SwaggerResourcesProvider {
 
 以上源码可参考[swagger-bootstrap-ui-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo)中的子项目`swagger-bootstrap-ui-zuul`
 
+
+ 
+ 
+ 

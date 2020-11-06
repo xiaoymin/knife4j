@@ -13,3 +13,6 @@
 如下图：
 
 ![](/knife4j/images/1-9-3/cache.png)
+ 
+ 
+ 

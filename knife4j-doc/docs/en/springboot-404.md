@@ -19,3 +19,6 @@ public class SwaggerBootstrapUiDemoApplication  implements WebMvcConfigurer{
 Similarly, when using a permission framework such as SpringMvc or shiro, if the page is inaccessible, configure the doc.html property.
 
 For a code example of SpringBoot, see [swagger-bootstrap-ui-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/swagger-bootstrap-ui-demo)
+ 
+ 
+ 

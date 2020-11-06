@@ -16,3 +16,6 @@
 ![](/knife4j/images/knife4j/plus/cacheLocation.png)
 
 你也可以手工删除该缓存值,然后再刷新`Knife4j`的文档查看文档效果
+ 
+ 
+ 

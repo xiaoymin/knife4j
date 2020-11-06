@@ -129,3 +129,6 @@ public Docket groupRestApi() {
 最终的效果如下：
 
 ![](/knife4j/images/springfox/springfox-ignore-class1.png)
+ 
+ 
+ 

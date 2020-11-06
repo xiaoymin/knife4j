@@ -43,3 +43,6 @@ Springfox-Swagger中guava的版本为20
 解决此错误的办法是排除低版本的guava即可.
 
 maven命令在项目根目录运行：`mvn dependency:tree`命令可以看到jar包项目的引用树结构，可以看到低版本的guava是那个jar引入的
+ 
+ 
+ 

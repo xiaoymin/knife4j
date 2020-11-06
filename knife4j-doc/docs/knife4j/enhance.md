@@ -110,3 +110,6 @@ public class SwaggerConfiguration {
 增强效果开启后,在最终调用接口时，Knife4j会添加扩展属性`x-openapi`,如下图：
 
 ![](/knife4j/images/knife4j/enc.png)
+ 
+ 
+ 

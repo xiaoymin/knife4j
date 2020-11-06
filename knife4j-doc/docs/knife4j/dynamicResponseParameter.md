@@ -29,3 +29,7 @@ public Rest<HashMap> createOrder1235332(@RequestBody HashMap map){
 
 
 同样对于数组、泛型等复杂的类型暂不提供支持。
+
+ 
+ 
+ 
