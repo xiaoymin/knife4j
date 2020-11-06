@@ -60,5 +60,5 @@ public class Api203Constroller {
 
 ![](/knife4j/images/2-0-2/debug-3.png)
 
- 
+ 开发者如果遇到排序不生效的问题，可以通过检查接口返回的OpenAPI规范中，分组`path`节点下是否包含`x-author`的扩展属性
  
