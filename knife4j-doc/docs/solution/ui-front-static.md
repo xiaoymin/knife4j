@@ -84,6 +84,3 @@ server {
 控制面板 -> 管理工具 -> Internet Information Services (IIS)管理器 -> 添加网站 -> 选择静态目录 -> 浏览
 
 如果没有IIS管理器,你首先需要自行安装该服务,至于如何安装IIS,自行搜索解决,此处不再骜述.
- 
- <comment-comment/> 
- 
