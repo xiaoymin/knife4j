@@ -38,8 +38,8 @@
 
             script.onload = () => {
                 const commentConfig = {
-                    clientID: 'ec01832826e103daa07b',
-                    clientSecret: '8b6977fb29466a3b974842c2e4059cfb8434f0eb',
+                    clientID: 'e7925e9fae959dd02c85',
+                    clientSecret: '65e0d52eb658caa2d75dcdfdddcf81d1ead3c743',
                     repo: 'blog-comments',
                     owner: 'xiaoymin',
                     // 这里接受一个数组，可以添加多个管理员

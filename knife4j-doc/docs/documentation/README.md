@@ -1,4 +1,3 @@
-
 Java开发使用`Knife4j`目前有一些不同的版本变化，主要如下：
 
 1、如果开发者继续使用OpenAPI2的规范结构，底层框架依赖springfox2.10.5版本，那么可以考虑`Knife4j`的2.x版本
@@ -33,3 +32,4 @@ Java开发使用`Knife4j`目前有一些不同的版本变化，主要如下：
     <version>3.0.1</version>
 </dependency>
 ```
+
