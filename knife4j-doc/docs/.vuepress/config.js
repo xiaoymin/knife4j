@@ -54,6 +54,7 @@ module.exports = {
                   // 打开guide主页链接时生成下面这个菜单
                   '/documentation/':genDocumentationSideBar(),
                   "/changelog/":genChangeLogSideBar(),
+                  "/action/":genActionSideBar(),
                   "/faq/":genFaqSideBar()
               }
           },
@@ -94,6 +95,34 @@ module.exports = {
     }
 }
 
+/**
+ * 实战指南
+ * @returns {({children: string[], collapsable: boolean, title: string}|{children: string[], collapsable: boolean, title: string}|{children: string[], collapsable: boolean, title: string}|{children: [string, string], collapsable: boolean, title: string})[]}
+ */
+function genActionSideBar() {
+    return [
+        {
+            title: "1.Spring单体架构",
+            collapsable: false,
+            children: ["springmvc","springboot"]
+        },
+        {
+            title: "2.Spring微服务架构",
+            collapsable: false,
+            children: ["springcloud-gateway","springcloud-zuul.md"]
+        },
+        {
+            title: "3.OAuth2.0",
+            collapsable: false,
+            children: ["oauth2-implicit.md","oauth2-authorization_code.md","oauth2-client_credentials.md","oauth2-password.md"]
+        }
+    ]
+}
+
+/**
+ * 用户指南
+ * @returns {({children: string[], collapsable: boolean, title: string}|{children: string[], collapsable: boolean, title: string}|{children: string[], collapsable: boolean, title: string}|{children: [string, string], collapsable: boolean, title: string})[]}
+ */
 function genDocumentationSideBar() {
     return [
         {
@@ -111,6 +140,10 @@ function genDocumentationSideBar() {
                 "apiSort.md","tagSort.md","requestCache.md","dynamicRequestParameter.md","exportDocument.md",
                 "filterRequestParameter.md","includeRequestParameter.md","search.md","clearCache.md","dynamicRequestDescription.md",
                 "dynamicResponseDescription.md","host.md"]
+        },{
+            title: "4.生态衍生",
+            collapsable: false,
+            children: ["knife4jCloud.md","knife4jGateway.md"]
         }
     ]
 }
