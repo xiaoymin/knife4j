@@ -145,6 +145,15 @@ function genDocumentationSideBar() {
             title: "4.生态衍生",
             collapsable: false,
             children: ["knife4jCloud.md","knife4jGateway.md"]
+        },{
+            title: "5.小技巧",
+            collapsable: false,
+            children: ["apimodelproperty.md"]
+        },{
+            title: "6.其它语言",
+            collapsable: false,
+            children: ["knife4j-front.md","knife4j-front-source-run.md","knife4j-front-execute.md","knife4j-front-source-modified.md",
+            "knife4j-front-iis.md","knife4j-front-nginx.md"]
         }
     ]
 }
