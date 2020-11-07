@@ -1,4 +1,4 @@
-# 6.1 前置说明
+# 5.1 前置说明
 
 
 `Knife4j`从开源至今,都是提供的基于Java+Spring技术栈的jar包方式供Java开发人员方便使用,特别是和`Springfox-Swagger2`组件深度绑定的一个工具

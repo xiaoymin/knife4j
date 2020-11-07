@@ -46,6 +46,7 @@ module.exports = {
                   // [以 '/' 结尾的默认指向该路径下README.md文件]
                   { text: '用户指南', link: '/documentation/' },
                   { text: '实战指南', link: '/action/' },
+                  { text: 'OAS规范', link: '/oas/' },
                   { text: '更新日志', link: '/changelog/' },
                   { text: 'FAQ', link: '/faq/' }
               ],
@@ -55,6 +56,7 @@ module.exports = {
                   '/documentation/':genDocumentationSideBar(),
                   "/changelog/":genChangeLogSideBar(),
                   "/action/":genActionSideBar(),
+                  "/oas/":genOASSideBar(),
                   "/faq/":genFaqSideBar()
               }
           },
@@ -119,6 +121,22 @@ function genActionSideBar() {
     ]
 }
 
+function genOASSideBar(){
+    return [
+        {
+            title: "1.OAS2",
+            collapsable: false,
+            children: ["oas2.md","Api.md","ApiImplicitParam.md","ApiImplicitParams.md","ApiModel.md",
+                "ApiModelProperty.md","ApiOperation.md","ApiParam.md","ApiResponse.md","ApiResponses.md"]
+        },
+        {
+            title: "2.OAS3",
+            collapsable: false,
+            children: ["oas3.md","schema.md"]
+        }
+    ]
+}
+
 /**
  * 用户指南
  * @returns {({children: string[], collapsable: boolean, title: string}|{children: string[], collapsable: boolean, title: string}|{children: string[], collapsable: boolean, title: string}|{children: [string, string], collapsable: boolean, title: string})[]}
@@ -146,11 +164,7 @@ function genDocumentationSideBar() {
             collapsable: false,
             children: ["knife4jCloud.md","knife4jGateway.md"]
         },{
-            title: "5.小技巧",
-            collapsable: false,
-            children: ["apimodelproperty.md"]
-        },{
-            title: "6.其它语言",
+            title: "5.其它语言",
             collapsable: false,
             children: ["knife4j-front.md","knife4j-front-source-run.md","knife4j-front-execute.md","knife4j-front-source-modified.md",
             "knife4j-front-iis.md","knife4j-front-nginx.md"]

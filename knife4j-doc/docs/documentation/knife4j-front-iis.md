@@ -1,4 +1,4 @@
-# 6.5 基于IIS使用knife4j
+# 5.5 基于IIS使用knife4j
 
 在[上一篇](knife4j-front-source-modified.md)中,我们通过改造`knife4j`的源码,构造了自己的front版本,接下来
 
