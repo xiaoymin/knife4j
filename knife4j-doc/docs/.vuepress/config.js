@@ -106,7 +106,7 @@ function genActionSideBar() {
         {
             title: "1.Spring单体架构",
             collapsable: false,
-            children: ["springmvc","springboot"]
+            children: ["mavenbom.md","springmvc","springboot"]
         },
         {
             title: "2.Spring微服务架构",
@@ -150,7 +150,7 @@ function genDocumentationSideBar() {
         },{
             title: "2.社区",
             collapsable: false,
-            children: ["help","joinus","sourcecode","apache","community","changelog","donate"]
+            children: ["help","joinus","sourcecode","apache","community","changelog","donate","simple-demo"]
         },{
             title: "3.增强特性",
             collapsable: false,
