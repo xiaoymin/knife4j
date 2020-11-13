@@ -53,7 +53,7 @@ public class RouteDispatcher {
         this.routeCache=routeRouteCache;
         initExecutor(executorEnum);
         ignoreHeaders.addAll(Arrays.asList(new String[]{
-                "host","content-length"
+                "host","content-length",ROUTE_PROXY_HEADER_NAME,"Request-Origion"
         }));
     }
 
