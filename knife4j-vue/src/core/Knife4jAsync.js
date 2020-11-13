@@ -688,6 +688,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         }]
       };
       if(KUtils.checkUndefined(this.currentInstance.header)){
+        //Knife4j自研Aggreration微服务聚合组件请求头
         var gatewayHeader={'knfie4j-gateway-request':that.currentInstance.header};
         requestConfig=Object.assign({},requestConfig,{headers:gatewayHeader});
       }
@@ -4374,6 +4375,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   /* if (that.currentInstance.baseUrl != "" && that.currentInstance.baseUrl != "/") {
     newurl = that.currentInstance.baseUrl + newurl;
   } */
+
   var startApiTime = new Date().getTime();
   swpinfo.showUrl = newurl;
   //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
