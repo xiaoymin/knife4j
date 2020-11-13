@@ -489,7 +489,8 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     )
     g.url = group.url
     //g.url="/test/json";
-    
+    //Knife4j自研微服务聚合使用，默认是null
+    g.header=KUtils.getValue(group,'header',null,true);
     var newUrl = ''
     //此处需要判断basePath路径的情况
     if (group.url != null && group.url != undefined && group.url != '') {
@@ -677,7 +678,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       //api = 'run.json';
       //此处加上transformResponse参数,防止Long类型在前端丢失精度
       //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/269
-      that.ajax({
+      var requestConfig={
         url: api,
         dataType: 'json',
         timeout: 20000,
@@ -685,7 +686,12 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         transformResponse:[function(data){
           return KUtils.json5parse(data);
         }]
-      },data=>{
+      };
+      if(KUtils.checkUndefined(this.currentInstance.header)){
+        var gatewayHeader={'knfie4j-gateway-request':that.currentInstance.header};
+        requestConfig=Object.assign({},requestConfig,{headers:gatewayHeader});
+      }
+      that.ajax(requestConfig,data=>{
         that.analysisApiSuccess(data);
       },err=>{
         message.error('Knife4j文档请求异常')
@@ -6453,6 +6459,8 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   this.markdownFiles = []
 
   this.i18n = null
+  //增加header头,主要针对Knife4j-aggregation网关聚合模块
+  this.header=null;
 }
 SwaggerBootstrapUiInstance.prototype.clearOAuth2=function(){
   if(!KUtils.checkUndefined(this.oauths)){
