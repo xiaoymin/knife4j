@@ -17,24 +17,28 @@ knife4j:
   enable: true
   documents:
     -
-      group: 1.2.x
-      name: 测试自定义标题分组
-      locations: classpath:md/*
+      group: 2.X版本
+      name: 接口签名
+      locations: classpath:sign/*
   setting:
+    language: zh-CN
     enableSwaggerModels: true
     enableDocumentManage: true
-    enableHost: false
-    enableHostText: http://localhost:999
-    enableRequestCache: true
-    enableFilterMultipartApis: false
+    swaggerModelName: 实体类列表
+    enableVersion: false
+    enableReloadCacheParameter: false
+    enableAfterScript: true
     enableFilterMultipartApiMethodType: POST
-    language: zh-CN
+    enableFilterMultipartApis: false
+    enableRequestCache: true
+    enableHost: false
+    enableHostText: 192.168.0.193:8000
   cors: false
   production: false
   basic:
     enable: false
     username: test
-    password: 123
+    password: 12313
 ```
 
 在以前的版本中,开发者需要在配置文件中手动使用`@EnableKnife4j`来使用增强，自2.0.6版本后,只需要在配置文件中配置`knife4j.enable=true`即可不在使用注解
@@ -59,7 +63,7 @@ knife4j:
 |knife4j.setting.enableAfterScript|true| 调试Tab是否显示AfterScript功能,默认开启|
 |knife4j.setting.language|zh-CN|Ui默认显示语言,目前主要有两种:中文(zh-CN)、英文(en-US)|
 |knife4j.setting.enableSwaggerModels|true|是否显示界面中SwaggerModel功能|
-|knife4j.setting.swaggerModelName|`Swagger Model`| 重命名SwaggerModel名称,默认|
+|knife4j.setting.swaggerModelName|`Swagger Models`| 重命名SwaggerModel名称,默认|
 |knife4j.setting.enableDocumentManage|true|是否显示界面中"文档管理"功能|
 |knife4j.setting.enableReloadCacheParameter|false|是否在每个Debug调试栏后显示刷新变量按钮,默认不显示|
 |knife4j.setting.enableVersion|false|是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点|
