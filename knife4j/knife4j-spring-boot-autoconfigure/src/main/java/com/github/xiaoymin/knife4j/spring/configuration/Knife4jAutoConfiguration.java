@@ -36,7 +36,6 @@ import org.springframework.web.filter.CorsFilter;
 @ComponentScan(
         basePackages = {
                 "com.github.xiaoymin.knife4j.spring.plugin",
-                "com.github.xiaoymin.knife4j.spring.web"
         }
 )
 @ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
