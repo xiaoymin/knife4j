@@ -29,6 +29,7 @@ public class SwaggerRoute {
      * 是否本地请求,本地请求在前端无需添加Header,否则会走代理
      */
     private boolean local=false;
+    private String basePath;
 
     public SwaggerRoute() {
     }
@@ -44,6 +45,7 @@ public class SwaggerRoute {
                     this.uri=openApiRoute.getUri();
                 }
             }
+            this.basePath=openApiRoute.getBasePath();
             this.location=openApiRoute.getLocation();
             this.swaggerVersion=openApiRoute.getSwaggerVersion();
         }
@@ -103,5 +105,13 @@ public class SwaggerRoute {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
     }
 }

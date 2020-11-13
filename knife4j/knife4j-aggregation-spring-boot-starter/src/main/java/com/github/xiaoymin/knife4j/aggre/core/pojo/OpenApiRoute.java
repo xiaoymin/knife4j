@@ -31,7 +31,12 @@ public class OpenApiRoute {
     /**
      * OpenAPI版本，2.0 or 3.0
      */
-    private String swaggerVersion;
+    private String swaggerVersion="2.0";
+
+    /**
+     * 每个微服务下接口的basePath前缀
+     */
+    private String basePath;
 
     public String getName() {
         return name;
@@ -65,6 +70,14 @@ public class OpenApiRoute {
         this.swaggerVersion = swaggerVersion;
     }
 
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
+
     @Override
     public String toString() {
         return "OpenApiRoute{" +
@@ -72,6 +85,7 @@ public class OpenApiRoute {
                 ", uri='" + uri + '\'' +
                 ", location='" + location + '\'' +
                 ", swaggerVersion='" + swaggerVersion + '\'' +
+                ", basePath='" + basePath + '\'' +
                 '}';
     }
 }
