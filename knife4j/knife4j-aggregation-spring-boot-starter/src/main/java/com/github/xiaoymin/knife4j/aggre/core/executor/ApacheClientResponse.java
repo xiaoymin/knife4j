@@ -25,9 +25,9 @@ import java.util.Map;
 
 /***
  *
- * @since:route-proxy 1.0
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
- * 2020/05/29 22:04
+ * 2020/10/29 22:04
  */
 public class ApacheClientResponse implements RouteResponse {
 

@@ -11,7 +11,7 @@ import com.github.xiaoymin.knife4j.aggre.core.RouteCache;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
 import com.github.xiaoymin.knife4j.aggre.core.cache.RouteInMemoryCache;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
-import com.github.xiaoymin.knife4j.aggre.core.filter.RouteProxyFilter;
+import com.github.xiaoymin.knife4j.aggre.core.filter.Knife4jRouteProxyFilter;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.core.repository.DiskRouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class Knife4jAggreAutoConfiguration {
     public FilterRegistrationBean routeProxyFilter(@Autowired RouteDispatcher routeDispatcher)
     {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
-        filterRegistrationBean.setFilter(new RouteProxyFilter(routeDispatcher));
+        filterRegistrationBean.setFilter(new Knife4jRouteProxyFilter(routeDispatcher));
         filterRegistrationBean.setOrder(99);
         filterRegistrationBean.setEnabled(true);
         filterRegistrationBean.addUrlPatterns("/*");

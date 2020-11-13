@@ -11,11 +11,13 @@ package com.github.xiaoymin.knife4j.aggre.core.repository;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 
+import java.util.List;
+
 /***
  *
- * @since:route-proxy 1.0
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
- * 2020/05/29 20:13
+ * 2020/10/29 20:13
  */
 public class CloudRouteRepository implements RouteRepository {
 
@@ -26,6 +28,11 @@ public class CloudRouteRepository implements RouteRepository {
 
     @Override
     public SwaggerRoute getRoute(String header) {
+        return null;
+    }
+
+    @Override
+    public List<SwaggerRoute> getRoutes() {
         return null;
     }
 }

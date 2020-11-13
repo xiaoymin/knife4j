@@ -64,4 +64,14 @@ public class OpenApiRoute {
     public void setSwaggerVersion(String swaggerVersion) {
         this.swaggerVersion = swaggerVersion;
     }
+
+    @Override
+    public String toString() {
+        return "OpenApiRoute{" +
+                "name='" + name + '\'' +
+                ", uri='" + uri + '\'' +
+                ", location='" + location + '\'' +
+                ", swaggerVersion='" + swaggerVersion + '\'' +
+                '}';
+    }
 }

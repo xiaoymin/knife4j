@@ -7,39 +7,48 @@
 
 package com.github.xiaoymin.knife4j.aggre.core.repository;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.MD5;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.OpenApiRoute;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /***
  * 基于内存+本地磁盘的方式
- * @since:route-proxy 1.0
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
- * 2020/05/29 20:11
+ * 2020/10/29 20:11
  */
 public class DiskRouteRepository implements RouteRepository {
     private  final List<OpenApiRoute> routes;
-    private List<String> headers=new ArrayList<>();
+    private final Map<String,SwaggerRoute> routeMap=new HashMap<>();
     public DiskRouteRepository(List<OpenApiRoute> routes){
         this.routes = routes;
-        headers.add("a1");
-        headers.add("a2");
+        if (CollectionUtil.isNotEmpty(routes)){
+            routes.stream().forEach(openApiRoute -> routeMap.put(MD5.create().digestHex(openApiRoute.toString()),new SwaggerRoute(openApiRoute)));
+        }
     }
 
     @Override
     public boolean checkRoute(String header) {
         if (StrUtil.isNotBlank(header)){
-            return headers.contains(header);
+            return routeMap.containsKey(header);
         }
         return false;
     }
 
     @Override
     public SwaggerRoute getRoute(String header) {
-        return null;
+        return routeMap.get(header);
+    }
+
+    @Override
+    public List<SwaggerRoute> getRoutes() {
+        return CollectionUtil.newArrayList(routeMap.values());
     }
 }

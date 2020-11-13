@@ -27,9 +27,8 @@ import java.net.UnknownHostException;
 
 /***
  *
- * @since:breport-sdk 1.0
- * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
- * 2019/11/14 14:42
+ * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * 2020/10/14 14:42
  */
 public  class PoolingConnectionManager {
 

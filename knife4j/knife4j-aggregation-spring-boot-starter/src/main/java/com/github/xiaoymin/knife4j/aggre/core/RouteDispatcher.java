@@ -28,9 +28,9 @@ import java.util.*;
 
 /***
  *
- * @since:route-proxy 1.0
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
- * 2020/05/29 20:08
+ * 2020/10/29 20:08
  */
 public class RouteDispatcher {
     /**
@@ -200,5 +200,9 @@ public class RouteDispatcher {
             }
         }
         return swaggerRoute;
+    }
+
+    public List<SwaggerRoute> getRoutes(){
+        return routeRepository.getRoutes();
     }
 }

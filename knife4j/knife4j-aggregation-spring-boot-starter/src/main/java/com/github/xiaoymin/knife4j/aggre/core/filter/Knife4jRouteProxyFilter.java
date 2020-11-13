@@ -7,6 +7,8 @@
 
 package com.github.xiaoymin.knife4j.aggre.core.filter;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,20 +17,21 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /***
  *
- * @since:route-proxy 1.0
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
- * 2020/05/29 20:06
+ * 2020/10/29 20:06
  */
-public class RouteProxyFilter implements Filter {
-
+public class Knife4jRouteProxyFilter implements Filter {
+    private final String OpenAPI_GROUP_URL="/swagger-resources";
     private final RouteDispatcher routeDispatcher;
 
-    Logger logger= LoggerFactory.getLogger(RouteProxyFilter.class);
+    Logger logger= LoggerFactory.getLogger(Knife4jRouteProxyFilter.class);
 
-    public RouteProxyFilter(RouteDispatcher routeDispatcher) {
+    public Knife4jRouteProxyFilter(RouteDispatcher routeDispatcher) {
         this.routeDispatcher = routeDispatcher;
     }
 
@@ -48,7 +51,17 @@ public class RouteProxyFilter implements Filter {
             logger.info("执行完毕");
         }else{
             //go on
-            filterChain.doFilter(servletRequest,servletResponse);
+            String uri=request.getRequestURI();
+            if (StrUtil.endWith(uri,OpenAPI_GROUP_URL)){
+                //响应当前服务聚合结构
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                PrintWriter printWriter=response.getWriter();
+                new JSONObject(routeDispatcher.getRoutes()).write(printWriter);
+                printWriter.close();
+            }else{
+                filterChain.doFilter(servletRequest,servletResponse);
+            }
         }
     }
     @Override
