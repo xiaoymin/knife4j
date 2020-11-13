@@ -77,12 +77,12 @@ public class RouteDispatcher {
         if (StrUtil.isNotBlank(header)){
             SwaggerRoute swaggerRoute=routeCache.get(header);
             if (swaggerRoute!=null){
-                return true;
+                return StrUtil.isNotBlank(swaggerRoute.getUri());
             }
             swaggerRoute=routeRepository.getRoute(header);
             if (swaggerRoute!=null){
                 routeCache.put(header,swaggerRoute);
-                return true;
+                return StrUtil.isNotBlank(swaggerRoute.getUri());
             }
         }
         return false;

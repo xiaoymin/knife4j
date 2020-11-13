@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j.aggre.core.filter;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
 import org.slf4j.Logger;
@@ -57,7 +58,7 @@ public class Knife4jRouteProxyFilter implements Filter {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 PrintWriter printWriter=response.getWriter();
-                new JSONObject(routeDispatcher.getRoutes()).write(printWriter);
+                new JSONArray(routeDispatcher.getRoutes()).write(printWriter);
                 printWriter.close();
             }else{
                 filterChain.doFilter(servletRequest,servletResponse);
