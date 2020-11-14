@@ -8,7 +8,7 @@
     <span class="knife4j-header-title">{{ documentTitle }}</span>
 
     <div class="right">
-      <HeaderSearch
+      <HeaderSearch v-if="settings.enableSearch"
         class="action search"
         :placeholder="$t('searchHolderText')"
         :onSearch="value => onSearch(value)"
@@ -80,6 +80,11 @@ export default {
     onMenuClick: {
       type: Function,
       default: () => {}
+    }
+  },
+  computed:{
+    settings(){
+      return this.$store.state.globals.settings;
     }
   },
   data() {
