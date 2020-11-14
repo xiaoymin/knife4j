@@ -48,6 +48,15 @@ const constants = {
   globalSettingsKey: "Knife4jGlobalSettings",
   globalTreeTableModelParams: "Knife4jGlobalTreeTableModelParams",
   defaultSettings: {
+    enableDebug:true,//是否开启Debug调试栏
+    enableFooter:true,//是否默认显示底部Footer
+    enableFooterCustom:false,//是否自定义Footer
+    footerCustomContent:"",//自定义footer内容
+    enableSearch:true,//是否显示搜索框
+    enableOpenApi:true,//是否显示OpenApi原始规范结构
+    enableHomeCustom:false,// 是否开启主页自定义配置，默认false
+    homeCustomLocation:"",//自定义主页的Markdown文档内容
+
     enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
     swaggerModelName:"Swagger Models",//重命名界面Swagger Model的显示名称
     enableReloadCacheParameter:false,// 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
@@ -69,6 +78,15 @@ const constants = {
   },
   //增强配置
   defaultPlusSettings: {
+    enableDebug:true,//是否开启Debug调试栏
+    enableFooter:true,//是否默认显示底部Footer
+    enableFooterCustom:false,//是否自定义Footer
+    footerCustomContent:"",//自定义footer内容
+    enableSearch:true,//是否显示搜索框
+    enableOpenApi:true,//是否显示OpenApi原始规范结构
+    enableHomeCustom:false,// 是否开启主页自定义配置，默认false
+    homeCustomLocation:"",//自定义主页的Markdown文档内容
+    
     enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
     swaggerModelName:"Swagger Models",//重命名界面Swagger Model的显示名称
     enableReloadCacheParameter:false,// 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
