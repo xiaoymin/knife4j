@@ -90,6 +90,36 @@ public class OpenApiExtensionResolver {
                 }
             }
         }
+        //判断主页文档
+        if (this.setting!=null){
+            if (this.setting.isEnableHomeCustom()){
+                if (StrUtil.isNotBlank(this.setting.getHomeCustomLocation())){
+                    String content=readCustomHome(this.setting.getHomeCustomLocation());
+                    //赋值
+                    this.setting.setHomeCustomLocation(content);
+                }
+            }
+        }
+    }
+
+    /**
+     * 读取自定义主页markdown的内容
+     * @param customHomeLocation 路径
+     * @return markdown内容
+     */
+    private String readCustomHome(String customHomeLocation){
+        String customHomeContent="";
+        try{
+            Resource[] resources=resourceResolver.getResources(customHomeLocation);
+            if(resources!=null&&resources.length>0){
+                //取第1个
+                Resource resource=resources[0];
+                customHomeContent=new String(CommonUtils.readBytes(resource.getInputStream()),"UTF-8");
+            }
+        }catch (Exception e){
+            logger.warn("(Ignores) Failed to read CustomeHomeLocation Markdown files,Error Message:{} ",e.getMessage());
+        }
+        return customHomeContent;
     }
 
     /**
