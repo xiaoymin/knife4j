@@ -347,7 +347,7 @@ export default {
               plus: this.getPlusStatus(),
               i18n:tmpI18n,
               i18nVue:this.$i18n,
-              configSupport:true,
+              configSupport:false,
               i18nInstance:this.getCurrentI18nInstance() 
               })
           }else{
@@ -370,7 +370,7 @@ export default {
                 plus: this.getPlusStatus(),
                 i18n:tmpI18n,
                 i18nVue:this.$i18n,
-                configSupport:true,
+                configSupport:false,
                 i18nInstance:this.getCurrentI18nInstance() 
                 })
             })
