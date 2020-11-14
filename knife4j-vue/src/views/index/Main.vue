@@ -1,6 +1,9 @@
 <template>
   <a-layout-content class="knife4j-body-content">
-    <a-row>
+    <a-row  class="markdown-body editormd-preview-container" v-if="this.settings.enableHomeCustom">
+      <vue-markdown :source="settings.homeCustomLocation"></vue-markdown>
+    </a-row>
+    <a-row v-else>
       <a-col :span="24">
         <div class="title">
           <h2>{{ swaggerCurrentInstance.title }}</h2>
@@ -94,19 +97,28 @@
         </div>
       </a-col>
     </a-row>
+
   </a-layout-content>
 </template>
 <script>
+import VueMarkdown from "vue-markdown";
 export default {
   props: {
     data: {
       type: Object
     }
   },
+  components: {
+    VueMarkdown
+  },
   computed:{
     swaggerCurrentInstance(){
       return this.$store.state.globals.swaggerCurrentInstance;
+    },
+    settings(){
+      return this.$store.state.globals.settings;
     }
+
   },
   data() {
     return {
@@ -114,6 +126,7 @@ export default {
     };
   },
   created() {
+    //console.log(this.settings);
     //console("子组件渲染");
     //console(this.data);
   }

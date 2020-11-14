@@ -831,6 +831,7 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
 SwaggerBootstrapUi.prototype.dispatchSettings=function(){
   this.store.dispatch('globals/setAfterScript', this.settings.enableAfterScript);
   this.store.dispatch('globals/setReloadCacheParameter', this.settings.enableReloadCacheParameter);
+  this.store.dispatch('globals/setSettings', this.settings);
 }
 
 /**
