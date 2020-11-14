@@ -14,17 +14,6 @@
         :onSearch="value => onSearch(value)"
         :onPressEnter="value => onPressEnter(value)"
       />
-      <a-tooltip :title="$t('docLinkTip')">
-        <a
-          target="_blank"
-          href="https://doc.xiaominfo.com/"
-          rel="noopener noreferrer"
-          class="action"
-        >
-          <a-icon type="question-circle-o" />
-        </a>
-      </a-tooltip>
-
       <a-dropdown v-if="currentUser.name">
         <a-menu slot="overlay" class="menu">
           <a-menu-item>
