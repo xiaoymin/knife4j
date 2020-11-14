@@ -126,6 +126,58 @@
       "name": "knife4j.setting.enableHostText",
       "type": "java.lang.String",
       "description": "Host Value"
+    },
+    {
+      "name": "knife4j.setting.enableDebug",
+      "type": "java.lang.Boolean",
+      "description": "Enable RESTful API debugging",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableFooter",
+      "type": "java.lang.Boolean",
+      "description": "Display Footer",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableFooterCustom",
+      "type": "java.lang.Boolean",
+      "description": "Enable Customize the footer content",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.setting.footerCustomContent",
+      "type": "java.lang.String",
+      "description": "Customize the footer content at the bottom"
+    },
+    {
+      "name": "knife4j.setting.enableSearch",
+      "type": "java.lang.Boolean",
+      "description": "Enable Search input",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableOpenApi",
+      "type": "java.lang.Boolean",
+      "description": "Display OpenApi Tab",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableHomeCustom",
+      "type": "java.lang.Boolean",
+      "description": "Enable Customize the home content",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.setting.homeCustomLocation",
+      "type": "java.lang.String",
+      "description": "Customize the home content at the index"
+    },
+    {
+      "name": "knife4j.setting.enableDynamicParameter",
+      "type": "java.lang.Boolean",
+      "description": "Enable Dynamic Request Parameter",
+      "defaultValue": false
     }
   ],
   "hints": [
@@ -295,6 +347,97 @@
         {
           "value": "en-US",
           "description": "Display Ui in English"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableDebug",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Host to enable debugging"
+        },
+        {
+          "value": false,
+          "description": "Disable RESTful API debugging"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableDynamicParameter",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Dynamic Request Parameter for debugging"
+        },
+        {
+          "value": false,
+          "description": "Disable Dynamic Request Parameter for debugging"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableFooter",
+      "values":[
+        {
+          "value": true,
+          "description": "Display default footer"
+        },
+        {
+          "value": false,
+          "description": "Hidden default footer"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableFooterCustom",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Customize the footer content"
+        },
+        {
+          "value": false,
+          "description": "Disalbe Customize the footer content"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableSearch",
+      "values":[
+        {
+          "value": true,
+          "description": "Display the Search input"
+        },
+        {
+          "value": false,
+          "description": "Hidden the Search input"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableOpenApi",
+      "values":[
+        {
+          "value": true,
+          "description": "Display the OpenAPI tab"
+        },
+        {
+          "value": false,
+          "description": "Hidden the OpenApi tab"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableHomeCustom",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Customize the home content"
+        },
+        {
+          "value": false,
+          "description": "Disable Customize the home content"
         }
       ]
     }

@@ -173,6 +173,19 @@ public class OpenApiExtensionResolver {
         return vendorExtensions;
     }
 
+    /**
+     * 构建个性化增强插件，个性化增强配置无需传递分组名称
+     * @return 扩展插件集合
+     */
+    public List<VendorExtension> buildSettingExtensions(){
+        OpenApiExtension openApiExtension=new OpenApiExtension(OpenApiExtension.EXTENSION_NAME);
+        //增加Markdown和setting
+        openApiExtension.addProperty(new OpenApiSettingExtension(this.setting));
+        List<VendorExtension> vendorExtensions=new ArrayList<>();
+        vendorExtensions.add(openApiExtension);
+        return vendorExtensions;
+    }
+
     public OpenApiExtensionResolver(OpenApiExtendSetting setting, List<MarkdownProperty> markdownProperties) {
         this.setting = setting;
         this.markdownProperties = markdownProperties;
