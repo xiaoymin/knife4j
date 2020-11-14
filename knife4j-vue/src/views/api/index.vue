@@ -12,7 +12,7 @@
             <my-icon type="icon-debug" /><span v-html="$t('debug.title')">调试</span></span>
           <Debug :api="api" :swaggerInstance="swaggerInstance" />
         </a-tab-pane>
-        <a-tab-pane key="openapi">
+        <a-tab-pane v-if="settings.enableOpenApi" key="openapi">
           <span slot="tab">
             <a-icon type="file-text" /><span>Open</span>
           </span>
@@ -53,6 +53,9 @@ export default {
   computed:{
     swagger(){
        return this.$store.state.globals.swagger;
+    },
+    settings(){
+      return this.$store.state.globals.settings;
     }
   },
   mounted() {},
@@ -78,7 +81,8 @@ export default {
     this.storeCacheApiAddApiInfo(apiInfo, instance.groupId);
     this.swaggerInstance = instance;
     this.api = apiInfo;
-    this.debugSupport = this.api.configurationDebugSupport;
+    //this.debugSupport = this.api.configurationDebugSupport;
+    this.debugSupport = this.settings.enableDebug;
     
   },
   methods: {
