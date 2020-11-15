@@ -4550,7 +4550,24 @@ SwaggerBootstrapUi.prototype.readApiSecurityOAS2=function(swpinfo,apiInfo){
 }
 
 SwaggerBootstrapUi.prototype.readApiSecurityOAS3=function(swpinfo,apiInfo){
-  
+  //判断是否包含security节点
+  if(KUtils.checkUndefined(apiInfo)&&apiInfo.hasOwnProperty("security")){
+    var securityArr=apiInfo["security"];
+    if(KUtils.arrNotEmpty(securityArr)){
+      var securityKeys=new Array();
+      securityArr.forEach(sa=>{
+        var saKeys=Object.keys(sa||{});
+        if(KUtils.arrNotEmpty(saKeys)){
+          securityKeys=securityKeys.concat(saKeys);
+        }
+      })
+      if(KUtils.arrNotEmpty(securityKeys)){
+        swpinfo.securityFlag=true;
+        swpinfo.securityKeys=securityKeys;
+      }
+      //console.log(swpinfo);
+    }
+  }
 }
 /**
  * 读取原始OpenAPI数据
