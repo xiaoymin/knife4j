@@ -78,7 +78,7 @@ function SwaggerBootstrapUi(options) {
   if(this.springdoc){
     this.url = options.url || 'v3/api-docs/swagger-config'
   }else{
-    this.url = options.url || 'cc/swagger-resources'
+    this.url = options.url || 'swagger-resources'
   }
   this.i18n=options.i18n||'zh-CN'
   this.i18nVue=options.i18nVue||null;
@@ -496,7 +496,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       group.location,
       group.swaggerVersion
     )
-    g.url = '/cc'+group.url
+    g.url = group.url
     //g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
