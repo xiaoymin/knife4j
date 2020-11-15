@@ -55,14 +55,14 @@ public class OperationDynamicModelProvider implements OperationModelsProviderPlu
                     if (Map.class.isAssignableFrom(parameterType.getParameterType().getErasedType()) || parameterType.getParameterType().getErasedType().getName() == "com.google.gson.JsonObject" ) {
                         //查询注解
                         Optional<ApiOperationSupport> supportOptional=context.findAnnotation(ApiOperationSupport.class);
-                        if (supportOptional.isPresent()){
-                            ApiOperationSupport support=supportOptional.get();
-                            //判断是否包含自定义注解
-                            collectDynamicParameter(support.params(),context);
+                        Optional<DynamicParameters> dynamicParametersOptional=context.findAnnotation(DynamicParameters.class);
+                        if (dynamicParametersOptional.isPresent()){
+                            collectDynamicParameter(dynamicParametersOptional.get(),context);
                         }else{
-                            Optional<DynamicParameters> dynamicParametersOptional=context.findAnnotation(DynamicParameters.class);
-                            if (dynamicParametersOptional.isPresent()){
-                                collectDynamicParameter(dynamicParametersOptional.get(),context);
+                            if (supportOptional.isPresent()){
+                                ApiOperationSupport support=supportOptional.get();
+                                //判断是否包含自定义注解
+                                collectDynamicParameter(support.params(),context);
                             }
                         }
                     }

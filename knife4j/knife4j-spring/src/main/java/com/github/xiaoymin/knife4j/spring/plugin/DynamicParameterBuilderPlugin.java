@@ -43,14 +43,14 @@ public class DynamicParameterBuilderPlugin implements ParameterBuilderPlugin {
             if (Map.class.isAssignableFrom(resolvedMethodParameter.getParameterType().getErasedType()) || resolvedMethodParameter.getParameterType().getErasedType().getName() == "com.google.gson.JsonObject" ){
                 //查询注解
                 Optional<ApiOperationSupport> supportOptional=parameterContext.getOperationContext().findAnnotation(ApiOperationSupport.class);
-                if (supportOptional.isPresent()){
-                    ApiOperationSupport support=supportOptional.get();
-                    //判断是否包含自定义注解
-                    changeDynamicParameterType(support.params(),parameterContext);
+                Optional<DynamicParameters> dynamicParametersOptional=parameterContext.getOperationContext().findAnnotation(DynamicParameters.class);
+                if (dynamicParametersOptional.isPresent()){
+                    changeDynamicParameterType(dynamicParametersOptional.get(),parameterContext);
                 }else{
-                    Optional<DynamicParameters> dynamicParametersOptional=parameterContext.getOperationContext().findAnnotation(DynamicParameters.class);
-                    if (dynamicParametersOptional.isPresent()){
-                        changeDynamicParameterType(dynamicParametersOptional.get(),parameterContext);
+                    if (supportOptional.isPresent()){
+                        ApiOperationSupport support=supportOptional.get();
+                        //判断是否包含自定义注解
+                        changeDynamicParameterType(support.params(),parameterContext);
                     }
                 }
             }
