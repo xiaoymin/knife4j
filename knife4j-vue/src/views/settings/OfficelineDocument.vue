@@ -3,7 +3,7 @@
     <a-row class="markdown-row">
       <a-row class="globalparameters">
         <a-row class="gptips" v-html="$t('offline.des')">
-          Knife4j提供导出4种格式的离线文档(Html/Markdown/Word/Pdf)
+          Knife4j提供导出4种格式的离线文档(Html/Markdown/Word/OpenAPI)
         </a-row>
       </a-row>
       <a-row class="knife4j-download-button">
@@ -19,9 +19,9 @@
         <a-button type="default" @click="triggerDownloadOpenAPI">
           <a-icon type="file-text" /><span>OpenAPI</span></a-button
         >
-        <a-button type="default" @click="triggerDownloadPDF">
+        <!-- <a-button type="default" @click="triggerDownloadPDF">
           <a-icon type="file-pdf" /><span v-html="$t('offline.download.pdf')">下载PDF</span></a-button
-        >
+        > -->
       </a-row>
       <!--  <a-modal v-model="downloadHtmlFlag" :footer="null" :maskClosable="false" :keyboard="false" :closable="false">
         <p>正在下载中...</p>

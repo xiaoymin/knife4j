@@ -483,7 +483,7 @@ const langOptions = {
 
   },
   offline: {
-    des: 'Knife4j provides export of offline documents in 4 formats (Html/Markdown/Word/Pdf)',
+    des: 'Knife4j provides export of offline documents in 4 formats (Html/Markdown/Word/OpenAPI)',
     download:{
       markdown:'Markdown',
       html:'Html',

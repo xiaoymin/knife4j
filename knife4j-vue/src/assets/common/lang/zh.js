@@ -435,7 +435,7 @@ const langOptions = {
     ]
   },
   offline: {
-    des: 'Knife4j提供导出4种格式的离线文档(Html/Markdown/Word/Pdf)',
+    des: 'Knife4j提供导出4种格式的离线文档(Html/Markdown/Word/OpenAPI)',
     download:{
       markdown:'下载Markdown',
       html:'下载Html',
