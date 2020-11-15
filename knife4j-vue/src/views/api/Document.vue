@@ -83,6 +83,10 @@
       <template slot="descriptionTemplate" slot-scope="text">
         <div v-html="text"></div>
       </template>
+      <template slot="schemaTemplate" slot-scope="text,record">
+        <span v-if="text!=null" v-html="text"></span>
+        <span v-else-if="record.schemaTitle!=null" v-html="record.schemaTitle"></span>
+      </template>
     </a-table>
     <!--响应参数需要判断是否存在多个code-schema的情况-->
     <div v-if="api.multipartResponseSchema">
@@ -200,7 +204,7 @@ export default {
   created() {
     var that = this;
     //console.log("Document")
-    //console.log(this.api.responseValue);
+    //console.log(this.api);
     var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
     //根据instance的实例初始化model名称
     //var treeTableModel = this.swaggerInstance.refTreeTableModels;
@@ -746,6 +750,14 @@ export default {
             that.multipCodeDatas.push(nresobj);
           }
         });
+        var multipKeys=Object.keys(that.multipData);
+        if(KUtils.arrNotEmpty(rcodes)&&!KUtils.arrNotEmpty(multipKeys)){
+          var rc=rcodes[0];
+          if(KUtils.strNotBlank(rc.schemaTitle)){
+            var nresobj = { ...rc, data: [] };
+            that.multipData = nresobj;
+          }
+        }
       }
       //console.log(that.multipData);
     },

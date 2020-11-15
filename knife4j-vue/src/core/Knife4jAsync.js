@@ -3335,6 +3335,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2=function(swpinfo){
               } else {
                 //判断是否是基础类型
                 if (KUtils.checkIsBasicType(t)) {
+                  var _tmpSchemaName=t;
                   //基础类型
                   swpinfo.responseText = t;
                   swpinfo.responseBasicType = true;
@@ -3342,6 +3343,12 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2=function(swpinfo){
                   //响应状态码的响应内容
                   swaggerResp.responseText = t;
                   swaggerResp.responseBasicType = true;
+                  //判断是否包含format
+                  var responsecodeformat=KUtils.propValue("format",schema,"");
+                  if(KUtils.strNotBlank(responsecodeformat)){
+                    _tmpSchemaName=_tmpSchemaName+"("+responsecodeformat+")";
+                  }
+                  swaggerResp.schemaTitle = _tmpSchemaName;
                 }
               }
             }
@@ -5988,6 +5995,7 @@ var SwaggerBootstrapUiResponseCode = function () {
   this.code = null;
   this.description = null;
   this.schema = null;
+  this.schemaTitle=null;
   //treetable组件使用对象
   this.refTreetableparameters = new Array();
   this.responseCodes = new Array();

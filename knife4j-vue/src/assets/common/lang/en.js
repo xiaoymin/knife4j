@@ -80,7 +80,8 @@ const langOptions = {
       },
       {
         title: 'schema',
-        dataIndex: 'schema'
+        dataIndex: 'schema',
+        scopedSlots: { customRender: 'schemaTemplate' }
       }
     ],
     //文档说明-响应Header
