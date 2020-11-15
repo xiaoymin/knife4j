@@ -78,7 +78,7 @@ function SwaggerBootstrapUi(options) {
   if(this.springdoc){
     this.url = options.url || 'v3/api-docs/swagger-config'
   }else{
-    this.url = options.url || 'swagger-resources'
+    this.url = options.url || 'cc/swagger-resources'
   }
   this.i18n=options.i18n||'zh-CN'
   this.i18nVue=options.i18nVue||null;
@@ -496,7 +496,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       group.location,
       group.swaggerVersion
     )
-    g.url = group.url
+    g.url = '/cc'+group.url
     //g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
@@ -2315,6 +2315,10 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   //解析paths属性
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("paths")) {
     var paths = menu["paths"];
+    //是否需要继续追加basePath的标志位
+    //true:代表框架已经append，Knife4j无需二次追加
+    //false: 代表框架未处理，Knife4j需要二次追加
+    var appendBaePathFlag=KUtils.appendBasePath(paths,that.currentInstance.basePath);
     that.log("开始解析Paths.................")
     that.log(new Date().toTimeString());
     var pathStartTime = new Date().getTime();
@@ -2326,7 +2330,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
         if (pathObject.hasOwnProperty(method)) {
           apiInfo = pathObject[method]
           if (apiInfo != null) {
-            var ins = that.createApiInfoInstance(path, method, apiInfo);
+            var ins = that.createApiInfoInstance(path, method, apiInfo,appendBaePathFlag);
             that.currentInstance.paths.push(ins);
             ins.hashCollections.forEach(function (hashurl) {
               that.currentInstance.pathsDictionary[hashurl] = ins;
@@ -4332,10 +4336,14 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
     //console.log(swpinfo);
   }
 }
-/***
+/**
  * 创建对象实例,返回SwaggerBootstrapUiApiInfo实例
+ * @param {*} path path对象
+ * @param {*} mtype 接口类型
+ * @param {*} apiInfo 对象
+ * @param {*} appendBaePathFlag 是否追加basePath
  */
-SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiInfo) {
+SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiInfo,appendBaePathFlag) {
   var that = this;
 
   var swpinfo = new SwaggerBootstrapUiApiInfo();
@@ -4356,13 +4364,19 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   var basePathFlag = false;
   //basePath="/addd/";
   if (basePath != "" && basePath != "/") {
-    if(!that.baseSpringFox){
+    /* if(!that.baseSpringFox){
       //springfox2.10.5版本不在追加basePath
       //https://gitee.com/xiaoym/knife4j/issues/I230K8
       newfullPath += basePath;
-    }
+    } */
     //如果非空,非根目录
     basePathFlag = true;
+  }
+  //在微服务的情况下springfox不会追加basePath
+  //单体架构下springfox会追加basePath
+  //根据appendBasePathFlag标志位判断是否需要追加basePath
+  if(!appendBaePathFlag){
+    newfullPath += basePath;
   }
   //此处追加springdoc-openapi的逻辑
   //springdoc-openapi版本中对于接口不会再paths节点追加basePath,所以Knife4j自动化处理
