@@ -496,8 +496,8 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       group.location,
       group.swaggerVersion
     )
-    g.url = group.url
-    //g.url="/test/json";
+    //g.url = group.url
+    g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
     var newUrl = ''
@@ -937,7 +937,17 @@ SwaggerBootstrapUi.prototype.openSettings=function(data){
         }
         that.store.dispatch('globals/setLang', i18n);
       },500)
+    }else{
+      //不存在，直接移除缓存
+      that.localStore.setItem(Constants.globalSettingsKey,Constants.defaultSettings);
+      //当前settings设置为默认值
+      this.settings=Constants.defaultSettings;
     }
+  }else{
+    //不存在，直接移除缓存
+    that.localStore.setItem(Constants.globalSettingsKey,Constants.defaultSettings);
+    //当前settings设置为默认值
+    this.settings=Constants.defaultSettings;
   }
 
 }
@@ -966,7 +976,17 @@ SwaggerBootstrapUi.prototype.openV3Settings=function(data){
           that.store.dispatch('globals/setLang', i18n);
         },500)
       }
+    }else{
+      //不存在，直接移除缓存
+      that.localStore.setItem(Constants.globalSettingsKey,Constants.defaultSettings);
+      //当前settings设置为默认值
+      this.settings=Constants.defaultSettings;
     }
+  }else{
+    //不存在，直接移除缓存
+    that.localStore.setItem(Constants.globalSettingsKey,Constants.defaultSettings);
+    //当前settings设置为默认值
+    this.settings=Constants.defaultSettings;
   }
 
 }
@@ -2312,6 +2332,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
     }
     that.currentInstance.tags=tmpTags;
   }
+  console.log(that.currentInstance)
   //解析paths属性
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("paths")) {
     var paths = menu["paths"];
