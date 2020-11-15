@@ -496,8 +496,8 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       group.location,
       group.swaggerVersion
     )
-    //g.url = group.url
-    g.url="/test/json";
+    g.url = group.url
+    //g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
     var newUrl = ''
@@ -2332,7 +2332,6 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
     }
     that.currentInstance.tags=tmpTags;
   }
-  console.log(that.currentInstance)
   //解析paths属性
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("paths")) {
     var paths = menu["paths"];
@@ -2340,8 +2339,8 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
     //true:代表框架已经append，Knife4j无需二次追加
     //false: 代表框架未处理，Knife4j需要二次追加
     var appendBaePathFlag=KUtils.appendBasePath(paths,that.currentInstance.basePath);
-    that.log("开始解析Paths.................")
-    that.log(new Date().toTimeString());
+    //that.log("开始解析Paths.................")
+    //that.log(new Date().toTimeString());
     var pathStartTime = new Date().getTime();
     var _supportMethods = ["get", "post", "put", "delete", "patch", "options", "trace", "head", "connect"];
     async.forEachOf(paths, function (pathObject, path, callback) {
@@ -2362,8 +2361,8 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       })
 
     })
-    that.log("解析Paths结束,耗时：" + (new Date().getTime() - pathStartTime));
-    that.log(new Date().toTimeString());
+    //that.log("解析Paths结束,耗时：" + (new Date().getTime() - pathStartTime));
+    //that.log(new Date().toTimeString());
     //判断是否开启过滤
     if (that.settings.enableFilterMultipartApis) {
       //开启过滤
@@ -2397,6 +2396,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       //that.log(that.currentInstance.paths)
     }
   }
+  //console.log(that.currentInstance)
   that.readSecurityContextSchemes(menu);
   //当前实例不存在OAuth2验证的情况下需要clear
   that.currentInstance.clearOAuth2();
@@ -3118,6 +3118,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
       }
       tag.childrens.forEach(function (children) {
         //})
+        //console.log(children)
         //$.each(tag.childrens, function (i, children) {
         var tabSubMenu = {
           groupName: groupName,
@@ -4375,6 +4376,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   var that = this;
 
   var swpinfo = new SwaggerBootstrapUiApiInfo();
+  //console.log(that.currentInstance)
   //给接口增加一个版本属性
   if(that.currentInstance.oas2()){
     swpinfo.oas2=true;
@@ -4472,6 +4474,10 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     }
     swpinfo.operationId = apiInfo.operationId;
     swpinfo.summary = KUtils.toString(apiInfo.summary,"").replace(/\//g,"-");
+    //针对summary做一次非空判断
+    if(KUtils.strBlank(swpinfo.summary)){
+      swpinfo.summary=apiInfo.operationId;
+    }
     swpinfo.tags = apiInfo.tags;
     //读取扩展属性
     this.readApiInfoInstanceExt(swpinfo,apiInfo);
@@ -5256,6 +5262,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
       minfo.schemaValue = className;
       var def = that.getDefinitionByName(className,swpinfo.oas2);
       if (def != null) {
+        minfo.schema=true;
         minfo.def = def;
         minfo.value = def.value;
         if (def.description != undefined && def.description != null && def.description != "") {
@@ -5320,6 +5327,17 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
         //如果type是发array类型,判断撒地方是否是integer
         //minfo.txtValue = JSON.stringify(minfo.type === 'array' ? [newValue] : newValue, null, "\t");
         minfo.txtValue = KUtils.json5stringify(minfo.type === 'array' ? [newValue] : newValue, null, "\t");
+      }
+    }
+  }
+  //console.log(m)
+  //https://gitee.com/xiaoym/knife4j/issues/I24PCZ
+  if(minfo.in=='query'||minfo.in=='formData'){
+    //console.log(minfo)
+    if(minfo.schema){
+      //如果出現query类型的schema,解析txtValue
+      if(KUtils.checkUndefined(minfo.value)&&KUtils.strBlank(minfo.txtValue)){
+        minfo.txtValue = KUtils.json5stringify(minfo.type === 'array' ? [minfo.value] : minfo.value, null, "\t");
       }
     }
   }
