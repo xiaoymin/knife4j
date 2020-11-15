@@ -6,7 +6,7 @@
         :span="24"
       >
         <a-input-group compact>
-          <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
+          <span class="knife4j-api-summary-method"><a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}</span>
           <a-input
             :style="debugUrlStyle"
             :value="debugUrl"
@@ -798,6 +798,8 @@ export default {
             //读取Author的参数情况
             var securitykey = constant.globalSecurityParamPrefix + this.api.instanceId;
             this.$localStore.getItem(securitykey).then(val => {
+              //console.log(val);
+              //console.log(this.api)
               //console("读取本都Auth请");
               if (KUtils.arrNotEmpty(val)) {
                 //不为空
@@ -816,7 +818,12 @@ export default {
                       enumsMode:"default",
                       new: false
                     };
-                    this.authorizeQueryParameters.push(newquery);
+                    //判断该接口是否security-Authorize
+                    if(this.api.securityFlag){
+                      if(this.api.securityKeys.includes(security.key)){
+                        this.authorizeQueryParameters.push(newquery);
+                      }
+                    }
                   }
                 });
               }
@@ -886,7 +893,12 @@ export default {
             };
             if(security.in=='header'){
               //this.headerData.push(newHeader);
-              this.addDebugHeader(newHeader);
+              //判断该接口是否security-Authorize
+              if(this.api.securityFlag){
+                if(this.api.securityKeys.includes(security.key)){
+                  this.addDebugHeader(newHeader);
+                }
+              }
             }
           });
         }

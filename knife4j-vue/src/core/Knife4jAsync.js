@@ -4407,7 +4407,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     newurl = that.currentInstance.baseUrl + newurl;
   } */
 
-  var startApiTime = new Date().getTime();
+  //var startApiTime = new Date().getTime();
   swpinfo.showUrl = newurl;
   //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
   swpinfo.instanceId = that.currentInstance.id;
@@ -4434,6 +4434,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   swpinfo.id = md5(md5Str);
   swpinfo.versionId = KUtils.md5Id(apiInfo);
   if (apiInfo != null) {
+    this.readApiSecurity(swpinfo,apiInfo);
     this.readOpenApiSpeci(path,swpinfo,apiInfo,that.currentInstance.swaggerData,that.currentInstance.openApiBaseInfo);
     if (apiInfo.hasOwnProperty("deprecated")) {
       swpinfo.deprecated = apiInfo["deprecated"];
@@ -4510,6 +4511,47 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   return swpinfo;
 }
 
+/**
+ * 解析Security参数，用于判断该接口是否需要Security的标志
+ * @param {*} swpinfo 
+ * @param {*} apiInfo 
+ */
+SwaggerBootstrapUi.prototype.readApiSecurity=function(swpinfo,apiInfo){
+  if(swpinfo.oas2){
+    this.readApiSecurityOAS2(swpinfo,apiInfo);
+  }else{
+    this.readApiSecurityOAS3(swpinfo,apiInfo);
+  }
+}
+/**
+ * OAS2.0结构
+ * @param {*} swpinfo 
+ * @param {*} apiInfo 
+ */
+SwaggerBootstrapUi.prototype.readApiSecurityOAS2=function(swpinfo,apiInfo){
+  //判断是否包含security节点
+  if(KUtils.checkUndefined(apiInfo)&&apiInfo.hasOwnProperty("security")){
+    var securityArr=apiInfo["security"];
+    if(KUtils.arrNotEmpty(securityArr)){
+      var securityKeys=new Array();
+      securityArr.forEach(sa=>{
+        var saKeys=Object.keys(sa||{});
+        if(KUtils.arrNotEmpty(saKeys)){
+          securityKeys=securityKeys.concat(saKeys);
+        }
+      })
+      if(KUtils.arrNotEmpty(securityKeys)){
+        swpinfo.securityFlag=true;
+        swpinfo.securityKeys=securityKeys;
+      }
+      //console.log(swpinfo);
+    }
+  }
+}
+
+SwaggerBootstrapUi.prototype.readApiSecurityOAS3=function(swpinfo,apiInfo){
+  
+}
 /**
  * 读取原始OpenAPI数据
  * @param {*} swpinfo 
@@ -6331,6 +6373,10 @@ var SwaggerBootstrapUiApiInfo = function () {
   this.instanceId = null;
   // 用于请求后构建curl
   this.host = null;
+  //add 2020年11月15日 16:51:49 xiaoymin
+  //服务端指定了部分接口校验,因此并非全局所有接口都需要Authorize
+  this.securityFlag=false;
+  this.securityKeys=null;
 }
 
 var SwaggerBootstrapUiRefParameter = function () {
