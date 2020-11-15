@@ -5,12 +5,11 @@
       <a-icon type="copyright" /> 2019-<a target="_blank" href="https://gitee.com/xiaoym/knife4j">Knife4j</a></div>
     </a-row>
     <a-row v-else>
-      <vue-markdown v-if="settings.enableFooterCustom" :source="settings.footerCustomContent"></vue-markdown>
+      <Markdown v-if="settings.enableFooterCustom" :source="settings.footerCustomContent" />
     </a-row>
   </div>
 </template>
 <script>
-import VueMarkdown from "vue-markdown";
 export default {
   name: "GlobalFooter",
   props: {
@@ -22,7 +21,7 @@ export default {
     }
   },
   components: {
-    VueMarkdown
+    "Markdown":()=>import('@/components/Markdown')
   },
   computed:{
     settings(){

@@ -1,7 +1,7 @@
 <template>
   <a-layout-content class="knife4j-body-content">
     <a-row  class="markdown-body editormd-preview-container" v-if="this.settings.enableHomeCustom">
-      <vue-markdown :source="settings.homeCustomLocation"></vue-markdown>
+      <Markdown :source="settings.homeCustomLocation"/>
     </a-row>
     <a-row v-else>
       <a-col :span="24">
@@ -101,7 +101,6 @@
   </a-layout-content>
 </template>
 <script>
-import VueMarkdown from "vue-markdown";
 export default {
   props: {
     data: {
@@ -109,7 +108,7 @@ export default {
     }
   },
   components: {
-    VueMarkdown
+    "Markdown":()=>import('@/components/Markdown')
   },
   computed:{
     swaggerCurrentInstance(){

@@ -37,7 +37,6 @@
   </a-layout-content>
 </template>
 <script>
-import VueMarkdown from "vue-markdown";
 import { resumecss } from "./OfficelineCss";
 import {getDocumentVueTemplates} from "@/components/officeDocument/officeDocTemplate";
 import {getDocumentVueTemplatesUS} from "@/components/officeDocument/officeDocTemplateUS";
@@ -56,7 +55,6 @@ export default {
     }
   },
   components: {
-    VueMarkdown,
     OnlineDocument,
     DownloadHtml
   },

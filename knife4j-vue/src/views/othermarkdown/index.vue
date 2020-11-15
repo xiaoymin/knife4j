@@ -1,14 +1,13 @@
 <template>
   <a-layout-content class="knife4j-body-content">
     <a-row class="markdown-body editormd-preview-container">
-      <vue-markdown :source="markdown.content"></vue-markdown>
+      <Markdown :source="markdown.content" />
     </a-row>
   </a-layout-content>
 </template>
 <script>
 import "@/assets/css/editormd.css";
 import KUtils from "@/core/utils";
-import VueMarkdown from "vue-markdown";
 export default {
   props: {
     data: {
@@ -16,7 +15,7 @@ export default {
     }
   },
   components: {
-    VueMarkdown
+    "Markdown":()=>import('@/components/Markdown')
   },
   data() {
     return {
