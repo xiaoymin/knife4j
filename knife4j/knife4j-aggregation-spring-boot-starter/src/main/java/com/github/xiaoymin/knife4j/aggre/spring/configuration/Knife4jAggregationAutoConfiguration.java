@@ -10,11 +10,12 @@ package com.github.xiaoymin.knife4j.aggre.spring.configuration;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteCache;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
+import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.cache.RouteInMemoryCache;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.filter.Knife4jRouteProxyFilter;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
-import com.github.xiaoymin.knife4j.aggre.core.repository.DiskRouteRepository;
+import com.github.xiaoymin.knife4j.aggre.repository.CloudRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,15 @@ import org.springframework.core.env.Environment;
  * @since:knife4j 1.0
  */
 @Configuration
-@EnableConfigurationProperties({Knife4jAggreProperties.class})
-@ConditionalOnProperty(name = "knife4j.enableAggre",havingValue = "true")
-public class Knife4jAggreAutoConfiguration {
+@EnableConfigurationProperties({Knife4jAggregationProperties.class})
+@ConditionalOnProperty(name = "knife4j.enableAggregation",havingValue = "true")
+public class Knife4jAggregationAutoConfiguration {
 
-    Logger logger= LoggerFactory.getLogger(Knife4jAggreAutoConfiguration.class);
+    Logger logger= LoggerFactory.getLogger(Knife4jAggregationAutoConfiguration.class);
     final Environment environment;
 
     @Autowired
-    public Knife4jAggreAutoConfiguration(Environment environment) {
+    public Knife4jAggregationAutoConfiguration(Environment environment) {
         this.environment = environment;
     }
 
@@ -49,12 +50,13 @@ public class Knife4jAggreAutoConfiguration {
     }
 
     @Bean
-    public DiskRouteRepository mySqlRouteRepository(@Autowired Knife4jAggreProperties knife4jAggreProperties){
-        return new DiskRouteRepository(knife4jAggreProperties.getRoutes());
+    public CloudRepository mySqlRouteRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
+        return null;
+        //return new DiskRouteRepository(knife4jAggreProperties.getRoutes());
     }
 
     @Bean
-    public RouteDispatcher routeDispatcher(@Autowired DiskRouteRepository diskRouteRepository,
+    public RouteDispatcher routeDispatcher(@Autowired RouteRepository routeRepository,
                                            @Autowired RouteCache<String,SwaggerRoute> routeCache){
         //获取当前项目的contextPath
         String contextPath=environment.getProperty("server.servlet.context-path");
@@ -68,7 +70,7 @@ public class Knife4jAggreAutoConfiguration {
                 contextPath=RouteDispatcher.ROUTE_BASE_PATH+contextPath;
             }
         }
-        return new RouteDispatcher(diskRouteRepository,routeCache, ExecutorEnum.APACHE,contextPath);
+        return new RouteDispatcher(routeRepository,routeCache, ExecutorEnum.APACHE,contextPath);
     }
 
     @Bean

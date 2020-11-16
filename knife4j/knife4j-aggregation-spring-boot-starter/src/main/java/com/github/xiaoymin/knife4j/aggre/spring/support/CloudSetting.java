@@ -5,39 +5,34 @@
  * Developer Web Site: http://open.xiaominfo.com.
  */
 
-package com.github.xiaoymin.knife4j.aggre.spring.configuration;
+package com.github.xiaoymin.knife4j.aggre.spring.support;
 
 import com.github.xiaoymin.knife4j.aggre.core.pojo.OpenApiRoute;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
+ * 任意聚合OpenAPI,无注册中心
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2020/11/13 13:12
+ * 2020/11/16 22:32
  * @since:knife4j 1.0
  */
-@Component
-@ConfigurationProperties(prefix = "knife4j")
-public class Knife4jAggreProperties {
-
+public class CloudSetting {
     /**
-     * 是否开启Knife4j聚合模式
+     * 是否启用
      */
-    private boolean enableAggre=false;
-
+    private boolean enable;
     /**
      * 微服务集合
      */
     private List<OpenApiRoute> routes;
 
-    public boolean isEnableAggre() {
-        return enableAggre;
+    public boolean isEnable() {
+        return enable;
     }
 
-    public void setEnableAggre(boolean enableAggre) {
-        this.enableAggre = enableAggre;
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     public List<OpenApiRoute> getRoutes() {
