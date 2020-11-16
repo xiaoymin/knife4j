@@ -500,6 +500,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     //g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
+    g.servicePath=KUtils.getValue(group,'servicePath',null,true);
     var newUrl = ''
     //此处需要判断basePath路径的情况
     if (group.url != null && group.url != undefined && group.url != '') {
@@ -4429,7 +4430,15 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   /* if (that.currentInstance.baseUrl != "" && that.currentInstance.baseUrl != "/") {
     newurl = that.currentInstance.baseUrl + newurl;
   } */
-
+  //添加servicePath
+  if(KUtils.strNotBlank(that.currentInstance.servicePath)){
+    var tempUrl=that.currentInstance.servicePath;
+    if(!newfullPath.startsWith("/")){
+      tempUrl=tempUrl+"/";
+    }
+    tempUrl=tempUrl+newfullPath;
+    newurl=tempUrl;
+  }
   //var startApiTime = new Date().getTime();
   swpinfo.showUrl = newurl;
   //swpinfo.id="ApiInfo"+Math.round(Math.random()*1000000);
@@ -6595,8 +6604,9 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   this.markdownFiles = []
 
   this.i18n = null
-  //增加header头,主要针对Knife4j-aggregation网关聚合模块
+  //增加header头,servicePath,主要针对Knife4j-aggregation网关聚合模块
   this.header=null;
+  this.servicePath=null;
 }
 SwaggerBootstrapUiInstance.prototype.clearOAuth2=function(){
   if(!KUtils.checkUndefined(this.oauths)){
