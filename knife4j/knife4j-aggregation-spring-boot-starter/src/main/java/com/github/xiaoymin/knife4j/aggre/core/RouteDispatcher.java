@@ -37,6 +37,7 @@ public class RouteDispatcher {
      * 请求头
      */
     public static final String ROUTE_PROXY_HEADER_NAME="knfie4j-gateway-request";
+    public static final String ROUTE_BASE_PATH="/";
 
     Logger logger= LoggerFactory.getLogger(RouteDispatcher.class);
 
@@ -167,7 +168,19 @@ public class RouteDispatcher {
         String uri=swaggerRoute.getUri();
         String host=URI.create(uri).getHost();
         String fromUri=request.getRequestURI();
-        String requestUrl=uri+fromUri;
+        StringBuilder requestUrlBuilder=new StringBuilder();
+        requestUrlBuilder.append(uri);
+        //判断servicePath
+        if (StrUtil.isNotBlank(swaggerRoute.getServicePath())&&!StrUtil.equals(swaggerRoute.getServicePath(),ROUTE_BASE_PATH)){
+            if (StrUtil.startWith(fromUri,swaggerRoute.getServicePath())){
+                //实际在请求时,剔除servicePath,否则会造成404
+                requestUrlBuilder.append(fromUri.replace(swaggerRoute.getServicePath(),""));
+            }else{
+                requestUrlBuilder.append(fromUri);
+            }
+        }
+        //String requestUrl=uri+fromUri;
+        String requestUrl=requestUrlBuilder.toString();
         logger.info("目标请求Url:{},请求类型:{},Host:{}",requestUrl,request.getMethod(),host);
         routeRequestContext.setOriginalUri(fromUri);
         routeRequestContext.setUrl(requestUrl);

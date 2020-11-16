@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.aggre.core.pojo;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
+import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
 
 /***
  * 最终返回前端Swagger的数据结构
@@ -24,6 +25,7 @@ public class SwaggerRoute {
     private String header;
     private String location;
     private String swaggerVersion;
+    private String servicePath;
     private boolean debug=true;
     /**
      * 是否本地请求,本地请求在前端无需添加Header,否则会走代理
@@ -42,6 +44,14 @@ public class SwaggerRoute {
                     this.uri="http://"+openApiRoute.getUri();
                 }else{
                     this.uri=openApiRoute.getUri();
+                }
+            }
+            if (StrUtil.isNotBlank(openApiRoute.getServicePath())&&!StrUtil.equals(openApiRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)){
+                //判断是否是/开头
+                if (!StrUtil.startWith(openApiRoute.getServicePath(),RouteDispatcher.ROUTE_BASE_PATH)){
+                    this.servicePath= RouteDispatcher.ROUTE_BASE_PATH+openApiRoute.getServicePath();
+                }else{
+                    this.servicePath=openApiRoute.getServicePath();
                 }
             }
             this.location=openApiRoute.getLocation();
@@ -105,4 +115,11 @@ public class SwaggerRoute {
         this.debug = debug;
     }
 
+    public String getServicePath() {
+        return servicePath;
+    }
+
+    public void setServicePath(String servicePath) {
+        this.servicePath = servicePath;
+    }
 }

@@ -33,6 +33,11 @@ public class OpenApiRoute {
      */
     private String swaggerVersion="2.0";
 
+    /**
+     * 微服务路径,主要是针对在网关使用时，追加的basePath，主要是为了和在网关转发时路径在文档上展示一致的问题
+     */
+    private String servicePath;
+
     public String getName() {
         return name;
     }
@@ -65,6 +70,14 @@ public class OpenApiRoute {
         this.swaggerVersion = swaggerVersion;
     }
 
+    public String getServicePath() {
+        return servicePath;
+    }
+
+    public void setServicePath(String servicePath) {
+        this.servicePath = servicePath;
+    }
+
     @Override
     public String toString() {
         return "OpenApiRoute{" +
@@ -72,6 +85,7 @@ public class OpenApiRoute {
                 ", uri='" + uri + '\'' +
                 ", location='" + location + '\'' +
                 ", swaggerVersion='" + swaggerVersion + '\'' +
+                ", servicePath='" + servicePath + '\'' +
                 '}';
     }
 }
