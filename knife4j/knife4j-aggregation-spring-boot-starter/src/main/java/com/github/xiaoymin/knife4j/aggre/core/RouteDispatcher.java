@@ -41,6 +41,10 @@ public class RouteDispatcher {
     public static final String ROUTE_BASE_PATH="/";
 
     Logger logger= LoggerFactory.getLogger(RouteDispatcher.class);
+    /**
+     * 当前项目的contextPath
+     */
+    private String rootPath;
 
     private RouteRepository routeRepository;
 
@@ -50,9 +54,10 @@ public class RouteDispatcher {
 
     private Set<String> ignoreHeaders=new HashSet<>();
 
-    public RouteDispatcher(RouteRepository routeRepository, RouteCache<String,SwaggerRoute> routeRouteCache, ExecutorEnum executorEnum){
+    public RouteDispatcher(RouteRepository routeRepository, RouteCache<String,SwaggerRoute> routeRouteCache, ExecutorEnum executorEnum,String rootPath){
         this.routeRepository=routeRepository;
         this.routeCache=routeRouteCache;
+        this.rootPath=rootPath;
         initExecutor(executorEnum);
         ignoreHeaders.addAll(Arrays.asList(new String[]{
                 "host","content-length",ROUTE_PROXY_HEADER_NAME,"Request-Origion"
@@ -192,6 +197,10 @@ public class RouteDispatcher {
         String fromUri=request.getRequestURI();
         StringBuilder requestUrlBuilder=new StringBuilder();
         requestUrlBuilder.append(uri);
+        //判断当前聚合项目的contextPath
+        if (StrUtil.isNotBlank(this.rootPath)&&!StrUtil.equals(this.rootPath,ROUTE_BASE_PATH)){
+            fromUri=fromUri.replace(this.rootPath,"");
+        }
         //判断servicePath
         if (StrUtil.isNotBlank(swaggerRoute.getServicePath())&&!StrUtil.equals(swaggerRoute.getServicePath(),ROUTE_BASE_PATH)){
             if (StrUtil.startWith(fromUri,swaggerRoute.getServicePath())){
