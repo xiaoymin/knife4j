@@ -72,7 +72,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.springframework.plugin</groupId>
-                    <artifactId>spring-plugin-core</artifactId>
+                    <artifactId>spring-plugin-metadata</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -87,7 +87,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.springframework.plugin</groupId>
-                    <artifactId>spring-plugin-core</artifactId>
+                    <artifactId>spring-plugin-metadata</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -101,7 +101,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.springframework.plugin</groupId>
-                    <artifactId>spring-plugin-core</artifactId>
+                    <artifactId>spring-plugin-metadata</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
