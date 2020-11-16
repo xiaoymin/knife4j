@@ -82,6 +82,10 @@
             <artifactId>springfox-bean-validators</artifactId>
             <exclusions>
                 <exclusion>
+                    <groupId>io.springfox</groupId>
+                    <artifactId>springfox-spi</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.springframework.plugin</groupId>
                     <artifactId>spring-plugin-core</artifactId>
                 </exclusion>
@@ -95,6 +99,14 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-spring-webmvc</artifactId>
             <exclusions>
+                <exclusion>
+                    <groupId>io.springfox</groupId>
+                    <artifactId>springfox-spi</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.springfox</groupId>
+                    <artifactId>springfox-spring-web</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.springframework.plugin</groupId>
                     <artifactId>spring-plugin-core</artifactId>
