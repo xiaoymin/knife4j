@@ -1,7 +1,7 @@
 <template>
   <a-layout-content class="knife4j-body-content">
     <a-row class="markdown-body editormd-preview-container">
-      <Markdown :source="markdown.content" />
+      <Markdown :source="content" />
     </a-row>
   </a-layout-content>
 </template>
@@ -19,7 +19,7 @@ export default {
   },
   data() {
     return {
-      markdown: {}
+      content: ""
     };
   },
   created() {
@@ -28,12 +28,11 @@ export default {
     var id = this.$route.params.id;
     var key= this.data.instance.id+'markdownFiles';
     this.$localStore.getItem(key).then(mdfileMap=>{
+      //console.log(mdfileMap)
       if(KUtils.checkUndefined(mdfileMap)){
         var content=mdfileMap[id];
         if(KUtils.strNotBlank(content)){
-          that.markdown={
-            content:content
-          };
+          that.content=content;
         }
       }
     })
