@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.aggre.core;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.executor.ApacheClientExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.executor.OkHttpClientExecutor;
@@ -99,6 +100,24 @@ public class RouteDispatcher {
         }catch (Exception e){
            logger.error("has Error:{}",e.getMessage());
            logger.error(e.getMessage(),e);
+           //write Default
+            writeDefault(request,response,e.getMessage());
+        }
+    }
+
+    protected void writeDefault(HttpServletRequest request,HttpServletResponse response,String errMsg){
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            PrintWriter printWriter=response.getWriter();
+            Map<String,String> map= new HashMap<>();
+            map.put("message",errMsg);
+            map.put("code","500");
+            map.put("path",request.getRequestURI());
+            new JSONObject(map).write(printWriter);
+            printWriter.close();
+        } catch (IOException e) {
+            //ignore
         }
     }
 
@@ -166,6 +185,9 @@ public class RouteDispatcher {
         SwaggerRoute swaggerRoute=getRoute(request.getHeader(ROUTE_PROXY_HEADER_NAME));
         //String uri="http://knife4j.xiaominfo.com";
         String uri=swaggerRoute.getUri();
+        if (StrUtil.isBlank(uri)){
+            throw new RuntimeException("Uri is Empty");
+        }
         String host=URI.create(uri).getHost();
         String fromUri=request.getRequestURI();
         StringBuilder requestUrlBuilder=new StringBuilder();
