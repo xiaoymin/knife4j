@@ -8,7 +8,6 @@
 package com.github.xiaoymin.knife4j.aggre.repository;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.crypto.digest.MD5;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 
