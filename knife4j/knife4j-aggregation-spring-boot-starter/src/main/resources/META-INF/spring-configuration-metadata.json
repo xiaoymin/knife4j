@@ -12,11 +12,6 @@
       "type": "java.lang.Boolean",
       "description": "Enable Knife4j aggregation enhanced mode",
       "defaultValue": false
-    },
-    {
-      "name": "knife4j.cloud",
-      "type": "com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting",
-      "description": "Dynamically aggregate from the Cloud"
     },{
       "name": "knife4j.cloud.enable",
       "type": "java.lang.Boolean",
@@ -30,11 +25,6 @@
       "sourceType": "com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties"
     },
     {
-      "name": "knife4j.eureka",
-      "type": "com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting",
-      "description": "Dynamically aggregate from the Eureka"
-    },
-    {
       "name": "knife4j.eureka.enable",
       "type": "java.lang.Boolean",
       "defaultValue": false,
@@ -45,6 +35,12 @@
       "type": "java.lang.String",
       "defaultValue": false,
       "description": "Eureka register serviceUrl"
+    },
+    {
+      "name": "knife4j.eureka.routes",
+      "type": "java.util.List<com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute>",
+      "description": "Routes",
+      "sourceType": "com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties"
     },
     {
       "name": "knife4j.eureka.enableBasicAuth",

@@ -7,6 +7,7 @@
 
 package com.github.xiaoymin.knife4j.aggre.core.pojo;
 
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
@@ -70,7 +71,7 @@ public class SwaggerRoute {
                 this.name=eurekaRoute.getName();
             }
             //如果端口获取不到，给一个默认值80
-            this.uri="http://"+eurekaInstance.getIpAddr()+":"+ Objects.toString(eurekaInstance.getPort().get("$"),"80");
+            this.uri="http://"+eurekaInstance.getIpAddr()+":"+ NumberUtil.parseInt(Objects.toString(eurekaInstance.getPort().get("$"),"80"));
             if (StrUtil.isNotBlank(eurekaRoute.getServicePath())&&!StrUtil.equals(eurekaRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)){
                 //判断是否是/开头
                 if (!StrUtil.startWith(eurekaRoute.getServicePath(),RouteDispatcher.ROUTE_BASE_PATH)){
