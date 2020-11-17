@@ -50,9 +50,9 @@ public class Knife4jAggregationAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(name = "knife4j.cloud.enable",havingValue = "true")
     public CloudRepository mySqlRouteRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
-        return null;
-        //return new DiskRouteRepository(knife4jAggreProperties.getRoutes());
+        return new CloudRepository(knife4jAggregationProperties.getCloud());
     }
 
     @Bean

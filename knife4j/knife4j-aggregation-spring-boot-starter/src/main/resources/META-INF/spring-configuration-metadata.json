@@ -8,21 +8,66 @@
   ],
   "properties": [
     {
-      "name": "knife4j.enableAggre",
+      "name": "knife4j.enableAggregation",
       "type": "java.lang.Boolean",
       "description": "Enable Knife4j aggregation enhanced mode",
       "defaultValue": false
     },
     {
-      "name": "knife4j.routes",
+      "name": "knife4j.cloud",
+      "type": "com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting",
+      "description": "Dynamically aggregate from the Cloud"
+    },{
+      "name": "knife4j.cloud.enable",
+      "type": "java.lang.Boolean",
+      "description": "Dynamically aggregate from the Cloud",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.cloud.routes",
       "type": "java.util.List<com.github.xiaoymin.knife4j.aggre.core.pojo.OpenApiRoute>",
       "description": "Routes",
       "sourceType": "com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties"
+    },
+    {
+      "name": "knife4j.eureka",
+      "type": "com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting",
+      "description": "Dynamically aggregate from the Eureka"
+    },
+    {
+      "name": "knife4j.eureka.enable",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Dynamically aggregate from the Eureka"
+    },
+    {
+      "name": "knife4j.eureka.serviceUrl",
+      "type": "java.lang.String",
+      "defaultValue": false,
+      "description": "Eureka register serviceUrl"
+    },
+    {
+      "name": "knife4j.eureka.enableBasicAuth",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Enable Eureka BasicAuth"
+    },
+    {
+      "name": "knife4j.eureka.username",
+      "type": "java.lang.String",
+      "defaultValue": false,
+      "description": "Eureka Basic Username"
+    },
+    {
+      "name": "knife4j.eureka.password",
+      "type": "java.lang.String",
+      "defaultValue": false,
+      "description": "Eureka Basic Password"
     }
   ],
   "hints": [
     {
-      "name": "knife4j.enableAggre",
+      "name": "knife4j.enableAggregation",
       "values":[
         {
           "value": true,
@@ -31,6 +76,54 @@
         {
           "value": false,
           "description": "Disable Knife4j aggregation enhanced mode"
+        }
+      ]
+    },{
+      "name": "knife4j.cloud.enable",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Cloud mode"
+        },
+        {
+          "value": false,
+          "description": "Disable Cloud mode"
+        }
+      ]
+    },{
+      "name": "knife4j.eureka.enable",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Eureka mode"
+        },
+        {
+          "value": false,
+          "description": "Disable Eureka mode"
+        }
+      ]
+    },{
+      "name": "knife4j.eureka.enableBasicAuth",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Eureka Basic Auth"
+        },
+        {
+          "value": false,
+          "description": "Disable Eureka Basic Auth"
+        }
+      ]
+    },{
+      "name": "knife4j.nacos.enable",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Nacos mode"
+        },
+        {
+          "value": false,
+          "description": "Disable Nacos mode"
         }
       ]
     }

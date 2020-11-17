@@ -11,8 +11,8 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.OpenApiRoute;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,9 +28,9 @@ public class CloudRepository implements RouteRepository {
 
     private final Map<String,SwaggerRoute> routeMap=new HashMap<>();
 
-    public CloudRepository(List<OpenApiRoute> routes){
-        if (CollectionUtil.isNotEmpty(routes)){
-            routes.stream().forEach(openApiRoute -> routeMap.put(MD5.create().digestHex(openApiRoute.toString()),new SwaggerRoute(openApiRoute)));
+    public CloudRepository(CloudSetting cloudSetting){
+        if (cloudSetting!=null&&CollectionUtil.isNotEmpty(cloudSetting.getRoutes())){
+            cloudSetting.getRoutes().stream().forEach(openApiRoute -> routeMap.put(MD5.create().digestHex(openApiRoute.toString()),new SwaggerRoute(openApiRoute)));
         }
     }
 
