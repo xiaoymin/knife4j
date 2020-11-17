@@ -9,7 +9,6 @@ package com.github.xiaoymin.knife4j.aggre.core.pojo;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.MD5;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
@@ -40,7 +39,7 @@ public class SwaggerRoute {
     }
     public SwaggerRoute(CloudRoute cloudRoute){
         if (cloudRoute!=null){
-            this.header= MD5.create().digestHex(cloudRoute.toString());
+            this.header= cloudRoute.pkId();
             this.name=cloudRoute.getName();
             if (StrUtil.isNotBlank(cloudRoute.getUri())){
                 //判断
