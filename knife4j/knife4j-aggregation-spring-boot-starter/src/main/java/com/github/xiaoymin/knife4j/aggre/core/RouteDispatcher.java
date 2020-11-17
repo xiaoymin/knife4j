@@ -199,13 +199,13 @@ public class RouteDispatcher {
         requestUrlBuilder.append(uri);
         //判断当前聚合项目的contextPath
         if (StrUtil.isNotBlank(this.rootPath)&&!StrUtil.equals(this.rootPath,ROUTE_BASE_PATH)){
-            fromUri=fromUri.replace(this.rootPath,"");
+            fromUri=fromUri.replaceFirst(this.rootPath,"");
         }
         //判断servicePath
         if (StrUtil.isNotBlank(swaggerRoute.getServicePath())&&!StrUtil.equals(swaggerRoute.getServicePath(),ROUTE_BASE_PATH)){
             if (StrUtil.startWith(fromUri,swaggerRoute.getServicePath())){
                 //实际在请求时,剔除servicePath,否则会造成404
-                requestUrlBuilder.append(fromUri.replace(swaggerRoute.getServicePath(),""));
+                requestUrlBuilder.append(fromUri.replaceFirst(swaggerRoute.getServicePath(),""));
             }else{
                 requestUrlBuilder.append(fromUri);
             }
