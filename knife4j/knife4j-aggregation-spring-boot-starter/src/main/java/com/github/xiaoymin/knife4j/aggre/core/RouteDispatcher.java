@@ -205,11 +205,10 @@ public class RouteDispatcher {
         if (StrUtil.isNotBlank(swaggerRoute.getServicePath())&&!StrUtil.equals(swaggerRoute.getServicePath(),ROUTE_BASE_PATH)){
             if (StrUtil.startWith(fromUri,swaggerRoute.getServicePath())){
                 //实际在请求时,剔除servicePath,否则会造成404
-                requestUrlBuilder.append(fromUri.replaceFirst(swaggerRoute.getServicePath(),""));
-            }else{
-                requestUrlBuilder.append(fromUri);
+                fromUri=fromUri.replaceFirst(swaggerRoute.getServicePath(),"");
             }
         }
+        requestUrlBuilder.append(fromUri);
         //String requestUrl=uri+fromUri;
         String requestUrl=requestUrlBuilder.toString();
         logger.info("目标请求Url:{},请求类型:{},Host:{}",requestUrl,request.getMethod(),host);
