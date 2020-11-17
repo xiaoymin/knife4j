@@ -22,7 +22,7 @@ public class CloudRepository extends AbsctractRepository{
 
     public CloudRepository(CloudSetting cloudSetting){
         if (cloudSetting!=null&&CollectionUtil.isNotEmpty(cloudSetting.getRoutes())){
-            cloudSetting.getRoutes().stream().forEach(openApiRoute -> routeMap.put(MD5.create().digestHex(openApiRoute.toString()),new SwaggerRoute(openApiRoute)));
+            cloudSetting.getRoutes().stream().forEach(cloudRoute -> routeMap.put(cloudRoute.pkId(),new SwaggerRoute(cloudRoute)));
         }
     }
 }

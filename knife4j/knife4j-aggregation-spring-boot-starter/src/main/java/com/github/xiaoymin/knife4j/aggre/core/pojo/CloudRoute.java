@@ -7,6 +7,8 @@
 
 package com.github.xiaoymin.knife4j.aggre.core.pojo;
 
+import cn.hutool.crypto.digest.MD5;
+
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/13 13:14
@@ -76,6 +78,10 @@ public class CloudRoute {
 
     public void setServicePath(String servicePath) {
         this.servicePath = servicePath;
+    }
+
+    public String pkId(){
+        return MD5.create().digestHex(this.toString());
     }
 
     @Override

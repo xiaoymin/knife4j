@@ -38,28 +38,28 @@ public class SwaggerRoute {
 
     public SwaggerRoute() {
     }
-    public SwaggerRoute(CloudRoute openApiRoute){
-        if (openApiRoute!=null){
-            this.header= MD5.create().digestHex(openApiRoute.toString());
-            this.name=openApiRoute.getName();
-            if (StrUtil.isNotBlank(openApiRoute.getUri())){
+    public SwaggerRoute(CloudRoute cloudRoute){
+        if (cloudRoute!=null){
+            this.header= MD5.create().digestHex(cloudRoute.toString());
+            this.name=cloudRoute.getName();
+            if (StrUtil.isNotBlank(cloudRoute.getUri())){
                 //判断
-                if (!ReUtil.isMatch("(http|https)://.*?$",openApiRoute.getUri())){
-                    this.uri="http://"+openApiRoute.getUri();
+                if (!ReUtil.isMatch("(http|https)://.*?$",cloudRoute.getUri())){
+                    this.uri="http://"+cloudRoute.getUri();
                 }else{
-                    this.uri=openApiRoute.getUri();
+                    this.uri=cloudRoute.getUri();
                 }
             }
-            if (StrUtil.isNotBlank(openApiRoute.getServicePath())&&!StrUtil.equals(openApiRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)){
+            if (StrUtil.isNotBlank(cloudRoute.getServicePath())&&!StrUtil.equals(cloudRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)){
                 //判断是否是/开头
-                if (!StrUtil.startWith(openApiRoute.getServicePath(),RouteDispatcher.ROUTE_BASE_PATH)){
-                    this.servicePath= RouteDispatcher.ROUTE_BASE_PATH+openApiRoute.getServicePath();
+                if (!StrUtil.startWith(cloudRoute.getServicePath(),RouteDispatcher.ROUTE_BASE_PATH)){
+                    this.servicePath= RouteDispatcher.ROUTE_BASE_PATH+cloudRoute.getServicePath();
                 }else{
-                    this.servicePath=openApiRoute.getServicePath();
+                    this.servicePath=cloudRoute.getServicePath();
                 }
             }
-            this.location=openApiRoute.getLocation();
-            this.swaggerVersion=openApiRoute.getSwaggerVersion();
+            this.location=cloudRoute.getLocation();
+            this.swaggerVersion=cloudRoute.getSwaggerVersion();
         }
     }
 
