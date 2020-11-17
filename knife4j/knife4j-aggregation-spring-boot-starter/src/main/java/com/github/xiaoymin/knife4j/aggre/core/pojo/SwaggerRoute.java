@@ -11,6 +11,10 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
+import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
+import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
+
+import java.util.Objects;
 
 /***
  * 最终返回前端Swagger的数据结构
@@ -34,7 +38,7 @@ public class SwaggerRoute {
 
     public SwaggerRoute() {
     }
-    public SwaggerRoute(OpenApiRoute openApiRoute){
+    public SwaggerRoute(CloudRoute openApiRoute){
         if (openApiRoute!=null){
             this.header= MD5.create().digestHex(openApiRoute.toString());
             this.name=openApiRoute.getName();
@@ -59,6 +63,27 @@ public class SwaggerRoute {
         }
     }
 
+    public SwaggerRoute(EurekaRoute eurekaRoute, EurekaInstance eurekaInstance){
+        if (eurekaRoute!=null&&eurekaInstance!=null){
+            this.header= eurekaRoute.pkId();
+            this.name=eurekaRoute.getServiceName();
+            if (StrUtil.isNotBlank(eurekaRoute.getName())){
+                this.name=eurekaRoute.getName();
+            }
+            //如果端口获取不到，给一个默认值80
+            this.uri="http://"+eurekaInstance.getIpAddr()+":"+ Objects.toString(eurekaInstance.getPort().get("$"),"80");
+            if (StrUtil.isNotBlank(eurekaRoute.getServicePath())&&!StrUtil.equals(eurekaRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)){
+                //判断是否是/开头
+                if (!StrUtil.startWith(eurekaRoute.getServicePath(),RouteDispatcher.ROUTE_BASE_PATH)){
+                    this.servicePath= RouteDispatcher.ROUTE_BASE_PATH+eurekaRoute.getServicePath();
+                }else{
+                    this.servicePath=eurekaRoute.getServicePath();
+                }
+            }
+            this.location=eurekaRoute.getLocation();
+            this.swaggerVersion=eurekaRoute.getSwaggerVersion();
+        }
+    }
     public boolean isLocal() {
         return local;
     }

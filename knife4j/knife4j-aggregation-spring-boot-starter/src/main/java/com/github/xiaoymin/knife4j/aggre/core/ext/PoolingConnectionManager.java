@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.aggre.core.ext;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -103,5 +104,14 @@ public  class PoolingConnectionManager {
                 .build();
     }
 
+    public CloseableHttpClient getClient(CredentialsProvider credentialsProvider){
+        return HttpClients.custom()
+                .setConnectionManager(poolingHttpClientConnectionManager)
+                .setDefaultRequestConfig(defaultRequestConfig)
+                .setRetryHandler(retryHandler)
+                .setDefaultCredentialsProvider(credentialsProvider)
+                .setConnectionManagerShared(true)
+                .build();
+    }
 
 }

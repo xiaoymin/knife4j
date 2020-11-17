@@ -16,6 +16,7 @@ import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.filter.Knife4jRouteProxyFilter;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.repository.CloudRepository;
+import com.github.xiaoymin.knife4j.aggre.repository.EurekaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import org.springframework.core.env.Environment;
 public class Knife4jAggregationAutoConfiguration {
 
     Logger logger= LoggerFactory.getLogger(Knife4jAggregationAutoConfiguration.class);
+
     final Environment environment;
 
     @Autowired
@@ -51,8 +53,14 @@ public class Knife4jAggregationAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "knife4j.cloud.enable",havingValue = "true")
-    public CloudRepository mySqlRouteRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
+    public CloudRepository cloudRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
         return new CloudRepository(knife4jAggregationProperties.getCloud());
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "knife4j.eureka.enable",havingValue = "true")
+    public EurekaRepository eurekaRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
+        return new EurekaRepository(knife4jAggregationProperties.getEureka());
     }
 
     @Bean

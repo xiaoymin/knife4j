@@ -12,7 +12,7 @@ package com.github.xiaoymin.knife4j.aggre.core.pojo;
  * 2020/11/13 13:14
  * @since:knife4j 1.0
  */
-public class OpenApiRoute {
+public class CloudRoute {
 
     /**
      * 服务名称

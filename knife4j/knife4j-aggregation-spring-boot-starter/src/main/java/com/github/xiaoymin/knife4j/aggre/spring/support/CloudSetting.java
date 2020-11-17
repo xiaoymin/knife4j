@@ -7,7 +7,7 @@
 
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
-import com.github.xiaoymin.knife4j.aggre.core.pojo.OpenApiRoute;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.CloudRoute;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class CloudSetting {
     /**
      * 微服务集合
      */
-    private List<OpenApiRoute> routes;
+    private List<CloudRoute> routes;
 
     public boolean isEnable() {
         return enable;
@@ -35,11 +35,11 @@ public class CloudSetting {
         this.enable = enable;
     }
 
-    public List<OpenApiRoute> getRoutes() {
+    public List<CloudRoute> getRoutes() {
         return routes;
     }
 
-    public void setRoutes(List<OpenApiRoute> routes) {
+    public void setRoutes(List<CloudRoute> routes) {
         this.routes = routes;
     }
 }

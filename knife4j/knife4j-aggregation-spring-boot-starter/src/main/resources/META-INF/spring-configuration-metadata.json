@@ -25,7 +25,7 @@
     },
     {
       "name": "knife4j.cloud.routes",
-      "type": "java.util.List<com.github.xiaoymin.knife4j.aggre.core.pojo.OpenApiRoute>",
+      "type": "java.util.List<com.github.xiaoymin.knife4j.aggre.core.pojo.CloudRoute>",
       "description": "Routes",
       "sourceType": "com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties"
     },
