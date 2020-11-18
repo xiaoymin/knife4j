@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j.aggre.eureka;
 
 import cn.hutool.crypto.digest.MD5;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -39,6 +40,19 @@ public class EurekaRoute {
      * 微服务路径,主要是针对在网关使用时，追加的basePath，主要是为了和在网关转发时路径在文档上展示一致的问题
      */
     private String servicePath;
+
+    /**
+     * 接口请求是否需要Basic验证
+     */
+    private BasicAuth routeAuth;
+
+    public BasicAuth getRouteAuth() {
+        return routeAuth;
+    }
+
+    public void setRouteAuth(BasicAuth routeAuth) {
+        this.routeAuth = routeAuth;
+    }
 
     public String getName() {
         return name;

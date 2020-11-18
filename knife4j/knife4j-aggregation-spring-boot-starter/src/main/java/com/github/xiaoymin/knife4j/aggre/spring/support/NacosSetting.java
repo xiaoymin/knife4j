@@ -7,6 +7,7 @@
 
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute;
 
 import java.util.List;
@@ -36,6 +37,19 @@ public class NacosSetting {
      * Nacos注册聚合服务路由集合
      */
     private List<NacosRoute> routes;
+
+    /**
+     * 配置的Route路由服务的公共Basic验证信息
+     */
+    private BasicAuth routeAuth;
+
+    public BasicAuth getRouteAuth() {
+        return routeAuth;
+    }
+
+    public void setRouteAuth(BasicAuth routeAuth) {
+        this.routeAuth = routeAuth;
+    }
 
     public boolean isEnable() {
         return enable;

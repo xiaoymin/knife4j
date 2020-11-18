@@ -39,6 +39,10 @@ public class CloudRoute {
      * 微服务路径,主要是针对在网关使用时，追加的basePath，主要是为了和在网关转发时路径在文档上展示一致的问题
      */
     private String servicePath;
+    /**
+     * 接口请求是否需要Basic验证
+     */
+    private BasicAuth routeAuth;
 
     public String getName() {
         return name;
@@ -78,6 +82,14 @@ public class CloudRoute {
 
     public void setServicePath(String servicePath) {
         this.servicePath = servicePath;
+    }
+
+    public BasicAuth getRouteAuth() {
+        return routeAuth;
+    }
+
+    public void setRouteAuth(BasicAuth routeAuth) {
+        this.routeAuth = routeAuth;
     }
 
     public String pkId(){

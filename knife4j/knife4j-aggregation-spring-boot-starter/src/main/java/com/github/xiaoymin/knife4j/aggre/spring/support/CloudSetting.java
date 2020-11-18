@@ -7,6 +7,7 @@
 
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.CloudRoute;
 
 import java.util.List;
@@ -26,6 +27,19 @@ public class CloudSetting {
      * 微服务集合
      */
     private List<CloudRoute> routes;
+
+    /**
+     * 配置的Route路由服务的公共Basic验证信息
+     */
+    private BasicAuth routeAuth;
+
+    public BasicAuth getRouteAuth() {
+        return routeAuth;
+    }
+
+    public void setRouteAuth(BasicAuth routeAuth) {
+        this.routeAuth = routeAuth;
+    }
 
     public boolean isEnable() {
         return enable;

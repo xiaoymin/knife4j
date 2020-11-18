@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
 
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
 
 import java.util.List;
@@ -29,26 +30,27 @@ public class EurekaSetting {
      * Eureka注册中心地址,例如(http://localhost:10000/eureka/)
      */
     private String serviceUrl;
+    /**
+     * 注册中心请求接口是否需要Basic验证
+     */
+    private BasicAuth serviceAuth;
+    /**
+     * 配置的Route路由服务的公共Basic验证信息
+     */
+    private BasicAuth routeAuth;
 
     /**
      * 路由列表
      */
     private List<EurekaRoute> routes;
 
-    /**
-     * Eureka服务端是否启用了Basic认证，默认false
-     */
-    private boolean enableBasicAuth=false;
+    public BasicAuth getRouteAuth() {
+        return routeAuth;
+    }
 
-    /**
-     * 启用Basic认证后，需提供用户名
-     */
-    private String username;
-
-    /**
-     * 启用Basic认证后,需提供密码
-     */
-    private String password;
+    public void setRouteAuth(BasicAuth routeAuth) {
+        this.routeAuth = routeAuth;
+    }
 
     public boolean isEnable() {
         return enable;
@@ -74,27 +76,11 @@ public class EurekaSetting {
         this.routes = routes;
     }
 
-    public boolean isEnableBasicAuth() {
-        return enableBasicAuth;
+    public BasicAuth getServiceAuth() {
+        return serviceAuth;
     }
 
-    public void setEnableBasicAuth(boolean enableBasicAuth) {
-        this.enableBasicAuth = enableBasicAuth;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setServiceAuth(BasicAuth serviceAuth) {
+        this.serviceAuth = serviceAuth;
     }
 }

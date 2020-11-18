@@ -25,6 +25,22 @@
       "sourceType": "com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties"
     },
     {
+      "name": "knife4j.cloud.routeAuth.enable",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Enable Cloud Route Common BasicAuth"
+    },
+    {
+      "name": "knife4j.cloud.routeAuth.username",
+      "type": "java.lang.String",
+      "description": "Cloud Route Common Basic Username"
+    },
+    {
+      "name": "knife4j.cloud.routeAuth.password",
+      "type": "java.lang.String",
+      "description": " Cloud Route Common Basic Password"
+    },
+    {
       "name": "knife4j.eureka.enable",
       "type": "java.lang.Boolean",
       "defaultValue": false,
@@ -33,7 +49,6 @@
     {
       "name": "knife4j.eureka.serviceUrl",
       "type": "java.lang.String",
-      "defaultValue": false,
       "description": "Eureka register serviceUrl"
     },
     {
@@ -43,22 +58,36 @@
       "sourceType": "com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties"
     },
     {
-      "name": "knife4j.eureka.enableBasicAuth",
+      "name": "knife4j.eureka.serviceAuth.enable",
       "type": "java.lang.Boolean",
       "defaultValue": false,
-      "description": "Enable Eureka BasicAuth"
+      "description": "Enable Register BasicAuth"
     },
     {
-      "name": "knife4j.eureka.username",
+      "name": "knife4j.eureka.serviceAuth.username",
       "type": "java.lang.String",
-      "defaultValue": false,
-      "description": "Eureka Basic Username"
+      "description": "Eureka Register Basic Username"
     },
     {
-      "name": "knife4j.eureka.password",
+      "name": "knife4j.eureka.serviceAuth.password",
       "type": "java.lang.String",
+      "description": "Eureka Register Basic Password"
+    },
+    {
+      "name": "knife4j.eureka.routeAuth.enable",
+      "type": "java.lang.Boolean",
       "defaultValue": false,
-      "description": "Eureka Basic Password"
+      "description": "Enable eureka Route Common BasicAuth"
+    },
+    {
+      "name": "knife4j.eureka.routeAuth.username",
+      "type": "java.lang.String",
+      "description": "eureka Route Common Basic Username"
+    },
+    {
+      "name": "knife4j.eureka.routeAuth.password",
+      "type": "java.lang.String",
+      "description": "eureka Route Common Basic Password"
     },
     {
       "name": "knife4j.nacos.enable",
@@ -81,6 +110,22 @@
       "type": "java.util.List<com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute>",
       "description": "Routes",
       "sourceType": "com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties"
+    },
+    {
+      "name": "knife4j.nacos.routeAuth.enable",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Enable Nacos Route Common BasicAuth"
+    },
+    {
+      "name": "knife4j.nacos.routeAuth.username",
+      "type": "java.lang.String",
+      "description": "Nacos Route Common Basic Username"
+    },
+    {
+      "name": "knife4j.nacos.routeAuth.password",
+      "type": "java.lang.String",
+      "description": "Nacos Route Common Basic Password"
     },
     {
       "name": "knife4j.disk.enable",
@@ -121,6 +166,18 @@
         }
       ]
     },{
+      "name": "knife4j.cloud.routeAuth.enable",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Cloud Route Common BasicAuth mode"
+        },
+        {
+          "value": false,
+          "description": "Disable Cloud Route Common BasicAuth mode"
+        }
+      ]
+    } ,{
       "name": "knife4j.eureka.enable",
       "values":[
         {
@@ -133,15 +190,27 @@
         }
       ]
     },{
-      "name": "knife4j.eureka.enableBasicAuth",
+      "name": "knife4j.eureka.routeAuth.enable",
       "values":[
         {
           "value": true,
-          "description": "Enable Eureka Basic Auth"
+          "description": "Enable Eureka Route Common BasicAuth mode"
         },
         {
           "value": false,
-          "description": "Disable Eureka Basic Auth"
+          "description": "Disable Eureka Route Common BasicAuth mode"
+        }
+      ]
+    },{
+      "name": "knife4j.eureka.serviceAuth.enable",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Eureka Register BasicAuth mode"
+        },
+        {
+          "value": false,
+          "description": "Disable Eureka Register BasicAuth mode"
         }
       ]
     },{
@@ -154,6 +223,18 @@
         {
           "value": false,
           "description": "Disable Nacos mode"
+        }
+      ]
+    },{
+      "name": "knife4j.nacos.routeAuth.enable",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Nacos Route Common BasicAuth mode"
+        },
+        {
+          "value": false,
+          "description": "Disable Nacos Route Common BasicAuth mode"
         }
       ]
     },{
