@@ -8,9 +8,9 @@
 package com.github.xiaoymin.knife4j.aggre.core.filter;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +27,9 @@ import java.io.PrintWriter;
  * 2020/10/29 20:06
  */
 public class Knife4jRouteProxyFilter implements Filter {
-    private final String OpenAPI_GROUP_URL="/swagger-resources";
+    private final String OPENAPI_GROUP_ENDPOINT="/swagger-resources";
     private final RouteDispatcher routeDispatcher;
+    private final Gson gson=new GsonBuilder().create();
 
     Logger logger= LoggerFactory.getLogger(Knife4jRouteProxyFilter.class);
 
@@ -53,12 +54,12 @@ public class Knife4jRouteProxyFilter implements Filter {
         }else{
             //go on
             String uri=request.getRequestURI();
-            if (StrUtil.endWith(uri,OpenAPI_GROUP_URL)){
+            if (StrUtil.endWith(uri,OPENAPI_GROUP_ENDPOINT)){
                 //响应当前服务聚合结构
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 PrintWriter printWriter=response.getWriter();
-                new JSONArray(routeDispatcher.getRoutes()).write(printWriter);
+                printWriter.write(gson.toJson(routeDispatcher.getRoutes()));
                 printWriter.close();
             }else{
                 filterChain.doFilter(servletRequest,servletResponse);

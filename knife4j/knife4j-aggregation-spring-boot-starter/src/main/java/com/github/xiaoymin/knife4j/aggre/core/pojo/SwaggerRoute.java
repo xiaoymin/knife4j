@@ -13,6 +13,8 @@ import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
+import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
+import com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute;
 
 import java.util.Objects;
 
@@ -25,7 +27,10 @@ import java.util.Objects;
 public class SwaggerRoute {
 
     private String name;
-    private String uri;
+    /**
+     * 该属性JSON序列化时不能序列化出去,防止暴露服务的真实地址,存在安全隐患
+     */
+    private transient String uri;
     private String header;
     private String location;
     private String swaggerVersion;
@@ -38,6 +43,11 @@ public class SwaggerRoute {
 
     public SwaggerRoute() {
     }
+
+    /**
+     * 根据Cloud配置创建
+     * @param cloudRoute 云端配置
+     */
     public SwaggerRoute(CloudRoute cloudRoute){
         if (cloudRoute!=null){
             this.header= cloudRoute.pkId();
@@ -63,6 +73,11 @@ public class SwaggerRoute {
         }
     }
 
+    /**
+     * 根据Eureka配置创建
+     * @param eurekaRoute eureka配置
+     * @param eurekaInstance eureka实例
+     */
     public SwaggerRoute(EurekaRoute eurekaRoute, EurekaInstance eurekaInstance){
         if (eurekaRoute!=null&&eurekaInstance!=null){
             this.header= eurekaRoute.pkId();
@@ -83,6 +98,34 @@ public class SwaggerRoute {
             this.location=eurekaRoute.getLocation();
             this.swaggerVersion=eurekaRoute.getSwaggerVersion();
         }
+    }
+
+    /**
+     * 根据nacos配置
+     * @param nacosRoute nacos配置
+     * @param nacosInstance nacos实例
+     */
+    public SwaggerRoute(NacosRoute nacosRoute,NacosInstance nacosInstance){
+        if (nacosRoute!=null&&nacosInstance!=null){
+            this.header= nacosRoute.pkId();
+            this.name=nacosRoute.getServiceName();
+            if (StrUtil.isNotBlank(nacosRoute.getName())){
+                this.name=nacosRoute.getName();
+            }
+            //远程uri
+            this.uri="http://"+nacosInstance.getIp()+":"+ nacosInstance.getPort();
+            if (StrUtil.isNotBlank(nacosRoute.getServicePath())&&!StrUtil.equals(nacosRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)){
+                //判断是否是/开头
+                if (!StrUtil.startWith(nacosRoute.getServicePath(),RouteDispatcher.ROUTE_BASE_PATH)){
+                    this.servicePath= RouteDispatcher.ROUTE_BASE_PATH+nacosRoute.getServicePath();
+                }else{
+                    this.servicePath=nacosRoute.getServicePath();
+                }
+            }
+            this.location=nacosRoute.getLocation();
+            this.swaggerVersion=nacosRoute.getSwaggerVersion();
+        }
+
     }
     public boolean isLocal() {
         return local;

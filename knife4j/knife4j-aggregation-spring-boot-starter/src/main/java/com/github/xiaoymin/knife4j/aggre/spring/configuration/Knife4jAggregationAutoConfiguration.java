@@ -17,8 +17,7 @@ import com.github.xiaoymin.knife4j.aggre.core.filter.Knife4jRouteProxyFilter;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.repository.CloudRepository;
 import com.github.xiaoymin.knife4j.aggre.repository.EurekaRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.xiaoymin.knife4j.aggre.repository.NacosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -36,8 +35,6 @@ import org.springframework.core.env.Environment;
 @EnableConfigurationProperties({Knife4jAggregationProperties.class})
 @ConditionalOnProperty(name = "knife4j.enableAggregation",havingValue = "true")
 public class Knife4jAggregationAutoConfiguration {
-
-    Logger logger= LoggerFactory.getLogger(Knife4jAggregationAutoConfiguration.class);
 
     final Environment environment;
 
@@ -64,11 +61,16 @@ public class Knife4jAggregationAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(name = "knife4j.nacos.enable",havingValue = "true")
+    public NacosRepository nacosRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
+        return new NacosRepository(knife4jAggregationProperties.getNacos());
+    }
+
+    @Bean
     public RouteDispatcher routeDispatcher(@Autowired RouteRepository routeRepository,
                                            @Autowired RouteCache<String,SwaggerRoute> routeCache){
         //获取当前项目的contextPath
         String contextPath=environment.getProperty("server.servlet.context-path");
-        logger.info("contextPath:{}",contextPath);
         if (StrUtil.isBlank(contextPath)){
             contextPath="/";
         }
