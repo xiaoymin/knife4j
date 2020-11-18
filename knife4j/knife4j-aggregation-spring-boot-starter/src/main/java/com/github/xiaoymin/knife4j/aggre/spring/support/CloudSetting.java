@@ -8,7 +8,7 @@
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.CloudRoute;
+import com.github.xiaoymin.knife4j.aggre.cloud.CloudRoute;
 
 import java.util.List;
 

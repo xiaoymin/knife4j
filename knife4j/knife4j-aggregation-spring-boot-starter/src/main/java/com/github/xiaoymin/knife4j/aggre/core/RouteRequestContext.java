@@ -7,6 +7,8 @@
 
 package com.github.xiaoymin.knife4j.aggre.core;
 
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
+
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +50,10 @@ public class RouteRequestContext {
      * 请求长度
      */
     private Long contentLength;
+    /**
+     * Basic验证
+     */
+    private BasicAuth basicAuth;
 
     /**
      * 添加请求头
@@ -67,6 +73,13 @@ public class RouteRequestContext {
         this.params.put(name,value);
     }
 
+    public BasicAuth getBasicAuth() {
+        return basicAuth;
+    }
+
+    public void setBasicAuth(BasicAuth basicAuth) {
+        this.basicAuth = basicAuth;
+    }
 
     public String getOriginalUri() {
         return originalUri;

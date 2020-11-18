@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.aggre.repository;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
@@ -30,11 +31,14 @@ public class NacosRepository extends AbsctractRepository{
 
     Logger logger= LoggerFactory.getLogger(NacosRepository.class);
 
+    private NacosSetting nacosSetting;
+
     final ThreadPoolExecutor threadPoolExecutor=ThreadUtil.newExecutor(5,5);
 
     private Map<String,NacosInstance> nacosInstanceMap=new HashMap<>();
 
     public NacosRepository(NacosSetting nacosSetting){
+        this.nacosSetting=nacosSetting;
         if (nacosSetting!=null&& CollectionUtil.isNotEmpty(nacosSetting.getRoutes())){
             initNacos(nacosSetting);
             applyRoutes(nacosSetting);
@@ -64,5 +68,28 @@ public class NacosRepository extends AbsctractRepository{
             }
         });
     }
+
+    public NacosSetting getNacosSetting() {
+        return nacosSetting;
+    }
+
+    @Override
+    public BasicAuth getAuth(String header) {
+        BasicAuth basicAuth=null;
+        if (nacosSetting!=null&&CollectionUtil.isNotEmpty(nacosSetting.getRoutes())){
+            if (nacosSetting.getRouteAuth()!=null&&nacosSetting.getRouteAuth().isEnable()){
+                basicAuth=nacosSetting.getRouteAuth();
+                //判断route服务中是否再单独配置
+                BasicAuth routeBasicAuth=getAuthByRoute(header,nacosSetting.getRoutes());
+                if (routeBasicAuth!=null){
+                    basicAuth=routeBasicAuth;
+                }
+            }else{
+                basicAuth=getAuthByRoute(header,nacosSetting.getRoutes());
+            }
+        }
+        return basicAuth;
+    }
+
 
 }

@@ -16,11 +16,11 @@ import cn.hutool.crypto.digest.MD5;
  */
 public class DiskRoute {
     /**
-     * 服务名称
+     * 服务名称(最终在Ui分组进行展示)
      */
     private String name;
     /**
-     * openapi本地文件路径
+     * openapi本地文件路径或者OpenAPI访问接口路径
      */
     private String location;
 

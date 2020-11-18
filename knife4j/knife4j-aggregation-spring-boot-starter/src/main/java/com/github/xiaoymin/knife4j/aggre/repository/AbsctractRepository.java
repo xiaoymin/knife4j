@@ -11,6 +11,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 
 import java.util.HashMap;
@@ -42,4 +43,5 @@ public abstract class AbsctractRepository extends PoolingConnectionManager imple
     public List<SwaggerRoute> getRoutes() {
         return CollectionUtil.newArrayList(routeMap.values());
     }
+
 }

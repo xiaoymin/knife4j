@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j.aggre.repository;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 
@@ -18,10 +19,32 @@ import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
  * 2020/10/29 20:11
  */
 public class CloudRepository extends AbsctractRepository{
-
+    private CloudSetting cloudSetting;
     public CloudRepository(CloudSetting cloudSetting){
+        this.cloudSetting=cloudSetting;
         if (cloudSetting!=null&&CollectionUtil.isNotEmpty(cloudSetting.getRoutes())){
             cloudSetting.getRoutes().stream().forEach(cloudRoute -> routeMap.put(cloudRoute.pkId(),new SwaggerRoute(cloudRoute)));
         }
+    }
+    @Override
+    public BasicAuth getAuth(String header) {
+        BasicAuth basicAuth=null;
+        if (cloudSetting!=null&&CollectionUtil.isNotEmpty(cloudSetting.getRoutes())){
+            if (cloudSetting.getRouteAuth()!=null&&cloudSetting.getRouteAuth().isEnable()){
+                basicAuth=cloudSetting.getRouteAuth();
+                //判断route服务中是否再单独配置
+                BasicAuth routeBasicAuth=getAuthByRoute(header,cloudSetting.getRoutes());
+                if (routeBasicAuth!=null){
+                    basicAuth=routeBasicAuth;
+                }
+            }else{
+                basicAuth=getAuthByRoute(header,cloudSetting.getRoutes());
+            }
+        }
+        return basicAuth;
+    }
+
+    public CloudSetting getCloudSetting() {
+        return cloudSetting;
     }
 }

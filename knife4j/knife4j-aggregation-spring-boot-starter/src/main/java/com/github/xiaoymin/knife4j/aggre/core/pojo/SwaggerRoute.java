@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.aggre.core.pojo;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.aggre.cloud.CloudRoute;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
 import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;

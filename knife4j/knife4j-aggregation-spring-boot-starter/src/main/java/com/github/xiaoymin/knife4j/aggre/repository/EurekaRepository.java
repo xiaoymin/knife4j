@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.aggre.repository;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaApplication;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
@@ -46,10 +47,12 @@ import java.util.stream.Collectors;
 public class EurekaRepository extends AbsctractRepository {
 
     Logger logger= LoggerFactory.getLogger(EurekaRepository.class);
+    private EurekaSetting eurekaSetting;
 
     private List<EurekaApplication> eurekaApplications=new ArrayList<>();
 
     public EurekaRepository(EurekaSetting eurekaSetting){
+        this.eurekaSetting=eurekaSetting;
         if (eurekaSetting!=null&& CollectionUtil.isNotEmpty(eurekaSetting.getRoutes())){
             if (StrUtil.isBlank(eurekaSetting.getServiceUrl())){
                 throw new RuntimeException("Eureka ServiceUrl can't empty!!!");
@@ -146,5 +149,27 @@ public class EurekaRepository extends AbsctractRepository {
                 }
             }
         }
+    }
+
+    @Override
+    public BasicAuth getAuth(String header) {
+        BasicAuth basicAuth=null;
+        if (eurekaSetting!=null&&CollectionUtil.isNotEmpty(eurekaSetting.getRoutes())){
+            if (eurekaSetting.getRouteAuth()!=null&&eurekaSetting.getRouteAuth().isEnable()){
+                basicAuth=eurekaSetting.getRouteAuth();
+                //判断route服务中是否再单独配置
+                BasicAuth routeBasicAuth=getAuthByRoute(header,eurekaSetting.getRoutes());
+                if (routeBasicAuth!=null){
+                    basicAuth=routeBasicAuth;
+                }
+            }else{
+                basicAuth=getAuthByRoute(header,eurekaSetting.getRoutes());
+            }
+        }
+        return basicAuth;
+    }
+
+    public EurekaSetting getEurekaSetting() {
+        return eurekaSetting;
     }
 }

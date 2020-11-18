@@ -14,6 +14,7 @@ import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.executor.ApacheClientExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.executor.OkHttpClientExecutor;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class RouteDispatcher {
      * 请求头
      */
     public static final String ROUTE_PROXY_HEADER_NAME="knfie4j-gateway-request";
+    public static final String ROUTE_PROXY_HEADER_BASIC_NAME="knife4j-gateway-basic-request";
     public static final String OPENAPI_GROUP_ENDPOINT="/swagger-resources";
     public static final String OPENAPI_GROUP_INSTANCE_ENDPOINT="/swagger-instance";
     public static final String ROUTE_BASE_PATH="/";
@@ -62,7 +64,7 @@ public class RouteDispatcher {
         this.rootPath=rootPath;
         initExecutor(executorEnum);
         ignoreHeaders.addAll(Arrays.asList(new String[]{
-                "host","content-length",ROUTE_PROXY_HEADER_NAME,"Request-Origion"
+                "host","content-length",ROUTE_PROXY_HEADER_NAME,ROUTE_PROXY_HEADER_BASIC_NAME,"Request-Origion"
         }));
     }
 
@@ -189,6 +191,15 @@ public class RouteDispatcher {
      * @param request
      */
     protected void buildContext(RouteRequestContext routeRequestContext,HttpServletRequest request) throws IOException {
+        //当前请求是否basic请求
+        String basicHeader=request.getHeader(ROUTE_PROXY_HEADER_BASIC_NAME);
+        if (StrUtil.isNotBlank(basicHeader)){
+            BasicAuth basicAuth=routeRepository.getAuth(basicHeader);
+            if (basicAuth!=null){
+                //设置
+                routeRequestContext.setBasicAuth(basicAuth);
+            }
+        }
         SwaggerRoute swaggerRoute=getRoute(request.getHeader(ROUTE_PROXY_HEADER_NAME));
         //String uri="http://knife4j.xiaominfo.com";
         String uri=swaggerRoute.getUri();
