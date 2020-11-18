@@ -178,6 +178,12 @@
       "type": "java.lang.Boolean",
       "description": "Enable Dynamic Request Parameter",
       "defaultValue": false
+    },
+    {
+      "name": "knife4j.setting.enableGroup",
+      "type": "java.lang.Boolean",
+      "description": "Enable Show Select Group Element",
+      "defaultValue": true
     }
   ],
   "hints": [
@@ -438,6 +444,19 @@
         {
           "value": false,
           "description": "Disable Customize the home content"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableGroup",
+      "values":[
+        {
+          "value": true,
+          "description": "Show Select Group Element"
+        },
+        {
+          "value": false,
+          "description": "Hidden Select Group Element"
         }
       ]
     }

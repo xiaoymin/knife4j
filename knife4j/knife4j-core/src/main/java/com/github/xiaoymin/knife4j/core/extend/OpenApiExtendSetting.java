@@ -114,6 +114,19 @@ public class OpenApiExtendSetting {
      */
     private String homeCustomLocation;
 
+    /**
+     * 是否显示分组下拉框，默认true(即显示)，一般情况下，如果是单个分组的情况下，可以设置该属性为false，即不显示分组，那么也就不用选择了
+     */
+    private boolean enableGroup=true;
+
+    public boolean isEnableGroup() {
+        return enableGroup;
+    }
+
+    public void setEnableGroup(boolean enableGroup) {
+        this.enableGroup = enableGroup;
+    }
+
     public String getLanguage() {
         return language;
     }
