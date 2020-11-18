@@ -34,6 +34,10 @@ public class SwaggerRoute {
      */
     private transient String uri;
     private String header;
+    /**
+     * 是否需要添加auth的header
+     */
+    private String basicAuth;
     private String location;
     /**
      * Disk模式返回的OpenAPI规范json数据，作为结构来说不需要序列化
@@ -77,6 +81,9 @@ public class SwaggerRoute {
     public SwaggerRoute(CloudRoute cloudRoute){
         if (cloudRoute!=null){
             this.header= cloudRoute.pkId();
+            if (cloudRoute.getRouteAuth()!=null&&cloudRoute.getRouteAuth().isEnable()){
+                this.basicAuth=cloudRoute.pkId();
+            }
             this.name=cloudRoute.getName();
             if (StrUtil.isNotBlank(cloudRoute.getUri())){
                 //判断
@@ -107,6 +114,9 @@ public class SwaggerRoute {
     public SwaggerRoute(EurekaRoute eurekaRoute, EurekaInstance eurekaInstance){
         if (eurekaRoute!=null&&eurekaInstance!=null){
             this.header= eurekaRoute.pkId();
+            if (eurekaRoute.getRouteAuth()!=null&&eurekaRoute.getRouteAuth().isEnable()){
+                this.basicAuth=eurekaRoute.pkId();
+            }
             this.name=eurekaRoute.getServiceName();
             if (StrUtil.isNotBlank(eurekaRoute.getName())){
                 this.name=eurekaRoute.getName();
@@ -134,6 +144,9 @@ public class SwaggerRoute {
     public SwaggerRoute(NacosRoute nacosRoute,NacosInstance nacosInstance){
         if (nacosRoute!=null&&nacosInstance!=null){
             this.header= nacosRoute.pkId();
+            if (nacosRoute.getRouteAuth()!=null&&nacosRoute.getRouteAuth().isEnable()){
+                this.basicAuth=nacosRoute.pkId();
+            }
             this.name=nacosRoute.getServiceName();
             if (StrUtil.isNotBlank(nacosRoute.getName())){
                 this.name=nacosRoute.getName();
@@ -153,6 +166,15 @@ public class SwaggerRoute {
         }
 
     }
+
+    public String getBasicAuth() {
+        return basicAuth;
+    }
+
+    public void setBasicAuth(String basicAuth) {
+        this.basicAuth = basicAuth;
+    }
+
     public boolean isLocal() {
         return local;
     }
