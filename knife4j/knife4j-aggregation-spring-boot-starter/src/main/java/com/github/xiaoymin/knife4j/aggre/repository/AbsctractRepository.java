@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/16 22:36
- * @since:knife4j 1.0
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 public abstract class AbsctractRepository extends PoolingConnectionManager implements RouteRepository {
 

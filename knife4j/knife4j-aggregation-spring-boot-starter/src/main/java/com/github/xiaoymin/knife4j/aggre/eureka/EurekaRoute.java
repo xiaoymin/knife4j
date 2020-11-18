@@ -13,7 +13,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/16 22:38
- * @since:knife4j 1.0
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 public class EurekaRoute {
 

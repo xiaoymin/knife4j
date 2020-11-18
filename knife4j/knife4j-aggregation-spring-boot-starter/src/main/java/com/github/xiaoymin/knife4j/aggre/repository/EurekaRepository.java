@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/16 22:56
- * @since:knife4j 1.0
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 public class EurekaRepository extends AbsctractRepository {
 
@@ -80,12 +80,13 @@ public class EurekaRepository extends AbsctractRepository {
         try {
             CloseableHttpResponse response=null;
             //判断是否开启basic认证
-            if (eurekaSetting.isEnableBasicAuth()){
+            if (eurekaSetting.getServiceAuth()!=null&&eurekaSetting.getServiceAuth().isEnable()){
+            //if (eurekaSetting.isEnableBasicAuth()){
                 URI uri=URI.create(eurekaMetaApi);
                 HttpHost target = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
                 CredentialsProvider credentialsProvider=new BasicCredentialsProvider();
                 credentialsProvider.setCredentials(new AuthScope(target.getHostName(), target.getPort()),
-                        new UsernamePasswordCredentials(eurekaSetting.getUsername(), eurekaSetting.getPassword()));
+                        new UsernamePasswordCredentials(eurekaSetting.getServiceAuth().getUsername(), eurekaSetting.getServiceAuth().getPassword()));
                 response=getClient(credentialsProvider).execute(get);
             }else{
                 response=getClient().execute(get);

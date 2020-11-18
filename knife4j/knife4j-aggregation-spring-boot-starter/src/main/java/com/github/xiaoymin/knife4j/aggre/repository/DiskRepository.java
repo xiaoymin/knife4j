@@ -25,7 +25,7 @@ import java.io.InputStream;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/17 22:16
- * @since:knife4j 1.0
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 public class DiskRepository extends AbsctractRepository {
 

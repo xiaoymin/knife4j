@@ -12,7 +12,7 @@ import cn.hutool.crypto.digest.MD5;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/13 13:14
- * @since:knife4j 1.0
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 public class CloudRoute {
 
