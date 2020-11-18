@@ -47,7 +47,7 @@ public class NacosRepository extends AbsctractRepository{
 
     /**
      * 初始化
-     * @param nacosSetting
+     * @param nacosSetting Nacos配置属性
      */
     private void applyRoutes(NacosSetting nacosSetting) {
         if (CollectionUtil.isNotEmpty(nacosInstanceMap)){

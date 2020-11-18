@@ -66,7 +66,7 @@ public class EurekaRepository extends AbsctractRepository {
 
     /**
      * 初始化
-     * @param eurekaSetting 配置
+     * @param eurekaSetting eureka配置
      */
     private void initEurekaApps(EurekaSetting eurekaSetting){
         StringBuilder requestUrl=new StringBuilder();
