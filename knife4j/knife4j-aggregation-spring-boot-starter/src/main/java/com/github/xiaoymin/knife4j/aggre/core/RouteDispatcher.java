@@ -38,6 +38,8 @@ public class RouteDispatcher {
      * 请求头
      */
     public static final String ROUTE_PROXY_HEADER_NAME="knfie4j-gateway-request";
+    public static final String OPENAPI_GROUP_ENDPOINT="/swagger-resources";
+    public static final String OPENAPI_GROUP_INSTANCE_ENDPOINT="/swagger-instance";
     public static final String ROUTE_BASE_PATH="/";
 
     Logger logger= LoggerFactory.getLogger(RouteDispatcher.class);

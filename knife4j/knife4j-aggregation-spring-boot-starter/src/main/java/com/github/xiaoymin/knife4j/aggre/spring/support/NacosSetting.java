@@ -27,6 +27,10 @@ public class NacosSetting {
      * Nacos注册中心服务地址,例如：http://192.168.0.223:8888/nacos
      */
     private String serviceUrl;
+    /**
+     * 接口访问密钥
+     */
+    private String secret;
 
     /**
      * Nacos注册聚合服务路由集合
@@ -47,6 +51,14 @@ public class NacosSetting {
 
     public void setServiceUrl(String serviceUrl) {
         this.serviceUrl = serviceUrl;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
     public List<NacosRoute> getRoutes() {

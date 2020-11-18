@@ -11,6 +11,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
+import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
@@ -33,6 +34,10 @@ public class SwaggerRoute {
     private transient String uri;
     private String header;
     private String location;
+    /**
+     * Disk模式返回的OpenAPI规范json数据，作为结构来说不需要序列化
+     */
+    private transient String content;
     private String swaggerVersion;
     private String servicePath;
     private boolean debug=true;
@@ -41,7 +46,27 @@ public class SwaggerRoute {
      */
     private boolean local=false;
 
-    public SwaggerRoute() {
+    /**
+     * 本地聚合模式
+     * @param diskRoute 配置
+     * @param content 本地OpenAPI规范JSON具体内容
+     */
+    public SwaggerRoute(DiskRoute diskRoute,String content){
+        if (diskRoute!=null&&StrUtil.isNotBlank(content)){
+            this.name=diskRoute.getName();
+            if (StrUtil.isNotBlank(diskRoute.getServicePath())&&!StrUtil.equals(diskRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)){
+                //判断是否是/开头
+                if (!StrUtil.startWith(diskRoute.getServicePath(),RouteDispatcher.ROUTE_BASE_PATH)){
+                    this.servicePath= RouteDispatcher.ROUTE_BASE_PATH+diskRoute.getServicePath();
+                }else{
+                    this.servicePath=diskRoute.getServicePath();
+                }
+            }
+            this.location=RouteDispatcher.OPENAPI_GROUP_INSTANCE_ENDPOINT+"?group="+diskRoute.pkId();
+            this.content=content;
+            this.debug=false;
+            this.swaggerVersion=diskRoute.getSwaggerVersion();
+        }
     }
 
     /**
@@ -165,6 +190,14 @@ public class SwaggerRoute {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getSwaggerVersion() {

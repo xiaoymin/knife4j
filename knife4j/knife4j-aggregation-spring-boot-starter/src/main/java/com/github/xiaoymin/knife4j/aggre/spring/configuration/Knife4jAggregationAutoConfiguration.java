@@ -16,6 +16,7 @@ import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.filter.Knife4jRouteProxyFilter;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.repository.CloudRepository;
+import com.github.xiaoymin.knife4j.aggre.repository.DiskRepository;
 import com.github.xiaoymin.knife4j.aggre.repository.EurekaRepository;
 import com.github.xiaoymin.knife4j.aggre.repository.NacosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,12 @@ public class Knife4jAggregationAutoConfiguration {
     @ConditionalOnProperty(name = "knife4j.nacos.enable",havingValue = "true")
     public NacosRepository nacosRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
         return new NacosRepository(knife4jAggregationProperties.getNacos());
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "knife4j.disk.enable",havingValue = "true")
+    public DiskRepository diskRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
+        return new DiskRepository(knife4jAggregationProperties.getDisk());
     }
 
     @Bean

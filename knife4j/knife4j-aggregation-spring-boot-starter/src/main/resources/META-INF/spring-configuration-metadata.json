@@ -59,6 +59,40 @@
       "type": "java.lang.String",
       "defaultValue": false,
       "description": "Eureka Basic Password"
+    },
+    {
+      "name": "knife4j.nacos.enable",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Dynamically aggregate from the Nacos"
+    },
+    {
+      "name": "knife4j.nacos.serviceUrl",
+      "type": "java.lang.String",
+      "description": "Nacos register serviceUrl"
+    },
+    {
+      "name": "knife4j.nacos.secret",
+      "type": "java.lang.String",
+      "description": "Nacos secret"
+    },
+    {
+      "name": "knife4j.nacos.routes",
+      "type": "java.util.List<com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute>",
+      "description": "Routes",
+      "sourceType": "com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties"
+    },
+    {
+      "name": "knife4j.disk.enable",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Dynamically aggregate from the Disk"
+    },
+    {
+      "name": "knife4j.disk.routes",
+      "type": "java.util.List<com.github.xiaoymin.knife4j.aggre.disk.DiskRoute>",
+      "description": "Routes",
+      "sourceType": "com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties"
     }
   ],
   "hints": [
@@ -120,6 +154,18 @@
         {
           "value": false,
           "description": "Disable Nacos mode"
+        }
+      ]
+    },{
+      "name": "knife4j.disk.enable",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable disk mode"
+        },
+        {
+          "value": false,
+          "description": "Disable disk mode"
         }
       ]
     }

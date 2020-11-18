@@ -7,6 +7,7 @@
 
 package com.github.xiaoymin.knife4j.aggre.spring.configuration;
 
+import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
@@ -26,6 +27,10 @@ public class Knife4jAggregationProperties {
      * 是否开启Knife4j聚合模式
      */
     private boolean enableAggregation=false;
+    /**
+     * 本地json
+     */
+    private DiskSetting disk;
 
     /**
      * 任意聚合
@@ -48,6 +53,14 @@ public class Knife4jAggregationProperties {
 
     public void setEnableAggregation(boolean enableAggregation) {
         this.enableAggregation = enableAggregation;
+    }
+
+    public DiskSetting getDisk() {
+        return disk;
+    }
+
+    public void setDisk(DiskSetting disk) {
+        this.disk = disk;
     }
 
     public CloudSetting getCloud() {
