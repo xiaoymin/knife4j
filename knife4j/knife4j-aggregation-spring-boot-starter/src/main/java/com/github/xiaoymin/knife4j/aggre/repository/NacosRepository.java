@@ -51,6 +51,12 @@ public class NacosRepository extends AbsctractRepository{
      */
     private void applyRoutes(NacosSetting nacosSetting) {
         if (CollectionUtil.isNotEmpty(nacosInstanceMap)){
+            nacosSetting.getRoutes().forEach(nacosRoute -> {
+                if (nacosRoute.getRouteAuth()==null||!nacosRoute.getRouteAuth().isEnable()){
+                    nacosRoute.setRouteAuth(nacosSetting.getRouteAuth());
+                }
+                this.routeMap.put(nacosRoute.pkId(),new SwaggerRoute(nacosRoute,nacosInstanceMap.get(nacosRoute.getServiceName())));
+            });
             nacosSetting.getRoutes().forEach(nacosRoute -> this.routeMap.put(nacosRoute.pkId(),new SwaggerRoute(nacosRoute,nacosInstanceMap.get(nacosRoute.getServiceName()))));
         }
     }

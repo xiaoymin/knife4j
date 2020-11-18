@@ -142,6 +142,9 @@ public class EurekaRepository extends AbsctractRepository {
                        if (eurekaRouteOptional.isPresent()){
                            EurekaRoute eurekaRoute=eurekaRouteOptional.get();
                            EurekaInstance eurekaInstance=instanceOptional.get();
+                           if (eurekaRoute.getRouteAuth()==null||!eurekaRoute.getRouteAuth().isEnable()){
+                               eurekaRoute.setRouteAuth(eurekaSetting.getRouteAuth());
+                           }
                            //转换为SwaggerRoute
                            this.routeMap.put(eurekaRoute.pkId(),new SwaggerRoute(eurekaRoute,eurekaInstance));
                        }
