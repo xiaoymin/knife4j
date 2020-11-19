@@ -10,7 +10,6 @@ package com.github.xiaoymin.knife4j.aggre.nacos;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
-import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -23,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -41,21 +41,40 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
     /**
      * 服务名称
      */
-    private final String serviceName;
+    private final String serviceUrl;
+    /**
+     * nacos密钥
+     */
+    private final String secret;
     /**
      * Nacos配置
      */
-    private final NacosSetting nacosSetting;
+    private final NacosRoute nacosRoute;
 
-    public NacosService(String serviceName, NacosSetting nacosSetting) {
-        this.serviceName = serviceName;
-        this.nacosSetting = nacosSetting;
+    public NacosService(String serviceUrl, String secret, NacosRoute nacosRoute) {
+        this.serviceUrl = serviceUrl;
+        this.secret = secret;
+        this.nacosRoute = nacosRoute;
     }
 
 
     @Override
     public Optional<NacosInstance> call() throws Exception {
-        String api=nacosSetting.getServiceUrl()+NACOS_INSTANCE_LIST_API+"?serviceName="+serviceName;
+        List<String> params=new ArrayList<>();
+        params.add("serviceName="+nacosRoute.getServiceName());
+        //默认聚合时只返回健康实例
+        params.add("healthyOnly=true");
+        if (StrUtil.isNotBlank(nacosRoute.getGroupName())){
+            params.add("groupName="+nacosRoute.getGroupName());
+        }
+        if (StrUtil.isNotBlank(nacosRoute.getNamespaceId())){
+            params.add("namespaceId="+nacosRoute.getNamespaceId());
+        }
+        if (StrUtil.isNotBlank(nacosRoute.getClusters())){
+            params.add("clusters="+nacosRoute.getClusters());
+        }
+        String parameter=CollectionUtil.join(params,"&");
+        String api=serviceUrl+NACOS_INSTANCE_LIST_API+"?"+parameter;
         HttpGet get=new HttpGet(api);
         CloseableHttpResponse response=getClient().execute(get);
         if (response!=null){
@@ -72,7 +91,7 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
                             List<NacosInstance> nacosInstances=new Gson().fromJson(instances,type);
                             if (CollectionUtil.isNotEmpty(nacosInstances)){
                                 NacosInstance nacosInstance=nacosInstances.stream().findAny().get();
-                                nacosInstance.setServiceName(serviceName);
+                                nacosInstance.setServiceName(nacosRoute.getServiceName());
                                 return Optional.of(nacosInstance);
                             }
                         }

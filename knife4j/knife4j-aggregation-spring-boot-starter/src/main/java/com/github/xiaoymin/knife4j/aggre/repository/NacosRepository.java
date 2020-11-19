@@ -62,7 +62,7 @@ public class NacosRepository extends AbsctractRepository{
     }
     public void initNacos(NacosSetting nacosSetting){
         List<Future<Optional<NacosInstance>>> optionalList=new ArrayList<>();
-        nacosSetting.getRoutes().forEach(nacosRoute -> optionalList.add(threadPoolExecutor.submit(new NacosService(nacosRoute.getServiceName(),nacosSetting))));
+        nacosSetting.getRoutes().forEach(nacosRoute -> optionalList.add(threadPoolExecutor.submit(new NacosService(nacosSetting.getServiceUrl(), nacosSetting.getSecret(), nacosRoute))));
         optionalList.stream().forEach(optionalFuture -> {
             try {
                 Optional<NacosInstance> nacosInstanceOptional=optionalFuture.get();
