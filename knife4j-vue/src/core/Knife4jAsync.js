@@ -141,6 +141,7 @@ function SwaggerBootstrapUi(options) {
     enableOpenApi:true,//是否显示OpenApi原始规范结构
     enableHomeCustom:false,// 是否开启主页自定义配置，默认false
     homeCustomLocation:'',//自定义主页的Markdown文档内容
+    enableGroup:true,//是否显示分组下拉框，默认true(即显示)，一般情况下，如果是单个分组的情况下，可以设置该属性为false，即不显示分组，那么也就不用选择了
 
     enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
     swaggerModelName:'Swagger Models',//重命名界面Swagger Model的显示名称
