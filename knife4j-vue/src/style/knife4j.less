@@ -2,6 +2,7 @@
 //@import "~ant-design-vue/lib/style/themes/default.less";
 
 @contentHeight: calc(100vh - 64px);
+@contentAllHeight:calc(100vh);
 @DebugContentBodyHeight: calc(100vh - 395px);
 @headerDefaultWidth: calc(100vw - 310px);
 @headerCollapsedWidth: calc(100vw - 80px);
@@ -49,15 +50,6 @@
 
 }
 
-.ant-menu-dark,
-.ant-menu-dark .ant-menu-sub {
-  background: @GlobalBackgroundColor;
-}
-
-.knife4j-menu-api-deprecated {
-  text-decoration: line-through;
-}
-
 
 .knife4j-menu::-webkit-scrollbar {
   /*滚动条整体样式*/
@@ -79,6 +71,68 @@
   border-radius: 10px;
   background: #001529;
 }
+
+
+.knife4j-menu-all {
+  height: @contentAllHeight;
+  overflow: auto;
+  /* background: #161718; */
+  background: @GlobalBackgroundColor;
+
+  ul {
+    background: @GlobalBackgroundColor;
+  }
+
+  li {
+    /*  background: @GlobalBackgroundColor; */
+    /* background: @GlobalSubMenuBackgroundColor; */
+  }
+
+  .ant-menu-dark .ant-menu-inline.ant-menu-sub {
+    /* background: @GlobalBackgroundColor; */
+    background: @GlobalSubMenuBackgroundColor;
+
+    li {
+      /* background: @GlobalSubMenuBackgroundColor; */
+    }
+  }
+
+
+
+}
+
+
+.knife4j-menu-all::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 6px;
+  /*高宽分别对应横竖滚动条的尺寸*/
+  height: 0.5px;
+}
+
+.knife4j-menu-all::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #469aed;
+}
+
+.knife4j-menu-all::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background: #001529;
+}
+
+
+.ant-menu-dark,
+.ant-menu-dark .ant-menu-sub {
+  background: @GlobalBackgroundColor;
+}
+
+.knife4j-menu-api-deprecated {
+  text-decoration: line-through;
+}
+
 
 .knife4j-menu-line{
   /* left: 10px; 

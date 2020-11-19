@@ -1,19 +1,19 @@
 <template>
   <div class="BasicLayout">
     <a-layout class="ant-layout-has-sider">
-      <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider">
-        <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
+      <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider" style="background: #1e282c;">
+        <div class="knife4j-logo-data" key="logo" v-if="!collapsed&&settings.enableGroup">
           <a to="/" style="float:left;">
             <a-select show-search :value="defaultServiceOption" style="width: 300px" :options="serviceOptions" @change="serviceChange">
             </a-select>
           </a>
         </div>
-        <div class="knife4j-logo" key="logo" v-if="collapsed">
+        <div class="knife4j-logo" key="logo" v-if="collapsed&&settings.enableGroup">
           <a to="/" style="float:left;" v-if="collapsed">
             <img :src="logo" alt="logo" />
           </a>
         </div>
-        <div class="knife4j-menu">
+        <div :class="settings.enableGroup?'knife4j-menu':'knife4j-menu-all'">
           <a-menu key="Menu" theme="dark" mode="inline" :inlineCollapsed="collapsed" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 2px 0; width: 100%">
             <ThreeMenu :menuData="localMenuData" :collapsed="collapsed"/>
           </a-menu>
@@ -129,6 +129,8 @@ export default {
     },
     defaultServiceOption(){
       return this.$store.state.globals.defaultServiceOption;
+    },settings(){
+      return this.$store.state.globals.settings;
     }
   },
   updated() {
