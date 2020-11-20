@@ -12,19 +12,13 @@ import com.github.xiaoymin.knife4j.aggre.core.RouteExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRequestContext;
 import com.github.xiaoymin.knife4j.aggre.core.RouteResponse;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
 import java.util.Map;
 
 /***
@@ -70,17 +64,7 @@ public class ApacheClientExecutor extends PoolingConnectionManager implements Ro
         RouteResponse routeResponse=null;
         try {
             //判断当前接口是否需要执行basic
-            CloseableHttpResponse closeableHttpResponse=null;
-            if (routeContext.getBasicAuth()!=null&&routeContext.getBasicAuth().isEnable()){
-                URI uri=URI.create(routeContext.getUrl());
-                HttpHost target = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
-                CredentialsProvider credentialsProvider=new BasicCredentialsProvider();
-                credentialsProvider.setCredentials(new AuthScope(target.getHostName(), target.getPort()),
-                        new UsernamePasswordCredentials(routeContext.getBasicAuth().getUsername(), routeContext.getBasicAuth().getPassword()));
-                closeableHttpResponse=getClient(credentialsProvider).execute(buildRequest(routeContext));
-            }else{
-                closeableHttpResponse=getClient().execute(buildRequest(routeContext));
-            }
+            CloseableHttpResponse closeableHttpResponse=getClient().execute(buildRequest(routeContext));
             routeResponse=new ApacheClientResponse(closeableHttpResponse);
         } catch (Exception e) {
             logger.error("Executor Failed,message:{}",e.getMessage());

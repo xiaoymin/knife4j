@@ -12,6 +12,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
+import com.github.xiaoymin.knife4j.aggre.core.common.RouteUtils;
 import com.github.xiaoymin.knife4j.aggre.core.executor.ApacheClientExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.executor.OkHttpClientExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
@@ -196,8 +197,8 @@ public class RouteDispatcher {
         if (StrUtil.isNotBlank(basicHeader)){
             BasicAuth basicAuth=routeRepository.getAuth(basicHeader);
             if (basicAuth!=null){
-                //设置
-                routeRequestContext.setBasicAuth(basicAuth);
+                //增加Basic请求头
+                routeRequestContext.addHeader("Authorization", RouteUtils.authorize(basicAuth.getUsername(),basicAuth.getPassword()));
             }
         }
         SwaggerRoute swaggerRoute=getRoute(request.getHeader(ROUTE_PROXY_HEADER_NAME));

@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.aggre.repository;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
+import com.github.xiaoymin.knife4j.aggre.core.common.RouteUtils;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaApplication;
@@ -20,20 +21,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -81,19 +76,11 @@ public class EurekaRepository extends AbsctractRepository {
         //指定服务端响应JSON格式
         get.addHeader("Accept","application/json");
         try {
-            CloseableHttpResponse response=null;
             //判断是否开启basic认证
             if (eurekaSetting.getServiceAuth()!=null&&eurekaSetting.getServiceAuth().isEnable()){
-            //if (eurekaSetting.isEnableBasicAuth()){
-                URI uri=URI.create(eurekaMetaApi);
-                HttpHost target = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
-                CredentialsProvider credentialsProvider=new BasicCredentialsProvider();
-                credentialsProvider.setCredentials(new AuthScope(target.getHostName(), target.getPort()),
-                        new UsernamePasswordCredentials(eurekaSetting.getServiceAuth().getUsername(), eurekaSetting.getServiceAuth().getPassword()));
-                response=getClient(credentialsProvider).execute(get);
-            }else{
-                response=getClient().execute(get);
+                get.addHeader("Authorization", RouteUtils.authorize(eurekaSetting.getServiceAuth().getUsername(),eurekaSetting.getServiceAuth().getPassword()));
             }
+            CloseableHttpResponse response=getClient().execute(get);
             if (response!=null){
                 int statusCode=response.getStatusLine().getStatusCode();
                 logger.info("Eureka Response code:{}",statusCode);
