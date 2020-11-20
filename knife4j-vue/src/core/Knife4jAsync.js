@@ -503,6 +503,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     //g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
+    g.basicAuth=KUtils.getValue(group,'basicAuth',null,true);
     g.servicePath=KUtils.getValue(group,'servicePath',null,true);
     var newUrl = ''
     //此处需要判断basePath路径的情况
@@ -706,6 +707,10 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         //Knife4j自研Aggreration微服务聚合组件请求头
         var gatewayHeader={'knfie4j-gateway-request':that.currentInstance.header};
         requestConfig=Object.assign({},requestConfig,{headers:gatewayHeader});
+      }
+      if(KUtils.checkUndefined(this.currentInstance.basicAuth)){
+        var basicAuthHeader={'knife4j-gateway-basic-request':that.currentInstance.basicAuth};
+        requestConfig=Object.assign({},requestConfig,{headers:basicAuthHeader});
       }
       that.ajax(requestConfig,data=>{
         that.analysisApiSuccess(data);
@@ -6619,6 +6624,7 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   this.i18n = null
   //增加header头,servicePath,主要针对Knife4j-aggregation网关聚合模块
   this.header=null;
+  this.basicAuth=null;
   this.servicePath=null;
 }
 SwaggerBootstrapUiInstance.prototype.clearOAuth2=function(){
