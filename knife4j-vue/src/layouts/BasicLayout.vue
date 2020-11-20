@@ -263,6 +263,7 @@ export default {
         if(!settings.enableSwaggerBootstrapUi){
            settings.enableSwaggerBootstrapUi=this.getPlusStatus();
         }
+        settings.language=tmpI18n;
         that.$localStore.setItem(constant.globalSettingsKey, settings);
         this.$localStore.getItem(constant.globalGitApiVersionCaches).then(gitVal=>{
           var cacheApis=this.getCacheGitVersion(gitVal);
@@ -283,6 +284,7 @@ export default {
               plus: this.getPlusStatus(),
               i18n:tmpI18n,
               i18nVue:this.$i18n,
+              i18nFlag:i18nParams.include,
               configSupport:false,
               i18nInstance:this.getCurrentI18nInstance() 
               })
@@ -307,6 +309,7 @@ export default {
                 plus: this.getPlusStatus(),
                 i18n:tmpI18n,
                 i18nVue:this.$i18n,
+                i18nFlag:i18nParams.include,
                 configSupport:false,
                 i18nInstance:this.getCurrentI18nInstance() 
                 })
@@ -330,6 +333,7 @@ export default {
         if(!settings.enableSwaggerBootstrapUi){
            settings.enableSwaggerBootstrapUi=this.getPlusStatus();
         }
+        settings.language=tmpI18n;
         that.$localStore.setItem(constant.globalSettingsKey, settings);
         this.$localStore.getItem(constant.globalGitApiVersionCaches).then(gitVal=>{
           var cacheApis=this.getCacheGitVersion(gitVal);
@@ -349,11 +353,13 @@ export default {
               plus: this.getPlusStatus(),
               i18n:tmpI18n,
               i18nVue:this.$i18n,
+              i18nFlag:i18nParams.include,
               configSupport:false,
               i18nInstance:this.getCurrentI18nInstance() 
               })
           }else{
             //不包含
+            console.log("不包含")
             //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
             this.$localStore.getItem(constant.globalI18nCache).then(i18n => {
               if(KUtils.checkUndefined(i18n)){
@@ -372,6 +378,7 @@ export default {
                 plus: this.getPlusStatus(),
                 i18n:tmpI18n,
                 i18nVue:this.$i18n,
+                i18nFlag:i18nParams.include,
                 configSupport:false,
                 i18nInstance:this.getCurrentI18nInstance() 
                 })

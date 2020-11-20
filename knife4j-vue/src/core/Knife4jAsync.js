@@ -82,6 +82,8 @@ function SwaggerBootstrapUi(options) {
   }
   this.i18n=options.i18n||'zh-CN'
   this.i18nVue=options.i18nVue||null;
+  //是否从地址栏设置i18n，如果是，那么默认以外部地址传入为主，否则会根据后台配置的setting中的language进行合并显示具体对应的i18n版本
+  this.i18nFlag=options.i18nFlag||false;
   //服务端版本是否依赖springfox2.10.5版本
   //该版本会自动追加basePath,因为Knife4j在以前的版本中帮忙追加了basePath所以导致重复
   this.baseSpringFox=options.baseSpringFox||false;
@@ -160,7 +162,7 @@ function SwaggerBootstrapUi(options) {
     enableCacheOpenApiTable: false, //是否开启缓存已打开的api文档
     enableHost:false,//是否启用Host
     enableHostText:'',//启用Host后文本
-    language: 'zh-CN' //默认语言版本
+    language: options.i18n||'zh-CN' //默认语言版本
   }
   //SwaggerBootstrapUi增强注解地址
   this.extUrl = '/v2/api-docs'
@@ -694,6 +696,8 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         dataType: 'json',
         timeout: 20000,
         type: 'get',
+        //# 发送一个语言的header头给后端
+        headers:{'language':that.settings.language},
         transformResponse:[function(data){
           return KUtils.json5parse(data);
         }]
@@ -928,6 +932,10 @@ SwaggerBootstrapUi.prototype.openSettings=function(data){
       //存在，进行合并
       //与当前缓存在local本地的进行对比与合并
       var mergeSetting=Object.assign({},that.settings,setting);
+      if(that.i18nFlag){
+        //外部i18n传参
+        mergeSetting=Object.assign({},mergeSetting,{'language':that.i18n});
+      }
       that.settings=mergeSetting;
       that.localStore.setItem(Constants.globalSettingsKey,mergeSetting);
       //设置i18n
@@ -966,6 +974,10 @@ SwaggerBootstrapUi.prototype.openV3Settings=function(data){
         //存在，进行合并
         //与当前缓存在local本地的进行对比与合并
         var mergeSetting=Object.assign({},that.settings,setting);
+        if(that.i18nFlag){
+          //外部i18n传参
+          mergeSetting=Object.assign({},mergeSetting,{'language':that.i18n});
+        }
         that.settings=mergeSetting;
         that.localStore.setItem(Constants.globalSettingsKey,mergeSetting);
         //设置i18n
