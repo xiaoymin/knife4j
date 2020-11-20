@@ -3033,8 +3033,6 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
           i18n:'selfSettings',
           component: 'Settings',
           path: 'Settings'
-          // hideInBreadcrumb: true,
-          // hideInMenu: true,
         }
       ]
     })

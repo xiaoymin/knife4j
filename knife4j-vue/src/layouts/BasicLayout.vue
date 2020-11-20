@@ -359,7 +359,7 @@ export default {
               })
           }else{
             //不包含
-            console.log("不包含")
+            //console.log("不包含")
             //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
             this.$localStore.getItem(constant.globalI18nCache).then(i18n => {
               if(KUtils.checkUndefined(i18n)){
