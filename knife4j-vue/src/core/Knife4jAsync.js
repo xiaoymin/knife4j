@@ -692,26 +692,25 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       //api = 'run.json';
       //此处加上transformResponse参数,防止Long类型在前端丢失精度
       //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/269
+      var reqHeaders={'language':that.settings.language};
       var requestConfig={
         url: api,
         dataType: 'json',
         timeout: 20000,
         type: 'get',
         //# 发送一个语言的header头给后端
-        headers:{'language':that.settings.language},
         transformResponse:[function(data){
           return KUtils.json5parse(data);
         }]
       };
       if(KUtils.checkUndefined(this.currentInstance.header)){
         //Knife4j自研Aggreration微服务聚合组件请求头
-        var gatewayHeader={'knfie4j-gateway-request':that.currentInstance.header};
-        requestConfig=Object.assign({},requestConfig,{headers:gatewayHeader});
+        reqHeaders=Object.assign({},reqHeaders,{'knfie4j-gateway-request':that.currentInstance.header});
       }
       if(KUtils.checkUndefined(this.currentInstance.basicAuth)){
-        var basicAuthHeader={'knife4j-gateway-basic-request':that.currentInstance.basicAuth};
-        requestConfig=Object.assign({},requestConfig,{headers:basicAuthHeader});
+        reqHeaders=Object.assign({},reqHeaders,{'knife4j-gateway-basic-request':that.currentInstance.basicAuth});
       }
+      requestConfig=Object.assign({},requestConfig,{headers:reqHeaders});
       that.ajax(requestConfig,data=>{
         that.analysisApiSuccess(data);
       },err=>{
