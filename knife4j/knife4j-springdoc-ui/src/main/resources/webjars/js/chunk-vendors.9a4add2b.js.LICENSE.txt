@@ -50,8 +50,6 @@ object-assign
 
 /*! http://mths.be/fromcodepoint v0.1.0 by @mathias */
 
-/*! https://mths.be/punycode v1.4.1 by @mathias */
-
 /*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 
 /**
