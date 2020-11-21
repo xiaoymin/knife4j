@@ -17,8 +17,11 @@ Knife4j从开源至今,目前主要经历版本的变化，分别如下：
 |3.0~|底层依赖springfox框架版本升级至`3.0.3`,OpenAPI规范是v3|
 
 需要注意的是，目前Knife4j的主版本依然是沿用2.x的版本号，也就是从2.0.6版本开始逐步升级，迭代发布时版本会随之升级，但同时3.x版本也会同步更新发布，主要是满足开发者对于springfox3以及OpenAPI3规范的使用
+::: danger 特别注意
+1、目前已经发行的Knife4j版本，Knife4j本身已经引入了springfox，开发者在使用时不用再单独引入Springfox的具体版本，否额会导致版本冲突。另外在网关层聚合(例如gateway)时，必须禁用Knife4j的增强模式
 
-**特别注意：目前已经发行的Knife4j版本，Knife4j本身已经引入了springfox，开发者在使用时不用再单独引入Springfox的具体版本，否额会导致版本冲突。另外在网关层聚合(例如gateway)时，只需要引入Ui资源(knife4j-spring-ui-xxx.jar)就可以了.不必再引用Knife4j提供的starter包**
+2、使用Knife4j2.0.6以上的版本，Spring Boot的版本必须大于等于`2.2.x`
+:::
 
 自2.0.6版本开始，2.x与3.x的版本主要变化是底层springfox所引用的版本不同，但Knife4j提供的Ui其实是同一个，同时兼容OpenAPI2以及OpenAPI3规范，源码请参考[knife4j-vue](https://gitee.com/xiaoym/knife4j/tree/master/knife4j-vue)，如果开发者依然想沿用以前Knife4j一直以来发布的2.x版本，请继续更随Knife4j的更新步伐使用2.x的版本即可，如果开发者想尝鲜，则可以考虑3.x的版本
 ::: tip

@@ -33,6 +33,16 @@ knife4j:
     enableRequestCache: true
     enableHost: false
     enableHostText: 192.168.0.193:8000
+    enableHomeCustom: true
+    homeCustomLocation: classpath:markdown/home.md
+    enableSearch: false
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Apache License 2.0 | Copyright  2019-[浙江八一菜刀股份有限公司](https://gitee.com/xiaoym/knife4j)
+    enableDynamicParameter: false
+    enableDebug: true
+    enableOpenApi: false
+    enableGroup: true
   cors: false
   production: false
   basic:
@@ -71,7 +81,16 @@ knife4j:
 |knife4j.setting.enableFilterMultipartApis|false| 针对RequestMapping的接口请求类型,在不指定参数类型的情况下,如果不过滤,默认会显示7个类型的接口地址参数,如果开启此配置,默认展示一个Post类型的接口地址|
 |knife4j.setting.enableFilterMultipartApiMethodType|POST|具体接口的过滤类型|
 |knife4j.setting.enableHost|false|是否启用Host|
-|knife4j.setting.enableHostText||启用Host后的地址|
+|knife4j.setting.enableHomeCustom|false|是否开启自定义主页内容|
+|knife4j.setting.homeCustomLocation||主页内容Markdown文件路径|
+|knife4j.setting.enableSearch|false|是否禁用Ui界面中的搜索框|
+|knife4j.setting.enableFooter|true|是否显示Footer|
+|knife4j.setting.enableFooterCustom|false|是否开启自定义Footer|
+|knife4j.setting.footerCustomContent|false|自定义Footer内容|
+|knife4j.setting.enableDynamicParameter|false|是否开启动态参数调试功能|
+|knife4j.setting.enableDebug|true|启用调试|
+|knife4j.setting.enableOpenApi|true|显示OpenAPI规范|
+|knife4j.setting.enableGroup|true|显示服务分组|
 
 关于个性化文档(`knife4j.documents`)以及个性化设置(`knife4j.setting`),有一些细微的区别,开发者在配置文件中进行配合好后,还需要在创建Docket对象时调用`Knife4j`提供的扩展Extesions进行赋值
 
