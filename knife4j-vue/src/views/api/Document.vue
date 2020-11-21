@@ -206,18 +206,12 @@ export default {
     //console.log("Document")
     //console.log(this.api);
     var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
-    //根据instance的实例初始化model名称
-    //var treeTableModel = this.swaggerInstance.refTreeTableModels;
-    //
     var treeTableModel = this.swaggerInstance.swaggerTreeTableModels;
-    //console.log("treeTableModel")
-    //console.log(treeTableModel);
     this.$Knife4jModels.setValue(key, treeTableModel);
     this.initI18n();
     this.initRequestParams();
     this.initResponseCodeParams();
     setTimeout(() => {
-      //that.showResponseEditFieldDescription();
       that.copyApiAddress();
       that.copyApiMarkdown();
       that.copyApiUrl();
@@ -539,6 +533,7 @@ export default {
       }else{
         that.reqParameters = reqParameters;
       }
+      //console.log("document")
       //console.log(reqParameters);
     },
     deepRootKeys(tmpIncludeKeys,rootKeys){

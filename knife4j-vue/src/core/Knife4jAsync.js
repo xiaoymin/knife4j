@@ -1602,6 +1602,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3=function(menu,swud,oas2
               //判断是否包含readOnly属性
               if (!propobj.hasOwnProperty("readOnly") || !propobj["readOnly"]) {}
               var spropObj = new SwaggerBootstrapUiProperty();
+              //jsr303
+              that.validateJSR303(spropObj,propobj);
               //赋值readOnly属性
               if (propobj.hasOwnProperty("readOnly")) {
                 spropObj.readOnly = propobj["readOnly"];
@@ -1926,6 +1928,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel=function(instanceId
       if(name==treeTableModel.name){
         originalTreeTableModel=instance.swaggerTreeTableModels[name];
         if(!originalTreeTableModel.init){
+          //console.log("开始加载属性")
           //开始加载属性
           originalTreeTableModel.init=true;
           //var definitions=instance.swaggerData["definitions"];
@@ -1949,6 +1952,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel=function(instanceId
                     for(var pkey in props){
                       var p=props[pkey];
                       p.refType=that.getSwaggerModelRefType(p,oas2);
+                      //console.log("------------------analyslsldiflsjfdlsfaaaaaaaaaaaaaaaaaaa")
+                      //console.log(p);
                       var refp = new SwaggerBootstrapUiParameter();
                       refp.pid = originalTreeTableModel.id;
                       refp.readOnly = p.readOnly;
@@ -1957,6 +1962,11 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel=function(instanceId
                       //refp.level = minfo.level + 1;
                       refp.name = pkey;
                       refp.type = p.type;
+                      //判断format
+                      var _format = KUtils.propValue("format", p, "");
+                      if (KUtils.strNotBlank(_format)) {
+                        refp.type=refp.type + "(" + _format + ")";
+                      }
                       //判断非array
                       if (p.type != "array") {
                         if (p.refType != null && p.refType != undefined && p.refType != "") {
@@ -1982,7 +1992,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel=function(instanceId
                         description = description + "可用值:" + p.enum.join(",");
                       }
                       refp.description = KUtils.replaceMultipLineStr(description);
-                      //KUtils.validateJSR303(refp, p);
+                      that.validateJSR303(refp, p);
                       //models添加所有属性
                       originalTreeTableModel.params.push(refp);
                       //判断类型是否基础类型
@@ -3912,6 +3922,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
       }
 
     }
+    
     var definitionType = null;
     var arr = false;
     //解析responsecode
@@ -5129,6 +5140,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
       minfo.example=minfo.txtValue;
     }
   }
+  var jsrvalidateObject={};
   if (m.hasOwnProperty("schema")) {
     //存在schema属性,请求对象是实体类
     minfo.schema = true;
@@ -5276,7 +5288,14 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
         }
       }
     }
+    //如果是表单类型，该schema直接包含jsr303
+    jsrvalidateObject=schemaObject;
+    //JSR-303 注解支持.
+  }else{
+    jsrvalidateObject=m;
   }
+  //JSR-303 注解支持.
+  that.validateJSR303(minfo, jsrvalidateObject);
   if (m.hasOwnProperty("items")) {
     var items = m["items"];
     if (items.hasOwnProperty("$ref")) {
@@ -5365,8 +5384,6 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
       }
     }
   }
-  //JSR-303 注解支持.
-  that.validateJSR303(minfo, m);
   if (!KUtils.checkParamArrsExists(swpinfo.parameters, minfo)) {
     const ignoreParameterKeys = Object.keys(swpinfo.ignoreParameters || {});
     // 处理请求参数表格依然展示忽略参数
@@ -5922,7 +5939,11 @@ function deepTreeTableRefParameter(minfo, that, def, apiInfo,oas2) {
               refp.require = p.required;
               refp.example = p.example;
               refp.description = KUtils.replaceMultipLineStr(p.description);
+              //console.log("deep-----------propfmasdlkfsafdd")
+              //console.log(p)
               that.validateJSR303(refp, p.originProperty);
+              //console.log("after")
+              //console.log(refp)
               //models添加所有属性
               refModelParam.params.push(refp);
               if (!p.readOnly) {
@@ -6321,6 +6342,11 @@ var SwaggerBootstrapUiProperty = function () {
   this.enum = null;
   //是否readOnly
   this.readOnly = false;
+  
+  //JSR-303 annotations supports since 1.8.7
+  //默认状态为false
+  this.validateStatus = false;
+  this.validateInstance = null;
 }
 /***
  * swagger的tag标签
