@@ -249,6 +249,9 @@ knife4j:
     routes:
       - name: 订单服务
         serviceName: service-order
+        groupName: test
+        namespaceId: test
+        clusters: test
         location: /v2/api-docs?group=default
         swaggerVersion: 2.0
         servicePath: /order
@@ -267,6 +270,9 @@ knife4j:
 - `knife4j.nacos.routes`:需要聚合的服务集合(必选)，可以配置多个
 - `knife4j.nacos.routes.name`:服务名称(显示名称，最终在Ui的左上角下拉框进行显示)，如果该属性不配置，最终Ui会显示`serviceName`
 - `knife4j.nacos.routes.serviceName`:nacos注册中心的服务名称
+- `knife4j.nacos.routes.groupName`:Nacos分组名称,非必须,开发者根据自己的实际情况进行配置
+- `knife4j.nacos.routes.namespaceId`:命名空间id,非必须,开发者根据自己的实际情况进行配置
+- `knife4j.nacos.routes.clusters`:集群名称,多个集群用逗号分隔,非必须,开发者根据自己的实际情况进行配置
 - `knife4j.nacos.routes.uri`:该服务的接口URI资源，如果是HTTPS，则需要完整配置
 - `knife4j.nacos.routes.location:`:具体资源接口地址，最终Knife4j是通过注册服务uri+location的组合路径进行访问
 - `knife4j.nacos.routes.swaggerVersion`:版本号，默认是`2.0`，可选配置

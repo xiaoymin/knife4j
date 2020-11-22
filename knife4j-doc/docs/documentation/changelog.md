@@ -33,6 +33,7 @@ Knife4j从开源至今,目前主要经历版本的变化，分别如下：
 |--|--|
 |2.0.6|3.0|
 |2.0.7|3.0.1|
+|2.0.8|3.0.2|
 |以此类推...|以此类推...|
 
 如果开发者底层框架使用的是springdoc-openapi框架而非springfox,则需要使用Knife4j提供的对应3.x版本,需要注意的是该版本没有Knife4j提供的部分增强功能，是一个纯Ui。
@@ -41,7 +42,7 @@ Knife4j从开源至今,目前主要经历版本的变化，分别如下：
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-springdoc-ui</artifactId>
     <!--在引用时请在maven中央仓库搜索3.X最新版本号-->
-    <version>3.0.1</version>
+    <version>3.0.2</version>
 </dependency>
 ```
 
