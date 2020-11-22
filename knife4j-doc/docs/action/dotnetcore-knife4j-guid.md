@@ -1,5 +1,5 @@
 
-# 4.2 .NET Core直接集成Knife4j
+# 5.2 .NET Core直接集成Knife4j
 
 ## [IGeekFan.AspNetCore.Knife4jUI](https://github.com/luoyunchong/IGeekFan.AspNetCore.Knife4jUI)
 

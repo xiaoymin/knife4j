@@ -119,7 +119,12 @@ function genActionSideBar() {
             children: ["oauth2-implicit.md", "oauth2-authorization_code.md", "oauth2-client_credentials.md", "oauth2-password.md"]
         },
         {
-            title: "4. ASP.NET Core",
+            title:"4.微服务聚合实战",
+            collapsable: false,
+            children: ["aggregation-disk.md", "aggregation-cloud.md","aggregation-eureka.md","aggregation-nacos.md"]
+        },
+        {
+            title: "5. ASP.NET Core",
             collapsable: false,
             children: ["dotnetcore-knife4j-how.md", "dotnetcore-knife4j-guid.md"]
         }
@@ -169,7 +174,7 @@ function genDocumentationSideBar() {
         }, {
             title: "4.生态衍生",
             collapsable: false,
-            children: ["knife4jCloud.md", "knife4jGateway.md"]
+            children: ["knife4jCloud.md", "knife4jAggregation.md"]
         }, {
             title: "5.其它语言",
             collapsable: false,
