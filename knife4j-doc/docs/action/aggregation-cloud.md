@@ -1,6 +1,6 @@
 # 4.2 Cloud模式聚合OpenAPI文档
 
-Cloud(云端)模式和Disk大同小异，主要的区别是获取OpenAPI规范的方式换成了基于HTTP接口而已
+Cloud(云端)模式和[Disk模式](aggregation-disk.md)大同小异，主要的区别是获取OpenAPI规范的方式换成了基于HTTP接口而已
 
 
 完整代码请参考[knife4j-aggregation-cloud-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-aggregation-cloud-demo)
