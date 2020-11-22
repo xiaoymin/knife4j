@@ -3,7 +3,7 @@
 Cloud(云端)模式和Disk大同小异，主要的区别是获取OpenAPI规范的方式换成了基于HTTP接口而已
 
 
-完整代码请参考[knife4j-aggregation-cloud-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-aggregation-disk-demo)
+完整代码请参考[knife4j-aggregation-cloud-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-aggregation-cloud-demo)
 
 本次Cloud聚合以Knife4j目前部署的线上demo为例，本地聚合在线的OpenAPI，并且可以本地调试，[Knife4jAggregation](../documentation/knife4jAggregation.md)组件会自动帮助我们转发
 
