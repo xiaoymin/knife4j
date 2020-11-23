@@ -16,7 +16,7 @@
       </a-row>
       <a-row :class="'knife4j-api-' + api.methodType.toLowerCase()">
         <div class="knife4j-api-summary">
-          <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
+          <span class="knife4j-api-summary-method"><a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}</span>
           <span class="knife4j-api-summary-path">{{ api.showUrl }}</span>
         </div>
       </a-row>
@@ -82,6 +82,10 @@
     <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes" rowKey="code" size="small" :pagination="page">
       <template slot="descriptionTemplate" slot-scope="text">
         <div v-html="text"></div>
+      </template>
+      <template slot="schemaTemplate" slot-scope="text,record">
+        <span v-if="text!=null" v-html="text"></span>
+        <span v-else-if="record.schemaTitle!=null" v-html="record.schemaTitle"></span>
       </template>
     </a-table>
     <!--响应参数需要判断是否存在多个code-schema的情况-->
@@ -200,20 +204,14 @@ export default {
   created() {
     var that = this;
     //console.log("Document")
-    //console.log(this.api.responseValue);
+    //console.log(this.api);
     var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
-    //根据instance的实例初始化model名称
-    //var treeTableModel = this.swaggerInstance.refTreeTableModels;
-    //
     var treeTableModel = this.swaggerInstance.swaggerTreeTableModels;
-    //console.log("treeTableModel")
-    //console.log(treeTableModel);
     this.$Knife4jModels.setValue(key, treeTableModel);
     this.initI18n();
     this.initRequestParams();
     this.initResponseCodeParams();
     setTimeout(() => {
-      //that.showResponseEditFieldDescription();
       that.copyApiAddress();
       that.copyApiMarkdown();
       that.copyApiUrl();
@@ -535,6 +533,7 @@ export default {
       }else{
         that.reqParameters = reqParameters;
       }
+      //console.log("document")
       //console.log(reqParameters);
     },
     deepRootKeys(tmpIncludeKeys,rootKeys){
@@ -746,6 +745,14 @@ export default {
             that.multipCodeDatas.push(nresobj);
           }
         });
+        var multipKeys=Object.keys(that.multipData);
+        if(KUtils.arrNotEmpty(rcodes)&&!KUtils.arrNotEmpty(multipKeys)){
+          var rc=rcodes[0];
+          if(KUtils.strNotBlank(rc.schemaTitle)){
+            var nresobj = { ...rc, data: [] };
+            that.multipData = nresobj;
+          }
+        }
       }
       //console.log(that.multipData);
     },

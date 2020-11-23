@@ -10,6 +10,7 @@ const globals = {
     enableReloadCacheParameter:false,
     currentMenuData:[],
     serviceOptions:[],
+    settings:{},
     defaultServiceOption: ''
   },
   mutations: {
@@ -42,9 +43,15 @@ const globals = {
     },
     setReloadCacheParameter:(state,reloadCacheParameter)=>{
       state.enableReloadCacheParameter=reloadCacheParameter;
+    },
+    setSettings:(state,settings)=>{
+      state.settings=settings;
     }
   },
   actions: {
+    setSettings({commit},settings){
+      commit('setSettings',settings);
+    },
     setReloadCacheParameter({commit},reloadCacheParameter){
       commit('setReloadCacheParameter',reloadCacheParameter);
     },

@@ -90,8 +90,36 @@ public class OpenApiExtensionResolver {
                 }
             }
         }
+        //判断主页文档
+        if (this.setting!=null){
+            if (this.setting.isEnableHomeCustom()){
+                if (StrUtil.isNotBlank(this.setting.getHomeCustomLocation())){
+                    String content=readCustomHome(this.setting.getHomeCustomLocation());
+                    //赋值
+                    this.setting.setHomeCustomLocation(content);
+                }
+            }
+        }
     }
-
+    /**
+     * 读取自定义主页markdown的内容
+     * @param customHomeLocation 路径
+     * @return markdown内容
+     */
+    private String readCustomHome(String customHomeLocation){
+        String customHomeContent="";
+        try{
+            Resource[] resources=resourceResolver.getResources(customHomeLocation);
+            if(resources!=null&&resources.length>0){
+                //取第1个
+                Resource resource=resources[0];
+                customHomeContent=new String(CommonUtils.readBytes(resource.getInputStream()),"UTF-8");
+            }
+        }catch (Exception e){
+            logger.warn("(Ignores) Failed to read CustomeHomeLocation Markdown files,Error Message:{} ",e.getMessage());
+        }
+        return customHomeContent;
+    }
     /**
      * 根据路径读取markdown文件
      * @param locations markdown文件路径
@@ -171,6 +199,15 @@ public class OpenApiExtensionResolver {
         List<VendorExtension> vendorExtensions=new ArrayList<>();
         vendorExtensions.add(new OpenApiSettingExtension(OpenApiSettingExtension.SETTING_EXTENSION_NAME,CollectionUtils.newArrayList(this.setting)));
         vendorExtensions.add(new OpenApiMarkdownExtension(OpenApiMarkdownExtension.MARKDOWN_EXTENSION_NAME,markdownFileMaps.get(swaggerGroupName)));
+        return vendorExtensions;
+    }
+    /**
+     * 构建个性化增强插件，个性化增强配置无需传递分组名称
+     * @return 扩展插件集合
+     */
+    public List<VendorExtension> buildSettingExtensions(){
+        List<VendorExtension> vendorExtensions=new ArrayList<>();
+        vendorExtensions.add(new OpenApiSettingExtension(OpenApiSettingExtension.SETTING_EXTENSION_NAME,CollectionUtils.newArrayList(this.setting)));
         return vendorExtensions;
     }
 

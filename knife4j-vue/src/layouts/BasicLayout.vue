@@ -1,19 +1,19 @@
 <template>
   <div class="BasicLayout">
     <a-layout class="ant-layout-has-sider">
-      <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider">
-        <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
+      <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider" style="background: #1e282c;">
+        <div class="knife4j-logo-data" key="logo" v-if="!collapsed&&settings.enableGroup">
           <a to="/" style="float:left;">
             <a-select show-search :value="defaultServiceOption" style="width: 300px" :options="serviceOptions" @change="serviceChange">
             </a-select>
           </a>
         </div>
-        <div class="knife4j-logo" key="logo" v-if="collapsed">
+        <div class="knife4j-logo" key="logo" v-if="collapsed&&settings.enableGroup">
           <a to="/" style="float:left;" v-if="collapsed">
             <img :src="logo" alt="logo" />
           </a>
         </div>
-        <div class="knife4j-menu">
+        <div :class="settings.enableGroup?'knife4j-menu':'knife4j-menu-all'">
           <a-menu key="Menu" theme="dark" mode="inline" :inlineCollapsed="collapsed" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 2px 0; width: 100%">
             <ThreeMenu :menuData="localMenuData" :collapsed="collapsed"/>
           </a-menu>
@@ -99,8 +99,8 @@ export default {
   },
   beforeCreate() {},
   created() {
-    //this.initSpringDocOpenApi();
-    this.initKnife4jSpringUi();
+    this.initSpringDocOpenApi();
+    //this.initKnife4jSpringUi();
     //this.initKnife4jFront();
     this.initI18n();
   },
@@ -129,6 +129,8 @@ export default {
     },
     defaultServiceOption(){
       return this.$store.state.globals.defaultServiceOption;
+    },settings(){
+      return this.$store.state.globals.settings;
     }
   },
   updated() {
@@ -261,6 +263,7 @@ export default {
         if(!settings.enableSwaggerBootstrapUi){
            settings.enableSwaggerBootstrapUi=this.getPlusStatus();
         }
+        settings.language=tmpI18n;
         that.$localStore.setItem(constant.globalSettingsKey, settings);
         this.$localStore.getItem(constant.globalGitApiVersionCaches).then(gitVal=>{
           var cacheApis=this.getCacheGitVersion(gitVal);
@@ -281,6 +284,7 @@ export default {
               plus: this.getPlusStatus(),
               i18n:tmpI18n,
               i18nVue:this.$i18n,
+              i18nFlag:i18nParams.include,
               configSupport:false,
               i18nInstance:this.getCurrentI18nInstance() 
               })
@@ -305,6 +309,7 @@ export default {
                 plus: this.getPlusStatus(),
                 i18n:tmpI18n,
                 i18nVue:this.$i18n,
+                i18nFlag:i18nParams.include,
                 configSupport:false,
                 i18nInstance:this.getCurrentI18nInstance() 
                 })
@@ -328,6 +333,7 @@ export default {
         if(!settings.enableSwaggerBootstrapUi){
            settings.enableSwaggerBootstrapUi=this.getPlusStatus();
         }
+        settings.language=tmpI18n;
         that.$localStore.setItem(constant.globalSettingsKey, settings);
         this.$localStore.getItem(constant.globalGitApiVersionCaches).then(gitVal=>{
           var cacheApis=this.getCacheGitVersion(gitVal);
@@ -347,11 +353,13 @@ export default {
               plus: this.getPlusStatus(),
               i18n:tmpI18n,
               i18nVue:this.$i18n,
-              configSupport:true,
+              i18nFlag:i18nParams.include,
+              configSupport:false,
               i18nInstance:this.getCurrentI18nInstance() 
               })
           }else{
             //不包含
+            //console.log("不包含")
             //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
             this.$localStore.getItem(constant.globalI18nCache).then(i18n => {
               if(KUtils.checkUndefined(i18n)){
@@ -370,7 +378,8 @@ export default {
                 plus: this.getPlusStatus(),
                 i18n:tmpI18n,
                 i18nVue:this.$i18n,
-                configSupport:true,
+                i18nFlag:i18nParams.include,
+                configSupport:false,
                 i18nInstance:this.getCurrentI18nInstance() 
                 })
             })

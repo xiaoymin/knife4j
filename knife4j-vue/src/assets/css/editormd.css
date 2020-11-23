@@ -3672,7 +3672,7 @@ only screen and (min-device-pixel-ratio: 3) {
 }
 
 .markdown-body table {
-  display: block;
+  /* display: block; */
   width: 100%;
   overflow: auto;
   word-break: normal;

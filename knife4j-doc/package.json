@@ -1,0 +1,12 @@
+{
+  "name": "swagger-bootstrap-ui-doc",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "node ./builds/addComponents.js && vuepress build docs && node ./builds/delComponents.js"
+  },
+  "dependencies": {
+    "vuepress": "1.7.1"
+  }
+}

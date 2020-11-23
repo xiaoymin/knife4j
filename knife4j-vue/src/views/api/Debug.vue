@@ -6,7 +6,7 @@
         :span="24"
       >
         <a-input-group compact>
-          <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
+          <span class="knife4j-api-summary-method"><a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}</span>
           <a-input
             :style="debugUrlStyle"
             :value="debugUrl"
@@ -544,10 +544,13 @@ export default {
       responseCurlText: "",
       responseStatus: null,
       responseContent: null,
-      responseFieldDescriptionChecked: true
+      responseFieldDescriptionChecked: true,
+      //网关转发请求Header标志
+      routeHeader:null
     };
   },
   created() {
+    this.routeHeader=this.swaggerInstance.header;
     this.initI18n();
     //初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
@@ -578,14 +581,14 @@ export default {
   },
   methods: {
     reloadCacheParameter(){
-      console.log("刷新变量,从缓存中重新读取变量值")
+      //console.log("刷新变量,从缓存中重新读取变量值")
       //刷新变量,从缓存中重新读取变量值
       //初始化读取本地缓存全局参数
       //this.initLocalGlobalParameters();
       //只更新变量,不做增加等任何处理
       var tempglobalParameters=[];
       const key = this.api.instanceId;
-      console.log(this.headerData);
+      //console.log(this.headerData);
       //初始化读取本地缓存全局参数
       this.$localStore.getItem(constant.globalParameter).then(val => {
         if (val != null) {
@@ -795,6 +798,8 @@ export default {
             //读取Author的参数情况
             var securitykey = constant.globalSecurityParamPrefix + this.api.instanceId;
             this.$localStore.getItem(securitykey).then(val => {
+              //console.log(val);
+              //console.log(this.api)
               //console("读取本都Auth请");
               if (KUtils.arrNotEmpty(val)) {
                 //不为空
@@ -813,7 +818,12 @@ export default {
                       enumsMode:"default",
                       new: false
                     };
-                    this.authorizeQueryParameters.push(newquery);
+                    //判断该接口是否security-Authorize
+                    if(this.api.securityFlag){
+                      if(this.api.securityKeys.includes(security.key)){
+                        this.authorizeQueryParameters.push(newquery);
+                      }
+                    }
                   }
                 });
               }
@@ -883,7 +893,12 @@ export default {
             };
             if(security.in=='header'){
               //this.headerData.push(newHeader);
-              this.addDebugHeader(newHeader);
+              //判断该接口是否security-Authorize
+              if(this.api.securityFlag){
+                if(this.api.securityKeys.includes(security.key)){
+                  this.addDebugHeader(newHeader);
+                }
+              }
             }
           });
         }
@@ -2145,6 +2160,11 @@ export default {
           }
         }
       }
+      //判断是否routeProxy请求，基于Knife4j自研aggre聚合组件请求header
+      //add by xiaoymin 2020年11月13日 21:33:18
+      if(KUtils.checkUndefined(this.routeHeader)){
+        headers["knfie4j-gateway-request"]=this.routeHeader;
+      }
       return headers;
     },
     debugRawFormParams() {
@@ -2978,10 +2998,15 @@ export default {
       curlified.push("-X", this.api.methodType.toUpperCase());
       //设置请求头
       var headers = this.debugHeaders();
+      var ignoreHeaders=[];
+      ignoreHeaders.push("knfie4j-gateway-request");
+      ignoreHeaders.push("Request-Origion");
       if (KUtils.checkUndefined(headers)) {
         for (var h in headers) {
-          curlified.push("-H ");
-          curlified.push('"' + h + ":" + headers[h] + '"');
+          if(!ignoreHeaders.includes(h)){
+            curlified.push("-H ");
+            curlified.push('"' + h + ":" + headers[h] + '"');
+          }
         }
       }
 

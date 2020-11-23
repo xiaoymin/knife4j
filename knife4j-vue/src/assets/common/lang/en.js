@@ -80,7 +80,8 @@ const langOptions = {
       },
       {
         title: 'schema',
-        dataIndex: 'schema'
+        dataIndex: 'schema',
+        scopedSlots: { customRender: 'schemaTemplate' }
       }
     ],
     //文档说明-响应Header
@@ -483,7 +484,7 @@ const langOptions = {
 
   },
   offline: {
-    des: 'Knife4j provides export of offline documents in 4 formats (Html/Markdown/Word/Pdf)',
+    des: 'Knife4j provides export of offline documents in 4 formats (Html/Markdown/Word/OpenAPI)',
     download:{
       markdown:'Markdown',
       html:'Html',
