@@ -8,26 +8,15 @@
     <span class="knife4j-header-title">{{ documentTitle }}</span>
 
     <div class="right">
-      <HeaderSearch
+      <HeaderSearch v-if="settings.enableSearch"
         class="action search"
         :placeholder="$t('searchHolderText')"
         :onSearch="value => onSearch(value)"
         :onPressEnter="value => onPressEnter(value)"
       />
-      <a-tooltip :title="$t('docLinkTip')">
-        <a
-          target="_blank"
-          href="https://doc.xiaominfo.com/"
-          rel="noopener noreferrer"
-          class="action"
-        >
-          <a-icon type="question-circle-o" />
-        </a>
-      </a-tooltip>
-
       <a-dropdown v-if="currentUser.name">
         <a-menu slot="overlay" class="menu">
-          <a-menu-item>
+          <a-menu-item v-if="settings.enableDocumentManage">
             <router-link to="/documentManager/Settings">
               <a-icon type="setting"/> <span v-html="$t('settingText')"></span
             ></router-link>
@@ -91,6 +80,11 @@ export default {
     onMenuClick: {
       type: Function,
       default: () => {}
+    }
+  },
+  computed:{
+    settings(){
+      return this.$store.state.globals.settings;
     }
   },
   data() {

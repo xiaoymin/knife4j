@@ -70,6 +70,62 @@ public class OpenApiExtendSetting {
      */
     private String enableHostText="";
 
+    /**
+     * 是否开启动态请求参数
+     */
+    private boolean enableDynamicParameter=false;
+
+    /**
+     * 是否开启debug调试
+     */
+    private boolean enableDebug=true;
+
+    /**
+     * 是否默认显示底部Footer
+     */
+    private boolean enableFooter=true;
+    /**
+     * 是否自定义Footer
+     */
+    private boolean enableFooterCustom=false;
+
+    /**
+     * 自定义Footer内容(支持Markdown语法)
+     */
+    private String footerCustomContent;
+
+    /**
+     * 是否显示搜索框
+     */
+    private boolean enableSearch=true;
+
+    /**
+     * 是否显示OpenAPI原始结构的Tab框，默认显示
+     */
+    private boolean enableOpenApi=true;
+
+    /**
+     * 是否开启主页自定义配置，默认false
+     */
+    private boolean enableHomeCustom=false;
+
+    /**
+     * 自定义主页的Markdown文档路径
+     */
+    private String homeCustomLocation;
+
+    /**
+     * 是否显示分组下拉框，默认true(即显示)，一般情况下，如果是单个分组的情况下，可以设置该属性为false，即不显示分组，那么也就不用选择了
+     */
+    private boolean enableGroup=true;
+
+    public boolean isEnableGroup() {
+        return enableGroup;
+    }
+
+    public void setEnableGroup(boolean enableGroup) {
+        this.enableGroup = enableGroup;
+    }
 
     public String getLanguage() {
         return language;
@@ -165,5 +221,77 @@ public class OpenApiExtendSetting {
 
     public void setEnableReloadCacheParameter(boolean enableReloadCacheParameter) {
         this.enableReloadCacheParameter = enableReloadCacheParameter;
+    }
+
+    public boolean isEnableDynamicParameter() {
+        return enableDynamicParameter;
+    }
+
+    public void setEnableDynamicParameter(boolean enableDynamicParameter) {
+        this.enableDynamicParameter = enableDynamicParameter;
+    }
+
+    public boolean isEnableDebug() {
+        return enableDebug;
+    }
+
+    public void setEnableDebug(boolean enableDebug) {
+        this.enableDebug = enableDebug;
+    }
+
+    public boolean isEnableFooter() {
+        return enableFooter;
+    }
+
+    public void setEnableFooter(boolean enableFooter) {
+        this.enableFooter = enableFooter;
+    }
+
+    public boolean isEnableFooterCustom() {
+        return enableFooterCustom;
+    }
+
+    public void setEnableFooterCustom(boolean enableFooterCustom) {
+        this.enableFooterCustom = enableFooterCustom;
+    }
+
+    public String getFooterCustomContent() {
+        return footerCustomContent;
+    }
+
+    public void setFooterCustomContent(String footerCustomContent) {
+        this.footerCustomContent = footerCustomContent;
+    }
+
+    public boolean isEnableSearch() {
+        return enableSearch;
+    }
+
+    public void setEnableSearch(boolean enableSearch) {
+        this.enableSearch = enableSearch;
+    }
+
+    public boolean isEnableOpenApi() {
+        return enableOpenApi;
+    }
+
+    public void setEnableOpenApi(boolean enableOpenApi) {
+        this.enableOpenApi = enableOpenApi;
+    }
+
+    public boolean isEnableHomeCustom() {
+        return enableHomeCustom;
+    }
+
+    public void setEnableHomeCustom(boolean enableHomeCustom) {
+        this.enableHomeCustom = enableHomeCustom;
+    }
+
+    public String getHomeCustomLocation() {
+        return homeCustomLocation;
+    }
+
+    public void setHomeCustomLocation(String homeCustomLocation) {
+        this.homeCustomLocation = homeCustomLocation;
     }
 }

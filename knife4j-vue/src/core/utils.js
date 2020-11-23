@@ -218,6 +218,32 @@ const utils = {
       }
     }
   },
+  appendBasePath(paths,basePath){
+    var appendBasePathFlag=false;
+    try{
+      if(this.checkUndefined(basePath)&&this.strNotBlank(basePath)&&basePath!='/'){
+        var pathKeys=Object.keys(paths||{});
+        var pathKeyLength=pathKeys.length;
+        var num=0;
+        for(var i=0;i<pathKeys.length;i++){
+          if(pathKeys[i].startsWith(basePath)){
+            num++;
+          }
+        }
+        if(num==pathKeyLength){
+          //已经追加过basePath，无需再次追加
+          appendBasePathFlag=true;
+        }
+      }else{
+        //其余情况都代表已经追加过
+        appendBasePathFlag=true;
+      }
+    }catch(e){
+      //ignore
+      appendBasePathFlag=true;
+    }
+    return appendBasePathFlag;
+  },
   filterIncludeParameters(inType, name, includeParameters) {
     if (includeParameters == null) {
       return true;

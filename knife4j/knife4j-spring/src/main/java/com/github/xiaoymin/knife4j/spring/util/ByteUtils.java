@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j.spring.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
@@ -33,6 +34,20 @@ public class ByteUtils {
     static Logger logger= LoggerFactory.getLogger(ByteUtils.class);
 
     static final ClassPool classPool=ClassPool.getDefault();
+
+    public static Class<?> loadDynamicClassType(String name){
+        String clazzName= Consts.BASE_PACKAGE_PREFIX+name;
+        Class<?> dynamicClass=null;
+        try{
+            dynamicClass=load(clazzName);
+            if (dynamicClass==null){
+                dynamicClass=Class.forName(clazzName);
+            }
+        }catch (Exception e){
+            //ignore
+        }
+        return dynamicClass;
+    }
 
     /**
      * createModel

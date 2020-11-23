@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span v-if="!record.validateStatus">{{text}}</span>
+    <span v-if="!record.validateStatus">{{text==null||text==''?'string':text}}</span>
     <span v-else class="knife4j-request-validate-jsr">
       <a-tooltip placement="right">
         <template slot="title">
@@ -18,6 +18,7 @@ export default {
   props: {
     text: {
       type: String,
+      default:"string",
       required: true
     },
     record: {
