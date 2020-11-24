@@ -1,0 +1,12 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: knife4j-aggregation-docker
+knife4j:
+  enableAggregation: true
+  disk:
+    enable: true
+    routes:
+      - name: 测试分组
+        location: classpath:openapi/user.json

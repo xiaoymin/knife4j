@@ -1,0 +1,2462 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "# swagger-bootstrap-ui-demo RESTful APIs",
+    "version": "1.0",
+    "termsOfService": "https://xiaoym.gitee.io/knife4j/",
+    "contact": {
+      "name": "xiaoymin@foxmail.com"
+    }
+  },
+  "host": "127.0.0.1:8999",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "列表展示",
+      "x-order": "2147483647"
+    },
+    {
+      "name": "响应自定义",
+      "x-order": "2147483647"
+    },
+    {
+      "name": "文件上传",
+      "x-order": "2147483647"
+    },
+    {
+      "name": "泛型响应",
+      "x-order": "2147483647"
+    },
+    {
+      "name": "测试用例",
+      "x-order": "2147483647"
+    },
+    {
+      "name": "测试路径",
+      "x-order": "2147483647"
+    },
+    {
+      "name": "相同URL",
+      "x-order": "2147483647"
+    },
+    {
+      "name": "菜单信息",
+      "x-order": "2147483647"
+    }
+  ],
+  "paths": {
+    "/api/list/obj": {
+      "post": {
+        "tags": [
+          "列表展示"
+        ],
+        "summary": "obj",
+        "operationId": "objUsingPOST_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "Rest«ReqEntity»",
+              "$ref": "#/definitions/Rest«ReqEntity»"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/list/objList": {
+      "post": {
+        "tags": [
+          "列表展示"
+        ],
+        "summary": "objList",
+        "operationId": "objListUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "originalRef": "Rest«ReqEntity»",
+                "$ref": "#/definitions/Rest«ReqEntity»"
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/list/query": {
+      "post": {
+        "tags": [
+          "列表展示"
+        ],
+        "summary": "场馆列表",
+        "description": "获取场馆列表",
+        "operationId": "queryUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "originalRef": "ReqEntity",
+                "$ref": "#/definitions/ReqEntity"
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/list/query1": {
+      "post": {
+        "tags": [
+          "列表展示"
+        ],
+        "summary": "场馆列表",
+        "description": "获取场馆列表",
+        "operationId": "query1UsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "workExperiences",
+            "description": "workExperiences",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "originalRef": "WorkExperience",
+                "$ref": "#/definitions/WorkExperience"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "originalRef": "ReqEntity",
+                "$ref": "#/definitions/ReqEntity"
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/menu/getMenu": {
+      "post": {
+        "tags": [
+          "菜单信息"
+        ],
+        "summary": "递归获取菜单",
+        "description": "获取菜单,考虑递归的情况",
+        "operationId": "getMenuUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "Menu",
+              "$ref": "#/definitions/Menu"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/menu/getRestMenu": {
+      "post": {
+        "tags": [
+          "菜单信息"
+        ],
+        "summary": "响应泛型为菜单Menu对象",
+        "description": "获取菜单,考虑递归的情况",
+        "operationId": "getRestMenuUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "Rest«Menu»",
+              "$ref": "#/definitions/Rest«Menu»"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/methods/allMethod": {
+      "get": {
+        "tags": [
+          "相同URL"
+        ],
+        "summary": "相同url,不同method",
+        "description": "针对相同url，不同mehtod类型未展示bug",
+        "operationId": "allMethodUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      },
+      "head": {
+        "tags": [
+          "相同URL"
+        ],
+        "summary": "相同url,不同method",
+        "description": "针对相同url，不同mehtod类型未展示bug",
+        "operationId": "allMethodUsingHEAD",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      },
+      "post": {
+        "tags": [
+          "相同URL"
+        ],
+        "summary": "相同url,不同method",
+        "description": "针对相同url，不同mehtod类型未展示bug",
+        "operationId": "allMethodUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      },
+      "put": {
+        "tags": [
+          "相同URL"
+        ],
+        "summary": "相同url,不同method",
+        "description": "针对相同url，不同mehtod类型未展示bug",
+        "operationId": "allMethodUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      },
+      "delete": {
+        "tags": [
+          "相同URL"
+        ],
+        "summary": "相同url,不同method",
+        "description": "针对相同url，不同mehtod类型未展示bug",
+        "operationId": "allMethodUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      },
+      "options": {
+        "tags": [
+          "相同URL"
+        ],
+        "summary": "相同url,不同method",
+        "description": "针对相同url，不同mehtod类型未展示bug",
+        "operationId": "allMethodUsingOPTIONS",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      },
+      "patch": {
+        "tags": [
+          "相同URL"
+        ],
+        "summary": "相同url,不同method",
+        "description": "针对相同url，不同mehtod类型未展示bug",
+        "operationId": "allMethodUsingPATCH",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/resp/test": {
+      "post": {
+        "tags": [
+          "泛型响应"
+        ],
+        "summary": "响应泛型类型为String类型",
+        "description": "针对ResponseEntity<String>",
+        "operationId": "testUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/resp/test1": {
+      "post": {
+        "tags": [
+          "泛型响应"
+        ],
+        "summary": "响应泛型类型为实体累引用类型",
+        "description": "针对ResponseEntity<T>类型",
+        "operationId": "test1UsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "Menu",
+              "$ref": "#/definitions/Menu"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/response/obj": {
+      "post": {
+        "tags": [
+          "响应自定义"
+        ],
+        "summary": "obj",
+        "operationId": "objUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "姓名",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "tel",
+            "in": "query",
+            "description": "电话号码",
+            "required": true,
+            "type": "string",
+            "x-example": "555"
+          },
+          {
+            "name": "workExperiences[0].company",
+            "in": "query",
+            "description": "公司",
+            "required": true,
+            "type": "string",
+            "x-example": "牛B的公司"
+          },
+          {
+            "name": "workExperiences[0].end",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "workExperiences[0].role",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "workExperiences[0].start",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "Rest«ReqEntity»",
+              "$ref": "#/definitions/Rest«ReqEntity»"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "请求参数没填好"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "请求路径没有或页面跳转路径不对"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      },
+      "put": {
+        "tags": [
+          "响应自定义"
+        ],
+        "summary": "objPut",
+        "operationId": "objPutUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "姓名",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "tel",
+            "in": "query",
+            "description": "电话号码",
+            "required": true,
+            "type": "string",
+            "x-example": "555"
+          },
+          {
+            "name": "workExperiences[0].company",
+            "in": "query",
+            "description": "公司",
+            "required": true,
+            "type": "string",
+            "x-example": "牛B的公司"
+          },
+          {
+            "name": "workExperiences[0].end",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "workExperiences[0].role",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "workExperiences[0].start",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "Rest«ReqEntity»",
+              "$ref": "#/definitions/Rest«ReqEntity»"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "请求参数没填好"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "请求路径没有或页面跳转路径不对"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/test/deletetest": {
+      "delete": {
+        "tags": [
+          "测试用例"
+        ],
+        "summary": "deletetest",
+        "description": "deletetest测试说明2",
+        "operationId": "deletetestUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "code",
+            "required": false,
+            "type": "string",
+            "x-example": "abcefg"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/test/puttest": {
+      "put": {
+        "tags": [
+          "测试用例"
+        ],
+        "summary": "puttest",
+        "description": "puttest测试说明2",
+        "operationId": "puttestUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "code",
+            "required": false,
+            "type": "string",
+            "default": "abc"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/test/reqbody": {
+      "post": {
+        "tags": [
+          "测试用例"
+        ],
+        "summary": "RequestBody接口类型",
+        "description": "RequestBody测试接口,实体类型",
+        "operationId": "reqbodyUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "reqEntity",
+            "description": "reqEntity",
+            "required": true,
+            "schema": {
+              "originalRef": "ReqEntity",
+              "$ref": "#/definitions/ReqEntity"
+            }
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/test/reqbody1": {
+      "post": {
+        "tags": [
+          "测试用例"
+        ],
+        "summary": "ModelAttribute",
+        "description": "ModelAttribute类型参数",
+        "operationId": "reqbody1UsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "姓名",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "tel",
+            "in": "query",
+            "description": "电话号码",
+            "required": true,
+            "type": "string",
+            "x-example": "555"
+          },
+          {
+            "name": "workExperiences[0].company",
+            "in": "query",
+            "description": "公司",
+            "required": true,
+            "type": "string",
+            "x-example": "牛B的公司"
+          },
+          {
+            "name": "workExperiences[0].end",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "workExperiences[0].role",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "workExperiences[0].start",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/test/reqbody2": {
+      "post": {
+        "tags": [
+          "测试用例"
+        ],
+        "summary": "RequestBody接口类型2",
+        "description": "RequestBody测试接口2-string类型",
+        "operationId": "reqbody2UsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "reqEntity",
+            "description": "reqEntity",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/test/reqbody3": {
+      "post": {
+        "tags": [
+          "测试用例"
+        ],
+        "summary": "header参数",
+        "description": "header参数",
+        "operationId": "reqbody3UsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "headerparam",
+            "in": "header",
+            "description": "headerparam",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page1",
+            "in": "query",
+            "description": "page1",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/testc/examp1": {
+      "post": {
+        "tags": [
+          "测试路径"
+        ],
+        "summary": "ModelAttribute接收实体类参数",
+        "description": "ModelAttribute接收实体类参数,非RequestBody的情况",
+        "operationId": "reqbody1UsingPOST_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "姓名",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "tel",
+            "in": "query",
+            "description": "电话号码",
+            "required": true,
+            "type": "string",
+            "x-example": "555"
+          },
+          {
+            "name": "workExperiences[0].company",
+            "in": "query",
+            "description": "公司",
+            "required": true,
+            "type": "string",
+            "x-example": "牛B的公司"
+          },
+          {
+            "name": "workExperiences[0].end",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "workExperiences[0].role",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "workExperiences[0].start",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/testc/resp": {
+      "get": {
+        "tags": [
+          "测试路径"
+        ],
+        "summary": "响应一般对象",
+        "description": "响应一般对象",
+        "operationId": "respUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestEetity",
+              "$ref": "#/definitions/RestEetity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/testc/rest": {
+      "get": {
+        "tags": [
+          "测试路径"
+        ],
+        "summary": "响应泛型对象",
+        "description": "响应泛型对象",
+        "operationId": "restUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "Rest«ReqEntity»",
+              "$ref": "#/definitions/Rest«ReqEntity»"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/testc/select1": {
+      "post": {
+        "tags": [
+          "测试路径"
+        ],
+        "summary": "请求头Header参数",
+        "description": "请求头Header参数",
+        "operationId": "reqbody3UsingPOST_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "headerparam",
+            "in": "header",
+            "description": "headerparam",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page1",
+            "in": "query",
+            "description": "page1",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/testc/selectLog": {
+      "post": {
+        "tags": [
+          "测试路径"
+        ],
+        "summary": "RequestBody接收Map参数",
+        "description": "RequestBody接收Map参数",
+        "operationId": "selectLogUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "infoMap",
+            "description": "infoMap",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "userId",
+            "description": "userId",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/testc/xdf/{code}": {
+      "delete": {
+        "tags": [
+          "测试路径"
+        ],
+        "summary": "PathVariable路径请求",
+        "description": "PathVariable路径请求",
+        "operationId": "urlpathUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "code",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/upload/uploadMaterial": {
+      "post": {
+        "tags": [
+          "文件上传"
+        ],
+        "summary": "多文件MultipartFile上传",
+        "operationId": "uploadMaterialUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "file[]",
+            "in": "formData",
+            "description": "文件流对象,接收数组格式",
+            "required": true,
+            "type": "array",
+            "items": {
+              "originalRef": "MultipartFile",
+              "$ref": "#/definitions/MultipartFile"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "title",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/upload/uploadMaterial1": {
+      "post": {
+        "tags": [
+          "文件上传"
+        ],
+        "summary": "多文件File上传",
+        "operationId": "uploadMaterial1UsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "file[]",
+            "in": "formData",
+            "description": "文件流对象,接收数组格式",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "file"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "title",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/upload/uploadMaterial2": {
+      "post": {
+        "tags": [
+          "文件上传"
+        ],
+        "summary": "单文件File上传",
+        "operationId": "uploadMaterial2UsingPOST",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "文件流对象,接收数组格式",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "title",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/upload/uploadMaterial4": {
+      "post": {
+        "tags": [
+          "文件上传"
+        ],
+        "summary": "单文件File上传-noArg",
+        "operationId": "uploadMaterial3UsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "文件流对象,接收数组格式",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "title",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    },
+    "/api/upload/uploadModel": {
+      "post": {
+        "tags": [
+          "文件上传"
+        ],
+        "summary": "文件素材上传Model接口",
+        "operationId": "uploadModelUsingPOST_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "query",
+            "description": "上传文件",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token令牌",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "originalRef": "RestMessage",
+              "$ref": "#/definitions/RestMessage"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerToken": [
+              "global"
+            ]
+          }
+        ],
+        "deprecated": false,
+        "x-order": "2147483647"
+      }
+    }
+  },
+  "securityDefinitions": {
+    "BearerToken": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "Menu": {
+      "type": "object",
+      "properties": {
+        "childrens": {
+          "type": "array",
+          "description": "子集",
+          "items": {
+            "originalRef": "Menu",
+            "$ref": "#/definitions/Menu"
+          }
+        },
+        "label": {
+          "type": "string",
+          "description": "label标签信息"
+        },
+        "text": {
+          "type": "string",
+          "description": "文本信息"
+        }
+      },
+      "title": "Menu"
+    },
+    "ReqEntity": {
+      "type": "object",
+      "required": [
+        "name",
+        "tel"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "姓名"
+        },
+        "tel": {
+          "type": "string",
+          "example": 555,
+          "description": "电话号码"
+        },
+        "workExperiences": {
+          "type": "array",
+          "items": {
+            "originalRef": "WorkExperience",
+            "$ref": "#/definitions/WorkExperience"
+          }
+        }
+      },
+      "title": "ReqEntity"
+    },
+    "RestEetity": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "编码"
+        },
+        "reqEntity": {
+          "originalRef": "ReqEntity",
+          "$ref": "#/definitions/ReqEntity"
+        }
+      },
+      "title": "RestEetity"
+    },
+    "RestMessage": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "description": "返回对象"
+        },
+        "errCode": {
+          "type": "integer",
+          "format": "int32",
+          "description": "错误编号"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "success": {
+          "type": "boolean",
+          "description": "是否成功"
+        }
+      },
+      "title": "RestMessage",
+      "description": "返回接口类"
+    },
+    "Rest«Menu»": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "description": "返回对象",
+          "originalRef": "Menu",
+          "$ref": "#/definitions/Menu"
+        },
+        "errCode": {
+          "type": "integer",
+          "format": "int32",
+          "description": "错误编号"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "success": {
+          "type": "boolean",
+          "description": "是否成功"
+        }
+      },
+      "title": "Rest«Menu»"
+    },
+    "Rest«ReqEntity»": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "description": "返回对象",
+          "originalRef": "ReqEntity",
+          "$ref": "#/definitions/ReqEntity"
+        },
+        "errCode": {
+          "type": "integer",
+          "format": "int32",
+          "description": "错误编号"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "success": {
+          "type": "boolean",
+          "description": "是否成功"
+        }
+      },
+      "title": "Rest«ReqEntity»"
+    },
+    "WorkExperience": {
+      "type": "object",
+      "required": [
+        "company"
+      ],
+      "properties": {
+        "company": {
+          "type": "string",
+          "example": "牛B的公司",
+          "description": "公司"
+        },
+        "end": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "start": {
+          "type": "string"
+        }
+      },
+      "title": "WorkExperience",
+      "description": "工作经验"
+    }
+  },
+  "x-openapi": {
+    "x-markdownFiles": [
+      {
+        "name": "我是另外一个分组的文档",
+        "children": [
+          {
+            "title": "自定义文档说明2",
+            "content": "# 自定义文档说明2\r\n\r\n## 效果说明\r\n\r\n在`1.9.3`版本中,`swagger-bootstrap-ui`为了满足文档的个性化配置,添加了自定义文档功能\r\n\r\n开发者可自定义`md`文件扩展补充整个系统的文档说明\r\n\r\n开发者可以在当前项目中添加一个文件夹，文件夹中存放`.md`格式的markdown文件,每个`.md`文档代表一份自定义文档说明\r\n\r\n**注意**：自定义文档说明必须以`.md`结尾的文件,其他格式文件会被忽略\r\n\r\n例如项目结构如下：\r\n\r\n![](/images/1-9-3/construct.png)\r\n\r\n每个`.md`文件中，`swagger-bootstrap-ui`允许一级(h1)、二级(h2)、三级(h3)标题作为最终的文档标题\r\n\r\n比如`api.md`文档：\r\n\r\n```markdown\r\n## 获取用户列表\r\n\r\naccess_token是公众号的全局唯一接口调用凭据，公众号调用各接口时都需使用access_token。开发者需要进行妥善保存。access_token的存储至少要保留512个字符空间。access_token的有效期目前为2个小时，需定时刷新，重复获取将导致上次获取的access_token失效\r\n\r\n```\r\n\r\n最终在`swagger-bootstrap-ui`的界面中,`api.md`的文档标题会是`获取用户列表`\r\n\r\n整个文档效果如下：\r\n\r\n![](/images/1-9-3/ef.png)\r\n\r\n如果没有按照一级(h1)、二级(h2)、三级(h3)来设置标题,默认标题会是文件名称，如图上的`api2.md`\r\n\r\n## 如何使用\r\n\r\n### Spring Boot环境\r\n\r\n在SpringBoot环境中,首先需要在`application.yml`或者`application.properties`配置文件中配置自定义文档目录\r\n\r\n如下：\r\n\r\n```yml\r\nswagger:\r\n  markdowns: classpath:markdown/*\r\n```\r\n\r\n然后在Swagger的配置文件中启用`@EnableSwaggerBootstrapUi`注解\r\n\r\n如下代码：\r\n\r\n```java\r\n@Configuration\r\n@EnableSwagger2\r\n@EnableSwaggerBootstrapUI\r\npublic class SwaggerConfiguration {\r\n    //more...\r\n    \r\n}\r\n```\r\n\r\n除了在后端开启注解功能,在`doc.html`中,个性化配置里面还需要设置开启增强功能\r\n\r\n![](/images/1-9-3/en-fun.png)\r\n\r\n当然,在确保后端增强无误的情况下,你可以直接使用快速访问设置功能来直接启用增强\r\n\r\n地址输入：`http://127.0.0.1:8888/doc.html?plus=1`\r\n\r\n\r\n\r\n### Spring MVC环境\r\n\r\n在Spring MVC环境中,首先引入swagger-bootstrap-ui的jar包文件\r\n\r\n```xml\r\n<dependency>\r\n  <groupId>com.github.xiaoymin</groupId>\r\n  <artifactId>swagger-bootstrap-ui</artifactId>\r\n  <version>1.9.3</version>\r\n</dependency>\r\n```\r\n然后,需要在Spring的XML配置文件中注入`MarkdownFiles`类的实例bean\r\n\r\n如下：\r\n\r\n```xml\r\n<!--注入自定义文档的bean-->\r\n<bean id=\"markdownFiles\" class=\"io.swagger.models.MarkdownFiles\" init-method=\"init\">\r\n    <property name=\"basePath\" value=\"classpath:markdown/*\"></property>\r\n</bean>\r\n```\r\n\r\n其他例如开启增强等操作和Spring Boot环境无异,打开doc.html即可访问看到效果"
+          },
+          {
+            "title": "自定义文档说明1",
+            "content": "# 自定义文档说明1\r\n\r\n## 效果说明\r\n\r\n在`1.9.3`版本中,`swagger-bootstrap-ui`为了满足文档的个性化配置,添加了自定义文档功能\r\n\r\n开发者可自定义`md`文件扩展补充整个系统的文档说明\r\n\r\n开发者可以在当前项目中添加一个文件夹，文件夹中存放`.md`格式的markdown文件,每个`.md`文档代表一份自定义文档说明\r\n\r\n**注意**：自定义文档说明必须以`.md`结尾的文件,其他格式文件会被忽略\r\n\r\n例如项目结构如下：\r\n\r\n![](/images/1-9-3/construct.png)\r\n\r\n每个`.md`文件中，`swagger-bootstrap-ui`允许一级(h1)、二级(h2)、三级(h3)标题作为最终的文档标题\r\n\r\n比如`api.md`文档：\r\n\r\n```markdown\r\n## 获取用户列表\r\n\r\naccess_token是公众号的全局唯一接口调用凭据，公众号调用各接口时都需使用access_token。开发者需要进行妥善保存。access_token的存储至少要保留512个字符空间。access_token的有效期目前为2个小时，需定时刷新，重复获取将导致上次获取的access_token失效\r\n\r\n```\r\n\r\n最终在`swagger-bootstrap-ui`的界面中,`api.md`的文档标题会是`获取用户列表`\r\n\r\n整个文档效果如下：\r\n\r\n![](/images/1-9-3/ef.png)\r\n\r\n如果没有按照一级(h1)、二级(h2)、三级(h3)来设置标题,默认标题会是文件名称，如图上的`api2.md`\r\n\r\n## 如何使用\r\n\r\n### Spring Boot环境\r\n\r\n在SpringBoot环境中,首先需要在`application.yml`或者`application.properties`配置文件中配置自定义文档目录\r\n\r\n如下：\r\n\r\n```yml\r\nswagger:\r\n  markdowns: classpath:markdown/*\r\n```\r\n\r\n然后在Swagger的配置文件中启用`@EnableSwaggerBootstrapUi`注解\r\n\r\n如下代码：\r\n\r\n```java\r\n@Configuration\r\n@EnableSwagger2\r\n@EnableSwaggerBootstrapUI\r\npublic class SwaggerConfiguration {\r\n    //more...\r\n    \r\n}\r\n```\r\n\r\n除了在后端开启注解功能,在`doc.html`中,个性化配置里面还需要设置开启增强功能\r\n\r\n![](/images/1-9-3/en-fun.png)\r\n\r\n当然,在确保后端增强无误的情况下,你可以直接使用快速访问设置功能来直接启用增强\r\n\r\n地址输入：`http://127.0.0.1:8888/doc.html?plus=1`\r\n\r\n\r\n\r\n### Spring MVC环境\r\n\r\n在Spring MVC环境中,首先引入swagger-bootstrap-ui的jar包文件\r\n\r\n```xml\r\n<dependency>\r\n  <groupId>com.github.xiaoymin</groupId>\r\n  <artifactId>swagger-bootstrap-ui</artifactId>\r\n  <version>1.9.3</version>\r\n</dependency>\r\n```\r\n然后,需要在Spring的XML配置文件中注入`MarkdownFiles`类的实例bean\r\n\r\n如下：\r\n\r\n```xml\r\n<!--注入自定义文档的bean-->\r\n<bean id=\"markdownFiles\" class=\"io.swagger.models.MarkdownFiles\" init-method=\"init\">\r\n    <property name=\"basePath\" value=\"classpath:markdown/*\"></property>\r\n</bean>\r\n```\r\n\r\n其他例如开启增强等操作和Spring Boot环境无异,打开doc.html即可访问看到效果"
+          },
+          {
+            "title": "swagger-bootstrap-ui 简介",
+            "content": "# swagger-bootstrap-ui 简介\r\n\r\n[![star](https://gitee.com/xiaoym/swagger-bootstrap-ui/badge/star.svg?theme=white)](https://gitee.com/xiaoym/swagger-bootstrap-ui/stargazers) [![fork](https://gitee.com/xiaoym/swagger-bootstrap-ui/badge/fork.svg?theme=white)](https://gitee.com/xiaoym/swagger-bootstrap-ui/members)\r\n\r\n[swagger-bootstrap-ui](https://gitee.com/xiaoym/swagger-bootstrap-ui)是springfox-swagger的增强UI实现，为Java开发者在使用Swagger的时候，能拥有一份简洁、强大的接口文档体验\r\n\r\n\r\n\r\n**效果：**[http://swagger-bootstrap-ui.xiaominfo.com/doc.html](http://swagger-bootstrap-ui.xiaominfo.com/doc.html)\r\n\r\n**示例:**[https://gitee.com/xiaoym/swagger-bootstrap-ui-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo)\r\n\r\n**交流：**[![](https://img.shields.io/badge/加入QQ1群-608374991满-red.svg)](//shang.qq.com/wpa/qunwpa?idkey=16b81902c23fbca82780fa107da1b6612e2ee44a05c4103c9176ad9d61c2f6bf) [![](https://img.shields.io/badge/加入QQ2群-621154782-red.svg)](//shang.qq.com/wpa/qunwpa?idkey=11e0a1453a6a3695bd8ed709fbc8359c9c48dd8538aaafbece7b84ecd325b91c)\r\n\r\n\r\n## 核心功能\r\n\r\n该UI增强包主要包括两大核心功能：**文档说明** 和 **在线调试**\r\n\r\n- **文档说明**：根据Swagger的规范说明，详细列出接口文档的说明，包括接口地址、类型、请求示例、请求参数、响应示例、响应参数、响应码等信息，使用swagger-bootstrap-ui能根据该文档说明，对该接口的使用情况一目了然。\r\n\r\n- **在线调试**：提供在线接口联调的强大功能，自动解析当前接口参数,同时包含表单验证，调用参数可返回接口响应内容、headers、Curl请求命令实例、响应时间、响应状态码等信息，帮助开发者在线调试，而不必通过其他测试工具测试接口是否正确,简介、强大。\r\n\r\n## UI增强\r\n\r\n同时，swagger-bootstrap-ui在满足以上功能的同时，还提供了文档的增强功能，这些功能是官方swagger-ui所没有的，每一个增强的功能都是贴合实际,考虑到开发者的实际开发需要,是比不可少的功能，主要包括：\r\n\r\n- **个性化配置**：通过个性化ui配置项，可自定义UI的相关显示信息\r\n\r\n- **离线文档**：根据标准规范，生成的在线markdown离线文档，开发者可以进行拷贝生成markdown接口文档，通过其他第三方markdown转换工具转换成html或pdf，这样也可以放弃swagger2markdown组件\r\n\r\n- **接口排序**：自1.8.5后，ui支持了接口排序功能，例如一个注册功能主要包含了多个步骤,可以根据swagger-bootstrap-ui提供的接口排序规则实现接口的排序，step化接口操作，方便其他开发者进行接口对接\r\n\r\n## UI特点\r\n\r\n- 以markdown形式展示文档,将文档的请求地址、类型、请求参数、示例、响应参数分层次依次展示,接口文档一目了然,方便开发者对接\r\n- 在线调试栏除了自动解析参数外,针对必填项着颜色区分,同时支持tab键快速输入上下切换.调试时可自定义Content-Type请求头类型\r\n- 个性化配置项,支持接口地址、接口description属性、UI增强等个性化配置功能\r\n- 接口排序,支持分组及接口的排序功能\r\n- 支持markdown文档离线文档导出,也可在线查看离线文档\r\n- 调试信息全局缓存,页面刷新后依然存在,方便开发者调试\r\n- 以更人性化的treetable组件展示Swagger Models功能\r\n- 响应内容可全屏查看,针对响应内容很多的情况下，全屏查看，方便调试、复制\r\n- 文档以多tab方式可显示多个接口文档\r\n- 请求参数栏请求类型、是否必填着颜色区分\r\n- 主页中粗略统计接口不同类型数量\r\n- 支持接口在线搜索功能\r\n- 左右菜单和内容页可自由拖动宽度\r\n- 支持自定义全局参数功能，主页包括header及query两种类型\r\n- i18n国际化支持,目前支持：中文简体、中文繁体、英文\r\n- JSR-303 annotations 注解的支持\r\n\r\n\r\n## UI效果图\r\n\r\n![接口说明](https://doc.xiaominfo.com/static/des.png)\r\n\r\n![接口调试](https://doc.xiaominfo.com/static/debug.png)\r\n\r\n![个性化设置](https://doc.xiaominfo.com/static/settings.png)\r\n\r\n![接口离线文档](https://doc.xiaominfo.com/static/markdown.png)\r\n\r\n![SwaggerModels](https://doc.xiaominfo.com/static/models.png)"
+          },
+          {
+            "title": "自定义文档说明",
+            "content": "# 自定义文档说明\r\n\r\n## 效果说明\r\n\r\n在`1.9.3`版本中,`swagger-bootstrap-ui`为了满足文档的个性化配置,添加了自定义文档功能\r\n\r\n开发者可自定义`md`文件扩展补充整个系统的文档说明\r\n\r\n开发者可以在当前项目中添加一个文件夹，文件夹中存放`.md`格式的markdown文件,每个`.md`文档代表一份自定义文档说明\r\n\r\n**注意**：自定义文档说明必须以`.md`结尾的文件,其他格式文件会被忽略\r\n\r\n例如项目结构如下：\r\n\r\n![](/images/1-9-3/construct.png)\r\n\r\n每个`.md`文件中，`swagger-bootstrap-ui`允许一级(h1)、二级(h2)、三级(h3)标题作为最终的文档标题\r\n\r\n比如`api.md`文档：\r\n\r\n```markdown\r\n## 获取用户列表\r\n\r\naccess_token是公众号的全局唯一接口调用凭据，公众号调用各接口时都需使用access_token。开发者需要进行妥善保存。access_token的存储至少要保留512个字符空间。access_token的有效期目前为2个小时，需定时刷新，重复获取将导致上次获取的access_token失效\r\n\r\n```\r\n\r\n最终在`swagger-bootstrap-ui`的界面中,`api.md`的文档标题会是`获取用户列表`\r\n\r\n整个文档效果如下：\r\n\r\n![](/images/1-9-3/ef.png)\r\n\r\n如果没有按照一级(h1)、二级(h2)、三级(h3)来设置标题,默认标题会是文件名称，如图上的`api2.md`\r\n\r\n## 如何使用\r\n\r\n### Spring Boot环境\r\n\r\n在SpringBoot环境中,首先需要在`application.yml`或者`application.properties`配置文件中配置自定义文档目录\r\n\r\n如下：\r\n\r\n```yml\r\nswagger:\r\n  markdowns: classpath:markdown/*\r\n```\r\n\r\n然后在Swagger的配置文件中启用`@EnableSwaggerBootstrapUi`注解\r\n\r\n如下代码：\r\n\r\n```java\r\n@Configuration\r\n@EnableSwagger2\r\n@EnableSwaggerBootstrapUI\r\npublic class SwaggerConfiguration {\r\n    //more...\r\n    \r\n}\r\n```\r\n\r\n除了在后端开启注解功能,在`doc.html`中,个性化配置里面还需要设置开启增强功能\r\n\r\n![](/images/1-9-3/en-fun.png)\r\n\r\n当然,在确保后端增强无误的情况下,你可以直接使用快速访问设置功能来直接启用增强\r\n\r\n地址输入：`http://127.0.0.1:8888/doc.html?plus=1`\r\n\r\n\r\n\r\n### Spring MVC环境\r\n\r\n在Spring MVC环境中,首先引入swagger-bootstrap-ui的jar包文件\r\n\r\n```xml\r\n<dependency>\r\n  <groupId>com.github.xiaoymin</groupId>\r\n  <artifactId>swagger-bootstrap-ui</artifactId>\r\n  <version>1.9.3</version>\r\n</dependency>\r\n```\r\n然后,需要在Spring的XML配置文件中注入`MarkdownFiles`类的实例bean\r\n\r\n如下：\r\n\r\n```xml\r\n<!--注入自定义文档的bean-->\r\n<bean id=\"markdownFiles\" class=\"io.swagger.models.MarkdownFiles\" init-method=\"init\">\r\n    <property name=\"basePath\" value=\"classpath:markdown/*\"></property>\r\n</bean>\r\n```\r\n\r\n其他例如开启增强等操作和Spring Boot环境无异,打开doc.html即可访问看到效果"
+          }
+        ]
+      }
+    ]
+  }
+}
