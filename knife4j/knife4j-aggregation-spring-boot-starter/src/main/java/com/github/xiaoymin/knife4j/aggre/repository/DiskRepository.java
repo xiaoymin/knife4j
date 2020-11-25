@@ -45,9 +45,9 @@ public class DiskRepository extends AbsctractRepository {
         for (DiskRoute diskRoute:diskSetting.getRoutes()){
             if (StrUtil.isNotBlank(diskRoute.getLocation())){
                 try {
-                    Resource resource=getResource(diskRoute.getLocation());
+                    InputStream resource=getResource(diskRoute.getLocation());
                     if (resource!=null){
-                        String content=new String(readBytes(resource.getInputStream()),"UTF-8");
+                        String content=new String(readBytes(resource),"UTF-8");
                         //添加分组
                         this.routeMap.put(diskRoute.pkId(),new SwaggerRoute(diskRoute,content));
                     }
@@ -60,21 +60,21 @@ public class DiskRepository extends AbsctractRepository {
     }
 
 
-    private Resource getResource(String location){
-        Resource resource=null;
+    private InputStream getResource(String location){
+        InputStream resource=null;
         try{
             Resource[] resources=resourceResolver.getResources(location);
             if (resources!=null&&resources.length>0){
-                resource=resources[0];
+                resource=resources[0].getInputStream();
             }else{
-                resource=new FileSystemResource(new File(location));
+                resource=new FileSystemResource(new File(location)).getInputStream();
             }
         }catch (Exception e){
             logger.error("read from resource error:"+e.getMessage());
             try{
                 logger.info("read from local file:{}",location);
                 //从本地读取
-                resource=new FileSystemResource(new File(location));
+                resource=new FileSystemResource(new File(location)).getInputStream();
             }catch (Exception ef){
                 //ignore
             }
