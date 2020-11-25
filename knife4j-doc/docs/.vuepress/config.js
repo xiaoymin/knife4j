@@ -121,7 +121,7 @@ function genActionSideBar() {
         {
             title:"4.微服务聚合实战",
             collapsable: false,
-            children: ["aggregation-disk.md", "aggregation-cloud.md","aggregation-eureka.md","aggregation-nacos.md"]
+            children: ["aggregation-disk.md", "aggregation-cloud.md","aggregation-eureka.md","aggregation-nacos.md","aggregation-docker.md"]
         },
         {
             title: "5. ASP.NET Core",
