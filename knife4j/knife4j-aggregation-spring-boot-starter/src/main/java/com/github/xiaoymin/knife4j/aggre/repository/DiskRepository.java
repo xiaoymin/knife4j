@@ -15,11 +15,13 @@ import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -43,9 +45,9 @@ public class DiskRepository extends AbsctractRepository {
         for (DiskRoute diskRoute:diskSetting.getRoutes()){
             if (StrUtil.isNotBlank(diskRoute.getLocation())){
                 try {
-                    Resource[] resources=resourceResolver.getResources(diskRoute.getLocation());
-                    if (resources!=null&&resources.length>0){
-                        String content=new String(readBytes(resources[0].getInputStream()),"UTF-8");
+                    Resource resource=getResource(diskRoute.getLocation());
+                    if (resource!=null){
+                        String content=new String(readBytes(resource.getInputStream()),"UTF-8");
                         //添加分组
                         this.routeMap.put(diskRoute.pkId(),new SwaggerRoute(diskRoute,content));
                     }
@@ -56,6 +58,30 @@ public class DiskRepository extends AbsctractRepository {
             }
         }
     }
+
+
+    private Resource getResource(String location){
+        Resource resource=null;
+        try{
+            Resource[] resources=resourceResolver.getResources(location);
+            if (resources!=null&&resources.length>0){
+                resource=resources[0];
+            }else{
+                resource=new FileSystemResource(new File(location));
+            }
+        }catch (Exception e){
+            logger.error("read from resource error:"+e.getMessage());
+            try{
+                logger.info("read from local file:{}",location);
+                //从本地读取
+                resource=new FileSystemResource(new File(location));
+            }catch (Exception ef){
+                //ignore
+            }
+        }
+        return resource;
+    }
+
     private byte[] readBytes(InputStream ins){
         if (ins==null){
             return null;
