@@ -10,3 +10,7 @@ knife4j:
     routes:
       - name: 测试分组
         location: classpath:openapi/user.json
+  basicAuth:
+    enable: false
+    username: test
+    password: 1234
