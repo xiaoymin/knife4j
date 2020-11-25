@@ -12,6 +12,22 @@
       "type": "java.lang.Boolean",
       "description": "Enable Knife4j aggregation enhanced mode",
       "defaultValue": false
+    },
+    {
+      "name": "knife4j.basicAuth.enable",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Enable Doc BasicAuth"
+    },
+    {
+      "name": "knife4j.basicAuth.username",
+      "type": "java.lang.String",
+      "description": "doc Basic Username"
+    },
+    {
+      "name": "knife4j.basicAuth.password",
+      "type": "java.lang.String",
+      "description": "doc Basic Password"
     },{
       "name": "knife4j.cloud.enable",
       "type": "java.lang.Boolean",
@@ -151,6 +167,18 @@
         {
           "value": false,
           "description": "Disable Knife4j aggregation enhanced mode"
+        }
+      ]
+    },{
+      "name": "knife4j.basicAuth.enable",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable BasicAuth mode"
+        },
+        {
+          "value": false,
+          "description": "Disable BasicAuth mode"
         }
       ]
     },{

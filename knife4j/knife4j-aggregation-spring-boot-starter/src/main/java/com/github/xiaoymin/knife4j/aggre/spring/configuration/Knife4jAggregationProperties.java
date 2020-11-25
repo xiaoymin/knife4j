@@ -7,6 +7,7 @@
 
 package com.github.xiaoymin.knife4j.aggre.spring.configuration;
 
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
@@ -27,6 +28,11 @@ public class Knife4jAggregationProperties {
      * 是否开启Knife4j聚合模式
      */
     private boolean enableAggregation=false;
+
+    /**
+     * 文档Basic保护
+     */
+    private BasicAuth basicAuth;
     /**
      * 本地json
      */
@@ -53,6 +59,14 @@ public class Knife4jAggregationProperties {
 
     public void setEnableAggregation(boolean enableAggregation) {
         this.enableAggregation = enableAggregation;
+    }
+
+    public BasicAuth getBasicAuth() {
+        return basicAuth;
+    }
+
+    public void setBasicAuth(BasicAuth basicAuth) {
+        this.basicAuth = basicAuth;
     }
 
     public DiskSetting getDisk() {

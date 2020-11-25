@@ -14,6 +14,7 @@ import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.cache.RouteInMemoryCache;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.filter.Knife4jRouteProxyFilter;
+import com.github.xiaoymin.knife4j.aggre.core.filter.Knife4jSecurityBasicAuthFilter;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.repository.CloudRepository;
 import com.github.xiaoymin.knife4j.aggre.repository.DiskRepository;
@@ -96,6 +97,18 @@ public class Knife4jAggregationAutoConfiguration {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(new Knife4jRouteProxyFilter(routeDispatcher));
         filterRegistrationBean.setOrder(99);
+        filterRegistrationBean.setEnabled(true);
+        filterRegistrationBean.addUrlPatterns("/*");
+        return filterRegistrationBean;
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "knife4j.basicAuth.enable",havingValue = "true")
+    public FilterRegistrationBean routeBasicFilter(@Autowired Knife4jAggregationProperties knife4jAggregationProperties)
+    {
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        filterRegistrationBean.setFilter(new Knife4jSecurityBasicAuthFilter(knife4jAggregationProperties.getBasicAuth()));
+        filterRegistrationBean.setOrder(10);
         filterRegistrationBean.setEnabled(true);
         filterRegistrationBean.addUrlPatterns("/*");
         return filterRegistrationBean;
