@@ -1,5 +1,14 @@
 # 2.5 社区
 
+Knife4j鼓励开发者通过[获取帮助](help.md)中的方式发起提问，这样有助于Knife4j的社区发展,当然如果你嫌麻烦，也可以直接加入Knife4j提供的付费QQ群(5元)与作者直接交流获取帮助
+
+
+> 付费入群后概不退款！！！
+>
+> 设置付费也是因为很多人并不细看文档，很多基础的问题作者也无力实时回答，作为一名技术开发者，需要有钻研精神！！！文档解决不了的直接看源码好了！！！
+>
+
+
 目前Knife4j有4个QQ技术交流群,群里主要讨论Swagger、Springfox、Knife4j、OpenAPI等项目问题.如果你有兴趣,可以加入其中获取帮助,或者帮助别人.
 
 - [![img](https://img.shields.io/badge/%E5%8A%A0%E5%85%A5QQ1%E7%BE%A4-453925079(%E6%BB%A1)-red.svg)](https://shang.qq.com/wpa/qunwpa?idkey=9a160903786b88bf3ca112842e501d3623510db4f1c307eec81849165485bf5f)
