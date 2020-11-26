@@ -20,6 +20,10 @@ public class DiskRoute {
      */
     private String name;
     /**
+     * disk模式调试目标服务器的Host地址，如果不为空，则配置可以调试走代理转发
+     */
+    private String host;
+    /**
      * openapi本地文件路径或者OpenAPI访问接口路径
      */
     private String location;
@@ -40,6 +44,14 @@ public class DiskRoute {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public String getLocation() {
@@ -74,6 +86,7 @@ public class DiskRoute {
     public String toString() {
         return "DiskRoute{" +
                 "name='" + name + '\'' +
+                ", host='" + host + '\'' +
                 ", location='" + location + '\'' +
                 ", swaggerVersion='" + swaggerVersion + '\'' +
                 ", servicePath='" + servicePath + '\'' +

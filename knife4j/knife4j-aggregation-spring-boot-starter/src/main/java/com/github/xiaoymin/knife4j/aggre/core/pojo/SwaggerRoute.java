@@ -71,6 +71,16 @@ public class SwaggerRoute {
             this.content=content;
             this.debug=false;
             this.swaggerVersion=diskRoute.getSwaggerVersion();
+            //如果服务端设置了Disk模式的Host，代表可以调试
+            if (StrUtil.isNotBlank(diskRoute.getHost())){
+                //判断
+                if (!ReUtil.isMatch("(http|https)://.*?$",diskRoute.getHost())){
+                    this.uri="http://"+diskRoute.getHost();
+                }else{
+                    this.uri=diskRoute.getHost();
+                }
+                this.header=diskRoute.pkId();
+            }
         }
     }
 
