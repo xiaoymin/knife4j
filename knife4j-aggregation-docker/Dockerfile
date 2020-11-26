@@ -1,5 +1,5 @@
 FROM openjdk:8-jdk-alpine
-LABEL version="2.0"
+LABEL version="2.2"
 LABEL released-date=2020/11/25
 LABEL author="xiaoymin@foxmail.com"
 LABEL description="Knife4jAggregation OpenAPI,RunAnyWhere!!!"

@@ -47,6 +47,10 @@ public class SwaggerRoute {
     private String servicePath;
     private boolean debug=true;
     /**
+     * 当前的分组请求是否需要服务端代理
+     */
+    private boolean routeProxy=true;
+    /**
      * 是否本地请求,本地请求在前端无需添加Header,否则会走代理
      */
     private boolean local=false;
@@ -73,6 +77,8 @@ public class SwaggerRoute {
             this.swaggerVersion=diskRoute.getSwaggerVersion();
             //如果服务端设置了Disk模式的Host，代表可以调试
             if (StrUtil.isNotBlank(diskRoute.getHost())){
+                //disk模式不需要，只有debug调试时才需要
+                this.routeProxy=false;
                 //判断
                 if (!ReUtil.isMatch("(http|https)://.*?$",diskRoute.getHost())){
                     this.uri="http://"+diskRoute.getHost();
@@ -175,6 +181,14 @@ public class SwaggerRoute {
             this.swaggerVersion=nacosRoute.getSwaggerVersion();
         }
 
+    }
+
+    public boolean isRouteProxy() {
+        return routeProxy;
+    }
+
+    public void setRouteProxy(boolean routeProxy) {
+        this.routeProxy = routeProxy;
     }
 
     public String getBasicAuth() {

@@ -9,6 +9,7 @@ knife4j:
     enable: true
     routes:
       - name: 测试分组
+        #host: knife4j.xiaominfo.com
         location: classpath:openapi/user.json
   basicAuth:
     enable: false

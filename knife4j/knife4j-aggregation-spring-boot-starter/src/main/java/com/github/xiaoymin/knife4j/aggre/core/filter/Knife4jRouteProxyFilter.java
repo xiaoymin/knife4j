@@ -48,10 +48,17 @@ public class Knife4jRouteProxyFilter implements Filter {
         HttpServletResponse response=(HttpServletResponse) servletResponse;
         String uri=request.getRequestURI();
         if (routeDispatcher.checkRoute(request.getHeader(RouteDispatcher.ROUTE_PROXY_HEADER_NAME))){
-            logger.info("Current Request:{}",uri);
-            logger.info("当前请求是Proxy请求");
-            routeDispatcher.execute(request,response);
-            logger.info("执行完毕");
+            if(StrUtil.endWith(uri,RouteDispatcher.OPENAPI_GROUP_INSTANCE_ENDPOINT)){
+                String group=request.getParameter("group");
+                SwaggerRoute swaggerRoute=routeDispatcher.getRoute(group);
+                writeRouteResponse(response,swaggerRoute==null?"":swaggerRoute.getContent());
+                //响应当前服务disk-实例
+            }else{
+                logger.info("Current Request:{}",uri);
+                logger.info("当前请求是Proxy请求");
+                routeDispatcher.execute(request,response);
+                logger.info("执行完毕");
+            }
         }else{
             //go on
             if (StrUtil.endWith(uri,RouteDispatcher.OPENAPI_GROUP_ENDPOINT)){
