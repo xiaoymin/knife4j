@@ -8,7 +8,7 @@
 
 | 新闻标题                                                     | 发布时间   |
 | ------------------------------------------------------------ | ---------- |
-| [Knife4j 2.0.8发布,轻量级微服务聚合文档中间件诞生](2020-11-22-knife4j-2.0.8-issue.md) | 2020-11-22 |
+| [Knife4j 2.0.8发布,轻量级微服务聚合文档中间件诞生](https://www.oschina.net/news/121357/knife4j-2-0-8-released) | 2020-11-22 |
 | [Knife4j 2.0.7发布,细节优化](https://www.oschina.net/news/119621/knife4j-2-0-7-released) | 2020-11-02 |
 | [Knife4j 2.0.6发布,支持OpenAPI3及Auth2认证](https://www.oschina.net/news/119457) | 2020-10-26 |
 | [Knife4j 2.0.5发布,性能优化](https://www.oschina.net/news/118621) | 2020-09-14 |
