@@ -8,5 +8,6 @@
 - 通过Gitter向作者提问：[https://gitter.im/knife4j/knife4j](https://gitter.im/knife4j/knife4j)
 - 使用`Knife4j`的标签在开源中国社区进行提问:[https://www.oschina.net/question/ask?tag=swagger-bootstrap-ui](https://www.oschina.net/question/ask?tag=swagger-bootstrap-ui)
 - 在[https://gitee.com/xiaoym/knife4j/issues](https://gitee.com/xiaoym/knife4j/issues)报告错误或者增强需求及建议.
+- 在[https://gitee.com/xiaoym/knife4j/issues](https://gitee.com/xiaoym/knife4j/issues)搜索相关问题，也许别人早已经碰到了你的问题
 - 加入Knife4j的[社区QQ群](community.md)
 
