@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "docs:dev": "vuepress dev docs",
-    "docs:build": "node ./builds/addComponents.js && vuepress build docs && node ./builds/delComponents.js"
+    "docs:build": "vuepress build docs"
   },
   "dependencies": {
     "vuepress": "1.7.1"
