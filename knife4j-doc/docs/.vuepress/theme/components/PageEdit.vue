@@ -37,7 +37,7 @@ export default {
     //baidu
     let bd= document.querySelector('.self-container');
     let bds=document.createElement('script');
-    bds.src="/js/baidu.js";
+    bds.src="/knife4j/js/baidu.js";
     bd.appendChild(bds);
     // buanzi
     let busuanziScript=document.createElement("script");
