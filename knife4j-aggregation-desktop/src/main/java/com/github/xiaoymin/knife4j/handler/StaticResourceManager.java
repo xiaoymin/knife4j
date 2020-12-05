@@ -9,6 +9,8 @@ package com.github.xiaoymin.knife4j.handler;
 
 import io.undertow.server.handlers.resource.FileResourceManager;
 import io.undertow.server.handlers.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -18,6 +20,7 @@ import java.io.File;
  * @since:knife4j-aggregation-desktop 1.0
  */
 public class StaticResourceManager extends FileResourceManager {
+    Logger logger= LoggerFactory.getLogger(StaticResourceManager.class);
 
     public StaticResourceManager(File base) {
         super(base);
@@ -25,6 +28,8 @@ public class StaticResourceManager extends FileResourceManager {
 
     @Override
     public Resource getResource(String path) {
+        logger.info("path:{}",path);
+        //支持多项目，此处需要映射真实的文件目录
         return super.getResource(path);
     }
 }

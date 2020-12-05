@@ -71,7 +71,7 @@ public class AggregationDesktopConf {
         if (CollectionUtil.isNotEmpty(propertyMap)){
             int port=NumberUtil.parseInt(propertyMap.get("knife4j.port"));
             if (port>0){
-                logger.info("Read applications port:{}",port);
+                //logger.info("Read applications port:{}",port);
                 setPort(port);
             }
             //是否包含基础basic验证
