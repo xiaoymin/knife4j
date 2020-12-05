@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j;
 
 import cn.hutool.core.util.ArrayUtil;
+import com.github.xiaoymin.knife4j.core.AggregationDesktopBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +18,15 @@ import org.slf4j.LoggerFactory;
  * @since:knife4j-aggregation-desktop 1.0
  */
 public class Knife4jAggregationDesktop {
+
     static Logger logger= LoggerFactory.getLogger(Knife4jAggregationDesktop.class);
 
     public static void main(String[] args) {
+        logger.info("config:{}",AggregationDesktopBuilder.me.getConfig());
+        AggregationDesktopBuilder.me.setConfig("F:\\开发项目\\开源中国\\knife4j\\Knife4j-Aggregation\\软件目录");
+        logger.info("config1:{}",AggregationDesktopBuilder.me.getConfig());
+        String userDir=System.getProperty("user.dir");
+        logger.info("userDir:{}",userDir);
         logger.info("start Desktop");
         logger.debug("Hello");
         logger.error("error");
