@@ -113,7 +113,6 @@ public final class AggregationDesktopBuilder {
                    // .addListener(new Undertow.ListenerBuilder().setPort(this.desktopConf.getPort()))
                     .setHandler(predicateHandler).build();
             server.start();
-            System.out.println(NetUtil.getIpByHost("localhost"));
             String host= InetAddress.getLocalHost().getHostAddress();
             String port= Objects.toString(this.desktopConf.getPort());
             logger.info("\n-------------------------------------------------------------------\n\t" +
