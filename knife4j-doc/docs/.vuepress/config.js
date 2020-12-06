@@ -174,7 +174,7 @@ function genDocumentationSideBar() {
         }, {
             title: "4.生态衍生",
             collapsable: false,
-            children: ["knife4jCloud.md", "knife4jAggregation.md"]
+            children: ["knife4jCloud.md", "knife4jAggregation.md","knife4jAggregationDesktop.md"]
         }, {
             title: "5.其它语言",
             collapsable: false,

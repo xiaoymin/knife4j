@@ -70,7 +70,7 @@ knife4j:
           password: 12313
   nacos:
     enable: false
-    serviceUrl: http://localhost:10000/eureka/
+    serviceUrl: http://localhost:10000/nacos/
     routeAuth:
       enable: true
       username: test
