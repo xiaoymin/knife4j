@@ -19,7 +19,10 @@ import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
  * 2020/10/29 20:11
  */
 public class CloudRepository extends AbsctractRepository{
+
     private CloudSetting cloudSetting;
+
+    public CloudRepository(){}
     public CloudRepository(CloudSetting cloudSetting){
         this.cloudSetting=cloudSetting;
         if (cloudSetting!=null&&CollectionUtil.isNotEmpty(cloudSetting.getRoutes())){

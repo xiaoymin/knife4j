@@ -13,5 +13,5 @@ package com.github.xiaoymin.knife4j.aggre.core.common;
  * 2020/10/29 20:13
  */
 public enum RouteRepositoryEnum {
-    DISK,MYSQL,CLOUD,EUREKA,NACOS
+    DISK,CLOUD,EUREKA,NACOS
 }

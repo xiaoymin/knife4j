@@ -7,7 +7,6 @@
 
 package com.github.xiaoymin.knife4j.core;
 
-import cn.hutool.core.net.NetUtil;
 import com.github.xiaoymin.knife4j.handler.StaticResourceManager;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
@@ -16,7 +15,6 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.PredicateHandler;
 import io.undertow.server.handlers.RedirectHandler;
-import io.undertow.server.handlers.resource.PathResourceManager;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.util.Headers;
 import org.slf4j.Logger;
@@ -24,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.InetAddress;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

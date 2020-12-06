@@ -27,6 +27,11 @@ public abstract class AbsctractRepository extends PoolingConnectionManager imple
 
     protected final Map<String, SwaggerRoute> routeMap=new HashMap<>();
 
+    /**
+     * 多项目版本
+     */
+    protected final Map<String,Map<String,SwaggerRoute>> multipartRouteMap=new HashMap<>();
+
     @Override
     public boolean checkRoute(String header) {
         if (StrUtil.isNotBlank(header)){

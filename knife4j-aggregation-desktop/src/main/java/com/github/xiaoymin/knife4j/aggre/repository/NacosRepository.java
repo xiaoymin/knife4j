@@ -37,6 +37,7 @@ public class NacosRepository extends AbsctractRepository{
 
     private Map<String,NacosInstance> nacosInstanceMap=new HashMap<>();
 
+    public NacosRepository(){}
     public NacosRepository(NacosSetting nacosSetting){
         this.nacosSetting=nacosSetting;
         if (nacosSetting!=null&& CollectionUtil.isNotEmpty(nacosSetting.getRoutes())){

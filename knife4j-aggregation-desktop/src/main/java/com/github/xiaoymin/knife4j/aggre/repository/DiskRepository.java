@@ -29,6 +29,8 @@ public class DiskRepository extends AbsctractRepository {
 
     Logger logger= LoggerFactory.getLogger(DiskRepository.class);
 
+    public DiskRepository(){}
+
 
     public DiskRepository(DiskSetting diskSetting){
         if (diskSetting!=null&& CollectionUtil.isNotEmpty(diskSetting.getRoutes())){

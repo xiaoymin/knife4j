@@ -41,10 +41,11 @@ import java.util.stream.Collectors;
 public class EurekaRepository extends AbsctractRepository {
 
     Logger logger= LoggerFactory.getLogger(EurekaRepository.class);
+
     private EurekaSetting eurekaSetting;
 
     private List<EurekaApplication> eurekaApplications=new ArrayList<>();
-
+    public EurekaRepository(){}
     public EurekaRepository(EurekaSetting eurekaSetting){
         this.eurekaSetting=eurekaSetting;
         if (eurekaSetting!=null&& CollectionUtil.isNotEmpty(eurekaSetting.getRoutes())){
