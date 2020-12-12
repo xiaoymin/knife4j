@@ -28,9 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,22 +40,7 @@ public class EurekaRepository extends AbsctractRepository {
 
     Logger logger= LoggerFactory.getLogger(EurekaRepository.class);
 
-    private EurekaSetting eurekaSetting;
-
-    private List<EurekaApplication> eurekaApplications=new ArrayList<>();
-    public EurekaRepository(){}
-    public EurekaRepository(EurekaSetting eurekaSetting){
-        this.eurekaSetting=eurekaSetting;
-        if (eurekaSetting!=null&& CollectionUtil.isNotEmpty(eurekaSetting.getRoutes())){
-            if (StrUtil.isBlank(eurekaSetting.getServiceUrl())){
-                throw new RuntimeException("Eureka ServiceUrl can't empty!!!");
-            }
-            //从注册中心进行初始化获取EurekaApplication
-            initEurekaApps(eurekaSetting);
-            //根据EurekaApplication转换为Knife4j内部SwaggerRoute结构
-            applyRoutes(eurekaSetting);
-        }
-    }
+    private final Map<String,EurekaSetting> eurekaSettingMap=new HashMap<>();
 
     /**
      * 根据EurekaSetting进行新增
@@ -65,19 +48,25 @@ public class EurekaRepository extends AbsctractRepository {
      * @param eurekaSetting
      */
     public void add(String code,EurekaSetting eurekaSetting){
-
+        if (eurekaSetting!=null&& CollectionUtil.isNotEmpty(eurekaSetting.getRoutes())){
+            if (StrUtil.isBlank(eurekaSetting.getServiceUrl())){
+                throw new RuntimeException("Eureka ServiceUrl can't empty!!!");
+            }
+            //从注册中心进行初始化获取EurekaApplication
+            List<EurekaApplication> eurekaApplications=initEurekaApps(eurekaSetting);
+            //根据EurekaApplication转换为Knife4j内部SwaggerRoute结构
+            applyRoutes(code,eurekaApplications,eurekaSetting);
+        }
     }
 
     /**
      * 初始化
      * @param eurekaSetting eureka配置
      */
-    private void initEurekaApps(EurekaSetting eurekaSetting){
+    private List<EurekaApplication> initEurekaApps(EurekaSetting eurekaSetting){
+        List<EurekaApplication> eurekaApplications=new ArrayList<>();
         StringBuilder requestUrl=new StringBuilder();
         requestUrl.append(eurekaSetting.getServiceUrl());
-        /*if (!StrUtil.endWith(eurekaSetting.getServiceUrl(), RouteDispatcher.ROUTE_BASE_PATH)){
-            requestUrl.append(RouteDispatcher.ROUTE_BASE_PATH);
-        }*/
         requestUrl.append("apps");
         String eurekaMetaApi=requestUrl.toString();
         logger.info("Eureka meta api:{}",eurekaMetaApi);
@@ -105,30 +94,35 @@ public class EurekaRepository extends AbsctractRepository {
                                     Type type=new TypeToken<List<EurekaApplication>>(){}.getType();
                                     List<EurekaApplication> eurekaApps=new Gson().fromJson(application,type);
                                     if (CollectionUtil.isNotEmpty(eurekaApps)){
-                                        this.eurekaApplications.addAll(eurekaApps);
+                                        eurekaApplications.addAll(eurekaApps);
                                     }
                                 }
                             }
                         }
 
                     }
+                }else{
+                    get.abort();
+                    response.close();
                 }
             }
         } catch (Exception e) {
             //error
             logger.error("load Register Metadata from Eureka Error,message:"+e.getMessage(),e);
         }
+        return eurekaApplications;
     }
 
     /**
      * 内部参数转换
      * @param eurekaSetting 配置
      */
-    private void applyRoutes(EurekaSetting eurekaSetting){
-        if (CollectionUtil.isNotEmpty(this.eurekaApplications)){
+    private void applyRoutes(String code,List<EurekaApplication> eurekaApplications,EurekaSetting eurekaSetting){
+        Map<String, SwaggerRoute> eurekaRouteMap=new HashMap<>();
+        if (CollectionUtil.isNotEmpty(eurekaApplications)){
             //获取服务列表
             List<String> serviceNames=eurekaSetting.getRoutes().stream().map(EurekaRoute::getServiceName).map(String::toLowerCase).collect(Collectors.toList());
-            for (EurekaApplication eurekaApplication:this.eurekaApplications){
+            for (EurekaApplication eurekaApplication:eurekaApplications){
                 //判断当前instance不可为空，并且取status="UP"的服务
                 if (serviceNames.contains(eurekaApplication.getName().toLowerCase())&&CollectionUtil.isNotEmpty(eurekaApplication.getInstance())){
                     Optional<EurekaInstance> instanceOptional=eurekaApplication.getInstance().stream().filter(eurekaInstance -> StrUtil.equalsIgnoreCase(eurekaInstance.getStatus(),"up")).findFirst();
@@ -142,17 +136,22 @@ public class EurekaRepository extends AbsctractRepository {
                                eurekaRoute.setRouteAuth(eurekaSetting.getRouteAuth());
                            }
                            //转换为SwaggerRoute
-                           this.routeMap.put(eurekaRoute.pkId(),new SwaggerRoute(eurekaRoute,eurekaInstance));
+                           eurekaRouteMap.put(eurekaRoute.pkId(),new SwaggerRoute(eurekaRoute,eurekaInstance));
                        }
                     }
                 }
             }
         }
+        if (CollectionUtil.isNotEmpty(eurekaRouteMap)){
+            this.multipartRouteMap.put(code,eurekaRouteMap);
+            this.eurekaSettingMap.put(code,eurekaSetting);
+        }
     }
 
     @Override
-    public BasicAuth getAuth(String header) {
+    public BasicAuth getAuth(String code,String header) {
         BasicAuth basicAuth=null;
+        EurekaSetting eurekaSetting=this.eurekaSettingMap.get(code);
         if (eurekaSetting!=null&&CollectionUtil.isNotEmpty(eurekaSetting.getRoutes())){
             if (eurekaSetting.getRouteAuth()!=null&&eurekaSetting.getRouteAuth().isEnable()){
                 basicAuth=eurekaSetting.getRouteAuth();
@@ -168,7 +167,9 @@ public class EurekaRepository extends AbsctractRepository {
         return basicAuth;
     }
 
-    public EurekaSetting getEurekaSetting() {
-        return eurekaSetting;
+    @Override
+    public void remove(String code) {
+        this.multipartRouteMap.remove(code);
+        this.eurekaSettingMap.remove(code);
     }
 }
