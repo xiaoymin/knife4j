@@ -25,6 +25,24 @@ import java.util.Map;
 public class GlobalStatus {
 
     public static final String ROOT="ROOT";
+    /**
+     * 请求头
+     */
+    public static final String ROUTE_PROXY_HEADER_NAME="knfie4j-gateway-request";
+    public static final String ROUTE_PROXY_HEADER_BASIC_NAME="knife4j-gateway-basic-request";
+    public static final String OPENAPI_GROUP_ENDPOINT="/swagger-resources";
+    public static final String OPENAPI_GROUP_INSTANCE_ENDPOINT="/swagger-instance";
+    public static final String ROUTE_BASE_PATH="/";
+
+    /**
+     * 配置文件
+     */
+    public static final String CLOUD_PROPERTIES="cloud.properties";
+    public static final String NACOS_PROPERTIES="nacos.properties";
+    public static final String DISK_PROPERTIES="disk.properties";
+    public static final String EUREKA_PROPERTIES="eureka.properties";
+
+
     public static final GlobalStatus me=new GlobalStatus();
     private final DiskRepository diskRepository=new DiskRepository();
     private final NacosRepository nacosRepository=new NacosRepository();

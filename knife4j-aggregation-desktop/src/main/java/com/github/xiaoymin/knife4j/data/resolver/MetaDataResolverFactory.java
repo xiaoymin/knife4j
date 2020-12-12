@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.data.resolver;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.core.GlobalStatus;
 import com.github.xiaoymin.knife4j.data.impl.CloudMetaDataResolver;
 import com.github.xiaoymin.knife4j.data.impl.DiskMetaDataResolver;
 import com.github.xiaoymin.knife4j.data.impl.EurekaMetaDataResolver;
@@ -36,13 +37,13 @@ public class MetaDataResolverFactory {
      */
     public static MetaDataResolver resolver(File path){
         if (path!=null){
-            if (ArrayUtil.isNotEmpty(path.list(((dir, name) -> StrUtil.equalsIgnoreCase("cloud.properties",name))))){
+            if (ArrayUtil.isNotEmpty(path.list(((dir, name) -> StrUtil.equalsIgnoreCase(GlobalStatus.CLOUD_PROPERTIES,name))))){
                 return cloud;
-            }else if(ArrayUtil.isNotEmpty(path.list(((dir, name) -> StrUtil.equalsIgnoreCase("nacos.properties",name))))){
+            }else if(ArrayUtil.isNotEmpty(path.list(((dir, name) -> StrUtil.equalsIgnoreCase(GlobalStatus.NACOS_PROPERTIES,name))))){
                 return nacos;
-            }else if(ArrayUtil.isNotEmpty(path.list(((dir, name) -> StrUtil.equalsIgnoreCase("eureka.properties",name))))){
+            }else if(ArrayUtil.isNotEmpty(path.list(((dir, name) -> StrUtil.equalsIgnoreCase(GlobalStatus.EUREKA_PROPERTIES,name))))){
                 return eureka;
-            }else if(ArrayUtil.isNotEmpty(path.list(((dir, name) -> StrUtil.equalsIgnoreCase("disk.properties",name))))){
+            }else if(ArrayUtil.isNotEmpty(path.list(((dir, name) -> StrUtil.equalsIgnoreCase(GlobalStatus.DISK_PROPERTIES,name))))){
                 return disk;
             }else{
                 //判断是否disk模式

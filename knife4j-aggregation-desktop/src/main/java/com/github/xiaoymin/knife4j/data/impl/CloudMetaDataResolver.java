@@ -7,30 +7,36 @@
 
 package com.github.xiaoymin.knife4j.data.impl;
 
+import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
+import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 import com.github.xiaoymin.knife4j.core.GlobalStatus;
-import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
-import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
+import com.github.xiaoymin.knife4j.util.PropertyUtil;
 
 import java.io.File;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/12/12 15:34
  * @since:knife4j-aggregation-desktop 1.0
  */
-public class CloudMetaDataResolver implements MetaDataResolver {
+public class CloudMetaDataResolver extends AbstractMetaDataResolver{
 
     @Override
-    public void resolve(File file, MetaDataResolverKey metaDataResolverKey) {
-        switch (metaDataResolverKey){
-            case delete:
-                GlobalStatus.me.getCloudRepository().remove(file.getName());
-                break;
-            case modify:
+    public void resolverModifyAndCreate(File file) {
+        String cloudProperties=file.getAbsolutePath()+File.separator+GlobalStatus.CLOUD_PROPERTIES;
+        File cloudFile=new File(cloudProperties);
+        if (cloudFile.exists()){
+            Optional<CloudSetting> cloudSettingOptional= PropertyUtil.resolveSingle(cloudFile, CloudSetting.class);
+            if (cloudSettingOptional.isPresent()){
+                GlobalStatus.me.getCloudRepository().add(file.getName(),cloudSettingOptional.get());
+            }
 
-                break;
-            case create:
-                break;
         }
+    }
+
+    @Override
+    public RouteRepository repository() {
+        return GlobalStatus.me.getCloudRepository();
     }
 }

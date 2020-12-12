@@ -7,7 +7,11 @@
 
 package com.github.xiaoymin.knife4j.data.impl;
 
+import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
+import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
+
+import java.io.File;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -15,6 +19,16 @@ import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
  * @since:knife4j-aggregation-desktop 1.0
  */
 public abstract class AbstractMetaDataResolver implements MetaDataResolver {
+    @Override
+    public void resolve(File file, MetaDataResolverKey metaDataResolverKey) {
+        String code=file.getName();
+        repository().remove(code);
+        if (metaDataResolverKey==MetaDataResolverKey.create||metaDataResolverKey==MetaDataResolverKey.modify){
+            resolverModifyAndCreate(file);
+        }
+    }
 
+    public abstract void resolverModifyAndCreate(File file);
 
+    public abstract RouteRepository repository();
 }
