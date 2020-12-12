@@ -8,12 +8,10 @@
 package com.github.xiaoymin.knife4j.data.impl;
 
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
-import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
+import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
 import com.github.xiaoymin.knife4j.core.GlobalStatus;
-import com.github.xiaoymin.knife4j.util.PropertyUtil;
 
 import java.io.File;
-import java.util.Optional;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -27,11 +25,10 @@ public class CloudMetaDataResolver extends AbstractMetaDataResolver{
         String cloudProperties=file.getAbsolutePath()+File.separator+GlobalStatus.CLOUD_PROPERTIES;
         File cloudFile=new File(cloudProperties);
         if (cloudFile.exists()){
-            Optional<CloudSetting> cloudSettingOptional= PropertyUtil.resolveSingle(cloudFile, CloudSetting.class);
-            if (cloudSettingOptional.isPresent()){
-                GlobalStatus.me.getCloudRepository().add(file.getName(),cloudSettingOptional.get());
+            Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(cloudFile);
+            if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getCloud()!=null){
+                GlobalStatus.me.getCloudRepository().add(file.getName(),knife4jAggregationProperties.getCloud());
             }
-
         }
     }
 

@@ -10,6 +10,8 @@ package com.github.xiaoymin.knife4j.data.impl;
 import cn.hutool.core.util.ArrayUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
+import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
+import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jSettingProperties;
 import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
 import com.github.xiaoymin.knife4j.core.GlobalStatus;
 import com.github.xiaoymin.knife4j.util.PropertyUtil;
@@ -32,9 +34,9 @@ public class DiskMetaDataResolver extends AbstractMetaDataResolver{
         String cloudProperties=file.getAbsolutePath()+File.separator+GlobalStatus.DISK_PROPERTIES;
         File cloudFile=new File(cloudProperties);
         if (cloudFile.exists()){
-            Optional<DiskSetting> settingOptional= PropertyUtil.resolveSingle(cloudFile, DiskSetting.class);
-            if (settingOptional.isPresent()){
-                GlobalStatus.me.getDiskRepository().add(code,settingOptional.get());
+            Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(cloudFile);
+            if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getDisk()!=null){
+                GlobalStatus.me.getDiskRepository().add(code,knife4jAggregationProperties.getDisk());
             }
         }else{
             //判断是否包含json文件

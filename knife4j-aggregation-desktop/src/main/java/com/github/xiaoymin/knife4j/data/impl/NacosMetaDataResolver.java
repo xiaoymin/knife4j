@@ -8,12 +8,10 @@
 package com.github.xiaoymin.knife4j.data.impl;
 
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
-import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
+import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
 import com.github.xiaoymin.knife4j.core.GlobalStatus;
-import com.github.xiaoymin.knife4j.util.PropertyUtil;
 
 import java.io.File;
-import java.util.Optional;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -28,9 +26,9 @@ public class NacosMetaDataResolver extends AbstractMetaDataResolver {
         String nacosProperties=file.getAbsolutePath()+File.separator+GlobalStatus.NACOS_PROPERTIES;
         File nacosFile=new File(nacosProperties);
         if (nacosFile.exists()){
-            Optional<NacosSetting> settingOptional= PropertyUtil.resolveSingle(nacosFile, NacosSetting.class);
-            if (settingOptional.isPresent()){
-                GlobalStatus.me.getNacosRepository().add(code,settingOptional.get());
+            Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(nacosFile);
+            if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getNacos()!=null){
+                GlobalStatus.me.getNacosRepository().add(code,knife4jAggregationProperties.getNacos());
             }
         }
     }
