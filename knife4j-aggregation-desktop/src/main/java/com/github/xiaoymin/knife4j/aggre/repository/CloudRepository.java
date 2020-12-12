@@ -34,6 +34,15 @@ public class CloudRepository extends AbsctractRepository{
             });
         }
     }
+
+    /**
+     * 根据Cloud模式配置新增
+     * @param code
+     * @param cloudSetting
+     */
+    public void add(String code,CloudSetting cloudSetting){
+
+    }
     @Override
     public BasicAuth getAuth(String header) {
         BasicAuth basicAuth=null;

@@ -60,6 +60,15 @@ public class EurekaRepository extends AbsctractRepository {
     }
 
     /**
+     * 根据EurekaSetting进行新增
+     * @param code
+     * @param eurekaSetting
+     */
+    public void add(String code,EurekaSetting eurekaSetting){
+
+    }
+
+    /**
      * 初始化
      * @param eurekaSetting eureka配置
      */

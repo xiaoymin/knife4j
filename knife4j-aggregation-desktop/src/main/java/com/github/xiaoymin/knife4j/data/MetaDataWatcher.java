@@ -11,6 +11,9 @@ import cn.hutool.core.io.watch.Watcher;
 import cn.hutool.core.lang.PatternPool;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
+import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverFactory;
+import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +33,7 @@ public class MetaDataWatcher implements Watcher {
 
     /**
      * 创建文件夹或者文件
-     * 创建文件或者文件夹可以忽略,只需要监听modify和delete事件即可
+     * 当项目code即文件夹名称变更时，会触发create事件
      * @param event
      * @param currentPath 当前路径
      */
@@ -40,6 +43,7 @@ public class MetaDataWatcher implements Watcher {
         if (checkFileValidate(context,currentPath)){
             File createFile=currentPath.resolve(context).toFile();
             logger.info("onCreateFile:{}",createFile.getAbsolutePath());
+            resolver(createFile,MetaDataResolverKey.create);
         }
     }
 
@@ -49,7 +53,7 @@ public class MetaDataWatcher implements Watcher {
         if (checkFileValidate(context,currentPath)){
             File modifyFile=currentPath.resolve(context).toFile();
             //当前目录变更,需要变量
-
+            resolver(modifyFile,MetaDataResolverKey.modify);
         }
     }
 
@@ -59,12 +63,25 @@ public class MetaDataWatcher implements Watcher {
         if (checkFileValidate(context,currentPath)){
             File deleteFile=currentPath.resolve(context).toFile();
             logger.info("移除OpenAPI文档,项目code：{}",deleteFile.getName());
+            resolver(deleteFile,MetaDataResolverKey.delete);
         }
     }
 
     @Override
     public void onOverflow(WatchEvent<?> event, Path currentPath) {
+        logger.info("overflow,path:{}",currentPath.toString());
+    }
 
+    /**
+     * 处理文件变化状态
+     * @param targetFile 目标目录
+     * @param metaDataResolverKey 事件
+     */
+    private void resolver(File targetFile, MetaDataResolverKey metaDataResolverKey){
+        MetaDataResolver metaDataResolver=MetaDataResolverFactory.resolver(targetFile);
+        if (metaDataResolver!=null){
+            metaDataResolver.resolve(targetFile,metaDataResolverKey);
+        }
     }
 
     private boolean checkFileValidate(String context,Path currentPath){

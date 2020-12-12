@@ -7,7 +7,6 @@
 
 package com.github.xiaoymin.knife4j.core;
 
-import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.repository.CloudRepository;
@@ -65,4 +64,19 @@ public class GlobalStatus {
         return routeRepository;
     }
 
+    public DiskRepository getDiskRepository() {
+        return diskRepository;
+    }
+
+    public NacosRepository getNacosRepository() {
+        return nacosRepository;
+    }
+
+    public EurekaRepository getEurekaRepository() {
+        return eurekaRepository;
+    }
+
+    public CloudRepository getCloudRepository() {
+        return cloudRepository;
+    }
 }

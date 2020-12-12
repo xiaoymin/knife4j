@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -36,6 +35,15 @@ public class DiskRepository extends AbsctractRepository {
         if (diskSetting!=null&& CollectionUtil.isNotEmpty(diskSetting.getRoutes())){
             init(diskSetting);
         }
+    }
+
+    /**
+     * 根据Disk配置新增
+     * @param code
+     * @param diskSetting
+     */
+    public void add(String code,DiskSetting diskSetting){
+
     }
 
     private void init(DiskSetting diskSetting) {

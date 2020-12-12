@@ -49,4 +49,13 @@ public abstract class AbsctractRepository extends PoolingConnectionManager imple
         return CollectionUtil.newArrayList(routeMap.values());
     }
 
+    @Override
+    public void remove(String code) {
+        multipartRouteMap.remove(code);
+    }
+
+    @Override
+    public void add(String code, Map<String, SwaggerRoute> routeMap) {
+        this.multipartRouteMap.put(code,routeMap);
+    }
 }

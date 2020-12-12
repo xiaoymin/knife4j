@@ -47,6 +47,15 @@ public class NacosRepository extends AbsctractRepository{
     }
 
     /**
+     * 根据Nacos配置新增
+     * @param code
+     * @param nacosSetting
+     */
+    public void add(String code,NacosSetting nacosSetting){
+
+    }
+
+    /**
      * 初始化
      * @param nacosSetting Nacos配置属性
      */

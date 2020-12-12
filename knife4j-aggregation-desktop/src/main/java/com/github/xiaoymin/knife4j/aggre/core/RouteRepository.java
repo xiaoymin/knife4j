@@ -15,6 +15,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.CommonAuthRoute;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /***
@@ -72,4 +73,17 @@ public interface RouteRepository {
         }
         return basicAuth;
     }
+
+    /**
+     * 移除项目文档
+     * @param code
+     */
+    void remove(String code);
+
+    /**
+     * 添加文档
+     * @param code 项目编号
+     * @param routeMap 文档集合
+     */
+    void add(String code, Map<String,SwaggerRoute> routeMap);
 }
