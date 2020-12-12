@@ -7,6 +7,7 @@
 
 package com.github.xiaoymin.knife4j.core;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.handler.StaticResourceManager;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
@@ -53,6 +54,21 @@ public final class AggregationDesktopBuilder {
 
     private final ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();
 
+    public AggregationDesktopBuilder(String baseDir){
+        String userDir=System.getProperty("user.dir");
+        if (StrUtil.isBlank(baseDir)){
+            //此处由于目标jar存放在bin目录，需要回退一个目录
+            File file=new File(userDir);
+            this.baseDir=file.getParentFile().getAbsolutePath();
+        }else{
+            this.baseDir=baseDir;
+        }
+        checkAccess();
+        if (this.status){
+            resolveProperties();
+        }
+    }
+
     public AggregationDesktopBuilder(){
         String userDir=System.getProperty("user.dir");
         //此处由于目标jar存放在bin目录，需要回退一个目录
@@ -64,19 +80,6 @@ public final class AggregationDesktopBuilder {
         }
     }
 
-    /**
-     * 设置配置文件目录
-     * @param baseDir 配置文件主目录
-     * @return this
-     */
-    public AggregationDesktopBuilder setBase(String baseDir){
-        this.baseDir=baseDir;
-        checkAccess();
-        if (this.status){
-            resolveProperties();
-        }
-        return this;
-    }
 
     public void start(){
         String applicationName="Knife4jAggregationDesktop";
@@ -106,7 +109,7 @@ public final class AggregationDesktopBuilder {
             }));
 
             Undertow server = Undertow.builder()
-                    .addHttpListener(this.desktopConf.getPort(), "localhost")
+                    .addHttpListener(this.desktopConf.getPort(), "0.0.0.0")
                    // .addListener(new Undertow.ListenerBuilder().setPort(this.desktopConf.getPort()))
                     .setHandler(predicateHandler).build();
             server.start();

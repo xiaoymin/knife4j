@@ -57,6 +57,11 @@ public class MetaDataWatcher implements Watcher {
         }
     }
 
+    /**
+     * 当文件夹删除或者文件夹名称变更时都会触发delete事件
+     * @param event
+     * @param currentPath
+     */
     @Override
     public void onDelete(WatchEvent<?> event, Path currentPath) {
         String context=Objects.toString(event.context());

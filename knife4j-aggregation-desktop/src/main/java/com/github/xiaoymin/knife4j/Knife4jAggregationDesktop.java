@@ -24,6 +24,6 @@ public class Knife4jAggregationDesktop {
     public static void main(String[] args) {
         //ScheduledExecutorService executorService=Executors.newSingleThreadScheduledExecutor();
         //executorService.scheduleAtFixedRate(new MetaDataMonitor("F:\\开发项目\\开源中国\\knife4j\\Knife4j-Aggregation\\软件目录\\data"),0,3L, TimeUnit.SECONDS);
-        new AggregationDesktopBuilder().setBase("F:\\开发项目\\开源中国\\knife4j\\Knife4j-Aggregation\\软件目录").start();
+        new AggregationDesktopBuilder("F:\\开发项目\\开源中国\\knife4j\\Knife4j-Aggregation\\软件目录").start();
     }
 }
