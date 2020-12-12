@@ -15,6 +15,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
+import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +52,7 @@ public class NacosRepository extends AbsctractRepository{
     public void remove(String code) {
         this.multipartRouteMap.remove(code);
         this.nacosSettingMap.remove(code);
+        GlobalDesktopManager.me.remove(code);
     }
 
     /**

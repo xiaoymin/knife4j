@@ -8,8 +8,9 @@
 package com.github.xiaoymin.knife4j.data.impl;
 
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
+import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
-import com.github.xiaoymin.knife4j.core.GlobalStatus;
+import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 
 import java.io.File;
 
@@ -23,18 +24,19 @@ public class EurekaMetaDataResolver extends AbstractMetaDataResolver{
     @Override
     public void resolverModifyAndCreate(File file) {
         String code=file.getName();
-        String eurekaProperties=file.getAbsolutePath()+File.separator+GlobalStatus.EUREKA_PROPERTIES;
+        String eurekaProperties=file.getAbsolutePath()+File.separator+ GlobalDesktopManager.EUREKA_PROPERTIES;
         File eurekaFile=new File(eurekaProperties);
         if (eurekaFile.exists()){
             Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(eurekaFile);
             if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getEureka()!=null){
-                GlobalStatus.me.getEurekaRepository().add(code,knife4jAggregationProperties.getEureka());
+                GlobalDesktopManager.me.getEurekaRepository().add(code,knife4jAggregationProperties.getEureka());
+                GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.EUREKA);
             }
         }
     }
 
     @Override
     public RouteRepository repository() {
-        return GlobalStatus.me.getEurekaRepository();
+        return GlobalDesktopManager.me.getEurekaRepository();
     }
 }

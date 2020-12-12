@@ -8,8 +8,9 @@
 package com.github.xiaoymin.knife4j.data.impl;
 
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
+import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
-import com.github.xiaoymin.knife4j.core.GlobalStatus;
+import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 
 import java.io.File;
 
@@ -22,18 +23,20 @@ public class CloudMetaDataResolver extends AbstractMetaDataResolver{
 
     @Override
     public void resolverModifyAndCreate(File file) {
-        String cloudProperties=file.getAbsolutePath()+File.separator+GlobalStatus.CLOUD_PROPERTIES;
+        String cloudProperties=file.getAbsolutePath()+File.separator+ GlobalDesktopManager.CLOUD_PROPERTIES;
         File cloudFile=new File(cloudProperties);
         if (cloudFile.exists()){
             Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(cloudFile);
             if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getCloud()!=null){
-                GlobalStatus.me.getCloudRepository().add(file.getName(),knife4jAggregationProperties.getCloud());
+                GlobalDesktopManager.me.getCloudRepository().add(file.getName(),knife4jAggregationProperties.getCloud());
+                //指定当前code文档的模式
+                GlobalDesktopManager.me.addRepositoryType(file.getName(), RouteRepositoryEnum.CLOUD);
             }
         }
     }
 
     @Override
     public RouteRepository repository() {
-        return GlobalStatus.me.getCloudRepository();
+        return GlobalDesktopManager.me.getCloudRepository();
     }
 }

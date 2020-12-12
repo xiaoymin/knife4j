@@ -13,6 +13,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
+import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,7 @@ public class DiskRepository extends AbsctractRepository {
     public void remove(String code) {
         this.diskSettingMap.remove(code);
         this.multipartRouteMap.remove(code);
+        GlobalDesktopManager.me.remove(code);
     }
 
     /**

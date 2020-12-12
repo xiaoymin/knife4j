@@ -9,17 +9,15 @@ package com.github.xiaoymin.knife4j.data.impl;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
+import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
-import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jSettingProperties;
 import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
-import com.github.xiaoymin.knife4j.core.GlobalStatus;
-import com.github.xiaoymin.knife4j.util.PropertyUtil;
+import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -31,12 +29,13 @@ public class DiskMetaDataResolver extends AbstractMetaDataResolver{
     @Override
     public void resolverModifyAndCreate(File file) {
         String code=file.getName();
-        String cloudProperties=file.getAbsolutePath()+File.separator+GlobalStatus.DISK_PROPERTIES;
+        String cloudProperties=file.getAbsolutePath()+File.separator+ GlobalDesktopManager.DISK_PROPERTIES;
         File cloudFile=new File(cloudProperties);
         if (cloudFile.exists()){
             Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(cloudFile);
             if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getDisk()!=null){
-                GlobalStatus.me.getDiskRepository().add(code,knife4jAggregationProperties.getDisk());
+                GlobalDesktopManager.me.getDiskRepository().add(code,knife4jAggregationProperties.getDisk());
+                GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.DISK);
             }
         }else{
             //判断是否包含json文件
@@ -47,17 +46,18 @@ public class DiskMetaDataResolver extends AbstractMetaDataResolver{
                 for (File diskFile:jsons){
                     DiskRoute diskRoute=new DiskRoute();
                     diskRoute.setName(diskFile.getName());
-                    diskRoute.setLocation(GlobalStatus.OPENAPI_GROUP_INSTANCE_ENDPOINT+"?group="+diskFile.getName());
+                    diskRoute.setLocation(GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT+"?group="+diskFile.getName());
                     routes.add(diskRoute);
                 }
                 diskSetting.setRoutes(routes);
-                GlobalStatus.me.getDiskRepository().add(code,diskSetting);
+                GlobalDesktopManager.me.getDiskRepository().add(code,diskSetting);
+                GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.DISK);
             }
         }
     }
 
     @Override
     public RouteRepository repository() {
-        return GlobalStatus.me.getDiskRepository();
+        return GlobalDesktopManager.me.getDiskRepository();
     }
 }

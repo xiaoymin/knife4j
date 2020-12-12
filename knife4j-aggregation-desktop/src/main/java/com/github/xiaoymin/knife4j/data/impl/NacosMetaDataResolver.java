@@ -8,8 +8,9 @@
 package com.github.xiaoymin.knife4j.data.impl;
 
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
+import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
-import com.github.xiaoymin.knife4j.core.GlobalStatus;
+import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 
 import java.io.File;
 
@@ -23,18 +24,19 @@ public class NacosMetaDataResolver extends AbstractMetaDataResolver {
     @Override
     public void resolverModifyAndCreate(File file) {
         String code=file.getName();
-        String nacosProperties=file.getAbsolutePath()+File.separator+GlobalStatus.NACOS_PROPERTIES;
+        String nacosProperties=file.getAbsolutePath()+File.separator+ GlobalDesktopManager.NACOS_PROPERTIES;
         File nacosFile=new File(nacosProperties);
         if (nacosFile.exists()){
             Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(nacosFile);
             if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getNacos()!=null){
-                GlobalStatus.me.getNacosRepository().add(code,knife4jAggregationProperties.getNacos());
+                GlobalDesktopManager.me.getNacosRepository().add(code,knife4jAggregationProperties.getNacos());
+                GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.NACOS);
             }
         }
     }
 
     @Override
     public RouteRepository repository() {
-        return GlobalStatus.me.getNacosRepository();
+        return GlobalDesktopManager.me.getNacosRepository();
     }
 }

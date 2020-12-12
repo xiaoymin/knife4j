@@ -16,6 +16,7 @@ import com.github.xiaoymin.knife4j.aggre.eureka.EurekaApplication;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
+import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -171,5 +172,6 @@ public class EurekaRepository extends AbsctractRepository {
     public void remove(String code) {
         this.multipartRouteMap.remove(code);
         this.eurekaSettingMap.remove(code);
+        GlobalDesktopManager.me.remove(code);
     }
 }

@@ -22,7 +22,7 @@ import java.util.Map;
  * 2020/12/05 17:44
  * @since:knife4j-aggregation-desktop 1.0
  */
-public class GlobalStatus {
+public class GlobalDesktopManager {
 
     public static final String ROOT="ROOT";
     /**
@@ -43,17 +43,34 @@ public class GlobalStatus {
     public static final String EUREKA_PROPERTIES="eureka.properties";
 
 
-    public static final GlobalStatus me=new GlobalStatus();
+    public static final GlobalDesktopManager me=new GlobalDesktopManager();
     private final DiskRepository diskRepository=new DiskRepository();
     private final NacosRepository nacosRepository=new NacosRepository();
     private final EurekaRepository eurekaRepository=new EurekaRepository();
     private final CloudRepository cloudRepository=new CloudRepository();
-    private GlobalStatus(){}
+    private GlobalDesktopManager(){}
 
     /**
      * 分组类型
      */
     private final Map<String, RouteRepositoryEnum> routeRepositoryEnumMap=new HashMap<>();
+
+    /**
+     * 设置项目code的具体类型
+     * @param code 项目编码
+     * @param routeRepositoryEnum 类型
+     */
+    public void addRepositoryType(String code,RouteRepositoryEnum routeRepositoryEnum){
+        this.routeRepositoryEnumMap.put(code,routeRepositoryEnum);
+    }
+
+    /**
+     * 项目code发生变更,移除
+     * @param code
+     */
+    public void remove(String code){
+        this.routeRepositoryEnumMap.remove(code);
+    }
 
     /**
      * 根据项目获取对应的Repository

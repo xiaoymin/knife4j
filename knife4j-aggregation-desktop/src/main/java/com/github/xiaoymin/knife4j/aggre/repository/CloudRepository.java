@@ -11,6 +11,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
+import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class CloudRepository extends AbsctractRepository{
     public void remove(String code) {
         this.multipartRouteMap.remove(code);
         this.cloudSettingMap.remove(code);
+        GlobalDesktopManager.me.remove(code);
     }
 
     /**
