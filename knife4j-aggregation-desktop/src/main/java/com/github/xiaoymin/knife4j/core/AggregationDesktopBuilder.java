@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.core;
 
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.handler.StaticResourceManager;
+import com.github.xiaoymin.knife4j.util.PropertyUtil;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.predicate.Predicates;
@@ -23,10 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -154,7 +152,14 @@ public final class AggregationDesktopBuilder {
             return;
         }
         logger.debug("load application.properties,location:{}",propertiesPath);
-        this.desktopConf.resolveProperty(file);
+        Optional<AggregationDesktopApplicationConf> applicationConfOptional=PropertyUtil.resolveSingle(file,AggregationDesktopApplicationConf.class);
+        if (applicationConfOptional.isPresent()){
+            //读取配置文件,赋值
+            if (applicationConfOptional.get().getKnife4j()!=null){
+                this.desktopConf=applicationConfOptional.get().getKnife4j();
+            }
+        }
+        //this.desktopConf.resolveProperty(file);
     }
 
 }
