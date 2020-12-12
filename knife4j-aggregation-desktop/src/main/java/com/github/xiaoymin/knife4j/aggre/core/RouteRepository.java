@@ -47,10 +47,11 @@ public interface RouteRepository {
 
     /**
      * 根据Header请求头获取Basic基础信息
+     * @param code 请求文档编码
      * @param header 请求头
      * @return Basic基础信息
      */
-    default BasicAuth getAuth(String header){return null;}
+    default BasicAuth getAuth(String code,String header){return null;}
 
     /**
      * 获取route中配置的Basic信息

@@ -25,6 +25,7 @@ import java.util.Map;
  */
 public abstract class AbsctractRepository extends PoolingConnectionManager implements RouteRepository {
 
+
     protected final Map<String, SwaggerRoute> routeMap=new HashMap<>();
 
     /**
@@ -47,11 +48,6 @@ public abstract class AbsctractRepository extends PoolingConnectionManager imple
     @Override
     public List<SwaggerRoute> getRoutes() {
         return CollectionUtil.newArrayList(routeMap.values());
-    }
-
-    @Override
-    public void remove(String code) {
-        multipartRouteMap.remove(code);
     }
 
     @Override

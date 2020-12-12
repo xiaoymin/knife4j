@@ -12,6 +12,9 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /***
  * 基于本地配置的方式动态聚合云端(http)任意OpenAPI
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
@@ -20,19 +23,12 @@ import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
  */
 public class CloudRepository extends AbsctractRepository{
 
-    private CloudSetting cloudSetting;
+    private final Map<String,CloudSetting> cloudSettingMap=new HashMap<>();
 
-    public CloudRepository(){}
-    public CloudRepository(CloudSetting cloudSetting){
-        this.cloudSetting=cloudSetting;
-        if (cloudSetting!=null&&CollectionUtil.isNotEmpty(cloudSetting.getRoutes())){
-            cloudSetting.getRoutes().stream().forEach(cloudRoute -> {
-                if (cloudRoute.getRouteAuth()==null||!cloudRoute.getRouteAuth().isEnable()){
-                    cloudRoute.setRouteAuth(cloudSetting.getRouteAuth());
-                }
-                routeMap.put(cloudRoute.pkId(),new SwaggerRoute(cloudRoute));
-            });
-        }
+    @Override
+    public void remove(String code) {
+        this.multipartRouteMap.remove(code);
+        this.cloudSettingMap.remove(code);
     }
 
     /**
@@ -41,11 +37,23 @@ public class CloudRepository extends AbsctractRepository{
      * @param cloudSetting
      */
     public void add(String code,CloudSetting cloudSetting){
-
+        if (cloudSetting!=null&&CollectionUtil.isNotEmpty(cloudSetting.getRoutes())){
+            Map<String, SwaggerRoute> cloudRouteMap=new HashMap<>();
+            cloudSetting.getRoutes().stream().forEach(cloudRoute -> {
+                if (cloudRoute.getRouteAuth()==null||!cloudRoute.getRouteAuth().isEnable()){
+                    cloudRoute.setRouteAuth(cloudSetting.getRouteAuth());
+                }
+                cloudRouteMap.put(cloudRoute.pkId(),new SwaggerRoute(cloudRoute));
+            });
+            //存一个副本
+            this.cloudSettingMap.put(code,cloudSetting);
+            multipartRouteMap.put(code,cloudRouteMap);
+        }
     }
     @Override
-    public BasicAuth getAuth(String header) {
+    public BasicAuth getAuth(String code,String header) {
         BasicAuth basicAuth=null;
+        CloudSetting cloudSetting=this.cloudSettingMap.get(code);
         if (cloudSetting!=null&&CollectionUtil.isNotEmpty(cloudSetting.getRoutes())){
             if (cloudSetting.getRouteAuth()!=null&&cloudSetting.getRouteAuth().isEnable()){
                 basicAuth=cloudSetting.getRouteAuth();
@@ -61,7 +69,4 @@ public class CloudRepository extends AbsctractRepository{
         return basicAuth;
     }
 
-    public CloudSetting getCloudSetting() {
-        return cloudSetting;
-    }
 }
