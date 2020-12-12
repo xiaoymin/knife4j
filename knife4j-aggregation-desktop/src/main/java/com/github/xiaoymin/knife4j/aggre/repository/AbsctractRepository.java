@@ -11,9 +11,9 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,29 +25,41 @@ import java.util.Map;
  */
 public abstract class AbsctractRepository extends PoolingConnectionManager implements RouteRepository {
 
-
-    protected final Map<String, SwaggerRoute> routeMap=new HashMap<>();
-
     /**
      * 多项目版本
      */
     protected final Map<String,Map<String,SwaggerRoute>> multipartRouteMap=new HashMap<>();
 
     @Override
-    public boolean checkRoute(String header) {
-        if (StrUtil.isNotBlank(header)){
-            return routeMap.containsKey(header);
+    public boolean checkRoute(String code,String header) {
+        if (StrUtil.isNotBlank(code)&&StrUtil.isNotBlank(header)){
+            Map<String,SwaggerRoute> routeMap=this.multipartRouteMap.get(code);
+            if (CollectionUtil.isNotEmpty(routeMap)){
+                return routeMap.containsKey(header);
+            }
         }
         return false;
     }
     @Override
-    public SwaggerRoute getRoute(String header) {
-        return routeMap.get(header);
+    public SwaggerRoute getRoute(String code,String header) {
+        if (StrUtil.isNotBlank(code)&&StrUtil.isNotBlank(header)){
+            Map<String,SwaggerRoute> routeMap=this.multipartRouteMap.get(code);
+            if (CollectionUtil.isNotEmpty(routeMap)){
+                return routeMap.get(header);
+            }
+        }
+        return null;
     }
 
     @Override
-    public List<SwaggerRoute> getRoutes() {
-        return CollectionUtil.newArrayList(routeMap.values());
+    public List<SwaggerRoute> getRoutes(String code) {
+        if (StrUtil.isNotBlank(code)){
+            Map<String,SwaggerRoute> routeMap=this.multipartRouteMap.get(code);
+            if (CollectionUtil.isNotEmpty(routeMap)){
+                return CollectionUtil.newArrayList(routeMap.values());
+            }
+        }
+        return new ArrayList<>();
     }
 
     @Override

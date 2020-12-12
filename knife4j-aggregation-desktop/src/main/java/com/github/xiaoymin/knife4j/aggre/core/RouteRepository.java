@@ -30,20 +30,20 @@ public interface RouteRepository {
      * @param header
      * @return
      */
-    boolean checkRoute(String header);
+    boolean checkRoute(String code,String header);
 
     /**
      * 根据请求header获取
      * @param header
      * @return
      */
-    SwaggerRoute getRoute(String header);
+    SwaggerRoute getRoute(String code,String header);
 
     /**
      * 获取所有
      * @return
      */
-    List<SwaggerRoute> getRoutes();
+    List<SwaggerRoute> getRoutes(String code);
 
     /**
      * 根据Header请求头获取Basic基础信息

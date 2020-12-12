@@ -31,20 +31,9 @@ public class NacosRepository extends AbsctractRepository{
 
     Logger logger= LoggerFactory.getLogger(NacosRepository.class);
 
-    private NacosSetting nacosSetting;
+    private final Map<String,NacosSetting> nacosSettingMap=new HashMap<>();
 
     final ThreadPoolExecutor threadPoolExecutor=ThreadUtil.newExecutor(5,5);
-
-    private Map<String,NacosInstance> nacosInstanceMap=new HashMap<>();
-
-    public NacosRepository(){}
-    public NacosRepository(NacosSetting nacosSetting){
-        this.nacosSetting=nacosSetting;
-        if (nacosSetting!=null&& CollectionUtil.isNotEmpty(nacosSetting.getRoutes())){
-            initNacos(nacosSetting);
-            applyRoutes(nacosSetting);
-        }
-    }
 
     /**
      * 根据Nacos配置新增
@@ -52,25 +41,40 @@ public class NacosRepository extends AbsctractRepository{
      * @param nacosSetting
      */
     public void add(String code,NacosSetting nacosSetting){
+        if (nacosSetting!=null&& CollectionUtil.isNotEmpty(nacosSetting.getRoutes())){
+            Map<String,NacosInstance> nacosInstanceMap=initNacos(nacosSetting);
+            applyRoutes(code,nacosInstanceMap,nacosSetting);
+        }
+    }
 
+    @Override
+    public void remove(String code) {
+        this.multipartRouteMap.remove(code);
+        this.nacosSettingMap.remove(code);
     }
 
     /**
      * 初始化
      * @param nacosSetting Nacos配置属性
      */
-    private void applyRoutes(NacosSetting nacosSetting) {
+    private void applyRoutes(String code,Map<String,NacosInstance> nacosInstanceMap,NacosSetting nacosSetting) {
         if (CollectionUtil.isNotEmpty(nacosInstanceMap)){
+            Map<String, SwaggerRoute> nacosRouteMap=new HashMap<>();
             nacosSetting.getRoutes().forEach(nacosRoute -> {
                 if (nacosRoute.getRouteAuth()==null||!nacosRoute.getRouteAuth().isEnable()){
                     nacosRoute.setRouteAuth(nacosSetting.getRouteAuth());
                 }
-                this.routeMap.put(nacosRoute.pkId(),new SwaggerRoute(nacosRoute,nacosInstanceMap.get(nacosRoute.getServiceName())));
+                nacosRouteMap.put(nacosRoute.pkId(),new SwaggerRoute(nacosRoute,nacosInstanceMap.get(nacosRoute.getServiceName())));
             });
-            nacosSetting.getRoutes().forEach(nacosRoute -> this.routeMap.put(nacosRoute.pkId(),new SwaggerRoute(nacosRoute,nacosInstanceMap.get(nacosRoute.getServiceName()))));
+            nacosSetting.getRoutes().forEach(nacosRoute -> nacosRouteMap.put(nacosRoute.pkId(),new SwaggerRoute(nacosRoute,nacosInstanceMap.get(nacosRoute.getServiceName()))));
+            if (CollectionUtil.isNotEmpty(nacosRouteMap)){
+                this.multipartRouteMap.put(code,nacosRouteMap);
+                this.nacosSettingMap.put(code,nacosSetting);
+            }
         }
     }
-    public void initNacos(NacosSetting nacosSetting){
+    public Map<String,NacosInstance> initNacos(NacosSetting nacosSetting){
+        Map<String,NacosInstance> nacosInstanceMap=new HashMap<>();
         List<Future<Optional<NacosInstance>>> optionalList=new ArrayList<>();
         nacosSetting.getRoutes().forEach(nacosRoute -> optionalList.add(threadPoolExecutor.submit(new NacosService(nacosSetting.getServiceUrl(), nacosSetting.getSecret(), nacosRoute))));
         optionalList.stream().forEach(optionalFuture -> {
@@ -83,15 +87,13 @@ public class NacosRepository extends AbsctractRepository{
                 logger.error("nacos get error:"+e.getMessage(),e);
             }
         });
-    }
-
-    public NacosSetting getNacosSetting() {
-        return nacosSetting;
+        return nacosInstanceMap;
     }
 
     @Override
-    public BasicAuth getAuth(String header) {
+    public BasicAuth getAuth(String code,String header) {
         BasicAuth basicAuth=null;
+        NacosSetting nacosSetting=this.nacosSettingMap.get(code);
         if (nacosSetting!=null&&CollectionUtil.isNotEmpty(nacosSetting.getRoutes())){
             if (nacosSetting.getRouteAuth()!=null&&nacosSetting.getRouteAuth().isEnable()){
                 basicAuth=nacosSetting.getRouteAuth();
