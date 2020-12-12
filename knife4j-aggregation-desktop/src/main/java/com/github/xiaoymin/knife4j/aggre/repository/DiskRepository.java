@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -28,13 +30,12 @@ public class DiskRepository extends AbsctractRepository {
 
     Logger logger= LoggerFactory.getLogger(DiskRepository.class);
 
-    public DiskRepository(){}
+    private final Map<String,DiskSetting> diskSettingMap=new HashMap<>();
 
-
-    public DiskRepository(DiskSetting diskSetting){
-        if (diskSetting!=null&& CollectionUtil.isNotEmpty(diskSetting.getRoutes())){
-            init(diskSetting);
-        }
+    @Override
+    public void remove(String code) {
+        this.diskSettingMap.remove(code);
+        this.multipartRouteMap.remove(code);
     }
 
     /**
@@ -43,26 +44,30 @@ public class DiskRepository extends AbsctractRepository {
      * @param diskSetting
      */
     public void add(String code,DiskSetting diskSetting){
-
-    }
-
-    private void init(DiskSetting diskSetting) {
-        for (DiskRoute diskRoute:diskSetting.getRoutes()){
-            if (StrUtil.isNotBlank(diskRoute.getLocation())){
-                try {
-                    InputStream resource=getResource(diskRoute.getLocation());
-                    if (resource!=null){
-                        String content=new String(readBytes(resource),"UTF-8");
-                        //添加分组
-                        this.routeMap.put(diskRoute.pkId(),new SwaggerRoute(diskRoute,content));
+        if (diskSetting!=null&& CollectionUtil.isNotEmpty(diskSetting.getRoutes())){
+            Map<String, SwaggerRoute> diskRouteMap=new HashMap<>();
+            for (DiskRoute diskRoute:diskSetting.getRoutes()){
+                if (StrUtil.isNotBlank(diskRoute.getLocation())){
+                    try {
+                        InputStream resource=getResource(diskRoute.getLocation());
+                        if (resource!=null){
+                            String content=new String(readBytes(resource),"UTF-8");
+                            //添加分组
+                            diskRouteMap.put(diskRoute.pkId(),new SwaggerRoute(diskRoute,content));
+                        }
+                    } catch (Exception e) {
+                        //
+                        logger.error("read err:"+e.getMessage());
                     }
-                } catch (Exception e) {
-                    //
-                    logger.error("read err:"+e.getMessage());
                 }
+            }
+            if (CollectionUtil.isNotEmpty(diskRouteMap)){
+                this.multipartRouteMap.put(code,diskRouteMap);
+                this.diskSettingMap.put(code,diskSetting);
             }
         }
     }
+
 
 
     private InputStream getResource(String location){
