@@ -7,7 +7,7 @@ Knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 - 前后端Java代码以及前端Ui模块进行分离,在微服务架构下使用更加灵活
 - 提供专注于Swagger的增强解决方案,不同于只是改善增强前端Ui部分
 
-**官方文档：**[https://xiaoym.gitee.io/knife4j/documentation/](https://xiaoym.gitee.io/knife4j/documentation/)
+**官方文档：**[https://doc.xiaominfo.com/knife4j/documentation/](https://doc.xiaominfo.com/knife4j/documentation/)
 
 **效果(2.0版)：**[http://knife4j.xiaominfo.com/doc.html](http://knife4j.xiaominfo.com/doc.html)
 
@@ -15,7 +15,7 @@ Knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 
 **示例:**[https://gitee.com/xiaoym/swagger-bootstrap-ui-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo)
 
-**交流：** [https://xiaoym.gitee.io/knife4j/documentation/community.html](https://xiaoym.gitee.io/knife4j/documentation/community.html)
+**交流：** [https://doc.xiaominfo.com/knife4j/documentation/help.html](https://doc.xiaominfo.com/knife4j/documentation/help.html)
 
 **源码分析**:[https://www.xiaominfo.com/2019/05/20/springfox-0/](https://www.xiaominfo.com/2019/05/20/springfox-0/)
 
