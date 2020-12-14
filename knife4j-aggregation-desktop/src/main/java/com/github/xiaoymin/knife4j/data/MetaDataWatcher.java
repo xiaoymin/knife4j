@@ -15,7 +15,6 @@ import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverFactory;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
-import com.sun.xml.internal.ws.api.wsdl.parser.MetadataResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

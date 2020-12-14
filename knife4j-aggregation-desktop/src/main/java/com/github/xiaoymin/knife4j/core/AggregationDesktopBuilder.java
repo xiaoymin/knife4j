@@ -84,7 +84,7 @@ public final class AggregationDesktopBuilder {
         logger.info("Start Knife4jAggregationDesktop Application");
         try{
             String staticPath=this.baseDir+File.separator+"webapps";
-            logger.info("statuc directory:{}",staticPath);
+            logger.info("static directory:{}",staticPath);
             ResourceManager resourceManager=new StaticResourceManager(new File(staticPath));
             List<String> staticResources=new ArrayList<>();
             staticResources.addAll(Arrays.asList("gif","png","bmp","jpeg","jpg"));

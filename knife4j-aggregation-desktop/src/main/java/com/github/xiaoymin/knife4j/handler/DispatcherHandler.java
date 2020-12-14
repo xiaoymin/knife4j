@@ -224,8 +224,8 @@ public class DispatcherHandler implements HttpHandler {
         //当前请求是否basic请求
         HeaderMap headerValues=http.getRequestHeaders();
         //String basicHeader=headerValues.get(GlobalDesktopManager.ROUTE_PROXY_HEADER_BASIC_NAME);
-        String basicHeader=headerValues.get(GlobalDesktopManager.ROUTE_PROXY_HEADER_BASIC_NAME).getFirst();
-        String code=headerValues.get(GlobalDesktopManager.ROUTE_PROXY_DOCUMENT_CODE).getFirst();
+        String basicHeader=getHeader(headerValues,GlobalDesktopManager.ROUTE_PROXY_HEADER_BASIC_NAME);
+        String code=getHeader(headerValues,GlobalDesktopManager.ROUTE_PROXY_DOCUMENT_CODE);
         RouteRepository routeRepository=GlobalDesktopManager.me.repository(code);
         if (StrUtil.isNotBlank(code)&&StrUtil.isNotBlank(basicHeader)){
             BasicAuth basicAuth=routeRepository.getAuth(code,basicHeader);
@@ -235,11 +235,11 @@ public class DispatcherHandler implements HttpHandler {
             }
         }
         //SwaggerRoute swaggerRoute=getRoute(request.getHeader(ROUTE_PROXY_HEADER_NAME));
-        SwaggerRoute swaggerRoute=routeRepository.getRoute(code,headerValues.get(GlobalDesktopManager.ROUTE_PROXY_HEADER_NAME).getFirst());
+        SwaggerRoute swaggerRoute=routeRepository.getRoute(code,getHeader(headerValues,GlobalDesktopManager.ROUTE_PROXY_HEADER_NAME));
         //String uri="http://knife4j.xiaominfo.com";
         String uri=swaggerRoute.getUri();
         if (StrUtil.isBlank(uri)){
-            throw new RuntimeException("Uri is Empty");
+            throw new UnsupportedOperationException("Unsupported Debug");
         }
         String host= URI.create(uri).getHost();
         String fromUri=http.getRequestURI();
@@ -266,9 +266,11 @@ public class DispatcherHandler implements HttpHandler {
         if (CollectionUtil.isNotEmpty(headerValues)){
             for (HeaderValues hv:headerValues){
                 String key=hv.getHeaderName().toString();
-                String value=hv.getFirst();
-                if (!ignoreHeaders.contains(key.toLowerCase())){
-                    routeRequestContext.addHeader(key,value);
+                if (CollectionUtil.isNotEmpty(hv)){
+                    String value=hv.getFirst();
+                    if (!ignoreHeaders.contains(key.toLowerCase())){
+                        routeRequestContext.addHeader(key,value);
+                    }
                 }
             }
         }
@@ -277,11 +279,23 @@ public class DispatcherHandler implements HttpHandler {
         if (CollectionUtil.isNotEmpty(parameters)){
             for (Map.Entry<String,Deque<String>> dequeEntry:parameters.entrySet()){
                 String name=dequeEntry.getKey();
-                String value=dequeEntry.getValue().getFirst();
-                logger.info("param-name:{},value:{}",name,value);
-                routeRequestContext.addParam(name,value);
+                Deque<String> deque=dequeEntry.getValue();
+                if (CollectionUtil.isNotEmpty(deque)){
+                    String value=deque.getFirst();
+                    logger.info("param-name:{},value:{}",name,value);
+                    routeRequestContext.addParam(name,value);
+                }
             }
         }
         routeRequestContext.setRequestContent(http.getInputStream());
+    }
+
+
+    private String getHeader(HeaderMap headerMap,String header){
+        HeaderValues headerValues=headerMap.get(header);
+        if (CollectionUtil.isNotEmpty(headerValues)){
+            return headerValues.getFirst();
+        }
+        return null;
     }
 }

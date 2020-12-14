@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j.data.impl;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
@@ -45,7 +46,8 @@ public class DiskMetaDataResolver extends AbstractMetaDataResolver{
                 List<DiskRoute> routes=new ArrayList<>();
                 for (File diskFile:jsons){
                     DiskRoute diskRoute=new DiskRoute();
-                    diskRoute.setName(diskFile.getName());
+                    //名称去除扩展名
+                    diskRoute.setName(StrUtil.subBefore(diskFile.getName(),'.',true));
                     diskRoute.setLocation(diskFile.getAbsolutePath());
                     //diskRoute.setLocation(GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT+"?group="+diskFile.getName());
                     routes.add(diskRoute);
