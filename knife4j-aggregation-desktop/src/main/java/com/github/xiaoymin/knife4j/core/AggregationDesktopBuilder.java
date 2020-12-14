@@ -115,6 +115,7 @@ public final class AggregationDesktopBuilder {
                     host,port);
         }catch (Exception e){
             //ignore..
+            logger.error(e.getMessage(),e);
         }
     }
 
