@@ -236,6 +236,10 @@ public class DispatcherHandler implements HttpHandler {
         }
         //SwaggerRoute swaggerRoute=getRoute(request.getHeader(ROUTE_PROXY_HEADER_NAME));
         SwaggerRoute swaggerRoute=routeRepository.getRoute(code,getHeader(headerValues,GlobalDesktopManager.ROUTE_PROXY_HEADER_NAME));
+        //有可能是Disk模式
+        if (swaggerRoute==null){
+            throw new UnsupportedOperationException("Unsupported Debug");
+        }
         //String uri="http://knife4j.xiaominfo.com";
         String uri=swaggerRoute.getUri();
         if (StrUtil.isBlank(uri)){
