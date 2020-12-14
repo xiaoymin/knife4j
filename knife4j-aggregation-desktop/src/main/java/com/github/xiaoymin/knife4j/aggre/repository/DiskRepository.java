@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,21 +77,9 @@ public class DiskRepository extends AbsctractRepository {
     private InputStream getResource(String location){
         InputStream resource=null;
         try{
-           /* Resource[] resources=resourceResolver.getResources(location);
-            if (resources!=null&&resources.length>0){
-                resource=resources[0].getInputStream();
-            }else{
-                resource=new FileSystemResource(new File(location)).getInputStream();
-            }*/
+           return new FileInputStream(new File(location));
         }catch (Exception e){
             logger.error("read from resource error:"+e.getMessage());
-            try{
-                logger.info("read from local file:{}",location);
-                //从本地读取
-                //resource=new FileSystemResource(new File(location)).getInputStream();
-            }catch (Exception ef){
-                //ignore
-            }
         }
         return resource;
     }

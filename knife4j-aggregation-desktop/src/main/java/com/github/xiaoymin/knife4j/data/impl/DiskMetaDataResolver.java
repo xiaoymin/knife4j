@@ -46,7 +46,8 @@ public class DiskMetaDataResolver extends AbstractMetaDataResolver{
                 for (File diskFile:jsons){
                     DiskRoute diskRoute=new DiskRoute();
                     diskRoute.setName(diskFile.getName());
-                    diskRoute.setLocation(GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT+"?group="+diskFile.getName());
+                    diskRoute.setLocation(diskFile.getAbsolutePath());
+                    //diskRoute.setLocation(GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT+"?group="+diskFile.getName());
                     routes.add(diskRoute);
                 }
                 diskSetting.setRoutes(routes);

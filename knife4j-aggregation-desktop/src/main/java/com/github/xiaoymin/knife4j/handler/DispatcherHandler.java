@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.RedirectHandler;
 import io.undertow.util.HeaderMap;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.HttpString;
@@ -81,6 +82,10 @@ public class DispatcherHandler implements HttpHandler {
 
     public void handleRequest(HttpServerExchange exchange) throws Exception {
         String uri=exchange.getRequestURI();
+        if (StrUtil.equalsIgnoreCase(uri,"/")){
+            exchange.dispatch(new RedirectHandler("/doc.html"));
+            return;
+        }
         logger.info("requestURI:{}",uri);
         HeaderMap requestHeaderMap=exchange.getRequestHeaders();
         String code=requestHeaderMap.get(GlobalDesktopManager.ROUTE_PROXY_DOCUMENT_CODE,0);

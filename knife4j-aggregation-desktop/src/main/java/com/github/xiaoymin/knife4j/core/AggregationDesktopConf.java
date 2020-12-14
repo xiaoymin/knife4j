@@ -26,7 +26,7 @@ public class AggregationDesktopConf {
     /**
      * 基础文档Basic
      */
-    private BasicAuth basicAuth;
+    private BasicAuth basic;
 
 
     public Integer getPort() {
@@ -37,12 +37,12 @@ public class AggregationDesktopConf {
         this.port = port;
     }
 
-    public BasicAuth getBasicAuth() {
-        return basicAuth;
+    public BasicAuth getBasic() {
+        return basic;
     }
 
-    public void setBasicAuth(BasicAuth basicAuth) {
-        this.basicAuth = basicAuth;
+    public void setBasic(BasicAuth basic) {
+        this.basic = basic;
     }
 
     public long getDuration() {
