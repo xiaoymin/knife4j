@@ -124,7 +124,7 @@ public final class AggregationDesktopBuilder {
         String dataDir=this.baseDir+File.separator+"data";
         logger.info("Watcher data directory:{}",dataDir);
         Path path= Paths.get(dataDir);
-        WatchMonitor watchMonitor= WatchUtil.createAll(path,new DelayWatcher(new MetaDataWatcher(),duration));
+        WatchMonitor watchMonitor= WatchUtil.createAll(path,new DelayWatcher(new MetaDataWatcher(dataDir),duration));
         watchMonitor.setMaxDepth(3);
         watchMonitor.start();
     }

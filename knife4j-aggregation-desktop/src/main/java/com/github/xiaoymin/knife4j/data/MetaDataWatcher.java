@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.data;
 
 import cn.hutool.core.io.watch.Watcher;
 import cn.hutool.core.lang.PatternPool;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
@@ -30,6 +31,26 @@ import java.util.Objects;
 public class MetaDataWatcher implements Watcher {
 
     Logger logger= LoggerFactory.getLogger(MetaDataWatcher.class);
+
+    private final String dataDir;
+
+    public MetaDataWatcher(String dataDir) {
+        this.dataDir = dataDir;
+        init();
+    }
+
+    private void init(){
+        //初始化所有
+        File dataFile=new File(dataDir);
+        if (dataFile.exists()){
+            File[] files=dataFile.listFiles(File::isDirectory);
+            if (ArrayUtil.isNotEmpty(files)){
+                for (File file:files){
+                    resolver(file,MetaDataResolverKey.create);
+                }
+            }
+        }
+    }
 
     /**
      * 创建文件夹或者文件
