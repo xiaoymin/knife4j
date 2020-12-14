@@ -356,6 +356,7 @@ export default {
               i18nVue:this.$i18n,
               i18nFlag:i18nParams.include,
               configSupport:false,
+              desktop:true,
               i18nInstance:this.getCurrentI18nInstance() 
               })
           }else{
@@ -381,6 +382,7 @@ export default {
                 i18nVue:this.$i18n,
                 i18nFlag:i18nParams.include,
                 configSupport:false,
+                desktop:true,
                 i18nInstance:this.getCurrentI18nInstance() 
                 })
             })

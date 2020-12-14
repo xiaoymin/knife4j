@@ -81,6 +81,9 @@ function SwaggerBootstrapUi(options) {
     this.url = options.url || 'swagger-resources'
   }
   this.i18n=options.i18n||'zh-CN'
+  //是否Knife4jAggregationDesktop
+  this.desktop=options.desktop||false;
+  this.desktopCode=null;
   this.i18nVue=options.i18nVue||null;
   //是否从地址栏设置i18n，如果是，那么默认以外部地址传入为主，否则会根据后台配置的setting中的language进行合并显示具体对应的i18n版本
   this.i18nFlag=options.i18nFlag||false;
@@ -336,11 +339,29 @@ SwaggerBootstrapUi.prototype.configInit = function () {
 SwaggerBootstrapUi.prototype.analysisGroup = function () {
   var that = this
   try {
+    var headers={};
+    if(that.desktop){
+      var loc=window.location.pathname;
+      //默认根目录
+      var code='ROOT';
+      var reg=new RegExp('(?:/(.*?))?/doc.html',"ig");
+      if(reg.exec(loc)){
+        var c=RegExp.$1;
+        if(KUtils.strNotBlank(c)){
+          code=c;
+        }
+      }
+      headers={
+        'knife4j-gateway-code':code
+      };
+      this.desktopCode=code;
+    }
     that.ajax({
       url: that.url,
       type: 'get',
       timeout: 20000,
-      dataType: 'json'
+      dataType: 'json',
+      headers:headers
     },data=>{
       if(that.springdoc){
         that.analysisSpringDocOpenApiGroupSuccess(data);
@@ -395,6 +416,8 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess=function(data)
       group.swaggerVersion
     )
     g.url = group.url
+    g.desktop=that.desktop;
+    g.desktopCode=that.desktopCode;
     //g.url="/test/json";
     var newUrl = ''
     //此处需要判断basePath路径的情况
@@ -505,6 +528,8 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     g.header=KUtils.getValue(group,'header',null,true);
     g.basicAuth=KUtils.getValue(group,'basicAuth',null,true);
     g.servicePath=KUtils.getValue(group,'servicePath',null,true);
+    g.desktop=that.desktop;
+    g.desktopCode=that.desktopCode;
     var newUrl = ''
     //此处需要判断basePath路径的情况
     if (group.url != null && group.url != undefined && group.url != '') {
@@ -703,6 +728,10 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
           return KUtils.json5parse(data);
         }]
       };
+      //针对Knife4jAggregationDesktop软件的请求头
+      if(that.desktop){
+        reqHeaders=Object.assign({},reqHeaders,{'knife4j-gateway-code':that.desktopCode});
+      }
       if(KUtils.checkUndefined(this.currentInstance.header)){
         //Knife4j自研Aggreration微服务聚合组件请求头
         reqHeaders=Object.assign({},reqHeaders,{'knfie4j-gateway-request':that.currentInstance.header});
@@ -6649,6 +6678,9 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   this.header=null;
   this.basicAuth=null;
   this.servicePath=null;
+  //Knife4jAggregationDesktop
+  this.desktop=false;
+  this.desktopCode=null;
 }
 SwaggerBootstrapUiInstance.prototype.clearOAuth2=function(){
   if(!KUtils.checkUndefined(this.oauths)){

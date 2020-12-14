@@ -2165,6 +2165,11 @@ export default {
       if(KUtils.checkUndefined(this.routeHeader)){
         headers["knfie4j-gateway-request"]=this.routeHeader;
       }
+      //Knife4jAggregationDesktop组件header
+      if(this.swaggerInstance.desktop){
+        headers["knife4j-gateway-code"]=this.swaggerInstance.desktopCode;
+      }
+
       return headers;
     },
     debugRawFormParams() {
@@ -3000,6 +3005,7 @@ export default {
       var headers = this.debugHeaders();
       var ignoreHeaders=[];
       ignoreHeaders.push("knfie4j-gateway-request");
+      ignoreHeaders.push("knife4j-gateway-code");
       ignoreHeaders.push("Request-Origion");
       if (KUtils.checkUndefined(headers)) {
         for (var h in headers) {
