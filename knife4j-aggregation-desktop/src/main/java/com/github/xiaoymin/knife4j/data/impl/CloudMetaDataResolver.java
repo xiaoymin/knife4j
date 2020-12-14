@@ -35,8 +35,4 @@ public class CloudMetaDataResolver extends AbstractMetaDataResolver{
         }
     }
 
-    @Override
-    public RouteRepository repository() {
-        return GlobalDesktopManager.me.getCloudRepository();
-    }
 }

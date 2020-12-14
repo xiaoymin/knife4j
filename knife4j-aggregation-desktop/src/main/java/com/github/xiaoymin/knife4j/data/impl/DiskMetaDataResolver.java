@@ -56,9 +56,4 @@ public class DiskMetaDataResolver extends AbstractMetaDataResolver{
             }
         }
     }
-
-    @Override
-    public RouteRepository repository() {
-        return GlobalDesktopManager.me.getDiskRepository();
-    }
 }

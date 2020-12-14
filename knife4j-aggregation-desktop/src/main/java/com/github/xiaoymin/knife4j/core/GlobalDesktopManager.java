@@ -74,6 +74,15 @@ public class GlobalDesktopManager {
     }
 
     /**
+     * 获取当前code的类型
+     * @param code
+     * @return
+     */
+    public RouteRepositoryEnum type(String code){
+        return this.routeRepositoryEnumMap.get(code);
+    }
+
+    /**
      * 根据项目获取对应的Repository
      * @param code
      * @return

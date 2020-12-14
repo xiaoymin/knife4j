@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.data.resolver;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.github.xiaoymin.knife4j.data.impl.CloudMetaDataResolver;
 import com.github.xiaoymin.knife4j.data.impl.DiskMetaDataResolver;
@@ -50,6 +51,25 @@ public class MetaDataResolverFactory {
                 if (ArrayUtil.isNotEmpty(path.listFiles(((dir, name) -> name.endsWith(".json"))))){
                     return disk;
                 }
+            }
+        }
+        return null;
+    }
+
+    public static MetaDataResolver resolverByCode(String code){
+        RouteRepositoryEnum routeRepositoryEnum=GlobalDesktopManager.me.type(code);
+        if (routeRepositoryEnum!=null){
+            switch (routeRepositoryEnum){
+                case EUREKA:
+                    return eureka;
+                case NACOS:
+                    return nacos;
+                case DISK:
+                    return disk;
+                case CLOUD:
+                    return cloud;
+                default:
+                    break;
             }
         }
         return null;

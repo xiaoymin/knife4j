@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.data.impl;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jSettingProperties;
+import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
 import com.github.xiaoymin.knife4j.util.PropertyUtil;
@@ -26,7 +27,12 @@ public abstract class AbstractMetaDataResolver implements MetaDataResolver {
     @Override
     public void resolve(File file, MetaDataResolverKey metaDataResolverKey) {
         String code=file.getName();
-        repository().remove(code);
+        RouteRepository routeRepository=GlobalDesktopManager.me.repository(code);
+        if (routeRepository!=null){
+            GlobalDesktopManager.me.repository(code).remove(code);
+            //GlobalDesktopManager.me.remove(code);
+            //routeRepository.remove(code);
+        }
         if (metaDataResolverKey==MetaDataResolverKey.create||metaDataResolverKey==MetaDataResolverKey.modify){
             resolverModifyAndCreate(file);
         }
@@ -50,5 +56,5 @@ public abstract class AbstractMetaDataResolver implements MetaDataResolver {
 
     public abstract void resolverModifyAndCreate(File file);
 
-    public abstract RouteRepository repository();
+
 }

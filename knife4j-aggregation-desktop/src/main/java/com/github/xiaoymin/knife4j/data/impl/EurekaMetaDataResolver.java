@@ -7,7 +7,7 @@
 
 package com.github.xiaoymin.knife4j.data.impl;
 
-import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
+
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
@@ -33,10 +33,5 @@ public class EurekaMetaDataResolver extends AbstractMetaDataResolver{
                 GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.EUREKA);
             }
         }
-    }
-
-    @Override
-    public RouteRepository repository() {
-        return GlobalDesktopManager.me.getEurekaRepository();
     }
 }

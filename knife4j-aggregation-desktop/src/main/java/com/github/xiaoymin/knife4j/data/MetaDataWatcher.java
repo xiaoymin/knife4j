@@ -15,6 +15,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverFactory;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
+import com.sun.xml.internal.ws.api.wsdl.parser.MetadataResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +72,7 @@ public class MetaDataWatcher implements Watcher {
     @Override
     public void onModify(WatchEvent<?> event, Path currentPath) {
         String context=Objects.toString(event.context());
+        logger.info("onModify:{},path:{}",context,currentPath.toString());
         if (checkFileValidate(context,currentPath)){
             File modifyFile=currentPath.resolve(context).toFile();
             //当前目录变更,需要变量
@@ -86,8 +88,9 @@ public class MetaDataWatcher implements Watcher {
     @Override
     public void onDelete(WatchEvent<?> event, Path currentPath) {
         String context=Objects.toString(event.context());
-        if (checkFileValidate(context,currentPath)){
-            File deleteFile=currentPath.resolve(context).toFile();
+        logger.info("onDelete:{},path:{}",context,currentPath.toString());
+        File deleteFile=currentPath.resolve(context).toFile();
+        if (!deleteFile.exists()&&StrUtil.equalsIgnoreCase(deleteFile.getParentFile().getName(),"data")){
             logger.info("移除OpenAPI文档,项目code：{}",deleteFile.getName());
             resolver(deleteFile,MetaDataResolverKey.delete);
         }
@@ -107,6 +110,13 @@ public class MetaDataWatcher implements Watcher {
         MetaDataResolver metaDataResolver=MetaDataResolverFactory.resolver(targetFile);
         if (metaDataResolver!=null){
             metaDataResolver.resolve(targetFile,metaDataResolverKey);
+        }else{
+            //针对删除
+            metaDataResolver= MetaDataResolverFactory.resolverByCode(targetFile.getName());
+            if (metaDataResolver!=null){
+                metaDataResolver.resolve(targetFile,metaDataResolverKey);
+            }
+
         }
     }
 
