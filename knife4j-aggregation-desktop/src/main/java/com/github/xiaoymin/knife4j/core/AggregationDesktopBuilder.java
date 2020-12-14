@@ -7,26 +7,28 @@
 
 package com.github.xiaoymin.knife4j.core;
 
+import cn.hutool.core.io.watch.WatchMonitor;
+import cn.hutool.core.io.watch.WatchUtil;
+import cn.hutool.core.io.watch.watchers.DelayWatcher;
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
+import com.github.xiaoymin.knife4j.data.MetaDataWatcher;
+import com.github.xiaoymin.knife4j.handler.DispatcherHandler;
 import com.github.xiaoymin.knife4j.handler.StaticResourceManager;
 import com.github.xiaoymin.knife4j.util.PropertyUtil;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.predicate.Predicates;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.PredicateHandler;
-import io.undertow.server.handlers.RedirectHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
-import io.undertow.util.Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.InetAddress;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -49,8 +51,6 @@ public final class AggregationDesktopBuilder {
      * 配置文件
      */
     private AggregationDesktopConf desktopConf=new AggregationDesktopConf();
-
-    private final ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();
 
     public AggregationDesktopBuilder(String baseDir){
         String userDir=System.getProperty("user.dir");
@@ -92,20 +92,10 @@ public final class AggregationDesktopBuilder {
             staticResources.addAll(Arrays.asList("mp3","wma","flv","mp4","wmv","ogg","avi"));
             staticResources.addAll(Arrays.asList("doc","docx","xls","xlsx","ppt","txt","pdf"));
             staticResources.addAll(Arrays.asList("zip","exe","tat","ico","css","js","swf","apk","ts","m3u8","json"));
-            PredicateHandler predicateHandler= Handlers.predicate(Predicates.suffixes(staticResources.toArray(new String[]{})),Handlers.resource(resourceManager),Handlers.path(new HttpHandler() {
-                @Override
-                public void handleRequest(HttpServerExchange exchange) throws Exception {
-                    String requestPath=exchange.getRequestPath();
-                    if (requestPath.endsWith("/")){
-                        exchange.dispatch(new RedirectHandler(requestPath+"doc.html"));
-                    }else{
-                        System.out.println("requestPath:"+requestPath);
-                        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                        exchange.getResponseSender().send("Hello World");
-                    }
-                }
-            }));
-
+            initWatcherMonitor();
+            //初始化DispatcherHandler
+            DispatcherHandler dispatcherHandler=new DispatcherHandler(ExecutorEnum.APACHE,"/");
+            PredicateHandler predicateHandler= Handlers.predicate(Predicates.suffixes(staticResources.toArray(new String[]{})),Handlers.resource(resourceManager),dispatcherHandler);
             Undertow server = Undertow.builder()
                     .addHttpListener(this.desktopConf.getPort(), "0.0.0.0")
                    // .addListener(new Undertow.ListenerBuilder().setPort(this.desktopConf.getPort()))
@@ -126,6 +116,17 @@ public final class AggregationDesktopBuilder {
         }catch (Exception e){
             //ignore..
         }
+    }
+
+    private void initWatcherMonitor(){
+        //初始化监听文件目录
+        long duration=desktopConf.getDuration();
+        String dataDir=this.baseDir+File.separator+"data";
+        logger.info("Watcher data directory:{}",dataDir);
+        Path path= Paths.get(dataDir);
+        WatchMonitor watchMonitor= WatchUtil.createAll(path,new DelayWatcher(new MetaDataWatcher(),duration));
+        watchMonitor.setMaxDepth(3);
+        watchMonitor.start();
     }
 
     private void checkAccess(){
