@@ -11,10 +11,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
-import com.github.xiaoymin.knife4j.aggre.core.RouteExecutor;
-import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
-import com.github.xiaoymin.knife4j.aggre.core.RouteRequestContext;
-import com.github.xiaoymin.knife4j.aggre.core.RouteResponse;
+import com.github.xiaoymin.knife4j.aggre.core.*;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteUtils;
 import com.github.xiaoymin.knife4j.aggre.core.executor.ApacheClientExecutor;
@@ -22,6 +19,8 @@ import com.github.xiaoymin.knife4j.aggre.core.executor.OkHttpClientExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderMap;
@@ -46,7 +45,7 @@ public class DispatcherHandler implements HttpHandler {
     Logger logger= LoggerFactory.getLogger(DispatcherHandler.class);
 
     private RouteExecutor routeExecutor;
-
+    private final Gson gson=new GsonBuilder().create();
     private Set<String> ignoreHeaders=new HashSet<>();
     /**
      * 当前项目的contextPath
@@ -81,6 +80,49 @@ public class DispatcherHandler implements HttpHandler {
     }
 
     public void handleRequest(HttpServerExchange exchange) throws Exception {
+        String uri=exchange.getRequestURI();
+        logger.info("requestURI:{}",uri);
+        HeaderMap requestHeaderMap=exchange.getRequestHeaders();
+        String code=requestHeaderMap.get(GlobalDesktopManager.ROUTE_PROXY_DOCUMENT_CODE,0);
+        if (StrUtil.isNotBlank(code)){
+            RouteRepository routeRepository=GlobalDesktopManager.me.repository(code);
+            if (routeRepository==null){
+                writeDefault(exchange,"Unsupported code:"+code);
+                return;
+            }
+            if (StrUtil.endWith(uri, GlobalDesktopManager.OPENAPI_GROUP_ENDPOINT)) {
+                //分组接口
+                writeRouteResponse(exchange, gson.toJson(routeRepository.getRoutes(code)));
+            }else if(StrUtil.endWith(uri,GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT)){
+                Deque<String> group=exchange.getQueryParameters().get("group");
+                String groupStr=group.getFirst();
+                SwaggerRoute swaggerRoute=routeRepository.getRoute(code,groupStr);
+                writeRouteResponse(exchange,swaggerRoute==null?"":swaggerRoute.getContent());
+            }else{
+                exeute(exchange);
+            }
+        }else{
+            //不支持的方法
+            writeDefault(exchange,"Unsupported Method");
+        }
+    }
+    /**
+     * 响应服务端的内容
+     * @param response 响应流
+     * @param content 内容
+     * @throws IOException 异常
+     */
+    protected void writeRouteResponse(HttpServerExchange response,String content) throws IOException {
+        response.getResponseHeaders().add(new HttpString("Content-Type"),"application/json;charset=UTF-8");
+        response.getResponseSender().send(content);;
+        response.endExchange();
+    }
+
+    /**
+     * 执行请求
+     * @param exchange
+     */
+    public void exeute(HttpServerExchange exchange){
         try{
             RouteRequestContext routeContext=new RouteRequestContext();
             this.buildContext(routeContext,exchange);
