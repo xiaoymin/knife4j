@@ -76,6 +76,11 @@ public class MetaDataWatcher implements Watcher {
             File modifyFile=currentPath.resolve(context).toFile();
             //当前目录变更,需要变量
             resolver(modifyFile,MetaDataResolverKey.modify);
+        }else{
+            File currentFile=currentPath.toFile();
+            if (StrUtil.equalsIgnoreCase(currentFile.getParentFile().getName(),"data")){
+                resolver(currentFile,MetaDataResolverKey.modify);
+            }
         }
     }
 
