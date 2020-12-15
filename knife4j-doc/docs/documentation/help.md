@@ -2,7 +2,7 @@
 
 如果您需要有关`Knife4j`的帮助,我们将在这里为您提供帮助,以下是获取帮助的一些方法：
 
-- 仔细阅读官方文档：[https://xiaoym.gitee.io/knife4j/](https://xiaoym.gitee.io/knife4j/)
+- 仔细阅读官方文档：[https://doc.xiaominfo.com/knife4j/](https://doc.xiaominfo.com/knife4j/)
 - 参考官方提供的demo示例：[https://gitee.com/xiaoym/swagger-bootstrap-ui-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo)
 - 官方提供demo示例文档说明请参考[文档](simple-demo.md)
 - 通过Gitter向作者提问：[https://gitter.im/knife4j/knife4j](https://gitter.im/knife4j/knife4j)
