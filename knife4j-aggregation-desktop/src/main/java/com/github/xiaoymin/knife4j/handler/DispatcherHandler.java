@@ -22,6 +22,7 @@ import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.github.xiaoymin.knife4j.util.NetUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.undertow.io.Sender;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.RedirectHandler;
@@ -100,9 +101,15 @@ public class DispatcherHandler implements HttpHandler {
                 //分组接口
                 writeRouteResponse(exchange, gson.toJson(routeRepository.getRoutes(code)));
             }else if(StrUtil.endWith(uri,GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT)){
+                logger.info("分组接口instance");
                 Deque<String> group=exchange.getQueryParameters().get("group");
                 String groupStr=group.getFirst();
+                logger.info("group:{}",groupStr);
                 SwaggerRoute swaggerRoute=routeRepository.getRoute(code,groupStr);
+                logger.info("swaggerContent:{}");
+                if (swaggerRoute!=null){
+                    logger.info(swaggerRoute.toString());
+                }
                 writeRouteResponse(exchange,swaggerRoute==null?"":swaggerRoute.getContent());
             }else{
                 exeute(exchange);
@@ -120,7 +127,9 @@ public class DispatcherHandler implements HttpHandler {
      */
     protected void writeRouteResponse(HttpServerExchange response,String content) throws IOException {
         response.getResponseHeaders().add(new HttpString("Content-Type"),"application/json;charset=UTF-8");
-        response.getResponseSender().send(content);;
+        Sender sender=response.getResponseSender();
+        sender.send(content,GlobalDesktopManager.UTF_8);
+        sender.close();
         response.endExchange();
     }
 
@@ -209,7 +218,10 @@ public class DispatcherHandler implements HttpHandler {
             }else{
                 String text=routeResponse.text();
                 if (StrUtil.isNotBlank(text)){
-                    response.getResponseSender().send(text);
+                    Sender sender=response.getResponseSender();
+                    sender.send(text,GlobalDesktopManager.UTF_8);
+                    sender.close();
+                    //response.getResponseSender().send(text);
                     response.endExchange();
                 }
             }

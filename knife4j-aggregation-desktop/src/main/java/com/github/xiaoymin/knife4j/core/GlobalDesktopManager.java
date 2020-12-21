@@ -14,6 +14,7 @@ import com.github.xiaoymin.knife4j.aggre.repository.DiskRepository;
 import com.github.xiaoymin.knife4j.aggre.repository.EurekaRepository;
 import com.github.xiaoymin.knife4j.aggre.repository.NacosRepository;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ import java.util.Map;
 public class GlobalDesktopManager {
 
     public static final String ROOT="ROOT";
+
+    public static final Charset UTF_8=Charset.forName("UTF-8");
     /**
      * 请求头
      */

@@ -270,4 +270,21 @@ public class SwaggerRoute {
     public void setServicePath(String servicePath) {
         this.servicePath = servicePath;
     }
+
+    @Override
+    public String toString() {
+        return "SwaggerRoute{" +
+                "name='" + name + '\'' +
+                ", uri='" + uri + '\'' +
+                ", header='" + header + '\'' +
+                ", basicAuth='" + basicAuth + '\'' +
+                ", location='" + location + '\'' +
+                ", content='" + content + '\'' +
+                ", swaggerVersion='" + swaggerVersion + '\'' +
+                ", servicePath='" + servicePath + '\'' +
+                ", debug=" + debug +
+                ", routeProxy=" + routeProxy +
+                ", local=" + local +
+                '}';
+    }
 }
