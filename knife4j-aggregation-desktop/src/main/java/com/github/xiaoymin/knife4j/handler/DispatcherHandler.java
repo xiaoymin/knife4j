@@ -8,7 +8,6 @@
 package com.github.xiaoymin.knife4j.handler;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.aggre.core.*;
@@ -34,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.util.*;
 
@@ -202,14 +200,10 @@ public class DispatcherHandler implements HttpHandler {
             if (routeResponse.success()){
                 InputStream inputStream=routeResponse.getBody();
                 if (inputStream!=null){
-                    int read=-1;
-                    byte[] bytes=new byte[1024*1024];
-                    OutputStream outputStream=response.getOutputStream();
-                    while ((read=inputStream.read(bytes))!=-1){
-                        outputStream.write(bytes,0,read);
+                    if (response.isInIoThread()){
+                        response.dispatch(new BlockingResponseHandler(inputStream));
+                        return;
                     }
-                    IoUtil.close(inputStream);
-                    IoUtil.close(outputStream);
                 }
             }else{
                 String text=routeResponse.text();
