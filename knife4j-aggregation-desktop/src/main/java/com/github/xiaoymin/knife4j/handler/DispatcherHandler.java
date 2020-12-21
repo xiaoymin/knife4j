@@ -19,6 +19,7 @@ import com.github.xiaoymin.knife4j.aggre.core.executor.OkHttpClientExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
+import com.github.xiaoymin.knife4j.util.NetUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpHandler;
@@ -291,7 +292,7 @@ public class DispatcherHandler implements HttpHandler {
                 }
             }
         }
-        routeRequestContext.setRequestContent(http.getInputStream());
+        routeRequestContext.setRequestContent(NetUtils.getRequestInput(http));
     }
 
 
