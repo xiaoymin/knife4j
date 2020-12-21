@@ -7,9 +7,9 @@
 
 package com.github.xiaoymin.knife4j.data.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
@@ -30,13 +30,20 @@ public class DiskMetaDataResolver extends AbstractMetaDataResolver{
     @Override
     public void resolverModifyAndCreate(File file) {
         String code=file.getName();
-        String cloudProperties=file.getAbsolutePath()+File.separator+ GlobalDesktopManager.DISK_PROPERTIES;
+        String basePath=file.getAbsolutePath()+File.separator;
+        String cloudProperties=basePath+ GlobalDesktopManager.DISK_PROPERTIES;
         File cloudFile=new File(cloudProperties);
         if (cloudFile.exists()){
             Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(cloudFile);
             if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getDisk()!=null){
-                GlobalDesktopManager.me.getDiskRepository().add(code,knife4jAggregationProperties.getDisk());
-                GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.DISK);
+                DiskSetting diskSetting=knife4jAggregationProperties.getDisk();
+                if (diskSetting!=null){
+                    if (CollectionUtil.isNotEmpty(diskSetting.getRoutes())){
+                        diskSetting.getRoutes().forEach(diskRoute -> diskRoute.setLocation(basePath+diskRoute.getLocation()));
+                    }
+                    GlobalDesktopManager.me.getDiskRepository().add(code,diskSetting);
+                    GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.DISK);
+                }
             }
         }else{
             //判断是否包含json文件
