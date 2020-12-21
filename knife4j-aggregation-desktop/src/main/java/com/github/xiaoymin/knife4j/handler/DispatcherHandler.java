@@ -129,8 +129,8 @@ public class DispatcherHandler implements HttpHandler {
         response.getResponseHeaders().add(new HttpString("Content-Type"),"application/json;charset=UTF-8");
         Sender sender=response.getResponseSender();
         sender.send(content,GlobalDesktopManager.UTF_8);
-        sender.close();
-        response.endExchange();
+        //sender.close();
+        //response.endExchange();
     }
 
     /**
@@ -159,7 +159,7 @@ public class DispatcherHandler implements HttpHandler {
             map.put("code","500");
             map.put("path",server.getRequestURI());
             server.getResponseSender().send(new JSONObject(map).toString());
-            server.endExchange();
+            //server.endExchange();
         } catch (Exception e) {
             //ignore
         }
@@ -218,11 +218,7 @@ public class DispatcherHandler implements HttpHandler {
             }else{
                 String text=routeResponse.text();
                 if (StrUtil.isNotBlank(text)){
-                    Sender sender=response.getResponseSender();
-                    sender.send(text,GlobalDesktopManager.UTF_8);
-                    sender.close();
-                    //response.getResponseSender().send(text);
-                    response.endExchange();
+                    response.getResponseSender().send(text);
                 }
             }
 
