@@ -106,10 +106,6 @@ public class DispatcherHandler implements HttpHandler {
                 String groupStr=group.getFirst();
                 logger.info("group:{}",groupStr);
                 SwaggerRoute swaggerRoute=routeRepository.getRoute(code,groupStr);
-                logger.info("swaggerContent:{}");
-                if (swaggerRoute!=null){
-                    logger.info(swaggerRoute.toString());
-                }
                 writeRouteResponse(exchange,swaggerRoute==null?"":swaggerRoute.getContent());
             }else{
                 exeute(exchange);
