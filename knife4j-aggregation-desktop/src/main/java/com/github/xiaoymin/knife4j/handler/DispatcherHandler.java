@@ -95,6 +95,18 @@ public class DispatcherHandler implements HttpHandler {
                 writeDefault(exchange,"Unsupported code:"+code);
                 return;
             }
+            //判断鉴权
+            BasicAuth basicAuth=routeRepository.getAccessAuth(code);
+            if (basicAuth!=null&&basicAuth.isEnable()){
+                //校验请求头是否包含Authrize
+                //获取请求头Authorization
+                String auth=getHeader(requestHeaderMap,"Authorization");
+                if (StrUtil.isBlank(auth)){
+                    writeForbiddenCode(exchange);
+                    return;
+                }
+                String userAndPass=NetUtils.decodeBase64(auth.substring(6));
+            }
             if (StrUtil.endWith(uri, GlobalDesktopManager.OPENAPI_GROUP_ENDPOINT)) {
                 //分组接口
                 writeRouteResponse(exchange, gson.toJson(routeRepository.getRoutes(code)));
@@ -112,6 +124,16 @@ public class DispatcherHandler implements HttpHandler {
             //不支持的方法
             writeDefault(exchange,"Unsupported Method");
         }
+    }
+
+    /**
+     * Basic验证
+     * @param exchange
+     */
+    protected void writeForbiddenCode(HttpServerExchange exchange){
+        exchange.setStatusCode(401);
+        exchange.getResponseHeaders().put(new HttpString("WWW-Authenticate"),"Basic realm=\"input Document Basic userName & password \"");
+        exchange.getResponseSender().send("You do not have permission to access this resource");
     }
     /**
      * 响应服务端的内容

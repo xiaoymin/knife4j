@@ -8,8 +8,11 @@
 package com.github.xiaoymin.knife4j.util;
 
 import io.undertow.server.HttpServerExchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.Base64;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -17,6 +20,7 @@ import java.io.InputStream;
  * @since:knife4j-aggregation-desktop 1.0
  */
 public class NetUtils {
+    static Logger logger= LoggerFactory.getLogger(NetUtils.class);
 
     public static InputStream getRequestInput(HttpServerExchange http){
         InputStream inputStream=null;
@@ -26,5 +30,19 @@ public class NetUtils {
             //ignore..
         }
         return inputStream;
+    }
+    public static String decodeBase64(String source){
+        String decodeStr=null;
+        if (source!=null){
+            //BASE64Decoder decoder=new BASE64Decoder();
+            try {
+                //byte[] bytes=decoder.decodeBuffer(source);
+                byte[] bytes= Base64.getDecoder().decode(source);
+                decodeStr=new String(bytes);
+            } catch (Exception e) {
+                logger.error(e.getMessage(),e);
+            }
+        }
+        return decodeStr;
     }
 }
