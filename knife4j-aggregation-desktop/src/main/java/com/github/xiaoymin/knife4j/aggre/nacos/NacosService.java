@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.aggre.nacos;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -45,13 +46,13 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
     /**
      * nacos密钥
      */
-    private final String secret;
+    private final BasicAuth secret;
     /**
      * Nacos配置
      */
     private final NacosRoute nacosRoute;
 
-    public NacosService(String serviceUrl, String secret, NacosRoute nacosRoute) {
+    public NacosService(String serviceUrl, BasicAuth secret, NacosRoute nacosRoute) {
         this.serviceUrl = serviceUrl;
         this.secret = secret;
         this.nacosRoute = nacosRoute;

@@ -14,6 +14,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
+import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import org.slf4j.Logger;
@@ -47,7 +48,15 @@ public class NacosRepository extends AbsctractRepository{
             applyRoutes(code,nacosInstanceMap,nacosSetting);
         }
     }
-
+    @Override
+    public BasicAuth getAccessAuth(String code) {
+        BasicAuth basicAuth=null;
+        NacosSetting setting=this.nacosSettingMap.get(code);
+        if (setting!=null){
+            basicAuth=setting.getBasic();
+        }
+        return basicAuth;
+    }
     @Override
     public void remove(String code) {
         this.multipartRouteMap.remove(code);
@@ -78,7 +87,7 @@ public class NacosRepository extends AbsctractRepository{
     public Map<String,NacosInstance> initNacos(NacosSetting nacosSetting){
         Map<String,NacosInstance> nacosInstanceMap=new HashMap<>();
         List<Future<Optional<NacosInstance>>> optionalList=new ArrayList<>();
-        nacosSetting.getRoutes().forEach(nacosRoute -> optionalList.add(threadPoolExecutor.submit(new NacosService(nacosSetting.getServiceUrl(), nacosSetting.getSecret(), nacosRoute))));
+        nacosSetting.getRoutes().forEach(nacosRoute -> optionalList.add(threadPoolExecutor.submit(new NacosService(nacosSetting.getServiceUrl(), nacosSetting.getServiceAuth(), nacosRoute))));
         optionalList.stream().forEach(optionalFuture -> {
             try {
                 Optional<NacosInstance> nacosInstanceOptional=optionalFuture.get();

@@ -10,8 +10,10 @@ package com.github.xiaoymin.knife4j.aggre.repository;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
+import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import org.slf4j.Logger;
@@ -40,6 +42,16 @@ public class DiskRepository extends AbsctractRepository {
         this.diskSettingMap.remove(code);
         this.multipartRouteMap.remove(code);
         GlobalDesktopManager.me.remove(code);
+    }
+
+    @Override
+    public BasicAuth getAccessAuth(String code) {
+        BasicAuth basicAuth=null;
+        DiskSetting setting=this.diskSettingMap.get(code);
+        if (setting!=null){
+            basicAuth=setting.getBasic();
+        }
+        return basicAuth;
     }
 
     /**

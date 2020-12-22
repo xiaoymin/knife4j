@@ -71,4 +71,13 @@ public class CloudRepository extends AbsctractRepository{
         return basicAuth;
     }
 
+    @Override
+    public BasicAuth getAccessAuth(String code) {
+        BasicAuth basicAuth=null;
+        CloudSetting cloudSetting=this.cloudSettingMap.get(code);
+        if (cloudSetting!=null){
+            basicAuth=cloudSetting.getBasic();
+        }
+        return basicAuth;
+    }
 }

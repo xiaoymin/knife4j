@@ -54,6 +54,13 @@ public interface RouteRepository {
     default BasicAuth getAuth(String code,String header){return null;}
 
     /**
+     * 访问当前项目文档是否开启Basic验证
+     * @param code 项目code
+     * @return 权限code
+     */
+    default BasicAuth getAccessAuth(String code){return null;}
+
+    /**
      * 获取route中配置的Basic信息
      * @param header 请求头
      * @param commonAuthRoutes routes集合
@@ -73,7 +80,7 @@ public interface RouteRepository {
         }
         return basicAuth;
     }
-
+    
     /**
      * 移除项目文档
      * @param code
