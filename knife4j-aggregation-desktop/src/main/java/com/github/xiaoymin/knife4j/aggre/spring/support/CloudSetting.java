@@ -18,11 +18,8 @@ import java.util.List;
  * 2020/11/16 22:32
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
-public class CloudSetting {
-    /**
-     * 是否启用
-     */
-    private boolean enable;
+public class CloudSetting extends BaseSetting{
+
     /**
      * 微服务集合
      */
@@ -39,14 +36,6 @@ public class CloudSetting {
 
     public void setRouteAuth(BasicAuth routeAuth) {
         this.routeAuth = routeAuth;
-    }
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     public List<CloudRoute> getRoutes() {

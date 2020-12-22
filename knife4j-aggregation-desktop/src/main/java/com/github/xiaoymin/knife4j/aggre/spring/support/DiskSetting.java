@@ -16,19 +16,9 @@ import java.util.List;
  * 2020/11/18 11:17
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
-public class DiskSetting {
-
-    private boolean enable;
+public class DiskSetting extends BaseSetting{
 
     private List<DiskRoute> routes;
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
 
     public List<DiskRoute> getRoutes() {
         return routes;

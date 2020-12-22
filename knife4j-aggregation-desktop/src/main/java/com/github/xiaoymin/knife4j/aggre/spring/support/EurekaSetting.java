@@ -19,12 +19,7 @@ import java.util.List;
  * 2020/11/16 22:33
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
-public class EurekaSetting {
-
-    /**
-     * 是否启用
-     */
-    private boolean enable;
+public class EurekaSetting extends BaseSetting{
 
     /**
      * Eureka注册中心地址,例如(http://localhost:10000/eureka/)
@@ -50,14 +45,6 @@ public class EurekaSetting {
 
     public void setRouteAuth(BasicAuth routeAuth) {
         this.routeAuth = routeAuth;
-    }
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     public String getServiceUrl() {

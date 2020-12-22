@@ -17,21 +17,16 @@ import java.util.List;
  * 2020/11/16 22:52
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
-public class NacosSetting {
-
-    /**
-     * 是否启用
-     */
-    private boolean enable;
+public class NacosSetting extends BaseSetting{
 
     /**
      * Nacos注册中心服务地址,例如：http://192.168.0.223:8888/nacos
      */
     private String serviceUrl;
     /**
-     * 接口访问密钥
+     * 注册中心请求接口是否需要Basic验证
      */
-    private String secret;
+    private BasicAuth serviceAuth;
 
     /**
      * Nacos注册聚合服务路由集合
@@ -51,14 +46,6 @@ public class NacosSetting {
         this.routeAuth = routeAuth;
     }
 
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
     public String getServiceUrl() {
         return serviceUrl;
     }
@@ -67,12 +54,12 @@ public class NacosSetting {
         this.serviceUrl = serviceUrl;
     }
 
-    public String getSecret() {
-        return secret;
+    public BasicAuth getServiceAuth() {
+        return serviceAuth;
     }
 
-    public void setSecret(String secret) {
-        this.secret = secret;
+    public void setServiceAuth(BasicAuth serviceAuth) {
+        this.serviceAuth = serviceAuth;
     }
 
     public List<NacosRoute> getRoutes() {
