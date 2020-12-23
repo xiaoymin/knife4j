@@ -86,7 +86,8 @@ public class DispatcherHandler implements HttpHandler {
         }
         logger.info("requestURI:{}",uri);
         HeaderMap requestHeaderMap=exchange.getRequestHeaders();
-        String code=requestHeaderMap.get(GlobalDesktopManager.ROUTE_PROXY_DOCUMENT_CODE,0);
+        String code=getHeader(requestHeaderMap,GlobalDesktopManager.ROUTE_PROXY_DOCUMENT_CODE);
+        //String code=requestHeaderMap.get(GlobalDesktopManager.ROUTE_PROXY_DOCUMENT_CODE,0);
         if (StrUtil.isNotBlank(code)){
             RouteRepository routeRepository=GlobalDesktopManager.me.repository(code);
             if (routeRepository==null){
@@ -94,20 +95,36 @@ public class DispatcherHandler implements HttpHandler {
                 return;
             }
             //判断鉴权
-            BasicAuth basicAuth=routeRepository.getAccessAuth(code);
-            if (basicAuth!=null&&basicAuth.isEnable()){
-                //校验请求头是否包含Authrize
-                //获取请求头Authorization
-                String auth=getHeader(requestHeaderMap,"Authorization");
-                if (StrUtil.isBlank(auth)){
-                    NetUtils.writeForbiddenCode(exchange);
-                    return;
+            if (StrUtil.endWith(uri, GlobalDesktopManager.OPENAPI_GROUP_ENDPOINT)||StrUtil.endWith(uri,GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT)) {
+                BasicAuth basicAuth=routeRepository.getAccessAuth(code);
+                if (basicAuth!=null&&basicAuth.isEnable()){
+                    //校验请求头是否包含Authrize
+                    //获取请求头Authorization
+                    String auth=getHeader(requestHeaderMap,"Authorization");
+                    if (StrUtil.isBlank(auth)){
+                        NetUtils.writeForbiddenCode(exchange);
+                        return;
+                    }
+                    String userAndPass=NetUtils.decodeBase64(auth.substring(6));
+                    String[] upArr=userAndPass.split(":");
+                    if (upArr.length!=2){
+                        NetUtils.writeForbiddenCode(exchange);
+                        return;
+                    }else{
+                        String iptUser=upArr[0];
+                        String iptPass=upArr[1];
+                        //匹配服务端用户名及密码
+                        if (!StrUtil.equals(iptUser,basicAuth.getUsername())||!StrUtil.equals(iptPass,basicAuth.getPassword())){
+                            NetUtils.writeForbiddenCode(exchange);
+                            return;
+                        }
+                    }
                 }
-                String userAndPass=NetUtils.decodeBase64(auth.substring(6));
             }
             if (StrUtil.endWith(uri, GlobalDesktopManager.OPENAPI_GROUP_ENDPOINT)) {
                 //分组接口
                 NetUtils.renderJson(exchange, gson.toJson(routeRepository.getRoutes(code)));
+                return;
             }else if(StrUtil.endWith(uri,GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT)){
                 logger.info("分组接口instance");
                 Deque<String> group=exchange.getQueryParameters().get("group");
@@ -115,6 +132,7 @@ public class DispatcherHandler implements HttpHandler {
                 logger.info("group:{}",groupStr);
                 SwaggerRoute swaggerRoute=routeRepository.getRoute(code,groupStr);
                 NetUtils.renderJson(exchange,swaggerRoute==null?"":swaggerRoute.getContent());
+                return;
             }else{
                 exeute(exchange);
             }
@@ -123,7 +141,6 @@ public class DispatcherHandler implements HttpHandler {
             NetUtils.renderCommonJson(exchange,"Unsupported Method");
         }
     }
-
 
     /**
      * 执行请求
@@ -280,9 +297,11 @@ public class DispatcherHandler implements HttpHandler {
 
 
     private String getHeader(HeaderMap headerMap,String header){
-        HeaderValues headerValues=headerMap.get(header);
-        if (CollectionUtil.isNotEmpty(headerValues)){
-            return headerValues.getFirst();
+        if (headerMap!=null){
+            HeaderValues headerValues=headerMap.get(header);
+            if (CollectionUtil.isNotEmpty(headerValues)){
+                return headerValues.getFirst();
+            }
         }
         return null;
     }
