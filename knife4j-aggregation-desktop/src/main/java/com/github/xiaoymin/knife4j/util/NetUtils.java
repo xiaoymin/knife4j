@@ -101,9 +101,7 @@ public class NetUtils {
     public static String decodeBase64(String source){
         String decodeStr=null;
         if (source!=null){
-            //BASE64Decoder decoder=new BASE64Decoder();
             try {
-                //byte[] bytes=decoder.decodeBuffer(source);
                 byte[] bytes= Base64.getDecoder().decode(source);
                 decodeStr=new String(bytes);
             } catch (Exception e) {
