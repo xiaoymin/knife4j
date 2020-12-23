@@ -21,8 +21,6 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.github.xiaoymin.knife4j.util.NetUtils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderMap;
 import io.undertow.util.HeaderValues;
@@ -42,7 +40,6 @@ import java.util.*;
  */
 public class ProxyRequest {
     Logger logger= LoggerFactory.getLogger(ProxyRequest.class);
-    private final Gson gson=new GsonBuilder().create();
     private RouteExecutor routeExecutor;
     private Set<String> ignoreHeaders=new HashSet<>();
     /**
