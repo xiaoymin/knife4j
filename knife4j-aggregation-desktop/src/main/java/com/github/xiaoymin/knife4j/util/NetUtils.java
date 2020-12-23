@@ -7,11 +7,14 @@
 
 package com.github.xiaoymin.knife4j.util;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.io.Sender;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HeaderMap;
+import io.undertow.util.HeaderValues;
 import io.undertow.util.HttpString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +35,21 @@ public class NetUtils {
 
     static final Gson gson=new GsonBuilder().create();
 
+    /**
+     * 获取Header请求头
+     * @param headerMap
+     * @param header
+     * @return
+     */
+    public static String getHeader(HeaderMap headerMap, String header){
+        if (headerMap!=null){
+            HeaderValues headerValues=headerMap.get(header);
+            if (CollectionUtil.isNotEmpty(headerValues)){
+                return headerValues.getFirst();
+            }
+        }
+        return null;
+    }
     /**
      * 401错误
      * @param exchange
