@@ -9,7 +9,6 @@ package com.github.xiaoymin.knife4j.handler;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.aggre.core.*;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteUtils;
@@ -21,7 +20,6 @@ import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.github.xiaoymin.knife4j.util.NetUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.undertow.io.Sender;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.RedirectHandler;
@@ -92,7 +90,7 @@ public class DispatcherHandler implements HttpHandler {
         if (StrUtil.isNotBlank(code)){
             RouteRepository routeRepository=GlobalDesktopManager.me.repository(code);
             if (routeRepository==null){
-                writeDefault(exchange,"Unsupported code:"+code);
+                NetUtils.renderCommonJson(exchange,"Unsupported code:"+code);
                 return;
             }
             //判断鉴权
@@ -102,52 +100,30 @@ public class DispatcherHandler implements HttpHandler {
                 //获取请求头Authorization
                 String auth=getHeader(requestHeaderMap,"Authorization");
                 if (StrUtil.isBlank(auth)){
-                    writeForbiddenCode(exchange);
+                    NetUtils.writeForbiddenCode(exchange);
                     return;
                 }
                 String userAndPass=NetUtils.decodeBase64(auth.substring(6));
             }
             if (StrUtil.endWith(uri, GlobalDesktopManager.OPENAPI_GROUP_ENDPOINT)) {
                 //分组接口
-                writeRouteResponse(exchange, gson.toJson(routeRepository.getRoutes(code)));
+                NetUtils.renderJson(exchange, gson.toJson(routeRepository.getRoutes(code)));
             }else if(StrUtil.endWith(uri,GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT)){
                 logger.info("分组接口instance");
                 Deque<String> group=exchange.getQueryParameters().get("group");
                 String groupStr=group.getFirst();
                 logger.info("group:{}",groupStr);
                 SwaggerRoute swaggerRoute=routeRepository.getRoute(code,groupStr);
-                writeRouteResponse(exchange,swaggerRoute==null?"":swaggerRoute.getContent());
+                NetUtils.renderJson(exchange,swaggerRoute==null?"":swaggerRoute.getContent());
             }else{
                 exeute(exchange);
             }
         }else{
             //不支持的方法
-            writeDefault(exchange,"Unsupported Method");
+            NetUtils.renderCommonJson(exchange,"Unsupported Method");
         }
     }
 
-    /**
-     * Basic验证
-     * @param exchange
-     */
-    protected void writeForbiddenCode(HttpServerExchange exchange){
-        exchange.setStatusCode(401);
-        exchange.getResponseHeaders().put(new HttpString("WWW-Authenticate"),"Basic realm=\"input Document Basic userName & password \"");
-        exchange.getResponseSender().send("You do not have permission to access this resource");
-    }
-    /**
-     * 响应服务端的内容
-     * @param response 响应流
-     * @param content 内容
-     * @throws IOException 异常
-     */
-    protected void writeRouteResponse(HttpServerExchange response,String content) throws IOException {
-        response.getResponseHeaders().add(new HttpString("Content-Type"),"application/json;charset=UTF-8");
-        Sender sender=response.getResponseSender();
-        sender.send(content,GlobalDesktopManager.UTF_8);
-        //sender.close();
-        //response.endExchange();
-    }
 
     /**
      * 执行请求
@@ -164,20 +140,7 @@ public class DispatcherHandler implements HttpHandler {
             logger.error("has Error:{}",e.getMessage());
             logger.error(e.getMessage(),e);
             //write Default
-            writeDefault(exchange,e.getMessage());
-        }
-    }
-    protected void writeDefault(HttpServerExchange server,String errMsg){
-        server.getResponseHeaders().add(new HttpString("Content-Type"),"application/json;charset=UTF-8");
-        try {
-            Map<String,String> map= new HashMap<>();
-            map.put("message",errMsg);
-            map.put("code","500");
-            map.put("path",server.getRequestURI());
-            server.getResponseSender().send(new JSONObject(map).toString());
-            //server.endExchange();
-        } catch (Exception e) {
-            //ignore
+            NetUtils.renderCommonJson(exchange,e.getMessage());
         }
     }
 
