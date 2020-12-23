@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.data.impl;
 
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
+import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 
 import java.io.File;
@@ -29,8 +30,12 @@ public class EurekaMetaDataResolver extends AbstractMetaDataResolver{
         if (eurekaFile.exists()){
             Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(eurekaFile);
             if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getEureka()!=null){
-                GlobalDesktopManager.me.getEurekaRepository().add(code,knife4jAggregationProperties.getEureka());
-                GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.EUREKA);
+                EurekaSetting eurekaSetting=knife4jAggregationProperties.getEureka();
+                if (eurekaSetting!=null){
+                    eurekaSetting.setBasic(knife4jAggregationProperties.getBasicAuth());
+                    GlobalDesktopManager.me.getEurekaRepository().add(code,eurekaSetting);
+                    GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.EUREKA);
+                }
             }
         }
     }

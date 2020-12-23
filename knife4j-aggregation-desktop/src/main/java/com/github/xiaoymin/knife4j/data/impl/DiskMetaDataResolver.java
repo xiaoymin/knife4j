@@ -38,6 +38,7 @@ public class DiskMetaDataResolver extends AbstractMetaDataResolver{
             if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getDisk()!=null){
                 DiskSetting diskSetting=knife4jAggregationProperties.getDisk();
                 if (diskSetting!=null){
+                    diskSetting.setBasic(knife4jAggregationProperties.getBasicAuth());
                     if (CollectionUtil.isNotEmpty(diskSetting.getRoutes())){
                         diskSetting.getRoutes().forEach(diskRoute -> diskRoute.setLocation(basePath+diskRoute.getLocation()));
                     }

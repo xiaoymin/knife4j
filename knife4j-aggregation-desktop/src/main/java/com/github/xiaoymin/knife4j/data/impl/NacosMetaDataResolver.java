@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.data.impl;
 
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
+import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 
 import java.io.File;
@@ -28,8 +29,12 @@ public class NacosMetaDataResolver extends AbstractMetaDataResolver {
         if (nacosFile.exists()){
             Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(nacosFile);
             if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getNacos()!=null){
-                GlobalDesktopManager.me.getNacosRepository().add(code,knife4jAggregationProperties.getNacos());
-                GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.NACOS);
+                NacosSetting nacosSetting=knife4jAggregationProperties.getNacos();
+                if (nacosSetting!=null){
+                    nacosSetting.setBasic(knife4jAggregationProperties.getBasicAuth());
+                    GlobalDesktopManager.me.getNacosRepository().add(code,nacosSetting);
+                    GlobalDesktopManager.me.addRepositoryType(code, RouteRepositoryEnum.NACOS);
+                }
             }
         }
     }

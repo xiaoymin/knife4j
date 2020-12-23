@@ -7,9 +7,9 @@
 
 package com.github.xiaoymin.knife4j.data.impl;
 
-import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteRepositoryEnum;
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
+import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 
 import java.io.File;
@@ -28,9 +28,13 @@ public class CloudMetaDataResolver extends AbstractMetaDataResolver{
         if (cloudFile.exists()){
             Knife4jAggregationProperties knife4jAggregationProperties=loadFromProperties(cloudFile);
             if (knife4jAggregationProperties!=null&&knife4jAggregationProperties.getCloud()!=null){
-                GlobalDesktopManager.me.getCloudRepository().add(file.getName(),knife4jAggregationProperties.getCloud());
-                //指定当前code文档的模式
-                GlobalDesktopManager.me.addRepositoryType(file.getName(), RouteRepositoryEnum.CLOUD);
+                CloudSetting cloudSetting=knife4jAggregationProperties.getCloud();
+                if (cloudSetting!=null){
+                    cloudSetting.setBasic(knife4jAggregationProperties.getBasicAuth());
+                    GlobalDesktopManager.me.getCloudRepository().add(file.getName(),cloudSetting);
+                    //指定当前code文档的模式
+                    GlobalDesktopManager.me.addRepositoryType(file.getName(), RouteRepositoryEnum.CLOUD);
+                }
             }
         }
     }
