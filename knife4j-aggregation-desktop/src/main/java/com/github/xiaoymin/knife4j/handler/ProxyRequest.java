@@ -132,6 +132,9 @@ public class ProxyRequest {
         /*if (StrUtil.isNotBlank(this.rootPath)&&!StrUtil.equals(this.rootPath,ROUTE_BASE_PATH)){
             fromUri=fromUri.replaceFirst(this.rootPath,"");
         }*/
+        //替换项目的code路径
+        String projectContextPath="/"+code;
+        fromUri=fromUri.replaceFirst(projectContextPath,"");
         //判断servicePath
         if (StrUtil.isNotBlank(swaggerRoute.getServicePath())&&!StrUtil.equals(swaggerRoute.getServicePath(),GlobalDesktopManager.ROUTE_BASE_PATH)){
             if (StrUtil.startWith(fromUri,swaggerRoute.getServicePath())){
