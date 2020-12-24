@@ -19,6 +19,9 @@ import io.undertow.util.HttpString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.HashMap;
@@ -91,7 +94,16 @@ public class NetUtils {
     public static InputStream getRequestInput(HttpServerExchange http){
         InputStream inputStream=null;
         try{
-            inputStream=http.getInputStream();
+            final ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+            http.getRequestReceiver().receiveFullBytes((exchange, message) -> {
+                try {
+                    byteArrayOutputStream.write(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            //inputStream=http.getInputStream();
+            inputStream=new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         }catch (Exception e){
             //ignore..
         }
