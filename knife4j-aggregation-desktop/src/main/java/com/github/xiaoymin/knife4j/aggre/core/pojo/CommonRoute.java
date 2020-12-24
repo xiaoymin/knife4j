@@ -20,6 +20,10 @@ public abstract class CommonRoute {
      */
     private String name;
     /**
+     * 排序顺序
+     */
+    private int order=0;
+    /**
      * openapi本地文件路径
      */
     private String location;
@@ -42,14 +46,24 @@ public abstract class CommonRoute {
         return MD5.create().digestHex(this.toString());
     }
 
+
     @Override
     public String toString() {
-        return "Route{" +
+        return "CommonRoute{" +
                 "name='" + name + '\'' +
+                ", order=" + order +
                 ", location='" + location + '\'' +
                 ", swaggerVersion='" + swaggerVersion + '\'' +
                 ", servicePath='" + servicePath + '\'' +
                 '}';
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     public String getName() {
