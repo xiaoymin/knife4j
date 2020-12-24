@@ -43,6 +43,10 @@ public class SwaggerRoute {
      * Disk模式返回的OpenAPI规范json数据，作为结构来说不需要序列化
      */
     private transient String content;
+    /**
+     * 顺序
+     */
+    private transient int order=0;
     private String swaggerVersion;
     private String servicePath;
     private boolean debug=true;
@@ -62,6 +66,7 @@ public class SwaggerRoute {
      */
     public SwaggerRoute(DiskRoute diskRoute,String content){
         if (diskRoute!=null&&StrUtil.isNotBlank(content)){
+            this.order=diskRoute.getOrder();
             this.name=diskRoute.getName();
             if (StrUtil.isNotBlank(diskRoute.getServicePath())&&!StrUtil.equals(diskRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)){
                 //判断是否是/开头
@@ -96,6 +101,7 @@ public class SwaggerRoute {
      */
     public SwaggerRoute(CloudRoute cloudRoute){
         if (cloudRoute!=null){
+            this.order=cloudRoute.getOrder();
             this.header= cloudRoute.pkId();
             if (cloudRoute.getRouteAuth()!=null&&cloudRoute.getRouteAuth().isEnable()){
                 this.basicAuth=cloudRoute.pkId();
@@ -129,6 +135,7 @@ public class SwaggerRoute {
      */
     public SwaggerRoute(EurekaRoute eurekaRoute, EurekaInstance eurekaInstance){
         if (eurekaRoute!=null&&eurekaInstance!=null){
+            this.order=eurekaRoute.getOrder();
             this.header= eurekaRoute.pkId();
             if (eurekaRoute.getRouteAuth()!=null&&eurekaRoute.getRouteAuth().isEnable()){
                 this.basicAuth=eurekaRoute.pkId();
@@ -159,6 +166,7 @@ public class SwaggerRoute {
      */
     public SwaggerRoute(NacosRoute nacosRoute,NacosInstance nacosInstance){
         if (nacosRoute!=null&&nacosInstance!=null){
+            this.order=nacosRoute.getOrder();
             this.header= nacosRoute.pkId();
             if (nacosRoute.getRouteAuth()!=null&&nacosRoute.getRouteAuth().isEnable()){
                 this.basicAuth=nacosRoute.pkId();
@@ -271,12 +279,21 @@ public class SwaggerRoute {
         this.servicePath = servicePath;
     }
 
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
     @Override
     public String toString() {
         return "SwaggerRoute{" +
                 "name='" + name + '\'' +
                 ", uri='" + uri + '\'' +
                 ", header='" + header + '\'' +
+                ", order='" + order + '\'' +
                 ", basicAuth='" + basicAuth + '\'' +
                 ", location='" + location + '\'' +
                 ", content='" + content + '\'' +

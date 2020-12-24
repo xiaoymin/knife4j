@@ -13,10 +13,7 @@ import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -56,7 +53,9 @@ public abstract class AbsctractRepository extends PoolingConnectionManager imple
         if (StrUtil.isNotBlank(code)){
             Map<String,SwaggerRoute> routeMap=this.multipartRouteMap.get(code);
             if (CollectionUtil.isNotEmpty(routeMap)){
-                return CollectionUtil.newArrayList(routeMap.values());
+                List<SwaggerRoute> swaggerRoutes=CollectionUtil.newArrayList(routeMap.values());
+                Collections.sort(swaggerRoutes,Comparator.comparingInt(SwaggerRoute::getOrder));
+                return swaggerRoutes;
             }
         }
         return new ArrayList<>();
