@@ -12,7 +12,8 @@ import cn.hutool.core.io.watch.WatchUtil;
 import cn.hutool.core.io.watch.watchers.DelayWatcher;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
-import com.github.xiaoymin.knife4j.data.MetaDataWatcher;
+import com.github.xiaoymin.knife4j.data.commons.DataMonitorListener;
+import com.github.xiaoymin.knife4j.data.watcher.MetaDataWatcher;
 import com.github.xiaoymin.knife4j.handler.DispatcherHandler;
 import com.github.xiaoymin.knife4j.handler.StaticResourceManager;
 import com.github.xiaoymin.knife4j.util.PropertyUtil;
@@ -21,6 +22,8 @@ import io.undertow.Undertow;
 import io.undertow.predicate.Predicates;
 import io.undertow.server.handlers.PredicateHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +95,9 @@ public final class AggregationDesktopBuilder {
             staticResources.addAll(Arrays.asList("mp3","wma","flv","mp4","wmv","ogg","avi"));
             staticResources.addAll(Arrays.asList("doc","docx","xls","xlsx","ppt","txt","pdf"));
             staticResources.addAll(Arrays.asList("zip","exe","tat","ico","css","js","swf","apk","ts","m3u8","json"));
-            initWatcherMonitor();
+            //initWatcherMonitor();
+            initWatcherPoolMonitor();
+
             //初始化DispatcherHandler
             DispatcherHandler dispatcherHandler=new DispatcherHandler(ExecutorEnum.APACHE,"/");
             PredicateHandler predicateHandler= Handlers.predicate(Predicates.suffixes(staticResources.toArray(new String[]{})),Handlers.resource(resourceManager),dispatcherHandler);
@@ -128,6 +133,21 @@ public final class AggregationDesktopBuilder {
         WatchMonitor watchMonitor= WatchUtil.createAll(path,new DelayWatcher(new MetaDataWatcher(dataDir),duration));
         watchMonitor.setMaxDepth(3);
         watchMonitor.start();
+    }
+    private void initWatcherPoolMonitor(){
+        long duration=desktopConf.getDuration();
+        String dataDir=this.baseDir+File.separator+"data";
+        logger.info("initWatcherPoolMonitor-data:{}",dataDir);
+        File baseFile=new File(dataDir);
+        FileAlterationObserver observer=new FileAlterationObserver(baseFile);
+        FileAlterationMonitor monitor=new FileAlterationMonitor(2000);
+        observer.addListener(new DataMonitorListener());
+        monitor.addObserver(observer);
+        try {
+            monitor.start();
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+        }
     }
 
     private void checkAccess(){

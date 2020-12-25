@@ -52,7 +52,7 @@ public class EurekaRepository extends AbsctractRepository {
     public void add(String code,EurekaSetting eurekaSetting){
         if (eurekaSetting!=null&& CollectionUtil.isNotEmpty(eurekaSetting.getRoutes())){
             if (StrUtil.isBlank(eurekaSetting.getServiceUrl())){
-                throw new RuntimeException("Eureka ServiceUrl can't empty!!!");
+                throw new RuntimeException("Project:"+code+" properties error,Eureka ServiceUrl can't empty!!!");
             }
             //从注册中心进行初始化获取EurekaApplication
             List<EurekaApplication> eurekaApplications=initEurekaApps(eurekaSetting);

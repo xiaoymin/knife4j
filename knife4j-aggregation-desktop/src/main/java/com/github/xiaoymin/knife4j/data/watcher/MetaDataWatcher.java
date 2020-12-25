@@ -5,7 +5,7 @@
  * Developer Web Site: http://open.xiaominfo.com.
  */
 
-package com.github.xiaoymin.knife4j.data;
+package com.github.xiaoymin.knife4j.data.watcher;
 
 import cn.hutool.core.io.watch.Watcher;
 import cn.hutool.core.lang.PatternPool;
@@ -111,16 +111,19 @@ public class MetaDataWatcher implements Watcher {
      * @param metaDataResolverKey 事件
      */
     private void resolver(File targetFile, MetaDataResolverKey metaDataResolverKey){
-        MetaDataResolver metaDataResolver=MetaDataResolverFactory.resolver(targetFile);
-        if (metaDataResolver!=null){
-            metaDataResolver.resolve(targetFile,metaDataResolverKey);
-        }else{
-            //针对删除
-            metaDataResolver= MetaDataResolverFactory.resolverByCode(targetFile.getName());
+        try{
+            MetaDataResolver metaDataResolver=MetaDataResolverFactory.resolver(targetFile);
             if (metaDataResolver!=null){
                 metaDataResolver.resolve(targetFile,metaDataResolverKey);
+            }else{
+                //针对删除
+                metaDataResolver= MetaDataResolverFactory.resolverByCode(targetFile.getName());
+                if (metaDataResolver!=null){
+                    metaDataResolver.resolve(targetFile,metaDataResolverKey);
+                }
             }
-
+        }catch (Exception e){
+            logger.error("resolver exception:"+e.getMessage(),e);
         }
     }
 

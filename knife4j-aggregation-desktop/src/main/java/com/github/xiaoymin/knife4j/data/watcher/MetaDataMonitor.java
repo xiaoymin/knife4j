@@ -5,7 +5,7 @@
  * Developer Web Site: http://open.xiaominfo.com.
  */
 
-package com.github.xiaoymin.knife4j.data;
+package com.github.xiaoymin.knife4j.data.watcher;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
