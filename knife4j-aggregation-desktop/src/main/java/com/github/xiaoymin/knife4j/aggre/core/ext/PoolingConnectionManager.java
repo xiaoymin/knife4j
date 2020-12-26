@@ -48,7 +48,7 @@ public  class PoolingConnectionManager {
         @Override
         public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
             logger.info("retryRequest-->");
-            if (executionCount > 5) {
+            if (executionCount > 2) {
                 return false;
             }
             if (exception instanceof InterruptedIOException) {

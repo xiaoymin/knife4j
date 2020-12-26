@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j.aggre.nacos;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
@@ -98,8 +99,11 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
                         }
                     }
                 }
+            }else{
+                get.abort();
             }
         }
+        IoUtil.close(response);
         return Optional.empty();
     }
 }

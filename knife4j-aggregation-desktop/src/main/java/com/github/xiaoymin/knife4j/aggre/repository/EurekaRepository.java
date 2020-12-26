@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j.aggre.repository;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteUtils;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
@@ -116,6 +117,7 @@ public class EurekaRepository extends AbsctractRepository {
                     response.close();
                 }
             }
+            IoUtil.close(response);
         } catch (Exception e) {
             //error
             logger.error("load Register Metadata from Eureka Error,message:"+e.getMessage(),e);
