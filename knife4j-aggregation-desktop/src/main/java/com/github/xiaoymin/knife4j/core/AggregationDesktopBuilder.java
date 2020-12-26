@@ -140,8 +140,8 @@ public final class AggregationDesktopBuilder {
         logger.info("initWatcherPoolMonitor-data:{}",dataDir);
         File baseFile=new File(dataDir);
         FileAlterationObserver observer=new FileAlterationObserver(baseFile);
-        FileAlterationMonitor monitor=new FileAlterationMonitor(2000);
-        observer.addListener(new DataMonitorListener());
+        FileAlterationMonitor monitor=new FileAlterationMonitor(duration);
+        observer.addListener(new DataMonitorListener(dataDir));
         monitor.addObserver(observer);
         try {
             monitor.start();

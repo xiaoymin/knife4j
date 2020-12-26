@@ -9,9 +9,14 @@ package com.github.xiaoymin.knife4j.data.commons;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.PatternPool;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
+import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
+import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverFactory;
+import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +34,37 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
 
     Logger logger= LoggerFactory.getLogger(DataMonitorListener.class);
 
+    private final String dataPath;
+
     final Set<String> propertiesSet= CollectionUtil.newHashSet(GlobalDesktopManager.CLOUD_PROPERTIES,GlobalDesktopManager.DISK_PROPERTIES,GlobalDesktopManager.NACOS_PROPERTIES,GlobalDesktopManager.EUREKA_PROPERTIES);
+
+    public DataMonitorListener(String dataPath) {
+        this.dataPath = dataPath;
+        init();
+    }
+
+    public void init(){
+        ThreadUtil.execute(()->{
+            logger.info("inits data");
+            File dataFile=new File(dataPath);
+            if (dataFile.exists()){
+                File[] files=dataFile.listFiles(File::isDirectory);
+                if (ArrayUtil.isNotEmpty(files)){
+                    for (File file:files){
+                        resolver(file,MetaDataResolverKey.create);
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public void onDirectoryChange(File directory) {
         if (checkDirectoryValidate(directory)){
             //do
             logger.info("direcotyChange.directory:{}",directory.getAbsolutePath());
+            //当前目录变更,需要变量
+            resolver(directory,MetaDataResolverKey.modify);
         }
     }
 
@@ -43,6 +72,7 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
     public void onDirectoryCreate(File directory) {
         if (checkDirectoryValidate(directory)){
             logger.info("direcotyCreate.direcotory:{}",directory.getAbsolutePath());
+            resolver(directory,MetaDataResolverKey.create);
         }
     }
 
@@ -50,17 +80,21 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
     public void onDirectoryDelete(File directory) {
         if (checkDirectoryValidate(directory)){
             logger.info("direcotyDelete.direcotory:{}",directory.getAbsolutePath());
+            logger.info("移除OpenAPI文档,项目code：{}",directory.getName());
+            resolver(directory,MetaDataResolverKey.delete);
         }
     }
 
-    @Override
+   @Override
     public void onFileChange(File file) {
         if (checkFileValidate(file)){
             logger.info("fileChange.file:{}",file.getAbsolutePath());
+            //当前目录变更,需要变量
+            resolver(file.getParentFile(),MetaDataResolverKey.modify);
         }
     }
 
-    @Override
+    /* @Override
     public void onFileCreate(File file) {
         if (checkFileValidate(file)){
             logger.info("fileCreate.file:{}",file.getAbsolutePath());
@@ -73,7 +107,7 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
             logger.info("fileDelete.file:{}",file.getAbsolutePath());
         }
     }
-
+*/
     /**
      * 校验文件夹是否符合规则
      * @param directory data目录下文件夹
@@ -107,5 +141,27 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
             }
         }
         return flag;
+    }
+
+    /**
+     * 处理文件变化状态
+     * @param targetFile 目标目录
+     * @param metaDataResolverKey 事件
+     */
+    private void resolver(File targetFile, MetaDataResolverKey metaDataResolverKey){
+        try{
+            MetaDataResolver metaDataResolver= MetaDataResolverFactory.resolver(targetFile);
+            if (metaDataResolver!=null){
+                metaDataResolver.resolve(targetFile,metaDataResolverKey);
+            }else{
+                //针对删除
+                metaDataResolver= MetaDataResolverFactory.resolverByCode(targetFile.getName());
+                if (metaDataResolver!=null){
+                    metaDataResolver.resolve(targetFile,metaDataResolverKey);
+                }
+            }
+        }catch (Exception e){
+            logger.error("resolver exception:"+e.getMessage(),e);
+        }
     }
 }
