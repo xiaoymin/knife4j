@@ -40,9 +40,12 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
 
     public DataMonitorListener(String dataPath) {
         this.dataPath = dataPath;
-        init();
+        //init();
     }
 
+    /**
+     * 初始化所有
+     */
     public void init(){
         ThreadUtil.execute(()->{
             logger.info("inits data");

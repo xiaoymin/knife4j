@@ -13,6 +13,9 @@ import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
+import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
+import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverFactory;
+import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
 import com.github.xiaoymin.knife4j.util.NetUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,6 +26,7 @@ import io.undertow.util.HeaderMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -37,9 +41,11 @@ public class DispatcherHandler implements HttpHandler {
     private final Gson gson=new GsonBuilder().create();
 
     private ProxyRequest proxyRequest;
+    private final String datadir;
 
-    public DispatcherHandler(ExecutorEnum executorEnum,String rootPath){
-       this.proxyRequest=new ProxyRequest(executorEnum,rootPath);
+    public DispatcherHandler(ExecutorEnum executorEnum, String rootPath, String datadir){
+        this.datadir = datadir;
+        this.proxyRequest=new ProxyRequest(executorEnum,rootPath);
     }
 
 
@@ -56,8 +62,12 @@ public class DispatcherHandler implements HttpHandler {
         if (StrUtil.isNotBlank(code)){
             RouteRepository routeRepository=GlobalDesktopManager.me.repository(code);
             if (routeRepository==null){
-                NetUtils.renderCommonJson(exchange,"Unsupported code:"+code);
-                return;
+                //懒加载一次
+                routeRepository=lazyLoad(code);
+                if (routeRepository==null){
+                    NetUtils.renderCommonJson(exchange,"Unsupported code:"+code);
+                    return;
+                }
             }
             //判断鉴权
             if (StrUtil.endWith(uri, GlobalDesktopManager.OPENAPI_GROUP_ENDPOINT)||StrUtil.endWith(uri,GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT)) {
@@ -105,4 +115,30 @@ public class DispatcherHandler implements HttpHandler {
             NetUtils.renderCommonJson(exchange,"Unsupported Method");
         }
     }
+
+    /**
+     * 懒加载一次
+     * @param code
+     * @return
+     */
+    private RouteRepository lazyLoad(String code){
+        RouteRepository lazyRepository=null;
+        File cofile=new File(this.datadir+File.separator+code);
+        if (cofile.exists()){
+            //存在
+            try{
+                MetaDataResolver metaDataResolver= MetaDataResolverFactory.resolver(cofile);
+                if (metaDataResolver!=null){
+                    metaDataResolver.resolve(cofile, MetaDataResolverKey.create);
+                }
+            }catch (Exception e){
+                logger.error("resolver exception:"+e.getMessage(),e);
+            }finally {
+                lazyRepository=GlobalDesktopManager.me.repository(code);
+            }
+        }
+        return lazyRepository;
+    }
+
+
 }

@@ -97,9 +97,9 @@ public final class AggregationDesktopBuilder {
             staticResources.addAll(Arrays.asList("zip","exe","tat","ico","css","js","swf","apk","ts","m3u8","json"));
             //initWatcherMonitor();
             initWatcherPoolMonitor();
-
+            String dataDir=this.baseDir+File.separator+"data";
             //初始化DispatcherHandler
-            DispatcherHandler dispatcherHandler=new DispatcherHandler(ExecutorEnum.APACHE,"/");
+            DispatcherHandler dispatcherHandler=new DispatcherHandler(ExecutorEnum.APACHE,"/", dataDir);
             PredicateHandler predicateHandler= Handlers.predicate(Predicates.suffixes(staticResources.toArray(new String[]{})),Handlers.resource(resourceManager),dispatcherHandler);
             Undertow server = Undertow.builder()
                     .addHttpListener(this.desktopConf.getPort(), "0.0.0.0")
