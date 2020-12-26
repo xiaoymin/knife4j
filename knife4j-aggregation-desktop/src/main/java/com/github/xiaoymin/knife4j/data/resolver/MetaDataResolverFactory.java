@@ -15,6 +15,7 @@ import com.github.xiaoymin.knife4j.data.impl.CloudMetaDataResolver;
 import com.github.xiaoymin.knife4j.data.impl.DiskMetaDataResolver;
 import com.github.xiaoymin.knife4j.data.impl.EurekaMetaDataResolver;
 import com.github.xiaoymin.knife4j.data.impl.NacosMetaDataResolver;
+import com.github.xiaoymin.knife4j.util.CommonUtils;
 
 import java.io.File;
 
@@ -48,7 +49,7 @@ public class MetaDataResolverFactory {
                 return disk;
             }else{
                 //判断是否disk模式
-                if (ArrayUtil.isNotEmpty(path.listFiles(((dir, name) -> name.endsWith(".json")||name.endsWith(".yml"))))){
+                if (ArrayUtil.isNotEmpty(path.listFiles(((dir, name) -> CommonUtils.checkDiskFileName(name))))){
                     return disk;
                 }
             }

@@ -17,6 +17,7 @@ import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverFactory;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
+import com.github.xiaoymin.knife4j.util.CommonUtils;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,7 +140,7 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
             //2.是否以.properties结尾
             //3.是否是nacos\disk\eureka\cloud等properties配置文件
             String name=file.getName();
-            if (StrUtil.endWith(name,".json")||StrUtil.endWith(name,".yml")||propertiesSet.contains(name)){
+            if (CommonUtils.checkDiskFileName(name) ||propertiesSet.contains(name)){
                 flag=true;
             }
         }
