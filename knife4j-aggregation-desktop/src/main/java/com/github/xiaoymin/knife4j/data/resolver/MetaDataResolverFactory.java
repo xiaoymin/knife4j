@@ -48,7 +48,7 @@ public class MetaDataResolverFactory {
                 return disk;
             }else{
                 //判断是否disk模式
-                if (ArrayUtil.isNotEmpty(path.listFiles(((dir, name) -> name.endsWith(".json"))))){
+                if (ArrayUtil.isNotEmpty(path.listFiles(((dir, name) -> name.endsWith(".json")||name.endsWith(".yml"))))){
                     return disk;
                 }
             }

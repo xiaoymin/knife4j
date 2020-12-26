@@ -68,9 +68,8 @@ public class DiskRepository extends AbsctractRepository {
             Map<String, SwaggerRoute> diskRouteMap=new HashMap<>();
             for (DiskRoute diskRoute:diskSetting.getRoutes()){
                 if (StrUtil.isNotBlank(diskRoute.getLocation())){
-                    try {
-                        File file=new File(diskRoute.getLocation());
-                        InputStream resource=getResource(diskRoute.getLocation());
+                    File file=new File(diskRoute.getLocation());
+                    try (InputStream resource=getResource(diskRoute.getLocation())){
                         if (resource!=null){
                             //判断file类型是json还是yaml
                             String content="";
