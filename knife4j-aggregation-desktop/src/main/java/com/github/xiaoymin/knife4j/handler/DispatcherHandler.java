@@ -123,13 +123,14 @@ public class DispatcherHandler implements HttpHandler {
      */
     private RouteRepository lazyLoad(String code){
         RouteRepository lazyRepository=null;
-        File cofile=new File(this.datadir+File.separator+code);
-        if (cofile.exists()){
+        logger.info("lazy load repository,code:{}",code);
+        File lazyfile=new File(this.datadir+File.separator+code);
+        if (lazyfile.exists()){
             //存在
             try{
-                MetaDataResolver metaDataResolver= MetaDataResolverFactory.resolver(cofile);
+                MetaDataResolver metaDataResolver= MetaDataResolverFactory.resolver(lazyfile);
                 if (metaDataResolver!=null){
-                    metaDataResolver.resolve(cofile, MetaDataResolverKey.create);
+                    metaDataResolver.resolve(lazyfile, MetaDataResolverKey.create);
                 }
             }catch (Exception e){
                 logger.error("resolver exception:"+e.getMessage(),e);
