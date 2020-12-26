@@ -4,6 +4,9 @@
 >
 > 目前该想法作者正在开发中......
 
+::: danger 友情提示
+该文档页介绍已作废,请移步新的[文档介绍](../resources/desktop-introduction.md)
+:::
 
 Knife4jAggregationDesktop是一款基于聚合组件Knife4jAggregation特性的独立部署的聚合OpenAPI文档软件，脱离Spring、Spring Boot技术架构体系，开发者下载后独立部署启动。
 

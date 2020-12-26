@@ -5,6 +5,8 @@
 
 3、微服务聚合组件Knife4jAggregation强势发布，聚合OpenAPI文档太简单了,[详见文档](../resources/aggregation-introduction.md)
 
+4、Knife4j独立运行版本Knife4jAggregationDesktop强势发布,使用Knife4j渲染OpenAPI文档很简单,[详见文档](../resources/desktop-introduction.md)
+
 :::
 
 Java开发使用`Knife4j`目前有一些不同的版本变化,详见[版本说明](changelog.md)，主要如下：

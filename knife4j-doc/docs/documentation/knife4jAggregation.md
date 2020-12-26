@@ -1,5 +1,10 @@
 # 4.2 Knife4jAggregation微服务聚合中间件
 
+
+::: danger 友情提示
+该文档页介绍已作废,请移步新的[文档介绍](../resources/aggregation-introduction.md)
+:::
+
 Knife4j一直致力于将目前的Ui提供给更多的平台或者别的语言使用而努力，经过这么长时间的发展，Knife4j提供的轻量级聚合中间件终于诞生了，自`2.0.8`版本开始，Knife4j
 提供了`knife4j-aggregation-spring-boot-starter`组件，该组件是一个基于Spring Boot系统的starter，他提供了以下几种能力：
 
