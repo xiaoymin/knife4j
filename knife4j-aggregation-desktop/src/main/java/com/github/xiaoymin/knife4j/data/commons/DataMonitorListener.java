@@ -66,7 +66,7 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
     public void onDirectoryChange(File directory) {
         if (checkDirectoryValidate(directory)){
             //do
-            logger.info("direcotyChange.directory:{}",directory.getAbsolutePath());
+            logger.info("directoryChange.directory:{}",directory.getAbsolutePath());
             //当前目录变更,需要变量
             resolver(directory,MetaDataResolverKey.modify);
         }
@@ -75,7 +75,7 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
     @Override
     public void onDirectoryCreate(File directory) {
         if (checkDirectoryValidate(directory)){
-            logger.info("direcotyCreate.direcotory:{}",directory.getAbsolutePath());
+            logger.info("directoryCreate.direcotory:{}",directory.getAbsolutePath());
             resolver(directory,MetaDataResolverKey.create);
         }
     }
@@ -83,7 +83,7 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
     @Override
     public void onDirectoryDelete(File directory) {
         if (checkDirectoryValidate(directory)){
-            logger.info("direcotyDelete.direcotory:{}",directory.getAbsolutePath());
+            logger.info("directoryDelete.direcotory:{}",directory.getAbsolutePath());
             logger.info("Remove OpenAPI document,code：{}",directory.getName());
             resolver(directory,MetaDataResolverKey.delete);
         }
