@@ -15,11 +15,8 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
-import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.http.HttpStatus;
@@ -32,7 +29,6 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -45,8 +41,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class NacosRepository extends AbsctractRepository{
 
     Logger logger= LoggerFactory.getLogger(NacosRepository.class);
-
-    final Gson gson=new GsonBuilder().create();
 
     private final Map<String,NacosSetting> nacosSettingMap=new HashMap<>();
 
