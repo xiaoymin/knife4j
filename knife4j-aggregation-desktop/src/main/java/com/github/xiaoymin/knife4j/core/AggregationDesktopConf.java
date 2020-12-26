@@ -23,11 +23,23 @@ public class AggregationDesktopConf {
      * MetaDataMonitor组件刷新频率,单位:毫秒(data文件夹变更时触发Knife4jAggregationDesktop将从硬盘properties配置文件加载文档),默认是5000毫秒
      */
     private long duration=5000L;
+
+    /**
+     * 静态资源
+     */
+    private String statics="gif,png,bmp,jpeg,jpg,html,htm,shtml,mp3,wma,flv,mp4,wmv,ogg,avi,doc,docx,xls,xlsx,ppt,txt,pdf,zip,exe,tat,ico,css,js,swf,apk,ts,m3u8,json";
     /**
      * 基础文档Basic
      */
     private BasicAuth basic;
 
+    public String getStatics() {
+        return statics;
+    }
+
+    public void setStatics(String statics) {
+        this.statics = statics;
+    }
 
     public Integer getPort() {
         return port;

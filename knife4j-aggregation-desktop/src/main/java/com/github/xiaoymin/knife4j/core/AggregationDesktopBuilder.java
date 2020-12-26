@@ -7,6 +7,7 @@
 
 package com.github.xiaoymin.knife4j.core;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.watch.WatchMonitor;
 import cn.hutool.core.io.watch.WatchUtil;
 import cn.hutool.core.io.watch.watchers.DelayWatcher;
@@ -89,12 +90,12 @@ public final class AggregationDesktopBuilder {
             String staticPath=this.baseDir+File.separator+"webapps";
             logger.info("static directory:{}",staticPath);
             ResourceManager resourceManager=new StaticResourceManager(new File(staticPath));
-            List<String> staticResources=new ArrayList<>();
-            staticResources.addAll(Arrays.asList("gif","png","bmp","jpeg","jpg"));
+            List<String> staticResources= CollectionUtil.newArrayList(StrUtil.split(this.desktopConf.getStatics(),","));
+            /*staticResources.addAll(Arrays.asList("gif","png","bmp","jpeg","jpg"));
             staticResources.addAll(Arrays.asList("html","htm","shtml"));
             staticResources.addAll(Arrays.asList("mp3","wma","flv","mp4","wmv","ogg","avi"));
             staticResources.addAll(Arrays.asList("doc","docx","xls","xlsx","ppt","txt","pdf"));
-            staticResources.addAll(Arrays.asList("zip","exe","tat","ico","css","js","swf","apk","ts","m3u8","json"));
+            staticResources.addAll(Arrays.asList("zip","exe","tat","ico","css","js","swf","apk","ts","m3u8","json"));*/
             //initWatcherMonitor();
             initWatcherPoolMonitor();
             String dataDir=this.baseDir+File.separator+"data";
