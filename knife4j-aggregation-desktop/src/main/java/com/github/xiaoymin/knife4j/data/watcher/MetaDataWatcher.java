@@ -95,7 +95,7 @@ public class MetaDataWatcher implements Watcher {
         logger.info("onDelete:{},path:{}",context,currentPath.toString());
         File deleteFile=currentPath.resolve(context).toFile();
         if (!deleteFile.exists()&&StrUtil.equalsIgnoreCase(deleteFile.getParentFile().getName(),"data")){
-            logger.info("移除OpenAPI文档,项目code：{}",deleteFile.getName());
+            logger.info("Remove OpenAPI document,code：{}",deleteFile.getName());
             resolver(deleteFile,MetaDataResolverKey.delete);
         }
     }

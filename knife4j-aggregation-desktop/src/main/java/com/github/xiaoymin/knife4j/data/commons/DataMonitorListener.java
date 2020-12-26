@@ -84,7 +84,7 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
     public void onDirectoryDelete(File directory) {
         if (checkDirectoryValidate(directory)){
             logger.info("direcotyDelete.direcotory:{}",directory.getAbsolutePath());
-            logger.info("移除OpenAPI文档,项目code：{}",directory.getName());
+            logger.info("Remove OpenAPI document,code：{}",directory.getName());
             resolver(directory,MetaDataResolverKey.delete);
         }
     }

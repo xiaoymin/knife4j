@@ -145,7 +145,7 @@ public class ProxyRequest {
         requestUrlBuilder.append(fromUri);
         //String requestUrl=uri+fromUri;
         String requestUrl=requestUrlBuilder.toString();
-        logger.info("目标请求Url:{},请求类型:{},Host:{}",requestUrl,http.getRequestMethod().toString(),host);
+        logger.info("Target Request Url:{},Method:{},Host:{}",requestUrl,http.getRequestMethod().toString(),host);
         routeRequestContext.setOriginalUri(fromUri);
         routeRequestContext.setUrl(requestUrl);
         routeRequestContext.setMethod(http.getRequestMethod().toString());
@@ -192,7 +192,7 @@ public class ProxyRequest {
                     }
                 }
             }
-            logger.info("响应类型:{},响应编码:{}",routeResponse.getContentType(),routeResponse.getCharsetEncoding());
+            logger.info("ContentType:{},CharsetEncoding:{}",routeResponse.getContentType(),routeResponse.getCharsetEncoding());
             StringBuilder contentType=new StringBuilder();
             contentType.append(routeResponse.getContentType());
             if (routeResponse.getCharsetEncoding()!=null){

@@ -81,7 +81,7 @@ public class DispatcherHandler implements HttpHandler {
                     //校验请求头是否包含Authrize
                     //获取请求头Authorization
                     String auth=NetUtils.getHeader(requestHeaderMap,"Authorization");
-                    logger.info("服务端开启Basic鉴权,请求Authorization:{}",auth);
+                    logger.info("The server opens Basic authentication and requests Authorization:{}",auth);
                     if (StrUtil.isBlank(auth)){
                         NetUtils.writeForbiddenCode(exchange);
                         return;
@@ -106,7 +106,7 @@ public class DispatcherHandler implements HttpHandler {
                 //分组接口
                 NetUtils.renderJson(exchange, gson.toJson(routeRepository.getRoutes(code)));
             }else if(StrUtil.endWith(uri,GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT)){
-                logger.info("分组接口instance");
+                logger.info("group instance");
                 Deque<String> group=exchange.getQueryParameters().get("group");
                 String groupStr=group.getFirst();
                 logger.info("group:{}",groupStr);
