@@ -75,7 +75,7 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
     @Override
     public void onDirectoryCreate(File directory) {
         if (checkDirectoryValidate(directory)){
-            logger.info("directoryCreate.direcotory:{}",directory.getAbsolutePath());
+            logger.info("directoryCreate.directory:{}",directory.getAbsolutePath());
             resolver(directory,MetaDataResolverKey.create);
         }
     }
@@ -83,7 +83,7 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
     @Override
     public void onDirectoryDelete(File directory) {
         if (checkDirectoryValidate(directory)){
-            logger.info("directoryDelete.direcotory:{}",directory.getAbsolutePath());
+            logger.info("directoryDelete.directory:{}",directory.getAbsolutePath());
             logger.info("Remove OpenAPI document,code：{}",directory.getName());
             resolver(directory,MetaDataResolverKey.delete);
         }

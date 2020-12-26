@@ -11,7 +11,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -40,6 +39,11 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
      * Nacos获取实例列表OpenAPI接口，详情参考：https://nacos.io/zh-cn/docs/open-api.html
      */
     private static final String NACOS_INSTANCE_LIST_API="/v1/ns/instance/list";
+
+    /**
+     * 登录接口
+     */
+    public static final String NACOS_LOGIN="/v1/auth/login";
     /**
      * 服务名称
      */
@@ -47,15 +51,15 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
     /**
      * nacos密钥
      */
-    private final BasicAuth secret;
+    private final String accessToken;
     /**
      * Nacos配置
      */
     private final NacosRoute nacosRoute;
 
-    public NacosService(String serviceUrl, BasicAuth secret, NacosRoute nacosRoute) {
+    public NacosService(String serviceUrl, String accessToken, NacosRoute nacosRoute) {
         this.serviceUrl = serviceUrl;
-        this.secret = secret;
+        this.accessToken = accessToken;
         this.nacosRoute = nacosRoute;
     }
 
@@ -74,6 +78,10 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
         }
         if (StrUtil.isNotBlank(nacosRoute.getClusters())){
             params.add("clusters="+nacosRoute.getClusters());
+        }
+        //是否需要登录token
+        if (StrUtil.isNotBlank(this.accessToken)){
+            params.add("accessToken="+this.accessToken);
         }
         String parameter=CollectionUtil.join(params,"&");
         String api=serviceUrl+NACOS_INSTANCE_LIST_API+"?"+parameter;
