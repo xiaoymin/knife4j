@@ -139,7 +139,7 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
             //2.是否以.properties结尾
             //3.是否是nacos\disk\eureka\cloud等properties配置文件
             String name=file.getName();
-            if (StrUtil.endWith(name,".json")||propertiesSet.contains(name)){
+            if (StrUtil.endWith(name,".json")||StrUtil.endWith(name,".yml")||propertiesSet.contains(name)){
                 flag=true;
             }
         }
