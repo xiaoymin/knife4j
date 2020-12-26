@@ -41,9 +41,11 @@ public class DispatcherHandler implements HttpHandler {
     private final Gson gson=new GsonBuilder().create();
 
     private ProxyRequest proxyRequest;
+    private final BasicAuth allBasic;
     private final String datadir;
 
-    public DispatcherHandler(ExecutorEnum executorEnum, String rootPath, String datadir){
+    public DispatcherHandler(ExecutorEnum executorEnum, String rootPath, BasicAuth allBasic, String datadir){
+        this.allBasic = allBasic;
         this.datadir = datadir;
         this.proxyRequest=new ProxyRequest(executorEnum,rootPath);
     }
@@ -72,6 +74,9 @@ public class DispatcherHandler implements HttpHandler {
             //判断鉴权
             if (StrUtil.endWith(uri, GlobalDesktopManager.OPENAPI_GROUP_ENDPOINT)||StrUtil.endWith(uri,GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT)) {
                 BasicAuth basicAuth=routeRepository.getAccessAuth(code);
+                if (basicAuth==null){
+                    basicAuth=this.allBasic;
+                }
                 if (basicAuth!=null&&basicAuth.isEnable()){
                     //校验请求头是否包含Authrize
                     //获取请求头Authorization

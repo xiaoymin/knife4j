@@ -100,7 +100,7 @@ public final class AggregationDesktopBuilder {
             initWatcherPoolMonitor();
             String dataDir=this.baseDir+File.separator+"data";
             //初始化DispatcherHandler
-            DispatcherHandler dispatcherHandler=new DispatcherHandler(ExecutorEnum.APACHE,"/", dataDir);
+            DispatcherHandler dispatcherHandler=new DispatcherHandler(ExecutorEnum.APACHE,"/", this.desktopConf.getBasic(), dataDir);
             PredicateHandler predicateHandler= Handlers.predicate(Predicates.suffixes(staticResources.toArray(new String[]{})),Handlers.resource(resourceManager),dispatcherHandler);
             Undertow server = Undertow.builder()
                     .addHttpListener(this.desktopConf.getPort(), "0.0.0.0")
