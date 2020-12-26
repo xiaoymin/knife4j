@@ -47,8 +47,8 @@ public class DiskMetaDataResolver extends AbstractMetaDataResolver{
                 }
             }
         }else{
-            //判断是否包含json文件
-            File[] jsons=file.listFiles(((dir, name) -> name.endsWith(".json")));
+            //判断是否包含json文件或者yml文件
+            File[] jsons=file.listFiles(((dir, name) -> name.endsWith(".json")||name.endsWith(".yml")));
             if (ArrayUtil.isNotEmpty(jsons)){
                 DiskSetting diskSetting=new DiskSetting();
                 List<DiskRoute> routes=new ArrayList<>();

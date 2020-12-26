@@ -13,11 +13,13 @@ import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
-import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,6 +36,8 @@ import java.util.Map;
 public class DiskRepository extends AbsctractRepository {
 
     Logger logger= LoggerFactory.getLogger(DiskRepository.class);
+
+    private final Gson gson=new GsonBuilder().create();
 
     private final Map<String,DiskSetting> diskSettingMap=new HashMap<>();
 
@@ -65,11 +69,22 @@ public class DiskRepository extends AbsctractRepository {
             for (DiskRoute diskRoute:diskSetting.getRoutes()){
                 if (StrUtil.isNotBlank(diskRoute.getLocation())){
                     try {
+                        File file=new File(diskRoute.getLocation());
                         InputStream resource=getResource(diskRoute.getLocation());
                         if (resource!=null){
-                            String content=new String(readBytes(resource),"UTF-8");
-                            //添加分组
-                            diskRouteMap.put(diskRoute.pkId(),new SwaggerRoute(diskRoute,content));
+                            //判断file类型是json还是yaml
+                            String content="";
+                            if (StrUtil.endWith(file.getName(),".json")){
+                                content=new String(readBytes(resource),"UTF-8");
+                            }else if(StrUtil.endWith(file.getName(),".yml")){
+                                Yaml yaml=new Yaml();
+                                Object object=yaml.load(resource);
+                                content=gson.toJson(object);
+                            }
+                            if (StrUtil.isNotBlank(content)){
+                                //添加分组
+                                diskRouteMap.put(diskRoute.pkId(),new SwaggerRoute(diskRoute,content));
+                            }
                         }
                     } catch (Exception e) {
                         //
