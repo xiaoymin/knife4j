@@ -45,6 +45,7 @@ module.exports = {
                     // 这里的'/' 指的是 docs文件夹路径
                     // [以 '/' 结尾的默认指向该路径下README.md文件]
                     { text: '用户指南', link: '/documentation/' },
+                    { text: '生态衍生', link: '/resources/' },
                     { text: '实战指南', link: '/action/' },
                     { text: 'OAS规范', link: '/oas/' },
                     { text: '更新日志', link: '/changelog/' },
@@ -54,6 +55,7 @@ module.exports = {
                 sidebar: {
                     // 打开guide主页链接时生成下面这个菜单
                     '/documentation/': genDocumentationSideBar(),
+                    '/resources/':genResourcesSideBar(),
                     "/changelog/": genChangeLogSideBar(),
                     "/action/": genActionSideBar(),
                     "/oas/": genOASSideBar(),
@@ -131,6 +133,7 @@ function genActionSideBar() {
     ]
 }
 
+
 function genOASSideBar() {
     return [
         {
@@ -143,6 +146,25 @@ function genOASSideBar() {
             title: "2.OAS3",
             collapsable: false,
             children: ["oas3.md", "schema.md"]
+        }
+    ]
+}
+
+function genResourcesSideBar() {
+    return [
+        {
+            title: "1.Aggregation微服务聚合组件",
+            collapsable: false,
+            children: ["aggregation-introduction.md","aggregation-disk.md","aggregation-cloud.md","aggregation-eureka.md","aggregation-nacos.md"]
+        }, {
+            title: "2.Desktop独立渲染组件",
+            collapsable: false,
+            children: ["desktop-introduction.md","desktop-install.md","desktop-use.md","desktop-test.md"]
+        },
+        {
+            title: "3.Cloud管理平台",
+            collapsable: false,
+            children: ["cloud-introduction.md","cloud-function.md","cloud-openapi.md","cloud-use.md"]
         }
     ]
 }

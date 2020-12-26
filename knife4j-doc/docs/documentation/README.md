@@ -3,7 +3,7 @@
 
 2、使用Knife4j2.0.6及以上的版本，Spring Boot的版本必须大于等于`2.2.x`
 
-3、微服务聚合组件Knife4jAggregation强势发布，聚合OpenAPI文档太简单了,[详见文档](knife4jAggregation.md)
+3、微服务聚合组件Knife4jAggregation强势发布，聚合OpenAPI文档太简单了,[详见文档](../resources/aggregation-introduction.md)
 
 :::
 
