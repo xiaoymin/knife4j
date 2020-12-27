@@ -1,9 +1,27 @@
-::: danger 
-1、目前已经发行的Knife4j版本，Knife4j本身已经引入了springfox，开发者在使用时不用再单独引入Springfox的具体版本，否额会导致版本冲突。另外在网关层聚合(例如gateway)时，必须禁用Knife4j的增强模式
+::: danger 温馨提醒
 
-2、使用Knife4j2.0.6及以上的版本，Spring Boot的版本必须大于等于`2.2.x`
+1、微服务聚合组件Knife4jAggregation强势发布，聚合OpenAPI文档太简单了,[详见文档](aggregation-introduction.md)
 
-3、微服务聚合组件Knife4jAggregation强势发布，聚合OpenAPI文档太简单了,[详见文档](knife4jAggregation.md)
+2、Knife4j独立运行组件Knife4jAggregationDesktop强制发布,渲染OpenAPI规范就用Knife4j,[详见文档](desktop-introduction.md)
+
+3、云端服务聚合OpenAPI文档Knife4jCloud组件,使用依然很简单,[详见文档](cloud-introduction.md)
 
 :::
+
+
+## Knife4jAggregationDekstop视频介绍
+
+[第一篇 Knife4jAggregationDesktop介绍](https://www.bilibili.com/video/BV14z4y1r7e9/)
+
+[第二篇 Knige4jAggregationDesktiop安装和使用说明](https://www.bilibili.com/video/BV1xV411b7Fe/)
+
+[第三篇 Knife4jAggregationDesktop使用-Disk模式](https://www.bilibili.com/video/BV1XA411s73b/)
+
+[第四篇 Knife4jAggregationDesktop使用-Cloud模式](https://www.bilibili.com/video/BV14y4y1i7nu/)
+
+[第五篇 Knife4jAggregationDesktop使用-Eureka模式](https://www.bilibili.com/video/BV1Cy4y1i7B5/)
+
+[第六篇 Knife4jAggregationDesktop使用-Nacos模式](https://www.bilibili.com/video/BV1zh411f7pz/)
+
+
 

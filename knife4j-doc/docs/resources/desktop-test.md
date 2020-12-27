@@ -6,6 +6,8 @@
 
 ## 2.3.1 Disk模式
 
+> [视频介绍-Knife4jAggregationDesktop使用-Disk模式](https://www.bilibili.com/video/BV1XA411s73b/)
+
 1、在`data`目录下新增文件夹并且修改符合Desktop要求的名称格式，直接放入OpenAPI规范的静态JSON文件，不重启的情况下渲染正常(<font style="color:red">正常</font>)
 
 2、修改某个文件夹下的OpenAPI规范静态JSON文件,不重启的情况下等待5s后刷新文档是否变更(<font style="color:red">正常</font>)
@@ -79,6 +81,8 @@ knife4j.disk.routes[1].location=user.json
 
 ## 2.3.2 Cloud模式
 
+> [视频介绍-Knife4jAggregationDesktop使用-Cloud模式](https://www.bilibili.com/video/BV14y4y1i7nu/)
+
 1、在`data`目录下新增文件夹并且修改符合Desktop要求的名称格式，新建`cloud.properties`配置文件及配置，是否生效(<font style="color:red">正常</font>)
 
 ```properties
@@ -138,6 +142,8 @@ knife4j.cloud.routes[1].uri=http://knife4j.xiaominfo.com
 ```
 
 ## 2.3.3 Eureka模式
+
+> [视频介绍-Knife4jAggregationDesktop使用-Eureka模式](https://www.bilibili.com/video/BV1Cy4y1i7B5/)
 
 1、在`data`目录下新增文件夹并且修改符合Desktop要求的名称格式，新建`eureka.properties`配置文件及配置，是否生效(<font style="color:red">正常</font>)
 
@@ -219,6 +225,8 @@ knife4j.basicAuth.password=123456
 7、删除`eureka.properties`配置文件，文档是否还能访问(<font style="color:red">正常</font>)
 
 ## 2.3.4 Nacos模式
+
+> [视频介绍-Knife4jAggregationDesktop使用-Nacos模式](https://www.bilibili.com/video/BV1zh411f7pz/)
 
 1、在`data`目录下新增文件夹并且修改符合Desktop要求的名称格式，新建`nacos.properties`配置文件及配置，是否生效(<font style="color:red">正常</font>)
 
