@@ -2634,7 +2634,7 @@ SwaggerBootstrapUi.prototype.readSecurityContextSchemesCommon=function(securityD
     var securityArr = new Array();
     for (var j in securityDefinitions) {
       var sdobj = securityDefinitions[j];
-      if(j=="oauth2"){
+      if(sdobj.type=="oauth2"){
         //oauth2认证
         var oauth=new SwaggerBootstrapUiOAuth2(
           KUtils.getValue(sdobj,"flow","",true),
