@@ -2293,6 +2293,7 @@ export default {
     debugStreamFlag() {
       var streamFlag = false;
       var apiInfo = this.api;
+      //console.log(apiInfo);
       if (
         apiInfo.produces != undefined &&
         apiInfo.produces != null &&
@@ -2598,12 +2599,15 @@ export default {
           //否则axios会忽略请求头Content-Type
           data:applyReuqest.data
         };
-        //console.log(requestConfig);
         //需要判断是否是下载请求
-        if (this.debugStreamFlag()) {
+        /* if (this.debugStreamFlag()) {
           //流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
-        }
+        } */
+        //统一追加一个blob类型的响应,在OpenAPI3.0的规范中,没有关于produces的设定，因此无法判断当前请求是否是流的请求
+        //https://gitee.com/xiaoym/knife4j/issues/I374SP
+        requestConfig = { ...requestConfig, responseType: "blob" };
+        console.log(requestConfig);
         const debugInstance = DebugAxios.create();
         //get请求编码问题
         //https://gitee.com/xiaoym/knife4j/issues/I19C8Y
@@ -3203,19 +3207,16 @@ export default {
     setResponseBody(res) {
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
-        //console.log(res);
+        console.log(res);
         var headers = res.headers;
         if (KUtils.checkUndefined(resp)) {
           //判断是否是blob类型
-          if (resp.responseType == "blob") {
+          var contentDisposition = KUtils.propValue("content-disposition",headers,"");
+
+          if (resp.responseType == "blob"||KUtils.strNotBlank(contentDisposition)) {
             var ctype = KUtils.propValue("content-type", headers, "");
             //从响应头中得到文件名称
             var fileName = "Knife4j.txt";
-            var contentDisposition = KUtils.propValue(
-              "Content-Disposition",
-              headers,
-              ""
-            );
             if (!KUtils.strNotBlank(contentDisposition)) {
               //如果是空,获取小写的请求头
               contentDisposition = KUtils.propValue(
@@ -3296,7 +3297,10 @@ export default {
               imageFlag=imgProduceFlag;
             }
             //console.log(imgProduceFlag);
-            var downloadurl = window.URL.createObjectURL(res.data);
+            //application/octet-stream
+            let downloadurl = window.URL.createObjectURL(res.data);
+            //let blobTarget=new Blob([res.data])
+            //var downloadurl = window.URL.createObjectURL(blobTarget);
             this.responseContent = {
               text: "",
               mode: "blob",
