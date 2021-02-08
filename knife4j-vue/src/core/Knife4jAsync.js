@@ -5169,6 +5169,14 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3=function(m,swpinfo,requireArr
       minfo.example=minfo.txtValue;
     }
   }
+  //对当前参数判断format，如果是binary，修改为file类型，文件上传(OpenAPIV3会出现这种情况)
+  //https://gitee.com/xiaoym/knife4j/issues/I34NOS
+  var v3format=KUtils.propValue("format",m,"");
+  if(v3format=='binary'){
+    //文件上传
+    minfo.type="file";
+  }
+
   var jsrvalidateObject={};
   if (m.hasOwnProperty("schema")) {
     //存在schema属性,请求对象是实体类
