@@ -197,7 +197,10 @@ function createWordPlusInfo(instance, markdownCollections) {
           md.children.forEach(mdfile=>{
             markdownCollections.push('<h3>'+mdfile.title+'</h3>');
             markdownCollections.push('<div class="knife4j-word-content">');
-            markdownCollections.push(marked(mdfile.content));
+            //判断非空
+            if(KUtils.strNotBlank(mdfile.content)){
+              markdownCollections.push(marked(mdfile.content));
+            }
             markdownCollections.push('</div>');
           })
         }
