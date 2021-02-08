@@ -413,41 +413,63 @@ export default {
         text: downloadMessage
       });
       this.deepTags();
-      var instance = {
-        title: that.data.instance.title,
-        description: that.data.instance.title,
-        contact: that.data.instance.contact,
-        version: that.data.instance.version,
-        host: that.data.instance.host,
-        basePath: that.data.instance.basePath,
-        termsOfService: that.data.instance.termsOfService,
-        name: that.data.instance.name,
-        url: that.data.instance.url,
-        location: that.data.instance.location,
-        pathArrs: that.data.instance.pathArrs,
-        tags: that.tags,
-        markdownFiles: that.data.instance.markdownFiles
-      };
-      //console.info("下载markdown")
-      //console.log(instance)
-
-      //遍历得到markdown语法
-      if (this.markdownText == null || this.markdownText == "") {
-        //遍历得到markdown文本
-        //this.markdownText = markdownText(this.data.instance);
-        if(this.getCurrentI18nInstance().lang==='zh'){
-          this.markdownText = markdownText(instance);
-        }else{
-          this.markdownText = markdownTextUS(instance);
+      //构建下载对象,从缓存中读取离线文档
+      //https://gitee.com/xiaoym/knife4j/issues/I2EDI8
+      var markdownKey= this.data.instance.id+'markdownFiles';
+      this.$localStore.getItem(markdownKey).then(mdfileMap=>{
+        //console.log(mdfileMap)
+        var markdownFiles=that.data.instance.markdownFiles;
+        if(KUtils.checkUndefined(mdfileMap)){
+          if(KUtils.arrNotEmpty(markdownFiles)){
+            markdownFiles.forEach(mdgrp=>{
+              //判断是否children
+              if(KUtils.arrNotEmpty(mdgrp.children)){
+                  mdgrp.children.forEach(mdfile=>{
+                    var mdContent=mdfileMap[mdfile.id];
+                    if(KUtils.strNotBlank(mdContent)){
+                      mdfile.content=mdContent;
+                    }
+                  })
+              }
+            })
+          }
         }
-      }
-      //等待ace-editor渲染,给与充足时间
-      setTimeout(() => {
-        //下载html
-        that.downloadMarkdown(that.markdownText);
-        //关闭
-        that.$kloading.destroy();
-      }, 1000);
+        var instance = {
+          title: that.data.instance.title,
+          description: that.data.instance.title,
+          contact: that.data.instance.contact,
+          version: that.data.instance.version,
+          host: that.data.instance.host,
+          basePath: that.data.instance.basePath,
+          termsOfService: that.data.instance.termsOfService,
+          name: that.data.instance.name,
+          url: that.data.instance.url,
+          location: that.data.instance.location,
+          pathArrs: that.data.instance.pathArrs,
+          tags: that.tags,
+          markdownFiles: markdownFiles
+        };
+        //console.info("下载markdown")
+        //console.log(instance)
+
+        //遍历得到markdown语法
+        if (this.markdownText == null || this.markdownText == "") {
+          //遍历得到markdown文本
+          //this.markdownText = markdownText(this.data.instance);
+          if(this.getCurrentI18nInstance().lang==='zh'){
+            this.markdownText = markdownText(instance);
+          }else{
+            this.markdownText = markdownTextUS(instance);
+          }
+        }
+        //等待ace-editor渲染,给与充足时间
+        setTimeout(() => {
+          //下载html
+          that.downloadMarkdown(that.markdownText);
+          //关闭
+          that.$kloading.destroy();
+        }, 1000);
+      })
     },
     triggerDownloadHtml() {
       let that = this;

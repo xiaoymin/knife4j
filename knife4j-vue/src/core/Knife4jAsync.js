@@ -1096,9 +1096,12 @@ SwaggerBootstrapUi.prototype.openV3Documents=function(data){
           var swuFileChildrens=mdTag['children'];
           swuFileChildrens.forEach(mdFile=>{
             var mdf=new SwaggerBootstrapUiMarkdownFile(mdFile.title);
+            var mdContentTmp=KUtils.getValue(mdFile,'content','',true);
+            //离线文档缓存
+            //mdf.content=mdContentTmp;
             swuFileTag.children.push(mdf);
             //缓存对象
-            currentInstanceMarkdownFileMap[mdf.id]=KUtils.getValue(mdFile,'content','',true);
+            currentInstanceMarkdownFileMap[mdf.id]=mdContentTmp;
           })
         }
         that.currentInstance.markdownFiles.push(swuFileTag);
@@ -6713,6 +6716,9 @@ function SwaggerBootstrapUiMarkdownTag(name){
 function SwaggerBootstrapUiMarkdownFile(title){
   this.id='document-' + md5(title)
   this.title=title;
+  //添加内容,离线文件导出时需要
+  //add by xiaoymin 2021年2月8日 15:34:41
+  this.content=null;
 }
 
 /**

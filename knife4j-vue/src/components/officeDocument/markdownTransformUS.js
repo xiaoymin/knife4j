@@ -58,8 +58,16 @@ function createPlusInfo(instance, markdownCollections) {
       markdownCollections.push('# appendix');
       instance.markdownFiles.forEach(function (md) {
         markdownLines(markdownCollections);
-        markdownCollections.push('## ' + md.title);
-        markdownCollections.push(md.content);
+        //判断是否包含children
+        if(KUtils.arrNotEmpty(md.children)){
+          markdownCollections.push('## ' + md.name);
+          markdownLines(markdownCollections);
+
+          md.children.forEach(mdfile=>{
+            markdownCollections.push('### ' + mdfile.title);
+            markdownCollections.push(mdfile.content);
+          })
+        }
       })
     }
   }
