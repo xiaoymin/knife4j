@@ -55,6 +55,7 @@
 import constant from "@/store/constants";
 import KUtils from "@/core/utils";
 import DebugAxios from "axios";
+import qs from 'qs'
 export default {
   props: {
     data: {
@@ -187,10 +188,11 @@ export default {
       }else if(this.oauth.grantType=="password"){
         //密码模式
         const debugInstance = DebugAxios.create();
-        var formData = new FormData();
-        formData.append("grant_type","password");
-        formData.append("username",this.oauth.username);
-        formData.append("password",this.oauth.password);
+        var formData = {
+          "grant_type":"password",
+          "username":this.oauth.username,
+          "password":this.oauth.password,
+        }
         var requestConfig = {
           url: this.oauth.tokenUrl,
           method: "post",
@@ -200,7 +202,7 @@ export default {
           },
           params: null,
           timeout: 0,
-          data:formData
+          data: qs.stringify(formData)
         };
         debugInstance
           .request(requestConfig)
@@ -223,8 +225,9 @@ export default {
       }else if(this.oauth.grantType=="application"||this.oauth.grantType=="client_credentials"){
         //客户端模式
         const debugInstance = DebugAxios.create();
-        var formData = new FormData();
-        formData.append("grant_type","client_credentials");
+        var formData = {
+          "grant_type":"client_credentials"
+        }
         var requestConfig = {
           url: this.oauth.tokenUrl,
           method: "post",
@@ -234,7 +237,7 @@ export default {
           },
           params: null,
           timeout: 0,
-          data:formData
+          data: qs.stringify(formData)
         };
         debugInstance
           .request(requestConfig)
