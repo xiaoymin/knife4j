@@ -191,12 +191,16 @@ function createWordPlusInfo(instance, markdownCollections) {
       instance.markdownFiles.forEach(function (md,mdIndex) {
         wordLines(markdownCollections);
         var mindex=mdIndex+1;
-        var mdTitle='3.'+mindex+md.title;
+        var mdTitle='3.'+mindex+md.name;
         markdownCollections.push('<h2>'+mdTitle+'</h2>');
-        markdownCollections.push('<div class="knife4j-word-content">');
-        //markdownCollections.push('## ' + md.title);
-        markdownCollections.push(marked(md.content));
-        markdownCollections.push('</div>');
+        if(KUtils.arrNotEmpty(md.children)){
+          md.children.forEach(mdfile=>{
+            markdownCollections.push('<h3>'+mdfile.title+'</h3>');
+            markdownCollections.push('<div class="knife4j-word-content">');
+            markdownCollections.push(marked(mdfile.content));
+            markdownCollections.push('</div>');
+          })
+        }
       })
     }
   }
