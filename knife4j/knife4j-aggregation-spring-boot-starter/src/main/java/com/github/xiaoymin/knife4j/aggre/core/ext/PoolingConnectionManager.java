@@ -47,7 +47,9 @@ public  class PoolingConnectionManager {
     private HttpRequestRetryHandler retryHandler = new HttpRequestRetryHandler() {
         @Override
         public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-            logger.info("retryRequest-->");
+            if (logger.isDebugEnabled()){
+                logger.debug("retryRequest-->");
+            }
             if (executionCount > 5) {
                 return false;
             }

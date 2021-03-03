@@ -71,7 +71,9 @@ public class EurekaRepository extends AbsctractRepository {
         }
         requestUrl.append("apps");
         String eurekaMetaApi=requestUrl.toString();
-        logger.info("Eureka meta api:{}",eurekaMetaApi);
+        if (logger.isDebugEnabled()){
+            logger.debug("Eureka meta api:{}",eurekaMetaApi);
+        }
         HttpGet get=new HttpGet(eurekaMetaApi);
         //指定服务端响应JSON格式
         get.addHeader("Accept","application/json");
@@ -83,9 +85,14 @@ public class EurekaRepository extends AbsctractRepository {
             CloseableHttpResponse response=getClient().execute(get);
             if (response!=null){
                 int statusCode=response.getStatusLine().getStatusCode();
-                logger.info("Eureka Response code:{}",statusCode);
+                if (logger.isDebugEnabled()){
+                    logger.debug("Eureka Response code:{}",statusCode);
+                }
                 if (statusCode== HttpStatus.SC_OK){
                     String content= EntityUtils.toString(response.getEntity(),"UTF-8");
+                    if (logger.isDebugEnabled()){
+                        logger.debug("Eureka Response Content:{}",content);
+                    }
                     if (StrUtil.isNotBlank(content)){
                         JsonElement jsonElement= JsonParser.parseString(content);
                         if (jsonElement!=null&&jsonElement.isJsonObject()){

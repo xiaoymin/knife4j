@@ -23,37 +23,6 @@ import io.swagger.models.Swagger;
 @Ignore
 public class JFinalSwaggerController extends Controller{
 
-    @ActionKey(value = "/swagger-resources/configuration/ui")
-    public void config(){
-        renderJson("{\n" +
-                "    \"deepLinking\": true,\n" +
-                "    \"displayOperationId\": false,\n" +
-                "    \"defaultModelsExpandDepth\": 1,\n" +
-                "    \"defaultModelExpandDepth\": 1,\n" +
-                "    \"defaultModelRendering\": \"example\",\n" +
-                "    \"displayRequestDuration\": false,\n" +
-                "    \"docExpansion\": \"none\",\n" +
-                "    \"filter\": false,\n" +
-                "    \"operationsSorter\": \"alpha\",\n" +
-                "    \"showExtensions\": false,\n" +
-                "    \"tagsSorter\": \"alpha\",\n" +
-                "    \"validatorUrl\": \"\",\n" +
-                "    \"apisSorter\": \"alpha\",\n" +
-                "    \"jsonEditor\": false,\n" +
-                "    \"showRequestHeaders\": false,\n" +
-                "    \"supportedSubmitMethods\": [\n" +
-                "        \"get\",\n" +
-                "        \"put\",\n" +
-                "        \"post\",\n" +
-                "        \"delete\",\n" +
-                "        \"options\",\n" +
-                "        \"head\",\n" +
-                "        \"patch\",\n" +
-                "        \"trace\"\n" +
-                "    ]\n" +
-                "}");
-    }
-
     @ActionKey(value = "/swagger-resources")
     public void group(){
         renderJson(JFinalSwagger.me.getAllDocumentation());

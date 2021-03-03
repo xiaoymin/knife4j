@@ -33,7 +33,9 @@ public class ApacheClientExecutor extends PoolingConnectionManager implements Ro
 
     private HttpUriRequest buildRequest(RouteRequestContext routeContext){
         RequestBuilder builder = RequestBuilder.create(routeContext.getMethod());
-        logger.info("ApacheClient Uri:{}",routeContext.getUrl());
+        if (logger.isDebugEnabled()){
+            logger.debug("ApacheClient Uri:{}",routeContext.getUrl());
+        }
         builder.setUri(routeContext.getUrl());
         if (CollectionUtil.isNotEmpty(routeContext.getHeaders())){
             //构建Header

@@ -54,10 +54,10 @@ public class Knife4jRouteProxyFilter implements Filter {
                 writeRouteResponse(response,swaggerRoute==null?"":swaggerRoute.getContent());
                 //响应当前服务disk-实例
             }else{
-                logger.info("Current Request:{}",uri);
-                logger.info("当前请求是Proxy请求");
+                if (logger.isDebugEnabled()){
+                    logger.debug("Current Request URI:{},Proxy Request",uri);
+                }
                 routeDispatcher.execute(request,response);
-                logger.info("执行完毕");
             }
         }else{
             //go on

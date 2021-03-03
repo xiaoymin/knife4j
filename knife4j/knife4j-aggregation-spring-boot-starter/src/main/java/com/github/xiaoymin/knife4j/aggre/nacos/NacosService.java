@@ -75,14 +75,22 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
         }
         String parameter=CollectionUtil.join(params,"&");
         String api=serviceUrl+NACOS_INSTANCE_LIST_API+"?"+parameter;
+        if (logger.isDebugEnabled()){
+            logger.debug("Nacos API:{}",api);
+        }
         HttpGet get=new HttpGet(api);
         CloseableHttpResponse response=getClient().execute(get);
         if (response!=null){
             int statusCode=response.getStatusLine().getStatusCode();
-            logger.info("Nacos Response Status:{}",statusCode);
+            if (logger.isDebugEnabled()){
+                logger.debug("Nacos Response Status:{}",statusCode);
+            }
             if (statusCode== HttpStatus.SC_OK){
                 String content= EntityUtils.toString(response.getEntity(),"UTF-8");
                 if (StrUtil.isNotBlank(content)){
+                    if (logger.isDebugEnabled()){
+                        logger.debug("Response Content:{}",content);
+                    }
                     JsonElement jsonElement=JsonParser.parseString(content);
                     if (jsonElement!=null&&jsonElement.isJsonObject()){
                         JsonElement instances=jsonElement.getAsJsonObject().get("hosts");

@@ -146,7 +146,9 @@ public class RouteDispatcher {
                     }
                 }
             }
-            logger.info("响应类型:{},响应编码:{}",routeResponse.getContentType(),routeResponse.getCharsetEncoding());
+            if (logger.isDebugEnabled()){
+                logger.debug("响应类型:{},响应编码:{}",routeResponse.getContentType(),routeResponse.getCharsetEncoding());
+            }
             response.setContentType(routeResponse.getContentType());
             if (routeResponse.getContentLength()>0){
                 response.setContentLengthLong(routeResponse.getContentLength());
@@ -225,7 +227,9 @@ public class RouteDispatcher {
         requestUrlBuilder.append(fromUri);
         //String requestUrl=uri+fromUri;
         String requestUrl=requestUrlBuilder.toString();
-        logger.info("目标请求Url:{},请求类型:{},Host:{}",requestUrl,request.getMethod(),host);
+        if (logger.isDebugEnabled()){
+            logger.debug("目标请求Url:{},请求类型:{},Host:{}",requestUrl,request.getMethod(),host);
+        }
         routeRequestContext.setOriginalUri(fromUri);
         routeRequestContext.setUrl(requestUrl);
         routeRequestContext.setMethod(request.getMethod());

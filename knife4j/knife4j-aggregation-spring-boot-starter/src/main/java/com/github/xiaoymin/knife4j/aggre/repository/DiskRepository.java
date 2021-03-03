@@ -70,9 +70,11 @@ public class DiskRepository extends AbsctractRepository {
                 resource=new FileSystemResource(new File(location)).getInputStream();
             }
         }catch (Exception e){
-            logger.error("read from resource error:"+e.getMessage());
             try{
-                logger.info("read from local file:{}",location);
+                if (logger.isDebugEnabled()){
+                    logger.error("read from resource error:"+e.getMessage());
+                    logger.debug("read from local file:{}",location);
+                }
                 //从本地读取
                 resource=new FileSystemResource(new File(location)).getInputStream();
             }catch (Exception ef){
