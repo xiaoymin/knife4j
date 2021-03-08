@@ -7,6 +7,8 @@
 
 package com.github.xiaoymin.knife4j.aggre.core;
 
+import org.apache.http.Header;
+
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -22,7 +24,7 @@ public interface RouteResponse {
      * 获取响应头
      * @return
      */
-    Map<String,String> getHeaders();
+    Header[] getHeaders();
 
     /**
      * 是否请求成功

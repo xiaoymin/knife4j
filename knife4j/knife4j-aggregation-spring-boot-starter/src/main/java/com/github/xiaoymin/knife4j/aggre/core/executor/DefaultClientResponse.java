@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.aggre.core.executor;
 
 
 import com.github.xiaoymin.knife4j.aggre.core.RouteResponse;
+import org.apache.http.Header;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -33,7 +34,7 @@ public class DefaultClientResponse implements RouteResponse {
     }
 
     @Override
-    public Map<String, String> getHeaders() {
+    public Header[] getHeaders() {
         return null;
     }
 

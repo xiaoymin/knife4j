@@ -48,17 +48,8 @@ public class ApacheClientResponse implements RouteResponse {
     }
 
     @Override
-    public Map<String, String> getHeaders() {
-        Header[] headers= this.httpResponse.getAllHeaders();
-        Map<String,String> headerMaps=new HashMap<>();
-        if (ArrayUtil.isNotEmpty(headers)){
-            for (Header header:headers){
-                if (header!=null){
-                    headerMaps.put(header.getName(),header.getValue());
-                }
-            }
-        }
-        return headerMaps;
+    public Header[] getHeaders() {
+        return this.httpResponse.getAllHeaders();
     }
 
     @Override

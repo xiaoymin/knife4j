@@ -17,6 +17,7 @@ import com.github.xiaoymin.knife4j.aggre.core.executor.ApacheClientExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.executor.OkHttpClientExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,11 +139,10 @@ public class RouteDispatcher {
      */
     protected void writeResponseHeader(RouteResponse routeResponse,HttpServletResponse response){
         if (routeResponse!=null){
-            if (CollectionUtil.isNotEmpty(routeResponse.getHeaders())){
-                for (Map.Entry<String,String> entry:routeResponse.getHeaders().entrySet()){
-                    //logger.info("{}:{}",entry.getKey(),entry.getValue());
-                    if (!StrUtil.equalsIgnoreCase(entry.getKey(),"Transfer-Encoding")){
-                        response.addHeader(entry.getKey(),entry.getValue());
+            if (routeResponse.getHeaders() != null && routeResponse.getHeaders().length > 0){
+                for (Header header : routeResponse.getHeaders()){
+                    if (!StrUtil.equalsIgnoreCase(header.getName(), "Transfer-Encoding")){
+                        response.addHeader(header.getName(), header.getValue());
                     }
                 }
             }
