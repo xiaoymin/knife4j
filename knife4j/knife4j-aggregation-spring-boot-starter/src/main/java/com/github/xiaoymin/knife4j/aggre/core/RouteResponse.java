@@ -7,11 +7,11 @@
 
 package com.github.xiaoymin.knife4j.aggre.core;
 
-import org.apache.http.Header;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.HeaderWrapper;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Map;
+import java.util.List;
 
 /***
  *
@@ -24,7 +24,7 @@ public interface RouteResponse {
      * 获取响应头
      * @return
      */
-    Header[] getHeaders();
+    List<HeaderWrapper> getHeaders();
 
     /**
      * 是否请求成功
