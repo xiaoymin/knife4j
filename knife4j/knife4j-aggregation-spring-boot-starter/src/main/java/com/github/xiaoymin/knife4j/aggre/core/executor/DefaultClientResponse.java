@@ -9,12 +9,13 @@ package com.github.xiaoymin.knife4j.aggre.core.executor;
 
 
 import com.github.xiaoymin.knife4j.aggre.core.RouteResponse;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.HeaderWrapper;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
+import java.util.List;
 
 /***
  *
@@ -33,7 +34,7 @@ public class DefaultClientResponse implements RouteResponse {
     }
 
     @Override
-    public Map<String, String> getHeaders() {
+    public List<HeaderWrapper> getHeaders() {
         return null;
     }
 
