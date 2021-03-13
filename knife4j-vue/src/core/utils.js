@@ -409,6 +409,16 @@ const utils = {
     var reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
     return reg.test(keyword);
   },
+  json5stringifyNoFormat:function(rtext){
+    var ret = null;
+    try {
+      ret = JSON5.stringify(rtext);
+    } catch (err) {
+      //console(err)
+      ret = JSON.stringify(rtext);
+    }
+    return ret;
+  },
   json5stringify: function (rtext) {
     var ret = null;
     try {
@@ -592,7 +602,8 @@ const utils = {
       return v;
     }else{
       if(typeof(v)=='object'){
-        v=this.json5stringify(v);
+        //v=this.json5stringify(v);
+        v=this.json5stringifyNoFormat(v);
       }
     }
     return v;
