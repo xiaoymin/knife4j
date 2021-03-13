@@ -225,8 +225,10 @@ const utils = {
         var pathKeys=Object.keys(paths||{});
         var pathKeyLength=pathKeys.length;
         var num=0;
+        //https://gitee.com/xiaoym/knife4j/issues/I3B5BK
+        let basePathStr=basePath+"/";
         for(var i=0;i<pathKeys.length;i++){
-          if(pathKeys[i].startsWith(basePath)){
+          if(pathKeys[i].startsWith(basePathStr)){
             num++;
           }
         }
