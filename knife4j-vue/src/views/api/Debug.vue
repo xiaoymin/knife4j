@@ -2233,13 +2233,21 @@ export default {
                   //判断是否是urlPath参数
                   if (this.debugPathFlag) {
                     if (this.debugPathParams.indexOf(form.name) == -1) {
-                      formData.append(form.name, form.content);
+                      //非空判断
+                      //https://gitee.com/xiaoym/knife4j/issues/I3AHDQ
+                      if(KUtils.strNotBlank(form.content)){
+                        formData.append(form.name, form.content);
+                      }
                     } else {
                       var replaceRege = "{" + form.name + "}";
                       url = url.replace(replaceRege, form.content);
                     }
                   } else {
-                    formData.append(form.name, form.content);
+                    //非空判断
+                    //https://gitee.com/xiaoym/knife4j/issues/I3AHDQ
+                    if(KUtils.strNotBlank(form.content)){
+                      formData.append(form.name, form.content);
+                    }
                   }
                 } else {
                   //文件
@@ -3207,7 +3215,7 @@ export default {
     setResponseBody(res) {
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
-        console.log(res);
+        //console.log(res);
         var headers = res.headers;
         if (KUtils.checkUndefined(resp)) {
           //判断是否是blob类型
