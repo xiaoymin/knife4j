@@ -4,7 +4,7 @@
       <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider" style="background: #1e282c;">
         <div class="knife4j-logo-data" key="logo" v-if="!collapsed&&settings.enableGroup">
           <a to="/" style="float:left;">
-            <a-select show-search :value="defaultServiceOption" style="width: 300px" :options="serviceOptions" @change="serviceChange">
+            <a-select show-search :value="defaultServiceOption" style="width: 300px" :options="serviceOptions" optionFilterProp="children" @change="serviceChange">
             </a-select>
           </a>
         </div>
