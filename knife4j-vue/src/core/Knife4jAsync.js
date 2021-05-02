@@ -981,19 +981,39 @@ SwaggerBootstrapUi.prototype.openSettings=function(data){
         that.store.dispatch('globals/setLang', i18n);
       },500)
     }else{
+      //此处逻辑存在问题,如果开发者通过界面中的个性化设置保存了部分操作,则需要继承开发者的配置(2021/05/02)
+      //https://gitee.com/xiaoym/knife4j/issues/I27CN8
+      that.setDefaultSettings();
       //不存在，直接移除缓存
-      that.localStore.setItem(Constants.globalSettingsKey,Constants.defaultSettings);
+      //that.localStore.setItem(Constants.globalSettingsKey,Constants.defaultSettings);
       //当前settings设置为默认值
-      this.settings=Constants.defaultSettings;
+      //this.settings=Constants.defaultSettings;
     }
   }else{
+    that.setDefaultSettings();
     //不存在，直接移除缓存
-    that.localStore.setItem(Constants.globalSettingsKey,Constants.defaultSettings);
+    //that.localStore.setItem(Constants.globalSettingsKey,Constants.defaultSettings);
     //当前settings设置为默认值
-    this.settings=Constants.defaultSettings;
+    //this.settings=Constants.defaultSettings;
   }
 
 }
+
+/**
+ * https://gitee.com/xiaoym/knife4j/issues/I27CN8
+ */
+SwaggerBootstrapUi.prototype.setDefaultSettings=function(){
+    //此处逻辑存在问题,如果开发者通过界面中的个性化设置保存了部分操作,则需要继承开发者的配置(2021/05/02)
+    //https://gitee.com/xiaoym/knife4j/issues/I27CN8
+    //不存在，直接移除缓存
+    let extSettings=this.settings;
+    let defaultSettings=Constants.defaultSettings;
+    var mergeSetting=Object.assign({},defaultSettings,extSettings);
+    this.localStore.setItem(Constants.globalSettingsKey,mergeSetting);
+    //当前settings设置为默认值
+    this.settings=mergeSetting;
+}
+
 SwaggerBootstrapUi.prototype.openV3Settings=function(data){
   var that=this;
   //判断是否包含extensions的增强
@@ -1025,15 +1045,10 @@ SwaggerBootstrapUi.prototype.openV3Settings=function(data){
       }
     }else{
       //不存在，直接移除缓存
-      that.localStore.setItem(Constants.globalSettingsKey,Constants.defaultSettings);
-      //当前settings设置为默认值
-      this.settings=Constants.defaultSettings;
+      that.setDefaultSettings();
     }
   }else{
-    //不存在，直接移除缓存
-    that.localStore.setItem(Constants.globalSettingsKey,Constants.defaultSettings);
-    //当前settings设置为默认值
-    this.settings=Constants.defaultSettings;
+    that.setDefaultSettings();
   }
 
 }
