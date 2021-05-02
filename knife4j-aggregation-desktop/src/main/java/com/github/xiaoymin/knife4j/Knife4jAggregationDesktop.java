@@ -23,8 +23,8 @@ public class Knife4jAggregationDesktop {
 
     public static void main(String[] args) {
         //dev
-        //new AggregationDesktopBuilder("F:\\开发项目\\开源中国\\knife4j\\Knife4j-Aggregation\\软件目录").start();
+        new AggregationDesktopBuilder("F:\\开发项目\\开源中国\\knife4j\\Knife4j-Aggregation\\软件目录").start();
         //prod
-        new AggregationDesktopBuilder().start();
+        //new AggregationDesktopBuilder().start();
     }
 }
