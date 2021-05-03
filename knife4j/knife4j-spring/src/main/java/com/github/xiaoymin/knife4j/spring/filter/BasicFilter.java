@@ -31,6 +31,7 @@ public class BasicFilter{
         urlFilters=new ArrayList<>();
         urlFilters.add(Pattern.compile(".*?/doc\\.html.*",Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/v2/api-docs.*",Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/v3/api-docs.*",Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/v2/api-docs-ext.*",Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/swagger-resources.*",Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/swagger-ui\\.html.*",Pattern.CASE_INSENSITIVE));
