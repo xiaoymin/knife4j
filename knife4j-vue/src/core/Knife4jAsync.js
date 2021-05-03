@@ -523,6 +523,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       group.swaggerVersion
     )
     g.url = group.url
+    //测试api接口JSON
     //g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
@@ -3178,13 +3179,18 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
       } else {
         _lititle = tag.name;
       }
+      //如果当前tag分组下不存在接口,当前tag的path不允许点击,否则会出现白板
+      //https://gitee.com/xiaoym/knife4j/issues/I2CVTF
+      //modified by xiaoymin 2021年5月3日 19:40:41
       menuArr.push({
         groupName: groupName,
         groupId: groupId,
         key: md5(_lititle),
         name: _lititle,
         icon: 'icon-APIwendang',
-        path: groupName + "/" + tag.name
+        //path: groupName + "/" + tag.name
+        //不存在接口,直接指向home主页
+        path:""
       })
     } else {
       if (that.settings.showTagStatus) {
