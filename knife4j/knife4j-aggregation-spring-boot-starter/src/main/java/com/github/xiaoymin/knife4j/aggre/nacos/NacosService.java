@@ -43,17 +43,18 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
      */
     private final String serviceUrl;
     /**
-     * nacos密钥
+     * Nacos注册中心鉴权,参考issue：https://gitee.com/xiaoym/knife4j/issues/I28IF9
+     * since 2.0.9
      */
-    private final String secret;
+    private final String accessToken;
     /**
      * Nacos配置
      */
     private final NacosRoute nacosRoute;
 
-    public NacosService(String serviceUrl, String secret, NacosRoute nacosRoute) {
+    public NacosService(String serviceUrl, String accessToken, NacosRoute nacosRoute) {
         this.serviceUrl = serviceUrl;
-        this.secret = secret;
+        this.accessToken = accessToken;
         this.nacosRoute = nacosRoute;
     }
 
@@ -72,6 +73,10 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
         }
         if (StrUtil.isNotBlank(nacosRoute.getClusters())){
             params.add("clusters="+nacosRoute.getClusters());
+        }
+        //Nacos鉴权 since2.0.9
+        if (StrUtil.isNotBlank(this.accessToken)){
+            params.add("accessToken="+this.accessToken);
         }
         String parameter=CollectionUtil.join(params,"&");
         String api=serviceUrl+NACOS_INSTANCE_LIST_API+"?"+parameter;
@@ -105,8 +110,11 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
                         }
                     }
                 }
+            }else{
+                get.abort();
             }
         }
         return Optional.empty();
     }
+
 }

@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
+import com.github.xiaoymin.knife4j.aggre.nacos.NacosOpenApi;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute;
 
 import java.util.List;
@@ -28,6 +29,11 @@ public class NacosSetting {
      * Nacos注册中心服务地址,例如：http://192.168.0.223:8888/nacos
      */
     private String serviceUrl;
+    /**
+     * Nacos注册中心鉴权,参考issue：https://gitee.com/xiaoym/knife4j/issues/I28IF9
+     * since 2.0.9
+     */
+    private BasicAuth serviceAuth;
     /**
      * 接口访问密钥
      */
@@ -81,5 +87,20 @@ public class NacosSetting {
 
     public void setRoutes(List<NacosRoute> routes) {
         this.routes = routes;
+    }
+
+    public BasicAuth getServiceAuth() {
+        return serviceAuth;
+    }
+
+    public void setServiceAuth(BasicAuth serviceAuth) {
+        this.serviceAuth = serviceAuth;
+    }
+
+    public void initAccessToken(){
+        //判断当前Nacos是否需要鉴权访问
+        if (this.serviceAuth!=null&&this.serviceAuth.isEnable()){
+            setSecret(NacosOpenApi.me().getAccessToken(this.serviceUrl,this.serviceAuth));
+        }
     }
 }

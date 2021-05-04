@@ -13,6 +13,7 @@ import cn.hutool.core.thread.ThreadUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
+import com.github.xiaoymin.knife4j.aggre.nacos.NacosOpenApi;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
 import org.slf4j.Logger;
@@ -62,6 +63,7 @@ public class NacosRepository extends AbsctractRepository{
     }
     public void initNacos(NacosSetting nacosSetting){
         List<Future<Optional<NacosInstance>>> optionalList=new ArrayList<>();
+        nacosSetting.initAccessToken();
         nacosSetting.getRoutes().forEach(nacosRoute -> optionalList.add(threadPoolExecutor.submit(new NacosService(nacosSetting.getServiceUrl(), nacosSetting.getSecret(), nacosRoute))));
         optionalList.stream().forEach(optionalFuture -> {
             try {
@@ -74,7 +76,6 @@ public class NacosRepository extends AbsctractRepository{
             }
         });
     }
-
     public NacosSetting getNacosSetting() {
         return nacosSetting;
     }
