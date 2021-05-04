@@ -546,11 +546,13 @@ export default {
       responseContent: null,
       responseFieldDescriptionChecked: true,
       //网关转发请求Header标志
-      routeHeader:null
+      routeHeader:null,
+      oas2:true
     };
   },
   created() {
     this.routeHeader=this.swaggerInstance.header;
+    this.oas2=this.swaggerInstance.oas2();
     this.initI18n();
     //初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
@@ -2607,15 +2609,20 @@ export default {
           //否则axios会忽略请求头Content-Type
           data:applyReuqest.data
         };
-        //需要判断是否是下载请求
-        /* if (this.debugStreamFlag()) {
-          //流请求
+        //判断当前接口规范是OAS3还是Swagger2
+        if(this.oas2){
+          //OAS2规范制定了produces的定义,需要判断请求头
+          //需要判断是否是下载请求
+          if (this.debugStreamFlag()) {
+            //流请求
+            requestConfig = { ...requestConfig, responseType: "blob" };
+          }
+        }else{
+          //统一追加一个blob类型的响应,在OpenAPI3.0的规范中,没有关于produces的设定，因此无法判断当前请求是否是流的请求
+          //https://gitee.com/xiaoym/knife4j/issues/I374SP
           requestConfig = { ...requestConfig, responseType: "blob" };
-        } */
-        //统一追加一个blob类型的响应,在OpenAPI3.0的规范中,没有关于produces的设定，因此无法判断当前请求是否是流的请求
-        //https://gitee.com/xiaoym/knife4j/issues/I374SP
-        requestConfig = { ...requestConfig, responseType: "blob" };
-        console.log(requestConfig);
+        }
+        //console.log(requestConfig);
         const debugInstance = DebugAxios.create();
         //get请求编码问题
         //https://gitee.com/xiaoym/knife4j/issues/I19C8Y
@@ -3213,6 +3220,7 @@ export default {
       return params;
     },
     setResponseBody(res) {
+      let that=this;
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
         //console.log(res);
@@ -3220,104 +3228,129 @@ export default {
         if (KUtils.checkUndefined(resp)) {
           //判断是否是blob类型
           var contentDisposition = KUtils.propValue("content-disposition",headers,"");
-
           if (resp.responseType == "blob"||KUtils.strNotBlank(contentDisposition)) {
-            var ctype = KUtils.propValue("content-type", headers, "");
-            //从响应头中得到文件名称
-            var fileName = "Knife4j.txt";
-            if (!KUtils.strNotBlank(contentDisposition)) {
-              //如果是空,获取小写的请求头
-              contentDisposition = KUtils.propValue(
-                "content-disposition",
-                headers,
-                ""
-              );
-            }
-            if (KUtils.strNotBlank(contentDisposition)) {
-              var respcds = contentDisposition.split(";");
-              for (var i = 0; i < respcds.length; i++) {
-                var header = respcds[i];
-                if (header != null && header != "") {
-                  var headerValu = header.split("=");
-                  if (headerValu != null && headerValu.length > 0) {
-                    var _hdvalue = headerValu[0];
-                    if (
-                      _hdvalue != null &&
-                      _hdvalue != undefined &&
-                      _hdvalue != ""
-                    ) {
-                      if (_hdvalue.toLowerCase() == "filename") {
-                        //对filename进行decode处理,防止出现中文的情况
-                        fileName = decodeURIComponent(headerValu[1]);
+            //针对OpenAPI3的规范,由于统一添加了blob类型，此处需要判断
+            if(res.data.type=="application/json"||
+            res.data.type=="application/xml"||
+            res.data.type=="text/html"||
+            res.data.type=="text/plain"){
+              //服务端返回JSON数据,Blob对象转为JSON
+              const reader = new FileReader();
+              reader.onload = e => {
+                //let message=KUtils.json5parse(e.target.result);
+                //console.log(e.target.result);
+                //重新赋值
+                let readerResponse={
+                  responseText:e.target.result,
+                  response:e.target.result,
+                  responseType:"",
+                  status:resp.status,
+                  statusText:resp.statusText,
+                  readyState:resp.readyState,
+                  timeout:resp.timeout,
+                  withCredentials:resp.withCredentials
+                }
+                that.setResponseJsonBody(readerResponse,headers)
+              };
+              reader.readAsText(res.data);
+            }else{
+              var ctype = KUtils.propValue("content-type", headers, "");
+              //从响应头中得到文件名称
+              var fileName = "Knife4j.txt";
+              if (!KUtils.strNotBlank(contentDisposition)) {
+                //如果是空,获取小写的请求头
+                contentDisposition = KUtils.propValue(
+                  "content-disposition",
+                  headers,
+                  ""
+                );
+              }
+              if (KUtils.strNotBlank(contentDisposition)) {
+                var respcds = contentDisposition.split(";");
+                for (var i = 0; i < respcds.length; i++) {
+                  var header = respcds[i];
+                  if (header != null && header != "") {
+                    var headerValu = header.split("=");
+                    if (headerValu != null && headerValu.length > 0) {
+                      var _hdvalue = headerValu[0];
+                      if (
+                        _hdvalue != null &&
+                        _hdvalue != undefined &&
+                        _hdvalue != ""
+                      ) {
+                        if (_hdvalue.toLowerCase() == "filename") {
+                          //对filename进行decode处理,防止出现中文的情况
+                          fileName = decodeURIComponent(headerValu[1]);
+                        }
                       }
                     }
                   }
                 }
               }
+              //双重验证,判断是否为图片
+              var imageFlag = false;
+              if (ctype.indexOf("image") != -1) {
+                imageFlag = true;
+              } else {
+                //如果contentType非image,判断文件名称
+                //png,jpg,jpeg,gif
+                var imageArrs = [
+                  "bmp",
+                  "jpg",
+                  "png",
+                  "tif",
+                  "gif",
+                  "pcx",
+                  "tga",
+                  "exif",
+                  "fpx",
+                  "svg",
+                  "psd",
+                  "cdr",
+                  "pcd",
+                  "dxf",
+                  "ufo",
+                  "eps",
+                  "ai",
+                  "raw",
+                  "WMF",
+                  "webp"
+                ];
+                imageArrs.forEach(fmt => {
+                  if (fileName.indexOf(fmt) != -1) {
+                    imageFlag = true;
+                  }
+                });
+              }
+              //最后再判断produces
+              var produces=this.api.produces;
+              //判断是否是image
+              var imgProduceFlag=false;
+              if(KUtils.arrNotEmpty(produces)){
+                produces.forEach(prd=>{
+                  if(prd.indexOf("image")!=-1){
+                    imgProduceFlag=true;
+                  }
+                })
+              }
+              if(!imageFlag){
+                imageFlag=imgProduceFlag;
+              }
+              //console.log(imgProduceFlag);
+              //application/octet-stream
+              let downloadurl = window.URL.createObjectURL(res.data);
+              //let blobTarget=new Blob([res.data])
+              //var downloadurl = window.URL.createObjectURL(blobTarget);
+              this.responseContent = {
+                text: "",
+                mode: "blob",
+                blobFlag: true,
+                imageFlag: imageFlag,
+                blobFileName: fileName,
+                blobUrl: downloadurl,
+                base64:""
+              };
             }
-            //双重验证,判断是否为图片
-            var imageFlag = false;
-            if (ctype.indexOf("image") != -1) {
-              imageFlag = true;
-            } else {
-              //如果contentType非image,判断文件名称
-              //png,jpg,jpeg,gif
-              var imageArrs = [
-                "bmp",
-                "jpg",
-                "png",
-                "tif",
-                "gif",
-                "pcx",
-                "tga",
-                "exif",
-                "fpx",
-                "svg",
-                "psd",
-                "cdr",
-                "pcd",
-                "dxf",
-                "ufo",
-                "eps",
-                "ai",
-                "raw",
-                "WMF",
-                "webp"
-              ];
-              imageArrs.forEach(fmt => {
-                if (fileName.indexOf(fmt) != -1) {
-                  imageFlag = true;
-                }
-              });
-            }
-            //最后再判断produces
-            var produces=this.api.produces;
-            //判断是否是image
-            var imgProduceFlag=false;
-            if(KUtils.arrNotEmpty(produces)){
-              produces.forEach(prd=>{
-                if(prd.indexOf("image")!=-1){
-                  imgProduceFlag=true;
-                }
-              })
-            }
-            if(!imageFlag){
-              imageFlag=imgProduceFlag;
-            }
-            //console.log(imgProduceFlag);
-            //application/octet-stream
-            let downloadurl = window.URL.createObjectURL(res.data);
-            //let blobTarget=new Blob([res.data])
-            //var downloadurl = window.URL.createObjectURL(blobTarget);
-            this.responseContent = {
-              text: "",
-              mode: "blob",
-              blobFlag: true,
-              imageFlag: imageFlag,
-              blobFileName: fileName,
-              blobUrl: downloadurl,
-              base64:""
-            };
           } else {
             this.setResponseJsonBody(resp, headers);
           }

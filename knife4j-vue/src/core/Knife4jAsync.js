@@ -6777,10 +6777,11 @@ function SwaggerBootstrapUiMarkdownFile(title){
  * 判断是否是swagger2
  */
 SwaggerBootstrapUiInstance.prototype.oas2=function(){
-  if(this.groupVersion.indexOf("2")>=0){
-    return true;
+  if(this.groupVersion.indexOf("3")>=0){
+    return false;
   }
-  return false;
+  //默认是swagger2
+  return true;
 }
 /**
  * 获取类结构
