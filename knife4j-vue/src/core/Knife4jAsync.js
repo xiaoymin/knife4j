@@ -524,7 +524,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     )
     g.url = group.url
     //测试api接口JSON
-    //g.url="/test/json";
+    g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
     g.basicAuth=KUtils.getValue(group,'basicAuth',null,true);
@@ -2419,6 +2419,11 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       tmpTags.sort(function (a, b) {
         return a.order - b.order;
       })
+    }else{
+      //当前接口tags不存在，给一个默认tag-default
+      //https://gitee.com/xiaoym/knife4j/issues/I27M98
+      var defaultTag= new SwaggerBootstrapUiTag("default", "default");
+      tmpTags.push(defaultTag);
     }
     that.currentInstance.tags=tmpTags;
   }
@@ -3172,6 +3177,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
     //})
     //$.each(that.currentInstance.tags, function (i, tag) {
     var len = tag.childrens.length;
+    console.log(tag);
     var _lititle = "";
     if (len == 0) {
       if (that.settings.showTagStatus) {
@@ -4564,9 +4570,14 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     if (apiInfo.hasOwnProperty("deprecated")) {
       swpinfo.deprecated = apiInfo["deprecated"];
     }
-    if (!apiInfo.tags) {
+    //此处判断tags是否为空
+    //https://gitee.com/xiaoym/knife4j/issues/I27M98
+    if(KUtils.arrEmpty(apiInfo.tags)){
       apiInfo.tags = ['default'];
     }
+    /* if (!apiInfo.tags) {
+      apiInfo.tags = ['default'];
+    } */
     //swpinfo.consumes = apiInfo.consumes;
     swpinfo.consumes = KUtils.getValue(apiInfo,"consumes",[].concat("application/x-www-form-urlencoded"),true);
     swpinfo.description = KUtils.getValue(apiInfo, "description", "", true);
