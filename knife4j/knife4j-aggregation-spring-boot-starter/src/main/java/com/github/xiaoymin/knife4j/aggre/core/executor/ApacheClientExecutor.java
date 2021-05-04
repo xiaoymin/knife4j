@@ -12,6 +12,7 @@ import com.github.xiaoymin.knife4j.aggre.core.RouteExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRequestContext;
 import com.github.xiaoymin.knife4j.aggre.core.RouteResponse;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.HeaderWrapper;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -39,8 +40,8 @@ public class ApacheClientExecutor extends PoolingConnectionManager implements Ro
         builder.setUri(routeContext.getUrl());
         if (CollectionUtil.isNotEmpty(routeContext.getHeaders())){
             //构建Header
-            for (Map.Entry<String,String> entry:routeContext.getHeaders().entrySet()){
-                builder.addHeader(entry.getKey(),entry.getValue());
+            for (HeaderWrapper headerWrapper:routeContext.getHeaders()){
+                builder.addHeader(headerWrapper.getName(),headerWrapper.getValue());
             }
         }
         if (CollectionUtil.isNotEmpty(routeContext.getParams())){

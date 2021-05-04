@@ -8,9 +8,12 @@
 package com.github.xiaoymin.knife4j.aggre.core;
 
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.HeaderWrapper;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /***
@@ -35,7 +38,7 @@ public class RouteRequestContext {
     /**
      * 请求头
      */
-    private Map<String,String> headers=new HashMap<>();
+    private List<HeaderWrapper> headers=new ArrayList<>();
     /**
      * 查询参数
      */
@@ -61,7 +64,7 @@ public class RouteRequestContext {
      * @param value
      */
     public void addHeader(String key,String value){
-        this.headers.put(key,value);
+        this.headers.add(new HeaderWrapper(key,value));
     }
 
     /**
@@ -121,11 +124,11 @@ public class RouteRequestContext {
         this.method = method;
     }
 
-    public Map<String, String> getHeaders() {
+    public List<HeaderWrapper> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, String> headers) {
+    public void setHeaders(List<HeaderWrapper> headers) {
         this.headers = headers;
     }
 
