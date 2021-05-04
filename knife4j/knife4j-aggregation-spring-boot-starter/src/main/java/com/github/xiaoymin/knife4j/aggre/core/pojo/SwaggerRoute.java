@@ -54,6 +54,11 @@ public class SwaggerRoute {
      * 是否本地请求,本地请求在前端无需添加Header,否则会走代理
      */
     private boolean local=false;
+    /**
+     * 增加聚合显示顺序,参考issues：https://gitee.com/xiaoym/knife4j/issues/I27ST2
+     * @since 2.0.9
+     */
+    private transient Integer order=1;
 
     /**
      * 本地聚合模式
@@ -87,6 +92,8 @@ public class SwaggerRoute {
                 }
                 this.header=diskRoute.pkId();
             }
+            //since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
+            this.order=diskRoute.getOrder();
         }
     }
 
@@ -119,6 +126,8 @@ public class SwaggerRoute {
             }
             this.location=cloudRoute.getLocation();
             this.swaggerVersion=cloudRoute.getSwaggerVersion();
+            //since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
+            this.order=cloudRoute.getOrder();
         }
     }
 
@@ -149,6 +158,8 @@ public class SwaggerRoute {
             }
             this.location=eurekaRoute.getLocation();
             this.swaggerVersion=eurekaRoute.getSwaggerVersion();
+            //since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
+            this.order=eurekaRoute.getOrder();
         }
     }
 
@@ -179,6 +190,8 @@ public class SwaggerRoute {
             }
             this.location=nacosRoute.getLocation();
             this.swaggerVersion=nacosRoute.getSwaggerVersion();
+            //since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
+            this.order=nacosRoute.getOrder();
         }
 
     }
@@ -269,5 +282,13 @@ public class SwaggerRoute {
 
     public void setServicePath(String servicePath) {
         this.servicePath = servicePath;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 }

@@ -35,6 +35,12 @@ public abstract class CommonRoute {
     private String servicePath;
 
     /**
+     * 增加聚合显示顺序,参考issues：https://gitee.com/xiaoym/knife4j/issues/I27ST2
+     * @since 2.0.9
+     */
+    private Integer order=1;
+
+    /**
      * 当前Route主键唯一id
      * @return 唯一id
      */
@@ -44,12 +50,14 @@ public abstract class CommonRoute {
 
     @Override
     public String toString() {
-        return "Route{" +
-                "name='" + name + '\'' +
-                ", location='" + location + '\'' +
-                ", swaggerVersion='" + swaggerVersion + '\'' +
-                ", servicePath='" + servicePath + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("CommonRoute{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", location='").append(location).append('\'');
+        sb.append(", swaggerVersion='").append(swaggerVersion).append('\'');
+        sb.append(", servicePath='").append(servicePath).append('\'');
+        sb.append(", order=").append(order);
+        sb.append('}');
+        return sb.toString();
     }
 
     public String getName() {
@@ -82,5 +90,13 @@ public abstract class CommonRoute {
 
     public void setServicePath(String servicePath) {
         this.servicePath = servicePath;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 }

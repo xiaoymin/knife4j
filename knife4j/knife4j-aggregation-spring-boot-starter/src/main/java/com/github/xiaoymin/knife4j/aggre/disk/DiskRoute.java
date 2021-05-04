@@ -37,6 +37,19 @@ public class DiskRoute {
      * 微服务路径,主要是针对在网关使用时，追加的basePath，主要是为了和在网关转发时路径在文档上展示一致的问题
      */
     private String servicePath;
+    /**
+     * 增加聚合显示顺序,参考issues：https://gitee.com/xiaoym/knife4j/issues/I27ST2
+     * @since 2.0.9
+     */
+    private Integer order=1;
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
 
     public String getName() {
         return name;
@@ -84,12 +97,14 @@ public class DiskRoute {
 
     @Override
     public String toString() {
-        return "DiskRoute{" +
-                "name='" + name + '\'' +
-                ", host='" + host + '\'' +
-                ", location='" + location + '\'' +
-                ", swaggerVersion='" + swaggerVersion + '\'' +
-                ", servicePath='" + servicePath + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("DiskRoute{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", host='").append(host).append('\'');
+        sb.append(", location='").append(location).append('\'');
+        sb.append(", swaggerVersion='").append(swaggerVersion).append('\'');
+        sb.append(", servicePath='").append(servicePath).append('\'');
+        sb.append(", order=").append(order);
+        sb.append('}');
+        return sb.toString();
     }
 }

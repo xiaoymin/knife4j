@@ -7,16 +7,13 @@
 
 package com.github.xiaoymin.knife4j.aggre.repository;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -41,7 +38,13 @@ public abstract class AbsctractRepository extends PoolingConnectionManager imple
 
     @Override
     public List<SwaggerRoute> getRoutes() {
-        return CollectionUtil.newArrayList(routeMap.values());
+        //排序规则,asc
+        Collection<SwaggerRoute> swaggerRoutes=routeMap.values();
+        if (swaggerRoutes!=null){
+            return swaggerRoutes.stream().sorted(Comparator.comparingInt(SwaggerRoute::getOrder))
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
 }
