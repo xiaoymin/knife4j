@@ -524,7 +524,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     )
     g.url = group.url
     //测试api接口JSON
-    g.url="/test/json";
+    //g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
     g.basicAuth=KUtils.getValue(group,'basicAuth',null,true);
@@ -2688,6 +2688,12 @@ SwaggerBootstrapUi.prototype.readSecurityContextSchemesCommon=function(securityD
         sdf.type = sdobj.type;
         sdf.name = sdobj.name;
         sdf.in = sdobj.in;
+        //如果name为空，则默认取key值
+        //https://gitee.com/xiaoym/knife4j/issues/I27CNZ
+        if(KUtils.strBlank(sdobj.name)){
+          sdf.name=j;
+          sdf.in="header";
+        }
         var flag = false;
         if (cacheSecurityData != null && cacheSecurityData != undefined) {
           //存在缓存值,更新当前值,无需再次授权
@@ -3177,7 +3183,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
     //})
     //$.each(that.currentInstance.tags, function (i, tag) {
     var len = tag.childrens.length;
-    console.log(tag);
+    //console.log(tag);
     var _lititle = "";
     if (len == 0) {
       if (that.settings.showTagStatus) {
