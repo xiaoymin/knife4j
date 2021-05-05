@@ -524,7 +524,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     )
     g.url = group.url
     //测试api接口JSON
-    g.url="/test/json";
+    //g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
     g.basicAuth=KUtils.getValue(group,'basicAuth',null,true);
