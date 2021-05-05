@@ -6310,7 +6310,10 @@ var SwaggerBootstrapUiApiFilter = function () {
   this.api = function (methodType) {
     var apis = new Array();
     //判断当前methods类型,如果methods只有1条则返回
-    if (this.methods.length == 7) {
+    //if (this.methods.length == 7) {
+    //如果服务端限定只存在GET|POST两种，过滤功能任然有效
+    //https://gitee.com/xiaoym/knife4j/issues/I28RJ5
+    if (this.methods.length >1) {
       //如果是7个则 开启过滤
       var mpt = null;
       //如果接口梳理是7个
