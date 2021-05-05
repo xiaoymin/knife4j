@@ -3226,6 +3226,7 @@ export default {
         //console.log(res);
         var headers = res.headers;
         if (KUtils.checkUndefined(resp)) {
+          var ctype = KUtils.propValue("content-type", headers, "");
           //判断是否是blob类型
           var contentDisposition = KUtils.propValue("content-disposition",headers,"");
           if (resp.responseType == "blob"||KUtils.strNotBlank(contentDisposition)) {
@@ -3253,8 +3254,9 @@ export default {
                 that.setResponseJsonBody(readerResponse,headers)
               };
               reader.readAsText(res.data);
+            }else if(ctype=="text/html"||ctype=="text/plain"||ctype=="application/xml"){
+              this.setResponseJsonBody(resp, headers);
             }else{
-              var ctype = KUtils.propValue("content-type", headers, "");
               //从响应头中得到文件名称
               var fileName = "Knife4j.txt";
               if (!KUtils.strNotBlank(contentDisposition)) {
