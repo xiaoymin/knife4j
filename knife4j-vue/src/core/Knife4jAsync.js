@@ -3761,7 +3761,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2=function(swpinfo){
             for (var i = 0; i < swpinfo.parameters.length; i++) {
               var pt = swpinfo.parameters[i];
               if (pt.in == "body") {
-                if (pt.schemaValue == "MultipartFile") {
+                if (pt.schemaValue == "MultipartFile"||pt.type=="file") {
                   defaultType = "multipart/form-data";
                   defaultValue = "form-data";
                   break;
@@ -3775,7 +3775,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2=function(swpinfo){
                   break;
                 }
               } else {
-                if (pt.schemaValue == "MultipartFile") {
+                //https://gitee.com/xiaoym/knife4j/issues/I29KMH
+                if (pt.schemaValue == "MultipartFile"||pt.type=="file") {
                   defaultType = "multipart/form-data";
                   defaultValue = "form-data";
                   break;
@@ -3804,7 +3805,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2=function(swpinfo){
         for (var i = 0; i < swpinfo.parameters.length; i++) {
           var pt = swpinfo.parameters[i];
           if (pt.in == "body") {
-            if (pt.schemaValue == "MultipartFile") {
+            if (pt.schemaValue == "MultipartFile"||pt.type=="file") {
               defaultType = "multipart/form-data";
               defaultValue = "form-data";
               break;
@@ -3815,7 +3816,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2=function(swpinfo){
               break;
             }
           } else {
-            if (pt.schemaValue == "MultipartFile") {
+            if (pt.schemaValue == "MultipartFile"||pt.type=="file") {
               defaultType = "multipart/form-data";
               defaultValue = "form-data";
               break;
