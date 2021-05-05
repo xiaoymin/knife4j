@@ -1009,7 +1009,10 @@ SwaggerBootstrapUi.prototype.setDefaultSettings=function(){
     //不存在，直接移除缓存
     let extSettings=this.settings;
     let defaultSettings=Constants.defaultSettings;
+    let defaultWebSettings=Constants.defaultWebSettings;
     var mergeSetting=Object.assign({},defaultSettings,extSettings);
+    //默认配置需要排除Ui界面中的几个配置，因为界面开发者可能存在保存操作，在界面初始化加载的时候需要从缓存读取继承
+    mergeSetting=Object.assign({},mergeSetting,defaultWebSettings);
     this.localStore.setItem(Constants.globalSettingsKey,mergeSetting);
     //当前settings设置为默认值
     this.settings=mergeSetting;
