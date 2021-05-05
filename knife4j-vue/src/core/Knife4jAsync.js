@@ -524,7 +524,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     )
     g.url = group.url
     //测试api接口JSON
-    //g.url="/test/json";
+    g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
     g.header=KUtils.getValue(group,'header',null,true);
     g.basicAuth=KUtils.getValue(group,'basicAuth',null,true);
@@ -2660,6 +2660,7 @@ SwaggerBootstrapUi.prototype.readSecurityContextSchemes=function(menu){
   }
 }
 
+
 /**
  * oas2
  * @param {*} menu
@@ -3844,6 +3845,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
   var that=this;
   var apiInfo=swpinfo.originalApiInfo;
   if(!swpinfo.init){
+    let oa3Data=that.currentInstance.swaggerData;
+    let refParameterObject=oa3Data["components"]["parameters"];
     //如果当前对象未初始化,进行初始化
     if (apiInfo.hasOwnProperty("parameters")) {
       var pameters = apiInfo["parameters"];
@@ -3852,21 +3855,39 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
         //$.each(pameters, function (i, m) {
         var originalName = KUtils.propValue("name", m, "");
         var inType = KUtils.propValue("in", m, "");
+        //判断是否包含$ref
+        //https://gitee.com/xiaoym/knife4j/issues/I2A89C
+        let refValue=KUtils.propValue("$ref", m, "");
+        //console.log("ref:"+refValue)
         //忽略参数
         //if (swpinfo.ignoreParameters == null || (swpinfo.ignoreParameters != null && !swpinfo.ignoreParameters.hasOwnProperty(originalName))) {
         //暂时放弃增加includeParameters的新特性支持
         //if (KUtils.filterIncludeParameters(inType, originalName, swpinfo.includeParameters)) {
-        if(swpinfo.includeParameters!=null){
-          //直接判断include的参数即可
-          if (KUtils.filterIncludeParameters(inType, originalName, swpinfo.includeParameters)) {
-            that.assembleParameterOAS3(m,swpinfo,[]);
+        if(KUtils.strNotBlank(refValue)){
+          //当前参数是ref类型
+          let refParameterName=KUtils.getRefParameterName(refValue);
+          if(KUtils.strNotBlank(refParameterName)){
+            if(KUtils.checkUndefined(refParameterObject)){
+              //console.log("参数："+refParameterName);
+              let refParameterValue=refParameterObject[refParameterName];
+              //console.log(refParameterValue)
+              if(KUtils.checkUndefined(refParameterValue)){
+                that.assembleParameterOAS3(refParameterValue,swpinfo,[]);
+              }
+            }
           }
         }else{
-          if (KUtils.filterIgnoreParameters(inType, originalName, swpinfo.ignoreParameters)) {
-            that.assembleParameterOAS3(m,swpinfo,[]);
+          if(swpinfo.includeParameters!=null){
+            //直接判断include的参数即可
+            if (KUtils.filterIncludeParameters(inType, originalName, swpinfo.includeParameters)) {
+              that.assembleParameterOAS3(m,swpinfo,[]);
+            }
+          }else{
+            if (KUtils.filterIgnoreParameters(inType, originalName, swpinfo.ignoreParameters)) {
+              that.assembleParameterOAS3(m,swpinfo,[]);
+            }
           }
         }
-
         //}
       })
     }
@@ -4012,6 +4033,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
     if (typeof (apiInfo.responses) != 'undefined' && apiInfo.responses != null) {
       var resp = apiInfo.responses;
       var rpcount = 0;
+      //console.log(resp)
       for (var status in resp) {
         var swaggerResp = new SwaggerBootstrapUiResponseCode();
         var rescrobj = resp[status];
@@ -4019,6 +4041,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
         swaggerResp.code = status;
         swaggerResp.description = rescrobj["description"];
         var rptype = null;
+        //console.log(rescrobj)
         //3.0判断content
         if(rescrobj.hasOwnProperty("content")&&KUtils.checkUndefined(rescrobj["content"])){
           var content=rescrobj["content"];

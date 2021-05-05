@@ -666,6 +666,14 @@ const utils = {
     
     return null;
   },
+  getRefParameterName:function(item){
+    var regex = new RegExp("#/components/parameters/(.*)$", "ig");
+    if (regex.test(item)) {
+      var ptype = RegExp.$1;
+      return ptype;
+    }
+    return null;
+  },
   trim(text) {
     var whitespace = "[\\x20\\t\\r\\n\\f]";
     var rtrim = new RegExp("^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$", "g");
