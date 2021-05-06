@@ -3828,6 +3828,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2=function(swpinfo){
         swpinfo.contentValue = defaultValue;
       }
     }else{
+      console.log("123")
       swpinfo.contentType = "application/x-www-form-urlencoded";
       swpinfo.contentValue = "x-www-form-urlencoded";
     }
@@ -4428,7 +4429,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
             for (var i = 0; i < swpinfo.parameters.length; i++) {
               var pt = swpinfo.parameters[i];
               if (pt.in == "body") {
-                if (pt.schemaValue == "MultipartFile") {
+                if (pt.schemaValue == "MultipartFile"||pt.type=="file") {
                   defaultType = "multipart/form-data";
                   defaultValue = "form-data";
                   break;
@@ -4442,7 +4443,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
                   break;
                 }
               } else {
-                if (pt.schemaValue == "MultipartFile") {
+                if (pt.schemaValue == "MultipartFile"||pt.type=="file") {
                   defaultType = "multipart/form-data";
                   defaultValue = "form-data";
                   break;
@@ -4471,7 +4472,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
         for (var i = 0; i < swpinfo.parameters.length; i++) {
           var pt = swpinfo.parameters[i];
           if (pt.in == "body") {
-            if (pt.schemaValue == "MultipartFile") {
+            if (pt.schemaValue == "MultipartFile"||pt.type=="file") {
               defaultType = "multipart/form-data";
               defaultValue = "form-data";
               break;
@@ -4482,7 +4483,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
               break;
             }
           } else {
-            if (pt.schemaValue == "MultipartFile") {
+            if (pt.schemaValue == "MultipartFile"||pt.type=="file") {
               defaultType = "multipart/form-data";
               defaultValue = "form-data";
               break;
