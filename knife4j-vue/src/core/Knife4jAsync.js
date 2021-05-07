@@ -840,6 +840,7 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
     menu = data;
   }
   that.setInstanceBasicPorperties(menu);
+  that.resolvedOASVersion(menu);
   //since2.0.6
   if(this.currentInstance.oas2()){
     that.openSettings(menu);
@@ -863,6 +864,21 @@ SwaggerBootstrapUi.prototype.analysisApiSuccess = function (data) {
   //that.afterApiInitSuccess();
   this.store.dispatch('globals/setSwaggerInstance', this.currentInstance);
 
+}
+
+/**
+ * 根据接口响应的OpenAPI结构,在确认当前的OpenAPI规范版本
+ * https://gitee.com/xiaoym/knife4j/issues/I37X0Q
+ * @param {*} openApi 
+ */
+SwaggerBootstrapUi.prototype.resolvedOASVersion=function(openApi){
+  let version=KUtils.getValue(openApi, 'openapi', '', true);
+  //默认2.0
+  let vs='2.0';
+  if(KUtils.strNotBlank(version)){
+    vs=version;
+  }
+  this.currentInstance.groupVersion=vs;
 }
 
 /**
@@ -6703,7 +6719,12 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   this.url = null
   //增强地址
   this.extUrl = null
-  this.groupVersion = version
+  //如果version为空,给一个默认值2.0
+  if(KUtils.strNotBlank(version)){
+    this.groupVersion = version
+  }else{
+    this.groupVersion = "2.0"
+  }
   //所有实例的分组id
   this.allGroupIds=null;
   //分组url请求实例
@@ -6808,8 +6829,12 @@ function SwaggerBootstrapUiMarkdownFile(title){
  * 判断是否是swagger2
  */
 SwaggerBootstrapUiInstance.prototype.oas2=function(){
-  if(this.groupVersion.indexOf("3")>=0){
-    return false;
+  //非空判断
+  // https://gitee.com/xiaoym/knife4j/issues/I37X0Q
+  if(KUtils.strNotBlank(this.groupVersion)){
+    if(this.groupVersion.indexOf("3")>=0){
+      return false;
+    }
   }
   //默认是swagger2
   return true;
