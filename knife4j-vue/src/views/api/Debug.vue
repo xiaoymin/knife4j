@@ -163,6 +163,9 @@
                 </a-dropdown>
               </div>
             </div>
+            <div v-if="formatFlag" class="knife4j-debug-request-content-type-beautify">
+              <a @click="beautifyJson">Beautify</a>
+            </div>
           </a-row>
           <a-row v-if="formFlag">
             <a-table
@@ -533,6 +536,8 @@ export default {
       rawDefaultText: "Auto",
       rawFlag: false,
       rawTypeFlag: false,
+      //格式化按钮显示标志
+      formatFlag:false,
       rawText: "",
       rawScript:"",
       rawScriptMode:"javascript",
@@ -1294,8 +1299,10 @@ export default {
       this.formFlag = true;
       this.rawFlag = false;
       this.rawTypeFlag = false;
+      this.formatFlag=false;
       this.urlFormFlag = false;
       this.requestContentType = "form-data";
+      this.toggleBeautifyButtonStatus();
     },
     showTabUrlForm() {
       this.urlFormFlag = true;
@@ -1303,6 +1310,7 @@ export default {
       this.rawTypeFlag = false;
       this.formFlag = false;
       this.requestContentType = "x-www-form-urlencoded";
+      this.toggleBeautifyButtonStatus();
     },
     showTabRaw() {
       this.rawFlag = true;
@@ -1317,6 +1325,7 @@ export default {
         this.rawRequestType = "application/xml";
       }
       this.requestContentType = "raw";
+      this.toggleBeautifyButtonStatus();
     },
     getEnumOptions(param) {
       var tmpenum = KUtils.propValue("enum", param, null);
@@ -1709,6 +1718,7 @@ export default {
         this.urlFormFlag = false;
         this.formFlag = false;
       }
+      this.toggleBeautifyButtonStatus();
     },
     initSelectionHeaders(selectedKey) {
       if (KUtils.strNotBlank(selectedKey)) {
@@ -2079,6 +2089,29 @@ export default {
       this.rawMode = item.$el.getAttribute("data-mode");
       this.rawRequestType = item.$el.getAttribute("data-mode-type");
       this.rawDefaultText = key;
+      this.toggleBeautifyButtonStatus();
+    },
+    beautifyJson(){
+      let jsontext=this.rawText;
+      if(KUtils.strNotBlank(jsontext)){
+        //格式化操作
+        try{
+          let j=KUtils.json5stringify(KUtils.json5parse(jsontext));
+          this.rawText=j;
+        }catch(err){
+          console.error(err);
+        }
+      }
+    },
+    toggleBeautifyButtonStatus(){
+      //格式化JSON按钮标志
+      let flag=false;
+      if(this.rawFlag){
+        if(this.rawMode=='json'){
+          flag=true;
+        }
+      }
+      this.formatFlag=flag;
     },
     rawScriptChange(value){
       this.rawScript=value;
