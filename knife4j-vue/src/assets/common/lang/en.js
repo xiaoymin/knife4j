@@ -22,6 +22,7 @@ const langOptions = {
       },
       {
         title: 'description',
+        width: '35%',
         dataIndex: 'description',
         scopedSlots: { customRender: 'descriptionValueTemplate' }
       },

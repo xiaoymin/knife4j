@@ -23,6 +23,7 @@ const langOptions = {
       },
       {
         title: '说明',
+        width: '35%',
         dataIndex: 'description',
         scopedSlots: { customRender: 'descriptionValueTemplate' }
       },
