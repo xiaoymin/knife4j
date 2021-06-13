@@ -415,7 +415,7 @@
           </a-tabs>
         </a-row>
         <a-row>
-          <DebugResponse
+           <DebugResponse
             ref="childDebugResponse"
             :responseFieldDescriptionChecked="responseFieldDescriptionChecked"
             :swaggerInstance="swaggerInstance"
@@ -465,6 +465,10 @@ export default {
   data() {
     return {
       i18n:null,
+      //当前回调数据是否太大
+      bigFlag:false,
+      //数据很大,raw显示会导致内存溢出
+      bigBlobFlag:false,
       //是否开启缓存
       debugUrlStyle:"width: 80%",
       enableRequestCache: false,
@@ -2143,7 +2147,9 @@ export default {
     },
     callChildEditorShow() {
       //console("调用子类方法---");
-      this.$refs.childDebugResponse.showEditorFieldDescription();
+      if(!this.bigFlag){
+        this.$refs.childDebugResponse.showEditorFieldDescription();
+      }
     },
     debugHeaders() {
       //获取发送请求的自定义等等请求头参数
@@ -2902,6 +2908,8 @@ export default {
       }
     },
     handleDebugSuccess(startTime,endTime, res) {
+      this.bigFlag=false;
+      this.bigBlobFlag=false;
       //成功的情况
       this.setResponseBody(res);
       this.setResponseHeaders(res.headers);
@@ -2915,6 +2923,8 @@ export default {
       this.storeApiParams();
     },
     handleDebugError(startTime,endTime, resp) {
+      this.bigFlag=false;
+      this.bigBlobFlag=false;
       //console.log("失败情况---");
       //console.log(resp);
       //失败的情况
@@ -2983,6 +2993,8 @@ export default {
           //判断是否是blob类型
           if (resp.responseType != "blob") {
             var _tmpRawText = KUtils.toString(resp.responseText, "");
+            //123
+            //console.log(_tmpRawText)
             this.responseRawText = _tmpRawText;
           }
         }
@@ -3260,6 +3272,8 @@ export default {
       return params;
     },
     setResponseBody(res) {
+      //console.log("成功");
+      //console.log(res);
       let that=this;
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
@@ -3402,6 +3416,8 @@ export default {
     setResponseJsonBody(resp, headers) {
       //判断响应的类型
       //var _text = resp.responseText;
+      //console.log("setResponseJsonBody")
+      //console.log(resp);
       var _text = "";
       var _base64 = "";
       var mode = this.getContentTypeByHeaders(headers);
@@ -3413,14 +3429,21 @@ export default {
         //_text = KUtils.json5stringify(res.data);
         var responseSize = resp.responseText.gblen();
         var mbSize = (responseSize / 1024).toFixed(1);
-        var maxSize = 500;
+        var maxSize = 150;
+        //数据大小
+        this.bigBlobFlag=mbSize>300;
+        //console.log(mbSize)
         if (mbSize > maxSize) {
+          this.bigFlag=true;
           //_text = resp.responseText;
           //var messageInfo='接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看';
           var messageInfo=this.i18n.message.debug.contentToBig;
           this.$message.info(messageInfo);
           mode = "text";
+          //_text=resp.responseText;
+          //console.log("1")
         } else {
+          //console.log("2")
           //此处存在空指针异常
           if (KUtils.strNotBlank(resp.responseText)) {
             try{
@@ -3431,13 +3454,23 @@ export default {
               mode="text";
             }
           }
+          //console.log("2-1")
         }
        if (KUtils.strNotBlank(resp.responseText)) {
-        var base64ImageRegex=new RegExp(".*?\"(data:image.*?base64.*?)\".*","ig");
-        if(base64ImageRegex.test(resp.responseText)){
-          var s=RegExp.$1;
-          _base64=s;
-        }
+          //console.log("3")
+          if(!this.bigFlag){
+            //数据太大,查找缓慢
+            if(resp.responseText.indexOf("data:image")>-1){
+              //console.log("3-1.5")
+              var base64ImageRegex=new RegExp(".*?\"(data:image.*?base64.*?)\".*","ig");
+              if(base64ImageRegex.test(resp.responseText)){
+                var s=RegExp.$1;
+                _base64=s;
+              }
+
+            }
+          }
+          //console.log("3-1")
        }
         /* if(_text.indexOf("data:image/jpg;base64") > -1) {
             let newStr = _text.substring(_text.indexOf("data:image/jpg;base64"));
@@ -3450,7 +3483,9 @@ export default {
         } else {
           _text = tmpXmlText;
         }
+        //console.log("4")
       } else {
+        //console.log("5")
         _text = resp.responseText;
       }
       //console.log('set value before')
@@ -3463,6 +3498,7 @@ export default {
         blobUrl: "",
         base64: _base64
       };
+      //console.log(this.responseContent)
     },
     debugEditorChange(value) {
       //针对Debug调试框inputchange事件做的处理
