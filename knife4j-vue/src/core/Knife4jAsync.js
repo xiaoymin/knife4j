@@ -1456,9 +1456,9 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2=function(menu,swud,oas2
                         globalArr.push(name);
                         var addTempValue = null;
                         if (addtionalName != name) {
-                          addTempValue = that.findRefDefinition(addtionalName, definitions, false, globalArr);
+                          addTempValue = that.findRefDefinition(addtionalName, definitions, false, globalArr,null,oas2);
                         } else {
-                          addTempValue = that.findRefDefinition(addtionalName, definitions, true, name, globalArr);
+                          addTempValue = that.findRefDefinition(addtionalName, definitions, true, globalArr, name,oas2);
                         }
                         propValue = {
                           "additionalProperties1": addTempValue

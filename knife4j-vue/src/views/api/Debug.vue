@@ -2892,6 +2892,10 @@ export default {
           var func=new Function('ke',this.rawScript);
           //执行
           func(ke);
+          setTimeout(() => {
+            //console.log("开始执行...")
+            ke.global.action();
+          }, 1000);
         }catch(e){
           console.error(e);
         }
