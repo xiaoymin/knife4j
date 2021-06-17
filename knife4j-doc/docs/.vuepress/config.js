@@ -190,7 +190,7 @@ function genDocumentationSideBar() {
                 "apiSort.md", "tagSort.md", "requestCache.md", "dynamicRequestParameter.md", "exportDocument.md",
                 "filterRequestParameter.md", "includeRequestParameter.md", "search.md", "clearCache.md", "dynamicRequestDescription.md",
                 "dynamicResponseDescription.md", "host.md", "afterScript.md", "oauth2.md", "postman.md", "globalParameter.md","swaggermodels.md",
-                "customHome.md","customFooter.md","jsr303.md","forbidDebug.md","forbidSearch.md","forbidOpenApi.md"
+                "customHome.md","customFooter.md","jsr303.md","forbidDebug.md","forbidSearch.md","forbidOpenApi.md","gitVersion.md"
             ]
 
         }, {
