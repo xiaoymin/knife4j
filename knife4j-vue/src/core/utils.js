@@ -211,8 +211,8 @@ const utils = {
       }
     } else {
       if (inType == 'query') {
-        console.log("ignoreParameterAllKeys")
-        console.log(ignoreParameterAllKeys)
+        //console.log("ignoreParameterAllKeys")
+        //console.log(ignoreParameterAllKeys)
         return !ignoreParameterAllKeys.some(key =>
           new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/'+key+'/g').test(name));
       } else {

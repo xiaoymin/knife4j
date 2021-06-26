@@ -5167,7 +5167,7 @@ SwaggerBootstrapUi.prototype.assembleParameter = function (m, swpinfo) {
                   key.replace(`${originalName}.`, '') // 处理 body 带参，需要加前缀问题
                   :
                   key;
-                console.log(ignorePath)
+                //console.log(ignorePath)
                 // if (has(cloneValue, ignorePath)) {
                 //   // 使用 lodash.unset 方法移除 newValue 对象中的属性
                 //   unset(cloneValue, ignorePath);
