@@ -5174,8 +5174,20 @@ SwaggerBootstrapUi.prototype.assembleParameter = function (m, swpinfo) {
                 // }
                 //正则判断
                 Object.keys(cloneValue || {}).forEach(x =>{
-                  if (has(cloneValue, ignorePath)||eval('/'+ignorePath+'/g').test(x)) {
+                  //由于对象.属性的原因,导致ignorePath被替换后，ignorePath可能不是一个正则，出现误判的情况
+                  if(has(cloneValue, ignorePath)){
                     unset(cloneValue, x);
+                  }else{
+                    let ignoreRegex=ignorePath;
+                    if(!ignorePath.endsWith("$")){
+                      //防止出现正则误判的情况
+                      ignoreRegex+="$";
+                    }
+                    let regExp=new RegExp(ignoreRegex,"g");
+                    if(regExp.test(x)){
+                      unset(cloneValue, x);
+                    }
+
                   }
                 })
                 /* if ('/'+ignorePath+'/g'.test(cloneValue)) {
@@ -5501,8 +5513,20 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
                 // }
                 //正则判断
                 Object.keys(cloneValue || {}).forEach(x =>{
-                  if (eval('/'+ignorePath+'/g').test(x)) {
+                  //由于对象.属性的原因,导致ignorePath被替换后，ignorePath可能不是一个正则，出现误判的情况
+                  if(has(cloneValue, ignorePath)){
                     unset(cloneValue, x);
+                  }else{
+                    let ignoreRegex=ignorePath;
+                    if(!ignorePath.endsWith("$")){
+                      //防止出现正则误判的情况
+                      ignoreRegex+="$";
+                    }
+                    let regExp=new RegExp(ignoreRegex,"g");
+                    if(regExp.test(x)){
+                      unset(cloneValue, x);
+                    }
+
                   }
                 })
               });
