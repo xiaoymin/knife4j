@@ -373,7 +373,6 @@ export default {
       /*  const ignoreParameterAllKeys = Object.keys(
         apiInfo.ignoreParameters || {}
       ); */
-      //console.log(ignoreParameterAllKeys);
       if (apiInfo.parameters != null && apiInfo.parameters.length > 0) {
         var dx = apiInfo.parameters.filter(function(pm) {
           if (pm.name.indexOf("[0]") > -1) {
@@ -387,7 +386,7 @@ export default {
               return true;
             }
           } else {
-            return !ignoreParameterAllKeys.includes(name);
+            return !ignoreParameterAllKeys.includes(pm.name);
           }
         });
         data = data.concat(dx);
@@ -414,7 +413,6 @@ export default {
           return b.require - a.require;
         });
       }
-      //console.log(data)
       let reqParameters = [];
       if (data != null && data.length > 0) {
         //console("初始化请求参数----------");
@@ -448,6 +446,9 @@ export default {
                             ignoreParameterAllKeys.includes(name + "[0]") ||
                             ignoreParameterAllKeys.includes(
                               `${param.name}.${name}`
+                            )||
+                            ignoreParameterAllKeys.some(key =>
+                              new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/'+key+'/g').test(name)
                             )
                           ) // 处理 json 提交
                         );

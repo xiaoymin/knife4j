@@ -5173,9 +5173,14 @@ SwaggerBootstrapUi.prototype.assembleParameter = function (m, swpinfo) {
                 //   unset(cloneValue, ignorePath);
                 // }
                 //正则判断
-                if ('/'+ignorePath+'/g'.test(cloneValue)) {
+                Object.keys(cloneValue || {}).forEach(x =>{
+                  if (has(cloneValue, ignorePath)||eval('/'+ignorePath+'/g').test(x)) {
+                    unset(cloneValue, x);
+                  }
+                })
+                /* if ('/'+ignorePath+'/g'.test(cloneValue)) {
                   unset(cloneValue, ignorePath);
-                }
+                } */
               });
             }
           }
