@@ -211,8 +211,10 @@ const utils = {
       }
     } else {
       if (inType == 'query') {
+        console.log("ignoreParameterAllKeys")
+        console.log(ignoreParameterAllKeys)
         return !ignoreParameterAllKeys.some(key =>
-          new RegExp(`^(${key}$|${key}[.[])`).test(name));
+          new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/'+key+'/g').test(name));
       } else {
         return !ignoreParameterAllKeys.includes(name);
       }
@@ -663,7 +665,7 @@ const utils = {
         return ptype;
       }
     }
-    
+
     return null;
   },
   getRefParameterName:function(item){
