@@ -71,8 +71,7 @@ public class ApacheClientExecutor extends PoolingConnectionManager implements Ro
             CloseableHttpResponse closeableHttpResponse=getClient().execute(buildRequest(routeContext));
             routeResponse=new ApacheClientResponse(closeableHttpResponse);
         } catch (Exception e) {
-            logger.error("Executor Failed,message:{}",e.getMessage());
-            logger.error(e.getMessage(),e);
+            logger.error("Executor Failed,message:"+e.getMessage(),e);
             //当前异常有可能是服务下线导致
             if (e instanceof HttpHostConnectException){
                 //服务下线，连接失败

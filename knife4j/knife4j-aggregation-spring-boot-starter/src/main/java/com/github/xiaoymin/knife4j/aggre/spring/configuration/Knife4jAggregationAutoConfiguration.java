@@ -50,7 +50,7 @@ public class Knife4jAggregationAutoConfiguration {
         return new RouteInMemoryCache();
     }
 
-    @Bean
+    @Bean(initMethod = "start",destroyMethod = "close")
     @ConditionalOnProperty(name = "knife4j.cloud.enable",havingValue = "true")
     public CloudRepository cloudRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
         return new CloudRepository(knife4jAggregationProperties.getCloud());

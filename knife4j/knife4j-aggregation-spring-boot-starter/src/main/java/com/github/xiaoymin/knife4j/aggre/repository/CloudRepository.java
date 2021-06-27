@@ -8,9 +8,20 @@
 package com.github.xiaoymin.knife4j.aggre.repository;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
+import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
 import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Optional;
 
 /***
  * 基于本地配置的方式动态聚合云端(http)任意OpenAPI
@@ -19,6 +30,9 @@ import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
  * 2020/10/29 20:11
  */
 public class CloudRepository extends AbsctractRepository{
+    final Logger logger= LoggerFactory.getLogger(CloudRepository.class);
+    private volatile boolean stop=false;
+    private Thread thread;
     private CloudSetting cloudSetting;
     public CloudRepository(CloudSetting cloudSetting){
         this.cloudSetting=cloudSetting;
@@ -51,5 +65,66 @@ public class CloudRepository extends AbsctractRepository{
 
     public CloudSetting getCloudSetting() {
         return cloudSetting;
+    }
+
+    @Override
+    public void start() {
+        logger.info("start Cloud hearbeat Holder thread.");
+        thread=new Thread(()->{
+            while (!stop){
+                try{
+                    ThreadUtil.sleep(HEART_BEAT_DURATION);
+                    logger.debug("Cloud hearbeat start working...");
+                    if (this.cloudSetting!=null&&CollectionUtil.isNotEmpty(this.cloudSetting.getRoutes())){
+                        this.cloudSetting.getRoutes().forEach(cloudRoute -> {
+                            String uri=cloudRoute.getUri();
+                            StringBuilder urlBuilder=new StringBuilder();
+                            if (!StrUtil.startWith("http",uri)){
+                                urlBuilder.append("http://");
+                            }
+                            urlBuilder.append(uri);
+                            if (logger.isDebugEnabled()){
+                                logger.debug("hearbeat url:{}",urlBuilder.toString());
+                            }
+                            HttpGet get=new HttpGet(urlBuilder.toString());
+                            try {
+                                CloseableHttpResponse response=getClient().execute(get);
+                                if (response!=null){
+                                    int statusCode=response.getStatusLine().getStatusCode();
+                                    if (logger.isDebugEnabled()){
+                                        logger.debug("statusCode:{}",statusCode);
+                                    }
+                                    if (statusCode<0){
+                                        //服务不存在,下线处理
+                                        this.routeMap.remove(cloudRoute.pkId());
+                                    }
+                                }else {
+                                    //服务不存在,下线处理
+                                    this.routeMap.remove(cloudRoute.pkId());
+                                    get.abort();
+                                }
+                            } catch (IOException e) {
+                                logger.debug("heartBeat url check error,message:"+e.getMessage(),e);
+                            }
+
+                        });
+                    }
+                }catch (Exception e){
+                    logger.debug(e.getMessage(),e);
+                }
+
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    @Override
+    public void close() {
+        logger.info("stop Cloud heartbeat Holder thread.");
+        this.stop=true;
+        if (this.thread!=null){
+            ThreadUtil.interrupt(this.thread,true);
+        }
     }
 }
