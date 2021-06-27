@@ -17,6 +17,7 @@ import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
 import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,6 +92,7 @@ public class CloudRepository extends AbsctractRepository{
                                 CloseableHttpResponse response=getClient().execute(get);
                                 if (response!=null){
                                     int statusCode=response.getStatusLine().getStatusCode();
+                                    EntityUtils.consumeQuietly(response.getEntity());
                                     if (logger.isDebugEnabled()){
                                         logger.debug("statusCode:{}",statusCode);
                                     }
