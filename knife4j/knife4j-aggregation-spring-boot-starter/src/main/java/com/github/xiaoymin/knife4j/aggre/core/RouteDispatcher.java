@@ -89,13 +89,8 @@ public class RouteDispatcher {
 
     public boolean checkRoute(String header) {
         if (StrUtil.isNotBlank(header)) {
-            SwaggerRoute swaggerRoute = routeCache.get(header);
+            SwaggerRoute swaggerRoute = routeRepository.getRoute(header);
             if (swaggerRoute != null) {
-                return StrUtil.isNotBlank(swaggerRoute.getUri());
-            }
-            swaggerRoute = routeRepository.getRoute(header);
-            if (swaggerRoute != null) {
-                routeCache.put(header, swaggerRoute);
                 return StrUtil.isNotBlank(swaggerRoute.getUri());
             }
         }
@@ -272,13 +267,9 @@ public class RouteDispatcher {
     }
 
     public SwaggerRoute getRoute(String header) {
-        SwaggerRoute swaggerRoute = routeCache.get(header);
-        if (swaggerRoute == null) {
-            swaggerRoute = routeRepository.getRoute(header);
-            if (swaggerRoute != null) {
-                routeCache.put(header, swaggerRoute);
-            }
-        }
+        //去除缓存机制，由于Eureka以及Nacos设立了心跳检测机制，服务在多节点部署时，节点ip可能存在变化,导致调试最终转发给已经下线的服务
+        //since 2.0.9
+        SwaggerRoute swaggerRoute = routeRepository.getRoute(header);
         return swaggerRoute;
     }
 
