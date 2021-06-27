@@ -280,11 +280,11 @@
       "values":[
         {
           "value": true,
-          "description": "Enable Nacos Authentication Auth mode"
+          "description": "Enable Nacos authentication"
         },
         {
           "value": false,
-          "description": "Disable Nacos Authentication Auth mode"
+          "description": "Disable Nacos authentication"
         }
       ]
     },{

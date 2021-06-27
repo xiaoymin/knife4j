@@ -27,11 +27,20 @@ public class DefaultClientResponse implements RouteResponse {
 
     private final String uri;
     private final String error;
+    private int httpCode=500;
 
     public DefaultClientResponse(String uri, String error) {
         this.uri = uri;
         this.error = error;
     }
+
+    public DefaultClientResponse(String uri,String error,int httpCode){
+        this.uri = uri;
+        this.error = error;
+        this.httpCode=httpCode;
+    }
+
+
 
     @Override
     public List<HeaderWrapper> getHeaders() {
@@ -45,7 +54,7 @@ public class DefaultClientResponse implements RouteResponse {
 
     @Override
     public int getStatusCode() {
-        return 500;
+        return httpCode;
     }
 
     @Override
@@ -55,7 +64,7 @@ public class DefaultClientResponse implements RouteResponse {
 
     @Override
     public Long getContentLength() {
-        return null;
+        return 0L;
     }
 
     @Override

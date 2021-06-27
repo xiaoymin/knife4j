@@ -16,6 +16,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.HeaderWrapper;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.BasicHttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +73,13 @@ public class ApacheClientExecutor extends PoolingConnectionManager implements Ro
         } catch (Exception e) {
             logger.error("Executor Failed,message:{}",e.getMessage());
             logger.error(e.getMessage(),e);
-            routeResponse=new DefaultClientResponse(routeContext.getOriginalUri(),e.getMessage());
+            //当前异常有可能是服务下线导致
+            if (e instanceof HttpHostConnectException){
+                //服务下线，连接失败
+                routeResponse=new DefaultClientResponse(routeContext.getOriginalUri(),e.getMessage(),504);
+            }else{
+                routeResponse=new DefaultClientResponse(routeContext.getOriginalUri(),e.getMessage());
+            }
         }
         return routeResponse;
     }
