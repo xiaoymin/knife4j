@@ -125,17 +125,17 @@
       "name": "knife4j.nacos.serviceAuth.enable",
       "type": "java.lang.Boolean",
       "defaultValue": false,
-      "description": "Enable Nacos Secret Auth"
+      "description": "Enable nacos authentication"
     },
     {
       "name": "knife4j.nacos.serviceAuth.username",
       "type": "java.lang.String",
-      "description": "Nacos Secret Username"
+      "description": "Nacos authentication username"
     },
     {
       "name": "knife4j.nacos.serviceAuth.password",
       "type": "java.lang.String",
-      "description": "Nacos Secret Password"
+      "description": "Nacos authentication password"
     },
     {
       "name": "knife4j.nacos.routes",
@@ -274,11 +274,11 @@
       "values":[
         {
           "value": true,
-          "description": "Enable Nacos Secret Auth mode"
+          "description": "Enable Nacos Authentication Auth mode"
         },
         {
           "value": false,
-          "description": "Disable Nacos Secret Auth mode"
+          "description": "Disable Nacos Authentication Auth mode"
         }
       ]
     },{
