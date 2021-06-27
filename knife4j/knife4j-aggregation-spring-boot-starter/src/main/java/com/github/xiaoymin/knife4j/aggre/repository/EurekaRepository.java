@@ -185,7 +185,7 @@ public class EurekaRepository extends AbsctractRepository {
 
     @Override
     public void start() {
-        logger.info("start Eureka heartbeat thread.");
+        logger.info("start Eureka heartbeat Holder thread.");
         thread=new Thread(()->{
             while (!this.stop){
                 try{
@@ -233,7 +233,7 @@ public class EurekaRepository extends AbsctractRepository {
 
     @Override
     public void close() {
-        logger.info("stop Eureka heartbeat thread.");
+        logger.info("stop Eureka heartbeat Holder thread.");
         this.stop=true;
         if (thread!=null){
             ThreadUtil.interrupt(thread,true);

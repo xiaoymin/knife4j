@@ -28,7 +28,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 public class NacosRepository extends AbsctractRepository{
-
+    private volatile boolean stop=false;
+    private Thread thread;
     Logger logger= LoggerFactory.getLogger(NacosRepository.class);
 
     private NacosSetting nacosSetting;
@@ -97,5 +98,17 @@ public class NacosRepository extends AbsctractRepository{
         return basicAuth;
     }
 
+    @Override
+    public void start() {
 
+    }
+
+    @Override
+    public void close() {
+        logger.info("stop Nacos heartbeat Holder thread.");
+        this.stop=true;
+        if (thread!=null){
+            ThreadUtil.interrupt(thread,true);
+        }
+    }
 }

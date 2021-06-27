@@ -62,7 +62,7 @@ public class Knife4jAggregationAutoConfiguration {
         return new EurekaRepository(knife4jAggregationProperties.getEureka());
     }
 
-    @Bean
+    @Bean(initMethod = "start",destroyMethod = "close")
     @ConditionalOnProperty(name = "knife4j.nacos.enable",havingValue = "true")
     public NacosRepository nacosRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
         return new NacosRepository(knife4jAggregationProperties.getNacos());
