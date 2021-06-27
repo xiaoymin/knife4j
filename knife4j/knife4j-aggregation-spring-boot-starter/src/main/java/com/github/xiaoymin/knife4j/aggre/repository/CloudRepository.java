@@ -12,17 +12,14 @@ import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
-import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
-import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
 import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.Optional;
 
 /***
  * 基于本地配置的方式动态聚合云端(http)任意OpenAPI
@@ -105,8 +102,12 @@ public class CloudRepository extends AbsctractRepository{
                                     this.routeMap.remove(cloudRoute.pkId());
                                     get.abort();
                                 }
-                            } catch (IOException e) {
+                            } catch (Exception e) {
                                 logger.debug("heartBeat url check error,message:"+e.getMessage(),e);
+                                if (e instanceof HttpHostConnectException){
+                                    //服务不存在,下线处理
+                                    this.routeMap.remove(cloudRoute.pkId());
+                                }
                             }
 
                         });
