@@ -25,7 +25,7 @@ public abstract class AbsctractRepository extends PoolingConnectionManager imple
     /**
      * 心跳检测间隔(15s)
      */
-    protected static final Long HEART_BEAT_DURATION=15L;
+    protected static final Long HEART_BEAT_DURATION=15000L;
 
     protected final Map<String, SwaggerRoute> routeMap=new HashMap<>();
 
