@@ -100,7 +100,39 @@ public class NacosRepository extends AbsctractRepository{
 
     @Override
     public void start() {
+        logger.info("start Nacos hearbeat Holder thread.");
+        thread=new Thread(()->{
+            while (!stop){
+                try{
+                    ThreadUtil.sleep(HEART_BEAT_DURATION);
+                    logger.debug("nacos hearbeat start working...");
+                    this.nacosSetting.initAccessToken();
+                    //校验该服务是否在线
+                    this.nacosSetting.getRoutes().forEach(nacosRoute -> {
+                        try{
+                            NacosService nacosService=new NacosService(this.nacosSetting.getServiceUrl(), this.nacosSetting.getSecret(), nacosRoute);
+                            //单线程check即可
+                            Optional<NacosInstance> nacosInstanceOptional=nacosService.call();
+                            if (nacosInstanceOptional.isPresent()){
+                                this.routeMap.put(nacosRoute.pkId(),new SwaggerRoute(nacosRoute,nacosInstanceOptional.get()));
+                            }else{
+                                //当前服务下线，剔除
+                                this.routeMap.remove(nacosRoute.pkId());
+                            }
+                        }catch (Exception e){
+                            //发生异常,剔除服务
+                            this.routeMap.remove(nacosRoute.pkId());
+                            logger.debug(e.getMessage(),e);
+                        }
+                    });
+                }catch (Exception e){
+                    logger.debug(e.getMessage(),e);
+                }
 
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @Override

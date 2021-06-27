@@ -223,7 +223,7 @@ public class EurekaRepository extends AbsctractRepository {
                         }
                     }
                 }catch (Exception e){
-                    logger.error(e.getMessage(),e);
+                    logger.debug(e.getMessage(),e);
                 }
             }
         });

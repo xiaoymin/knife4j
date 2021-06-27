@@ -122,6 +122,12 @@
       "description": "Nacos secret(use knife4j.nacos.serviceAuth instead)"
     },
     {
+      "name": "knife4j.nacos.tokenExpire",
+      "type": "java.lang.Long",
+      "defaultValue": 18000,
+      "description": "Nacos token expiration in seconds"
+    },
+    {
       "name": "knife4j.nacos.serviceAuth.enable",
       "type": "java.lang.Boolean",
       "defaultValue": false,

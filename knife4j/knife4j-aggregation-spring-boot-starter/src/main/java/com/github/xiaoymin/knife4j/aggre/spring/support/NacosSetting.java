@@ -7,10 +7,13 @@
 
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosOpenApi;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -48,6 +51,24 @@ public class NacosSetting {
      * 配置的Route路由服务的公共Basic验证信息，仅作用与访问Swagger接口时使用，具体服务的其他接口不使用该配置
      */
     private BasicAuth routeAuth;
+
+    /**
+     * Nacos-token失效时间
+     */
+    private Long tokenExpire=18000L;
+
+    /**
+     * secret初始化时间
+     */
+    private LocalDateTime secretDateTime;
+
+    public LocalDateTime getSecretDateTime() {
+        return secretDateTime;
+    }
+
+    public void setSecretDateTime(LocalDateTime secretDateTime) {
+        this.secretDateTime = secretDateTime;
+    }
 
     public BasicAuth getRouteAuth() {
         return routeAuth;
@@ -100,7 +121,18 @@ public class NacosSetting {
     public void initAccessToken(){
         //判断当前Nacos是否需要鉴权访问
         if (this.serviceAuth!=null&&this.serviceAuth.isEnable()){
-            setSecret(NacosOpenApi.me().getAccessToken(this.serviceUrl,this.serviceAuth));
+            if (this.secretDateTime==null){
+                setSecret(NacosOpenApi.me().getAccessToken(this.serviceUrl,this.serviceAuth));
+                setSecretDateTime(LocalDateTime.now().plusSeconds(this.tokenExpire));
+            }else{
+                LocalDateTime nowTime=LocalDateTime.now();
+                long seconds=Duration.between(nowTime,this.secretDateTime).getSeconds();
+                //token expired,初始化token
+                if (seconds<100){
+                    setSecret(NacosOpenApi.me().getAccessToken(this.serviceUrl,this.serviceAuth));
+                    setSecretDateTime(LocalDateTime.now().plusSeconds(this.tokenExpire));
+                }
+            }
         }
     }
 }
