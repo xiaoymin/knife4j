@@ -56,7 +56,7 @@ public class Knife4jAggregationAutoConfiguration {
         return new CloudRepository(knife4jAggregationProperties.getCloud());
     }
 
-    @Bean
+    @Bean(initMethod = "start",destroyMethod = "close")
     @ConditionalOnProperty(name = "knife4j.eureka.enable",havingValue = "true")
     public EurekaRepository eurekaRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties){
         return new EurekaRepository(knife4jAggregationProperties.getEureka());

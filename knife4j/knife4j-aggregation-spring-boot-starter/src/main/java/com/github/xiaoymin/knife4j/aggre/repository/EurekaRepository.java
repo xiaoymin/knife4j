@@ -8,6 +8,7 @@
 package com.github.xiaoymin.knife4j.aggre.repository;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteUtils;
@@ -29,9 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,10 +40,12 @@ import java.util.stream.Collectors;
  */
 public class EurekaRepository extends AbsctractRepository {
 
+    private volatile boolean stop=false;
+    private Thread thread;
+
     Logger logger= LoggerFactory.getLogger(EurekaRepository.class);
     private EurekaSetting eurekaSetting;
 
-    private List<EurekaApplication> eurekaApplications=new ArrayList<>();
 
     public EurekaRepository(EurekaSetting eurekaSetting){
         this.eurekaSetting=eurekaSetting;
@@ -54,16 +55,16 @@ public class EurekaRepository extends AbsctractRepository {
             }
             //从注册中心进行初始化获取EurekaApplication
             initEurekaApps(eurekaSetting);
-            //根据EurekaApplication转换为Knife4j内部SwaggerRoute结构
-            applyRoutes(eurekaSetting);
         }
     }
 
     /**
-     * 初始化
-     * @param eurekaSetting eureka配置
+     * 从eureka注册中心获取服务列表
+     * @param eurekaSetting 配置
+     * @return 服务列表
      */
-    private void initEurekaApps(EurekaSetting eurekaSetting){
+    private List<EurekaApplication> getApplications(EurekaSetting eurekaSetting){
+        List<EurekaApplication> eurekaApps=null;
         StringBuilder requestUrl=new StringBuilder();
         requestUrl.append(eurekaSetting.getServiceUrl());
         if (!StrUtil.endWith(eurekaSetting.getServiceUrl(), RouteDispatcher.ROUTE_BASE_PATH)){
@@ -101,10 +102,7 @@ public class EurekaRepository extends AbsctractRepository {
                                 JsonElement application=applications.getAsJsonObject().get("application");
                                 if (application!=null){
                                     Type type=new TypeToken<List<EurekaApplication>>(){}.getType();
-                                    List<EurekaApplication> eurekaApps=new Gson().fromJson(application,type);
-                                    if (CollectionUtil.isNotEmpty(eurekaApps)){
-                                        this.eurekaApplications.addAll(eurekaApps);
-                                    }
+                                    eurekaApps=new Gson().fromJson(application,type);
                                 }
                             }
                         }
@@ -116,33 +114,48 @@ public class EurekaRepository extends AbsctractRepository {
             //error
             logger.error("load Register Metadata from Eureka Error,message:"+e.getMessage(),e);
         }
+        return eurekaApps;
+    }
+
+
+    private Map<String, SwaggerRoute> applySwaggerRoutes(List<EurekaApplication> eurekaApps){
+        Map<String, SwaggerRoute> swaggerRouteMap=new HashMap<>();
+        //获取服务列表
+        List<String> serviceNames=eurekaSetting.getRoutes().stream().map(EurekaRoute::getServiceName).map(String::toLowerCase).collect(Collectors.toList());
+        for (EurekaApplication eurekaApplication:eurekaApps){
+            //判断当前instance不可为空，并且取status="UP"的服务
+            if (serviceNames.contains(eurekaApplication.getName().toLowerCase())&&CollectionUtil.isNotEmpty(eurekaApplication.getInstance())){
+                Optional<EurekaInstance> instanceOptional=eurekaApplication.getInstance().stream().filter(eurekaInstance -> StrUtil.equalsIgnoreCase(eurekaInstance.getStatus(),"up")).findFirst();
+                if (instanceOptional.isPresent()){
+                    //根据服务配置获取外部setting
+                    Optional<EurekaRoute> eurekaRouteOptional=eurekaSetting.getRoutes().stream().filter(eurekaRoute -> StrUtil.equalsIgnoreCase(eurekaRoute.getServiceName(),eurekaApplication.getName())).findFirst();
+                    if (eurekaRouteOptional.isPresent()){
+                        EurekaRoute eurekaRoute=eurekaRouteOptional.get();
+                        EurekaInstance eurekaInstance=instanceOptional.get();
+                        if (eurekaRoute.getRouteAuth()==null||!eurekaRoute.getRouteAuth().isEnable()){
+                            eurekaRoute.setRouteAuth(eurekaSetting.getRouteAuth());
+                        }
+                        //转换为SwaggerRoute
+                        swaggerRouteMap.put(eurekaRoute.pkId(),new SwaggerRoute(eurekaRoute,eurekaInstance));
+                    }
+                }
+            }
+        }
+        return swaggerRouteMap;
     }
 
     /**
-     * 内部参数转换
-     * @param eurekaSetting 配置
+     * 初始化
+     * @param eurekaSetting eureka配置
      */
-    private void applyRoutes(EurekaSetting eurekaSetting){
-        if (CollectionUtil.isNotEmpty(this.eurekaApplications)){
-            //获取服务列表
-            List<String> serviceNames=eurekaSetting.getRoutes().stream().map(EurekaRoute::getServiceName).map(String::toLowerCase).collect(Collectors.toList());
-            for (EurekaApplication eurekaApplication:this.eurekaApplications){
-                //判断当前instance不可为空，并且取status="UP"的服务
-                if (serviceNames.contains(eurekaApplication.getName().toLowerCase())&&CollectionUtil.isNotEmpty(eurekaApplication.getInstance())){
-                    Optional<EurekaInstance> instanceOptional=eurekaApplication.getInstance().stream().filter(eurekaInstance -> StrUtil.equalsIgnoreCase(eurekaInstance.getStatus(),"up")).findFirst();
-                    if (instanceOptional.isPresent()){
-                        //根据服务配置获取外部setting
-                       Optional<EurekaRoute> eurekaRouteOptional=eurekaSetting.getRoutes().stream().filter(eurekaRoute -> StrUtil.equalsIgnoreCase(eurekaRoute.getServiceName(),eurekaApplication.getName())).findFirst();
-                       if (eurekaRouteOptional.isPresent()){
-                           EurekaRoute eurekaRoute=eurekaRouteOptional.get();
-                           EurekaInstance eurekaInstance=instanceOptional.get();
-                           if (eurekaRoute.getRouteAuth()==null||!eurekaRoute.getRouteAuth().isEnable()){
-                               eurekaRoute.setRouteAuth(eurekaSetting.getRouteAuth());
-                           }
-                           //转换为SwaggerRoute
-                           this.routeMap.put(eurekaRoute.pkId(),new SwaggerRoute(eurekaRoute,eurekaInstance));
-                       }
-                    }
+    private void initEurekaApps(EurekaSetting eurekaSetting){
+        List<EurekaApplication> eurekaApps=getApplications(eurekaSetting);
+        if (CollectionUtil.isNotEmpty(eurekaApps)){
+            //根据EurekaApplication转换为Knife4j内部SwaggerRoute结构
+            Map<String, SwaggerRoute> swaggerRouteMap=applySwaggerRoutes(eurekaApps);
+            if (CollectionUtil.isNotEmpty(swaggerRouteMap)){
+                for (Map.Entry<String,SwaggerRoute> swaggerRouteEntry:swaggerRouteMap.entrySet()){
+                    this.routeMap.put(swaggerRouteEntry.getKey(),swaggerRouteEntry.getValue());
                 }
             }
         }
@@ -168,5 +181,62 @@ public class EurekaRepository extends AbsctractRepository {
 
     public EurekaSetting getEurekaSetting() {
         return eurekaSetting;
+    }
+
+    @Override
+    public void start() {
+        logger.info("start Eureka heartbeat thread.");
+        thread=new Thread(()->{
+            while (!this.stop){
+                try{
+                    ThreadUtil.sleep(HEART_BEAT_DURATION);
+                    if (logger.isDebugEnabled()){
+                        logger.debug("Knife4jAggregation Eureka heartbeat working...");
+                    }
+                    if (this.eurekaSetting!=null&& CollectionUtil.isNotEmpty(this.eurekaSetting.getRoutes())){
+                        if (StrUtil.isBlank(this.eurekaSetting.getServiceUrl())){
+                            throw new RuntimeException("Eureka ServiceUrl can't empty!!!");
+                        }
+                        List<EurekaApplication> eurekaApps=getApplications(this.eurekaSetting);
+                        if (CollectionUtil.isNotEmpty(eurekaApps)){
+                            //根据EurekaApplication转换为Knife4j内部SwaggerRoute结构
+                            Map<String, SwaggerRoute> swaggerRouteMap=applySwaggerRoutes(eurekaApps);
+                            if (CollectionUtil.isNotEmpty(swaggerRouteMap)){
+                                //移除老的不存在或者掉线的服务
+                                final Set<String> oldRouteKeys=this.routeMap.keySet();
+                                for (String oldKey:oldRouteKeys){
+                                    if (!swaggerRouteMap.containsKey(oldKey)){
+                                        this.routeMap.remove(oldKey);
+                                    }
+                                }
+                                //获取到了最新数据,需要匹配更新当前的列表数据
+                                for (Map.Entry<String,SwaggerRoute> swaggerRouteEntry:swaggerRouteMap.entrySet()){
+                                    this.routeMap.put(swaggerRouteEntry.getKey(),swaggerRouteEntry.getValue());
+                                }
+                            }else{
+                                //没有在线服务，清空routes中的数据
+                                this.routeMap.clear();
+                            }
+                        }else{
+                            //没有在线服务，清空routes中的数据
+                            this.routeMap.clear();
+                        }
+                    }
+                }catch (Exception e){
+                    logger.error(e.getMessage(),e);
+                }
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    @Override
+    public void close() {
+        logger.info("stop Eureka heartbeat thread.");
+        this.stop=true;
+        if (thread!=null){
+            ThreadUtil.interrupt(thread,true);
+        }
     }
 }

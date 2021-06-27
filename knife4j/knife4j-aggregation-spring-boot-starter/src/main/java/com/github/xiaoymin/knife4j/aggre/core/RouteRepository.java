@@ -24,6 +24,15 @@ import java.util.Optional;
  * 2020/10/29 20:09
  */
 public interface RouteRepository {
+    /**
+     * start心跳监听程序
+     */
+    default void start(){}
+
+    /**
+     * stop心跳监听乘车
+     */
+    default void close(){}
 
     /**
      * 校验请求Header是否正确

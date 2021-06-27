@@ -22,6 +22,11 @@ import java.util.stream.Collectors;
  */
 public abstract class AbsctractRepository extends PoolingConnectionManager implements RouteRepository {
 
+    /**
+     * 心跳检测间隔(15s)
+     */
+    protected static final Long HEART_BEAT_DURATION=15L;
+
     protected final Map<String, SwaggerRoute> routeMap=new HashMap<>();
 
     @Override

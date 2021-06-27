@@ -13,7 +13,6 @@ import cn.hutool.core.thread.ThreadUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
-import com.github.xiaoymin.knife4j.aggre.nacos.NacosOpenApi;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
 import org.slf4j.Logger;
