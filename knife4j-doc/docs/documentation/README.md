@@ -1,7 +1,12 @@
-::: danger 特别注意
+::: danger 友情提示
 1、目前已经发行的Knife4j版本，Knife4j本身已经引入了springfox，开发者在使用时不用再单独引入Springfox的具体版本，否额会导致版本冲突。另外在网关层聚合(例如gateway)时，必须禁用Knife4j的增强模式
 
 2、使用Knife4j2.0.6及以上的版本，Spring Boot的版本必须大于等于`2.2.x`
+
+3、微服务聚合组件Knife4jAggregation强势发布，聚合OpenAPI文档太简单了,[详见文档](../resources/aggregation-introduction.md)
+
+4、Knife4j独立运行版本Knife4jAggregationDesktop强势发布,使用Knife4j渲染OpenAPI文档很简单,[详见文档](../resources/desktop-introduction.md)
+
 :::
 
 Java开发使用`Knife4j`目前有一些不同的版本变化,详见[版本说明](changelog.md)，主要如下：
@@ -13,7 +18,7 @@ Java开发使用`Knife4j`目前有一些不同的版本变化,详见[版本说�
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-spring-boot-starter</artifactId>
     <!--在引用时请在maven中央仓库搜索2.X最新版本号-->
-    <version>2.0.8</version>
+    <version>2.0.9</version>
 </dependency>
 ```
 
@@ -24,7 +29,7 @@ Java开发使用`Knife4j`目前有一些不同的版本变化,详见[版本说�
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-spring-boot-starter</artifactId>
     <!--在引用时请在maven中央仓库搜索3.X最新版本号-->
-    <version>3.0.2</version>
+    <version>3.0.3</version>
 </dependency>
 ```
 
@@ -35,7 +40,7 @@ Java开发使用`Knife4j`目前有一些不同的版本变化,详见[版本说�
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-springdoc-ui</artifactId>
     <!--在引用时请在maven中央仓库搜索3.X最新版本号-->
-    <version>3.0.2</version>
+    <version>3.0.3</version>
 </dependency>
 ```
 

@@ -1,4 +1,9 @@
-# 4.1 Knife4jAggregation微服务聚合中间件
+# 4.2 Knife4jAggregation微服务聚合中间件
+
+
+::: danger 友情提示
+该文档页介绍已作废,请移步新的[文档介绍](../resources/aggregation-introduction.md)
+:::
 
 Knife4j一直致力于将目前的Ui提供给更多的平台或者别的语言使用而努力，经过这么长时间的发展，Knife4j提供的轻量级聚合中间件终于诞生了，自`2.0.8`版本开始，Knife4j
 提供了`knife4j-aggregation-spring-boot-starter`组件，该组件是一个基于Spring Boot系统的starter，他提供了以下几种能力：
@@ -28,7 +33,7 @@ Knife4j一直致力于将目前的Ui提供给更多的平台或者别的语言�
 接下来将详细介绍该组件的说明以及不同的聚合方式介绍
 [[toc]]
 
-## 4.1.1 组件属性说明
+## 4.2.1 组件属性说明
 
 既然基于Spring Boot的starter组件发布，那么必然提供了很多属性，完整的属性如下：
 
@@ -70,7 +75,7 @@ knife4j:
           password: 12313
   nacos:
     enable: false
-    serviceUrl: http://localhost:10000/eureka/
+    serviceUrl: http://localhost:10000/nacos/
     routeAuth:
       enable: true
       username: test
@@ -108,7 +113,7 @@ Disk、Cloud、Eureka、Nacos这四种模式只能使用1种，不能混合一�
 
 - `knife4j.enableAggregation`:该属性是前提条件，如果要启用聚合，那么该属性必须设置为true
 
-## 4.1.2 Disk模式
+## 4.2.2 Disk模式
 
 更加详细的实战demo请参考[基于Disk模式聚合OpenAPI](../action/aggregation-disk.md)
 
@@ -129,7 +134,7 @@ knife4j:
 - `knife4j.disk.routes.name`:服务名称(显示名称，最终在Ui的左上角下拉框进行显示)
 - `knife4j.disk.routes.location`:本地Disk模式聚合的OpenAPI规范JSON文件,可以是V2也可以是V3版本
 
-## 4.1.3 Cloud模式
+## 4.2.3 Cloud模式
 
 更加详细的实战demo请参考[基于Cloud模式聚合OpenAPI](../action/aggregation-cloud.md)
 
@@ -172,7 +177,7 @@ knife4j:
 - `knife4j.cloud.routes.routeAuth.password`:Basic密码
 
 
-## 4.1.4 Eureka模式
+## 4.2.4 Eureka模式
 
 更加详细的实战demo请参考[基于Eureka注册中心聚合OpenAPI](../action/aggregation-eureka.md)
 
@@ -229,7 +234,7 @@ knife4j:
 - `knife4j.eureka.routes.routeAuth.password`:Basic密码
 
 
-## 4.1.4 Nacos模式
+## 4.2.4 Nacos模式
 
 更加详细的实战demo请参考[基于Nacos注册中心聚合OpenAPI](../action/aggregation-nacos.md)
 

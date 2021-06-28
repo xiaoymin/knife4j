@@ -59,6 +59,14 @@ public T getData(){
 
 ![](/knife4j/images/nf4.png)
 
+::: danger 友情提示
+
+在2.0.6等后面的高版本中,由于升级了Springfox基础组件，如果开发者使用类似JRebel这类热加载插件的时候，会出现类字段没有的情况，目前没有办法解决springfox项目与JRebel插件的冲突，建议是不用JRebel
+
+
+:::
+ 
+
 如果以上情况都ok，还是不显示说明,恭喜你发现了SwaggerBootstrapUi的一个bug，欢迎提[issue](https://gitee.com/xiaoym/swagger-bootstrap-ui/issues)反馈给我,我会搞定它的~~！
 
 **另外**
@@ -124,7 +132,37 @@ public class Rest<T> {
     }
 }
 ```
+::: danger 友情提示
 
+在泛型基础封装类中,开发者有两点需要注意：
+
+1、基础封装泛型类中,不能使用`@ApiModel`注解来约束该泛型类的类名称，因为泛型类一旦用该注解进行约束后,在OpenAPI的结构中,类名称就只有一个，会导致字段属性找不到的情况。**<font style="color:red;">错误的代码示例</font>**：
+
+```java
+/*
+* 泛型类中不能使用@ApiModel注解，应该去掉
+*/
+@ApiModel("结果类")
+public class Rest<T> {
+    //....
+}
+```
+
+2、针对泛型T的属性，不应该在使用`@ApiModelProperty`注解时，赋予`example`值,**<font style="color:red;">错误的代码示例</font>**：
+```java
+public class Rest<T> {
+    /*
+    * 泛型T属性不能赋予example值，因为T有可能是实体类，这样赋值会导致生成的示例值不一致，应该交给框架去解析类结构
+    */
+    @ApiModelProperty(value = "返回对象",example="Test")
+    private T data; 
+}
+```
+
+
+
+:::
+ 
 
  
  

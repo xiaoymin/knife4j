@@ -1,5 +1,11 @@
 # 4.1 Knife4jCloud综合管理平台
 
+
+::: danger 友情提示
+该文档页介绍已作废,请移步新的[文档介绍](../resources/cloud-introduction.md)
+:::
+
+
 ## 4.1.1 产品介绍
 
 

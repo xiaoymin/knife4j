@@ -1,10 +1,13 @@
 import localStore from '@/store/local'
 import constant from '@/store/constants'
 import KUtils from '@/core/utils';
+import GlobalIndexDbCache from '@/core/GlobalIndexDbCache'
 
 var KEnvironment =function(settings){
   //window.console.log(settings)
   this.groupid=settings.groupid||'afterScriptGroup';
+  //执行命令的缓存对象
+  this.commands=[];
   this.allgroupids=settings.allgroupids||[];
   this.response=settings.response||{
     data:{},
@@ -44,6 +47,42 @@ var KEnvironment =function(settings){
       this.global.setCommon(name,value,'query',true);
     },
     setCommon:(name,value,type,all)=>{
+      //延时执行该方法
+      //this.global.executeAsyncCommon(name,value,type,all);
+      this.global.cacheCommand(name,value,type,all);
+      /* window.setTimeout(()=>{
+        this.global.executeAsyncCommon(name,value,type,all)
+      },250) */
+    },
+    cacheCommand:(name,value,type,all)=>{
+      //将所有命令缓存
+      this.commands.push({
+        name:name,
+        value:value,
+        type:type,
+        all:all
+      })
+    },
+    action:()=>{
+      //window.console.info("缓存cache");
+      //window.console.info(this.commands);
+      if(this.commands!=null&&this.commands.length>0){
+        let allCommands=this.commands;
+        //命令不为空
+        let key=this.groupid;
+        let allGroup=this.allgroupids;
+        //window.console.log(allGroup)
+        localStore.getItem(constant.globalParameter).then(val=>{
+          //window.console.log(val);
+          let dbcache=new GlobalIndexDbCache(constant.globalParameter,val,allGroup,allCommands,key);
+          //保存
+          dbcache.save();
+          
+        })
+
+      }
+    },
+    executeAsyncCommon:(name,value,type,all)=>{
       //window.console.log('setCommon,name:'+name+',value:'+value+',type:'+type);
       var key=this.groupid;
       var pkid=name+type;
@@ -149,7 +188,7 @@ var KEnvironment =function(settings){
             })
           }
           tmpVal[key]=groupParameters;
-         // window.console.log(tmpVal)
+        // window.console.log(tmpVal)
           //存储
           localStore.setItem(constant.globalParameter, tmpVal);
         })

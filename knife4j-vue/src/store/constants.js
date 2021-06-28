@@ -47,6 +47,31 @@ const constants = {
   //个性化设置名称
   globalSettingsKey: "Knife4jGlobalSettings",
   globalTreeTableModelParams: "Knife4jGlobalTreeTableModelParams",
+  //Ui界面个性化配置默认初始值
+  defaultWebSettings:{
+    enableDebug:true,//是否开启Debug调试栏
+    enableFooter:true,//是否默认显示底部Footer
+    enableFooterCustom:false,//是否自定义Footer
+    footerCustomContent:"",//自定义footer内容
+    enableSearch:true,//是否显示搜索框
+    enableOpenApi:true,//是否显示OpenApi原始规范结构
+    enableHomeCustom:false,// 是否开启主页自定义配置，默认false
+    homeCustomLocation:"",//自定义主页的Markdown文档内容
+    enableGroup:true,//是否显示分组下拉框，默认true(即显示)，一般情况下，如果是单个分组的情况下，可以设置该属性为false，即不显示分组，那么也就不用选择了
+
+    enableSwaggerModels:true,//是否显示界面中SwaggerModel功能
+    swaggerModelName:"Swagger Models",//重命名界面Swagger Model的显示名称
+    enableReloadCacheParameter:false,// 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
+    enableAfterScript:true,//调试Tab是否显示AfterScript功能,默认开启
+    enableDocumentManage:true,//是否显示界面中"文档管理"功能
+    enableVersion:false,//是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
+    showApiUrl: false, //接口api地址不显示
+    showTagStatus: false, //分组tag显示description属性,针对@Api注解没有tags属性值的情况
+    enableSwaggerBootstrapUi: false, //是否开启swaggerBootstrapUi增强
+    treeExplain: true,
+    
+    language: "zh-CN" //默认语言版本
+  },
   defaultSettings: {
     enableDebug:true,//是否开启Debug调试栏
     enableFooter:true,//是否默认显示底部Footer

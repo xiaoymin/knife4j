@@ -22,6 +22,7 @@ const langOptions = {
       },
       {
         title: 'description',
+        width: '35%',
         dataIndex: 'description',
         scopedSlots: { customRender: 'descriptionValueTemplate' }
       },
@@ -329,7 +330,8 @@ const langOptions = {
       urlNotEmpty: 'Request URL address cannot be empty',
       fieldNotEmpty: 'cannot be empty',
       networkErr: 'The server is restarting or hanging up:(~~~~',
-      contentToBig:'The amount of interface response data exceeds the limit and is not displayed in the response content. Please check it in raw'
+      contentToBig:'The amount of interface response data exceeds the limit and is not displayed in the response content. Please check it in raw',
+      contentToBigBlob:'The amount of interface response data exceeds the limit and is not displayed in the response content.'
     },
     sys: {
       loadErr: 'Make sure the swagger resource interface is correct.'

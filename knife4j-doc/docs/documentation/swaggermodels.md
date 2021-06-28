@@ -20,8 +20,9 @@ Knife4j在Ui菜单层提供的OpenAPI规范中的模型结构菜单名称Swagger
 ```yml
 knife4j:
   enable: true
-  enableSwaggerModels: true
-  swaggerModelName: 我是自定义的Model名称
+  setting:
+    enableSwaggerModels: true
+    swaggerModelName: 我是自定义的Model名称
 ```
 
 开发者配置好后,最核心的一步，也是最后最重要的一步，开发者需要在创建`Docket`逻辑分组对象时，通过`Knife4j`提供的工具对象`OpenApiExtensionResolver`将扩展属性进行赋值

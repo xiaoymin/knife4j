@@ -4,7 +4,7 @@
       <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="handleMenuCollapse" :width="menuWidth" class="sider" style="background: #1e282c;">
         <div class="knife4j-logo-data" key="logo" v-if="!collapsed&&settings.enableGroup">
           <a to="/" style="float:left;">
-            <a-select show-search :value="defaultServiceOption" style="width: 300px" :options="serviceOptions" @change="serviceChange">
+            <a-select show-search :value="defaultServiceOption" style="width: 300px" :options="serviceOptions" optionFilterProp="children" @change="serviceChange">
             </a-select>
           </a>
         </div>
@@ -99,8 +99,9 @@ export default {
   },
   beforeCreate() {},
   created() {
-    this.initSpringDocOpenApi();
-    //this.initKnife4jSpringUi();
+    //this.initSpringDocOpenApi();
+    this.initKnife4jSpringUi();
+    //this.initKnife4jJFinal();
     //this.initKnife4jFront();
     this.initI18n();
   },
@@ -355,6 +356,7 @@ export default {
               i18nVue:this.$i18n,
               i18nFlag:i18nParams.include,
               configSupport:false,
+              desktop:true,
               i18nInstance:this.getCurrentI18nInstance() 
               })
           }else{
@@ -377,6 +379,78 @@ export default {
                 routeParams: that.$route.params, 
                 plus: this.getPlusStatus(),
                 i18n:tmpI18n,
+                i18nVue:this.$i18n,
+                i18nFlag:i18nParams.include,
+                configSupport:false,
+                desktop:true,
+                i18nInstance:this.getCurrentI18nInstance() 
+                })
+            })
+          }
+        })
+      })
+    },
+    initKnife4jJFinal(){
+      //该版本是最终打包到knife4j-jfinal-ui的模块,默认是调用该方法
+      var that = this;
+      var i18nParams=this.getI18nFromUrl();
+      var tmpI18n=i18nParams.i18n;
+      //console.log(tmpI18n)
+      //读取settings
+      this.$localStore.getItem(constant.globalSettingsKey).then(settingCache=>{
+        var settings=this.getCacheSettings(settingCache);
+        //console.log("layout---")
+        //console.log(settings)
+        //重新赋值是否开启增强
+        if(!settings.enableSwaggerBootstrapUi){
+           settings.enableSwaggerBootstrapUi=this.getPlusStatus();
+        }
+        settings.language=tmpI18n;
+        that.$localStore.setItem(constant.globalSettingsKey, settings);
+        this.$localStore.getItem(constant.globalGitApiVersionCaches).then(gitVal=>{
+          var cacheApis=this.getCacheGitVersion(gitVal);
+          if(i18nParams.include){
+            //写入本地缓存
+            this.$store.dispatch("globals/setLang", tmpI18n);
+            this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
+            this.$i18n.locale = tmpI18n;
+            this.enableVersion=settings.enableVersion;
+            this.initSwagger({
+              baseSpringFox:true,
+              store:this.$store,
+              localStore:this.$localStore,
+              settings:settings,
+              cacheApis:cacheApis, 
+              routeParams: that.$route.params, 
+              plus: this.getPlusStatus(),
+              i18n:tmpI18n,
+              url:'jf-swagger/swagger-resources',
+              i18nVue:this.$i18n,
+              i18nFlag:i18nParams.include,
+              configSupport:false,
+              i18nInstance:this.getCurrentI18nInstance() 
+              })
+          }else{
+            //不包含
+            //console.log("不包含")
+            //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
+            this.$localStore.getItem(constant.globalI18nCache).then(i18n => {
+              if(KUtils.checkUndefined(i18n)){
+                this.$store.dispatch("globals/setLang", i18n);
+                tmpI18n=i18n;
+              }
+              this.$i18n.locale = tmpI18n;
+              this.enableVersion=settings.enableVersion;
+              this.initSwagger({
+                baseSpringFox:true,
+                store:this.$store,
+                localStore:this.$localStore,
+                settings:settings,
+                cacheApis:cacheApis, 
+                routeParams: that.$route.params, 
+                plus: this.getPlusStatus(),
+                i18n:tmpI18n,
+                url:'jf-swagger/swagger-resources',
                 i18nVue:this.$i18n,
                 i18nFlag:i18nParams.include,
                 configSupport:false,

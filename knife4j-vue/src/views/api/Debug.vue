@@ -1,360 +1,67 @@
 <template>
   <div class="knife4j-debug">
-    <a-row>
-      <a-col
-        :class="'knife4j-debug-api-' + api.methodType.toLowerCase()"
-        :span="24"
-      >
-        <a-input-group compact>
-          <span class="knife4j-api-summary-method"><a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}</span>
-          <a-input
-            :style="debugUrlStyle"
-            :value="debugUrl"
-            @change="debugUrlChange"
-          />
-          <a-button v-html="$t('debug.send')"
-            :loading="debugLoading"
-            class="knife4j-api-send"
-            type="primary"
-            @click="sendRestfulApi"
-            >发 送</a-button
+    <a-spin tip="Loading..." :spinning="debugLoading">
+      <div class="spin-content">
+        <a-row>
+          <a-col
+            :class="'knife4j-debug-api-' + api.methodType.toLowerCase()"
+            :span="24"
           >
-          <a-button v-if="enableReloadCacheParameter" @click="reloadCacheParameter">刷新变量</a-button>
-        </a-input-group>
-      </a-col>
-    </a-row>
-    <a-row class="knife4j-debug-tabs">
-      <a-tabs defaultActiveKey="2">
-        <a-tab-pane key="1">
-          <template slot="tab">
-            <span>
-              <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
-                headerCount
-              }}</a-tag
-              ><span v-html="$t('debug.headers')">请求头部</span>
-            </span>
-          </template>
-          <a-table
-            v-if="headerTableFlag"
-            bordered
-            size="small"
-            :rowSelection="rowSelection"
-            :columns="headerColumn"
-            :pagination="pagination"
-            :dataSource="headerData"
-            rowKey="id"
-          >
-            <!--请求头下拉框-->
-            <template slot="headerName" slot-scope="text, record">
-              <!-- <a-select showSearch :options="headerOptions" placeholder="输入请求头" optionFilterProp="children" style="width: 100%">
-              </a-select> -->
-              <a-auto-complete
-                @select="headerSelect"
-                @search="headerSearch"
-                @change="headerNameChange(record)"
-                :value="text"
-                :filterOption="headerNameFilterOption"
-                :allowClear="allowClear"
-                :dataSource="headerAutoOptions"
-                style="width: 100%"
-                :placeholder="$t('debug.tableHeader.holderName')"
+            <a-input-group compact>
+              <span class="knife4j-api-summary-method"><a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}</span>
+              <a-input
+                :style="debugUrlStyle"
+                :value="debugUrl"
+                @change="debugUrlChange"
               />
-            </template>
-            <template slot="headerValue" slot-scope="text, record">
-              <!--判断枚举类型-->
-              <a-row v-if="record.enums != null">
-                <!--不为空-->
-                <a-select
-                  :mode="record.enumsMode"
-                  :defaultValue="text"
-                  :data-key="record.id"
-                  :options="record.enums"
-                  style="width: 100%"
-                  @change="headerContentEnumChnage"
-                >
-                </a-select>
-              </a-row>
-              <a-row v-else>
-                <a-input
-                  :placeholder="$t('debug.tableHeader.holderValue')"
-                  :class="'knife4j-debug-param-require' + record.require"
-                  :data-key="record.id"
-                  :defaultValue="text"
-                  @change="headerContentChnage"
-                />
-              </a-row>
-            </template>
-            <a-row slot="operation" slot-scope="text, record">
-              <a-button v-html="$t('debug.tableHeader.holderDel')"
-                type="link"
-                v-if="!record.new"
-                @click="headerDelete(record)"
-                >删除</a-button
+              <a-button v-html="$t('debug.send')"
+                class="knife4j-api-send"
+                type="primary"
+                @click="sendRestfulApi"
+                >发 送</a-button
               >
-            </a-row>
-          </a-table>
-        </a-tab-pane>
-        <a-tab-pane :tab="$t('debug.params')" key="2" forceRender>
-          <a-row class="knife4j-debug-request-type">
-            <div class="knife4j-debug-request-content-type-float">
-              <a-radio-group
-                @change="requestContentTypeChange"
-                class="knife4j-debug-request-content-type"
-                v-model="requestContentType"
-              >
-                <a-radio value="x-www-form-urlencoded"
-                  >x-www-form-urlencoded</a-radio
-                >
-                <a-radio value="form-data">form-data</a-radio>
-                <a-radio value="raw">raw</a-radio>
-              </a-radio-group>
-            </div>
-            <div class="knife4j-debug-request-content-type-float">
-              <div class="knife4j-debug-request-content-type-raw">
-                <a-dropdown v-if="rawTypeFlag" :trigger="['click']">
-                  <span class="knife4j-debug-raw-span">
-                    <span>{{ rawDefaultText }}</span>
-                    <a-icon type="down" />
-                  </span>
-                  <a-menu slot="overlay" @click="rawMenuClick">
-                    <a-menu-item
-                      data-mode-type="application/json"
-                      data-mode="text"
-                      key="Auto"
-                      >Auto</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="text/plain"
-                      data-mode="text"
-                      key="Text(text/plain)"
-                      >Text(text/plain)</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="application/json"
-                      data-mode="json"
-                      key="JSON(application/json)"
-                      >JSON(application/json)</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="application/javascript"
-                      data-mode="javascript"
-                      key="Javascript(application/Javascript)"
-                      >Javascript(application/Javascript)</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="application/xml"
-                      data-mode="xml"
-                      key="XML(application/xml)"
-                      >XML(application/xml)</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="text/xml"
-                      data-mode="xml"
-                      key="XML(text/xml)"
-                      >XML(text/xml)</a-menu-item
-                    >
-                    <a-menu-item
-                      data-mode-type="text/html"
-                      data-mode="html"
-                      key="HTML(text/html)"
-                      >HTML(text/html)</a-menu-item
-                    >
-                  </a-menu>
-                </a-dropdown>
-              </div>
-            </div>
-          </a-row>
-          <a-row v-if="formFlag">
-            <a-table
-              v-if="formTableFlag"
-              bordered
-              size="small"
-              :rowSelection="rowFormSelection"
-              :columns="formColumn"
-              :pagination="pagination"
-              :dataSource="formData"
-              rowKey="id"
-            >
-              <!--参数名称-->
-              <template slot="formName" slot-scope="text, record">
-                <a-input
-                  :placeholder="record.description"
-                  :data-key="record.id"
-                  :defaultValue="text"
-                  @change="formNameChange"
-                />
+              <a-button v-if="enableReloadCacheParameter" @click="reloadCacheParameter">刷新变量</a-button>
+            </a-input-group>
+          </a-col>
+        </a-row>
+        <a-row class="knife4j-debug-tabs">
+          <a-tabs defaultActiveKey="2">
+            <a-tab-pane key="1">
+              <template slot="tab">
+                <span>
+                  <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
+                    headerCount
+                  }}</a-tag
+                  ><span v-html="$t('debug.headers')">请求头部</span>
+                </span>
               </template>
-              <!--参数下拉框-->
-              <template slot="formType" slot-scope="text, record">
-                <a-select
-                  :defaultValue="text + '-' + record.id"
-                  @change="formTypeChange"
-                  style="width: 100%;"
-                >
-                  <a-select-option :value="'text-' + record.id"><span v-html="$t('debug.form.itemText')">文本</span></a-select-option
-                  >
-                  <a-select-option :value="'file-' + record.id"
-                    ><span v-html="$t('debug.form.itemFile')">文件</span></a-select-option
-                  >
-                </a-select>
-              </template>
-              <!--参数名称-->
-              <template slot="formValue" slot-scope="text, record">
-                <div v-if="record.type == 'text'">
-                  <!--判断枚举类型-->
-                  <a-row v-if="record.enums != null">
-                    <!--不为空-->
-                    <a-select
-                      :mode="record.enumsMode"
-                      :defaultValue="text"
-                      :data-key="record.id"
-                      :options="record.enums"
-                      style="width: 100%"
-                      @change="formContentEnumChange"
-                    >
-                    </a-select>
-                  </a-row>
-                  <a-row v-else>
-                    <a-input
-                      :placeholder="record.description"
-                      :class="'knife4j-debug-param-require' + record.require"
-                      :data-key="record.id"
-                      :defaultValue="text"
-                      @change="formContentChange"
-                    />
-                  </a-row>
-                </div>
-                <div v-else>
-                  <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
-                  <div>
-                    <div style="display:none;" v-if="record.multipart">
-                      <input
-                        :id="'file' + record.id"
-                        multiple
-                        style="display:none;"
-                        type="file"
-                        :data-key="record.id"
-                        @change="formFileChange"
-                      />
-                    </div>
-                    <div style="display:none;" v-else>
-                      <input
-                        :id="'file' + record.id"
-                        style="display:none;"
-                        type="file"
-                        :data-key="record.id"
-                        @change="formFileChange"
-                      />
-                    </div>
-                    <a-input-group compact>
-                      <a-input
-                        style="width: 80%"
-                        :class="'knife4j-debug-param-require' + record.require"
-                        :value="record.content"
-                        disabled
-                      />
-                      <a-button v-html="$t('debug.form.upload')"
-                        @click="formFileUploadClick(record)"
-                        class="knife4j-api-send"
-                        style="width:80px;"
-                        type="primary"
-                        >选择文件</a-button
-                      >
-                    </a-input-group>
-                  </div>
-                </div>
-              </template>
-              <a-row slot="operation" slot-scope="text, record">
-                <a-button v-html="$t('debug.tableHeader.holderDel')"
-                  type="link"
-                  v-if="!record.new"
-                  @click="formDelete(record)"
-                  >删除</a-button
-                >
-              </a-row>
-            </a-table>
-          </a-row>
-          <a-row v-if="urlFormFlag">
-            <a-table
-              v-if="urlFormTableFlag"
-              bordered
-              size="small"
-              :rowSelection="rowUrlFormSelection"
-              :columns="urlFormColumn"
-              :pagination="pagination"
-              :dataSource="urlFormData"
-              rowKey="id"
-            >
-              <!--参数名称-->
-              <template slot="urlFormName" slot-scope="text, record">
-                <a-input
-                  :placeholder="record.description"
-                  :data-key="record.id"
-                  :defaultValue="text"
-                  @change="urlFormNameChange"
-                />
-              </template>
-
-              <!--参数名称-->
-              <template slot="urlFormValue" slot-scope="text, record">
-                <!--判断枚举类型-->
-                <a-row v-if="record.enums != null">
-                  <!--不为空-->
-                  <a-select
-                    :mode="record.enumsMode"
-                    :defaultValue="text"
-                    :data-key="record.id"
-                    :options="record.enums"
-                    style="width: 100%"
-                    @change="urlFormContentEnumChange"
-                  >
-                  </a-select>
-                </a-row>
-                <a-row v-else>
-                  <a-input
-                    :placeholder="record.description"
-                    :class="'knife4j-debug-param-require' + record.require"
-                    :data-key="record.id"
-                    :defaultValue="text"
-                    @change="urlFormContentChange"
-                  />
-                </a-row>
-              </template>
-              <a-row slot="operation" slot-scope="text, record">
-                <a-button  v-html="$t('debug.tableHeader.holderDel')"
-                  type="link"
-                  v-if="!record.new"
-                  @click="urlFormDelete(record)"
-                  >删除</a-button
-                >
-              </a-row>
-            </a-table>
-          </a-row>
-          <a-row v-if="rawFlag">
-            <a-row v-if="rawFormFlag">
-              <!--如果存在raw类型的参数则显示该表格-->
               <a-table
-                v-if="rawFormTableFlag"
+                v-if="headerTableFlag"
                 bordered
                 size="small"
-                :rowSelection="rowRawFormSelection"
-                :columns="urlFormColumn"
+                :rowSelection="rowSelection"
+                :columns="headerColumn"
                 :pagination="pagination"
-                :dataSource="rawFormData"
+                :dataSource="headerData"
                 rowKey="id"
               >
-                <!--参数名称-->
-                <template slot="urlFormName" slot-scope="text, record">
-                  <a-input
-                    :placeholder="record.description"
-                    :data-key="record.id"
-                    :defaultValue="text"
-                    @change="rawFormNameChange"
+                <!--请求头下拉框-->
+                <template slot="headerName" slot-scope="text, record">
+                  <!-- <a-select showSearch :options="headerOptions" placeholder="输入请求头" optionFilterProp="children" style="width: 100%">
+                  </a-select> -->
+                  <a-auto-complete
+                    @select="headerSelect"
+                    @search="headerSearch"
+                    @change="headerNameChange(record)"
+                    :value="text"
+                    :filterOption="headerNameFilterOption"
+                    :allowClear="allowClear"
+                    :dataSource="headerAutoOptions"
+                    style="width: 100%"
+                    :placeholder="$t('debug.tableHeader.holderName')"
                   />
                 </template>
-
-                <!--参数名称-->
-                <template slot="urlFormValue" slot-scope="text, record">
+                <template slot="headerValue" slot-scope="text, record">
                   <!--判断枚举类型-->
                   <a-row v-if="record.enums != null">
                     <!--不为空-->
@@ -364,68 +71,367 @@
                       :data-key="record.id"
                       :options="record.enums"
                       style="width: 100%"
-                      @change="rawFormContentEnumChange"
+                      @change="headerContentEnumChnage"
                     >
                     </a-select>
                   </a-row>
                   <a-row v-else>
                     <a-input
-                      :placeholder="record.description"
+                      :placeholder="$t('debug.tableHeader.holderValue')"
                       :class="'knife4j-debug-param-require' + record.require"
                       :data-key="record.id"
                       :defaultValue="text"
-                      @change="rawFormContentChange"
+                      @change="headerContentChnage"
                     />
                   </a-row>
                 </template>
                 <a-row slot="operation" slot-scope="text, record">
-                  <a-button  v-html="$t('debug.tableHeader.holderDel')"
+                  <a-button v-html="$t('debug.tableHeader.holderDel')"
                     type="link"
                     v-if="!record.new"
-                    @click="rawFormDelete(record)"
+                    @click="headerDelete(record)"
                     >删除</a-button
                   >
                 </a-row>
               </a-table>
-            </a-row>
-            <editor-debug-show
-              style="margin-top:5px;"
-              :value="rawText"
-              :mode="rawMode"
-              @change="rawChange"
-            ></editor-debug-show>
-          </a-row>
-        </a-tab-pane>
-        <a-tab-pane v-if="enableAfterScript" key="3" tab="AfterScript">
-          <a-row style="height:25px;line-height:25px;">
-            关于AfterScript更详细的使用方法及介绍,请<a href="https://gitee.com/xiaoym/knife4j/wikis/AfterScript" target="_blank">参考文档</a>
-          </a-row>
-          <a-row>
-            <editor-script
-              style="margin-top:5px;"
-              :value="rawScript" 
-              @change="rawScriptChange"
-            ></editor-script>
-          </a-row>
-        </a-tab-pane>
-      </a-tabs>
-    </a-row>
-    <a-row>
-      <DebugResponse
-        ref="childDebugResponse"
-        :responseFieldDescriptionChecked="responseFieldDescriptionChecked"
-        :swaggerInstance="swaggerInstance"
-        :api="api"
-        @debugShowFieldDescriptionChange="debugShowFieldDescriptionChange"
-        @debugEditorChange="debugEditorChange"
-        :debugSend="debugSend"
-        :responseContent="responseContent"
-        :responseCurlText="responseCurlText"
-        :responseStatus="responseStatus"
-        :responseRawText="responseRawText"
-        :responseHeaders="responseHeaders"
-      />
-    </a-row>
+            </a-tab-pane>
+            <a-tab-pane :tab="$t('debug.params')" key="2" forceRender>
+              <a-row class="knife4j-debug-request-type">
+                <div class="knife4j-debug-request-content-type-float">
+                  <a-radio-group
+                    @change="requestContentTypeChange"
+                    class="knife4j-debug-request-content-type"
+                    v-model="requestContentType"
+                  >
+                    <a-radio value="x-www-form-urlencoded"
+                      >x-www-form-urlencoded</a-radio
+                    >
+                    <a-radio value="form-data">form-data</a-radio>
+                    <a-radio value="raw">raw</a-radio>
+                  </a-radio-group>
+                </div>
+                <div class="knife4j-debug-request-content-type-float">
+                  <div class="knife4j-debug-request-content-type-raw">
+                    <a-dropdown v-if="rawTypeFlag" :trigger="['click']">
+                      <span class="knife4j-debug-raw-span">
+                        <span>{{ rawDefaultText }}</span>
+                        <a-icon type="down" />
+                      </span>
+                      <a-menu slot="overlay" @click="rawMenuClick">
+                        <a-menu-item
+                          data-mode-type="application/json"
+                          data-mode="text"
+                          key="Auto"
+                          >Auto</a-menu-item
+                        >
+                        <a-menu-item
+                          data-mode-type="text/plain"
+                          data-mode="text"
+                          key="Text(text/plain)"
+                          >Text(text/plain)</a-menu-item
+                        >
+                        <a-menu-item
+                          data-mode-type="application/json"
+                          data-mode="json"
+                          key="JSON(application/json)"
+                          >JSON(application/json)</a-menu-item
+                        >
+                        <a-menu-item
+                          data-mode-type="application/javascript"
+                          data-mode="javascript"
+                          key="Javascript(application/Javascript)"
+                          >Javascript(application/Javascript)</a-menu-item
+                        >
+                        <a-menu-item
+                          data-mode-type="application/xml"
+                          data-mode="xml"
+                          key="XML(application/xml)"
+                          >XML(application/xml)</a-menu-item
+                        >
+                        <a-menu-item
+                          data-mode-type="text/xml"
+                          data-mode="xml"
+                          key="XML(text/xml)"
+                          >XML(text/xml)</a-menu-item
+                        >
+                        <a-menu-item
+                          data-mode-type="text/html"
+                          data-mode="html"
+                          key="HTML(text/html)"
+                          >HTML(text/html)</a-menu-item
+                        >
+                      </a-menu>
+                    </a-dropdown>
+                  </div>
+                </div>
+                <div v-if="formatFlag" class="knife4j-debug-request-content-type-beautify">
+                  <a @click="beautifyJson">Beautify</a>
+                </div>
+              </a-row>
+              <a-row v-if="formFlag">
+                <a-table
+                  v-if="formTableFlag"
+                  bordered
+                  size="small"
+                  :rowSelection="rowFormSelection"
+                  :columns="formColumn"
+                  :pagination="pagination"
+                  :dataSource="formData"
+                  rowKey="id"
+                >
+                  <!--参数名称-->
+                  <template slot="formName" slot-scope="text, record">
+                    <a-input
+                      :placeholder="record.description"
+                      :data-key="record.id"
+                      :defaultValue="text"
+                      @change="formNameChange"
+                    />
+                  </template>
+                  <!--参数下拉框-->
+                  <template slot="formType" slot-scope="text, record">
+                    <a-select
+                      :defaultValue="text + '-' + record.id"
+                      @change="formTypeChange"
+                      style="width: 100%;"
+                    >
+                      <a-select-option :value="'text-' + record.id"><span v-html="$t('debug.form.itemText')">文本</span></a-select-option
+                      >
+                      <a-select-option :value="'file-' + record.id"
+                        ><span v-html="$t('debug.form.itemFile')">文件</span></a-select-option
+                      >
+                    </a-select>
+                  </template>
+                  <!--参数名称-->
+                  <template slot="formValue" slot-scope="text, record">
+                    <div v-if="record.type == 'text'">
+                      <!--判断枚举类型-->
+                      <a-row v-if="record.enums != null">
+                        <!--不为空-->
+                        <a-select
+                          :mode="record.enumsMode"
+                          :defaultValue="text"
+                          :data-key="record.id"
+                          :options="record.enums"
+                          style="width: 100%"
+                          @change="formContentEnumChange"
+                        >
+                        </a-select>
+                      </a-row>
+                      <a-row v-else>
+                        <a-input
+                          :placeholder="record.description"
+                          :class="'knife4j-debug-param-require' + record.require"
+                          :data-key="record.id"
+                          :defaultValue="text"
+                          @change="formContentChange"
+                        />
+                      </a-row>
+                    </div>
+                    <div v-else>
+                      <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
+                      <div>
+                        <div style="display:none;" v-if="record.multipart">
+                          <input
+                            :id="'file' + record.id"
+                            multiple
+                            style="display:none;"
+                            type="file"
+                            :data-key="record.id"
+                            @change="formFileChange"
+                          />
+                        </div>
+                        <div style="display:none;" v-else>
+                          <input
+                            :id="'file' + record.id"
+                            style="display:none;"
+                            type="file"
+                            :data-key="record.id"
+                            @change="formFileChange"
+                          />
+                        </div>
+                        <a-input-group compact>
+                          <a-input
+                            style="width: 80%"
+                            :class="'knife4j-debug-param-require' + record.require"
+                            :value="record.content"
+                            disabled
+                          />
+                          <a-button v-html="$t('debug.form.upload')"
+                            @click="formFileUploadClick(record)"
+                            class="knife4j-api-send"
+                            style="width:80px;"
+                            type="primary"
+                            >选择文件</a-button
+                          >
+                        </a-input-group>
+                      </div>
+                    </div>
+                  </template>
+                  <a-row slot="operation" slot-scope="text, record">
+                    <a-button v-html="$t('debug.tableHeader.holderDel')"
+                      type="link"
+                      v-if="!record.new"
+                      @click="formDelete(record)"
+                      >删除</a-button
+                    >
+                  </a-row>
+                </a-table>
+              </a-row>
+              <a-row v-if="urlFormFlag">
+                <a-table
+                  v-if="urlFormTableFlag"
+                  bordered
+                  size="small"
+                  :rowSelection="rowUrlFormSelection"
+                  :columns="urlFormColumn"
+                  :pagination="pagination"
+                  :dataSource="urlFormData"
+                  rowKey="id"
+                >
+                  <!--参数名称-->
+                  <template slot="urlFormName" slot-scope="text, record">
+                    <a-input
+                      :placeholder="record.description"
+                      :data-key="record.id"
+                      :defaultValue="text"
+                      @change="urlFormNameChange"
+                    />
+                  </template>
+
+                  <!--参数名称-->
+                  <template slot="urlFormValue" slot-scope="text, record">
+                    <!--判断枚举类型-->
+                    <a-row v-if="record.enums != null">
+                      <!--不为空-->
+                      <a-select
+                        :mode="record.enumsMode"
+                        :defaultValue="text"
+                        :data-key="record.id"
+                        :options="record.enums"
+                        style="width: 100%"
+                        @change="urlFormContentEnumChange"
+                      >
+                      </a-select>
+                    </a-row>
+                    <a-row v-else>
+                      <a-input
+                        :placeholder="record.description"
+                        :class="'knife4j-debug-param-require' + record.require"
+                        :data-key="record.id"
+                        :defaultValue="text"
+                        @change="urlFormContentChange"
+                      />
+                    </a-row>
+                  </template>
+                  <a-row slot="operation" slot-scope="text, record">
+                    <a-button  v-html="$t('debug.tableHeader.holderDel')"
+                      type="link"
+                      v-if="!record.new"
+                      @click="urlFormDelete(record)"
+                      >删除</a-button
+                    >
+                  </a-row>
+                </a-table>
+              </a-row>
+              <a-row v-if="rawFlag">
+                <a-row v-if="rawFormFlag">
+                  <!--如果存在raw类型的参数则显示该表格-->
+                  <a-table
+                    v-if="rawFormTableFlag"
+                    bordered
+                    size="small"
+                    :rowSelection="rowRawFormSelection"
+                    :columns="urlFormColumn"
+                    :pagination="pagination"
+                    :dataSource="rawFormData"
+                    rowKey="id"
+                  >
+                    <!--参数名称-->
+                    <template slot="urlFormName" slot-scope="text, record">
+                      <a-input
+                        :placeholder="record.description"
+                        :data-key="record.id"
+                        :defaultValue="text"
+                        @change="rawFormNameChange"
+                      />
+                    </template>
+
+                    <!--参数名称-->
+                    <template slot="urlFormValue" slot-scope="text, record">
+                      <!--判断枚举类型-->
+                      <a-row v-if="record.enums != null">
+                        <!--不为空-->
+                        <a-select
+                          :mode="record.enumsMode"
+                          :defaultValue="text"
+                          :data-key="record.id"
+                          :options="record.enums"
+                          style="width: 100%"
+                          @change="rawFormContentEnumChange"
+                        >
+                        </a-select>
+                      </a-row>
+                      <a-row v-else>
+                        <a-input
+                          :placeholder="record.description"
+                          :class="'knife4j-debug-param-require' + record.require"
+                          :data-key="record.id"
+                          :defaultValue="text"
+                          @change="rawFormContentChange"
+                        />
+                      </a-row>
+                    </template>
+                    <a-row slot="operation" slot-scope="text, record">
+                      <a-button  v-html="$t('debug.tableHeader.holderDel')"
+                        type="link"
+                        v-if="!record.new"
+                        @click="rawFormDelete(record)"
+                        >删除</a-button
+                      >
+                    </a-row>
+                  </a-table>
+                </a-row>
+                <editor-debug-show
+                  style="margin-top:5px;"
+                  :value="rawText"
+                  :mode="rawMode"
+                  @change="rawChange"
+                ></editor-debug-show>
+              </a-row>
+            </a-tab-pane>
+            <a-tab-pane v-if="enableAfterScript" key="3" tab="AfterScript">
+              <a-row style="height:25px;line-height:25px;">
+                关于AfterScript更详细的使用方法及介绍,请<a href="https://gitee.com/xiaoym/knife4j/wikis/AfterScript" target="_blank">参考文档</a>
+              </a-row>
+              <a-row>
+                <editor-script
+                  style="margin-top:5px;"
+                  :value="rawScript" 
+                  @change="rawScriptChange"
+                ></editor-script>
+              </a-row>
+            </a-tab-pane>
+          </a-tabs>
+        </a-row>
+        <a-row>
+           <DebugResponse
+            ref="childDebugResponse"
+            :responseFieldDescriptionChecked="responseFieldDescriptionChecked"
+            :swaggerInstance="swaggerInstance"
+            :api="api"
+            @debugShowFieldDescriptionChange="debugShowFieldDescriptionChange"
+            @debugEditorChange="debugEditorChange"
+            :debugSend="debugSend"
+            :responseContent="responseContent"
+            :responseCurlText="responseCurlText"
+            :responseStatus="responseStatus"
+            :responseRawText="responseRawText"
+            :responseHeaders="responseHeaders"
+          />
+        </a-row>
+      </div>
+    </a-spin>
   </div>
 </template>
 <script>
@@ -459,6 +465,10 @@ export default {
   data() {
     return {
       i18n:null,
+      //当前回调数据是否太大
+      bigFlag:false,
+      //数据很大,raw显示会导致内存溢出
+      bigBlobFlag:false,
       //是否开启缓存
       debugUrlStyle:"width: 80%",
       enableRequestCache: false,
@@ -533,6 +543,8 @@ export default {
       rawDefaultText: "Auto",
       rawFlag: false,
       rawTypeFlag: false,
+      //格式化按钮显示标志
+      formatFlag:false,
       rawText: "",
       rawScript:"",
       rawScriptMode:"javascript",
@@ -546,11 +558,13 @@ export default {
       responseContent: null,
       responseFieldDescriptionChecked: true,
       //网关转发请求Header标志
-      routeHeader:null
+      routeHeader:null,
+      oas2:true
     };
   },
   created() {
     this.routeHeader=this.swaggerInstance.header;
+    this.oas2=this.swaggerInstance.oas2();
     this.initI18n();
     //初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
@@ -1292,8 +1306,10 @@ export default {
       this.formFlag = true;
       this.rawFlag = false;
       this.rawTypeFlag = false;
+      this.formatFlag=false;
       this.urlFormFlag = false;
       this.requestContentType = "form-data";
+      this.toggleBeautifyButtonStatus();
     },
     showTabUrlForm() {
       this.urlFormFlag = true;
@@ -1301,6 +1317,7 @@ export default {
       this.rawTypeFlag = false;
       this.formFlag = false;
       this.requestContentType = "x-www-form-urlencoded";
+      this.toggleBeautifyButtonStatus();
     },
     showTabRaw() {
       this.rawFlag = true;
@@ -1315,6 +1332,7 @@ export default {
         this.rawRequestType = "application/xml";
       }
       this.requestContentType = "raw";
+      this.toggleBeautifyButtonStatus();
     },
     getEnumOptions(param) {
       var tmpenum = KUtils.propValue("enum", param, null);
@@ -1707,6 +1725,7 @@ export default {
         this.urlFormFlag = false;
         this.formFlag = false;
       }
+      this.toggleBeautifyButtonStatus();
     },
     initSelectionHeaders(selectedKey) {
       if (KUtils.strNotBlank(selectedKey)) {
@@ -2077,6 +2096,29 @@ export default {
       this.rawMode = item.$el.getAttribute("data-mode");
       this.rawRequestType = item.$el.getAttribute("data-mode-type");
       this.rawDefaultText = key;
+      this.toggleBeautifyButtonStatus();
+    },
+    beautifyJson(){
+      let jsontext=this.rawText;
+      if(KUtils.strNotBlank(jsontext)){
+        //格式化操作
+        try{
+          let j=KUtils.json5stringify(KUtils.json5parse(jsontext));
+          this.rawText=j;
+        }catch(err){
+          console.error(err);
+        }
+      }
+    },
+    toggleBeautifyButtonStatus(){
+      //格式化JSON按钮标志
+      let flag=false;
+      if(this.rawFlag){
+        if(this.rawMode=='json'){
+          flag=true;
+        }
+      }
+      this.formatFlag=flag;
     },
     rawScriptChange(value){
       this.rawScript=value;
@@ -2105,7 +2147,9 @@ export default {
     },
     callChildEditorShow() {
       //console("调用子类方法---");
-      this.$refs.childDebugResponse.showEditorFieldDescription();
+      if(!this.bigFlag){
+        this.$refs.childDebugResponse.showEditorFieldDescription();
+      }
     },
     debugHeaders() {
       //获取发送请求的自定义等等请求头参数
@@ -2165,6 +2209,11 @@ export default {
       if(KUtils.checkUndefined(this.routeHeader)){
         headers["knfie4j-gateway-request"]=this.routeHeader;
       }
+      //Knife4jAggregationDesktop组件header
+      if(this.swaggerInstance.desktop){
+        headers["knife4j-gateway-code"]=this.swaggerInstance.desktopCode;
+      }
+
       return headers;
     },
     debugRawFormParams() {
@@ -2228,13 +2277,21 @@ export default {
                   //判断是否是urlPath参数
                   if (this.debugPathFlag) {
                     if (this.debugPathParams.indexOf(form.name) == -1) {
-                      formData.append(form.name, form.content);
+                      //非空判断
+                      //https://gitee.com/xiaoym/knife4j/issues/I3AHDQ
+                      if(KUtils.strNotBlank(form.content)){
+                        formData.append(form.name, form.content);
+                      }
                     } else {
                       var replaceRege = "{" + form.name + "}";
                       url = url.replace(replaceRege, form.content);
                     }
                   } else {
-                    formData.append(form.name, form.content);
+                    //非空判断
+                    //https://gitee.com/xiaoym/knife4j/issues/I3AHDQ
+                    if(KUtils.strNotBlank(form.content)){
+                      formData.append(form.name, form.content);
+                    }
                   }
                 } else {
                   //文件
@@ -2288,6 +2345,7 @@ export default {
     debugStreamFlag() {
       var streamFlag = false;
       var apiInfo = this.api;
+      //console.log(apiInfo);
       if (
         apiInfo.produces != undefined &&
         apiInfo.produces != null &&
@@ -2593,12 +2651,20 @@ export default {
           //否则axios会忽略请求头Content-Type
           data:applyReuqest.data
         };
-        //console.log(requestConfig);
-        //需要判断是否是下载请求
-        if (this.debugStreamFlag()) {
-          //流请求
+        //判断当前接口规范是OAS3还是Swagger2
+        if(this.oas2){
+          //OAS2规范制定了produces的定义,需要判断请求头
+          //需要判断是否是下载请求
+          if (this.debugStreamFlag()) {
+            //流请求
+            requestConfig = { ...requestConfig, responseType: "blob" };
+          }
+        }else{
+          //统一追加一个blob类型的响应,在OpenAPI3.0的规范中,没有关于produces的设定，因此无法判断当前请求是否是流的请求
+          //https://gitee.com/xiaoym/knife4j/issues/I374SP
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
+        //console.log(requestConfig);
         const debugInstance = DebugAxios.create();
         //get请求编码问题
         //https://gitee.com/xiaoym/knife4j/issues/I19C8Y
@@ -2832,12 +2898,18 @@ export default {
           var func=new Function('ke',this.rawScript);
           //执行
           func(ke);
+          setTimeout(() => {
+            //console.log("开始执行...")
+            ke.global.action();
+          }, 1000);
         }catch(e){
           console.error(e);
         }
       }
     },
     handleDebugSuccess(startTime,endTime, res) {
+      this.bigFlag=false;
+      this.bigBlobFlag=false;
       //成功的情况
       this.setResponseBody(res);
       this.setResponseHeaders(res.headers);
@@ -2851,6 +2923,8 @@ export default {
       this.storeApiParams();
     },
     handleDebugError(startTime,endTime, resp) {
+      this.bigFlag=false;
+      this.bigBlobFlag=false;
       //console.log("失败情况---");
       //console.log(resp);
       //失败的情况
@@ -2919,6 +2993,8 @@ export default {
           //判断是否是blob类型
           if (resp.responseType != "blob") {
             var _tmpRawText = KUtils.toString(resp.responseText, "");
+            //123
+            //console.log(_tmpRawText)
             this.responseRawText = _tmpRawText;
           }
         }
@@ -3000,6 +3076,7 @@ export default {
       var headers = this.debugHeaders();
       var ignoreHeaders=[];
       ignoreHeaders.push("knfie4j-gateway-request");
+      ignoreHeaders.push("knife4j-gateway-code");
       ignoreHeaders.push("Request-Origion");
       if (KUtils.checkUndefined(headers)) {
         for (var h in headers) {
@@ -3195,111 +3272,141 @@ export default {
       return params;
     },
     setResponseBody(res) {
+      //console.log("成功");
+      //console.log(res);
+      let that=this;
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
         //console.log(res);
         var headers = res.headers;
         if (KUtils.checkUndefined(resp)) {
+          var ctype = KUtils.propValue("content-type", headers, "");
           //判断是否是blob类型
-          if (resp.responseType == "blob") {
-            var ctype = KUtils.propValue("content-type", headers, "");
-            //从响应头中得到文件名称
-            var fileName = "Knife4j.txt";
-            var contentDisposition = KUtils.propValue(
-              "Content-Disposition",
-              headers,
-              ""
-            );
-            if (!KUtils.strNotBlank(contentDisposition)) {
-              //如果是空,获取小写的请求头
-              contentDisposition = KUtils.propValue(
-                "content-disposition",
-                headers,
-                ""
-              );
-            }
-            if (KUtils.strNotBlank(contentDisposition)) {
-              var respcds = contentDisposition.split(";");
-              for (var i = 0; i < respcds.length; i++) {
-                var header = respcds[i];
-                if (header != null && header != "") {
-                  var headerValu = header.split("=");
-                  if (headerValu != null && headerValu.length > 0) {
-                    var _hdvalue = headerValu[0];
-                    if (
-                      _hdvalue != null &&
-                      _hdvalue != undefined &&
-                      _hdvalue != ""
-                    ) {
-                      if (_hdvalue.toLowerCase() == "filename") {
-                        //对filename进行decode处理,防止出现中文的情况
-                        fileName = decodeURIComponent(headerValu[1]);
+          var contentDisposition = KUtils.propValue("content-disposition",headers,"");
+          if (resp.responseType == "blob"||KUtils.strNotBlank(contentDisposition)) {
+            //针对OpenAPI3的规范,由于统一添加了blob类型，此处需要判断
+            if(res.data.type=="application/json"||
+            res.data.type=="application/xml"||
+            res.data.type=="text/html"||
+            res.data.type=="text/plain"){
+              //服务端返回JSON数据,Blob对象转为JSON
+              const reader = new FileReader();
+              reader.onload = e => {
+                //let message=KUtils.json5parse(e.target.result);
+                //console.log(e.target.result);
+                //重新赋值
+                let readerResponse={
+                  responseText:e.target.result,
+                  response:e.target.result,
+                  responseType:"",
+                  status:resp.status,
+                  statusText:resp.statusText,
+                  readyState:resp.readyState,
+                  timeout:resp.timeout,
+                  withCredentials:resp.withCredentials
+                }
+                that.setResponseJsonBody(readerResponse,headers)
+              };
+              reader.readAsText(res.data);
+            }else if(ctype=="text/html"||ctype=="text/plain"||ctype=="application/xml"){
+              this.setResponseJsonBody(resp, headers);
+            }else{
+              //从响应头中得到文件名称
+              var fileName = "Knife4j.txt";
+              if (!KUtils.strNotBlank(contentDisposition)) {
+                //如果是空,获取小写的请求头
+                contentDisposition = KUtils.propValue(
+                  "content-disposition",
+                  headers,
+                  ""
+                );
+              }
+              if (KUtils.strNotBlank(contentDisposition)) {
+                var respcds = contentDisposition.split(";");
+                for (var i = 0; i < respcds.length; i++) {
+                  var header = respcds[i];
+                  if (header != null && header != "") {
+                    var headerValu = header.split("=");
+                    if (headerValu != null && headerValu.length > 0) {
+                      var _hdvalue = headerValu[0];
+                      if (
+                        _hdvalue != null &&
+                        _hdvalue != undefined &&
+                        _hdvalue != ""
+                      ) {
+                        if (_hdvalue.toLowerCase() == "filename") {
+                          //对filename进行decode处理,防止出现中文的情况
+                          fileName = decodeURIComponent(headerValu[1]);
+                        }
                       }
                     }
                   }
                 }
               }
+              //双重验证,判断是否为图片
+              var imageFlag = false;
+              if (ctype.indexOf("image") != -1) {
+                imageFlag = true;
+              } else {
+                //如果contentType非image,判断文件名称
+                //png,jpg,jpeg,gif
+                var imageArrs = [
+                  "bmp",
+                  "jpg",
+                  "png",
+                  "tif",
+                  "gif",
+                  "pcx",
+                  "tga",
+                  "exif",
+                  "fpx",
+                  "svg",
+                  "psd",
+                  "cdr",
+                  "pcd",
+                  "dxf",
+                  "ufo",
+                  "eps",
+                  "ai",
+                  "raw",
+                  "WMF",
+                  "webp"
+                ];
+                imageArrs.forEach(fmt => {
+                  if (fileName.indexOf(fmt) != -1) {
+                    imageFlag = true;
+                  }
+                });
+              }
+              //最后再判断produces
+              var produces=this.api.produces;
+              //判断是否是image
+              var imgProduceFlag=false;
+              if(KUtils.arrNotEmpty(produces)){
+                produces.forEach(prd=>{
+                  if(prd.indexOf("image")!=-1){
+                    imgProduceFlag=true;
+                  }
+                })
+              }
+              if(!imageFlag){
+                imageFlag=imgProduceFlag;
+              }
+              //console.log(imgProduceFlag);
+              //application/octet-stream
+              let downloadurl = window.URL.createObjectURL(res.data);
+              //let blobTarget=new Blob([res.data])
+              //var downloadurl = window.URL.createObjectURL(blobTarget);
+              this.responseContent = {
+                text: "",
+                mode: "blob",
+                blobFlag: true,
+                imageFlag: imageFlag,
+                blobFileName: fileName,
+                blobUrl: downloadurl,
+                base64:""
+              };
             }
-            //双重验证,判断是否为图片
-            var imageFlag = false;
-            if (ctype.indexOf("image") != -1) {
-              imageFlag = true;
-            } else {
-              //如果contentType非image,判断文件名称
-              //png,jpg,jpeg,gif
-              var imageArrs = [
-                "bmp",
-                "jpg",
-                "png",
-                "tif",
-                "gif",
-                "pcx",
-                "tga",
-                "exif",
-                "fpx",
-                "svg",
-                "psd",
-                "cdr",
-                "pcd",
-                "dxf",
-                "ufo",
-                "eps",
-                "ai",
-                "raw",
-                "WMF",
-                "webp"
-              ];
-              imageArrs.forEach(fmt => {
-                if (fileName.indexOf(fmt) != -1) {
-                  imageFlag = true;
-                }
-              });
-            }
-            //最后再判断produces
-            var produces=this.api.produces;
-            //判断是否是image
-            var imgProduceFlag=false;
-            if(KUtils.arrNotEmpty(produces)){
-              produces.forEach(prd=>{
-                if(prd.indexOf("image")!=-1){
-                  imgProduceFlag=true;
-                }
-              })
-            }
-            if(!imageFlag){
-              imageFlag=imgProduceFlag;
-            }
-            //console.log(imgProduceFlag);
-            var downloadurl = window.URL.createObjectURL(res.data);
-            this.responseContent = {
-              text: "",
-              mode: "blob",
-              blobFlag: true,
-              imageFlag: imageFlag,
-              blobFileName: fileName,
-              blobUrl: downloadurl,
-              base64:""
-            };
           } else {
             this.setResponseJsonBody(resp, headers);
           }
@@ -3309,6 +3416,8 @@ export default {
     setResponseJsonBody(resp, headers) {
       //判断响应的类型
       //var _text = resp.responseText;
+      //console.log("setResponseJsonBody")
+      //console.log(resp);
       var _text = "";
       var _base64 = "";
       var mode = this.getContentTypeByHeaders(headers);
@@ -3320,14 +3429,21 @@ export default {
         //_text = KUtils.json5stringify(res.data);
         var responseSize = resp.responseText.gblen();
         var mbSize = (responseSize / 1024).toFixed(1);
-        var maxSize = 500;
+        var maxSize = 150;
+        //数据大小
+        this.bigBlobFlag=mbSize>300;
+        //console.log(mbSize)
         if (mbSize > maxSize) {
+          this.bigFlag=true;
           //_text = resp.responseText;
           //var messageInfo='接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看';
           var messageInfo=this.i18n.message.debug.contentToBig;
           this.$message.info(messageInfo);
           mode = "text";
+          //_text=resp.responseText;
+          //console.log("1")
         } else {
+          //console.log("2")
           //此处存在空指针异常
           if (KUtils.strNotBlank(resp.responseText)) {
             try{
@@ -3338,13 +3454,23 @@ export default {
               mode="text";
             }
           }
+          //console.log("2-1")
         }
        if (KUtils.strNotBlank(resp.responseText)) {
-        var base64ImageRegex=new RegExp(".*?\"(data:image.*?base64.*?)\".*","ig");
-        if(base64ImageRegex.test(resp.responseText)){
-          var s=RegExp.$1;
-          _base64=s;
-        }
+          //console.log("3")
+          if(!this.bigFlag){
+            //数据太大,查找缓慢
+            if(resp.responseText.indexOf("data:image")>-1){
+              //console.log("3-1.5")
+              var base64ImageRegex=new RegExp(".*?\"(data:image.*?base64.*?)\".*","ig");
+              if(base64ImageRegex.test(resp.responseText)){
+                var s=RegExp.$1;
+                _base64=s;
+              }
+
+            }
+          }
+          //console.log("3-1")
        }
         /* if(_text.indexOf("data:image/jpg;base64") > -1) {
             let newStr = _text.substring(_text.indexOf("data:image/jpg;base64"));
@@ -3357,7 +3483,9 @@ export default {
         } else {
           _text = tmpXmlText;
         }
+        //console.log("4")
       } else {
+        //console.log("5")
         _text = resp.responseText;
       }
       //console.log('set value before')
@@ -3370,6 +3498,7 @@ export default {
         blobUrl: "",
         base64: _base64
       };
+      //console.log(this.responseContent)
     },
     debugEditorChange(value) {
       //针对Debug调试框inputchange事件做的处理

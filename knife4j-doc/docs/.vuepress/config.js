@@ -45,6 +45,7 @@ module.exports = {
                     // 这里的'/' 指的是 docs文件夹路径
                     // [以 '/' 结尾的默认指向该路径下README.md文件]
                     { text: '用户指南', link: '/documentation/' },
+                    { text: '生态衍生', link: '/resources/' },
                     { text: '实战指南', link: '/action/' },
                     { text: 'OAS规范', link: '/oas/' },
                     { text: '更新日志', link: '/changelog/' },
@@ -54,6 +55,7 @@ module.exports = {
                 sidebar: {
                     // 打开guide主页链接时生成下面这个菜单
                     '/documentation/': genDocumentationSideBar(),
+                    '/resources/':genResourcesSideBar(),
                     "/changelog/": genChangeLogSideBar(),
                     "/action/": genActionSideBar(),
                     "/oas/": genOASSideBar(),
@@ -121,7 +123,7 @@ function genActionSideBar() {
         {
             title:"4.微服务聚合实战",
             collapsable: false,
-            children: ["aggregation-disk.md", "aggregation-cloud.md","aggregation-eureka.md","aggregation-nacos.md"]
+            children: ["aggregation-disk.md", "aggregation-cloud.md","aggregation-eureka.md","aggregation-nacos.md","aggregation-docker.md"]
         },
         {
             title: "5. ASP.NET Core",
@@ -130,6 +132,7 @@ function genActionSideBar() {
         }
     ]
 }
+
 
 function genOASSideBar() {
     return [
@@ -143,6 +146,25 @@ function genOASSideBar() {
             title: "2.OAS3",
             collapsable: false,
             children: ["oas3.md", "schema.md"]
+        }
+    ]
+}
+
+function genResourcesSideBar() {
+    return [
+        {
+            title: "1.Aggregation微服务聚合组件",
+            collapsable: false,
+            children: ["aggregation-introduction.md","aggregation-disk.md","aggregation-cloud.md","aggregation-eureka.md","aggregation-nacos.md"]
+        }, {
+            title: "2.Desktop独立渲染组件",
+            collapsable: false,
+            children: ["desktop-introduction.md","desktop-install.md","desktop-use.md","desktop-test.md"]
+        },
+        {
+            title: "3.Cloud管理平台",
+            collapsable: false,
+            children: ["cloud-introduction.md","cloud-function.md","cloud-openapi.md","cloud-use.md"]
         }
     ]
 }
@@ -168,13 +190,13 @@ function genDocumentationSideBar() {
                 "apiSort.md", "tagSort.md", "requestCache.md", "dynamicRequestParameter.md", "exportDocument.md",
                 "filterRequestParameter.md", "includeRequestParameter.md", "search.md", "clearCache.md", "dynamicRequestDescription.md",
                 "dynamicResponseDescription.md", "host.md", "afterScript.md", "oauth2.md", "postman.md", "globalParameter.md","swaggermodels.md",
-                "customHome.md","customFooter.md","jsr303.md","forbidDebug.md","forbidSearch.md","forbidOpenApi.md"
+                "customHome.md","customFooter.md","jsr303.md","forbidDebug.md","forbidSearch.md","forbidOpenApi.md","gitVersion.md"
             ]
 
         }, {
             title: "4.生态衍生",
             collapsable: false,
-            children: ["knife4jCloud.md", "knife4jAggregation.md"]
+            children: ["knife4jCloud.md", "knife4jAggregation.md","knife4jAggregationDesktop.md"]
         }, {
             title: "5.其它语言",
             collapsable: false,
@@ -291,6 +313,7 @@ function genChangeLogSideBar() {
             title: "发布日志",
             collapsable: false,
             children: [
+                "2021-06-28-knife4j-2.0.9-issue.md",
                 "2020-11-22-knife4j-2.0.8-issue",
                 "2020-11-02-knife4j-2.0.7-issue",
                 "2020-10-26-knife4j-2.0.6-issue",

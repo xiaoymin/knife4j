@@ -11,7 +11,7 @@ features:
   details: 个性化配置项,支持接口地址、接口description属性、UI增强等个性化配置功能...
 - title: 增强
   details: 接口排序、Swagger资源保护、导出Markdown、参数缓存众多强大功能...
-footer: Apache License 2.0 | Copyright © 2019-八一菜刀 
+footer: Apache License 2.0 | Copyright © 2019-八一菜刀 浙ICP备18027673号-1
 ---
 
  

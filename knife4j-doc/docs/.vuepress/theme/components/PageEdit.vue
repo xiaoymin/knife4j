@@ -1,5 +1,10 @@
 <template>
   <footer class="page-edit">
+    <div class="gitalk-container">
+      <div class="self-container" style="color: #c3c3c3;">
+        <span id="busuanzi_container_page_pv" >被围观 <span id="busuanzi_value_page_pv" style="color: #608fe8;"></span> 人次</span>
+      </div>
+    </div>
     <div
       v-if="editLink"
       class="edit-link"
@@ -28,7 +33,6 @@ import { endingSlashRE, outboundRE } from '../util'
 
 export default {
   name: 'PageEdit',
-
   computed: {
     lastUpdated () {
       return this.$page.lastUpdated
@@ -142,6 +146,9 @@ export default {
     .time
       font-weight 400
       color #767676
+
+.gitalk-container
+  float left
 
 @media (max-width: $MQMobile)
   .page-edit

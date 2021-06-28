@@ -23,6 +23,7 @@ const langOptions = {
       },
       {
         title: '说明',
+        width: '35%',
         dataIndex: 'description',
         scopedSlots: { customRender: 'descriptionValueTemplate' }
       },
@@ -330,7 +331,8 @@ const langOptions = {
       urlNotEmpty: '请求url地址不能为空',
       fieldNotEmpty: '不能为空',
       networkErr: '服务器正在重启或者已经挂了:(~~~~',
-      contentToBig:'接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看'
+      contentToBig:'接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看',
+      contentToBigBlob:'接口响应数据量超过限制,不在响应内容中显示'
     },
     sys: {
       loadErr: '请确保swagger资源接口正确.'

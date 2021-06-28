@@ -211,8 +211,10 @@ const utils = {
       }
     } else {
       if (inType == 'query') {
+        //console.log("ignoreParameterAllKeys")
+        //console.log(ignoreParameterAllKeys)
         return !ignoreParameterAllKeys.some(key =>
-          new RegExp(`^(${key}$|${key}[.[])`).test(name));
+          new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/'+key+'/g').test(name));
       } else {
         return !ignoreParameterAllKeys.includes(name);
       }
@@ -225,8 +227,10 @@ const utils = {
         var pathKeys=Object.keys(paths||{});
         var pathKeyLength=pathKeys.length;
         var num=0;
+        //https://gitee.com/xiaoym/knife4j/issues/I3B5BK
+        let basePathStr=basePath+"/";
         for(var i=0;i<pathKeys.length;i++){
-          if(pathKeys[i].startsWith(basePath)){
+          if(pathKeys[i].startsWith(basePathStr)){
             num++;
           }
         }
@@ -406,6 +410,16 @@ const utils = {
     //判断是否包含中文
     var reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
     return reg.test(keyword);
+  },
+  json5stringifyNoFormat:function(rtext){
+    var ret = null;
+    try {
+      ret = JSON5.stringify(rtext);
+    } catch (err) {
+      //console(err)
+      ret = JSON.stringify(rtext);
+    }
+    return ret;
   },
   json5stringify: function (rtext) {
     var ret = null;
@@ -590,7 +604,8 @@ const utils = {
       return v;
     }else{
       if(typeof(v)=='object'){
-        v=this.json5stringify(v);
+        //v=this.json5stringify(v);
+        v=this.json5stringifyNoFormat(v);
       }
     }
     return v;
@@ -650,7 +665,15 @@ const utils = {
         return ptype;
       }
     }
-    
+
+    return null;
+  },
+  getRefParameterName:function(item){
+    var regex = new RegExp("#/components/parameters/(.*)$", "ig");
+    if (regex.test(item)) {
+      var ptype = RegExp.$1;
+      return ptype;
+    }
     return null;
   },
   trim(text) {

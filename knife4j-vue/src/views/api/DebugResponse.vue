@@ -89,7 +89,8 @@ export default {
       type: Array
     },
     responseRawText: {
-      type: String
+      type: String,
+      default:""
     },
     responseCurlText: {
       type: String,
@@ -159,7 +160,7 @@ export default {
     },
     base64Init(){
       var bimg=KUtils.getValue(this.responseContent,"base64","",true);
-      console.log(this.responseContent)
+      //console.log(this.responseContent)
       if(KUtils.strNotBlank(bimg)){
         this.base64Image=true;
       }
@@ -277,7 +278,7 @@ export default {
     },
     showEditorFieldAnyWay() {
       var swaggerInstance = this.swaggerInstance;
-      //console("我被调用了--------");
+      //console.log("我被调用了--------");
       var responseCode = this.api.getHttpSuccessCodeObject();
       var cid = "responseEditorContent" + this.api.id;
       var editorContainer = document.getElementById(cid);
