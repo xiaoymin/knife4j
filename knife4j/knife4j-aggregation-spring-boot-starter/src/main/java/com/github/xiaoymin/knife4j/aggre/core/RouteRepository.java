@@ -36,21 +36,21 @@ public interface RouteRepository {
 
     /**
      * 校验请求Header是否正确
-     * @param header
-     * @return
+     * @param header 请求头
+     * @return 是否校验成功
      */
     boolean checkRoute(String header);
 
     /**
      * 根据请求header获取
-     * @param header
-     * @return
+     * @param header 请求头
+     * @return 服务Route
      */
     SwaggerRoute getRoute(String header);
 
     /**
      * 获取所有
-     * @return
+     * @return 返回所有Routes服务
      */
     List<SwaggerRoute> getRoutes();
 

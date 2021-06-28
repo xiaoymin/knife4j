@@ -17,23 +17,23 @@ public interface RouteCache<K,V> {
 
     /**
      *
-     * @param k
-     * @param v
-     * @return
+     * @param k 键
+     * @param v 值
+     * @return 是否缓存成功
      */
     boolean put(K k,V v);
 
     /**
      * 获取缓存值
-     * @param k
-     * @return
+     * @param k 键
+     * @return 缓存值
      */
     V get(K k);
 
     /**
      * 移除缓存
-     * @param k
-     * @return
+     * @param k 键
+     * @return 是否删除成功
      */
     boolean remove(K k);
 }

@@ -1,9 +1,10 @@
 package com.github.xiaoymin.knife4j.aggre.core.pojo;
 
-/**
- * @author: chenzf
- * @create: 2021/3/8 8:30 下午
- * @description: 自定义header包装bean
+/***
+ * 自定义header包装bean
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
+ * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * 2021/03/08 20:30
  */
 public class HeaderWrapper {
 

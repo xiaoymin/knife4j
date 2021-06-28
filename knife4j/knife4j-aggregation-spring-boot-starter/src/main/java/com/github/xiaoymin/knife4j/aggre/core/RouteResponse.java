@@ -22,49 +22,49 @@ import java.util.List;
 public interface RouteResponse {
     /**
      * 获取响应头
-     * @return
+     * @return 响应头列表
      */
     List<HeaderWrapper> getHeaders();
 
     /**
      * 是否请求成功
-     * @return
+     * @return 请求成功
      */
     boolean success();
 
     /**
      * 获取响应状态码
-     * @return
+     * @return 响应状态码
      */
     int getStatusCode();
 
     /**
      * 获取响应类型
-     * @return
+     * @return 响应类型
      */
     String getContentType();
 
     /**
      * 响应内容长度
-     * @return
+     * @return 内容长度
      */
     Long getContentLength();
 
     /**
      * 获取encoding
-     * @return
+     * @return 字符集编码
      */
     Charset getCharsetEncoding();
 
     /**
      * 响应实体
-     * @return
+     * @return 响应流
      */
     InputStream getBody();
 
     /**
      * 获取text返回
-     * @return
+     * @return 静态文本
      */
     String text();
 

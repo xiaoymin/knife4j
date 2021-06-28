@@ -16,8 +16,8 @@ public interface RouteExecutor {
 
     /**
      * 执行器
-     * @param routeContext
-     * @return
+     * @param routeContext 请求上下文
+     * @return 响应对象
      */
     RouteResponse executor(RouteRequestContext routeContext);
 }

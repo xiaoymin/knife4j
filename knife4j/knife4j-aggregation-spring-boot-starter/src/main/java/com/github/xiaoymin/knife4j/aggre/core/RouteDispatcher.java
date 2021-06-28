@@ -146,8 +146,8 @@ public class RouteDispatcher {
     /**
      * Write响应头
      *
-     * @param routeResponse
-     * @param response
+     * @param routeResponse route响应对象
+     * @param response 响应response
      */
     protected void writeResponseHeader(RouteResponse routeResponse, HttpServletResponse response) {
         if (routeResponse != null) {
@@ -172,8 +172,8 @@ public class RouteDispatcher {
     /**
      * 响应内容
      *
-     * @param routeResponse
-     * @param response
+     * @param routeResponse route响应对象
+     * @param response 响应对象
      */
     protected void writeBody(RouteResponse routeResponse, HttpServletResponse response) throws IOException {
         if (routeResponse != null) {
@@ -204,8 +204,8 @@ public class RouteDispatcher {
     /**
      * 构建路由的请求上下文
      *
-     * @param routeRequestContext
-     * @param request
+     * @param routeRequestContext 请求上下文
+     * @param request 请求对象
      */
     protected void buildContext(RouteRequestContext routeRequestContext, HttpServletRequest request) throws IOException {
         //当前请求是否basic请求

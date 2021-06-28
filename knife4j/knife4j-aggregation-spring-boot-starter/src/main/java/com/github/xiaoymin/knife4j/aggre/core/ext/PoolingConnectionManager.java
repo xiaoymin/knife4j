@@ -95,7 +95,7 @@ public  class PoolingConnectionManager {
 
     /***
      * 获取client连接
-     * @return
+     * @return client链接对象
      */
     public CloseableHttpClient getClient(){
         return HttpClients.custom()
