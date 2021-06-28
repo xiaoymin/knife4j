@@ -313,6 +313,7 @@ function genChangeLogSideBar() {
             title: "发布日志",
             collapsable: false,
             children: [
+                "2021-06-28-knife4j-2.0.9-issue.md",
                 "2020-11-22-knife4j-2.0.8-issue",
                 "2020-11-02-knife4j-2.0.7-issue",
                 "2020-10-26-knife4j-2.0.6-issue",

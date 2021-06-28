@@ -18,7 +18,7 @@ Java开发使用`Knife4j`目前有一些不同的版本变化,详见[版本说�
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-spring-boot-starter</artifactId>
     <!--在引用时请在maven中央仓库搜索2.X最新版本号-->
-    <version>2.0.8</version>
+    <version>2.0.9</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@ Java开发使用`Knife4j`目前有一些不同的版本变化,详见[版本说�
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-spring-boot-starter</artifactId>
     <!--在引用时请在maven中央仓库搜索3.X最新版本号-->
-    <version>3.0.2</version>
+    <version>3.0.3</version>
 </dependency>
 ```
 
@@ -40,7 +40,7 @@ Java开发使用`Knife4j`目前有一些不同的版本变化,详见[版本说�
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-springdoc-ui</artifactId>
     <!--在引用时请在maven中央仓库搜索3.X最新版本号-->
-    <version>3.0.2</version>
+    <version>3.0.3</version>
 </dependency>
 ```
 
