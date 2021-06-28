@@ -13,14 +13,19 @@ import com.github.xiaoymin.knife4j.aggre.core.RouteRequestContext;
 import com.github.xiaoymin.knife4j.aggre.core.RouteResponse;
 import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.HeaderWrapper;
+import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.Part;
+import java.io.IOException;
 import java.util.Map;
 
 /***
@@ -52,12 +57,31 @@ public class ApacheClientExecutor extends PoolingConnectionManager implements Ro
             }
         }
         if (routeContext.getRequestContent()!=null){
-            //构建请求体
-            BasicHttpEntity basicHttpEntity=new BasicHttpEntity();
-            basicHttpEntity.setContent(routeContext.getRequestContent());
-            // if the entity contentLength isn't set, transfer-encoding will be set
-            // to chunked in org.apache.http.protocol.RequestContent. See gh-1042
-            builder.setEntity(basicHttpEntity);
+            //文件请求是否为空 since 2.0.9
+            if (CollectionUtil.isNotEmpty(routeContext.getParts())){
+                MultipartEntityBuilder partFileBuilder = MultipartEntityBuilder.create();
+                //从请求头获取context-type
+                Header header=builder.getFirstHeader("content-type");
+                if (header!=null){
+                    //赋值
+                    partFileBuilder.setContentType(ContentType.parse(header.getValue()));
+                }
+                for (Part part : routeContext.getParts()) {
+                    try {
+                        partFileBuilder.addBinaryBody(part.getName(), part.getInputStream(), ContentType.MULTIPART_FORM_DATA, part.getSubmittedFileName());// 文件流
+                    } catch (IOException e) {
+                        logger.warn("add part file error,message:"+e.getMessage());
+                    }
+                }
+                builder.setEntity(partFileBuilder.build());
+            }else{
+                //普通请求，构建请求体
+                BasicHttpEntity basicHttpEntity=new BasicHttpEntity();
+                basicHttpEntity.setContent(routeContext.getRequestContent());
+                // if the entity contentLength isn't set, transfer-encoding will be set
+                // to chunked in org.apache.http.protocol.RequestContent. See gh-1042
+                builder.setEntity(basicHttpEntity);
+            }
         }
         builder.setConfig(getRequestConfig());
         return builder.build();

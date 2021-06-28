@@ -21,9 +21,11 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -262,6 +264,16 @@ public class RouteDispatcher {
             String value = request.getParameter(name);
             //logger.info("param-name:{},value:{}",name,value);
             routeRequestContext.addParam(name, value);
+        }
+        //增加文件，sinc 2.0.9
+        try {
+            Collection<Part> parts=request.getParts();
+            if (CollectionUtil.isNotEmpty(parts)){
+                parts.forEach(part -> routeRequestContext.addPart(part));
+            }
+        } catch (ServletException e) {
+            //ignore
+            logger.warn("get part error,message:"+e.getMessage());
         }
         routeRequestContext.setRequestContent(request.getInputStream());
     }

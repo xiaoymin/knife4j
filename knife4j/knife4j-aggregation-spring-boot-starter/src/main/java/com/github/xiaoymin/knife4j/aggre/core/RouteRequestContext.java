@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.aggre.core;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.HeaderWrapper;
 
+import javax.servlet.http.Part;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,10 @@ public class RouteRequestContext {
      * 查询参数
      */
     private Map<String,String> params=new HashMap<>();
+    /**
+     * 文件
+     */
+    private List<Part> parts=new ArrayList<>();
 
     /**
      * 请求内容
@@ -60,8 +65,8 @@ public class RouteRequestContext {
 
     /**
      * 添加请求头
-     * @param key
-     * @param value
+     * @param key 请求头
+     * @param value 值
      */
     public void addHeader(String key,String value){
         this.headers.add(new HeaderWrapper(key,value));
@@ -69,11 +74,19 @@ public class RouteRequestContext {
 
     /**
      * 添加params参数
-     * @param name
-     * @param value
+     * @param name 参数名称
+     * @param value 参数值
      */
     public void addParam(String name,String value){
         this.params.put(name,value);
+    }
+
+    /**
+     * 增加文件参数
+     * @param part  文件
+     */
+    public void addPart(Part part){
+        this.parts.add(part);
     }
 
     public BasicAuth getBasicAuth() {
@@ -138,5 +151,13 @@ public class RouteRequestContext {
 
     public void setRequestContent(InputStream requestContent) {
         this.requestContent = requestContent;
+    }
+
+    public List<Part> getParts() {
+        return parts;
+    }
+
+    public void setParts(List<Part> parts) {
+        this.parts = parts;
     }
 }
