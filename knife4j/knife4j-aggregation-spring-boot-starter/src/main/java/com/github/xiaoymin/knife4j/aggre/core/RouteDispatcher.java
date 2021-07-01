@@ -269,7 +269,7 @@ public class RouteDispatcher {
         //增加文件，sinc 2.0.9
         String contentType = request.getContentType();
         if ((!StringUtils.isEmpty(contentType)) &&
-                request.getContentType().contains("multipart/form-data")) {
+                contentType.contains("multipart/form-data")) {
             try {
                 Collection<Part> parts = request.getParts();
                 if (CollectionUtil.isNotEmpty(parts)) {
