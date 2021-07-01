@@ -20,6 +20,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.HeaderWrapper;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -266,14 +267,24 @@ public class RouteDispatcher {
             routeRequestContext.addParam(name, value);
         }
         //增加文件，sinc 2.0.9
-        try {
-            Collection<Part> parts=request.getParts();
-            if (CollectionUtil.isNotEmpty(parts)){
-                parts.forEach(part -> routeRequestContext.addPart(part));
+        String contentType = request.getContentType();
+        if ((!StringUtils.isEmpty(contentType)) &&
+                request.getContentType().contains("multipart/form-data")) {
+            try {
+                Collection<Part> parts = request.getParts();
+                if (CollectionUtil.isNotEmpty(parts)) {
+                    Map<String, String> paramMap = routeRequestContext.getParams();
+                    parts.forEach(part -> {
+                        String key = part.getName();
+                        if (!paramMap.containsKey(key)) {
+                            routeRequestContext.addPart(part);
+                        }
+                    });
+                }
+            } catch (ServletException e) {
+                //ignore
+                logger.warn("get part error,message:" + e.getMessage());
             }
-        } catch (ServletException e) {
-            //ignore
-            logger.warn("get part error,message:"+e.getMessage());
         }
         routeRequestContext.setRequestContent(request.getInputStream());
     }
