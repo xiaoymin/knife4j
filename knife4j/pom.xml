@@ -50,7 +50,7 @@
         <swagger2.version>1.5.22</swagger2.version>
         <swagger3.version>2.1.2</swagger3.version>
         <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
-        <jfinal.version>4.2</jfinal.version>
+        <jfinal.version>4.9.11</jfinal.version>
         <hutool.version>5.4.1</hutool.version>
         <!-- 打包跳过单元测试 -->
         <skipTests>true</skipTests>
