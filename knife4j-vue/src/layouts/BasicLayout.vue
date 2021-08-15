@@ -464,6 +464,8 @@ export default {
     initKnife4jFront() {
       //该版本区别于Spring-ui的版本,提供给其它语言来集成knife4j
       var that = this;
+      var i18nParams=this.getI18nFromUrl();
+      var tmpI18n=i18nParams.i18n;
       var swaggerOptions={ 
         store:this.$store,
         localStore:this.$localStore,
