@@ -4,6 +4,7 @@
  * @param {*} menuData 
  */
 export function findComponentsByPath(path, menuData) {
+  path = decodeURIComponent(path)
   var tmpComp = null;
   for (var i = 0; i < menuData.length; i++) {
     if (menuData[i].path == path) {
