@@ -4633,6 +4633,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     if (KUtils.strNotBlank(swpinfo.description)) {
       swpinfo.description = marked(swpinfo.description);
     }
+    apiInfo.operationId = apiInfo.operationId || swpinfo.id
     swpinfo.operationId = apiInfo.operationId;
     swpinfo.summary = KUtils.toString(apiInfo.summary,"").replace(/\//g,"-");
     //针对summary做一次非空判断
