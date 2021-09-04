@@ -20,12 +20,14 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Part;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /***
@@ -60,6 +62,8 @@ public class ApacheClientExecutor extends PoolingConnectionManager implements Ro
             //文件请求是否为空 since 2.0.9
             if (CollectionUtil.isNotEmpty(routeContext.getParts())){
                 MultipartEntityBuilder partFileBuilder = MultipartEntityBuilder.create();
+                partFileBuilder.setCharset(StandardCharsets.UTF_8);
+                partFileBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
                 //从请求头获取context-type
                 Header header=builder.getFirstHeader("content-type");
                 if (header!=null){
