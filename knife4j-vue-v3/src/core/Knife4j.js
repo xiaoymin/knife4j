@@ -753,7 +753,7 @@ SwaggerBootstrapUi.prototype.setInstanceBasicPorperties = function (menu) {
     version = '',
     termsOfService = '';
   var servers = KUtils.getValue(menu, "servers", [], true);
-  var host = (servers.length ? "" : servers[0].url);
+  var host = (servers.length ? servers[0].url : "");
   if (menu != null && menu != undefined) {
     if (menu.hasOwnProperty("info")) {
       var info = menu.info;
