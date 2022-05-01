@@ -98,6 +98,8 @@ public class DynamicParameterBuilderPlugin implements ParameterBuilderPlugin {
                 cacheGenModelMaps.put(name,name);
                 ResolvedMethodParameter methodParameter = parameterContext.resolvedMethodParameter();
                 //typeResolver.resolve()
+                //issue https://gitee.com/xiaoym/knife4j/issues/I4D6PM
+                name=parameterContext.getGroupName().replaceAll("[_-]","")+"."+name;
                 Class<?> clazzType= ByteUtils.loadDynamicClassType(name);
                 if (clazzType!=null){
                     try{
