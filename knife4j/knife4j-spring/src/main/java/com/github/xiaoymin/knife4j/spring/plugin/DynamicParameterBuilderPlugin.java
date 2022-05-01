@@ -93,13 +93,13 @@ public class DynamicParameterBuilderPlugin implements ParameterBuilderPlugin {
                 name=genClassName(parameterContext);
             }
             name=name.replaceAll("[_-]","");
+            //issue https://gitee.com/xiaoym/knife4j/issues/I4D6PM
+            name=parameterContext.getGroupName().replaceAll("[_-]","")+"."+name;
             DynamicParameter[] dynamics=dynamicParameters.properties();
             if (dynamics!=null&&dynamics.length>0){
                 cacheGenModelMaps.put(name,name);
                 ResolvedMethodParameter methodParameter = parameterContext.resolvedMethodParameter();
                 //typeResolver.resolve()
-                //issue https://gitee.com/xiaoym/knife4j/issues/I4D6PM
-                name=parameterContext.getGroupName().replaceAll("[_-]","")+"."+name;
                 Class<?> clazzType= ByteUtils.loadDynamicClassType(name);
                 if (clazzType!=null){
                     try{
