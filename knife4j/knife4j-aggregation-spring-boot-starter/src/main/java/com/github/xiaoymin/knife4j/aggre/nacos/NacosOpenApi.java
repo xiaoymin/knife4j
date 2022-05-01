@@ -65,7 +65,9 @@ public class NacosOpenApi  extends PoolingConnectionManager {
         HttpPost post=new HttpPost(api);
         List<BasicNameValuePair> pairs=new ArrayList<>();
         pairs.add(new BasicNameValuePair("username",basicAuth.getUsername()));
-        pairs.add(new BasicNameValuePair("password",basicAuth.getUsername()));
+        //访问Nacos时bug
+        //https://gitee.com/xiaoym/knife4j/issues/I4UF84
+        pairs.add(new BasicNameValuePair("password",basicAuth.getPassword()));
         try {
             post.setEntity(new UrlEncodedFormEntity(pairs,"UTF-8"));
             CloseableHttpResponse response=getClient().execute(post);
