@@ -42,9 +42,12 @@ public class BasicFilter{
 
     protected boolean match(String uri){
         boolean match=false;
+        //考虑双斜杠的问题会绕过校验
+        //https://gitee.com/xiaoym/knife4j/issues/I4XDYE
+        String newUri=uri.replaceAll("//","/");
         if (uri!=null){
             for (Pattern pattern:getUrlFilters()){
-                if (pattern.matcher(uri).matches()){
+                if (pattern.matcher(newUri).matches()){
                     match=true;
                     break;
                 }
