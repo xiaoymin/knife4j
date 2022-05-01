@@ -1267,7 +1267,9 @@ export default {
         }
       } else {
         this.formData.forEach(form => {
-          this.rowFormSelection.selectedRowKeys.push(form.id);
+          if(form.require){
+            this.rowFormSelection.selectedRowKeys.push(form.id);
+          }
         });
       }
     },
@@ -1282,7 +1284,9 @@ export default {
         }
       } else {
         this.rawFormData.forEach(form => {
-          this.rowRawFormSelection.selectedRowKeys.push(form.id);
+          if(form.require){
+            this.rowRawFormSelection.selectedRowKeys.push(form.id);
+          }
         });
       }
     },
@@ -1298,7 +1302,9 @@ export default {
       } else {
         //全选
         this.urlFormData.forEach(form => {
-          this.rowUrlFormSelection.selectedRowKeys.push(form.id);
+          if(form.require){
+            this.rowUrlFormSelection.selectedRowKeys.push(form.id);
+          }
         });
       }
     },
@@ -1738,7 +1744,9 @@ export default {
         }
       } else {
         this.headerData.forEach(header => {
-          this.rowSelection.selectedRowKeys.push(header.id);
+          if(header.require){
+            this.rowSelection.selectedRowKeys.push(header.id);
+          }
         });
       }
     },
