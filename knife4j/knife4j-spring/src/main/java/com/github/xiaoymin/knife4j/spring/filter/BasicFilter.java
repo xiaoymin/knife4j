@@ -44,7 +44,7 @@ public class BasicFilter{
         boolean match=false;
         //考虑双斜杠的问题会绕过校验
         //https://gitee.com/xiaoym/knife4j/issues/I4XDYE
-        String newUri=uri.replaceAll("//","/");
+        String newUri=uri.replaceAll("/+","/");
         if (uri!=null){
             for (Pattern pattern:getUrlFilters()){
                 if (pattern.matcher(newUri).matches()){
