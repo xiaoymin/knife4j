@@ -16,6 +16,9 @@ import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolver;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverFactory;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
+import com.github.xiaoymin.knife4j.proxy.ProxyHttpClient;
+import com.github.xiaoymin.knife4j.proxy.undertow.UndertowProxyHttpClient;
+import com.github.xiaoymin.knife4j.proxy.undertow.UndertowProxyHttpClientRequest;
 import com.github.xiaoymin.knife4j.util.NetUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,11 +46,13 @@ public class DispatcherHandler implements HttpHandler {
     private ProxyRequest proxyRequest;
     private final BasicAuth allBasic;
     private final String datadir;
+    private ProxyHttpClient proxyHttpClient;
 
     public DispatcherHandler(ExecutorEnum executorEnum, String rootPath, BasicAuth allBasic, String datadir){
         this.allBasic = allBasic;
         this.datadir = datadir;
         this.proxyRequest=new ProxyRequest(executorEnum,rootPath);
+        this.proxyHttpClient=new UndertowProxyHttpClient(executorEnum,rootPath);
     }
 
 
@@ -113,7 +118,8 @@ public class DispatcherHandler implements HttpHandler {
                 SwaggerRoute swaggerRoute=routeRepository.getRoute(code,groupStr);
                 NetUtils.renderJson(exchange,swaggerRoute==null?"":swaggerRoute.getContent());
             }else{
-                proxyRequest.request(exchange);
+                this.proxyHttpClient.proxy(new UndertowProxyHttpClientRequest(exchange));
+                //proxyRequest.request(exchange);
             }
         }else{
             //不支持的方法

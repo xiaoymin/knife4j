@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Copy right © 2022 浙江力石科技股份有限公司 All Rights Reserved.
+ * Official Web Site: http://lishiots.com
  */
 
-package com.github.xiaoymin.knife4j.handler;
+package com.github.xiaoymin.knife4j.proxy.undertow;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
@@ -20,6 +18,10 @@ import com.github.xiaoymin.knife4j.aggre.core.executor.OkHttpClientExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
+import com.github.xiaoymin.knife4j.handler.BlockingResponseHandler;
+import com.github.xiaoymin.knife4j.proxy.ProxyHttpClient;
+import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientRequest;
+import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientResponse;
 import com.github.xiaoymin.knife4j.util.NetUtils;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderMap;
@@ -35,11 +37,13 @@ import java.util.*;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2020/12/23 12:43
+ * 2022/5/8 19:49
  * @since:knife4j-aggregation-desktop 1.0
  */
-public class ProxyRequest {
-    Logger logger= LoggerFactory.getLogger(ProxyRequest.class);
+public class UndertowProxyHttpClient implements ProxyHttpClient {
+
+    Logger logger= LoggerFactory.getLogger(UndertowProxyHttpClient.class);
+
     private RouteExecutor routeExecutor;
     private Set<String> ignoreHeaders=new HashSet<>();
     /**
@@ -47,8 +51,9 @@ public class ProxyRequest {
      */
     private String rootPath;
 
-    public ProxyRequest(ExecutorEnum executorEnum, String rootPath){
-        this.rootPath=rootPath;
+    public UndertowProxyHttpClient(ExecutorEnum executorEnum , String rootPath) {
+        this.routeExecutor = routeExecutor;
+        this.rootPath = rootPath;
         initExecutor(executorEnum);
         ignoreHeaders.addAll(Arrays.asList(new String[]{
                 "host","content-length",
@@ -58,6 +63,7 @@ public class ProxyRequest {
                 "Request-Origion"
         }));
     }
+
     private void initExecutor(ExecutorEnum executorEnum){
         if (executorEnum==null){
             throw new IllegalArgumentException("ExecutorEnum can not be empty");
@@ -74,24 +80,30 @@ public class ProxyRequest {
         }
     }
 
-
-    /**
-     * 代理请求目标地址
-     * @param exchange
-     */
-    public void request(HttpServerExchange exchange){
+    @Override
+    public ProxyHttpClientResponse proxy(ProxyHttpClientRequest request) {
+        if (!(request instanceof UndertowProxyHttpClientRequest)){
+            throw new IllegalArgumentException("Request not Undertow Instance");
+        }
+        UndertowProxyHttpClientRequest proxyHttpClientRequest=(UndertowProxyHttpClientRequest) request;
+        boolean success=false;
+        String message="";
         try{
             RouteRequestContext routeContext=new RouteRequestContext();
-            this.buildContext(routeContext,exchange);
-            RouteResponse routeResponse=routeExecutor.executor(routeContext);
-            writeResponseHeader(routeResponse,exchange);
-            writeBody(routeResponse,exchange);
+            this.buildContext(routeContext,proxyHttpClientRequest.getExchange(),proxyHttpClientRequest);
+            RouteResponse routeResponse=this.routeExecutor.executor(routeContext);
+            writeResponseHeader(routeResponse,proxyHttpClientRequest.getExchange());
+            writeBody(routeResponse,proxyHttpClientRequest.getExchange());
+            success=true;
+            message="SUCCESS";
         }catch (Exception e){
             logger.error("has Error:{}",e.getMessage());
             logger.error(e.getMessage(),e);
             //write Default
-            NetUtils.renderCommonJson(exchange,e.getMessage());
+            NetUtils.renderCommonJson(proxyHttpClientRequest.getExchange(),e.getMessage());
+            message=e.getMessage();
         }
+        return new UndertowProxyHttpclientResponse(success,message);
     }
 
     /**
@@ -99,11 +111,11 @@ public class ProxyRequest {
      * @param routeRequestContext
      * @param http
      */
-    protected void buildContext(RouteRequestContext routeRequestContext,HttpServerExchange http) throws IOException {
+    protected void buildContext(RouteRequestContext routeRequestContext, HttpServerExchange http,UndertowProxyHttpClientRequest proxyHttpClientRequest) throws IOException {
         //当前请求是否basic请求
         HeaderMap headerValues=http.getRequestHeaders();
         //String basicHeader=headerValues.get(GlobalDesktopManager.ROUTE_PROXY_HEADER_BASIC_NAME);
-        String basicHeader=NetUtils.getHeader(headerValues,GlobalDesktopManager.ROUTE_PROXY_HEADER_BASIC_NAME);
+        String basicHeader=NetUtils.getHeader(headerValues, GlobalDesktopManager.ROUTE_PROXY_HEADER_BASIC_NAME);
         String code=NetUtils.getHeader(headerValues,GlobalDesktopManager.ROUTE_PROXY_DOCUMENT_CODE);
         RouteRepository routeRepository=GlobalDesktopManager.me.repository(code);
         if (StrUtil.isNotBlank(code)&&StrUtil.isNotBlank(basicHeader)){
@@ -154,7 +166,7 @@ public class ProxyRequest {
                 String key=hv.getHeaderName().toString();
                 if (CollectionUtil.isNotEmpty(hv)){
                     String value=hv.getFirst();
-                    if (!ignoreHeaders.contains(key.toLowerCase())){
+                    if (!this.ignoreHeaders.contains(key.toLowerCase())){
                         routeRequestContext.addHeader(key,value);
                     }
                 }
@@ -230,17 +242,5 @@ public class ProxyRequest {
             }
 
         }
-    }
-
-    public RouteExecutor getRouteExecutor() {
-        return routeExecutor;
-    }
-
-    public Set<String> getIgnoreHeaders() {
-        return ignoreHeaders;
-    }
-
-    public String getRootPath() {
-        return rootPath;
     }
 }

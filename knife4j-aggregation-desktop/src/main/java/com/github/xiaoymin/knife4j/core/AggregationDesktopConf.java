@@ -16,6 +16,10 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
  */
 public class AggregationDesktopConf {
     /**
+     * 数据目录DIR文件
+     */
+    public static final String DATA_DIR="/knife4j/data";
+    /**
      * 默认端口号
      */
     private Integer port=18006;

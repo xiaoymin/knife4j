@@ -19,6 +19,7 @@ import io.undertow.util.HttpString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -62,6 +63,27 @@ public class NetUtils {
         exchange.getResponseHeaders().put(new HttpString("WWW-Authenticate"),"Basic realm=\"input Document Basic userName & password \"");
         exchange.getResponseSender().send("You do not have permission to access this resource");
     }
+    /**
+     * 401错误
+     * @param response
+     */
+    public static void writeServletForbiddenCode(HttpServletResponse response){
+        response.setStatus(401);
+        response.addHeader("WWW-Authenticate","Basic realm=\"input Document Basic userName & password \"");
+    }
+    /**
+     * 默认响应对象
+     * @param uri 当前访问路径
+     * @param message 错误信息
+     * @return
+     */
+    public static Map<String,String> defaultResponseMap(String uri,String message){
+        Map<String,String> map= new HashMap<>();
+        map.put("message",message);
+        map.put("code","500");
+        map.put("path",uri);
+        return map;
+    }
 
     /**
      * 响应Knife4jDesktop的错误信息
@@ -69,11 +91,7 @@ public class NetUtils {
      * @param message 错误信息
      */
     public static void renderCommonJson(HttpServerExchange exchange,String message){
-        Map<String,String> map= new HashMap<>();
-        map.put("message",message);
-        map.put("code","500");
-        map.put("path",exchange.getRequestURI());
-        renderJson(exchange,gson.toJson(map));
+        renderJson(exchange,gson.toJson(defaultResponseMap(exchange.getRequestURI(),message)));
     }
     /**
      * 响应JSON信息
@@ -84,6 +102,15 @@ public class NetUtils {
         exchange.getResponseHeaders().add(new HttpString("Content-Type"),"application/json;charset=UTF-8");
         Sender sender=exchange.getResponseSender();
         sender.send(json, GlobalDesktopManager.UTF_8);
+    }
+
+    /**
+     * 设置响应JSON类型
+     * @param response
+     */
+    public static void responseJsonContentType(HttpServletResponse response){
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
     }
 
     /**
