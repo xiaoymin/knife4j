@@ -38,6 +38,9 @@
         <httpclient.version>4.5.12</httpclient.version>
         <gson.version>2.8.6</gson.version>
         <logback.version>1.2.3</logback.version>
+        <!--Spark Web框架-->
+        <spark.version>2.9.3</spark.version>
+
     </properties>
     <dependencies>
 
@@ -45,6 +48,11 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-properties</artifactId>
             <version>2.11.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>${spark.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -118,6 +126,24 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.6.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>spring-boot</classifier>
+                            <mainClass>
+                                com.github.xiaoymin.knife4j.Knife4jAggregationDesktop
+                            </mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!--maven 指定jdk版本 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -137,7 +163,7 @@
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
             </plugin>
-            <!--构建Knife4jAggregationDesktop-->
+           <!-- &lt;!&ndash;构建Knife4jAggregationDesktop&ndash;&gt;
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -176,7 +202,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
         </plugins>
     </build>
