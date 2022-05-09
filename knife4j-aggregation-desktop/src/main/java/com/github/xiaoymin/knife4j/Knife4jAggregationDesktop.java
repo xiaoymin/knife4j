@@ -13,10 +13,12 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ * 该类是Knife4jAggregationDesktop v1.0版本的实现,新2.0版本请参考{@link Knife4jAggregationDesktopApplication}
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/12/04 20:28
  * @since:knife4j-aggregation-desktop 1.0
  */
+@Deprecated
 public class Knife4jAggregationDesktop {
 
     static Logger logger= LoggerFactory.getLogger(Knife4jAggregationDesktop.class);
