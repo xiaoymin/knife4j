@@ -27,9 +27,11 @@ public class Knife4jAggregationDesktopApplication {
         logger.info("start Knfie4jAggregationDesktop V2.0");
         GsonResponseTransformer gsonResponseTransformer=new GsonResponseTransformer();
         final AggregationDesktopConf desktopConf=new AggregationDesktopConf();
-        //启动端口号
+        //启动端口号、最大线程数
         Spark.port(desktopConf.getPort());
         Spark.threadPool(200);
+        //设置静态资源访问目录
+        Spark.staticFileLocation("/static");
         Spark.get(GlobalDesktopManager.OPENAPI_GROUP_ENDPOINT,"*/*",new SwaggerResourceRoute(desktopConf),gsonResponseTransformer);
         Spark.get(GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT,"*/*",new SwaggerInstanceRoute(desktopConf),gsonResponseTransformer);
     }
