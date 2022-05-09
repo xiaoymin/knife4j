@@ -3,7 +3,7 @@
  * Official Web Site: http://lishiots.com
  */
 
-package com.github.xiaoymin.knife4j.proxy.undertow;
+package com.github.xiaoymin.knife4j.proxy.response;
 
 import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientResponse;
 
@@ -12,11 +12,11 @@ import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientResponse;
  * 2022/5/8 19:57
  * @since:knife4j-aggregation-desktop 2.0
  */
-public class UndertowProxyHttpclientResponse implements ProxyHttpClientResponse {
+public class DefaultProxyHttpclientResponse implements ProxyHttpClientResponse {
     private boolean success;
     private String message;
 
-    public UndertowProxyHttpclientResponse(boolean success, String message) {
+    public DefaultProxyHttpclientResponse(boolean success, String message) {
         this.success = success;
         this.message = message;
     }

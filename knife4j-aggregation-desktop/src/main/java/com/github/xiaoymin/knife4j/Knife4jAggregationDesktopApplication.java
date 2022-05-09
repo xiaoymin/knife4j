@@ -7,6 +7,7 @@ package com.github.xiaoymin.knife4j;
 
 import com.github.xiaoymin.knife4j.core.AggregationDesktopConf;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
+import com.github.xiaoymin.knife4j.filter.SparkProxyRouteFilter;
 import com.github.xiaoymin.knife4j.route.SwaggerInstanceRoute;
 import com.github.xiaoymin.knife4j.route.SwaggerResourceRoute;
 import com.github.xiaoymin.knife4j.transformer.GsonResponseTransformer;
@@ -32,6 +33,7 @@ public class Knife4jAggregationDesktopApplication {
         Spark.threadPool(200);
         //设置静态资源访问目录
         Spark.staticFileLocation("/static");
+        Spark.before(new SparkProxyRouteFilter("/"));
         Spark.get(GlobalDesktopManager.OPENAPI_GROUP_ENDPOINT,"*/*",new SwaggerResourceRoute(desktopConf),gsonResponseTransformer);
         Spark.get(GlobalDesktopManager.OPENAPI_GROUP_INSTANCE_ENDPOINT,"*/*",new SwaggerInstanceRoute(desktopConf),gsonResponseTransformer);
     }

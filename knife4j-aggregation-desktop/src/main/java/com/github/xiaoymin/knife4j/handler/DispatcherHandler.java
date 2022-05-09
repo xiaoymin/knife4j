@@ -18,7 +18,7 @@ import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverFactory;
 import com.github.xiaoymin.knife4j.data.resolver.MetaDataResolverKey;
 import com.github.xiaoymin.knife4j.proxy.ProxyHttpClient;
 import com.github.xiaoymin.knife4j.proxy.undertow.UndertowProxyHttpClient;
-import com.github.xiaoymin.knife4j.proxy.undertow.UndertowProxyHttpClientRequest;
+import com.github.xiaoymin.knife4j.proxy.request.UndertowProxyHttpClientRequest;
 import com.github.xiaoymin.knife4j.util.NetUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

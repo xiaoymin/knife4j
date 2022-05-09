@@ -3,7 +3,7 @@
  * Official Web Site: http://lishiots.com
  */
 
-package com.github.xiaoymin.knife4j.proxy.undertow;
+package com.github.xiaoymin.knife4j.proxy.request;
 
 
 import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientRequest;

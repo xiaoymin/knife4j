@@ -19,6 +19,8 @@ import com.github.xiaoymin.knife4j.handler.BlockingResponseHandler;
 import com.github.xiaoymin.knife4j.proxy.AbstractProxyHttpClient;
 import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientRequest;
 import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientResponse;
+import com.github.xiaoymin.knife4j.proxy.request.UndertowProxyHttpClientRequest;
+import com.github.xiaoymin.knife4j.proxy.response.UndertowProxyHttpclientResponse;
 import com.github.xiaoymin.knife4j.util.NetUtils;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderMap;
