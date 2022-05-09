@@ -43,7 +43,6 @@ public class DispatcherHandler implements HttpHandler {
 
     private final Gson gson=new GsonBuilder().create();
 
-    private ProxyRequest proxyRequest;
     private final BasicAuth allBasic;
     private final String datadir;
     private ProxyHttpClient proxyHttpClient;
@@ -51,7 +50,6 @@ public class DispatcherHandler implements HttpHandler {
     public DispatcherHandler(ExecutorEnum executorEnum, String rootPath, BasicAuth allBasic, String datadir){
         this.allBasic = allBasic;
         this.datadir = datadir;
-        this.proxyRequest=new ProxyRequest(executorEnum,rootPath);
         this.proxyHttpClient=new UndertowProxyHttpClient(executorEnum,rootPath);
     }
 

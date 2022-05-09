@@ -19,6 +19,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.github.xiaoymin.knife4j.handler.BlockingResponseHandler;
+import com.github.xiaoymin.knife4j.proxy.AbstractProxyHttpClient;
 import com.github.xiaoymin.knife4j.proxy.ProxyHttpClient;
 import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientRequest;
 import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientResponse;
@@ -40,44 +41,12 @@ import java.util.*;
  * 2022/5/8 19:49
  * @since:knife4j-aggregation-desktop 1.0
  */
-public class UndertowProxyHttpClient implements ProxyHttpClient {
+public class UndertowProxyHttpClient extends AbstractProxyHttpClient {
 
     Logger logger= LoggerFactory.getLogger(UndertowProxyHttpClient.class);
 
-    private RouteExecutor routeExecutor;
-    private Set<String> ignoreHeaders=new HashSet<>();
-    /**
-     * 当前项目的contextPath
-     */
-    private String rootPath;
-
-    public UndertowProxyHttpClient(ExecutorEnum executorEnum , String rootPath) {
-        this.routeExecutor = routeExecutor;
-        this.rootPath = rootPath;
-        initExecutor(executorEnum);
-        ignoreHeaders.addAll(Arrays.asList(new String[]{
-                "host","content-length",
-                GlobalDesktopManager.ROUTE_PROXY_DOCUMENT_CODE,
-                GlobalDesktopManager.ROUTE_PROXY_HEADER_NAME,
-                GlobalDesktopManager.ROUTE_PROXY_HEADER_BASIC_NAME,
-                "Request-Origion"
-        }));
-    }
-
-    private void initExecutor(ExecutorEnum executorEnum){
-        if (executorEnum==null){
-            throw new IllegalArgumentException("ExecutorEnum can not be empty");
-        }
-        switch (executorEnum){
-            case APACHE:
-                this.routeExecutor=new ApacheClientExecutor();
-                break;
-            case OKHTTP:
-                this.routeExecutor=new OkHttpClientExecutor();
-                break;
-            default:
-                throw new UnsupportedOperationException("UnSupported ExecutorType:"+executorEnum.name());
-        }
+    public UndertowProxyHttpClient(ExecutorEnum executorEnum, String rootPath) {
+        super(executorEnum, rootPath);
     }
 
     @Override
