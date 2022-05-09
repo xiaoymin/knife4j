@@ -15,7 +15,7 @@ import spark.Request;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/5/8 18:52
- * @since:knife4j-aggregation-desktop 1.0
+ * @since:knife4j-aggregation-desktop 2.0
  */
 public class SwaggerResourceRoute extends AbstractRoute{
 

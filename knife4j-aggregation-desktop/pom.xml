@@ -138,7 +138,7 @@
                         <configuration>
                             <classifier>spring-boot</classifier>
                             <mainClass>
-                                com.github.xiaoymin.knife4j.Knife4jAggregationDesktop
+                                com.github.xiaoymin.knife4j.Knife4jAggregationDesktopApplication
                             </mainClass>
                         </configuration>
                     </execution>

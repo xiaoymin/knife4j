@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/5/9 8:55
- * @since:knife4j-aggregation-desktop 1.0
+ * @since:knife4j-aggregation-desktop 2.0
  */
 public abstract class AbstractProxyHttpClient implements ProxyHttpClient{
 

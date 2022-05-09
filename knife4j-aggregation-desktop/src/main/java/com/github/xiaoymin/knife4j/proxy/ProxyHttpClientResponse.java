@@ -8,7 +8,7 @@ package com.github.xiaoymin.knife4j.proxy;
  * 请求响应接口对象
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/5/8 19:47
- * @since:knife4j-aggregation-desktop 1.0
+ * @since:knife4j-aggregation-desktop 2.0
  */
 public interface ProxyHttpClientResponse {
 

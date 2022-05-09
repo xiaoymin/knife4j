@@ -10,7 +10,7 @@ import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientResponse;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/5/8 19:57
- * @since:knife4j-aggregation-desktop 1.0
+ * @since:knife4j-aggregation-desktop 2.0
  */
 public class UndertowProxyHttpclientResponse implements ProxyHttpClientResponse {
     private boolean success;

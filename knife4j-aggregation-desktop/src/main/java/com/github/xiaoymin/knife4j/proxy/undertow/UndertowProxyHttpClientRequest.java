@@ -13,7 +13,7 @@ import io.undertow.server.HttpServerExchange;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/5/8 19:50
- * @since:knife4j-aggregation-desktop 1.0
+ * @since:knife4j-aggregation-desktop 2.0
  */
 public class UndertowProxyHttpClientRequest implements ProxyHttpClientRequest {
 

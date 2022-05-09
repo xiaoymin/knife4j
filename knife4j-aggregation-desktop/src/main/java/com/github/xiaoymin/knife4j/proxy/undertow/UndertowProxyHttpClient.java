@@ -7,20 +7,16 @@ package com.github.xiaoymin.knife4j.proxy.undertow;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.aggre.core.RouteExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRequestContext;
 import com.github.xiaoymin.knife4j.aggre.core.RouteResponse;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteUtils;
-import com.github.xiaoymin.knife4j.aggre.core.executor.ApacheClientExecutor;
-import com.github.xiaoymin.knife4j.aggre.core.executor.OkHttpClientExecutor;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.github.xiaoymin.knife4j.handler.BlockingResponseHandler;
 import com.github.xiaoymin.knife4j.proxy.AbstractProxyHttpClient;
-import com.github.xiaoymin.knife4j.proxy.ProxyHttpClient;
 import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientRequest;
 import com.github.xiaoymin.knife4j.proxy.ProxyHttpClientResponse;
 import com.github.xiaoymin.knife4j.util.NetUtils;
@@ -39,7 +35,7 @@ import java.util.*;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/5/8 19:49
- * @since:knife4j-aggregation-desktop 1.0
+ * @since:knife4j-aggregation-desktop 2.0
  */
 public class UndertowProxyHttpClient extends AbstractProxyHttpClient {
 
