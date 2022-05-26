@@ -4063,6 +4063,13 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3=function(swpinfo){
           for(var ckey in content){
             var respContentProduces=content[ckey];
             if(respContentProduces.hasOwnProperty("schema")&&KUtils.checkUndefined(respContentProduces["schema"])){
+              if (!swpinfo.produces.includes(ckey)) {
+                swpinfo.produces.push(ckey);
+                // 如果第一个是“*/*”则删除
+                if (swpinfo.produces[0] === "*/*") {
+                  swpinfo.produces.shift()
+                }
+              }
               var schema = respContentProduces["schema"];
               //单引用类型
               //判断是否是数组类型
@@ -5177,7 +5184,9 @@ SwaggerBootstrapUi.prototype.assembleParameter = function (m, swpinfo) {
                 Object.keys(cloneValue || {}).forEach(x =>{
                   //由于对象.属性的原因,导致ignorePath被替换后，ignorePath可能不是一个正则，出现误判的情况
                   if(has(cloneValue, ignorePath)){
+                    if (x === ignorePath) {
                     unset(cloneValue, x);
+                    }
                   }else{
                     let ignoreRegex=ignorePath;
                     if(!ignorePath.endsWith("$")){
@@ -5516,7 +5525,9 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
                 Object.keys(cloneValue || {}).forEach(x =>{
                   //由于对象.属性的原因,导致ignorePath被替换后，ignorePath可能不是一个正则，出现误判的情况
                   if(has(cloneValue, ignorePath)){
+                    if (x === ignorePath) {
                     unset(cloneValue, x);
+                    }
                   }else{
                     let ignoreRegex=ignorePath;
                     if(!ignorePath.endsWith("$")){
