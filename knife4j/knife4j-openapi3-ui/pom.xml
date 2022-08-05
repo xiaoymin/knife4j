@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>knife4j-springdoc-ui</artifactId>
+    <artifactId>knife4j-openapi3-ui</artifactId>
     <description>springdoc-openapi的Ui模块</description>
     <properties>
         <!--<destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</destDir>-->

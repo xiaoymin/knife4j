@@ -8,8 +8,8 @@
         <version>3.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>knife4j-spring-ui</artifactId>
-    <name>knife4j-spring-ui</name>
+    <artifactId>knife4j-openapi2-ui</artifactId>
+    <name>knife4j-openapi2-ui</name>
     <description>前端Swagger文档ui模块</description>
 
     <properties>

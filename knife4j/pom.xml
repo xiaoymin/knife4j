@@ -10,12 +10,12 @@
     <modules>
         <module>knife4j-spring</module>
         <module>knife4j-spring-boot-starter</module>
-        <module>knife4j-spring-ui</module>
+        <module>knife4j-openapi2-ui</module>
         <module>knife4j-core</module>
         <module>knife4j-micro-spring-boot-starter</module>
         <module>knife4j-spring-boot-autoconfigure</module>
         <module>knife4j-dependencies</module>
-        <module>knife4j-springdoc-ui</module>
+        <module>knife4j-openapi3-ui</module>
         <module>knife4j-spring-mvc</module>
     </modules>
     <packaging>pom</packaging>
