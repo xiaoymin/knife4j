@@ -8,10 +8,9 @@
 package com.github.xiaoymin.knife4j.spring.util;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 
-import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
-import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
+import com.github.xiaoymin.knife4j.annotation.DynamicParameter;
+import com.github.xiaoymin.knife4j.annotation.DynamicResponseParameters;
 import com.github.xiaoymin.knife4j.core.conf.Consts;
 import com.github.xiaoymin.knife4j.core.model.DynamicClass;
 import io.swagger.annotations.ApiModelProperty;

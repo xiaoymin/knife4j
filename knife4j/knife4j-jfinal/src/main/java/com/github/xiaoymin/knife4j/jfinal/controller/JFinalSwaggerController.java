@@ -7,7 +7,7 @@
 
 package com.github.xiaoymin.knife4j.jfinal.controller;
 
-import com.github.xiaoymin.knife4j.annotations.Ignore;
+import com.github.xiaoymin.knife4j.annotation.Ignore;
 import com.github.xiaoymin.knife4j.jfinal.JFinalSwagger;
 import com.jfinal.core.ActionKey;
 import com.jfinal.core.Controller;

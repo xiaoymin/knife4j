@@ -8,9 +8,9 @@
 package com.github.xiaoymin.knife4j.spring.plugin;
 
 import com.fasterxml.classmate.TypeResolver;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
-import com.github.xiaoymin.knife4j.annotations.DynamicParameters;
+import com.github.xiaoymin.knife4j.annotation.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotation.DynamicParameter;
+import com.github.xiaoymin.knife4j.annotation.DynamicParameters;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
 import org.slf4j.Logger;

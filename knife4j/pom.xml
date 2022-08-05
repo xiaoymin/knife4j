@@ -8,7 +8,6 @@
     <artifactId>knife4j</artifactId>
     <version>3.0.3</version>
     <modules>
-        <module>knife4j-annotations</module>
         <module>knife4j-spring</module>
         <module>knife4j-spring-boot-starter</module>
         <module>knife4j-spring-ui</module>

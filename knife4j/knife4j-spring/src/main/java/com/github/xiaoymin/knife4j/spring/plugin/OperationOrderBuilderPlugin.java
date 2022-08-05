@@ -8,8 +8,8 @@
 package com.github.xiaoymin.knife4j.spring.plugin;
 
 import io.swagger.annotations.ApiOperation;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSort;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotation.ApiOperationSort;
+import com.github.xiaoymin.knife4j.annotation.ApiOperationSupport;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -34,8 +34,8 @@ public class OperationOrderBuilderPlugin extends AbstractOperationBuilderPlugin 
 
     /**
      * 扩展接口的排序规则,添加排序扩展字段
-     * {@link com.github.xiaoymin.knife4j.annotations.ApiOperationSupport} field order
-     * {@link com.github.xiaoymin.knife4j.annotations.ApiOperationSort} field value
+     * {@link ApiOperationSupport} field order
+     * {@link ApiOperationSort} field value
      * {@link io.swagger.annotations.ApiOperation} field position
      * ApiOperation - ApiOperationSort - ApioperationSupport
      * @param context 操作上下文

@@ -4,26 +4,20 @@
  * Official Web Site: http://www.xiaominfo.com.
  * Developer Web Site: http://open.xiaominfo.com.
  */
-package com.github.xiaoymin.knife4j.annotations;
+package com.github.xiaoymin.knife4j.annotation;
+
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DynamicParameters {
-
-    /***
-     * dynamic Model name
-     * @return 类名
+@Target({ElementType.METHOD, ElementType.TYPE, ElementType.PARAMETER})
+public @interface Ignore {
+    /**
+     * A brief description of why this parameter/operation is ignored
+     * @return  the description of why it is ignored
      */
-    String name() default "";
-
-    /***
-     * list of properties
-     * @return 类属性集合
-     */
-    DynamicParameter[] properties() default @DynamicParameter;
+    String value() default "";
 }

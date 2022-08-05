@@ -9,9 +9,9 @@ package com.github.xiaoymin.knife4j.spring.plugin;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
-import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
+import com.github.xiaoymin.knife4j.annotation.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotation.DynamicParameter;
+import com.github.xiaoymin.knife4j.annotation.DynamicResponseParameters;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
 import org.springframework.beans.factory.annotation.Autowired;

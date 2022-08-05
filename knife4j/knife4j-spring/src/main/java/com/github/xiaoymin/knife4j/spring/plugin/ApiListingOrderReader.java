@@ -7,8 +7,8 @@
 
 package com.github.xiaoymin.knife4j.spring.plugin;
 
-import com.github.xiaoymin.knife4j.annotations.ApiSort;
-import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.github.xiaoymin.knife4j.annotation.ApiSort;
+import com.github.xiaoymin.knife4j.annotation.ApiSupport;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import io.swagger.annotations.Api;

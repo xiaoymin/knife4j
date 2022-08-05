@@ -7,7 +7,7 @@
 
 package com.github.xiaoymin.knife4j.jfinal.core;
 
-import com.github.xiaoymin.knife4j.annotations.Ignore;
+import com.github.xiaoymin.knife4j.annotation.Ignore;
 import com.github.xiaoymin.knife4j.core.io.ResourceUtil;
 import com.github.xiaoymin.knife4j.core.util.AnnotationUtils;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;

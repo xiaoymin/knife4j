@@ -4,7 +4,7 @@
  * Official Web Site: https://www.xiaominfo.com.
  * Developer Web Site: https://doc.xiaominfo.com.
  */
-package com.github.xiaoymin.knife4j.annotations;
+package com.github.xiaoymin.knife4j.annotation;
 
 import java.lang.annotation.*;
 

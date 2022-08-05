@@ -4,7 +4,7 @@
  * Official Web Site: http://www.xiaominfo.com.
  * Developer Web Site: http://open.xiaominfo.com.
  */
-package com.github.xiaoymin.knife4j.annotations;
+package com.github.xiaoymin.knife4j.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
