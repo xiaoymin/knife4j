@@ -8,11 +8,12 @@
     <artifactId>knife4j</artifactId>
     <version>3.1.0-SNAPSHOT</version>
     <modules>
+        <module>knife4j-core</module>
+        <module>knife4j-dependencies</module>
         <module>knife4j-openapi2-ui</module>
         <module>knife4j-openapi3-ui</module>
-        <module>knife4j-core</module>
         <module>knife4j-openapi2-spring-boot-starter</module>
-        <module>knife4j-dependencies</module>
+        <module>knife4j-openapi3-spring-boot-starter</module>
         <module>knife4j-aggregation-spring-boot-starter</module>
     </modules>
     <packaging>pom</packaging>
@@ -33,7 +34,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <spring.version>5.2.2.RELEASE</spring.version>
+        <knife4j-spring.version>5.2.2.RELEASE</knife4j-spring.version>
         <springfox.version>2.10.5</springfox.version>
         <spring-plugin.version>2.0.0.RELEASE</spring-plugin.version>
         <springdoc-openapi.version>1.6.9</springdoc-openapi.version>
@@ -77,7 +78,6 @@
     <!--定义Jar包主版本-->
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-core</artifactId>
@@ -145,23 +145,6 @@
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${servlet.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -205,6 +188,22 @@
                 <groupId>org.springframework.plugin</groupId>
                 <artifactId>spring-plugin-metadata</artifactId>
                 <version>${spring-plugin.version}</version>
+            </dependency>
+            <!--springdoc-openapi的Jar包引用-->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-common</artifactId>
+                <version>${springdoc-openapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-webflux-core</artifactId>
+                <version>${springdoc-openapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-webmvc-core</artifactId>
+                <version>${springdoc-openapi.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
             <dependency>
