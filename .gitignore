@@ -19,6 +19,8 @@ logs
 *.ipr
 front/.idea
 
+.DS_Store
+
 ### NetBeans ###
 nbproject/private/
 build/
