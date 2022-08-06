@@ -7,8 +7,6 @@
 
 package com.github.xiaoymin.knife4j.spring.util;
 
-import java.lang.reflect.Field;
-
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 import com.github.xiaoymin.knife4j.core.conf.Consts;
@@ -22,6 +20,8 @@ import javassist.bytecode.annotation.BooleanMemberValue;
 import javassist.bytecode.annotation.StringMemberValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
 
 /***
  *

@@ -8,16 +8,34 @@
         <version>2.0.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>knife4j-spring</artifactId>
-    <name>knife4j-spring</name>
-    <description>依赖Springfox框架,生成Spring的增强文档</description>
 
+    <artifactId>knife4j-spring-boot-autoconfigure</artifactId>
+    <name>knife4j-spring-boot-autoconfigure</name>
+    <description>Spring Boot autoconfigure</description>
     <dependencies>
-
+        <!-- Compile dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi2-ui</artifactId>
         </dependency>
 
         <dependency>
@@ -81,4 +99,6 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+
 </project>
