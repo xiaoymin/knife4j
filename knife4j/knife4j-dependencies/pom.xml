@@ -36,14 +36,6 @@
         <url>git@gitee.com:xiaoym/knife4j.git</url>
     </scm>
     <properties>
-        <java.version>1.8</java.version>
-        <knife4j.version>2.0.9</knife4j.version>
-        <swagger-models.version>1.6.6</swagger-models.version>
-        <swagger-models-v3.version>2.2.2</swagger-models-v3.version>
-        <springfox.version>2.10.5</springfox.version>
-        <spring-plugin.version>2.0.0.RELEASE</spring-plugin.version>
-        <springdoc-openapi.version>1.6.9</springdoc-openapi.version>
-        <javassist.version>3.25.0-GA</javassist.version>
     </properties>
     <distributionManagement>
         <snapshotRepository>
@@ -107,7 +99,7 @@
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-aggregation-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
+                <version>3.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
