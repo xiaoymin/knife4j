@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>knife4j-openapi2-spring-boot</artifactId>
-    <name>knife4j-openapi2-spring-boot</name>
+    <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+    <name>knife4j-openapi2-spring-boot-starter</name>
     <description>Spring Boot autoconfigure</description>
     <dependencies>
         <!-- Compile dependencies -->
