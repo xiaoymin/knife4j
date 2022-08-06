@@ -9,15 +9,14 @@ knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 
 目前`knife4j`的项目结构：
 
-| 模块名称                          | 说明                                                         |
-| --------------------------------- | ------------------------------------------------------------ |
-| knife4j-annotations               | 自定义的增强Swagger注解                                      |
-| knife4j-core                      | 核心类,包含一些工具包等                                      |
-| knife4j-spring                    | 集成springfox-swagger,开发者可以直接引用此包进行整合swagger文档 |
-| knife4j-spring-ui                 | 增强Ui文档,该包是一个webjar,只包含前端代码                   |
-| knife4j-spring-boot-autoconfigure | Spring Boot项目的通用引用模块                                |
-| knife4j-micro-spring-boot-starter | 在微服务架构下引用此starter即可,该模块不包含前端ui部分       |
-| knife4j-spring-boot-starter       | 在Spring Boot的单体架构下可以直接引用此starter,该模块包含了Ui部分 |
+| 模块名称                                    | 说明                                                                                     |
+|-----------------------------------------|----------------------------------------------------------------------------------------|
+| knife4j-aggregation-spring-boot-starter | 基于Servlet体系下的聚合中间件                                                                     |
+| knife4j-core                            | 核心类,包含一些工具包、增强注解等                                                                      |
+| knife4j-dependencies                    | knife4j提供的dependencies工程，引入该工程后，knife4j\springfox\swagger\springdoc-openapi等版本号不用在独自声明 |
+| knife4j-openapi2-ui                     | 增强Ui文档,该包是一个webjar,只包含前端代码，支持openapi2                                                  |
+| knife4j-openapi3-ui                     | 增强Ui文档,该包是一个webjar,只包含前端代码，支持openapi3                                                  |
+| knife4j-openapi2-spring-boot-starter    | 基于OpenAPI2规范，在Spring Boot的单体架构下可以直接引用此starter,该模块包含了Ui部分                               |
 
 
 ## 业务场景
@@ -43,7 +42,7 @@ knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 ```xml
 <dependency>
     <groupId>com.github.xiaoymin</groupId>
-    <artifactId>knife4j-spring-ui</artifactId>
+    <artifactId>knife4j-openapi2-ui</artifactId>
     <version>${lastVersion}</version>
 </dependency>
 ```
@@ -55,35 +54,13 @@ knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 ```xml
 <dependency>
     <groupId>com.github.xiaoymin</groupId>
-    <artifactId>knife4j-spring-boot-starter</artifactId>
+    <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
     <version>${knife4j.version}</version>
 </dependency>
 ```
 
 该包会引用所有的knife4j提供的资源，包括前端Ui的jar包
-
-### Spring Cloud微服务架构
-
-在Spring Cloud的微服务架构下,每个微服务其实并不需要引入前端的Ui资源,因此在每个微服务的Spring Boot项目下,引入knife4j提供的微服务starter
-
-```xml
-<dependency>
-    <groupId>com.github.xiaoymin</groupId>
-    <artifactId>knife4j-micro-spring-boot-starter</artifactId>
-    <version>${knife4j.version}</version>
-</dependency>
-```
-
-在网关聚合文档服务下,可以再把前端的ui资源引入
-
-```xml
-<dependency>
-    <groupId>com.github.xiaoymin</groupId>
-    <artifactId>knife4j-spring-boot-starter</artifactId>
-    <version>${knife4j.version}</version>
-</dependency>
-```
-
+ 
 ## 另外说明
 
 不管是knife4j还是swagger-bootstrap-ui
