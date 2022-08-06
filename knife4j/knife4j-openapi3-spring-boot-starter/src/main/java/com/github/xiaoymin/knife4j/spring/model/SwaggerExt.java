@@ -7,9 +7,6 @@
 
 package com.github.xiaoymin.knife4j.spring.model;
 
-import io.swagger.models.Swagger;
-import org.springframework.beans.BeanUtils;
-
 
 /***
  *
@@ -17,7 +14,7 @@ import org.springframework.beans.BeanUtils;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2018/10/11 16:30
  */
-public class SwaggerExt extends Swagger {
+public class SwaggerExt  {
 
     protected SwaggerBootstrapUi swaggerBootstrapUi;
 
@@ -29,7 +26,4 @@ public class SwaggerExt extends Swagger {
         this.swaggerBootstrapUi = swaggerBootstrapUi;
     }
 
-    public SwaggerExt(Swagger swagger){
-        BeanUtils.copyProperties(swagger,this);
-    }
 }

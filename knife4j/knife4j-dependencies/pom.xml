@@ -49,16 +49,7 @@
     </distributionManagement>
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.plugin</groupId>
-                <artifactId>spring-plugin-core</artifactId>
-                <version>${spring-plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.plugin</groupId>
-                <artifactId>spring-plugin-metadata</artifactId>
-                <version>${spring-plugin.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-models</artifactId>

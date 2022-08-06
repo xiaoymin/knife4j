@@ -8,7 +8,7 @@
 package com.github.xiaoymin.knife4j.spring.model;
 
 
-import io.swagger.models.Tag;
+import io.swagger.v3.oas.models.tags.Tag;
 
 /***
  *

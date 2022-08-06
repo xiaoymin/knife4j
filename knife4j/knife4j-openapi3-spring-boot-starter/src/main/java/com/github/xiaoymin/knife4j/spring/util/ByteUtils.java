@@ -11,7 +11,7 @@ import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 import com.github.xiaoymin.knife4j.core.conf.Consts;
 import com.github.xiaoymin.knife4j.core.model.DynamicClass;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ConstPool;
@@ -130,21 +130,21 @@ public class ByteUtils {
 
     private static void addAnnotation(CtField target,Field source,CtClass ctClass){
         //此处需要判断原field是否包含注解
-        if (source.isAnnotationPresent(ApiModelProperty.class)){
+        if (source.isAnnotationPresent(Schema.class)){
             //如果包含
-            ApiModelProperty apiModelProperty=source.getAnnotation(ApiModelProperty.class);
+            Schema apiModelProperty=source.getAnnotation(Schema.class);
             ConstPool constPool=ctClass.getClassFile().getConstPool();
             AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
             Annotation ann = new Annotation("io.swagger.annotations.ApiModelProperty", constPool);
-            ann.addMemberValue("value", new StringMemberValue(apiModelProperty.value(), constPool));
+            ann.addMemberValue("value", new StringMemberValue(apiModelProperty.description(), constPool));
             ann.addMemberValue("example", new StringMemberValue(apiModelProperty.example(), constPool));
             ann.addMemberValue("name", new StringMemberValue(apiModelProperty.name(), constPool));
-            ann.addMemberValue("dataType", new StringMemberValue(apiModelProperty.dataType(), constPool));
-            ann.addMemberValue("access", new StringMemberValue(apiModelProperty.access(), constPool));
-            ann.addMemberValue("allowableValues", new StringMemberValue(apiModelProperty.allowableValues(), constPool));
-            ann.addMemberValue("notes", new StringMemberValue(apiModelProperty.notes(), constPool));
+            ann.addMemberValue("dataType", new StringMemberValue(apiModelProperty.type(), constPool));
+            ann.addMemberValue("access", new StringMemberValue(apiModelProperty.accessMode().name(), constPool));
+            ann.addMemberValue("allowableValues", new StringMemberValue(apiModelProperty.allowableValues()[0], constPool));
+            ann.addMemberValue("notes", new StringMemberValue(apiModelProperty.description(), constPool));
             //ann.addMemberValue("position", new IntegerMemberValue(apiModelProperty.position(), constPool));
-            ann.addMemberValue("reference", new StringMemberValue(apiModelProperty.reference(), constPool));
+            ann.addMemberValue("reference", new StringMemberValue(apiModelProperty.ref(), constPool));
             ann.addMemberValue("value", new BooleanMemberValue(apiModelProperty.readOnly(), constPool));
             ann.addMemberValue("readOnly", new BooleanMemberValue(apiModelProperty.hidden(), constPool));
             ann.addMemberValue("required", new BooleanMemberValue(apiModelProperty.required(),constPool));
