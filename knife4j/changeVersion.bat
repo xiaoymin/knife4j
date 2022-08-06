@@ -1,1 +1,1 @@
-mvn versions:set -DnewVersion=2.0.9 -DgenerateBackupPoms=false
+mvn versions:set -DnewVersion=4.0.0-SNAPSHOT -DgenerateBackupPoms=false

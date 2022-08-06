@@ -6,7 +6,7 @@
 
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j</artifactId>
-    <version>2.0.9</version>
+    <version>3.1.0-SNAPSHOT</version>
     <modules>
         <module>knife4j-openapi2-ui</module>
         <module>knife4j-openapi3-ui</module>
@@ -32,7 +32,6 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <knife4j.version>2.0.9</knife4j.version>
         <java.version>1.8</java.version>
         <spring.version>5.2.2.RELEASE</spring.version>
         <springfox.version>2.10.5</springfox.version>
@@ -76,38 +75,22 @@
     <!--定义Jar包主版本-->
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-annotations</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-core</artifactId>
-                <version>${knife4j.version}</version>
+                <version>3.1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi2-ui</artifactId>
-                <version>${knife4j.version}</version>
+                <version>3.1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi3-ui</artifactId>
-                <version>${knife4j.version}</version>
+                <version>3.1.0-SNAPSHOT</version>
             </dependency>
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-autoconfigure</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
-
             <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
             <dependency>
                 <groupId>cn.hutool</groupId>
