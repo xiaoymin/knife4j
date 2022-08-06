@@ -24,10 +24,6 @@
             <artifactId>spring-web</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
@@ -52,17 +48,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-models -->
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-models</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
