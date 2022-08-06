@@ -37,15 +37,19 @@ public @interface ApiOperationSupport {
 
     /**
      * A list of {@link DynamicParameter}s available to the API operation.
+     * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
      * @return 动态类声明
      */
+    @Deprecated
     DynamicParameters params() default @DynamicParameters;
 
     /**
      * 动态构建response响应参数说明
+     * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
      * @since 1.9.5
      * @return 响应类动态说明
      */
+    @Deprecated
     DynamicResponseParameters responses() default @DynamicResponseParameters;
 
     /**
@@ -56,16 +60,20 @@ public @interface ApiOperationSupport {
      *     <li>如果存在多个层次的参数过滤,则使用名称.属性的方式,例如 ignoreParameters={"uptModel.id","uptModel.uptPo.id"},其中uptModel是实体对象参数名称,id为其属性,uptPo为实体类,作为uptModel类的属性名称</li>
      *     <li>如果参数层级只是一级的情况下,并且参数是实体类的情况下,不需要设置参数名称,直接给定属性值名称即可.</li>
      * </ul>
+     * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
      * @return 过滤参数数组
      */
+    @Deprecated
     String[] ignoreParameters() default {};
 
 
     /**
      * 请求接口包含的参数数组,和ignoreParameters属性对立
+     * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
      * @since 2.0.3
      * @return 包含参数数组
      */
+    @Deprecated
     String[] includeParameters() default {};
 
 }
