@@ -17,13 +17,13 @@ module.exports = {
     }
   },
   devServer: {
-    watchOptions:{
+    watchOptions: {
       ignored: /node_modules/
     },
     proxy: {
       "/": {
-      target: 'http://localhost:8999/',
-      /*    target: 'http://localhost:18568/',   */
+        target: 'http://localhost:17812/',
+        /*    target: 'http://localhost:18568/',   */
         /* target: 'http://knife4j.xiaominfo.com/', */
         ws: true,
         changeOrigin: true
