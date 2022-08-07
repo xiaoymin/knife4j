@@ -577,7 +577,7 @@ export default {
     },
     initLocalGlobalParameters() {
       const key = this.api.instanceId;
-      console.log(this.api)
+      //console.log(this.api)
       //读取是否开启请求缓存标志
       this.$localStore.getItem(constant.globalSettingsKey).then(settings => {
         if (KUtils.checkUndefined(settings)) {
@@ -3152,8 +3152,9 @@ export default {
                         _hdvalue != ""
                       ) {
                         if (_hdvalue.toLowerCase() == "filename") {
-                          //对filename进行decode处理,防止出现中文的情况
-                          fileName = decodeURIComponent(headerValu[1]);
+                          //对filename进行decode处理,防止出现中文的情况,去除双引号
+                          let tmpHeader = headerValu[1].replace(/\"/g, "");
+                          fileName = decodeURIComponent(tmpHeader);
                         }
                       }
                     }
@@ -3211,7 +3212,20 @@ export default {
               }
               //console.log(imgProduceFlag);
               //application/octet-stream
-              let downloadurl = window.URL.createObjectURL(res.data);
+              //判断url是否存在
+              let downloadurl = "";
+              try {
+                downloadurl = window.URL ? window.URL.createObjectURL(res.data) : window.webkitURL.createObjectURL(res.data);
+              } catch (e) {
+                //https://gitee.com/xiaoym/knife4j/issues/I5DKE8
+                //捕获异常
+                if (window.console) {
+                  window.console.error(e);
+                }
+                let binaryData = [].concat(res.data);
+                let blobFile = new Blob(binaryData);
+                downloadurl = window.URL ? window.URL.createObjectURL(blobFile) : window.webkitURL.createObjectURL(blobFile);
+              }
               //let blobTarget=new Blob([res.data])
               //var downloadurl = window.URL.createObjectURL(blobTarget);
               this.responseContent = {
