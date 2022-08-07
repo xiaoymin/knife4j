@@ -10,6 +10,8 @@
 ```java
 @Bean
 public CorsFilter corsFilter(){
+    //针对CorsFilter详细的用法，不同的Spring Boot可能配置不太一样，建议开发者跟踪源码查看具体的使用方式
+    // 此处代码仅给出示例参考
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration corsConfiguration=new CorsConfiguration();
     corsConfiguration.setAllowCredentials(true);
