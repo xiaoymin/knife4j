@@ -416,6 +416,15 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
       }
       newGroupData.push(newGroup);
     })
+  } else {
+    //https://gitee.com/xiaoym/knife4j/issues/I5L440#note_12238431
+    //如果开发者没有创建bean对象，urls对象为空，取而代之的是直接返回url
+    newGroupData.push({
+      name: KUtils.getValue(groupData, 'url', 'default', true),
+      url: KUtils.getValue(groupData, 'url', '', true),
+      location: KUtils.getValue(groupData, 'url', '', true),
+      swaggerVersion: '3.0.3'
+    })
   }
   newGroupData.forEach(function (group) {
     var g = new SwaggerBootstrapUiInstance(
