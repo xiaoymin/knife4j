@@ -31,9 +31,9 @@
                 <template slot="headerName" slot-scope="text, record">
                   <!-- <a-select showSearch :options="headerOptions" placeholder="输入请求头" optionFilterProp="children" style="width: 100%">
                   </a-select> -->
-                  <a-auto-complete @select="headerSelect" @search="headerSearch" @change="headerNameChange(record)"
-                    :value="text" :filterOption="headerNameFilterOption" :allowClear="allowClear"
-                    :dataSource="headerAutoOptions" style="width: 100%"
+                  <a-auto-complete @select="headerSelect" :data-id="record.id" @search="headerSearch"
+                    @change="headerNameChange(record)" :value="text" :filterOption="headerNameFilterOption"
+                    :allowClear="allowClear" :dataSource="headerAutoOptions" style="width: 100%"
                     :placeholder="$t('debug.tableHeader.holderName')" />
                 </template>
                 <template slot="headerValue" slot-scope="text, record">
@@ -1564,12 +1564,19 @@ export default {
       this.headerContentChnageUpdate(value, headerId);
 
     },
+    headerCookieValue(header) {
+      //https://gitee.com/xiaoym/knife4j/issues/I439PO
+      if (header.name.toLowerCase() == "cookie") {
+        document.cookie = header.content;
+      }
+    },
     headerContentChnage(e) {
       var headerValue = e.target.value;
       var headerId = e.target.getAttribute("data-key");
       this.headerContentChnageUpdate(headerValue, headerId);
 
     },
+
     headerContentChnageUpdate(headerValue, headerId) {
       var record = this.headerData.filter(header => header.id == headerId)[0];
       if (record.new) {
@@ -1577,6 +1584,8 @@ export default {
           if (header.id == record.id) {
             header.content = headerValue;
             header.new = false;
+            this.headerCookieValue(header);
+
           }
         });
         //插入一行
@@ -1586,6 +1595,7 @@ export default {
           if (header.id == record.id) {
             header.content = headerValue;
             header.new = false;
+            this.headerCookieValue(header);
           }
         });
       }
@@ -1604,6 +1614,13 @@ export default {
     },
     headerSelect(value, option) {
       this.headerSelectName = value;
+      let dataId = option.context["$attrs"]["data-id"];
+      this.headerData.forEach(header => {
+        if (header.id == dataId) {
+          header.name = value;
+          header.new = false;
+        }
+      });
     },
     headerSearch(value) {
       this.headerSelectName = value;
@@ -1991,12 +2008,15 @@ export default {
           if (tmphArrs.length > 0) {
             //获取选中的headers才能发送
             if (KUtils.strNotBlank(header.name)) {
-              //需要判断请求头是否为中文,如果是中文,对其进行encode处理
-              if (KUtils.isChinese(header.content)) {
-                headers[header.name] = encodeURIComponent(header.content);
-              } else {
-                //header名称不等于空
-                headers[header.name] = KUtils.toString(header.content, "");
+              //此处去除header名称为cookie的值，因为已经更新了，浏览器发送时会自动带上
+              if (header.name.toLowerCase() != "cookie") {
+                //需要判断请求头是否为中文,如果是中文,对其进行encode处理
+                if (KUtils.isChinese(header.content)) {
+                  headers[header.name] = encodeURIComponent(header.content);
+                } else {
+                  //header名称不等于空
+                  headers[header.name] = KUtils.toString(header.content, "");
+                }
               }
             }
           }
