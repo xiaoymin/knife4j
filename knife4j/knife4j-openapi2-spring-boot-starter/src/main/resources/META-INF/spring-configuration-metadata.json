@@ -45,6 +45,13 @@
       "defaultValue": false
     },
     {
+      "name": "knife4j.customCode",
+      "type": "java.lang.Integer",
+      "description": "Disable Production Environment Custom HTTP Code",
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
+      "defaultValue": 200
+    },
+    {
       "name": "knife4j.cors",
       "type": "java.lang.Boolean",
       "description": "Enable cross-domain",

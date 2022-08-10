@@ -43,6 +43,11 @@ public class Knife4jProperties {
     private boolean production=false;
 
     /**
+     * 生产环境屏蔽后自定义响应HTTP状态码
+     */
+    private Integer customCode=200;
+
+    /**
      * 个性化配置
      */
     private OpenApiExtendSetting setting;
@@ -98,5 +103,13 @@ public class Knife4jProperties {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    public Integer getCustomCode() {
+        return customCode;
+    }
+
+    public void setCustomCode(Integer customCode) {
+        this.customCode = customCode;
     }
 }

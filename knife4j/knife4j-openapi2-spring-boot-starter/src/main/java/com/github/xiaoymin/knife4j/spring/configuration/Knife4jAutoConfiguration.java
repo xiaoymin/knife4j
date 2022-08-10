@@ -25,6 +25,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Objects;
+
 /***
  * Knife4j 基础自动配置类
  * @since:knife4j 2.0.0
@@ -89,7 +91,7 @@ public class Knife4jAutoConfiguration {
         SecurityBasicAuthFilter securityBasicAuthFilter=null;
         if (knife4jProperties==null){
             if (environment!=null){
-                String enableAuth=environment.getProperty("knife4j.basic.enable");
+                String enableAuth=Objects.toString(environment.getProperty("knife4j.basic.enable"),"false");
                 enableSwaggerBasicAuth=Boolean.valueOf(enableAuth);
                 if (enableSwaggerBasicAuth){
                     //如果开启basic验证,从配置文件中获取用户名和密码
@@ -121,20 +123,21 @@ public class Knife4jAutoConfiguration {
     @ConditionalOnProperty(name = "knife4j.production",havingValue = "true")
     public ProductionSecurityFilter productionSecurityFilter(Knife4jProperties knife4jProperties){
         boolean prod=false;
+        int customCode=200;
         ProductionSecurityFilter p=null;
         if (knife4jProperties==null){
             if (environment!=null){
                 String prodStr=environment.getProperty("knife4j.production");
                 if (logger.isDebugEnabled()){
-                    logger.debug("swagger.production:{}",prodStr);
+                    logger.debug("knife4j.production:{}",prodStr);
                 }
                 prod=Boolean.valueOf(prodStr);
+                customCode=Integer.parseInt(Objects.toString(environment.getProperty("knife4j.customCode"),"200"));
             }
-            p=new ProductionSecurityFilter(prod);
+            p=new ProductionSecurityFilter(prod,customCode);
         }else{
-            p=new ProductionSecurityFilter(knife4jProperties.isProduction());
+            p=new ProductionSecurityFilter(knife4jProperties.isProduction(),knife4jProperties.getCustomCode());
         }
-
         return p;
     }
 
