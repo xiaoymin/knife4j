@@ -3172,7 +3172,10 @@ export default {
                         _hdvalue != undefined &&
                         _hdvalue != ""
                       ) {
-                        if (_hdvalue.toLowerCase() == "filename") {
+                        if (
+                          _hdvalue.toLowerCase() == "filename*" ||
+                          _hdvalue.toLowerCase() == "filename"
+                        ) {
                           //对filename进行decode处理,防止出现中文的情况,去除双引号
                           let tmpHeader = headerValu[1].replace(/\"/g, "");
                           fileName = decodeURIComponent(tmpHeader);
