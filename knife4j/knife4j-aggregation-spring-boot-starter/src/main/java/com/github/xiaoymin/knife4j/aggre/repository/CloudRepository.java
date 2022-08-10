@@ -77,7 +77,7 @@ public class CloudRepository extends AbsctractRepository{
                         this.cloudSetting.getRoutes().forEach(cloudRoute -> {
                             String uri=cloudRoute.getUri();
                             StringBuilder urlBuilder=new StringBuilder();
-                            if (!StrUtil.startWith("http",uri)){
+                            if (!StrUtil.startWith(uri,"http")){
                                 urlBuilder.append("http://");
                             }
                             urlBuilder.append(uri);
