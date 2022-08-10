@@ -53,17 +53,17 @@
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-models</artifactId>
-                <version>${swagger-models.version}</version>
+                <version>${knife4j-swagger-models.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations</artifactId>
-                <version>${swagger-models-v3.version}</version>
+                <version>${knife4j-swagger-models-v3.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-models</artifactId>
-                <version>${swagger-models-v3.version}</version>
+                <version>${knife4j-swagger-models-v3.version}</version>
             </dependency>
 
             <dependency>
@@ -101,7 +101,7 @@
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
+                <version>${knife4j-springfox.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>io.swagger</groupId>
@@ -116,40 +116,40 @@
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox.version}</version>
+                <version>${knife4j-springfox.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/io.springfox/springfox-bean-validators -->
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-bean-validators</artifactId>
-                <version>${springfox.version}</version>
+                <version>${knife4j-springfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-spring-webmvc</artifactId>
-                <version>${springfox.version}</version>
+                <version>${knife4j-springfox.version}</version>
             </dependency>
 
             <!--springdoc-openapi的Jar包引用-->
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-common</artifactId>
-                <version>${springdoc-openapi.version}</version>
+                <version>${knife4j-springdoc-openapi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webflux-core</artifactId>
-                <version>${springdoc-openapi.version}</version>
+                <version>${knife4j-springdoc-openapi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webmvc-core</artifactId>
-                <version>${springdoc-openapi.version}</version>
+                <version>${knife4j-springdoc-openapi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
-                <version>${springdoc-openapi.version}</version>
+                <version>${knife4j-springdoc-openapi.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -32,24 +32,26 @@
         </developer>
     </developers>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
-        <knife4j-spring.version>5.2.2.RELEASE</knife4j-spring.version>
-        <springfox.version>2.10.5</springfox.version>
-        <spring-plugin.version>2.0.0.RELEASE</spring-plugin.version>
-        <springdoc-openapi.version>1.6.9</springdoc-openapi.version>
-        <servlet.version>3.1.0</servlet.version>
-        <slf4j.version>1.7.28</slf4j.version>
-        <spring-boot.version>2.4.8</spring-boot.version>
-        <hutool.version>5.4.1</hutool.version>
-        <httpclient.version>4.5.12</httpclient.version>
-        <gson.version>2.8.6</gson.version>
+        <knife4j-project.build.sourceEncoding>UTF-8</knife4j-project.build.sourceEncoding>
+        <knife4j-java.version>1.8</knife4j-java.version>
+        <knife4j-spring.version>5.3.8</knife4j-spring.version>
+        <knife4j-spring-boot.version>2.4.8</knife4j-spring-boot.version>
+        <knife4j-junit-jupiter-api.version>5.7.2</knife4j-junit-jupiter-api.version>
 
-        <swagger-models.version>1.6.6</swagger-models.version>
-        <swagger-models-v3.version>2.2.2</swagger-models-v3.version>
-        <javassist.version>3.25.0-GA</javassist.version>
+        <knife4j-springfox.version>2.10.5</knife4j-springfox.version>
+        <knife4j-spring-plugin.version>2.0.0.RELEASE</knife4j-spring-plugin.version>
+        <knife4j-springdoc-openapi.version>1.6.9</knife4j-springdoc-openapi.version>
+        <knife4j-servlet.version>3.1.0</knife4j-servlet.version>
+        <knife4j-slf4j.version>1.7.28</knife4j-slf4j.version>
+        <knife4j-hutool.version>5.4.1</knife4j-hutool.version>
+        <knife4j-httpclient.version>4.5.12</knife4j-httpclient.version>
+        <knife4j-gson.version>2.8.6</knife4j-gson.version>
+
+        <knife4j-swagger-models.version>1.6.6</knife4j-swagger-models.version>
+        <knife4j-swagger-models-v3.version>2.2.2</knife4j-swagger-models-v3.version>
+        <knife4j-javassist.version>3.25.0-GA</knife4j-javassist.version>
         <!-- 打包跳过单元测试1 -->
-        <skipTests>true</skipTests>
+        <knife4j-skipTests>true</knife4j-skipTests>
     </properties>
     <licenses>
         <license>
@@ -97,65 +99,65 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
+                <version>${knife4j-hutool.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
+                <version>${knife4j-httpclient.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>${gson.version}</version>
+                <version>${knife4j-gson.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>${javassist.version}</version>
+                <version>${knife4j-javassist.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations</artifactId>
-                <version>${swagger-models-v3.version}</version>
+                <version>${knife4j-swagger-models-v3.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-models</artifactId>
-                <version>${swagger-models-v3.version}</version>
+                <version>${knife4j-swagger-models-v3.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/io.swagger/swagger-models -->
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-models</artifactId>
-                <version>${swagger-models.version}</version>
+                <version>${knife4j-swagger-models.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/io.swagger/swagger-core -->
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-core</artifactId>
-                <version>${swagger-models.version}</version>
+                <version>${knife4j-swagger-models.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
-                <version>${servlet.version}</version>
+                <version>${knife4j-servlet.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-dependencies</artifactId>-->
+<!--                <version>${knife4j-spring-boot.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
+                <version>${knife4j-springfox.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>io.swagger</groupId>
@@ -170,46 +172,46 @@
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-spring-webmvc</artifactId>
-                <version>${springfox.version}</version>
+                <version>${knife4j-springfox.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/io.springfox/springfox-bean-validators -->
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-bean-validators</artifactId>
-                <version>${springfox.version}</version>
+                <version>${knife4j-springfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.plugin</groupId>
                 <artifactId>spring-plugin-core</artifactId>
-                <version>${spring-plugin.version}</version>
+                <version>${knife4j-spring-plugin.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.plugin</groupId>
                 <artifactId>spring-plugin-metadata</artifactId>
-                <version>${spring-plugin.version}</version>
+                <version>${knife4j-spring-plugin.version}</version>
             </dependency>
             <!--springdoc-openapi的Jar包引用-->
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-common</artifactId>
-                <version>${springdoc-openapi.version}</version>
+                <version>${knife4j-springdoc-openapi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webflux-core</artifactId>
-                <version>${springdoc-openapi.version}</version>
+                <version>${knife4j-springdoc-openapi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webmvc-core</artifactId>
-                <version>${springdoc-openapi.version}</version>
+                <version>${knife4j-springdoc-openapi.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
+                <version>${knife4j-slf4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -263,8 +265,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>${knife4j-java.version}</source>
+                    <target>${knife4j-java.version}</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -273,7 +275,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.18.1</version>
                 <configuration>
-                    <skipTests>${skipTests}</skipTests>
+                    <skipTests>${knife4j-skipTests}</skipTests>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
             </plugin>

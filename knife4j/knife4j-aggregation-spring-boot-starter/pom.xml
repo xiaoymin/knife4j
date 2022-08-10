@@ -16,6 +16,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>${knife4j-spring-boot.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -36,7 +37,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
-            <version>${httpclient.version}</version>
+            <version>${knife4j-httpclient.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
@@ -54,6 +55,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <version>${knife4j-junit-jupiter-api.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
