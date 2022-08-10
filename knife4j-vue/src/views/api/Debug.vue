@@ -1035,8 +1035,9 @@ export default {
           enumsMode: "default",
           new: true
         };
-        //this.headerData.push(newHeader);
-        this.addDebugHeader(newHeader);
+        //延时处理，保证新增的空行在最后一行
+        setTimeout(() => this.addDebugHeader(newHeader), 100);
+        //this.addDebugHeader(newHeader);
       }
       this.hideDynamicParameterTable();
     },
