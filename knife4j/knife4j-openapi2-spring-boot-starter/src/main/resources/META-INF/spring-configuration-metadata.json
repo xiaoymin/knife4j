@@ -191,6 +191,12 @@
       "type": "java.lang.Boolean",
       "description": "Enable Show Select Group Element",
       "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableResponseCode",
+      "type": "java.lang.Boolean",
+      "description": "Enable Show Response code status",
+      "defaultValue": true
     }
   ],
   "hints": [

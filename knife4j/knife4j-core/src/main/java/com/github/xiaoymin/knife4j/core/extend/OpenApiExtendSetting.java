@@ -119,6 +119,21 @@ public class OpenApiExtendSetting {
      */
     private boolean enableGroup=true;
 
+    /**
+     * 是否显示响应状态码栏
+     * https://gitee.com/xiaoym/knife4j/issues/I3TE0V
+     * @since v4.0.0
+     */
+    private boolean enableResponseCode=true;
+
+    public boolean isEnableResponseCode() {
+        return enableResponseCode;
+    }
+
+    public void setEnableResponseCode(boolean enableResponseCode) {
+        this.enableResponseCode = enableResponseCode;
+    }
+
     public boolean isEnableGroup() {
         return enableGroup;
     }
