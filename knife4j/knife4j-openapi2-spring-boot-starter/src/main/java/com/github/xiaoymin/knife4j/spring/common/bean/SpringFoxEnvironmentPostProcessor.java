@@ -1,7 +1,10 @@
 /*
- * Copy right © 2022 浙江力石科技股份有限公司 All Rights Reserved.
- * Official Web Site: http://lishiots.com
+ * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
+ * All rights reserved.
+ * Official Web Site: http://www.xiaominfo.com.
+ * Developer Web Site: http://open.xiaominfo.com.
  */
+
 package com.github.xiaoymin.knife4j.spring.common.bean;
 
 import org.slf4j.Logger;
