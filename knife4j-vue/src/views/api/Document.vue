@@ -10,13 +10,18 @@
             {{ api.summary }}
           </span>
         </a-col>
-        <a-col :span="2" :id="'btnCopyMethod' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copyMethod')">复制接口</a-col>
-        <a-col :span="2" :id="'btnCopyMarkdown' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copy')">复制文档</a-col>
-        <a-col :span="2" :id="'btnCopyAddress' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copyHash')">复制地址</a-col>
+        <a-col :span="2" :id="'btnCopyMethod' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copyMethod')">
+          复制接口</a-col>
+        <a-col :span="2" :id="'btnCopyMarkdown' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copy')">复制文档
+        </a-col>
+        <a-col :span="2" :id="'btnCopyAddress' + api.id" class="knife4j-api-copy-address" v-html="$t('doc.copyHash')">
+          复制地址</a-col>
       </a-row>
       <a-row :class="'knife4j-api-' + api.methodType.toLowerCase()">
         <div class="knife4j-api-summary">
-          <span class="knife4j-api-summary-method"><a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}</span>
+          <span class="knife4j-api-summary-method">
+            <a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}
+          </span>
           <span class="knife4j-api-summary-path">{{ api.showUrl }}</span>
         </div>
       </a-row>
@@ -59,10 +64,11 @@
     <div class="api-title" v-html="$t('doc.params')">
       请求参数
     </div>
-    <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small" :pagination="page">
+    <a-table :defaultExpandAllRows="expanRows" :columns="columns" :dataSource="reqParameters" rowKey="id" size="small"
+      :pagination="page">
       <template slot="descriptionValueTemplate" slot-scope="text,record">
         <span v-html="text"></span>
-        <span v-if="record.example">,示例值({{record.example}})</span>
+        <span v-if="record.example">,示例值({{ record.example }})</span>
       </template>
       <template slot="requireTemplate" slot-scope="text">
         <span v-if="text" style="color:red">{{ text.toLocaleString() }}</span>
@@ -76,18 +82,21 @@
         <data-type :text="text" :record="record"></data-type>
       </template>
     </a-table>
-    <div class="api-title" v-html="$t('doc.response')">
-      响应状态
+    <div v-if="responseCodeDisplayStatus">
+      <div class="api-title" v-html="$t('doc.response')">
+        响应状态
+      </div>
+      <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes"
+        rowKey="code" size="small" :pagination="page">
+        <template slot="descriptionTemplate" slot-scope="text">
+          <div v-html="text"></div>
+        </template>
+        <template slot="schemaTemplate" slot-scope="text,record">
+          <span v-if="text != null" v-html="text"></span>
+          <span v-else-if="record.schemaTitle != null" v-html="record.schemaTitle"></span>
+        </template>
+      </a-table>
     </div>
-    <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes" rowKey="code" size="small" :pagination="page">
-      <template slot="descriptionTemplate" slot-scope="text">
-        <div v-html="text"></div>
-      </template>
-      <template slot="schemaTemplate" slot-scope="text,record">
-        <span v-if="text!=null" v-html="text"></span>
-        <span v-else-if="record.schemaTitle!=null" v-html="record.schemaTitle"></span>
-      </template>
-    </a-table>
     <!--响应参数需要判断是否存在多个code-schema的情况-->
     <div v-if="api.multipartResponseSchema">
       <a-tabs @change="multipartTabCodeChanges">
@@ -97,14 +106,16 @@
             <div class="api-title" v-html="$t('doc.responseHeaderParams')">
               响应Header
             </div>
-            <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="resp.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
+            <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns"
+              :dataSource="resp.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
             </a-table>
           </div>
           <!--响应参数-->
           <div class="api-title" v-html="$t('doc.responseParams')">
             响应参数
           </div>
-          <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data" rowKey="id" size="small" :pagination="page">
+          <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data"
+            rowKey="id" size="small" :pagination="page">
             <template slot="descriptionTemplate" slot-scope="text">
               <span v-html="text"></span>
             </template>
@@ -114,8 +125,8 @@
           </div>
           <a-row :id="'knife4jDocumentShowEditor' + api.id + resp.code">
             <editor-show @showDescription="showResponseEditFieldDescription" :value="
-                resp.responseBasicType ? resp.responseText : resp.responseValue
-              "></editor-show>
+              resp.responseBasicType ? resp.responseText : resp.responseValue
+            "></editor-show>
           </a-row>
 
           <!-- <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor> -->
@@ -128,14 +139,16 @@
         <div class="api-title" v-html="$t('doc.responseHeaderParams')">
           响应Header
         </div>
-        <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns" :dataSource="api.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
+        <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns"
+          :dataSource="api.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
         </a-table>
       </div>
       <!--响应参数-->
       <div class="api-title" v-html="$t('doc.responseParams')">
         响应参数
       </div>
-      <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data" rowKey="id" size="small" :pagination="page">
+      <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data"
+        rowKey="id" size="small" :pagination="page">
         <template slot="descriptionTemplate" slot-scope="text">
           <span v-html="text"></span>
         </template>
@@ -145,11 +158,11 @@
       </div>
       <a-row :id="'knife4jDocumentShowEditor' + api.id">
         <editor-show @showDescription="showResponseEditFieldDescription" :value="
-            multipData.responseBasicType
-              ? multipData.responseText
-              : multipData.responseValue
-          "></editor-show>
-          
+          multipData.responseBasicType
+            ? multipData.responseText
+            : multipData.responseValue
+        "></editor-show>
+
       </a-row>
     </div>
   </div>
@@ -170,9 +183,10 @@ import cloneDeep from 'lodash/cloneDeep'
 
 export default {
   name: "Document",
-  components: { editor: require("vue2-ace-editor"), 
-    "DataType":()=>import('./DataType'),
-    "EditorShow":()=>import('./EditorShow')
+  components: {
+    editor: require("vue2-ace-editor"),
+    "DataType": () => import('./DataType'),
+    "EditorShow": () => import('./EditorShow')
   },
   props: {
     api: {
@@ -187,7 +201,7 @@ export default {
   data() {
     return {
       content: "<span>Hello</span>",
-      contentType:"*/*",//请求数据类型
+      contentType: "*/*",//请求数据类型
       columns: [],
       responseHeaderColumns: [],
       responseStatuscolumns: [],
@@ -215,54 +229,58 @@ export default {
       that.copyApiAddress();
       that.copyApiMarkdown();
       that.copyApiUrl();
+      console.log("status", this.responseCodeDisplayStatus)
     }, 1500);
   },
-  computed:{
-    language(){
-       return this.$store.state.globals.language;
-    }, 
-    swagger(){
-       return this.$store.state.globals.swagger;
+  computed: {
+    language() {
+      return this.$store.state.globals.language;
+    },
+    swagger() {
+      return this.$store.state.globals.swagger;
+    },
+    responseCodeDisplayStatus() {
+      return this.$store.state.globals.enableResponseCode;
     }
   },
-  watch:{
-    language:function(val,oldval){
+  watch: {
+    language: function (val, oldval) {
       this.initI18n();
     }
   },
   methods: {
-    getCurrentI18nInstance(){
+    getCurrentI18nInstance() {
       return this.$i18n.messages[this.language];
     },
-    initI18n(){
+    initI18n() {
       //根据i18n初始化部分参数
-      var inst=this.getCurrentI18nInstance();
-      this.columns=inst.table.documentRequestColumns;
-      this.responseStatuscolumns=inst.table.documentResponseStatusColumns;
-      this.responseHeaderColumns=inst.table.documentResponseHeaderColumns;
-      this.responseParametersColumns=inst.table.documentResponseColumns;
+      var inst = this.getCurrentI18nInstance();
+      this.columns = inst.table.documentRequestColumns;
+      this.responseStatuscolumns = inst.table.documentResponseStatusColumns;
+      this.responseHeaderColumns = inst.table.documentResponseHeaderColumns;
+      this.responseParametersColumns = inst.table.documentResponseColumns;
     },
-    copyApiUrl(){
+    copyApiUrl() {
       var that = this;
       var btnId = "btnCopyMethod" + this.api.id;
-      var copyMethodText=this.api.showUrl;
+      var copyMethodText = this.api.showUrl;
       var clipboard = new ClipboardJS("#" + btnId, {
         text() {
           return copyMethodText;
         }
       });
-     
-      clipboard.on("success",()=>{
-        var inst=that.getCurrentI18nInstance();
+
+      clipboard.on("success", () => {
+        var inst = that.getCurrentI18nInstance();
         //"复制地址成功"
-        var successMessage=inst.message.copy.method.success;
+        var successMessage = inst.message.copy.method.success;
         that.$message.info(successMessage);
       })
-      clipboard.on("error", function(e) {
-        var inst=that.getCurrentI18nInstance();
+      clipboard.on("error", function (e) {
+        var inst = that.getCurrentI18nInstance();
         console.log(inst)
         //"复制地址失败"
-        var failMessage=inst.message.copy.method.fail;
+        var failMessage = inst.message.copy.method.fail;
         that.$message.info(failMessage);
       });
     },
@@ -274,18 +292,18 @@ export default {
           return window.location.href;
         }
       });
-      
-      
-      clipboard.on("success", function(e) {
-        var inst=that.getCurrentI18nInstance();
+
+
+      clipboard.on("success", function (e) {
+        var inst = that.getCurrentI18nInstance();
         //"复制地址成功"
-        var successMessage=inst.message.copy.url.success;
+        var successMessage = inst.message.copy.url.success;
         that.$message.info(successMessage);
       });
-      clipboard.on("error", function(e) {
-        var inst=that.getCurrentI18nInstance();
+      clipboard.on("error", function (e) {
+        var inst = that.getCurrentI18nInstance();
         //"复制地址失败"
-        var failMessage=inst.message.copy.url.fail;
+        var failMessage = inst.message.copy.url.fail;
         that.$message.info(failMessage);
       });
     },
@@ -301,24 +319,24 @@ export default {
       //console.log(api);
       var clipboard = new ClipboardJS("#" + btnId, {
         text() {
-          var inst=that.getCurrentI18nInstance();
-          if(inst.lang==='zh'){
+          var inst = that.getCurrentI18nInstance();
+          if (inst.lang === 'zh') {
             return markdownSingleText(api);
-          }else if(inst.lang==='us'){
+          } else if (inst.lang === 'us') {
             return markdownSingleTextUs(api);
           }
         }
       });
-      clipboard.on("success", function(e) {
-        var inst=that.getCurrentI18nInstance();
+      clipboard.on("success", function (e) {
+        var inst = that.getCurrentI18nInstance();
         //"复制文档成功"
-        var successMessage=inst.message.copy.document.success;
+        var successMessage = inst.message.copy.document.success;
         that.$message.info(successMessage);
       });
-      clipboard.on("error", function(e) {
-        var inst=that.getCurrentI18nInstance();
+      clipboard.on("error", function (e) {
+        var inst = that.getCurrentI18nInstance();
         //"复制文档失败"
-        var failMessage=inst.message.copy.document.fail;
+        var failMessage = inst.message.copy.document.fail;
         that.$message.info(failMessage);
       });
     },
@@ -350,11 +368,11 @@ export default {
       var data = [];
       var that = this;
       var apiInfo = this.api;
-      if(KUtils.strNotBlank(apiInfo.contentType)){
-        this.contentType=apiInfo.contentType;
+      if (KUtils.strNotBlank(apiInfo.contentType)) {
+        this.contentType = apiInfo.contentType;
       }
-      if(apiInfo.contentType=="application/x-www-form-urlencoded;charset=UTF-8"){
-        this.contentType="application/x-www-form-urlencoded";
+      if (apiInfo.contentType == "application/x-www-form-urlencoded;charset=UTF-8") {
+        this.contentType = "application/x-www-form-urlencoded";
       }
       //console.log(apiInfo);
       //针对数组类型的ignore写法,在这里不需要,table树里面是对象点属性
@@ -374,7 +392,7 @@ export default {
         apiInfo.ignoreParameters || {}
       ); */
       if (apiInfo.parameters != null && apiInfo.parameters.length > 0) {
-        var dx = apiInfo.parameters.filter(function(pm) {
+        var dx = apiInfo.parameters.filter(function (pm) {
           if (pm.name.indexOf("[0]") > -1) {
             //存在数组的情况
             if (ignoreParameterAllKeys.length > 0) {
@@ -404,12 +422,12 @@ export default {
         apiInfo.refTreetableparameters != null &&
         apiInfo.refTreetableparameters.length > 0
       ) {
-        apiInfo.refTreetableparameters.forEach(function(ref) {
+        apiInfo.refTreetableparameters.forEach(function (ref) {
           data = data.concat(ref.params);
         });
       }
       if (data != null) {
-        data.sort(function(a, b) {
+        data.sort(function (a, b) {
           return b.require - a.require;
         });
       }
@@ -417,7 +435,7 @@ export default {
       if (data != null && data.length > 0) {
         //console("初始化请求参数----------");
         //console(data);
-        data.forEach(function(param) {
+        data.forEach(function (param) {
           if (param.pid == "-1") {
             param.children = null;
             //判断该参数是否存在schema参数
@@ -433,7 +451,7 @@ export default {
                     key,
                     schemaName
                   );
-                  model=that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id,model);
+                  model = that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id, model);
                   //console.log("findmodel")
                   //console.log(model)
                   if (model && model.params) {
@@ -446,9 +464,9 @@ export default {
                             ignoreParameterAllKeys.includes(name + "[0]") ||
                             ignoreParameterAllKeys.includes(
                               `${param.name}.${name}`
-                            )||
+                            ) ||
                             ignoreParameterAllKeys.some(key =>
-                              new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/'+key+'/g').test(name)
+                              new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/' + key + '/g').test(name)
                             )
                           ) // 处理 json 提交
                         );
@@ -495,79 +513,79 @@ export default {
         });
       }
       //此处需要递归去除include之外的parameters
-      if(apiInfo.includeParameters!=null){
+      if (apiInfo.includeParameters != null) {
         var tmpIncludeKeys = Object.keys(apiInfo.includeParameters || {});
-        var bodyParam=reqParameters.filter(req=>req.in=="body").length;
-        if(tmpIncludeKeys.length>0&&bodyParam>0){
-          var includeParameters=[];
+        var bodyParam = reqParameters.filter(req => req.in == "body").length;
+        if (tmpIncludeKeys.length > 0 && bodyParam > 0) {
+          var includeParameters = [];
           //rootkey代表的JSON的父级path,父级path必须保留
-          var rootKeys=[];
-          this.deepRootKeys(tmpIncludeKeys,rootKeys);
+          var rootKeys = [];
+          this.deepRootKeys(tmpIncludeKeys, rootKeys);
           //console.log(rootKeys)
           //console.log(tmpIncludeKeys)
-          reqParameters.forEach(param=>{
+          reqParameters.forEach(param => {
             //判断是否有childrens
-            if(rootKeys.includes(param.name)){
-              var copyParam=cloneDeep(param);
-              copyParam.children=null;
-              if(param.children!=null&&param.children.length>0){
-                copyParam.children=new Array();
-                this.deepIncludeParam(copyParam.name,copyParam,param.children,tmpIncludeKeys,rootKeys);
+            if (rootKeys.includes(param.name)) {
+              var copyParam = cloneDeep(param);
+              copyParam.children = null;
+              if (param.children != null && param.children.length > 0) {
+                copyParam.children = new Array();
+                this.deepIncludeParam(copyParam.name, copyParam, param.children, tmpIncludeKeys, rootKeys);
               }
               includeParameters.push(copyParam);
-            }else{
-              if(tmpIncludeKeys.includes(param.name)){
-                var copyParam=cloneDeep(param);
-                copyParam.children=null;
-                if(param.children!=null&&param.children.length>0){
-                  copyParam.children=new Array();
-                  this.deepIncludeParam(copyParam.name,copyParam,param.children,tmpIncludeKeys,rootKeys);
+            } else {
+              if (tmpIncludeKeys.includes(param.name)) {
+                var copyParam = cloneDeep(param);
+                copyParam.children = null;
+                if (param.children != null && param.children.length > 0) {
+                  copyParam.children = new Array();
+                  this.deepIncludeParam(copyParam.name, copyParam, param.children, tmpIncludeKeys, rootKeys);
                 }
                 includeParameters.push(copyParam);
               }
             }
           })
-          that.reqParameters=includeParameters;
-        }else{
+          that.reqParameters = includeParameters;
+        } else {
           that.reqParameters = reqParameters;
         }
-      }else{
+      } else {
         that.reqParameters = reqParameters;
       }
       //console.log("document")
       //console.log(reqParameters);
     },
-    deepRootKeys(tmpIncludeKeys,rootKeys){
-      var tmpRooks=[];
-      tmpIncludeKeys.forEach(key=>{
-        var rootKey=key.substring(0,key.lastIndexOf("."));
-        if(rootKey.indexOf(".")>-1){
+    deepRootKeys(tmpIncludeKeys, rootKeys) {
+      var tmpRooks = [];
+      tmpIncludeKeys.forEach(key => {
+        var rootKey = key.substring(0, key.lastIndexOf("."));
+        if (rootKey.indexOf(".") > -1) {
           tmpRooks.push(rootKey);
         }
-        if(!rootKeys.includes(rootKey)){
+        if (!rootKeys.includes(rootKey)) {
           rootKeys.push(rootKey);
         }
       })
-      if(tmpRooks.length>0){
-        this.deepRootKeys(tmpRooks,rootKeys);
+      if (tmpRooks.length > 0) {
+        this.deepRootKeys(tmpRooks, rootKeys);
       }
     },
-    deepIncludeParam(parentName,deepParams,children,tmpIncludeKeys,rootKeys){
-      if(children!=null&&children.length>0){
-        children.forEach(childrenParam=>{
-          var jsonPath=parentName+"."+childrenParam.name;
+    deepIncludeParam(parentName, deepParams, children, tmpIncludeKeys, rootKeys) {
+      if (children != null && children.length > 0) {
+        children.forEach(childrenParam => {
+          var jsonPath = parentName + "." + childrenParam.name;
           //判断root
-          if(rootKeys.includes(jsonPath)){
-            var copyParam=cloneDeep(childrenParam);
+          if (rootKeys.includes(jsonPath)) {
+            var copyParam = cloneDeep(childrenParam);
             //初始化children需要判断当前的param.name是否在includes中
-            copyParam.children=null;
+            copyParam.children = null;
             deepParams.children.push(copyParam)
-            if(KUtils.arrNotEmpty(childrenParam.children)){
-              copyParam.children=new Array();
-              this.deepIncludeParam(jsonPath,copyParam,childrenParam.children,tmpIncludeKeys,rootKeys);
+            if (KUtils.arrNotEmpty(childrenParam.children)) {
+              copyParam.children = new Array();
+              this.deepIncludeParam(jsonPath, copyParam, childrenParam.children, tmpIncludeKeys, rootKeys);
             }
-          }else{
-            if(tmpIncludeKeys.includes(jsonPath)){
+          } else {
+            if (tmpIncludeKeys.includes(jsonPath)) {
               deepParams.children.push(childrenParam)
             }
           }
@@ -600,7 +618,7 @@ export default {
         if (KUtils.checkUndefined(schema)) {
           rootParam.parentTypes.push(param.schemaValue);
           if (KUtils.arrNotEmpty(schema.params)) {
-            schema.params.forEach(function(nmd) {
+            schema.params.forEach(function (nmd) {
               //childrenparam需要深拷贝一个对象
               var childrenParam = {
                 childrenTypes: nmd.childrenTypes,
@@ -652,7 +670,7 @@ export default {
     findModelChildren(md, modelData) {
       var that = this;
       if (modelData != null && modelData != undefined && modelData.length > 0) {
-        modelData.forEach(function(nmd) {
+        modelData.forEach(function (nmd) {
           if (nmd.pid == md.id) {
             nmd.children = [];
             that.findModelChildren(nmd, modelData);
@@ -678,7 +696,7 @@ export default {
       //console.log("rcodes")
       //console.log(rcodes)
       if (rcodes != null && rcodes != undefined) {
-        rcodes.forEach(function(rc) {
+        rcodes.forEach(function (rc) {
           //遍历
           if (rc.schema != undefined && rc.schema != null) {
             var respdata = [];
@@ -692,21 +710,21 @@ export default {
               rc.responseTreetableRefParameters != null &&
               rc.responseTreetableRefParameters.length > 0
             ) {
-              rc.responseTreetableRefParameters.forEach(function(ref) {
+              rc.responseTreetableRefParameters.forEach(function (ref) {
                 respdata = respdata.concat(ref.params);
               });
             }
             let nrecodedatas = [];
             //遍历得到新的符合antd的树形结构
             if (respdata != null && respdata.length > 0) {
-              respdata.forEach(function(param) {
+              respdata.forEach(function (param) {
                 if (param.pid == "-1") {
                   param.children = [];
                   //判断该参数是否存在schema参数
                   if (param.schema) {
                     //判断当前缓存是否存在
                     var schemaName = param.schemaValue;
-                   // console.log("schemaName:"+schemaName)
+                    // console.log("schemaName:"+schemaName)
                     if (KUtils.checkUndefined(schemaName)) {
                       // //console("schemaValue--checkUndefined");
                       if (that.$Knife4jModels.exists(key, schemaName)) {
@@ -716,7 +734,7 @@ export default {
                           key,
                           schemaName
                         );
-                        model=that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id,model);
+                        model = that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id, model);
                         if (model && model.params) {
                           param.children = model.params.map(child => {
                             const newObj = that.copyNewParameter(child);
@@ -746,10 +764,10 @@ export default {
             that.multipCodeDatas.push(nresobj);
           }
         });
-        var multipKeys=Object.keys(that.multipData);
-        if(KUtils.arrNotEmpty(rcodes)&&!KUtils.arrNotEmpty(multipKeys)){
-          var rc=rcodes[0];
-          if(KUtils.strNotBlank(rc.schemaTitle)){
+        var multipKeys = Object.keys(that.multipData);
+        if (KUtils.arrNotEmpty(rcodes) && !KUtils.arrNotEmpty(multipKeys)) {
+          var rc = rcodes[0];
+          if (KUtils.strNotBlank(rc.schemaTitle)) {
             var nresobj = { ...rc, data: [] };
             that.multipData = nresobj;
           }
@@ -813,7 +831,7 @@ export default {
             var sfd = item.getElementsByClassName(
               "knife4j-debug-editor-field-description"
             );
-            if (!KUtils.arrNotEmpty(sfd)&&responseCode!=null) {
+            if (!KUtils.arrNotEmpty(sfd) && responseCode != null) {
               var fieldSpan = document.createElement("span");
               fieldSpan.className = "knife4j-debug-editor-field-description";
               fieldSpan.innerHTML = responseCode.responseDescriptionFind(
@@ -864,10 +882,12 @@ export default {
 .api-basic {
   padding: 11px;
 }
+
 .api-basic-title {
   font-size: 14px;
   font-weight: 700;
 }
+
 .api-basic-body {
   font-size: 14px;
   font-family: -webkit-body;
@@ -877,15 +897,18 @@ export default {
   border-left: 4px solid #ddd;
   line-height: 30px;
 }
+
 .api-body-desc {
   padding: 10px;
   min-height: 35px;
   box-sizing: border-box;
   border: 1px solid #e8e8e8;
 }
+
 .ant-card-body {
   padding: 5px;
 }
+
 .api-title {
   margin-top: 10px;
   margin-bottom: 5px;
@@ -896,14 +919,17 @@ export default {
   border-left: 4px solid #00ab6d;
   text-indent: 8px;
 }
+
 .content-line {
   height: 25px;
   line-height: 25px;
 }
+
 .content-line-count {
   height: 35px;
   line-height: 35px;
 }
+
 .divider {
   margin: 4px 0;
 }

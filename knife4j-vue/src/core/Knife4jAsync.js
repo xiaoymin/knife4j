@@ -155,6 +155,8 @@ function SwaggerBootstrapUi(options) {
     homeCustomLocation: '',//自定义主页的Markdown文档内容
     enableGroup: true,//是否显示分组下拉框，默认true(即显示)，一般情况下，如果是单个分组的情况下，可以设置该属性为false，即不显示分组，那么也就不用选择了
 
+    enableResponseCode: true, //since 4.0.0 是否显示响应状态码栏
+
     enableSwaggerModels: true,//是否显示界面中SwaggerModel功能
     swaggerModelName: 'Swagger Models',//重命名界面Swagger Model的显示名称
     enableReloadCacheParameter: false,// 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
@@ -904,6 +906,8 @@ SwaggerBootstrapUi.prototype.resolvedOASVersion = function (openApi) {
 SwaggerBootstrapUi.prototype.dispatchSettings = function () {
   this.store.dispatch('globals/setAfterScript', this.settings.enableAfterScript);
   this.store.dispatch('globals/setReloadCacheParameter', this.settings.enableReloadCacheParameter);
+  //add 2022.8.11 xiaoymin
+  this.store.dispatch('globals/setResponseCode', this.settings.enableResponseCode);
   this.store.dispatch('globals/setSettings', this.settings);
 }
 
