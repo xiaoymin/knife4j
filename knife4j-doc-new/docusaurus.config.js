@@ -135,6 +135,7 @@ module.exports = {
                         items: [
                             {
                                 href: '/v2/index.html',
+                                target: '_blank',
                                 label: '2.0.9',
                             }
                         ],
