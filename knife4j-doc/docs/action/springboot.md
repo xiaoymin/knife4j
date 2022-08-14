@@ -3,7 +3,7 @@
 
 本次示例使用Spring Boot作为脚手架来快速集成Knife4j,Spring Boot版本`2.3.5.RELEASE`,Knife4j版本`2.0.7`，完整代码可以去参考[knife4j-spring-boot-fast-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-spring-boot-fast-demo)
 
-::: details pom.xml完整文件代码如下
+:::tip pom.xml完整文件代码如下
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

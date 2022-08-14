@@ -20,7 +20,7 @@ public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
 创建Docket对象时，设置OAuth2的授权类型，示例代码如下：
 
-::: details 查看详细代码
+:::tip 查看详细代码
 ```java
 @Configuration
 @EnableSwagger2WebMvc

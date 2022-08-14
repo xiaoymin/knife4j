@@ -28,7 +28,7 @@ Codename:    Core
 
 ## 下载最新发行版
 
-前往[发行版地址](knife4j-admin-download.md)进行下载
+前往[发行版地址](knife4j-admin-download)进行下载
 
 发行版一般是以zip压缩包形式进行发布,压缩包中包含jar可运行文件以及一个front的前端文件
 

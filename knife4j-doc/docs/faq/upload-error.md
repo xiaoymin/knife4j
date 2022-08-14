@@ -2,7 +2,7 @@
 
 在使用SwaggerBootstrapUi的朋友经常询问的一个问题,为什么上传参数file对象不显示file文本域,而是普通文本,如下图：
 
-![](/images/file-error.jpeg)
+![](/knife4j/images/file-error.jpeg)
 
 因为Springfox-Swagger针对不同的版本,某些版本也会出现此问题,为一劳永逸,SwaggerBootstrapUi特别指定需要强指定dataType类型为`MultipartFile`
 

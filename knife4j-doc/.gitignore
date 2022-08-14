@@ -1,19 +1,19 @@
-/target/
-!.mvn/wrapper/maven-wrapper.jar
+# Dependencies
+/node_modules
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Production
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
- 
-/node_modules/
+# Generated files
+.docusaurus
+.cache-loader
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

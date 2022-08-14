@@ -1,6 +1,6 @@
 # 1.1 基于Maven Bom方式使用
 
-::: warning
+:::caution 温馨提醒
 该方式自`2.0.2`版本才提供,在`knife4j`以前的版本中没有`knife4j-dependencies`模块,开发者在使用的时候需要注意
 :::
 

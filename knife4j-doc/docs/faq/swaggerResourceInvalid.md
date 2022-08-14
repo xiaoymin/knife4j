@@ -17,7 +17,7 @@ catch (err){
 
 错误信息即开发者常见的**请确保swagger资源接口正确**
 
-![](/images/swggerapi404.jpg)
+![](/knife4j/images/swggerapi404.jpg)
 
 一般出现这种错误的时候有几种情况
 
@@ -115,7 +115,7 @@ public class SwaggerConfiguration {
 
 如果以上两种情况都排除的话,最后还有一种情况会造成此问题的出现，那就是响应的JSON并非是一个标准的JSON
 
-![](/images/swggerapi404-1.jpg)
+![](/knife4j/images/swggerapi404-1.jpg)
 
 一般出现此情况时,是因为后端在给List集合的属性赋予了`exmpale`属性,例如:
 
