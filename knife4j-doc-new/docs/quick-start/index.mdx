@@ -1,0 +1,79 @@
+---
+id: quick-start
+title: 快速开始
+description: 快速开始Knife4j
+---
+
+import ApiLink from '@site/src/components/ApiLink';
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import openapi2Xml from '!!raw-loader!./codeSamples/openapi2.xml';
+import openapi3Xml from '!!raw-loader!./codeSamples/openapi3.xml';
+import springfox2 from '!!raw-loader!./codeSamples/springfox2.java';
+import OpenAPI3 from '!!raw-loader!./codeSamples/OpenAPI3.java';
+
+
+import IndexController2 from '!!raw-loader!./codeSamples/IndexController2.java';
+import IndexController3 from '!!raw-loader!./codeSamples/IndexController3.java';
+ 
+
+<p>第一步：<a href='https://spring.io/guides/gs/spring-boot/'>创建Spring Boot项目</a>并且在pom.xml中引入<a href='https://search.maven.org/search?q=a:knife4j'>Knife4j的依赖包</a>，Maven坐标如下：</p>
+<Tabs groupId="quick_start1">
+<TabItem value="cheerio" label="Swagger2" default>
+    <CodeBlock className="language-xml">{openapi2Xml}</CodeBlock>
+</TabItem>
+<TabItem value="openapi3" label="OpenAPI3">
+    <CodeBlock className="language-xml">{openapi3Xml}</CodeBlock>
+</TabItem>
+</Tabs>
+<p>第二步：创建Swagger配置依赖，代码如下：：</p>
+<Tabs groupId="quick_start2">
+    <TabItem value="cheerio2" label="Swagger2" default>
+        <CodeBlock className="language-javascript">
+        {springfox2}
+        </CodeBlock>
+    </TabItem>
+    <TabItem value="openapi32" label="OpenAPI3">
+        <CodeBlock className="language-javascript">
+        {OpenAPI3}
+        </CodeBlock>
+    </TabItem>
+</Tabs>
+
+:::tip 提示信息
+
+如果开发者使用的是Knife4j 2.x版本，并且Spring Boot版本高于2.4,那么需要在Spring Boot的yml文件中做如下配置：
+
+```yml
+spring:
+    mvc:
+        pathmatch:
+            # 配置策略
+            matching-strategy: ant-path-matcher
+```
+
+:::
+
+
+<p>第三步:新建一个接口Controller类，如下：</p>
+<Tabs groupId="quick_start3">
+    <TabItem value="cheerio1" label="Swagger2" default>
+        <CodeBlock className="language-javascript">
+        {IndexController2}
+        </CodeBlock>
+    </TabItem>
+    <TabItem value="openapi31" label="OpenAPI3">
+        <CodeBlock className="language-javascript">
+        {IndexController3}
+        </CodeBlock>
+    </TabItem>
+</Tabs>
+
+
+<p>万事俱备，启动Spring Boot项目，浏览器访问Knife4j的文档地址即可查看效果</p>
+<CodeBlock className="language-bash">
+    http://localhost:8080/doc.html
+</CodeBlock>
