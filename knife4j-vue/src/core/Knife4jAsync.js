@@ -5136,6 +5136,14 @@ SwaggerBootstrapUi.prototype.assembleParameter = function (m, swpinfo) {
         } else {
           if (schemaObject.hasOwnProperty("type")) {
             minfo.type = schemaObject["type"];
+            //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/402
+            if (schemaObject.hasOwnProperty("example")) {
+              let epValue = KUtils.propValue("example", schemaObject, null);
+              if (epValue != null && epValue != "") {
+                minfo.txtValue = epValue;
+                minfo.example = epValue;
+              }
+            }
           }
           minfo.value = "";
         }
