@@ -1,7 +1,7 @@
 # springfox 源码分析(十一) 自定义添加Swagger Models功能实现
 
 
-在[springfox 源码分析(十) 遍历接口获取Model对象](/2019/05/26/springfox-10/)这一篇中,我们其实已经大致了解了Springfox针对接口中涉及到的Model类进行解析初始化的过程
+在[springfox 源码分析(十) 遍历接口获取Model对象](/docs/action/springfox/springfox10)这一篇中,我们其实已经大致了解了Springfox针对接口中涉及到的Model类进行解析初始化的过程
 
 在默认`OperationModelsProviderPlugin`插件中,`collectGlobalModels`收集全局Models的方法会将我们外部传入的Model添加到Springfox的集合中去,并且最终我们会在Swagger的标准属性定义**definitions**中发现她
 
@@ -9,7 +9,7 @@
 
 有时,如果我们在程序框架中定义了一些公共的属性Models,但是并没有在接口中使用,此时springfox默认是不会加入的,那么我们应该通过何种方式,才能再swagger的ui界面中看到后端自定义的Model呢
 
-我们通过源码环节知道`OperationModelsProviderPlugin`最终获取全局参数Models是通过`DocumentationContext`对象来获取的,而在[springfox 源码分析(七) 文档初始化-DocumentationContext](/2019/05/23/springfox-7/)这一节时,我们已经介绍了`DocumentationContext`的初始化过程
+我们通过源码环节知道`OperationModelsProviderPlugin`最终获取全局参数Models是通过`DocumentationContext`对象来获取的,而在[springfox 源码分析(七) 文档初始化-DocumentationContext](/docs/action/springfox/springfox7)这一节时,我们已经介绍了`DocumentationContext`的初始化过程
 
 我们只需要使用springfox为我们提供的Docket对象的方法就可以实现我们的自定义Models
 
