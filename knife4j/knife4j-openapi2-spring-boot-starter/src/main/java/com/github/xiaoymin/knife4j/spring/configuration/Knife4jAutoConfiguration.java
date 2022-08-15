@@ -35,17 +35,26 @@ import java.util.Objects;
  */
 @Configuration
 @EnableConfigurationProperties({Knife4jProperties.class})
-@ComponentScan(
-        basePackages = {
-                "com.github.xiaoymin.knife4j.spring.plugin",
-        }
-)
 @ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
 public class Knife4jAutoConfiguration {
 
     @Autowired
     private Environment environment;
     Logger logger= LoggerFactory.getLogger(Knife4jAutoConfiguration.class);
+
+
+    /**
+     * 写一个内部类，该类只有在knife4j.enable=true时才会加载，不做任何处理
+     * https://github.com/xiaoymin/swagger-bootstrap-ui/issues/394
+     */
+    @ComponentScan(
+            basePackages = {
+                    "com.github.xiaoymin.knife4j.spring.plugin",
+            }
+    )
+    public class Knife4jEnhanceAutoConfiguration{
+
+    }
 
     /**
      * 配置Cors
