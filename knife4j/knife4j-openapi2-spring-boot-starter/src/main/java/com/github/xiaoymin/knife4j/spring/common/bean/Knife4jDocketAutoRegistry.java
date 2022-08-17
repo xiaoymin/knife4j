@@ -23,6 +23,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
@@ -55,7 +56,7 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
     public void afterPropertiesSet() throws Exception {
         Knife4jInfoProperties info= knife4jProperties.getInfo();
         if (info!=null&& CollectionUtils.isNotEmpty(info.getDockets())){
-            logger.info("初始化Docket信息");
+            logger.debug("初始化Docket信息");
             BeanDefinitionRegistry beanRegistry = (BeanDefinitionRegistry)beanFactory;
 
             //构建基础信息
@@ -68,10 +69,9 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                     .termsOfServiceUrl(info.getTermsOfServiceUrl())
                     .contact(new Contact(info.getConcat(),info.getUrl(),info.getEmail()))
                     .build();
-            Set<String> docketBeanNameSets=new HashSet<>();
             for (Knife4jDocketInfo docketInfo:info.getDockets()){
                 String beanName= CommonUtils.getRandomBeanName(docketInfo.getGroupName());
-                logger.info("auto register Docket Bean,name:{}",beanName);
+                logger.debug("auto register Docket Bean,name:{}",beanName);
                 BeanDefinition docketBeanDefinition = new GenericBeanDefinition();
                 docketBeanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(0, DocumentationType.SWAGGER_2);
                 docketBeanDefinition.setBeanClassName(Docket.class.getName());
@@ -84,7 +84,7 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                         .apiInfo(apiInfo)
                         .select()
                         .apis(RequestHandlerSelectorUtils.baseMultipartPackage(docketInfo.getPackageNames().toArray(new String[]{})))
-                        .paths(PathSelectors.any());
+                        .paths(PathSelectors.any()).build();
 
             }
         }
