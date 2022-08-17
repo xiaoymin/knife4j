@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 /***
  *
@@ -21,8 +24,32 @@ import java.io.*;
  */
 public class CommonUtils {
 
+    static final String COMMON_REGEX="[a-zA-Z0-9]";
 
     static Logger logger= LoggerFactory.getLogger(CommonUtils.class);
+
+
+    public static String getRandomBeanName(String source){
+        String beanName="";
+        if (source!=null&&!"".equals(source)){
+            try {
+                String tmp=URLEncoder.encode(source, StandardCharsets.UTF_8.name());
+                StringBuilder appender=new StringBuilder("");
+                String[] chars=tmp.split("");
+                for (String charStr:chars){
+                    if (charStr.matches(COMMON_REGEX)){
+                        appender.append(charStr);
+                    }
+                }
+                beanName=appender.toString();
+            } catch (UnsupportedEncodingException e) {
+                //ignore
+            }
+        }else {
+            beanName=UUID.randomUUID().toString();
+        }
+        return beanName;
+    }
 
     /**
      * 首字母大写
@@ -41,7 +68,7 @@ public class CommonUtils {
         return supperName;
     }
 
-    public static String UpperCase(String str){
+    public static String upperCase(String str){
         StringBuffer  aa=new StringBuffer();
         int index = 0;
         int index22 = 0;
@@ -128,6 +155,12 @@ public class CommonUtils {
                 logger.warn("(Ignores) Failed to closeQuiltly,message:{}",e.getMessage());
             }
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getRandomBeanName("测试一下吧"));
+        System.out.println(getRandomBeanName("测试一下吧-=13【】13【-1=31=-3=1313"));
+        System.out.println(getRandomBeanName("测试一下吧！@！）@（）！*#**）！*#&…………%%"));
     }
 
 

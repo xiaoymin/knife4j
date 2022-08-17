@@ -8,12 +8,13 @@
 package com.github.xiaoymin.knife4j.spring.configuration;
 
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
+import com.github.xiaoymin.knife4j.spring.common.bean.Knife4jDocketAutoRegistry;
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.filter.SecurityBasicAuthFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -38,9 +39,13 @@ import java.util.Objects;
 @ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
 public class Knife4jAutoConfiguration {
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
+
     Logger logger= LoggerFactory.getLogger(Knife4jAutoConfiguration.class);
+
+    public Knife4jAutoConfiguration(Environment environment) {
+        this.environment = environment;
+    }
 
 
     /**
@@ -50,10 +55,21 @@ public class Knife4jAutoConfiguration {
     @ComponentScan(
             basePackages = {
                     "com.github.xiaoymin.knife4j.spring.plugin",
+                    "com.github.xiaoymin.knife4j.spring.common"
             }
     )
     public class Knife4jEnhanceAutoConfiguration{
 
+        /**
+         * 自动初始化Docket示例Bean
+         * @param knife4jProperties 配置信息
+         * @return knife4jDocketAutoRegistry
+         */
+        @Bean
+        @Qualifier("knife4jDocketAutoRegistry")
+        public Knife4jDocketAutoRegistry knife4jDocketAutoRegistry(Knife4jProperties knife4jProperties){
+            return new Knife4jDocketAutoRegistry(knife4jProperties);
+        }
     }
 
     /**

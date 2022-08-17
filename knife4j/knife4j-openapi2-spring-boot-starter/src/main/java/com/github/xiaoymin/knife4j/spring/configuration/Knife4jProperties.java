@@ -28,6 +28,10 @@ public class Knife4jProperties {
      */
     private boolean enable=false;
     /**
+     * 基础文档信息
+     */
+    private Knife4jInfoProperties info;
+    /**
      * 是否开启默认跨域
      */
     private boolean cors=false;
@@ -111,5 +115,13 @@ public class Knife4jProperties {
 
     public void setCustomCode(Integer customCode) {
         this.customCode = customCode;
+    }
+
+    public Knife4jInfoProperties getInfo() {
+        return info;
+    }
+
+    public void setInfo(Knife4jInfoProperties info) {
+        this.info = info;
     }
 }
