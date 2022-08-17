@@ -25,6 +25,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.Objects;
 
@@ -58,6 +59,7 @@ public class Knife4jAutoConfiguration {
                     "com.github.xiaoymin.knife4j.spring.common"
             }
     )
+    @EnableSwagger2WebMvc
     public class Knife4jEnhanceAutoConfiguration{
 
         /**

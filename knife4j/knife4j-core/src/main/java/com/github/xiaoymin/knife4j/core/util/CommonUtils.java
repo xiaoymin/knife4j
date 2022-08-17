@@ -25,6 +25,7 @@ import java.util.UUID;
 public class CommonUtils {
 
     static final String COMMON_REGEX="[a-zA-Z0-9]";
+    static final String COMMON_BEAN_NAME_PREFIX="Knife4jDocket";
 
     static Logger logger= LoggerFactory.getLogger(CommonUtils.class);
 
@@ -48,7 +49,7 @@ public class CommonUtils {
         }else {
             beanName=UUID.randomUUID().toString();
         }
-        return beanName;
+        return COMMON_BEAN_NAME_PREFIX+beanName;
     }
 
     /**
