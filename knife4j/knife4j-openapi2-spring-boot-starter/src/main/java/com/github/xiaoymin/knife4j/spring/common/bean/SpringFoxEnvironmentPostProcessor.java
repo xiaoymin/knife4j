@@ -1,8 +1,8 @@
 /*
  * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
  * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Official Web Site: https://www.xiaominfo.com.
+ * Developer Web Site: https://doc.xiaominfo.com.
  */
 
 package com.github.xiaoymin.knife4j.spring.common.bean;
