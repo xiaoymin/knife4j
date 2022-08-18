@@ -18,11 +18,15 @@ public enum OpenAPIGroupEnums {
      */
     PACKAGE,
     /**
-     * 根据路径正则规则
+     * ANT风格路径规则
      */
-    PATH,
+    ANT,
     /**
-     * 根据注解
+     * 正则风格路径规则
+     */
+    REGEX,
+    /**
+     * 注解
      */
     ANNOTATION
 }

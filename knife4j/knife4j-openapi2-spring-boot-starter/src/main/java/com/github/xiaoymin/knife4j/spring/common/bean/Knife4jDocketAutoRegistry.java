@@ -6,6 +6,7 @@
  */
 package com.github.xiaoymin.knife4j.spring.common.bean;
 
+import com.github.xiaoymin.knife4j.core.enums.OpenAPIGroupEnums;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
@@ -83,11 +85,24 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                 beanRegistry.registerBeanDefinition(beanName, docketBeanDefinition);
                 //赋值
                 Docket docketBean = (Docket)beanFactory.getBean(beanName);
-                docketBean.groupName(groupName)
-                        .apiInfo(apiInfo)
-                        .select()
-                        .apis(RequestHandlerSelectorUtils.baseMultipartPackage(docketInfo.getResources().toArray(new String[]{})))
-                        .paths(PathSelectors.any()).build();
+                docketBean.groupName(groupName).apiInfo(apiInfo);
+                //判断当前Docket对象的apis策略
+                if (docketInfo.getStrategy()== OpenAPIGroupEnums.PACKAGE){
+                    //包路径
+                    docketBean.select().apis(RequestHandlerSelectorUtils.multiplePackage(docketInfo.getResources().toArray(new String[]{})))
+                            .paths(PathSelectors.any()).build();
+                }else if(docketInfo.getStrategy()==OpenAPIGroupEnums.ANT){
+                    //ant路径
+                    docketBean.select().apis(RequestHandlerSelectors.any())
+                            .paths(RequestHandlerSelectorUtils.multipleAntPath(docketInfo.getResources())).build();
+                }else if(docketInfo.getStrategy()==OpenAPIGroupEnums.REGEX){
+                    //正则表达式
+                    docketBean.select().apis(RequestHandlerSelectors.any())
+                            .paths(RequestHandlerSelectorUtils.multipleRegexPath(docketInfo.getResources())).build();
+                }else if (docketInfo.getStrategy()==OpenAPIGroupEnums.ANNOTATION){
+                    //注解
+                    docketBean.select().apis(RequestHandlerSelectorUtils.multipleAnnotations(docketInfo.getResources())).paths(PathSelectors.any()).build();
+                }
                 //增加Knife4j的增强属性
                 docketBean.extensions(openApiExtensionResolver.buildExtensions(groupName));
             }

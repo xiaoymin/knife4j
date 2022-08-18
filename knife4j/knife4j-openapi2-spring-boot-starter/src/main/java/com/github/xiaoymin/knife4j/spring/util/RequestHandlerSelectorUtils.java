@@ -7,9 +7,13 @@
 
 package com.github.xiaoymin.knife4j.spring.util;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ClassUtils;
 import springfox.documentation.RequestHandler;
+import springfox.documentation.builders.RequestHandlerSelectors;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +29,13 @@ import static java.util.Optional.ofNullable;
  * 2021/03/02 15:39
  * @since:knife4j 1.0
  */
+@Slf4j
 public class RequestHandlerSelectorUtils {
+
+    /**
+     * 无任何路径
+     */
+    static final Predicate<String> DEFAULT_PATHS_NONE=s -> false;
 
     private static Function<Class<?>, Boolean> handlerPackage(final String basePackage) {
         return input -> ClassUtils.getPackageName(input).startsWith(basePackage);
@@ -47,28 +57,90 @@ public class RequestHandlerSelectorUtils {
      * @param basePackages pckages
      * @return this
      */
-    public static Predicate<RequestHandler> baseMultipartPackage(final String... basePackages){
+    public static Predicate<RequestHandler> multiplePackage(final String... basePackages){
         if (basePackages==null||basePackages.length==0){
-            throw new IllegalArgumentException("basePackage can't empty!!");
+            return RequestHandlerSelectors.none();
         }
         List<String> basePackageList= new ArrayList<>(Arrays.asList(basePackages));
-        if (basePackageList.size()==1){
-            return basePackage(basePackageList.get(0));
-        }else{
-            Predicate<RequestHandler> predicate=basePackage(basePackageList.get(0));
+        Predicate<RequestHandler> predicate=basePackage(basePackageList.get(0));
+        if (basePackageList.size()>1){
             for (int i=1;i<basePackageList.size();i++){
                 predicate=predicate.or(basePackage(basePackageList.get(i)));
             }
-            return predicate;
         }
+        return predicate;
     }
 
+    /**
+     * Ant风格
+     * @param antPaths
+     * @return
+     */
+    public static Predicate<String> multipleAntPath(List<String> antPaths){
+        if (antPaths==null||antPaths.size()==0){
+            return DEFAULT_PATHS_NONE;
+        }
+        final AntPathMatcher antPathMatcher = new AntPathMatcher();
+        Predicate<String> first=s -> antPathMatcher.match(antPaths.get(0),s);
+        if (antPaths.size()>1){
+            for (int i=1;i<antPaths.size();i++){
+                final int index=i;
+                first=first.and(s->antPathMatcher.match(antPaths.get(index),s));
+            }
+        }
+        return first;
+    }
+
+    /**
+     * 正则表达式
+     * @param regex
+     * @return
+     */
+    public static Predicate<String> multipleRegexPath(List<String> regex){
+        if (regex==null||regex.size()==0){
+            return DEFAULT_PATHS_NONE;
+        }
+        Predicate<String> first=s -> s.matches(regex.get(0));
+        if (regex.size()>1){
+            for (int i=1;i<regex.size();i++){
+                final int index=i;
+                first=first.and(s-> s.matches(regex.get(index)));
+            }
+        }
+        return first;
+    }
+
+    /**
+     * 基于注解
+     * @param annotations 注解类
+     * @return
+     */
+    public static Predicate<RequestHandler> multipleAnnotations(List<String> annotations){
+        if (annotations==null||annotations.size()==0){
+            return RequestHandlerSelectors.none();
+        }
+        //将所有annotation字符串转为class
+        final ClassLoader classLoader=ClassUtils.getDefaultClassLoader();
+        Predicate<RequestHandler> first=null;
+        List<Class<?>> classList=new ArrayList<>();
+        for (String annotationClassName:annotations){
+            try {
+                Class<? extends Annotation> clazz= (Class<? extends Annotation>) ClassUtils.forName(annotationClassName,classLoader);
+                if (clazz!=null){
+                    if (first==null){
+                        first=RequestHandlerSelectors.withClassAnnotation(clazz);
+                    }else {
+                        first=first.or(RequestHandlerSelectors.withClassAnnotation(clazz));
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("Cannot handle annotation type '"+annotationClassName+"' correctly, please make sure the path is correct,message:"+e.getMessage());
+            }
+        }
+        return first!=null?first:RequestHandlerSelectors.none();
+    }
     private static Optional<? extends Class<?>> declaringClass(RequestHandler input) {
         return ofNullable(input.declaringClass());
     }
-
-
-
-
 
 }
