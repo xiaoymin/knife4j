@@ -4,6 +4,7 @@
  */
 package com.github.xiaoymin.knife4j.spring.configuration;
 
+import com.github.xiaoymin.knife4j.core.enums.OpenAPILanguageEnums;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -22,7 +23,7 @@ public class Knife4jSetting {
     /**
      * Ui语言版本
      */
-    private String language="zh-CN";
+    private OpenAPILanguageEnums language= OpenAPILanguageEnums.ZH_CN;
     /**
      * 是否显示界面中SwaggerModel功能
      */

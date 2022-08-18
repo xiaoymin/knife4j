@@ -8,12 +8,13 @@ package com.github.xiaoymin.knife4j.spring.common.bean;
 
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
+import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.spring.configuration.Knife4jInfoProperties;
 import com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties;
+import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import com.github.xiaoymin.knife4j.spring.model.docket.Knife4jDocketInfo;
 import com.github.xiaoymin.knife4j.spring.util.RequestHandlerSelectorUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -35,15 +36,17 @@ import java.util.Map;
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/17 21:56
  */
+@Slf4j
 public class Knife4jDocketAutoRegistry implements BeanFactoryAware, InitializingBean {
 
-    Logger logger= LoggerFactory.getLogger(Knife4jDocketAutoRegistry.class);
+    public Knife4jDocketAutoRegistry(Knife4jProperties knife4jProperties, OpenApiExtensionResolver openApiExtensionResolver) {
+        this.knife4jProperties = knife4jProperties;
+        this.openApiExtensionResolver = openApiExtensionResolver;
+    }
 
     private final Knife4jProperties knife4jProperties;
+    private final OpenApiExtensionResolver openApiExtensionResolver;
     private BeanFactory beanFactory;
-    public Knife4jDocketAutoRegistry(Knife4jProperties knife4jProperties) {
-        this.knife4jProperties = knife4jProperties;
-    }
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
@@ -54,7 +57,7 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
     public void afterPropertiesSet() throws Exception {
         Knife4jInfoProperties info= knife4jProperties.getOpenapi();
         if (info!=null&& CollectionUtils.isNotEmpty(info.getGroup())){
-            logger.debug("初始化Docket信息");
+            log.debug("初始化Docket信息");
             BeanDefinitionRegistry beanRegistry = (BeanDefinitionRegistry)beanFactory;
             //构建基础信息
             ApiInfo apiInfo=new ApiInfoBuilder()
@@ -69,7 +72,9 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
             for (Map.Entry<String,Knife4jDocketInfo> map:info.getGroup().entrySet()){
                 String beanName=CommonUtils.getRandomBeanName(map.getKey());
                 Knife4jDocketInfo docketInfo=map.getValue();
-                logger.debug("auto register Docket Bean,name:{}",beanName);
+                //分组名称给一个默认值，如果用户没有设置，则取key值
+                String groupName= StrUtil.isNotBlank(docketInfo.getGroupName())?docketInfo.getGroupName():map.getKey();
+                log.debug("auto register Docket Bean,name:{}",beanName);
                 BeanDefinition docketBeanDefinition = new GenericBeanDefinition();
                 docketBeanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(0, DocumentationType.SWAGGER_2);
                 docketBeanDefinition.setBeanClassName(Docket.class.getName());
@@ -78,11 +83,13 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                 beanRegistry.registerBeanDefinition(beanName, docketBeanDefinition);
                 //赋值
                 Docket docketBean = (Docket)beanFactory.getBean(beanName);
-                docketBean.groupName(docketInfo.getGroupName())
+                docketBean.groupName(groupName)
                         .apiInfo(apiInfo)
                         .select()
                         .apis(RequestHandlerSelectorUtils.baseMultipartPackage(docketInfo.getResources().toArray(new String[]{})))
                         .paths(PathSelectors.any()).build();
+                //增加Knife4j的增强属性
+                docketBean.extensions(openApiExtensionResolver.buildExtensions(groupName));
             }
         }
     }

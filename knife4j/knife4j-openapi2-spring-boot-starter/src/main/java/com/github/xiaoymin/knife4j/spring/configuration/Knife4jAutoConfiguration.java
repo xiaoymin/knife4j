@@ -71,8 +71,8 @@ public class Knife4jAutoConfiguration {
          */
         @Bean
         @Qualifier("knife4jDocketAutoRegistry")
-        public Knife4jDocketAutoRegistry knife4jDocketAutoRegistry(Knife4jProperties knife4jProperties){
-            return new Knife4jDocketAutoRegistry(knife4jProperties);
+        public Knife4jDocketAutoRegistry knife4jDocketAutoRegistry(Knife4jProperties knife4jProperties,OpenApiExtensionResolver openApiExtensionResolver){
+            return new Knife4jDocketAutoRegistry(knife4jProperties,openApiExtensionResolver);
         }
     }
 
@@ -110,6 +110,7 @@ public class Knife4jAutoConfiguration {
         }
         OpenApiExtendSetting extendSetting=new OpenApiExtendSetting();
         BeanUtils.copyProperties(setting,extendSetting);
+        extendSetting.setLanguage(setting.getLanguage().getValue());
         return new OpenApiExtensionResolver(extendSetting, knife4jProperties.getDocuments());
     }
 
