@@ -12,6 +12,7 @@ import com.github.xiaoymin.knife4j.spring.common.bean.Knife4jDocketAutoRegistry;
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.filter.SecurityBasicAuthFilter;
+import com.github.xiaoymin.knife4j.spring.util.EnvironmentUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -152,21 +153,13 @@ public class Knife4jAutoConfiguration {
     @ConditionalOnMissingBean(ProductionSecurityFilter.class)
     @ConditionalOnProperty(name = "knife4j.production",havingValue = "true")
     public ProductionSecurityFilter productionSecurityFilter(Knife4jProperties knife4jProperties){
-        boolean prod=false;
-        int customCode=200;
         ProductionSecurityFilter p=null;
         if (knife4jProperties==null){
-            if (environment!=null){
-                String prodStr=environment.getProperty("knife4j.production");
-                if (logger.isDebugEnabled()){
-                    logger.debug("knife4j.production:{}",prodStr);
-                }
-                prod=Boolean.valueOf(prodStr);
-                customCode=Integer.parseInt(Objects.toString(environment.getProperty("knife4j.customCode"),"200"));
-            }
+            int customCode= EnvironmentUtils.resolveInt(environment,"knife4j.setting.custom-code",200);
+            boolean prod=EnvironmentUtils.resolveBool(environment,"knife4j.production",Boolean.FALSE);
             p=new ProductionSecurityFilter(prod,customCode);
         }else{
-            p=new ProductionSecurityFilter(knife4jProperties.isProduction(),knife4jProperties.getCustomCode());
+            p=new ProductionSecurityFilter(knife4jProperties.isProduction(),knife4jProperties.getSetting().getCustomCode());
         }
         return p;
     }
