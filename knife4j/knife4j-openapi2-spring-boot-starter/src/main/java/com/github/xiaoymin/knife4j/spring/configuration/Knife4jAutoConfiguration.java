@@ -14,6 +14,7 @@ import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.filter.SecurityBasicAuthFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -36,7 +37,7 @@ import java.util.Objects;
  * 2019/08/28 21:08
  */
 @Configuration
-@EnableConfigurationProperties({Knife4jProperties.class})
+@EnableConfigurationProperties({Knife4jProperties.class,Knife4jInfoProperties.class,Knife4jHttpBasic.class,Knife4jSetting.class})
 @ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
 public class Knife4jAutoConfiguration {
 
@@ -102,11 +103,13 @@ public class Knife4jAutoConfiguration {
     @ConditionalOnMissingBean(OpenApiExtensionResolver.class)
     @ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
     public OpenApiExtensionResolver markdownResolver(Knife4jProperties knife4jProperties){
-        OpenApiExtendSetting setting=knife4jProperties.getSetting();
+        Knife4jSetting setting=knife4jProperties.getSetting();
         if (setting==null){
-            setting=new OpenApiExtendSetting();
+            setting=new Knife4jSetting();
         }
-        return new OpenApiExtensionResolver(setting, knife4jProperties.getDocuments());
+        OpenApiExtendSetting extendSetting=new OpenApiExtendSetting();
+        BeanUtils.copyProperties(setting,extendSetting);
+        return new OpenApiExtensionResolver(extendSetting, knife4jProperties.getDocuments());
     }
 
     @Bean

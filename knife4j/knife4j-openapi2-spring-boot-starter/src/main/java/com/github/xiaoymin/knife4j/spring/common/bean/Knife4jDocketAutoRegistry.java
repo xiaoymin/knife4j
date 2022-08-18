@@ -56,7 +56,6 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
         if (info!=null&& CollectionUtils.isNotEmpty(info.getGroup())){
             logger.debug("初始化Docket信息");
             BeanDefinitionRegistry beanRegistry = (BeanDefinitionRegistry)beanFactory;
-
             //构建基础信息
             ApiInfo apiInfo=new ApiInfoBuilder()
                     .title(info.getTitle())
@@ -82,7 +81,7 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                 docketBean.groupName(docketInfo.getGroupName())
                         .apiInfo(apiInfo)
                         .select()
-                        .apis(RequestHandlerSelectorUtils.baseMultipartPackage(docketInfo.getPackageNames().toArray(new String[]{})))
+                        .apis(RequestHandlerSelectorUtils.baseMultipartPackage(docketInfo.getResources().toArray(new String[]{})))
                         .paths(PathSelectors.any()).build();
             }
         }

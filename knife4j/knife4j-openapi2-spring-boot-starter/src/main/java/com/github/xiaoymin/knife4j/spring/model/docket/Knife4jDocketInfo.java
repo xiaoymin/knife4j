@@ -6,6 +6,9 @@
  */
 package com.github.xiaoymin.knife4j.spring.model.docket;
 
+import com.github.xiaoymin.knife4j.core.enums.OpenAPIGroupEnums;
+import lombok.Data;
+
 import java.util.List;
 
 /**
@@ -13,6 +16,7 @@ import java.util.List;
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/17 21:41
  */
+@Data
 public class Knife4jDocketInfo {
 
     /**
@@ -21,24 +25,13 @@ public class Knife4jDocketInfo {
     private String groupName;
 
     /**
-     * 分包路径名称
+     * 分组策略
      */
-    private List<String> packageNames;
+    private OpenAPIGroupEnums strategy=OpenAPIGroupEnums.PACKAGE;
 
+    /**
+     * 分组策略所对应的资源集合,package-填写包名，path-填写正则api路径规则，annotation-填写注解类完整class路径
+     */
+    private List<String> resources;
 
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public List<String> getPackageNames() {
-        return packageNames;
-    }
-
-    public void setPackageNames(List<String> packageNames) {
-        this.packageNames = packageNames;
-    }
 }
