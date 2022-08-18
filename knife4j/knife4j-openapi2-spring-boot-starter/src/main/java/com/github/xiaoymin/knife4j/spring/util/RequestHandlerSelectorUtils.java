@@ -85,7 +85,7 @@ public class RequestHandlerSelectorUtils {
         if (antPaths.size()>1){
             for (int i=1;i<antPaths.size();i++){
                 final int index=i;
-                first=first.and(s->antPathMatcher.match(antPaths.get(index),s));
+                first=first.or(s->antPathMatcher.match(antPaths.get(index),s));
             }
         }
         return first;
@@ -104,7 +104,7 @@ public class RequestHandlerSelectorUtils {
         if (regex.size()>1){
             for (int i=1;i<regex.size();i++){
                 final int index=i;
-                first=first.and(s-> s.matches(regex.get(index)));
+                first=first.or(s-> s.matches(regex.get(index)));
             }
         }
         return first;
@@ -122,7 +122,6 @@ public class RequestHandlerSelectorUtils {
         //将所有annotation字符串转为class
         final ClassLoader classLoader=ClassUtils.getDefaultClassLoader();
         Predicate<RequestHandler> first=null;
-        List<Class<?>> classList=new ArrayList<>();
         for (String annotationClassName:annotations){
             try {
                 Class<? extends Annotation> clazz= (Class<? extends Annotation>) ClassUtils.forName(annotationClassName,classLoader);
