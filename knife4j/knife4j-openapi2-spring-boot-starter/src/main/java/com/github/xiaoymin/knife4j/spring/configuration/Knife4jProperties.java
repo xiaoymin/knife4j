@@ -30,7 +30,7 @@ public class Knife4jProperties {
     /**
      * 基础文档信息
      */
-    private Knife4jInfoProperties info;
+    private Knife4jInfoProperties openapi;
     /**
      * 是否开启默认跨域
      */
@@ -117,11 +117,11 @@ public class Knife4jProperties {
         this.customCode = customCode;
     }
 
-    public Knife4jInfoProperties getInfo() {
-        return info;
+    public Knife4jInfoProperties getOpenapi() {
+        return openapi;
     }
 
-    public void setInfo(Knife4jInfoProperties info) {
-        this.info = info;
+    public void setOpenapi(Knife4jInfoProperties openapi) {
+        this.openapi = openapi;
     }
 }

@@ -9,7 +9,7 @@ package com.github.xiaoymin.knife4j.spring.configuration;
 import com.github.xiaoymin.knife4j.core.model.OpenAPIInfo;
 import com.github.xiaoymin.knife4j.spring.model.docket.Knife4jDocketInfo;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * 基础配置信息
@@ -22,13 +22,13 @@ public class Knife4jInfoProperties extends OpenAPIInfo {
     /**
      * 分组Docket集合
      */
-    private List<Knife4jDocketInfo> dockets;
+    private Map<String,Knife4jDocketInfo> group;
 
-    public List<Knife4jDocketInfo> getDockets() {
-        return dockets;
+    public Map<String, Knife4jDocketInfo> getGroup() {
+        return group;
     }
 
-    public void setDockets(List<Knife4jDocketInfo> dockets) {
-        this.dockets = dockets;
+    public void setGroup(Map<String, Knife4jDocketInfo> group) {
+        this.group = group;
     }
 }

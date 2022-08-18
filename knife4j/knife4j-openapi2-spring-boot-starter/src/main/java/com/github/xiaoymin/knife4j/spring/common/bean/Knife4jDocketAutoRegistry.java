@@ -23,14 +23,12 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * @since:knife4j
@@ -54,8 +52,8 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Knife4jInfoProperties info= knife4jProperties.getInfo();
-        if (info!=null&& CollectionUtils.isNotEmpty(info.getDockets())){
+        Knife4jInfoProperties info= knife4jProperties.getOpenapi();
+        if (info!=null&& CollectionUtils.isNotEmpty(info.getGroup())){
             logger.debug("初始化Docket信息");
             BeanDefinitionRegistry beanRegistry = (BeanDefinitionRegistry)beanFactory;
 
@@ -69,8 +67,9 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                     .termsOfServiceUrl(info.getTermsOfServiceUrl())
                     .contact(new Contact(info.getConcat(),info.getUrl(),info.getEmail()))
                     .build();
-            for (Knife4jDocketInfo docketInfo:info.getDockets()){
-                String beanName= CommonUtils.getRandomBeanName(docketInfo.getGroupName());
+            for (Map.Entry<String,Knife4jDocketInfo> map:info.getGroup().entrySet()){
+                String beanName=CommonUtils.getRandomBeanName(map.getKey());
+                Knife4jDocketInfo docketInfo=map.getValue();
                 logger.debug("auto register Docket Bean,name:{}",beanName);
                 BeanDefinition docketBeanDefinition = new GenericBeanDefinition();
                 docketBeanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(0, DocumentationType.SWAGGER_2);
@@ -85,7 +84,6 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                         .select()
                         .apis(RequestHandlerSelectorUtils.baseMultipartPackage(docketInfo.getPackageNames().toArray(new String[]{})))
                         .paths(PathSelectors.any()).build();
-
             }
         }
     }

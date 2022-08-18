@@ -7,10 +7,7 @@
 
 package com.github.xiaoymin.knife4j.core.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /***
  *
@@ -32,6 +29,14 @@ public abstract class CollectionUtils {
         return false;
     }
 
+    public static boolean isNotEmpty(Map<?,?> map){
+        if (map!=null){
+            if (map.size() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * 判断集合是否非空
      * @param collection 集合
