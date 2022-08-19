@@ -10,7 +10,7 @@
   "dependencies": {
     "ant-design-vue": "^1.6.5",
     "async": "^3.1.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.2",
     "babel-plugin-import": "^1.13.0",
     "clipboard": "^2.0.4",
     "compression-webpack-plugin": "^3.1.0",
