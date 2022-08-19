@@ -6,6 +6,7 @@
  */
 package com.github.xiaoymin.knife4j.spring.common.bean;
 
+import com.github.xiaoymin.knife4j.core.enums.AnnotationClassEnums;
 import com.github.xiaoymin.knife4j.core.enums.OpenAPIGroupEnums;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
@@ -31,6 +32,7 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -100,8 +102,10 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                     docketBean.select().apis(RequestHandlerSelectors.any())
                             .paths(RequestHandlerSelectorUtils.multipleRegexPath(docketInfo.getResources())).build();
                 }else if (docketInfo.getStrategy()==OpenAPIGroupEnums.ANNOTATION){
+                    //替换shortName
+                    List<String> annotationClass= AnnotationClassEnums.resolveResources(docketInfo.getResources());
                     //注解
-                    docketBean.select().apis(RequestHandlerSelectorUtils.multipleAnnotations(docketInfo.getResources())).paths(PathSelectors.any()).build();
+                    docketBean.select().apis(RequestHandlerSelectorUtils.multipleAnnotations(annotationClass)).paths(PathSelectors.any()).build();
                 }
                 //增加Knife4j的增强属性
                 docketBean.extensions(openApiExtensionResolver.buildExtensions(groupName));
