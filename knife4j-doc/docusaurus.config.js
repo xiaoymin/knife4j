@@ -72,9 +72,6 @@ module.exports = {
                         from: '/knife4j',
                         to: '/docs/quick-start'
                     }, {
-                        from: '/knife4j/',
-                        to: '/docs/quick-start'
-                    }, {
                         from: '/knife4j/action',
                         to: '/docs/action'
                     }, {
