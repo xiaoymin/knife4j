@@ -1,73 +1,28 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import React from 'react';
-import clsx from 'clsx';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { useThemeConfig } from '@docusaurus/theme-common';
-import LinkItem from '@theme/Footer/LinkItem';
-import styles from './index.module.css';
-
-function FooterLinksColumn({ column }) {
-    return (
-        <>
-            <div className={styles.footerTitle}>{column.title}</div>
-            <ul className={clsx(styles.footerItem, 'clean-list')}>
-                {column.items.map((item, i) => (
-                    <li key={i} className="footer__item">
-                        <LinkItem item={item} />
-                    </li>
-                ))}
-            </ul>
-        </>
-    );
-}
-
+import {useThemeConfig} from '@docusaurus/theme-common';
+import FooterLinks from '@theme/Footer/Links';
+import FooterLogo from '@theme/Footer/Logo';
+import FooterCopyright from '@theme/Footer/Copyright';
+import FooterLayout from '@theme/Footer/Layout';
 function Footer() {
-    const { footer } = useThemeConfig();
-    if (!footer) {
-        return null;
-    }
-    const { links, style } = footer;
-    const OpenSourceIcon = require('../../../static/img/footer-open-source.svg').default;
-
-    return (
-        <footer className={clsx(styles.footer, style)}>
-            <div className="container padding-horiz--lg">
-                <div className="row">
-                    <div className="col col--5">
-                        <div className="row">
-                            <div className="col col--6">
-                                <FooterLinksColumn column={links[0]} />
-                            </div>
-                            <div className="col col--6">
-                                <FooterLinksColumn column={links[1]} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col col--7">
-                        <div className="row">
-                            <div className="col col--3 col--offset-9">
-                                <FooterLinksColumn column={links[2]} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row padding-vert--md padding-top--lg">
-                    <div className="col padding-vert--md col--6">
-                        <div className={styles.freeAndOpenSource}>
-                            <OpenSourceIcon className={styles.alignMiddle} />
-                            <span className={styles.alignMiddle}>Knife4j is free and open source</span>
-                        </div>
-                    </div>
-                    <div className="col padding-vert--md col--6 text--right">
-                        <span className={styles.builtBy}>
-                            <span className={styles.alignMiddle}>Built by xiaoymin</span>
-                        </span>
-                    </div>
-                </div>
-                <div className={styles.footBottomLicense}>Apache License 2.0 | Copyright © 2018-{new Date().getFullYear()}-八一菜刀 浙ICP备18027673号-1 </div>
-            </div>
-
-        </footer>
-    );
+  const {footer} = useThemeConfig();
+  if (!footer) {
+    return null;
+  }
+  const {copyright, links, logo, style} = footer;
+  return (
+    <FooterLayout
+      style={style}
+      links={links && links.length > 0 && <FooterLinks links={links} />}
+      logo={logo && <FooterLogo logo={logo} />}
+      copyright={copyright && <FooterCopyright copyright={copyright} />}
+    />
+  );
 }
-
 export default React.memo(Footer);

@@ -9,7 +9,7 @@ import DocItemFooter from '@theme/DocItem/Footer';
 import DocItemTOCMobile from '@theme/DocItem/TOC/Mobile';
 import DocItemTOCDesktop from '@theme/DocItem/TOC/Desktop';
 import DocItemContent from '@theme/DocItem/Content';
-import DocBreadcrumbs from '@theme/DocBreadcrumbs'; 
+import DocBreadcrumbs from '@theme/DocBreadcrumbs';
 import styles from './styles.module.css';
 
 /**
@@ -23,9 +23,9 @@ function useDocTOC() {
     const windowSize = useWindowSize();
     const hidden = frontMatter.hide_table_of_contents;
     const canRender = !hidden && toc.length > 0;
-    const mobile = canRender ? <DocItemTOCMobile/> : undefined;
+    const mobile = canRender ? <DocItemTOCMobile /> : undefined;
     const desktop = canRender && (windowSize === 'desktop' || windowSize === 'ssr') ? (
-        <DocItemTOCDesktop/>
+        <DocItemTOCDesktop />
     ) : undefined;
     return {
         hidden,
@@ -40,17 +40,17 @@ export default function DocItemLayout({ children }) {
     return (
         <div className="row">
             <div className={clsx('col', !docTOC.hidden && styles.docItemCol)}>
-                <DocVersionBanner/>
+                <DocVersionBanner />
                 <div className={styles.docItemContainer}>
                     <article>
-                        <DocBreadcrumbs/>
-                        <DocVersionBadge/>
+                        <DocBreadcrumbs />
+                        <DocVersionBadge />
                         {docTOC.mobile}
                         <DocItemContent>{children}</DocItemContent>
-                        <DocItemFooter/>
+                        <DocItemFooter />
                     </article>
-                    <DocItemPaginator/>
- 
+                    <DocItemPaginator />
+
                 </div>
             </div>
 

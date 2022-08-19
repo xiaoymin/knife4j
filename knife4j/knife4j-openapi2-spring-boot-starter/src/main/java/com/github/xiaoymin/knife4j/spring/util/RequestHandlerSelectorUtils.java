@@ -54,7 +54,8 @@ public class RequestHandlerSelectorUtils {
 
     /**
      * match multipart packages requestHandler
-     * @param basePackages pckages
+     * @param basePackages basePackages 多个包路径
+     * @since 4.0
      * @return this
      */
     public static Predicate<RequestHandler> multiplePackage(final String... basePackages){
@@ -73,7 +74,8 @@ public class RequestHandlerSelectorUtils {
 
     /**
      * Ant风格
-     * @param antPaths
+     * @param antPaths ant路径
+     * @since 4.0
      * @return
      */
     public static Predicate<String> multipleAntPath(List<String> antPaths){
@@ -93,7 +95,8 @@ public class RequestHandlerSelectorUtils {
 
     /**
      * 正则表达式
-     * @param regex
+     * @param regex 正则
+     * @since 4.0
      * @return
      */
     public static Predicate<String> multipleRegexPath(List<String> regex){
@@ -113,6 +116,7 @@ public class RequestHandlerSelectorUtils {
     /**
      * 基于注解
      * @param annotations 注解类
+     * @since 4.0
      * @return
      */
     public static Predicate<RequestHandler> multipleAnnotations(List<String> annotations){

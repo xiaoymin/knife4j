@@ -183,8 +183,7 @@ module.exports = {
                                 to: 'docs/upgrading/upgrading-to-v4',
                             },
                         ],
-                    },
-                    {
+                    }, {
                         title: '社区',
                         items: [
                             {
@@ -194,6 +193,14 @@ module.exports = {
                             {
                                 label: '开源中国',
                                 href: 'https://www.oschina.net/question/tag/swagger-bootstrap-ui',
+                            }
+                        ],
+                    },
+                    {
+                        title: '关注公众号',
+                        items: [
+                            {
+                                html: '<img src="/images/website/qrcode.jpg" width="150"/>'
                             }
                         ],
                     },
@@ -213,14 +220,9 @@ module.exports = {
                                 href: 'https://github.com/xiaoymin/swagger-bootstrap-ui',
                             },
                         ],
-                    },
+                    }
                 ],
-                logo: {
-                    src: 'img/knife4j-logo.svg',
-                    href: '/',
-                    width: '60px',
-                    height: '60px',
-                },
+                copyright: `Apache License 2.0 | Copyright © 2018-${new Date().getFullYear()}-八一菜刀 浙ICP备18027673号-1 `
             },
             algolia: {
                 appId: 'QBZ7705DZF',
