@@ -7,6 +7,7 @@
 
 package com.github.xiaoymin.knife4j.spring.util;
 
+import com.github.xiaoymin.knife4j.core.enums.AnnotationClassEnums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ClassUtils;
@@ -131,9 +132,17 @@ public class RequestHandlerSelectorUtils {
                 Class<? extends Annotation> clazz= (Class<? extends Annotation>) ClassUtils.forName(annotationClassName,classLoader);
                 if (clazz!=null){
                     if (first==null){
-                        first=RequestHandlerSelectors.withClassAnnotation(clazz);
+                        if (annotationClassName.equalsIgnoreCase(AnnotationClassEnums.Api.getFullPath())){
+                            first=RequestHandlerSelectors.withClassAnnotation(clazz);
+                        }else{
+                            first=RequestHandlerSelectors.withMethodAnnotation(clazz);
+                        }
                     }else {
-                        first=first.or(RequestHandlerSelectors.withClassAnnotation(clazz));
+                        if (annotationClassName.equalsIgnoreCase(AnnotationClassEnums.Api.getFullPath())){
+                            first=first.or(RequestHandlerSelectors.withClassAnnotation(clazz));
+                        }else{
+                            first=first.or(RequestHandlerSelectors.withMethodAnnotation(clazz));
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -144,6 +153,11 @@ public class RequestHandlerSelectorUtils {
     }
     private static Optional<? extends Class<?>> declaringClass(RequestHandler input) {
         return ofNullable(input.declaringClass());
+    }
+
+
+    public static void main(String[] args) throws ClassNotFoundException {
+        //System.out.println(ApiOperation.class==ClassUtils.forName("io.swagger.annotations.ApiOperation",ClassUtils.getDefaultClassLoader()));
     }
 
 }
