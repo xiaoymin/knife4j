@@ -91,23 +91,29 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                 //赋值
                 Docket docketBean = (Docket)beanFactory.getBean(beanName);
                 docketBean.groupName(groupName).apiInfo(apiInfo);
-                Predicate<RequestHandler> apiPredicate=RequestHandlerSelectors.none();
-                Predicate<String> pathPredicate=PathSelectors.none();
-                //判断当前Docket对象的apis策略
-                if (docketInfo.getApiRule()== ApiRuleEnums.PACKAGE){
-                    //包路径
-                    apiPredicate=RequestHandlerSelectorUtils.multiplePackage(docketInfo.getApiRuleResources().toArray(new String[]{}));
-                }else if (docketInfo.getApiRule()== ApiRuleEnums.ANNOTATION){
-                    //替换shortName
-                    List<String> annotationClass= AnnotationClassEnums.resolveResources(docketInfo.getApiRuleResources());
-                    apiPredicate=RequestHandlerSelectorUtils.multipleAnnotations(annotationClass);
+                //默认所有Api
+                Predicate<RequestHandler> apiPredicate=RequestHandlerSelectors.any();
+                Predicate<String> pathPredicate=PathSelectors.any();
+                //判断api资源策略
+                if (CollectionUtils.isNotEmpty(docketInfo.getApiRuleResources())){
+                    //判断当前Docket对象的apis策略
+                    if (docketInfo.getApiRule()== ApiRuleEnums.PACKAGE){
+                        //包路径
+                        apiPredicate=RequestHandlerSelectorUtils.multiplePackage(docketInfo.getApiRuleResources().toArray(new String[]{}));
+                    }else if (docketInfo.getApiRule()== ApiRuleEnums.ANNOTATION){
+                        //替换shortName
+                        List<String> annotationClass= AnnotationClassEnums.resolveResources(docketInfo.getApiRuleResources());
+                        apiPredicate=RequestHandlerSelectorUtils.multipleAnnotations(annotationClass);
+                    }
                 }
-                //paths策略
-                if(docketInfo.getPathStrategy()== PathRuleEnums.ANT){
-                    //ant路径
-                    pathPredicate=RequestHandlerSelectorUtils.multipleAntPath(docketInfo.getPathRuleResources());
-                }else if(docketInfo.getPathStrategy()== PathRuleEnums.REGEX){
-                    pathPredicate=RequestHandlerSelectorUtils.multipleRegexPath(docketInfo.getPathRuleResources());
+                if (CollectionUtils.isNotEmpty(docketInfo.getPathRuleResources())){
+                    //paths策略
+                    if(docketInfo.getPathStrategy()== PathRuleEnums.ANT){
+                        //ant路径
+                        pathPredicate=RequestHandlerSelectorUtils.multipleAntPath(docketInfo.getPathRuleResources());
+                    }else if(docketInfo.getPathStrategy()== PathRuleEnums.REGEX){
+                        pathPredicate=RequestHandlerSelectorUtils.multipleRegexPath(docketInfo.getPathRuleResources());
+                    }
                 }
                 //build
                 docketBean.select().apis(apiPredicate).paths(pathPredicate).build();
