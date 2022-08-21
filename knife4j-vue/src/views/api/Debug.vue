@@ -702,11 +702,14 @@ export default {
         if (KUtils.arrNotEmpty(val)) {
           //不为空
           val.forEach(security => {
+            //追加一个schema
+            //https://gitee.com/xiaoym/knife4j/issues/I4WDQ4
+            let securityHeaderTmpValue = KUtils.getOAuth2BearerValue(security.schema, security.value);
             //console.log(security)
             var newHeader = {
               id: KUtils.randomMd5(),
               name: security.name,
-              content: security.value,
+              content: securityHeaderTmpValue,
               require: true,
               description: "",
               enums: null, //枚举下拉框
@@ -715,6 +718,7 @@ export default {
               new: false
             };
             if (security.in == 'header') {
+              //console.log("addHeader.", security)
               //this.headerData.push(newHeader);
               //判断该接口是否security-Authorize
               if (this.api.securityFlag) {

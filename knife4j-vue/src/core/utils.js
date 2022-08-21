@@ -3,7 +3,7 @@ import md5 from 'js-md5'
 import JSON5 from './json5'
 import isObject from 'lodash/isObject'
 import isNumber from 'lodash/isNumber'
- 
+
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
 const binaryContentType = {
   "application/octet-stream": true,
@@ -154,30 +154,45 @@ function isUrl(path) {
 }
 
 const utils = {
-  getOAuth2Html(production){
-    if(production){
+  getOAuth2Html(production) {
+    if (production) {
       return "webjars/oauth/oauth2.html";
     }
     return "oauth/oauth2.html";
   },
-  groupName(url,defaultName){
-    var gname=defaultName;
-    var reg=new RegExp(".*?group=(.*?)(&.*?)?$");
-    if(reg.test(url)){
-      var tmpGroupName=RegExp.$1;
-      if(this.strNotBlank(tmpGroupName)){
-        if(tmpGroupName!=defaultName){
-          gname=tmpGroupName;
+  getOAuth2BearerValue(schema, defaultValue) {
+    if (schema == "bearer") {
+      //兼容用户已经填写了bearer的情况
+      if (defaultValue != null && defaultValue != '') {
+        let lowerStr = defaultValue.toLocaleLowerCase();
+        if (lowerStr.indexOf("bearer") > -1) {
+          //不做任何处理，直接返回，用户已经填写了Bearer
+          return defaultValue;
+        } else {
+          return "Bearer " + defaultValue;
+        }
+      }
+    }
+    return defaultValue;
+  },
+  groupName(url, defaultName) {
+    var gname = defaultName;
+    var reg = new RegExp(".*?group=(.*?)(&.*?)?$");
+    if (reg.test(url)) {
+      var tmpGroupName = RegExp.$1;
+      if (this.strNotBlank(tmpGroupName)) {
+        if (tmpGroupName != defaultName) {
+          gname = tmpGroupName;
         }
       }
     }
     return gname;
   },
-  oasmodel(oas2){
+  oasmodel(oas2) {
     //获取oas的definitions解析正则
-    if(oas2){
+    if (oas2) {
       return "#/definitions/(.*)$";
-    }else{
+    } else {
       return "#/components/schemas/(.*)$";
     }
   },
@@ -214,37 +229,37 @@ const utils = {
         //console.log("ignoreParameterAllKeys")
         //console.log(ignoreParameterAllKeys)
         return !ignoreParameterAllKeys.some(key =>
-          new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/'+key+'/g').test(name));
+          new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/' + key + '/g').test(name));
       } else {
         return !ignoreParameterAllKeys.includes(name);
       }
     }
   },
-  appendBasePath(paths,basePath){
-    var appendBasePathFlag=false;
-    try{
-      if(this.checkUndefined(basePath)&&this.strNotBlank(basePath)&&basePath!='/'){
-        var pathKeys=Object.keys(paths||{});
-        var pathKeyLength=pathKeys.length;
-        var num=0;
+  appendBasePath(paths, basePath) {
+    var appendBasePathFlag = false;
+    try {
+      if (this.checkUndefined(basePath) && this.strNotBlank(basePath) && basePath != '/') {
+        var pathKeys = Object.keys(paths || {});
+        var pathKeyLength = pathKeys.length;
+        var num = 0;
         //https://gitee.com/xiaoym/knife4j/issues/I3B5BK
-        let basePathStr=basePath+"/";
-        for(var i=0;i<pathKeys.length;i++){
-          if(pathKeys[i].startsWith(basePathStr)){
+        let basePathStr = basePath + "/";
+        for (var i = 0; i < pathKeys.length; i++) {
+          if (pathKeys[i].startsWith(basePathStr)) {
             num++;
           }
         }
-        if(num==pathKeyLength){
+        if (num == pathKeyLength) {
           //已经追加过basePath，无需再次追加
-          appendBasePathFlag=true;
+          appendBasePathFlag = true;
         }
-      }else{
+      } else {
         //其余情况都代表已经追加过
-        appendBasePathFlag=true;
+        appendBasePathFlag = true;
       }
-    }catch(e){
+    } catch (e) {
       //ignore
-      appendBasePathFlag=true;
+      appendBasePathFlag = true;
     }
     return appendBasePathFlag;
   },
@@ -390,7 +405,7 @@ const utils = {
         }
 
       }
-    } catch (err) {}
+    } catch (err) { }
     return md5Id;
 
   },
@@ -411,7 +426,7 @@ const utils = {
     var reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
     return reg.test(keyword);
   },
-  json5stringifyNoFormat:function(rtext){
+  json5stringifyNoFormat: function (rtext) {
     var ret = null;
     try {
       ret = JSON5.stringify(rtext);
@@ -431,7 +446,7 @@ const utils = {
     }
     return ret;
   },
-  json5stringifyFormat:function(rtext,format,num){
+  json5stringifyFormat: function (rtext, format, num) {
     var ret = null;
     try {
       ret = JSON5.stringify(rtext, format, num);
@@ -529,11 +544,11 @@ const utils = {
     }
     return flag;
   },
-  validateJSR303:function(parameter, origin){
+  validateJSR303: function (parameter, origin) {
     var max = origin["maximum"],
-    min = origin["minimum"],
-    emin = origin["exclusiveMinimum"],
-    emax = origin["exclusiveMaximum"];
+      min = origin["minimum"],
+      emin = origin["exclusiveMinimum"],
+      emax = origin["exclusiveMaximum"];
     var pattern = origin["pattern"];
     var maxLength = origin["maxLength"],
       minLength = origin["minLength"];
@@ -573,10 +588,10 @@ const utils = {
     }
     return flag;
   },
-  arrEmpty(arr){
+  arrEmpty(arr) {
     return !this.arrNotEmpty(arr);
   },
-  strBlank(str){
+  strBlank(str) {
     return !this.strNotBlank(str);
   },
   strNotBlank(str) {
@@ -597,15 +612,15 @@ const utils = {
     }
     return t;
   },
-  getExample(key, obj, defaultValue){
-    var v=this.propValue(key, obj, defaultValue);
+  getExample(key, obj, defaultValue) {
+    var v = this.propValue(key, obj, defaultValue);
     //判断是否是双精度64位，如果是，直接返回
-    if(isNumber(v)){
+    if (isNumber(v)) {
       return v;
-    }else{
-      if(typeof(v)=='object'){
+    } else {
+      if (typeof (v) == 'object') {
         //v=this.json5stringify(v);
-        v=this.json5stringifyNoFormat(v);
+        v = this.json5stringifyNoFormat(v);
       }
     }
     return v;
@@ -651,14 +666,14 @@ const utils = {
     }
     return val;
   },
-  getClassName: function (item,oas2) {
-    if(oas2){
+  getClassName: function (item, oas2) {
+    if (oas2) {
       var regex = new RegExp("#/definitions/(.*)$", "ig");
       if (regex.test(item)) {
         var ptype = RegExp.$1;
         return ptype;
       }
-    }else{
+    } else {
       var regex = new RegExp("#/components/schemas/(.*)$", "ig");
       if (regex.test(item)) {
         var ptype = RegExp.$1;
@@ -668,7 +683,7 @@ const utils = {
 
     return null;
   },
-  getRefParameterName:function(item){
+  getRefParameterName: function (item) {
     var regex = new RegExp("#/components/parameters/(.*)$", "ig");
     if (regex.test(item)) {
       var ptype = RegExp.$1;
@@ -720,12 +735,12 @@ const utils = {
     }
     return "";
   },
-  camelCase:function(str){
-    if(str!=null&&str!=undefined&&str!=""){
-      if(str.length==1){
+  camelCase: function (str) {
+    if (str != null && str != undefined && str != "") {
+      if (str.length == 1) {
         return str.toLocaleLowerCase();
-      }else{
-        return str.substr(0,1).toLocaleLowerCase()+str.substr(1);
+      } else {
+        return str.substr(0, 1).toLocaleLowerCase() + str.substr(1);
       }
     }
     return "";

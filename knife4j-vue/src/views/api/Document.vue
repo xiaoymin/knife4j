@@ -229,7 +229,7 @@ export default {
       that.copyApiAddress();
       that.copyApiMarkdown();
       that.copyApiUrl();
-      console.log("status", this.responseCodeDisplayStatus)
+      //console.log("status", this.responseCodeDisplayStatus)
     }, 1500);
   },
   computed: {

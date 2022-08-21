@@ -2710,6 +2710,7 @@ SwaggerBootstrapUi.prototype.readSecurityContextSchemesCommon = function (securi
     var securityArr = new Array();
     for (var j in securityDefinitions) {
       var sdobj = securityDefinitions[j];
+      //console.log(sdobj)
       if (sdobj.type == "oauth2") {
         //oauth2认证
         var oauth = new SwaggerBootstrapUiOAuth2(
@@ -2726,6 +2727,8 @@ SwaggerBootstrapUi.prototype.readSecurityContextSchemesCommon = function (securi
         sdf.type = sdobj.type;
         sdf.name = sdobj.name;
         sdf.in = sdobj.in;
+        //console.log('schema:', KUtils.propValue("scheme", sdobj, null))
+        sdf.schema = KUtils.propValue("scheme", sdobj, null);
         //如果name为空，则默认取key值
         //https://gitee.com/xiaoym/knife4j/issues/I27CNZ
         if (KUtils.strBlank(sdobj.name)) {
@@ -2750,8 +2753,9 @@ SwaggerBootstrapUi.prototype.readSecurityContextSchemesCommon = function (securi
         }*/
         //at 2019-12-7 18:22:01
         //得到主键id端
-        var md5StrBefore = sdf.key + sdf.type + sdf.in + sdf.name;
+        var md5StrBefore = sdf.key + sdf.type + sdf.in + sdf.name + sdf.schema;
         sdf.id = md5(md5StrBefore);
+        //console.log(sdf);
         securityArr.push(sdf);
       }
       //that.currentInstance.securityArrs.push(sdf);
@@ -6546,6 +6550,8 @@ var SwaggerBootstrapUiSecurityDefinition = function () {
   this.value = "";
   //add at 2019-12-7 18:20:35
   this.id = "";
+  //add at 20220821
+  this.schema = null;
 
 }
 
