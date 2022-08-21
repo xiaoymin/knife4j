@@ -7,7 +7,8 @@
 package com.github.xiaoymin.knife4j.spring.common.bean;
 
 import com.github.xiaoymin.knife4j.core.enums.AnnotationClassEnums;
-import com.github.xiaoymin.knife4j.core.enums.OpenAPIGroupEnums;
+import com.github.xiaoymin.knife4j.core.enums.ApiRuleEnums;
+import com.github.xiaoymin.knife4j.core.enums.PathRuleEnums;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
+import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -34,6 +36,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * @since:knife4j 4.0.0
@@ -88,25 +91,26 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                 //赋值
                 Docket docketBean = (Docket)beanFactory.getBean(beanName);
                 docketBean.groupName(groupName).apiInfo(apiInfo);
+                Predicate<RequestHandler> apiPredicate=RequestHandlerSelectors.none();
+                Predicate<String> pathPredicate=PathSelectors.none();
                 //判断当前Docket对象的apis策略
-                if (docketInfo.getStrategy()== OpenAPIGroupEnums.PACKAGE){
+                if (docketInfo.getApiRule()== ApiRuleEnums.PACKAGE){
                     //包路径
-                    docketBean.select().apis(RequestHandlerSelectorUtils.multiplePackage(docketInfo.getResources().toArray(new String[]{})))
-                            .paths(PathSelectors.any()).build();
-                }else if(docketInfo.getStrategy()==OpenAPIGroupEnums.ANT){
-                    //ant路径
-                    docketBean.select().apis(RequestHandlerSelectors.any())
-                            .paths(RequestHandlerSelectorUtils.multipleAntPath(docketInfo.getResources())).build();
-                }else if(docketInfo.getStrategy()==OpenAPIGroupEnums.REGEX){
-                    //正则表达式
-                    docketBean.select().apis(RequestHandlerSelectors.any())
-                            .paths(RequestHandlerSelectorUtils.multipleRegexPath(docketInfo.getResources())).build();
-                }else if (docketInfo.getStrategy()==OpenAPIGroupEnums.ANNOTATION){
+                    apiPredicate=RequestHandlerSelectorUtils.multiplePackage(docketInfo.getApiRuleResources().toArray(new String[]{}));
+                }else if (docketInfo.getApiRule()== ApiRuleEnums.ANNOTATION){
                     //替换shortName
-                    List<String> annotationClass= AnnotationClassEnums.resolveResources(docketInfo.getResources());
-                    //注解
-                    docketBean.select().apis(RequestHandlerSelectorUtils.multipleAnnotations(annotationClass)).paths(PathSelectors.any()).build();
+                    List<String> annotationClass= AnnotationClassEnums.resolveResources(docketInfo.getApiRuleResources());
+                    apiPredicate=RequestHandlerSelectorUtils.multipleAnnotations(annotationClass);
                 }
+                //paths策略
+                if(docketInfo.getPathStrategy()== PathRuleEnums.ANT){
+                    //ant路径
+                    pathPredicate=RequestHandlerSelectorUtils.multipleAntPath(docketInfo.getPathRuleResources());
+                }else if(docketInfo.getPathStrategy()== PathRuleEnums.REGEX){
+                    pathPredicate=RequestHandlerSelectorUtils.multipleRegexPath(docketInfo.getPathRuleResources());
+                }
+                //build
+                docketBean.select().apis(apiPredicate).paths(pathPredicate).build();
                 //增加Knife4j的增强属性
                 docketBean.extensions(openApiExtensionResolver.buildExtensions(groupName));
             }

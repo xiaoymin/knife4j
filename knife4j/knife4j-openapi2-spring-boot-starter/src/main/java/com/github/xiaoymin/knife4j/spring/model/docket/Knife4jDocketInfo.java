@@ -6,7 +6,8 @@
  */
 package com.github.xiaoymin.knife4j.spring.model.docket;
 
-import com.github.xiaoymin.knife4j.core.enums.OpenAPIGroupEnums;
+import com.github.xiaoymin.knife4j.core.enums.ApiRuleEnums;
+import com.github.xiaoymin.knife4j.core.enums.PathRuleEnums;
 import lombok.Data;
 
 import java.util.List;
@@ -25,13 +26,23 @@ public class Knife4jDocketInfo {
     private String groupName;
 
     /**
-     * Group strategy
+     * Apis strategy
      */
-    private OpenAPIGroupEnums strategy=OpenAPIGroupEnums.PACKAGE;
+    private ApiRuleEnums apiRule= ApiRuleEnums.PACKAGE;
 
     /**
-     * The resource set corresponding to the grouping policy. package-fill in the package name, (path|regex)-fill in the regular API path rules, and annotation - fill in the full class path of the annotation class
+     * The resource set corresponding to the grouping policy with Api Strategy
      */
-    private List<String> resources;
+    private List<String> apiRuleResources;
+
+    /**
+     * Paths strategy
+     */
+    private PathRuleEnums pathStrategy= PathRuleEnums.ANT;
+
+    /**
+     * The resource set corresponding to the grouping policy Withs Paths strategy
+     */
+    private List<String> pathRuleResources;
 
 }
