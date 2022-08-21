@@ -12,7 +12,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @since:knife4j
+ * @since:knife4j 4.0.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/17 21:41
  */
@@ -20,17 +20,17 @@ import java.util.List;
 public class Knife4jDocketInfo {
 
     /**
-     * 分组名称
+     * Group name
      */
     private String groupName;
 
     /**
-     * 分组策略
+     * Group strategy
      */
     private OpenAPIGroupEnums strategy=OpenAPIGroupEnums.PACKAGE;
 
     /**
-     * 分组策略所对应的资源集合,package-填写包名，path-填写正则api路径规则，annotation-填写注解类完整class路径
+     * The resource set corresponding to the grouping policy. package-fill in the package name, (path|regex)-fill in the regular API path rules, and annotation - fill in the full class path of the annotation class
      */
     private List<String> resources;
 

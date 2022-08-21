@@ -7,18 +7,18 @@
 package com.github.xiaoymin.knife4j.core.enums;
 
 /**
- * @since:knife4j
+ * @since:knife4j 4.0.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/18 22:52
  */
 public enum OpenAPILanguageEnums {
     /**
-     * 中文
+     * Chinese
      */
     ZH_CN("zh-CN"),
 
     /**
-     * 英文
+     * English
      */
     EN("en-US");
 

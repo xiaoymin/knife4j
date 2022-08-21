@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @since:knife4j
+ * @since:knife4j 4.0.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/17 21:56
  */
@@ -61,7 +61,7 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
     public void afterPropertiesSet() throws Exception {
         Knife4jInfoProperties info= knife4jProperties.getOpenapi();
         if (info!=null&& CollectionUtils.isNotEmpty(info.getGroup())){
-            log.debug("初始化Docket信息");
+            log.debug("Initialize docket information.");
             BeanDefinitionRegistry beanRegistry = (BeanDefinitionRegistry)beanFactory;
             //构建基础信息
             ApiInfo apiInfo=new ApiInfoBuilder()
@@ -78,7 +78,7 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                 Knife4jDocketInfo docketInfo=map.getValue();
                 //分组名称给一个默认值，如果用户没有设置，则取key值
                 String groupName= StrUtil.isNotBlank(docketInfo.getGroupName())?docketInfo.getGroupName():map.getKey();
-                log.debug("auto register Docket Bean,name:{}",beanName);
+                log.debug("Auto register Docket Bean,name:{}",beanName);
                 BeanDefinition docketBeanDefinition = new GenericBeanDefinition();
                 docketBeanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(0, DocumentationType.SWAGGER_2);
                 docketBeanDefinition.setBeanClassName(Docket.class.getName());

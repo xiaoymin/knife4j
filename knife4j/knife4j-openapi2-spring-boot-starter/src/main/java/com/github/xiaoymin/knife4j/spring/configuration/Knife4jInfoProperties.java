@@ -13,8 +13,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.Map;
 
 /**
- * 基础配置信息
- * @since:knife4j
+ * Basic configuration information
+ * @since:knife4j 4.0.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/17 21:39
  */
@@ -22,31 +22,31 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "knife4j.openapi")
 public class Knife4jInfoProperties   {
     /**
-     * 文档标题
+     * document title
      */
     private String title;
     /**
-     * 简介
+     * description
      */
     private String description;
 
     /**
-     * 邮箱地址
+     * email
      */
     private String email;
 
     /**
-     * 主页地址
+     * homepage
      */
     private String url;
 
     /**
-     * 联系人
+     * concat
      */
     private String concat;
 
     /**
-     * 当前文档版本号
+     * current version
      */
     private String version;
 
@@ -64,7 +64,7 @@ public class Knife4jInfoProperties   {
     private String licenseUrl;
 
     /**
-     * 分组Docket集合
+     * the group of OpenAPI
      */
     private Map<String,Knife4jDocketInfo> group;
 }

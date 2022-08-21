@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /***
- * 配置文件
+ * Knife4j Basic Properties
  * @since:knife4j 1.9.6
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/08/27 15:40
@@ -25,36 +25,36 @@ import java.util.List;
 @ConfigurationProperties(prefix = "knife4j")
 public class Knife4jProperties {
     /**
-     * 是否开启Knife4j增强模式
+     * Whether to enable knife4j enhanced mode
      */
     private boolean enable=false;
     /**
-     * 基础文档信息
+     * Basic Document OpenAPI information
      */
     private Knife4jInfoProperties openapi;
     /**
-     * 是否开启默认跨域
+     * Enable default cross domain,default is false.
      */
     private boolean cors=false;
 
     /**
-     * 是否开启BasicHttp验证
+     * Enable HTTP Basic authentication,default is false.
      */
     private Knife4jHttpBasic basic;
 
     /**
-     * 是否生产环境
+     * Is it in the production environment? If yes, all documents cannot be accessed at present，default is false
      */
     private boolean production=false;
 
 
     /**
-     * 个性化配置
+     * The Personalized configuration
      */
     private Knife4jSetting setting;
 
     /**
-     * 分组文档集合
+     * The group of Custom Markdown resources
      */
     private List<MarkdownProperty> documents;
 }

@@ -2,7 +2,7 @@
  * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
  * All rights reserved.
  * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Developer Web Site: http://doc.xiaominfo.com.
  */
 
 package com.github.xiaoymin.knife4j.spring.configuration;
@@ -11,7 +11,7 @@ package com.github.xiaoymin.knife4j.spring.configuration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /***
- * 配置文件
+ * HTTP basic properties
  * @since:knife4j 1.9.6
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/08/27 15:40
@@ -20,17 +20,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class Knife4jHttpBasic {
 
     /**
-     * basick是否开启,默认为false
+     * Whether to enable HTTP basic authentication, the default is false
      */
     private boolean enable=false;
 
     /**
-     * basic 用户名
+     * HTTP basic username
      */
     private String username;
 
     /**
-     * basic 密码
+     * HTTP basic password
      */
     private String password;
 

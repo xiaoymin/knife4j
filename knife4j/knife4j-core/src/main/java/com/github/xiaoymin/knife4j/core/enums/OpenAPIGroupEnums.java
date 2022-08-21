@@ -7,26 +7,26 @@
 package com.github.xiaoymin.knife4j.core.enums;
 
 /**
- * 分组策略枚举
- * @since:knife4j
+ * Group policy enumeration
+ * @since:knife4j 4.0.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/18 22:09
  */
 public enum OpenAPIGroupEnums {
     /**
-     * 根据包名
+     * group with package name
      */
     PACKAGE,
     /**
-     * ANT风格路径规则
+     * group with ant path matcher
      */
     ANT,
     /**
-     * 正则风格路径规则
+     * regex
      */
     REGEX,
     /**
-     * 注解
+     * annotation,see {@link AnnotationClassEnums}
      */
     ANNOTATION
 }

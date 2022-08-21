@@ -32,7 +32,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 import java.util.Objects;
 
 /***
- * Knife4j 基础自动配置类
+ * Knife4j AutoConfiguration
  * @since:knife4j 2.0.0
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/08/28 21:08
@@ -52,8 +52,9 @@ public class Knife4jAutoConfiguration {
 
 
     /**
-     * 写一个内部类，该类只有在knife4j.enable=true时才会加载，不做任何处理
+     * Write an internal class. This class will be loaded only when `knife4j.enable` = true, without any processing
      * https://github.com/xiaoymin/swagger-bootstrap-ui/issues/394
+     * @since v4.0.0
      */
     @ComponentScan(
             basePackages = {
@@ -65,8 +66,8 @@ public class Knife4jAutoConfiguration {
     public class Knife4jEnhanceAutoConfiguration{
 
         /**
-         * 自动初始化Docket示例Bean
-         * @param knife4jProperties 配置信息
+         * Auto Register Springfox Docket Bean Information to Spring Context
+         * @param knife4jProperties Knife4j properties
          * @return knife4jDocketAutoRegistry
          */
         @Bean
@@ -77,7 +78,7 @@ public class Knife4jAutoConfiguration {
     }
 
     /**
-     * 配置Cors
+     * Configuration CorsFilter
      * @since 2.0.4
      * @return
      */
@@ -100,6 +101,11 @@ public class Knife4jAutoConfiguration {
     }
 
 
+    /**
+     * Auto register enhance Bean to process Knife4j function
+     * @param knife4jProperties enhance properties
+     * @return openapi-extension
+     */
     @Bean(initMethod = "start")
     @ConditionalOnMissingBean(OpenApiExtensionResolver.class)
     @ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
@@ -114,6 +120,11 @@ public class Knife4jAutoConfiguration {
         return new OpenApiExtensionResolver(extendSetting, knife4jProperties.getDocuments());
     }
 
+    /**
+     * Security with Basic Http
+     * @param knife4jProperties Basic Properties
+     * @return BasicAuthFilter
+     */
     @Bean
     @ConditionalOnMissingBean(SecurityBasicAuthFilter.class)
     @ConditionalOnProperty(name = "knife4j.basic.enable",havingValue = "true")

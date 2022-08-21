@@ -13,12 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @since:knife4j
+ * @since:knife4j 4.0.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/18 23:59
  */
 public enum AnnotationClassEnums {
 
+    /**
+     * ShortName with @Api Swagger2
+     */
     Api("Api","io.swagger.annotations.Api"),
     ApiOperation("ApiOperation","io.swagger.annotations.ApiOperation"),
     PostMapping("PostMapping","org.springframework.web.bind.annotation.PostMapping"),
@@ -31,12 +34,12 @@ public enum AnnotationClassEnums {
 
 
     /**
-     * 简称
+     * ShortName
      */
     @Getter
     private String shortName;
     /**
-     * 注解全路径
+     * full package with Annotation
      */
     @Getter
     private String fullPath;

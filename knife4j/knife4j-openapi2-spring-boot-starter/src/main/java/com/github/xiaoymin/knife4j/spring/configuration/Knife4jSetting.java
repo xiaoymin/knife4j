@@ -9,7 +9,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @since:knife4j
+ * @since:knife4j 4.0.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/18 21:55
  */
@@ -17,117 +17,117 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "knife4j.setting")
 public class Knife4jSetting {
     /**
-     * 生产环境屏蔽后自定义响应HTTP状态码
+     * Custom response HTTP status code after production environment screening(Knife4j.production=true)
      */
     private Integer customCode=200;
     /**
-     * Ui语言版本
+     * i18n
      */
     private OpenAPILanguageEnums language= OpenAPILanguageEnums.ZH_CN;
     /**
-     * 是否显示界面中SwaggerModel功能
+     * Whether to display the Swagger Models function in the Ui Part.
      */
     private boolean enableSwaggerModels=true;
     /**
-     * 重命名SwaggerModel名称,默认
+     * Rename Swagger model name,default is `Swagger Models`
      */
     private String swaggerModelName="Swagger Models";
 
     /**
-     * 是否在每个Debug调试栏后显示刷新变量按钮,默认不显示
+     * Whether to display the refresh variable button after each debug debugging bar, which is not displayed by default
      */
     private boolean enableReloadCacheParameter=false;
 
     /**
-     * 调试Tab是否显示AfterScript功能,默认开启
+     * Whether the debug tab displays the afterScript function is enabled by default
      */
     private boolean enableAfterScript=true;
 
     /**
-     * 是否显示界面中"文档管理"功能
+     * Whether to display the "document management" function in the Ui Part.
      */
     private boolean enableDocumentManage=true;
     /**
-     * 是否开启界面中对某接口的版本控制,如果开启，后端变化后Ui界面会存在小蓝点
+     * Whether to enable the version control of an interface in the interface. If it is enabled, the UI interface will have small blue dots after the backend changes
      */
     private boolean enableVersion=false;
 
     /**
-     * 是否开启请求参数缓存
+     * Whether to enable request parameter cache
      */
     private boolean enableRequestCache=true;
 
     /**
-     * 针对RequestMapping的接口请求类型,在不指定参数类型的情况下,如果不过滤,默认会显示7个类型的接口地址参数,如果开启此配置,默认展示一个Post类型的接口地址
+     * For the interface request type of RequestMapping, if the parameter type is not specified, seven types of interface address parameters will be displayed by default if filtering is not performed. If this configuration is enabled, an interface address of post type will be displayed by default
      */
     private boolean enableFilterMultipartApis=false;
 
     /**
-     * 过滤类型
+     * Filter Method type
      */
     private String enableFilterMultipartApiMethodType="POST";
 
     /**
-     * 是否启用Host
+     * Enable host
      */
     private boolean enableHost=false;
 
     /**
-     * 启用Host后文本
+     * HostAddress after enabling host
      */
     private String enableHostText="";
 
     /**
-     * 是否开启动态请求参数
+     * Whether to enable dynamic request parameters
      */
     private boolean enableDynamicParameter=false;
 
     /**
-     * 是否开启debug调试
+     * Enable debug mode，default is true.
      */
     private boolean enableDebug=true;
 
     /**
-     * 是否默认显示底部Footer
+     * Display bottom footer by default
      */
     private boolean enableFooter=true;
     /**
-     * 是否自定义Footer
+     * Customize footer
      */
     private boolean enableFooterCustom=false;
 
     /**
-     * 自定义Footer内容(支持Markdown语法)
+     * Custom footer content (support Markdown syntax)
      */
     private String footerCustomContent;
 
     /**
-     * 是否显示搜索框
+     * Show search box
      */
     private boolean enableSearch=true;
 
     /**
-     * 是否显示OpenAPI原始结构的Tab框，默认显示
+     * Whether to display the tab box of the original structure of OpenAPI, which is displayed by default
      */
     private boolean enableOpenApi=true;
 
     /**
-     * 是否开启主页自定义配置，默认false
+     * Whether to enable home page custom configuration, false by default
      */
     private boolean enableHomeCustom=false;
 
     /**
-     * 自定义主页的Markdown文档路径
+     * Customize Markdown document path of home page
      */
     private String homeCustomLocation;
 
     /**
-     * 是否显示分组下拉框，默认true(即显示)，一般情况下，如果是单个分组的情况下，可以设置该属性为false，即不显示分组，那么也就不用选择了
+     * Whether to display the group drop-down box, the default is true (that is, display). In general, if it is a single group, you can set this property to false, that is, the group will not be displayed, so you don't need to select it.
      */
     private boolean enableGroup=true;
 
     /**
-     * 是否显示响应状态码栏
+     * Whether to display the response status code bar
      * https://gitee.com/xiaoym/knife4j/issues/I3TE0V
      * @since v4.0.0
      */
