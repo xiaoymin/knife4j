@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.spring.configuration;
 
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
 import com.github.xiaoymin.knife4j.spring.common.bean.Knife4jDocketAutoRegistry;
+import com.github.xiaoymin.knife4j.spring.common.bean.Knife4jI18nServiceModelToSwagger2MapperImpl;
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.filter.SecurityBasicAuthFilter;
@@ -17,18 +18,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
+import springfox.documentation.swagger2.mappers.*;
 
+import java.util.Locale;
 import java.util.Objects;
 
 /***
@@ -74,6 +80,26 @@ public class Knife4jAutoConfiguration {
         @Qualifier("knife4jDocketAutoRegistry")
         public Knife4jDocketAutoRegistry knife4jDocketAutoRegistry(Knife4jProperties knife4jProperties,OpenApiExtensionResolver openApiExtensionResolver){
             return new Knife4jDocketAutoRegistry(knife4jProperties,openApiExtensionResolver);
+        }
+
+        /**
+         * Register Primary Bean with ServiceModelToSwagger2Mapper to Support i18n
+         * @param knife4jProperties Knife4j properties
+         * @param messageSource i18n MessageSource
+         * @param modelMapper  modelMapper
+         * @param parameterMapper parameterMapper
+         * @param securityMapper securityMapper
+         * @param licenseMapper licenseMapper
+         * @param vendorExtensionsMapper vendorExtensionsMapper
+         * @return ServiceModelToSwagger2Mapper
+         */
+        @Bean
+        @ConditionalOnBean(value = MessageSource.class)
+        @Qualifier("ServiceModelToSwagger2Mapper")
+        @Primary
+        public Knife4jI18nServiceModelToSwagger2MapperImpl knife4jI18nServiceModelToSwagger2Mapper(Knife4jProperties knife4jProperties, MessageSource messageSource, ModelMapper modelMapper, ParameterMapper parameterMapper, SecurityMapper securityMapper, LicenseMapper licenseMapper, VendorExtensionsMapper vendorExtensionsMapper){
+            Locale locale=Locale.forLanguageTag(knife4jProperties.getSetting().getLanguage().getValue());
+            return new Knife4jI18nServiceModelToSwagger2MapperImpl(messageSource,locale,modelMapper,parameterMapper,securityMapper,licenseMapper,vendorExtensionsMapper);
         }
     }
 
