@@ -8,17 +8,17 @@
       </a-row>
       <a-row class="knife4j-download-button">
         <a-button @click="triggerDownloadMarkdown">
-          <a-icon type="file-markdown" /><span v-html="$t('offline.download.markdown')">下载Markdown</span></a-button
-        >
+          <a-icon type="file-markdown" /><span v-html="$t('offline.download.markdown')">下载Markdown</span>
+        </a-button>
         <a-button type="default" @click="triggerDownloadHtml">
-          <a-icon type="file-text" /><span v-html="$t('offline.download.html')">下载Html</span></a-button
-        >
+          <a-icon type="file-text" /><span v-html="$t('offline.download.html')">下载Html</span>
+        </a-button>
         <a-button type="default" @click="triggerDownloadWord">
-          <a-icon type="file-word" /><span v-html="$t('offline.download.word')">下载Word</span></a-button
-        >
+          <a-icon type="file-word" /><span v-html="$t('offline.download.word')">下载Word</span>
+        </a-button>
         <a-button type="default" @click="triggerDownloadOpenAPI">
-          <a-icon type="file-text" /><span>OpenAPI</span></a-button
-        >
+          <a-icon type="file-text" /><span>OpenAPI</span>
+        </a-button>
         <!-- <a-button type="default" @click="triggerDownloadPDF">
           <a-icon type="file-pdf" /><span v-html="$t('offline.download.pdf')">下载PDF</span></a-button
         > -->
@@ -38,10 +38,11 @@
 </template>
 <script>
 import { resumecss } from "./OfficelineCss";
-import {getDocumentVueTemplates} from "@/components/officeDocument/officeDocTemplate";
-import {getDocumentVueTemplatesUS} from "@/components/officeDocument/officeDocTemplateUS";
+import { getDocumentVueTemplates } from "@/components/officeDocument/officeDocTemplate";
+import { getDocumentVueTemplatesUS } from "@/components/officeDocument/officeDocTemplateUS";
 import markdownText from "@/components/officeDocument/markdownTransform";
 import wordText from "@/components/officeDocument/wordTransform";
+import wordTextUS from "@/components/officeDocument/wordTransformUS";
 import markdownTextUS from "@/components/officeDocument/markdownTransformUS";
 import OnlineDocument from "@/views/api/OnlineDocument";
 import { Modal } from "ant-design-vue";
@@ -92,24 +93,24 @@ export default {
     this.initModels();
     //this.deepTags();
   },
-  watch:{
-    language:function(val,oldval){
-      this.markdownText=null;
+  watch: {
+    language: function (val, oldval) {
+      this.markdownText = null;
     }
   },
-  computed:{
-    language(){
-       return this.$store.state.globals.language;
-    }, 
-    swagger(){
-       return this.$store.state.globals.swagger;
+  computed: {
+    language() {
+      return this.$store.state.globals.language;
     },
-    swaggerCurrentInstance(){
+    swagger() {
+      return this.$store.state.globals.swagger;
+    },
+    swaggerCurrentInstance() {
       return this.$store.state.globals.swaggerCurrentInstance;
     }
   },
   methods: {
-    getCurrentI18nInstance(){
+    getCurrentI18nInstance() {
       return this.$i18n.messages[this.language];
     },
     initModels() {
@@ -131,14 +132,14 @@ export default {
         ////console(tags);
         //console("开始遍历tags时间：" + new Date().toGMTString());
         if (KUtils.arrNotEmpty(tags)) {
-          tags.forEach(function(tag) {
+          tags.forEach(function (tag) {
             ////console(tag);
             //判断是否存在参数
             if (KUtils.arrNotEmpty(tag.childrens)) {
               //存在接口,遍历接口的参数
-              tag.childrens.forEach(function(apiInfo) {
+              tag.childrens.forEach(function (apiInfo) {
                 ////console("接口地址:" + apiInfo.showUrl);
-                if(!apiInfo.init){
+                if (!apiInfo.init) {
                   //是否初始化过
                   that.swagger.initApiInfoAsync(apiInfo);
                 }
@@ -154,12 +155,12 @@ export default {
                   apiInfo.refTreetableparameters != null &&
                   apiInfo.refTreetableparameters.length > 0
                 ) {
-                  apiInfo.refTreetableparameters.forEach(function(ref) {
+                  apiInfo.refTreetableparameters.forEach(function (ref) {
                     data = data.concat(ref.params);
                   });
                 }
                 if (data != null) {
-                  data.sort(function(a, b) {
+                  data.sort(function (a, b) {
                     return b.require - a.require;
                   });
                 }
@@ -167,7 +168,7 @@ export default {
                 //判断当前data参数接口是否依然还存在参数
                 if (KUtils.arrNotEmpty(data)) {
                   //存在请求参数,遍历data参数
-                  data.forEach(function(param) {
+                  data.forEach(function (param) {
                     ////console(param);
                     //只查找第一级的参数，即pid=-1的参数
                     if (param.pid == "-1") {
@@ -186,11 +187,11 @@ export default {
                               key,
                               schemaName
                             );
-                            model=that.swagger.analysisDefinitionRefTableModel(that.data.instance.id,model);
+                            model = that.swagger.analysisDefinitionRefTableModel(that.data.instance.id, model);
                             if (KUtils.checkUndefined(model)) {
                               var children = model.params;
                               if (KUtils.arrNotEmpty(children)) {
-                                children.forEach(function(chd) {
+                                children.forEach(function (chd) {
                                   var target = that.copyNewParameter(chd);
                                   target.pid = param.id;
                                   param.children.push(target);
@@ -239,7 +240,7 @@ export default {
       apiInfo.multipData = {};
       let rcodes = apiInfo.responseCodes;
       if (rcodes != null && rcodes != undefined) {
-        rcodes.forEach(function(rc) {
+        rcodes.forEach(function (rc) {
           //遍历
           if (rc.schema != undefined && rc.schema != null) {
             var respdata = [];
@@ -253,14 +254,14 @@ export default {
               rc.responseTreetableRefParameters != null &&
               rc.responseTreetableRefParameters.length > 0
             ) {
-              rc.responseTreetableRefParameters.forEach(function(ref) {
+              rc.responseTreetableRefParameters.forEach(function (ref) {
                 respdata = respdata.concat(ref.params);
               });
             }
             let nrecodedatas = [];
             //遍历得到新的符合antd的树形结构
             if (respdata != null && respdata.length > 0) {
-              respdata.forEach(function(param) {
+              respdata.forEach(function (param) {
                 if (param.pid == "-1") {
                   param.children = [];
                   //判断该参数是否存在schema参数
@@ -276,11 +277,11 @@ export default {
                           key,
                           schemaName
                         );
-                        model=that.swagger.analysisDefinitionRefTableModel(that.data.instance.id,model);
+                        model = that.swagger.analysisDefinitionRefTableModel(that.data.instance.id, model);
                         if (KUtils.checkUndefined(model)) {
                           var children = model.params;
                           if (KUtils.arrNotEmpty(children)) {
-                            children.forEach(function(chd) {
+                            children.forEach(function (chd) {
                               var target = that.copyNewParameter(chd);
                               target.pid = param.id;
                               param.children.push(target);
@@ -343,11 +344,11 @@ export default {
       };
       return target;
     },
-    triggerDownloadOpenAPI(){
+    triggerDownloadOpenAPI() {
       //console.log(this.swaggerCurrentInstance);
-      var name=this.swaggerCurrentInstance.name;
-      var openApi=this.swaggerCurrentInstance.swaggerData;
-      var content=KUtils.json5stringify(openApi);
+      var name = this.swaggerCurrentInstance.name;
+      var openApi = this.swaggerCurrentInstance.swaggerData;
+      var content = KUtils.json5stringify(openApi);
       var a = document.createElement("a");
       //var content = this.getHtmlContent(this.data.instance.title);
       var option = {};
@@ -367,34 +368,34 @@ export default {
     },
     triggerDownloadPDF() {
       //var message='该功能尚未实现...'
-      var message=this.getCurrentI18nInstance().message.offline.imple;
+      var message = this.getCurrentI18nInstance().message.offline.imple;
       this.$message.info(message);
     },
     triggerDownloadWord() {
-       var that = this;
+      var that = this;
       //正在下载word文件中,请稍后...
-      var downloadMessage=this.getCurrentI18nInstance().message.offline.word;
+      var downloadMessage = this.getCurrentI18nInstance().message.offline.word;
       that.$kloading.show({
         text: downloadMessage
       });
       this.deepTags();
       //构建下载对象,从缓存中读取离线文档
       //https://gitee.com/xiaoym/knife4j/issues/I2EDI8
-      var markdownKey= this.data.instance.id+'markdownFiles';
-      this.$localStore.getItem(markdownKey).then(mdfileMap=>{
+      var markdownKey = this.data.instance.id + 'markdownFiles';
+      this.$localStore.getItem(markdownKey).then(mdfileMap => {
         //console.log(mdfileMap)
-        var markdownFiles=that.data.instance.markdownFiles;
-        if(KUtils.checkUndefined(mdfileMap)){
-          if(KUtils.arrNotEmpty(markdownFiles)){
-            markdownFiles.forEach(mdgrp=>{
+        var markdownFiles = that.data.instance.markdownFiles;
+        if (KUtils.checkUndefined(mdfileMap)) {
+          if (KUtils.arrNotEmpty(markdownFiles)) {
+            markdownFiles.forEach(mdgrp => {
               //判断是否children
-              if(KUtils.arrNotEmpty(mdgrp.children)){
-                  mdgrp.children.forEach(mdfile=>{
-                    var mdContent=mdfileMap[mdfile.id];
-                    if(KUtils.strNotBlank(mdContent)){
-                      mdfile.content=mdContent;
-                    }
-                  })
+              if (KUtils.arrNotEmpty(mdgrp.children)) {
+                mdgrp.children.forEach(mdfile => {
+                  var mdContent = mdfileMap[mdfile.id];
+                  if (KUtils.strNotBlank(mdContent)) {
+                    mdfile.content = mdContent;
+                  }
+                })
               }
             })
           }
@@ -414,7 +415,13 @@ export default {
           tags: that.tags,
           markdownFiles: markdownFiles
         };
-        var word=wordText(instance);
+        //https://gitee.com/xiaoym/knife4j/issues/I58PG1
+        let word = '';
+        if (this.getCurrentI18nInstance().lang === 'zh') {
+          word = wordText(instance);
+        } else {
+          word = wordTextUS(instance);
+        }
         //等待ace-editor渲染,给与充足时间
         setTimeout(() => {
           //下载html
@@ -430,28 +437,28 @@ export default {
       //下载markdown
       var that = this;
       //正在下载Markdown文件中,请稍后...
-      var downloadMessage=this.getCurrentI18nInstance().message.offline.markdown;
+      var downloadMessage = this.getCurrentI18nInstance().message.offline.markdown;
       that.$kloading.show({
         text: downloadMessage
       });
       this.deepTags();
       //构建下载对象,从缓存中读取离线文档
       //https://gitee.com/xiaoym/knife4j/issues/I2EDI8
-      var markdownKey= this.data.instance.id+'markdownFiles';
-      this.$localStore.getItem(markdownKey).then(mdfileMap=>{
+      var markdownKey = this.data.instance.id + 'markdownFiles';
+      this.$localStore.getItem(markdownKey).then(mdfileMap => {
         //console.log(mdfileMap)
-        var markdownFiles=that.data.instance.markdownFiles;
-        if(KUtils.checkUndefined(mdfileMap)){
-          if(KUtils.arrNotEmpty(markdownFiles)){
-            markdownFiles.forEach(mdgrp=>{
+        var markdownFiles = that.data.instance.markdownFiles;
+        if (KUtils.checkUndefined(mdfileMap)) {
+          if (KUtils.arrNotEmpty(markdownFiles)) {
+            markdownFiles.forEach(mdgrp => {
               //判断是否children
-              if(KUtils.arrNotEmpty(mdgrp.children)){
-                  mdgrp.children.forEach(mdfile=>{
-                    var mdContent=mdfileMap[mdfile.id];
-                    if(KUtils.strNotBlank(mdContent)){
-                      mdfile.content=mdContent;
-                    }
-                  })
+              if (KUtils.arrNotEmpty(mdgrp.children)) {
+                mdgrp.children.forEach(mdfile => {
+                  var mdContent = mdfileMap[mdfile.id];
+                  if (KUtils.strNotBlank(mdContent)) {
+                    mdfile.content = mdContent;
+                  }
+                })
               }
             })
           }
@@ -478,9 +485,9 @@ export default {
         if (this.markdownText == null || this.markdownText == "") {
           //遍历得到markdown文本
           //this.markdownText = markdownText(this.data.instance);
-          if(this.getCurrentI18nInstance().lang==='zh'){
+          if (this.getCurrentI18nInstance().lang === 'zh') {
             this.markdownText = markdownText(instance);
-          }else{
+          } else {
             this.markdownText = markdownTextUS(instance);
           }
         }
@@ -498,7 +505,7 @@ export default {
       //html
       that.downloadType = "DownloadHtml";
       //正在下载Html中,请稍后...
-      var message=this.getCurrentI18nInstance().message.offline.html;
+      var message = this.getCurrentI18nInstance().message.offline.html;
       that.$kloading.show({
         text: message
       });
@@ -508,7 +515,7 @@ export default {
         that.downloadHtml();
       }, 1000);
     },
-    downloadWord(content){
+    downloadWord(content) {
       var a = document.createElement("a");
       //var content = this.getHtmlContent(this.data.instance.title);
       var option = {};
@@ -577,189 +584,189 @@ export default {
         a.click()
       }) */
     },
-    deepRequestParameters(parameter){
-      var tmpChildParams=null;
-      if(KUtils.arrNotEmpty(parameter.children)){
-          tmpChildParams=new Array();
-          parameter.children.forEach(tmpParam=>{
-            var children=this.deepRequestParameters(tmpParam);
-            tmpChildParams.push({
-                  "name":tmpParam.name
-                  ,"children":children
-                  ,"description":tmpParam.description
-                  ,"in":tmpParam.in
-                  ,"require":tmpParam.require
-                  ,"type":tmpParam.type
-                  ,"schemaValue":tmpParam.schemaValue
-                })
+    deepRequestParameters(parameter) {
+      var tmpChildParams = null;
+      if (KUtils.arrNotEmpty(parameter.children)) {
+        tmpChildParams = new Array();
+        parameter.children.forEach(tmpParam => {
+          var children = this.deepRequestParameters(tmpParam);
+          tmpChildParams.push({
+            "name": tmpParam.name
+            , "children": children
+            , "description": tmpParam.description
+            , "in": tmpParam.in
+            , "require": tmpParam.require
+            , "type": tmpParam.type
+            , "schemaValue": tmpParam.schemaValue
           })
+        })
       }
       return tmpChildParams;
     },
-    deepResponseStaticParameters(parameter){
-      var tmpChildParams=null;
-      if(KUtils.arrNotEmpty(parameter.children)){
-          tmpChildParams=new Array();
-          parameter.children.forEach(tmpParam=>{
-            var children=this.deepResponseStaticParameters(tmpParam);
-            tmpChildParams.push({
-                  "name":tmpParam.name
-                  ,"children":children
-                  ,"description":tmpParam.description
-                  ,"id":tmpParam.id
-                  ,"type":tmpParam.type
-                  ,"schemaValue":tmpParam.schemaValue
-                })
+    deepResponseStaticParameters(parameter) {
+      var tmpChildParams = null;
+      if (KUtils.arrNotEmpty(parameter.children)) {
+        tmpChildParams = new Array();
+        parameter.children.forEach(tmpParam => {
+          var children = this.deepResponseStaticParameters(tmpParam);
+          tmpChildParams.push({
+            "name": tmpParam.name
+            , "children": children
+            , "description": tmpParam.description
+            , "id": tmpParam.id
+            , "type": tmpParam.type
+            , "schemaValue": tmpParam.schemaValue
           })
+        })
       }
       return tmpChildParams;
     }
-    ,getHtmlData() {
+    , getHtmlData() {
       //获取导出网页的Html数据结构,用于在单页面渲染
       var that = this;
-      var tempTags=[].concat(that.tags);
+      var tempTags = [].concat(that.tags);
       //console.log(that.tags);
-      tempTags.forEach(tmpTag=>{
-        tmpTag.description=null;
-        if(KUtils.checkUndefined(tmpTag.childrens)&&KUtils.arrNotEmpty(tmpTag.childrens)){
-          var tmpChildrens=[];
-          tmpTag.childrens.forEach(tmpApi=>{
+      tempTags.forEach(tmpTag => {
+        tmpTag.description = null;
+        if (KUtils.checkUndefined(tmpTag.childrens) && KUtils.arrNotEmpty(tmpTag.childrens)) {
+          var tmpChildrens = [];
+          tmpTag.childrens.forEach(tmpApi => {
             //处理接口的请求参数,缩减不必要的属性
-            var tmpRequestParameters=null;
-            if(KUtils.arrNotEmpty(tmpApi.reqParameters)){
-              tmpRequestParameters=new Array();
-              tmpApi.reqParameters.forEach(tmpParam=>{
-                var tmpChildParams=this.deepRequestParameters(tmpParam);  
+            var tmpRequestParameters = null;
+            if (KUtils.arrNotEmpty(tmpApi.reqParameters)) {
+              tmpRequestParameters = new Array();
+              tmpApi.reqParameters.forEach(tmpParam => {
+                var tmpChildParams = this.deepRequestParameters(tmpParam);
                 tmpRequestParameters.push({
-                  "name":tmpParam.name
-                  ,"children":tmpChildParams
-                  ,"description":tmpParam.description
-                  ,"in":tmpParam.in
-                  ,"require":tmpParam.require
-                  ,"type":tmpParam.type
-                  ,"schemaValue":tmpParam.schemaValue
+                  "name": tmpParam.name
+                  , "children": tmpChildParams
+                  , "description": tmpParam.description
+                  , "in": tmpParam.in
+                  , "require": tmpParam.require
+                  , "type": tmpParam.type
+                  , "schemaValue": tmpParam.schemaValue
                 })
 
               })
 
             }
             //处理响应状态码,缩减不必要的属性
-            var tmpResponseCodes=null;
-            if(KUtils.arrNotEmpty(tmpApi.responseCodes)){
-              tmpResponseCodes=new Array();
-              tmpApi.responseCodes.forEach(responseCode=>{
+            var tmpResponseCodes = null;
+            if (KUtils.arrNotEmpty(tmpApi.responseCodes)) {
+              tmpResponseCodes = new Array();
+              tmpApi.responseCodes.forEach(responseCode => {
                 tmpResponseCodes.push({
-                  "code":responseCode.code
-                  ,"description":responseCode.description
-                  ,"schema":responseCode.schema
+                  "code": responseCode.code
+                  , "description": responseCode.description
+                  , "schema": responseCode.schema
                 })
               })
             }
             //处理响应参数,缩减不必要的属性
             //1.针对多schema的情况
-            var tmpMultiResponseParameters=null;
-            if(KUtils.arrNotEmpty(tmpApi.multipCodeDatas)){
-              tmpMultiResponseParameters=new Array();
-              tmpApi.multipCodeDatas.forEach(multipcd=>{
+            var tmpMultiResponseParameters = null;
+            if (KUtils.arrNotEmpty(tmpApi.multipCodeDatas)) {
+              tmpMultiResponseParameters = new Array();
+              tmpApi.multipCodeDatas.forEach(multipcd => {
                 //1.1 处理多Header的情况
-                var tmpMultipHeaders=null;
-                if(KUtils.arrNotEmpty(multipcd.responseHeaderParameters)){
-                  tmpMultipHeaders=new Array();
-                  multipcd.responseHeaderParameters.forEach(multipHeader=>{
+                var tmpMultipHeaders = null;
+                if (KUtils.arrNotEmpty(multipcd.responseHeaderParameters)) {
+                  tmpMultipHeaders = new Array();
+                  multipcd.responseHeaderParameters.forEach(multipHeader => {
                     tmpMultipHeaders.push({
-                      "id":multipHeader.id,
-                      "name":multipHeader.name,
-                      "description":multipHeader.description,
-                      "type":multipHeader.type
+                      "id": multipHeader.id,
+                      "name": multipHeader.name,
+                      "description": multipHeader.description,
+                      "type": multipHeader.type
                     })
                   })
                 }
                 //1.2处理响应参数data
-                var tmpMultipData=null;
-                if(KUtils.arrNotEmpty(multipcd.data)){
-                  tmpMultipData=new Array();
-                  multipcd.data.forEach(multipdata=>{
-                    var tmpResponseChildParams=this.deepResponseStaticParameters(multipdata);  
+                var tmpMultipData = null;
+                if (KUtils.arrNotEmpty(multipcd.data)) {
+                  tmpMultipData = new Array();
+                  multipcd.data.forEach(multipdata => {
+                    var tmpResponseChildParams = this.deepResponseStaticParameters(multipdata);
                     tmpMultipData.push({
-                      "name":multipdata.name
-                      ,"children":tmpResponseChildParams
-                      ,"description":multipdata.description
-                      ,"id":multipdata.id
-                      ,"type":multipdata.type
-                      ,"schemaValue":multipdata.schemaValue
+                      "name": multipdata.name
+                      , "children": tmpResponseChildParams
+                      , "description": multipdata.description
+                      , "id": multipdata.id
+                      , "type": multipdata.type
+                      , "schemaValue": multipdata.schemaValue
                     })
                   })
                 }
                 tmpMultiResponseParameters.push({
-                  "code":multipcd.code,
-                  "responseHeaderParameters":tmpMultipHeaders,
-                  "data":tmpMultipData,
-                  "responseBasicType":multipcd.responseBasicType,
-                  "responseText":multipcd.responseText,
-                  "responseValue":multipcd.responseValue
+                  "code": multipcd.code,
+                  "responseHeaderParameters": tmpMultipHeaders,
+                  "data": tmpMultipData,
+                  "responseBasicType": multipcd.responseBasicType,
+                  "responseText": multipcd.responseText,
+                  "responseValue": multipcd.responseValue
                 })
               })
             }
             //2.针对单schema的情况
             //2.1 header
-            var tmpSingleResponseHeader=null;
-            if(KUtils.arrNotEmpty(tmpApi.responseHeaderParameters)){
-              tmpSingleResponseHeader=new Array();
-              tmpApi.responseHeaderParameters.forEach(singleHeader=>{
+            var tmpSingleResponseHeader = null;
+            if (KUtils.arrNotEmpty(tmpApi.responseHeaderParameters)) {
+              tmpSingleResponseHeader = new Array();
+              tmpApi.responseHeaderParameters.forEach(singleHeader => {
                 tmpSingleResponseHeader.push({
-                  "id":singleHeader.id,
-                  "name":singleHeader.name,
-                  "description":singleHeader.description,
-                  "type":singleHeader.type
+                  "id": singleHeader.id,
+                  "name": singleHeader.name,
+                  "description": singleHeader.description,
+                  "type": singleHeader.type
                 })
               })
             }
             //2.2 响应参数
-            var tmpMultipData=null;
-            if(KUtils.checkUndefined(tmpApi.multipData)){
-              var tmpDataArr=null;
-              if(KUtils.checkUndefined(tmpApi.multipData.data)&&KUtils.arrNotEmpty(tmpApi.multipData.data)){
-                tmpDataArr=new Array();
-                tmpApi.multipData.data.forEach(md=>{
-                   var tmpMdChildren=this.deepResponseStaticParameters(md);  
-                    tmpDataArr.push({
-                      "name":md.name
-                      ,"children":tmpMdChildren
-                      ,"description":md.description
-                      ,"id":md.id
-                      ,"type":md.type
-                      ,"schemaValue":md.schemaValue
-                    })
+            var tmpMultipData = null;
+            if (KUtils.checkUndefined(tmpApi.multipData)) {
+              var tmpDataArr = null;
+              if (KUtils.checkUndefined(tmpApi.multipData.data) && KUtils.arrNotEmpty(tmpApi.multipData.data)) {
+                tmpDataArr = new Array();
+                tmpApi.multipData.data.forEach(md => {
+                  var tmpMdChildren = this.deepResponseStaticParameters(md);
+                  tmpDataArr.push({
+                    "name": md.name
+                    , "children": tmpMdChildren
+                    , "description": md.description
+                    , "id": md.id
+                    , "type": md.type
+                    , "schemaValue": md.schemaValue
+                  })
                 })
               }
-              tmpMultipData={
-                "responseBasicType":tmpApi.multipData.responseBasicType,
-                "responseText":tmpApi.multipData.responseText,
-                "responseValue":tmpApi.multipData.responseValue,
-                "data":tmpDataArr
+              tmpMultipData = {
+                "responseBasicType": tmpApi.multipData.responseBasicType,
+                "responseText": tmpApi.multipData.responseText,
+                "responseValue": tmpApi.multipData.responseValue,
+                "data": tmpDataArr
               }
             }
             tmpChildrens.push({
-              "id":tmpApi.id
-              ,"operationId":tmpApi.operationId
-              ,"deprecated":tmpApi.deprecated
-              ,"summary":tmpApi.summary
-              ,"methodType":tmpApi.methodType
-              ,"showUrl":tmpApi.showUrl
-              ,"consumes":tmpApi.consumes
-              ,"produces":tmpApi.produces
-              ,"author":tmpApi.author
-              ,"description":tmpApi.description
-              ,"requestValue":tmpApi.requestValue
-              ,"reqParameters":tmpRequestParameters
-              ,"responseCodes":tmpResponseCodes
-              ,"multipartResponseSchema":tmpApi.multipartResponseSchema
-              ,"multipCodeDatas":tmpMultiResponseParameters
-              ,"responseHeaderParameters":tmpSingleResponseHeader
-              ,"multipData":tmpApi.multipData
+              "id": tmpApi.id
+              , "operationId": tmpApi.operationId
+              , "deprecated": tmpApi.deprecated
+              , "summary": tmpApi.summary
+              , "methodType": tmpApi.methodType
+              , "showUrl": tmpApi.showUrl
+              , "consumes": tmpApi.consumes
+              , "produces": tmpApi.produces
+              , "author": tmpApi.author
+              , "description": tmpApi.description
+              , "requestValue": tmpApi.requestValue
+              , "reqParameters": tmpRequestParameters
+              , "responseCodes": tmpResponseCodes
+              , "multipartResponseSchema": tmpApi.multipartResponseSchema
+              , "multipCodeDatas": tmpMultiResponseParameters
+              , "responseHeaderParameters": tmpSingleResponseHeader
+              , "multipData": tmpApi.multipData
             })
           })
-          tmpTag.childrens=tmpChildrens;
+          tmpTag.childrens = tmpChildrens;
         }
       })
       //console.log("新")
@@ -797,15 +804,15 @@ export default {
       var dstr = JSON.stringify(this.getHtmlData());
       //const template = document.getElementById("content_views").innerHTML;
       //return getDocumentTemplates(title, resumecss, template);
-      if(this.getCurrentI18nInstance().lang==='zh'){
-          return getDocumentVueTemplates(title, resumecss, dstr);
-      }else{
+      if (this.getCurrentI18nInstance().lang === 'zh') {
+        return getDocumentVueTemplates(title, resumecss, dstr);
+      } else {
         return getDocumentVueTemplatesUS(title, resumecss, dstr);
       }
       return getDocumentVueTemplates(title, resumecss, dstr);
     }
   }
-  
+
 };
 </script>
 
@@ -813,15 +820,18 @@ export default {
 .knife4j-download-button {
   margin: 40px auto;
   text-align: center;
+
   button {
     width: 150px;
     margin: 20px;
   }
 }
+
 .globalparameters {
   width: 73%;
   margin: 40px auto;
 }
+
 .gptips {
   color: #31708f;
   background-color: #d9edf7;
@@ -831,20 +841,25 @@ export default {
   border: 1px solid transparent;
   border-radius: 4px;
 }
+
 .download-loading {
   color: white;
+
   i {
     background-color: #e6f7ff;
   }
 }
+
 .spin-content {
   border: 1px solid #91d5ff;
   background-color: #e6f7ff;
   padding: 30px;
 }
+
 .htmledit_views {
   display: none;
 }
+
 .markdown-row {
   width: 95%;
   margin: 10px auto;
@@ -854,22 +869,27 @@ export default {
   height: 25px;
   line-height: 25px;
 }
+
 .content-line-count {
   height: 35px;
   line-height: 35px;
 }
+
 .title {
   text-align: center;
   width: 80%;
   margin: 5px auto;
 }
+
 .description {
   width: 90%;
   margin: 15px auto;
 }
+
 .divider {
   margin: 4px 0;
 }
+
 .divider-count {
   margin: 8px 0;
 }
