@@ -108,10 +108,10 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                 }
                 if (CollectionUtils.isNotEmpty(docketInfo.getPathRuleResources())){
                     //paths策略
-                    if(docketInfo.getPathStrategy()== PathRuleEnums.ANT){
+                    if(docketInfo.getPathRule()== PathRuleEnums.ANT){
                         //ant路径
                         pathPredicate=RequestHandlerSelectorUtils.multipleAntPath(docketInfo.getPathRuleResources());
-                    }else if(docketInfo.getPathStrategy()== PathRuleEnums.REGEX){
+                    }else if(docketInfo.getPathRule()== PathRuleEnums.REGEX){
                         pathPredicate=RequestHandlerSelectorUtils.multipleRegexPath(docketInfo.getPathRuleResources());
                     }
                 }

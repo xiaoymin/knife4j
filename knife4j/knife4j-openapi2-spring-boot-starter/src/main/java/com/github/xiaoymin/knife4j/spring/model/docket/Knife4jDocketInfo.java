@@ -38,7 +38,7 @@ public class Knife4jDocketInfo {
     /**
      * Paths strategy
      */
-    private PathRuleEnums pathStrategy= PathRuleEnums.ANT;
+    private PathRuleEnums pathRule= PathRuleEnums.ANT;
 
     /**
      * The resource set corresponding to the grouping policy Withs Paths strategy
