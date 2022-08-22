@@ -7,12 +7,12 @@
 
 package com.github.xiaoymin.knife4j.aggre.repository;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
+import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -36,7 +36,7 @@ public class DiskRepository extends AbsctractRepository {
     private final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 
     public DiskRepository(DiskSetting diskSetting){
-        if (diskSetting!=null&& CollectionUtil.isNotEmpty(diskSetting.getRoutes())){
+        if (diskSetting!=null&& CollectionUtils.isNotEmpty(diskSetting.getRoutes())){
             init(diskSetting);
         }
     }

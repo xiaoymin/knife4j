@@ -7,7 +7,6 @@
 
 package com.github.xiaoymin.knife4j.aggre.repository;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
@@ -18,6 +17,7 @@ import com.github.xiaoymin.knife4j.aggre.eureka.EurekaApplication;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
+import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -49,7 +49,7 @@ public class EurekaRepository extends AbsctractRepository {
 
     public EurekaRepository(EurekaSetting eurekaSetting){
         this.eurekaSetting=eurekaSetting;
-        if (eurekaSetting!=null&& CollectionUtil.isNotEmpty(eurekaSetting.getRoutes())){
+        if (eurekaSetting!=null&& CollectionUtils.isNotEmpty(eurekaSetting.getRoutes())){
             if (StrUtil.isBlank(eurekaSetting.getServiceUrl())){
                 throw new RuntimeException("Eureka ServiceUrl can't empty!!!");
             }
@@ -124,7 +124,7 @@ public class EurekaRepository extends AbsctractRepository {
         List<String> serviceNames=eurekaSetting.getRoutes().stream().map(EurekaRoute::getServiceName).map(String::toLowerCase).collect(Collectors.toList());
         for (EurekaApplication eurekaApplication:eurekaApps){
             //判断当前instance不可为空，并且取status="UP"的服务
-            if (serviceNames.contains(eurekaApplication.getName().toLowerCase())&&CollectionUtil.isNotEmpty(eurekaApplication.getInstance())){
+            if (serviceNames.contains(eurekaApplication.getName().toLowerCase())&&CollectionUtils.isNotEmpty(eurekaApplication.getInstance())){
                 Optional<EurekaInstance> instanceOptional=eurekaApplication.getInstance().stream().filter(eurekaInstance -> StrUtil.equalsIgnoreCase(eurekaInstance.getStatus(),"up")).findFirst();
                 if (instanceOptional.isPresent()){
                     //根据服务配置获取外部setting
@@ -150,10 +150,10 @@ public class EurekaRepository extends AbsctractRepository {
      */
     private void initEurekaApps(EurekaSetting eurekaSetting){
         List<EurekaApplication> eurekaApps=getApplications(eurekaSetting);
-        if (CollectionUtil.isNotEmpty(eurekaApps)){
+        if (CollectionUtils.isNotEmpty(eurekaApps)){
             //根据EurekaApplication转换为Knife4j内部SwaggerRoute结构
             Map<String, SwaggerRoute> swaggerRouteMap=applySwaggerRoutes(eurekaApps);
-            if (CollectionUtil.isNotEmpty(swaggerRouteMap)){
+            if (CollectionUtils.isNotEmpty(swaggerRouteMap)){
                 for (Map.Entry<String,SwaggerRoute> swaggerRouteEntry:swaggerRouteMap.entrySet()){
                     this.routeMap.put(swaggerRouteEntry.getKey(),swaggerRouteEntry.getValue());
                 }
@@ -164,7 +164,7 @@ public class EurekaRepository extends AbsctractRepository {
     @Override
     public BasicAuth getAuth(String header) {
         BasicAuth basicAuth=null;
-        if (eurekaSetting!=null&&CollectionUtil.isNotEmpty(eurekaSetting.getRoutes())){
+        if (eurekaSetting!=null&&CollectionUtils.isNotEmpty(eurekaSetting.getRoutes())){
             if (eurekaSetting.getRouteAuth()!=null&&eurekaSetting.getRouteAuth().isEnable()){
                 basicAuth=eurekaSetting.getRouteAuth();
                 //判断route服务中是否再单独配置
@@ -193,15 +193,15 @@ public class EurekaRepository extends AbsctractRepository {
                     if (logger.isDebugEnabled()){
                         logger.debug("Knife4jAggregation Eureka heartbeat working...");
                     }
-                    if (this.eurekaSetting!=null&& CollectionUtil.isNotEmpty(this.eurekaSetting.getRoutes())){
+                    if (this.eurekaSetting!=null&& CollectionUtils.isNotEmpty(this.eurekaSetting.getRoutes())){
                         if (StrUtil.isBlank(this.eurekaSetting.getServiceUrl())){
                             throw new RuntimeException("Eureka ServiceUrl can't empty!!!");
                         }
                         List<EurekaApplication> eurekaApps=getApplications(this.eurekaSetting);
-                        if (CollectionUtil.isNotEmpty(eurekaApps)){
+                        if (CollectionUtils.isNotEmpty(eurekaApps)){
                             //根据EurekaApplication转换为Knife4j内部SwaggerRoute结构
                             Map<String, SwaggerRoute> swaggerRouteMap=applySwaggerRoutes(eurekaApps);
-                            if (CollectionUtil.isNotEmpty(swaggerRouteMap)){
+                            if (CollectionUtils.isNotEmpty(swaggerRouteMap)){
                                 //移除老的不存在或者掉线的服务
                                 final Set<String> oldRouteKeys=this.routeMap.keySet();
                                 for (String oldKey:oldRouteKeys){

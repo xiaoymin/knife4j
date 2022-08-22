@@ -8,13 +8,13 @@
 package com.github.xiaoymin.knife4j.aggre.repository;
 
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
+import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public class NacosRepository extends AbsctractRepository{
 
     public NacosRepository(NacosSetting nacosSetting){
         this.nacosSetting=nacosSetting;
-        if (nacosSetting!=null&& CollectionUtil.isNotEmpty(nacosSetting.getRoutes())){
+        if (nacosSetting!=null&& CollectionUtils.isNotEmpty(nacosSetting.getRoutes())){
             initNacos(nacosSetting);
             applyRoutes(nacosSetting);
         }
@@ -51,7 +51,7 @@ public class NacosRepository extends AbsctractRepository{
      * @param nacosSetting Nacos配置属性
      */
     private void applyRoutes(NacosSetting nacosSetting) {
-        if (CollectionUtil.isNotEmpty(nacosInstanceMap)){
+        if (CollectionUtils.isNotEmpty(nacosInstanceMap)){
             nacosSetting.getRoutes().forEach(nacosRoute -> {
                 if (nacosRoute.getRouteAuth()==null||!nacosRoute.getRouteAuth().isEnable()){
                     nacosRoute.setRouteAuth(nacosSetting.getRouteAuth());
@@ -83,7 +83,7 @@ public class NacosRepository extends AbsctractRepository{
     @Override
     public BasicAuth getAuth(String header) {
         BasicAuth basicAuth=null;
-        if (nacosSetting!=null&&CollectionUtil.isNotEmpty(nacosSetting.getRoutes())){
+        if (nacosSetting!=null&&CollectionUtils.isNotEmpty(nacosSetting.getRoutes())){
             if (nacosSetting.getRouteAuth()!=null&&nacosSetting.getRouteAuth().isEnable()){
                 basicAuth=nacosSetting.getRouteAuth();
                 //判断route服务中是否再单独配置
