@@ -2243,6 +2243,8 @@ SwaggerBootstrapUi.prototype.getSwaggerModelRefType = function (propobj, oas2) {
               refType = RegExp.$1;
             }
           }
+        } else {
+          refType = type;
         }
       }
     } else {
@@ -3976,6 +3978,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
                 //此处有可能是array类型
                 var arrFlag = that.getSwaggerModelRefArray(schema, swpinfo.oas2);
                 var type = that.getSwaggerModelRefType(schema, swpinfo.oas2);
+                //console.log('type:', type)
                 if (KUtils.checkUndefined(type)) {
                   //在此处构造openAPI2.0的结构,复用原来的解析方法
                   var originalSchema = null;
@@ -4002,6 +4005,11 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
                     "required": true,
                     "schema": originalSchema
                   };
+                  if (type == "object") {
+                    //如果是object类型，补一个空的请求对象
+                    //https://gitee.com/xiaoym/knife4j/issues/I2WCAS
+                    originalOpenApiParameter = Object.assign({}, originalOpenApiParameter, { "default": "{}" })
+                  }
                   that.assembleParameterOAS3(originalOpenApiParameter, swpinfo, []);
 
                   //此时，创建请求参数
