@@ -2032,6 +2032,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                 if (KUtils.checkUndefined(def)) {
                   if (def.hasOwnProperty("properties")) {
                     var props = def["properties"];
+                    //console.log(props)
                     //获取required属性
                     var requiredArrs = def.hasOwnProperty("required") ? def["required"] : new Array();
                     //console.log(props);
@@ -2086,6 +2087,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                         ////console("schema类型--------------" + p.refType)
                         refp.schemaValue = p.refType;
                         refp.schema = true;
+                        //console.log(refp)
                         //属性名称不同,或者ref类型不同
                         var deepDef = that.getOriginalDefinitionByName(p.refType, definitions);
                         //console.log("find-deepdef")
@@ -2290,6 +2292,12 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp, definitions, deepDef
         var def = definitions[key];
         //根据def的properties解析
         if (KUtils.checkUndefined(def)) {
+          //https://gitee.com/xiaoym/knife4j/issues/I51G01
+          //获取当前Schema的介绍信息,如果存在，就赋值
+          let tmpDescriptionValue = KUtils.propValue("description", def, null);
+          if (tmpDescriptionValue != null) {
+            parentRefp.description = tmpDescriptionValue;
+          }
           if (def.hasOwnProperty("properties")) {
             var props = def["properties"];
             //获取required属性
