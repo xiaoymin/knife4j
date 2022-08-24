@@ -18,6 +18,13 @@
           </span>
           <OpenApi :api="api" :swaggerInstance="swaggerInstance" />
         </a-tab-pane>
+        <a-tab-pane v-if="settings.enableOpenApi" key="script">
+          <span slot="tab">
+            <a-icon type="codepen" /><span>Script</span>
+          </span>
+          <ScriptView :api="api" :swaggerInstance="swaggerInstance" />
+        </a-tab-pane>
+
       </a-tabs>
     </a-row>
     <a-row class="knife4j-api-readonly" v-else>
@@ -33,11 +40,12 @@ import KUtils from "@/core/utils";
 
 export default {
   name: "APIDoc",
-  components: { 
-    "Document":()=>import('./Document'),
-    "Debug":()=>import('./Debug'),
-    "OpenApi":()=>import('./OpenApi')
-  },
+  components: {
+    "Document": () => import("./Document"),
+    "Debug": () => import("./Debug"),
+    "OpenApi": () => import("./OpenApi"),
+    "ScriptView": () => import("./ScriptView.vue"),
+},
   props: {
     data: {
       type: Object
@@ -83,7 +91,7 @@ export default {
     this.api = apiInfo;
     //this.debugSupport = this.api.configurationDebugSupport;
     this.debugSupport = this.settings.enableDebug;
-    
+
   },
   methods: {
     onTabChange(key, type) {

@@ -276,7 +276,7 @@ const langOptions = {
       url:{
         success: '复制地址成功',
         fail: '复制地址失败,您当前浏览器版本不兼容,请手动复制.'
-      }, 
+      },
       method:{
         success: '复制接口成功',
         fail: '复制接口失败,您当前浏览器版本不兼容,请手动复制.'
@@ -533,8 +533,11 @@ const langOptions = {
     header:'请求头 ',
     notEmpty:' 不能为空',
     fileNotEmpty:' 文件不能为空'
+  },
+  script: {
+    JSExample: 'JS模板示例',
+    TSExample: 'TS模板示例',
   }
-
 }
 
 export default langOptions;
