@@ -442,6 +442,7 @@ export default {
             if (param.schema) {
               //判断当前缓存是否存在
               var schemaName = param.schemaValue;
+              //console.log("param,", param)
               if (KUtils.checkUndefined(schemaName)) {
                 // //console("schemaValue--checkUndefined");
                 if (that.$Knife4jModels.exists(key, schemaName)) {
