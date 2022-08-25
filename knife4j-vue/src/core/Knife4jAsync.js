@@ -2422,6 +2422,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   //解析definition
   //放弃解析所有的Model结构
   that.analysisDefinitionRefModel(menu);
+  //console.log("解析tags")
   //解析tags标签
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("tags")) {
     var tags = menu["tags"];
@@ -2450,6 +2451,11 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
           tagauth = KUtils.getValue(tagexte, "x-author", "", true);
           tagorder = KUtils.getValue(tagexte, "x-order", "", true);
         }
+        //如果当前扩展对象为空
+        //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/487
+        if (KUtils.strBlank(tagorder)) {
+          tagorder = KUtils.getValue(tag, "x-order", "", true);
+        }
       }
 
       var swuTag = new SwaggerBootstrapUiTag(KUtils.toString(tag.name, "").replace(/\//g, '-'), tagdes);
@@ -2461,11 +2467,13 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       }
       tmpTags.push(swuTag);
     })
+    // console.log(tmpTags)
     if (KUtils.arrNotEmpty(tmpTags)) {
       //排序
-      tmpTags.sort(function (a, b) {
-        return a.order - b.order;
-      })
+      tmpTags.sort((a, b) => a.order - b.order);
+      // tmpTags.sort(function (a, b) {
+      //   return a.order - b.order;
+      // })
     } else {
       //当前接口tags不存在，给一个默认tag-default
       //https://gitee.com/xiaoym/knife4j/issues/I27M98
