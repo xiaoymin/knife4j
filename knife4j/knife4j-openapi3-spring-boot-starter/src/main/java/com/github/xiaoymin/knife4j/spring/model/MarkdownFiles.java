@@ -7,7 +7,7 @@
 
 package com.github.xiaoymin.knife4j.spring.model;
 
-import com.github.xiaoymin.knife4j.core.model.MarkdownFile;
+import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendMarkdownChildren;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,20 +32,20 @@ public class MarkdownFiles {
 
     private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 
-    Logger logger= LoggerFactory.getLogger(MarkdownFile.class);
+    Logger logger= LoggerFactory.getLogger(MarkdownFiles.class);
 
     /***
      * markdown files dir
      */
     private String basePath;
 
-    private List<MarkdownFile> markdownFiles=new ArrayList<>();
+    private List<OpenApiExtendMarkdownChildren> markdownFiles=new ArrayList<>();
 
-    public List<MarkdownFile> getMarkdownFiles() {
+    public List<OpenApiExtendMarkdownChildren> getMarkdownFiles() {
         return markdownFiles;
     }
 
-    public void setMarkdownFiles(List<MarkdownFile> markdownFiles) {
+    public void setMarkdownFiles(List<OpenApiExtendMarkdownChildren> markdownFiles) {
         this.markdownFiles = markdownFiles;
     }
 
@@ -71,7 +71,7 @@ public class MarkdownFiles {
                 Resource[] resources=resourceResolver.getResources(basePath);
                 if (resources!=null&&resources.length>0){
                     for (Resource resource:resources){
-                        MarkdownFile markdownFile=createMarkdownFile(resource);
+                        OpenApiExtendMarkdownChildren markdownFile=createMarkdownFile(resource);
                         if (markdownFile!=null){
                             getMarkdownFiles().add(markdownFile);
                         }
@@ -83,8 +83,8 @@ public class MarkdownFiles {
         }
     }
 
-    private MarkdownFile createMarkdownFile(Resource resource){
-        MarkdownFile markdownFile=new MarkdownFile();
+    private OpenApiExtendMarkdownChildren createMarkdownFile(Resource resource){
+        OpenApiExtendMarkdownChildren markdownFile=new OpenApiExtendMarkdownChildren();
         if (resource!=null){
             logger.info(resource.getFilename());
             //只读取md
@@ -105,7 +105,7 @@ public class MarkdownFiles {
                         }
                         break;
                     }
-                    CommonUtils.closeQuiltly(reader);
+                    CommonUtils.close(reader);
 
                     markdownFile.setTitle(title);
                     markdownFile.setContent(new String(CommonUtils.readBytes(resource.getInputStream()),"UTF-8"));
@@ -113,7 +113,7 @@ public class MarkdownFiles {
                 } catch (Exception e) {
                     logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
                 }finally {
-                    CommonUtils.closeQuiltly(reader);
+                    CommonUtils.close(reader);
                 }
             }
         }

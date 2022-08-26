@@ -7,7 +7,7 @@
 
 package com.github.xiaoymin.knife4j.spring.model;
 
-import com.github.xiaoymin.knife4j.core.model.MarkdownFile;
+import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendMarkdownChildren;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class SwaggerBootstrapUi {
     /***
      * 自定义菜单内容
      */
-    private List<MarkdownFile> markdownFiles=new ArrayList<>();
+    private List<OpenApiExtendMarkdownChildren> markdownFiles=new ArrayList<>();
 
     /***
      * 开启增强失败,错误原因
@@ -66,11 +66,11 @@ public class SwaggerBootstrapUi {
     }
 
 
-    public List<MarkdownFile> getMarkdownFiles() {
+    public List<OpenApiExtendMarkdownChildren> getMarkdownFiles() {
         return markdownFiles;
     }
 
-    public void setMarkdownFiles(List<MarkdownFile> markdownFiles) {
+    public void setMarkdownFiles(List<OpenApiExtendMarkdownChildren> markdownFiles) {
         this.markdownFiles = markdownFiles;
     }
 }
