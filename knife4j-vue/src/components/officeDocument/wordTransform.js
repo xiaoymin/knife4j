@@ -1,5 +1,5 @@
 import KUtils from '@/core/utils'
-import marked from 'marked'
+import { marked } from 'marked'
 
 marked.setOptions({
   gfm: true,
@@ -36,8 +36,8 @@ function wordLines(markdownCollections) {
   markdownCollections.push('\n');
 }
 
-function createWordHeader(markdownCollections){
-  var wordHeader=`<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+function createWordHeader(markdownCollections) {
+  var wordHeader = `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
   <html>
   <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -126,7 +126,7 @@ function createWordHeader(markdownCollections){
   markdownCollections.push(wordHeader);
 }
 
-function createWordFooter(markdownCollections){
+function createWordFooter(markdownCollections) {
   markdownCollections.push('</div></body></html>');
 }
 
@@ -139,38 +139,38 @@ function createWordBasicInfo(instance, markdownCollections) {
   markdownCollections.push('<h1>1.项目说明</h1>');
   markdownCollections.push('<div class="knife4j-word-row">');
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>标题</strong>:'+instance.title+'</div>');
+  markdownCollections.push('<div class="knife4j-word-line"><strong>标题</strong>:' + instance.title + '</div>');
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>简介</strong>:'+instance.description+'</div>');
+  markdownCollections.push('<div class="knife4j-word-line"><strong>简介</strong>:' + instance.description + '</div>');
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>作者</strong>:<code>'+instance.contact+'</code></div>');
+  markdownCollections.push('<div class="knife4j-word-line"><strong>作者</strong>:<code>' + instance.contact + '</code></div>');
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>HOST</strong>:'+instance.host+'</div>');
+  markdownCollections.push('<div class="knife4j-word-line"><strong>HOST</strong>:' + instance.host + '</div>');
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>basePath</strong>:'+instance.basePath+'</div>');
+  markdownCollections.push('<div class="knife4j-word-line"><strong>basePath</strong>:' + instance.basePath + '</div>');
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>termsOfService</strong>:'+instance.termsOfService+'</div>');
+  markdownCollections.push('<div class="knife4j-word-line"><strong>termsOfService</strong>:' + instance.termsOfService + '</div>');
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>联系人</strong>:'+instance.contact+'</div>')
+  markdownCollections.push('<div class="knife4j-word-line"><strong>联系人</strong>:' + instance.contact + '</div>')
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>Version</strong>:'+instance.version+'</div>');
+  markdownCollections.push('<div class="knife4j-word-line"><strong>Version</strong>:' + instance.version + '</div>');
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>GroupName</strong>:'+instance.name+'</div>');
+  markdownCollections.push('<div class="knife4j-word-line"><strong>GroupName</strong>:' + instance.name + '</div>');
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>分组Url</strong>:'+instance.url+'</div>');
+  markdownCollections.push('<div class="knife4j-word-line"><strong>分组Url</strong>:' + instance.url + '</div>');
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
-  markdownCollections.push('<div class="knife4j-word-line"><strong>分组Location</strong>:'+instance.location+'</div>');
+  markdownCollections.push('<div class="knife4j-word-line"><strong>分组Location</strong>:' + instance.location + '</div>');
   markdownCollections.push('<div class="knife4j-word-divider"></div>');
 
   markdownCollections.push('</div>');
@@ -183,23 +183,24 @@ function createWordBasicInfo(instance, markdownCollections) {
  */
 function createWordPlusInfo(instance, markdownCollections) {
   if (KUtils.checkUndefined(instance.markdownFiles)) {
-    if(KUtils.arrNotEmpty(instance.markdownFiles)){
-    //if (instance.markdownFiles.length > 0) {
+    if (KUtils.arrNotEmpty(instance.markdownFiles)) {
+      //if (instance.markdownFiles.length > 0) {
       wordLines(markdownCollections);
       //markdownCollections.push('# 附录');
       markdownCollections.push('<h1>3.附录</h1>')
-      instance.markdownFiles.forEach(function (md,mdIndex) {
+      instance.markdownFiles.forEach(function (md, mdIndex) {
         wordLines(markdownCollections);
-        var mindex=mdIndex+1;
-        var mdTitle='3.'+mindex+md.name;
-        markdownCollections.push('<h2>'+mdTitle+'</h2>');
-        if(KUtils.arrNotEmpty(md.children)){
-          md.children.forEach(mdfile=>{
-            markdownCollections.push('<h3>'+mdfile.title+'</h3>');
+        var mindex = mdIndex + 1;
+        var mdTitle = '3.' + mindex + md.name;
+        markdownCollections.push('<h2>' + mdTitle + '</h2>');
+        if (KUtils.arrNotEmpty(md.children)) {
+          md.children.forEach(mdfile => {
+            markdownCollections.push('<h3>' + mdfile.title + '</h3>');
             markdownCollections.push('<div class="knife4j-word-content">');
             //判断非空
-            if(KUtils.strNotBlank(mdfile.content)){
-              markdownCollections.push(marked(mdfile.content));
+            if (KUtils.strNotBlank(mdfile.content)) {
+              //markdownCollections.push(marked(mdfile.content));
+              markdownCollections.push(marked.parse(mdfile.content));
             }
             markdownCollections.push('</div>');
           })
@@ -219,17 +220,17 @@ function createWordTagsInfo(instance, markdownCollections) {
   if (instance.tags != undefined && instance.tags != null) {
     markdownCollections.push('\n');
     markdownCollections.push('<h1>2.接口列表</h1>')
-    instance.tags.forEach(function (tag,index) {
-      var docIdex=parseInt(index)+1;
-      var docParent='2.'+docIdex;
-      var tagTitle=docParent+tag.name;
-      markdownCollections.push('<h2>'+tagTitle+'</h2>');
+    instance.tags.forEach(function (tag, index) {
+      var docIdex = parseInt(index) + 1;
+      var docParent = '2.' + docIdex;
+      var tagTitle = docParent + tag.name;
+      markdownCollections.push('<h2>' + tagTitle + '</h2>');
       wordLines(markdownCollections);
       if (tag.childrens != undefined && tag.childrens != null && tag.childrens.length > 0) {
         //遍历
-        tag.childrens.forEach(function (apiInfo,aIndex) {
-          var apiIndex=aIndex+1;
-          createWrodApiInfo(apiInfo, markdownCollections,docParent,apiIndex);
+        tag.childrens.forEach(function (apiInfo, aIndex) {
+          var apiIndex = aIndex + 1;
+          createWrodApiInfo(apiInfo, markdownCollections, docParent, apiIndex);
         })
       } else {
         markdownCollections.push('暂无接口文档')
@@ -244,28 +245,28 @@ function createWordTagsInfo(instance, markdownCollections) {
  * @param {*} apiInfo 接口实例
  * @param {*} markdownCollections markdown文本集合对象
  */
-function createWrodApiInfo(apiInfo, markdownCollections,parentDoc,apiIndex) {
+function createWrodApiInfo(apiInfo, markdownCollections, parentDoc, apiIndex) {
   //二级标题
   wordLines(markdownCollections);
-  var h3Title=parentDoc+'.'+apiIndex+apiInfo.summary;
-  markdownCollections.push('<h3>'+h3Title+'</h3>');
+  var h3Title = parentDoc + '.' + apiIndex + apiInfo.summary;
+  markdownCollections.push('<h3>' + h3Title + '</h3>');
   markdownCollections.push('<div class="knife4j-word-api">');
 
   markdownCollections.push('<div class="knife4j-word-title">接口地址</div>')
-  markdownCollections.push('<div class="knife4j-word-content"><span class="knife4j-word-method">'+apiInfo.methodType+'</span>&nbsp;&nbsp;<code>'+apiInfo.showUrl+'</code></div>');
+  markdownCollections.push('<div class="knife4j-word-content"><span class="knife4j-word-method">' + apiInfo.methodType + '</span>&nbsp;&nbsp;<code>' + apiInfo.showUrl + '</code></div>');
 
   markdownCollections.push('<div class="knife4j-word-title">接口描述</div>');
-  markdownCollections.push('<div class="knife4j-word-content">'+KUtils.toString(apiInfo.description, '暂无')+'</div>');
+  markdownCollections.push('<div class="knife4j-word-content">' + KUtils.toString(apiInfo.description, '暂无') + '</div>');
 
   markdownCollections.push('<div class="knife4j-word-title">请求数据类型</div>');
-  markdownCollections.push('<div class="knife4j-word-content"><code>'+KUtils.toString(apiInfo.consumes, '*')+'</code></div>')
+  markdownCollections.push('<div class="knife4j-word-content"><code>' + KUtils.toString(apiInfo.consumes, '*') + '</code></div>')
 
   markdownCollections.push('<div class="knife4j-word-title">响应数据类型</div>');
-  markdownCollections.push('<div class="knife4j-word-content"><code>'+KUtils.toString(apiInfo.produces, '*')+'</code></div>')
+  markdownCollections.push('<div class="knife4j-word-content"><code>' + KUtils.toString(apiInfo.produces, '*') + '</code></div>')
 
-  if(KUtils.strNotBlank(apiInfo.author)){
+  if (KUtils.strNotBlank(apiInfo.author)) {
     markdownCollections.push('<div class="knife4j-word-title">开发者</div>');
-    markdownCollections.push('<div class="knife4j-word-content">'+KUtils.toString(apiInfo.author, '暂无')+'</div>');
+    markdownCollections.push('<div class="knife4j-word-content">' + KUtils.toString(apiInfo.author, '暂无') + '</div>');
   }
   //判断是否有请求示例
   if (KUtils.checkUndefined(apiInfo.requestValue)) {
@@ -274,17 +275,17 @@ function createWrodApiInfo(apiInfo, markdownCollections,parentDoc,apiIndex) {
     markdownCollections.push('<div class="knife4j-word-content">');
     //需要判断是否是xml请求
     markdownCollections.push('<pre class="knife4j-word-code-editor">');
-    if(apiInfo.xmlRequest){
+    if (apiInfo.xmlRequest) {
       //xml请求,不做处理
       markdownCollections.push(apiInfo.requestValue);
-    }else{
+    } else {
       markdownCollections.push(wordJsonFormatter(apiInfo.requestValue));
     }
 
     markdownCollections.push('</pre>');
     markdownCollections.push('</div>');
   }
-  
+
   //请求参数
   createWordApiRequestParameters(apiInfo, markdownCollections);
   //响应状态
@@ -315,9 +316,9 @@ function createWordApiResponseStatus(apiInfo, markdownCollections) {
     //拥有参数
     apiInfo.responseCodes.forEach(function (respcode) {
       markdownCollections.push('<tr>');
-      markdownCollections.push('<td>'+KUtils.toString(respcode.code, '')+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(respcode.description, '')+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(respcode.schema, '')+'</td>');
+      markdownCollections.push('<td>' + KUtils.toString(respcode.code, '') + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(respcode.description, '') + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(respcode.schema, '') + '</td>');
       //markdownCollections.push('|' + KUtils.toString(respcode.code, '') + '|' + KUtils.toString(respcode.description, '') + '|' + KUtils.toString(respcode.schema, '') + '|')
       markdownCollections.push('</tr>');
     })
@@ -336,8 +337,8 @@ function createWordApiResponseStatus(apiInfo, markdownCollections) {
  */
 function createWordApiResponseHeaderParams(responseHeaderParameters, markdownCollections) {
   if (KUtils.checkUndefined(responseHeaderParameters)) {
-    if(KUtils.arrNotEmpty(responseHeaderParameters)){
-    //if (responseHeaderParameters.length > 0) {
+    if (KUtils.arrNotEmpty(responseHeaderParameters)) {
+      //if (responseHeaderParameters.length > 0) {
       wordLines(markdownCollections);
       markdownCollections.push('<div class="knife4j-word-title">响应Header</div>')
       wordLines(markdownCollections);
@@ -350,9 +351,9 @@ function createWordApiResponseHeaderParams(responseHeaderParameters, markdownCol
       markdownCollections.push('<tbody>');
       responseHeaderParameters.forEach(function (respHeader) {
         markdownCollections.push('<tr>')
-        markdownCollections.push('<td>'+KUtils.toString(respHeader.name, '')+'</td>');
-        markdownCollections.push('<td>'+KUtils.toString(respHeader.description, '')+'</td>');
-        markdownCollections.push('<td>'+KUtils.toString(respHeader.type, '')+'</td>');
+        markdownCollections.push('<td>' + KUtils.toString(respHeader.name, '') + '</td>');
+        markdownCollections.push('<td>' + KUtils.toString(respHeader.description, '') + '</td>');
+        markdownCollections.push('<td>' + KUtils.toString(respHeader.type, '') + '</td>');
         //markdownCollections.push('|' + KUtils.toString(respHeader.name, '') + '|' + KUtils.toString(respHeader.description, '') + '|' + KUtils.toString(respHeader.type, '') + '|');
         markdownCollections.push('</tr>')
       })
@@ -377,7 +378,7 @@ function createWordApiResponseParameters(apiInfo, markdownCollections) {
     if (KUtils.arrNotEmpty(multipartData)) {
       multipartData.forEach(function (resp) {
         wordLines(markdownCollections);
-        markdownCollections.push('<div class="knife4j-word-title">响应状态码-'+KUtils.toString(resp.code, '')+'</div>');
+        markdownCollections.push('<div class="knife4j-word-title">响应状态码-' + KUtils.toString(resp.code, '') + '</div>');
         //markdownCollections.push('**响应状态码-' + KUtils.toString(resp.code, '') + '**:');
         createWordApiResponseSingleParam(resp, markdownCollections);
       })
@@ -410,10 +411,10 @@ function createWordApiResponseSingleParam(resp, markdownCollections) {
     resp.data.forEach(function (param) {
       param.level = 1;
       markdownCollections.push('<tr>')
-      markdownCollections.push('<td>'+getWordTableByLevel(param)+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.description, '')+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.type, '')+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.schemaValue, '')+'</td>');
+      markdownCollections.push('<td>' + getWordTableByLevel(param) + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.description, '') + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.type, '') + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.schemaValue, '') + '</td>');
       markdownCollections.push('</tr>');
       //markdownCollections.push('|' + getWordTableByLevel(param) + '|' + KUtils.toString(param.description, '') + '|' + KUtils.toString(param.type, '') + '|' + KUtils.toString(param.schemaValue, '') + '|')
       deepWordTableByResponseParameter(param.children, markdownCollections, (param.level + 1));
@@ -455,11 +456,11 @@ function createWordApiRequestParameters(apiInfo, markdownCollections) {
   markdownCollections.push('<thead><tr><th>参数名称</th><th>参数说明</th><th>请求类型</th><th>必须</th><th>数据类型</th><th>schema</th></tr></thead>');
   markdownCollections.push('<tbody>');
   //判断是否拥有请求参数
-  if(KUtils.arrNotEmpty(reqParameters)){
-  //if (reqParameters.length > 0) {
+  if (KUtils.arrNotEmpty(reqParameters)) {
+    //if (reqParameters.length > 0) {
     //级联表格，在表格需要最佳空格缩进符号
     deepWordTableByRequestParameter(reqParameters, markdownCollections, 1);
-  }else{
+  } else {
     //无参数
     markdownCollections.push('<tr><td colspan="6">暂无</td></tr>');
   }
@@ -478,10 +479,10 @@ function deepWordTableByResponseParameter(parameters, markdownCollections, level
     parameters.forEach(function (param) {
       param.level = level;
       markdownCollections.push('<tr>')
-      markdownCollections.push('<td>'+getWordTableByLevel(param)+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.description, '')+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.type, '')+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.schemaValue, '')+'</td>');
+      markdownCollections.push('<td>' + getWordTableByLevel(param) + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.description, '') + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.type, '') + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.schemaValue, '') + '</td>');
       markdownCollections.push('</tr>');
       //markdownCollections.push('|' + getWordTableByLevel(param) + '|' + KUtils.toString(param.description, '') + '|' + KUtils.toString(param.type, '') + '|' + KUtils.toString(param.schemaValue, '') + '|')
       deepWordTableByResponseParameter(param.children, markdownCollections, (param.level + 1));
@@ -502,12 +503,12 @@ function deepWordTableByRequestParameter(parameters, markdownCollections, level)
       //赋值一个level
       param.level = level;
       markdownCollections.push('<tr>');
-      markdownCollections.push('<td>'+getWordTableByLevel(param)+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.description, '')+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.in, '')+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.require, '')+'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.type, '') +'</td>');
-      markdownCollections.push('<td>'+KUtils.toString(param.schemaValue, '') +'</td>');
+      markdownCollections.push('<td>' + getWordTableByLevel(param) + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.description, '') + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.in, '') + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.require, '') + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.type, '') + '</td>');
+      markdownCollections.push('<td>' + KUtils.toString(param.schemaValue, '') + '</td>');
       markdownCollections.push('</tr>');
       //markdownCollections.push('|' + getWordTableByLevel(param) + '|' + KUtils.toString(param.description, '') + '|' + KUtils.toString(param.in, '') + '|' + KUtils.toString(param.require, '') + '|' + KUtils.toString(param.type, '') + '|' + KUtils.toString(param.schemaValue, '') + '|')
       deepWordTableByRequestParameter(param.children, markdownCollections, (param.level + 1));
@@ -530,7 +531,7 @@ function getWordTableByLevel(param) {
   return tmpName;
 }
 
-function wordJsonFormatter(json){
+function wordJsonFormatter(json) {
   try {
     if (typeof json != "string") {
       json = JSON.stringify(json, undefined, 2);
@@ -541,7 +542,7 @@ function wordJsonFormatter(json){
       .replace(/>/g, ">");
     return json.replace(
       /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-      function(match) {
+      function (match) {
         var cls = "number";
         if (/^"/.test(match)) {
           if (/:$/.test(match)) {

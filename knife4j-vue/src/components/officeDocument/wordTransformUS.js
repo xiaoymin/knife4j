@@ -1,5 +1,5 @@
 import KUtils from '@/core/utils'
-import marked from 'marked'
+import { marked } from 'marked'
 
 marked.setOptions({
   gfm: true,
@@ -199,7 +199,8 @@ function createWordPlusInfo(instance, markdownCollections) {
             markdownCollections.push('<div class="knife4j-word-content">');
             //判断非空
             if (KUtils.strNotBlank(mdfile.content)) {
-              markdownCollections.push(marked(mdfile.content));
+              // markdownCollections.push(marked(mdfile.content));
+              markdownCollections.push(marked.parse(mdfile.content));
             }
             markdownCollections.push('</div>');
           })

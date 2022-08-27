@@ -40,7 +40,7 @@ import {
   urlToList
 } from '@/components/utils/pathTools'
 import KUtils from './utils'
-import marked from 'marked'
+import { marked } from 'marked'
 import async from 'async'
 import {
   findComponentsByPath,
@@ -1253,7 +1253,8 @@ SwaggerBootstrapUi.prototype.basicInfoOAS2 = function (menu) {
     //that.currentInstance.host = host;
     that.currentInstance.title = title;
     //impl markdown syntax
-    that.currentInstance.description = marked(description);
+    //that.currentInstance.description = marked(description);
+    that.currentInstance.description = marked.parse(description);
     that.currentInstance.contact = name;
     that.currentInstance.version = version;
     that.currentInstance.termsOfService = termsOfService;
@@ -1307,7 +1308,8 @@ SwaggerBootstrapUi.prototype.basicInfoOAS3 = function (menu) {
 
       that.currentInstance.title = title;
       //impl markdown syntax
-      that.currentInstance.description = marked(description);
+      //that.currentInstance.description = marked(description);
+      that.currentInstance.description = marked.parse(description);
       that.currentInstance.contact = name;
       that.currentInstance.version = version;
       that.currentInstance.termsOfService = termsOfService;
@@ -4706,7 +4708,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     swpinfo.description = KUtils.getValue(apiInfo, "description", "", true);
     //描述支持markdown
     if (KUtils.strNotBlank(swpinfo.description)) {
-      swpinfo.description = marked(swpinfo.description);
+      //swpinfo.description = marked(swpinfo.description);
+      swpinfo.description = marked.parse(swpinfo.description);
     }
     apiInfo.operationId = apiInfo.operationId || swpinfo.id
     swpinfo.operationId = apiInfo.operationId;
