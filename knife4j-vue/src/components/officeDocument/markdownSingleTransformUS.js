@@ -7,7 +7,7 @@ import KUtils from '@/core/utils'
 export default function markdownSingleTextUs(apiInfo) {
   var markdownCollections = [];
   if (apiInfo != null && apiInfo != undefined) {
-    //二级标题
+    // 二级标题
     markdownLines(markdownCollections);
     markdownCollections.push('## ' + apiInfo.summary);
     markdownLines(markdownCollections);
@@ -20,7 +20,7 @@ export default function markdownSingleTextUs(apiInfo) {
     markdownCollections.push('**consumes**:`' + KUtils.toString(apiInfo.produces, '*') + '`');
     markdownLines(markdownCollections);
     markdownCollections.push('**description**:' + KUtils.toString(apiInfo.description, 'None') + '');
-    //判断是否有请求示例
+    // 判断是否有请求示例
     if (KUtils.checkUndefined(apiInfo.requestValue)) {
       markdownLines(markdownCollections);
       markdownCollections.push('**Sample**:');
@@ -29,12 +29,12 @@ export default function markdownSingleTextUs(apiInfo) {
       markdownCollections.push(apiInfo.requestValue);
       markdownCollections.push('```');
     }
-    //请求参数
+    // 请求参数
     createApiRequestParameters(apiInfo, markdownCollections);
-    //响应状态
+    // 响应状态
     createApiResponseStatus(apiInfo, markdownCollections);
-    //响应Schema-参数
-    //判断响应参数
+    // 响应Schema-参数
+    // 判断响应参数
     createApiResponseParameters(apiInfo, markdownCollections);
   }
   return markdownCollections.join('\n');
@@ -58,13 +58,13 @@ function createApiRequestParameters(apiInfo, markdownCollections) {
   markdownCollections.push('**Params**:');
   markdownLines(markdownCollections);
   markdownCollections.push('**Params**:');
-  //判断是否拥有请求参数
+  // 判断是否拥有请求参数
   if (reqParameters.length > 0) {
     markdownLines(markdownCollections);
-    //拥有参数
+    // 拥有参数
     markdownCollections.push('| name | description | in    | require | type | schema |');
     markdownCollections.push('| -------- | -------- | ----- | -------- | -------- | ------ |');
-    //级联表格，在表格需要最佳空格缩进符号
+    // 级联表格，在表格需要最佳空格缩进符号
     deepMdTableByRequestParameter(reqParameters, markdownCollections, 1);
   } else {
     markdownLines(markdownCollections);
@@ -82,7 +82,7 @@ function createApiResponseStatus(apiInfo, markdownCollections) {
     markdownLines(markdownCollections);
     markdownCollections.push('**status**:');
     markdownLines(markdownCollections);
-    //拥有参数
+    // 拥有参数
     markdownCollections.push('| code | description | schema |');
     markdownCollections.push('| -------- | -------- | ----- | ');
     apiInfo.responseCodes.forEach(function (respcode) {
@@ -98,7 +98,7 @@ function createApiResponseStatus(apiInfo, markdownCollections) {
  * @param {*} singleFlag 
  */
 function createApiResponseParameters(apiInfo, markdownCollections) {
-  //判断是否多个schema
+  // 判断是否多个schema
   if (apiInfo.multipartResponseSchema) {
     var multipartData = apiInfo.multipCodeDatas;
     if (KUtils.arrNotEmpty(multipartData)) {
@@ -109,7 +109,7 @@ function createApiResponseParameters(apiInfo, markdownCollections) {
       })
     }
   } else {
-    //单个
+    // 单个
     createApiResponseSingleParam(apiInfo.multipData, markdownCollections);
   }
 
@@ -126,10 +126,10 @@ function findRespModelChildren(md, modelData) {
     modelData.forEach(function (nmd) {
       if (nmd.pid == md.id) {
         nmd.children = [];
-        //本级level+1
+        // 本级level+1
         nmd.level = md.level + 1;
         findRespModelChildren(nmd, modelData);
-        //查找后如果没有,则将children置空
+        // 查找后如果没有,则将children置空
         if (nmd.children.length == 0) {
           nmd.children = null;
         }
@@ -145,15 +145,15 @@ function findRespModelChildren(md, modelData) {
  * @param {*} markdownCollections 
  */
 function createApiResponseSingleParam(resp, markdownCollections) {
-  //判断是否有响应Header
+  // 判断是否有响应Header
   createApiResponseHeaderParams(resp.responseHeaderParameters, markdownCollections);
-  //数据
+  // 数据
   markdownLines(markdownCollections);
   markdownCollections.push('**Responses**:');
   markdownLines(markdownCollections);
-  //拥有参数
+  // 拥有参数
   if (KUtils.arrNotEmpty(resp.data)) {
-    //拥有参数
+    // 拥有参数
     markdownCollections.push('| name | description | type | schema |');
     markdownCollections.push('| -------- | -------- | ----- |----- | ');
     resp.data.forEach(function (param) {
@@ -164,7 +164,7 @@ function createApiResponseSingleParam(resp, markdownCollections) {
   } else {
     markdownCollections.push('None');
   }
-  //判断是否拥有响应示例
+  // 判断是否拥有响应示例
   markdownLines(markdownCollections);
   markdownCollections.push('**Response Sample**:');
   if (resp.responseBasicType) {
@@ -206,7 +206,7 @@ function createApiResponseHeaderParams(responseHeaderParameters, markdownCollect
       markdownLines(markdownCollections);
       markdownCollections.push('**Response Header**:');
       markdownLines(markdownCollections);
-      //拥有参数
+      // 拥有参数
       markdownCollections.push('|name | description | type |');
       markdownCollections.push('| -------- | -------- | ----- | ');
       responseHeaderParameters.forEach(function (respHeader) {
@@ -225,7 +225,7 @@ function createApiResponseHeaderParams(responseHeaderParameters, markdownCollect
 function deepMdTableByRequestParameter(parameters, markdownCollections, level) {
   if (parameters != null && parameters != undefined && parameters.length > 0) {
     parameters.forEach(function (param) {
-      //赋值一个level
+      // 赋值一个level
       param.level = level;
       markdownCollections.push('|' + getMdTableByLevel(param) + '|' + KUtils.toString(param.description, '') + '|' + KUtils.toString(param.in, '') + '|' + KUtils.toString(param.require, '') + '|' + KUtils.toString(param.type, '') + '|' + KUtils.toString(param.schemaValue, '') + '|')
       deepMdTableByRequestParameter(param.children, markdownCollections, (param.level + 1));
@@ -259,7 +259,7 @@ function findModelChildren(md, modelData) {
       if (nmd.pid == md.id) {
         nmd.children = [];
         findModelChildren(nmd, modelData);
-        //查找后如果没有,则将children置空
+        // 查找后如果没有,则将children置空
         if (nmd.children.length == 0) {
           nmd.children = null;
         }
