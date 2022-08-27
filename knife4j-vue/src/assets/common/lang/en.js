@@ -275,7 +275,7 @@ const langOptions = {
       url:{
         success: 'Copy address successfully',
         fail: 'Failed to copy the address, your current browser version is not compatible, please copy manually.'
-      }, 
+      },
       method:{
         success: 'Copy Url successfully',
         fail: 'Failed to copy the url, your current browser version is not compatible, please copy manually.'
@@ -542,6 +542,10 @@ const langOptions = {
     header:'Request Header ',
     notEmpty:' cannot be empty',
     fileNotEmpty:' file cannot be empty'
+  },
+  script: {
+    JSExample: 'JSExample',
+    TSExample: 'TSExample',
   }
 };
 

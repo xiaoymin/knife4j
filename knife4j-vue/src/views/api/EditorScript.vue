@@ -21,6 +21,11 @@ export default {
       type: String,
       required: true,
       default: ""
+    },
+    tsMode: {
+      type: Boolean,
+      required: false,
+      default: false,
     }
   },
   data() {
@@ -53,8 +58,12 @@ export default {
       var that = this;
       this.editor = editor;
       require("brace/ext/language_tools"); //language extension prerequsite...
-      require('brace/mode/javascript')
+      require('brace/mode/javascript');
+      require('brace/mode/typescript');
       require("brace/theme/eclipse");
+      if (this.tsMode) {
+        this.lang = "typescript";
+      }
       //重设高度
       this.resetEditorHeight();
       this.editor.renderer.on("afterRender", function() {
