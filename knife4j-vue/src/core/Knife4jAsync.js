@@ -34,28 +34,28 @@
  */
 import {
   message
-} from 'ant-design-vue'
-import md5 from 'js-md5'
+} from 'ant-design-vue';
+import md5 from 'js-md5';
 import {
   urlToList
-} from '@/components/utils/pathTools'
-import KUtils from './utils'
-import { marked } from 'marked'
-import async from 'async'
+} from '@/components/utils/pathTools';
+import KUtils from './utils';
+import { marked } from 'marked';
+import async from 'async';
 import {
   findComponentsByPath,
   findMenuByKey
-} from '@/components/utils/Knife4jUtils'
-import Constants from '@/store/constants'
-import uniqueId from 'lodash/uniqueId'
-import isObject from 'lodash/isObject'
-import has from 'lodash/has'
-import cloneDeep from 'lodash/cloneDeep'
-import unset from 'lodash/unset'
-import isNull from 'lodash/isNull'
-import isUndefined from 'lodash/isUndefined'
-import xml2js from 'xml2js'
-import DebugAxios from 'axios'
+} from '@/components/utils/Knife4jUtils';
+import Constants from '@/store/constants';
+import uniqueId from 'lodash/uniqueId';
+import isObject from 'lodash/isObject';
+import has from 'lodash/has';
+import cloneDeep from 'lodash/cloneDeep';
+import unset from 'lodash/unset';
+import isNull from 'lodash/isNull';
+import isUndefined from 'lodash/isUndefined';
+import xml2js from 'xml2js';
+import DebugAxios from 'axios';
 
 marked.setOptions({
   gfm: true,
@@ -65,7 +65,7 @@ marked.setOptions({
   sanitize: false,
   smartLists: true,
   smartypants: false
-})
+});
 
 function SwaggerBootstrapUi(options) {
   this.swaggerData = null;
@@ -81,13 +81,13 @@ function SwaggerBootstrapUi(options) {
     const index = path.lastIndexOf("/");
     const basePath = path.length == index + 1 ? path : path.substring(0, index);
     // swagger请求api地址
-    this.url = options.url || basePath + 'v3/api-docs/swagger-config'
+    this.url = options.url || basePath + 'v3/api-docs/swagger-config';
     //console.log(this.url)
     //this.url = options.url || 'v3/api-docs/swagger-config'
   } else {
-    this.url = options.url || 'swagger-resources'
+    this.url = options.url || 'swagger-resources';
   }
-  this.i18n = options.i18n || 'zh-CN'
+  this.i18n = options.i18n || 'zh-CN';
   //是否Knife4jAggregationDesktop
   this.desktop = options.desktop || false;
   this.desktopCode = null;
@@ -98,7 +98,7 @@ function SwaggerBootstrapUi(options) {
   //该版本会自动追加basePath,因为Knife4j在以前的版本中帮忙追加了basePath所以导致重复
   this.baseSpringFox = options.baseSpringFox || false;
   //this.i18nInstance = null
-  this.configUrl = options.configUrl || 'swagger-resources/configuration/ui'
+  this.configUrl = options.configUrl || 'swagger-resources/configuration/ui';
   //用于控制是否请求configUrl的配置
   this.configSupport = options.configSupport || false;
   //用于控制是否请求configSecurityUrl的配置
@@ -113,36 +113,36 @@ function SwaggerBootstrapUi(options) {
   this.store = options.store || {};
   this.localStore = options.localStore || {};
   //
-  this.plus = options.plus
+  this.plus = options.plus;
   //文档id
-  this.docId = 'content'
-  this.title = 'knife4j'
-  this.titleOfUrl = 'https://gitee.com/xiaoym/knife4j'
-  this.load = 1
+  this.docId = 'content';
+  this.title = 'knife4j';
+  this.titleOfUrl = 'https://gitee.com/xiaoym/knife4j';
+  this.load = 1;
   //tabid
-  this.tabId = 'tabUl'
-  this.tabContentId = 'tabContent'
-  this.searchEleId = 'spanSearch'
-  this.searchTxtEleId = 'searchTxt'
-  this.menuId = 'menu'
-  this.searchMenuId = 'searchMenu'
+  this.tabId = 'tabUl';
+  this.tabContentId = 'tabContent';
+  this.searchEleId = 'spanSearch';
+  this.searchTxtEleId = 'searchTxt';
+  this.menuId = 'menu';
+  this.searchMenuId = 'searchMenu';
   //实例分组
-  this.instances = []
+  this.instances = [];
   //当前分组实例
-  this.currentInstance = null
+  this.currentInstance = null;
   //全局菜单 add by xiaoymin at 2019-11-30 13:51:39
   //菜单初始化时添加,后期tab切换时用来查找
-  this.globalMenuDatas = []
+  this.globalMenuDatas = [];
   //动态tab
-  this.globalTabId = 'sbu-dynamic-tab'
-  this.globalTabs = []
-  this.layui = options.layui
-  this.ace = options.ace
-  this.treetable = options.treetable
-  this.layTabFilter = 'admin-pagetabs'
-  this.version = '1.9.6'
-  this.requestOrigion = 'SwaggerBootstrapUi'
-  this.requestParameter = {} //浏览器请求参数
+  this.globalTabId = 'sbu-dynamic-tab';
+  this.globalTabs = [];
+  this.layui = options.layui;
+  this.ace = options.ace;
+  this.treetable = options.treetable;
+  this.layTabFilter = 'admin-pagetabs';
+  this.version = '1.9.6';
+  this.requestOrigion = 'SwaggerBootstrapUi';
+  this.requestParameter = {}; //浏览器请求参数
   //个性化配置
   this.settings = options.settings || {
     enableDebug: true,//是否开启Debug调试栏
@@ -175,18 +175,18 @@ function SwaggerBootstrapUi(options) {
     enableHost: false,//是否启用Host
     enableHostText: '',//启用Host后文本
     language: options.i18n || 'zh-CN' //默认语言版本
-  }
+  };
   //SwaggerBootstrapUi增强注解地址
-  this.extUrl = '/v2/api-docs'
-  this.ext3Url = '/v3/api-docs'
+  this.extUrl = '/v2/api-docs';
+  this.ext3Url = '/v3/api-docs';
   //验证增强有效地址
-  this.validateExtUrl = ''
+  this.validateExtUrl = '';
   //缓存api对象,以区分是否是新的api,存储SwaggerBootstapUiCacheApi对象
-  this.cacheApis = options.cacheApis || []
-  this.hasLoad = false
+  this.cacheApis = options.cacheApis || [];
+  this.hasLoad = false;
   //add i18n supports by xiaoymin at 2019-4-17 20:27:34
   //this.i18n = new I18n();
-  this.i18nInstance = options.i18nInstance || {}
+  this.i18nInstance = options.i18nInstance || {};
   //配置属性 2019-8-28 13:19:35,目前仅支持属性supportedSubmitMethods
   this.configuration = {
     supportedSubmitMethods: [
@@ -199,16 +199,16 @@ function SwaggerBootstrapUi(options) {
       'patch',
       'trace'
     ]
-  }
+  };
 }
 
 /***
  * swagger-bootstrap-ui的main方法,初始化文档所有功能,类似于SpringBoot的main方法
  */
 SwaggerBootstrapUi.prototype.main = function () {
-  var that = this
+  var that = this;
   //that.welcome();
-  that.initRequestParameters()
+  that.initRequestParameters();
   that.initSettings();
   /* that.initUnTemplatePageI18n();
   that.initWindowWidthAndHeight();
@@ -229,23 +229,23 @@ SwaggerBootstrapUi.prototype.main = function () {
  * i18n支持：lang=zh|en
  */
 SwaggerBootstrapUi.prototype.initRequestParameters = function () {
-  var that = this
-  var params = window.location.search
+  var that = this;
+  var params = window.location.search;
   if (params != undefined && params != '') {
-    var notQus = params.substr(1)
+    var notQus = params.substr(1);
     if (notQus != undefined && notQus != null && notQus != '') {
-      var pms = notQus.split('&')
+      var pms = notQus.split('&');
       for (var i = 0; i < pms.length; i++) {
-        var pm = pms[i]
+        var pm = pms[i];
         if (pm != undefined && pm != null && pm != '') {
-          var pmArr = pm.split('=')
-          that.requestParameter[KUtils.trim(pmArr[0])] = KUtils.trim(pmArr[1])
+          var pmArr = pm.split('=');
+          that.requestParameter[KUtils.trim(pmArr[0])] = KUtils.trim(pmArr[1]);
         }
       }
     }
   }
-  that.log('请求参数========================================')
-  that.log(that.requestParameter)
+  that.log('请求参数========================================');
+  that.log(that.requestParameter);
 }
 
 /***
@@ -255,27 +255,27 @@ SwaggerBootstrapUi.prototype.initRequestParameters = function () {
  * 此处仅作为一个读取初始化的作用
  */
 SwaggerBootstrapUi.prototype.initSettings = function () {
-  var that = this
-  that.log("本地Settings初始化")
+  var that = this;
+  that.log("本地Settings初始化");
   //添加对knife4j-front版本的支持,静态版本不提供配置
   if (that.configSupport) {
-    that.configInit()
+    that.configInit();
   }
   //加载分组接口
   that.analysisGroup();
 }
 
 SwaggerBootstrapUi.prototype.initApis = function () {
-  var that = this
+  var that = this;
   if (window.localStorage) {
-    var store = window.localStorage
-    var cacheApis = store['SwaggerBootstrapUiCacheApis']
+    var store = window.localStorage;
+    var cacheApis = store['SwaggerBootstrapUiCacheApis'];
     if (cacheApis != undefined && cacheApis != null && cacheApis != '') {
       //var settings = JSON.parse(cacheApis)
-      var settings = KUtils.json5parse(cacheApis)
-      that.cacheApis = settings
+      var settings = KUtils.json5parse(cacheApis);
+      that.cacheApis = settings;
     } else {
-      that.cacheApis = []
+      that.cacheApis = [];
     }
   }
 }
@@ -284,7 +284,7 @@ SwaggerBootstrapUi.prototype.initApis = function () {
  * Swagger配置信息加载
  */
 SwaggerBootstrapUi.prototype.configInit = function () {
-  var that = this
+  var that = this;
   this.ajax({
     url: that.configUrl,
     type: 'get',
@@ -296,15 +296,15 @@ SwaggerBootstrapUi.prototype.configInit = function () {
       data != undefined &&
       data.hasOwnProperty('supportedSubmitMethods')
     ) {
-      var originalSupportSubmitMethods = data['supportedSubmitMethods']
+      var originalSupportSubmitMethods = data['supportedSubmitMethods'];
       if (originalSupportSubmitMethods.length > 0) {
-        var newSupports = []
+        var newSupports = [];
         originalSupportSubmitMethods.forEach(function (method) {
-          newSupports.push(method.toLowerCase())
+          newSupports.push(method.toLowerCase());
         })
-        that.configuration.supportedSubmitMethods = newSupports
+        that.configuration.supportedSubmitMethods = newSupports;
       } else {
-        that.configuration.supportedSubmitMethods = []
+        that.configuration.supportedSubmitMethods = [];
       }
     }
   }, err => {
@@ -347,7 +347,7 @@ SwaggerBootstrapUi.prototype.configInit = function () {
  * 调用swagger的分组接口,获取swagger分组信息,包括分组名称,接口url地址,版本号等
  */
 SwaggerBootstrapUi.prototype.analysisGroup = function () {
-  var that = this
+  var that = this;
   try {
     var headers = {};
     if (that.desktop) {
@@ -376,16 +376,16 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
       if (that.springdoc) {
         that.analysisSpringDocOpenApiGroupSuccess(data);
       } else {
-        that.analysisGroupSuccess(data)
+        that.analysisGroupSuccess(data);
       }
       //创建分组元素
-      that.createGroupElement()
+      that.createGroupElement();
     }, err => {
-      message.error('Knife4j文档请求异常')
-      that.error(err)
+      message.error('Knife4j文档请求异常');
+      that.error(err);
     })
   } catch (err) {
-    that.error(err)
+    that.error(err);
   }
 }
 /**
@@ -393,17 +393,17 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
  * @param {*} data
  */
 SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (data) {
-  var that = this
-  var t = typeof data
-  var groupData = null
+  var that = this;
+  var t = typeof data;
+  var groupData = null;
   if (t == 'string') {
     //groupData = JSON.parse(data)
-    groupData = KUtils.json5parse(data)
+    groupData = KUtils.json5parse(data);
   } else {
-    groupData = data
+    groupData = data;
   }
-  that.log('响应分组json数据')
-  that.log(groupData)
+  that.log('响应分组json数据');
+  that.log(groupData);
   var serviceOptions = [];
   var allGroupIds = [];
   var groupUrls = KUtils.getValue(groupData, 'urls', [], true);
@@ -415,7 +415,7 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
         url: KUtils.getValue(gu, 'url', '', true),
         location: KUtils.getValue(gu, 'url', '', true),
         swaggerVersion: '3.0.3'
-      }
+      };
       newGroupData.push(newGroup);
     })
   } else {
@@ -433,21 +433,21 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
       KUtils.toString(group.name, '').replace(/\//g, '-'),
       group.location,
       group.swaggerVersion
-    )
-    g.url = group.url
+    );
+    g.url = group.url;
     g.desktop = that.desktop;
     g.desktopCode = that.desktopCode;
     //g.url="/test/json";
-    var newUrl = ''
+    var newUrl = '';
     //此处需要判断basePath路径的情况
     if (group.url != null && group.url != undefined && group.url != '') {
-      newUrl = group.url
+      newUrl = group.url;
     } else {
-      newUrl = group.location
+      newUrl = group.location;
     }
     g.extUrl = newUrl;
     if (that.validateExtUrl == '') {
-      that.validateExtUrl = g.extUrl
+      that.validateExtUrl = g.extUrl;
     }
     //判断当前分组url是否存在basePath
     if (
@@ -455,14 +455,14 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
       group.basePath != undefined &&
       group.basePath != ''
     ) {
-      g.baseUrl = group.basePath
+      g.baseUrl = group.basePath;
     }
     //赋值查找缓存的id
     if (that.cacheApis.length > 0) {
-      var cainstance = null
+      var cainstance = null;
       that.cacheApis.forEach(ca => {
         if (ca.id == g.groupId) {
-          cainstance = ca
+          cainstance = ca;
         }
       })
       /*  $.each(that.cacheApis, function (x, ca) {
@@ -471,34 +471,34 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
          }
        }) */
       if (cainstance != null) {
-        g.firstLoad = false
+        g.firstLoad = false;
         //判断旧版本是否包含updatesApi属性
         if (!cainstance.hasOwnProperty('updateApis')) {
-          cainstance['updateApis'] = {}
+          cainstance['updateApis'] = {};
         }
-        g.cacheInstance = cainstance
-        that.log(g)
+        g.cacheInstance = cainstance;
+        that.log(g);
         //g.groupApis=cainstance.cacheApis;
       } else {
         g.cacheInstance = new SwaggerBootstrapUiCacheApis({
           id: g.groupId,
           name: g.name
-        })
+        });
       }
     } else {
       g.cacheInstance = new SwaggerBootstrapUiCacheApis({
         id: g.groupId,
         name: g.name
-      })
+      });
     }
     //双向绑定
     serviceOptions.push({
       label: g.name,
       value: g.id
-    })
+    });
     //增加所有分组id，为afterScript特性
     allGroupIds.push(g.id);
-    that.instances.push(g)
+    that.instances.push(g);
   })
   //赋值分组id
   if (KUtils.arrNotEmpty(that.instances)) {
@@ -522,17 +522,17 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
  * @param data
  */
 SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
-  var that = this
-  var t = typeof data
-  var groupData = null
+  var that = this;
+  var t = typeof data;
+  var groupData = null;
   if (t == 'string') {
     //groupData = JSON.parse(data)
-    groupData = KUtils.json5parse(data)
+    groupData = KUtils.json5parse(data);
   } else {
-    groupData = data
+    groupData = data;
   }
-  that.log('响应分组json数据')
-  that.log(groupData)
+  that.log('响应分组json数据');
+  that.log(groupData);
   var serviceOptions = [];
   var allGroupIds = [];
   groupData.forEach(function (group) {
@@ -540,8 +540,8 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       KUtils.toString(group.name, '').replace(/\//g, '-'),
       group.location,
       group.swaggerVersion
-    )
-    g.url = group.url
+    );
+    g.url = group.url;
     //测试api接口JSON
     //g.url="/test/json";
     //Knife4j自研微服务聚合使用，默认是null
@@ -550,12 +550,12 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     g.servicePath = KUtils.getValue(group, 'servicePath', null, true);
     g.desktop = that.desktop;
     g.desktopCode = that.desktopCode;
-    var newUrl = ''
+    var newUrl = '';
     //此处需要判断basePath路径的情况
     if (group.url != null && group.url != undefined && group.url != '') {
-      newUrl = group.url
+      newUrl = group.url;
     } else {
-      newUrl = group.location
+      newUrl = group.location;
     }
     g.extUrl = newUrl;
     //去除增强地址
@@ -576,7 +576,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     }
      */
     if (that.validateExtUrl == '') {
-      that.validateExtUrl = g.extUrl
+      that.validateExtUrl = g.extUrl;
     }
     //判断当前分组url是否存在basePath
     if (
@@ -584,14 +584,14 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
       group.basePath != undefined &&
       group.basePath != ''
     ) {
-      g.baseUrl = group.basePath
+      g.baseUrl = group.basePath;
     }
     //赋值查找缓存的id
     if (that.cacheApis.length > 0) {
-      var cainstance = null
+      var cainstance = null;
       that.cacheApis.forEach(ca => {
         if (ca.id == g.groupId) {
-          cainstance = ca
+          cainstance = ca;
         }
       })
       /*  $.each(that.cacheApis, function (x, ca) {
@@ -600,34 +600,34 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
          }
        }) */
       if (cainstance != null) {
-        g.firstLoad = false
+        g.firstLoad = false;
         //判断旧版本是否包含updatesApi属性
         if (!cainstance.hasOwnProperty('updateApis')) {
-          cainstance['updateApis'] = {}
+          cainstance['updateApis'] = {};
         }
-        g.cacheInstance = cainstance
-        that.log(g)
+        g.cacheInstance = cainstance;
+        that.log(g);
         //g.groupApis=cainstance.cacheApis;
       } else {
         g.cacheInstance = new SwaggerBootstrapUiCacheApis({
           id: g.groupId,
           name: g.name
-        })
+        });
       }
     } else {
       g.cacheInstance = new SwaggerBootstrapUiCacheApis({
         id: g.groupId,
         name: g.name
-      })
+      });
     }
     //双向绑定
     serviceOptions.push({
       label: g.name,
       value: g.id
-    })
+    });
     //增加所有分组id，为afterScript特性
     allGroupIds.push(g.id);
-    that.instances.push(g)
+    that.instances.push(g);
   })
   //赋值分组id
   if (KUtils.arrNotEmpty(that.instances)) {
@@ -653,7 +653,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
 SwaggerBootstrapUi.prototype.createGroupElement = function () {
   var that = this;
   //创建分组flag
-  that.log("分组-------------------------------")
+  that.log("分组-------------------------------");
   //that.log(that.instances)
   //that.log(that.$Vue.$route.params)
   //此处需要根据当前访问hash地址动态设置访问的下拉组
@@ -665,8 +665,8 @@ SwaggerBootstrapUi.prototype.createGroupElement = function () {
       var gpName = urlParams.groupName;
       if (KUtils.checkUndefined(gpName) && gpName != '') {
         let selectInstance = that.selectInstanceByGroupName(gpName);
-        that.log("包含分组名称")
-        that.log(selectInstance)
+        that.log("包含分组名称");
+        that.log(selectInstance);
         //双向绑定下拉框的服务选项
         //that.$Vue.defaultServiceOption = selectInstance.id;
         this.defaultServiceOption = selectInstance.id;
@@ -763,7 +763,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       that.ajax(requestConfig, data => {
         that.analysisApiSuccess(data);
       }, err => {
-        message.error('Knife4j文档请求异常')
+        message.error('Knife4j文档请求异常');
         that.error(err);
       })
       /*  DebugAxios.create().request({
@@ -821,7 +821,7 @@ SwaggerBootstrapUi.prototype.afterApiInitSuccess = function () {
 SwaggerBootstrapUi.prototype.initOpenTable = function () {
   var that = this;
   if (!that.settings.enableCacheOpenApiTable) {
-    return
+    return;
   }
   if (window.localStorage) {
     var store = window.localStorage;
@@ -834,7 +834,7 @@ SwaggerBootstrapUi.prototype.initOpenTable = function () {
     if (cacheApis.length > 0) {
       for (var i = 0; i < cacheApis.length; i++) {
         var cacheApi = cacheApis[i];
-        that.log(cacheApi)
+        that.log(cacheApi);
         //var xx=that.getMenu().find(".menuLi[lay-id='"+cacheApi.tabId+"']");
         //xx.trigger("click");
       }
@@ -1017,7 +1017,7 @@ SwaggerBootstrapUi.prototype.openSettings = function (data) {
           that.i18nVue.locale = i18n;
         }
         that.store.dispatch('globals/setLang', i18n);
-      }, 500)
+      }, 500);
     } else {
       //此处逻辑存在问题,如果开发者通过界面中的个性化设置保存了部分操作,则需要继承开发者的配置(2021/05/02)
       //https://gitee.com/xiaoym/knife4j/issues/I27CN8
@@ -1082,7 +1082,7 @@ SwaggerBootstrapUi.prototype.openV3Settings = function (data) {
             that.i18nVue.locale = i18n;
           }
           that.store.dispatch('globals/setLang', i18n);
-        }, 500)
+        }, 500);
       }
     } else {
       //不存在，直接移除缓存
@@ -1269,7 +1269,7 @@ SwaggerBootstrapUi.prototype.basicInfoOAS2 = function (menu) {
       schemes: menu['schemes'] || [],
       consumes: menu['consumes'] || ['*/*'],
       produces: menu['produces'] || ['*/*']
-    }
+    };
     that.currentInstance.openApiBaseInfo = openApiBaseInfo;
   } else {
     title = that.currentInstance.title;
@@ -1323,7 +1323,7 @@ SwaggerBootstrapUi.prototype.basicInfoOAS3 = function (menu) {
       openapi: menu['openapi'] || '3.0.3',
       info: menu['info'] || {},
       servers: menu['servers'] || []
-    }
+    };
     that.currentInstance.openApiBaseInfo = openApiBaseInfo;
   }
 }
@@ -1486,7 +1486,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2 = function (menu, swud,
                         }
                         propValue = {
                           "additionalProperties1": addTempValue
-                        }
+                        };
                         //console.log(propValue)
                         spropObj.type = addtionalName;
                         spropObj.refType = addtionalName;
@@ -1508,7 +1508,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2 = function (menu, swud,
                           }
                           propValue = {
                             "additionalProperties1": addTempValue
-                          }
+                          };
                           that.log("解析map-=完毕：")
                           that.log(propValue);
                           spropObj.type = addrefType;
@@ -1537,8 +1537,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2 = function (menu, swud,
                           tempAddValue.push(addTempValue);
                           propValue = {
                             "additionalProperties1": tempAddValue
-                          }
-                          that.log("解析map-=完毕：")
+                          };
+                          that.log("解析map-=完毕：");
                           that.log(propValue);
                           spropObj.type = "array";
                           spropObj.refType = addrefType;
@@ -1769,7 +1769,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
                         }
                         propValue = {
                           "additionalProperties1": addTempValue
-                        }
+                        };
                         //console.log(propValue)
                         spropObj.type = addtionalName;
                         spropObj.refType = addtionalName;
@@ -1791,8 +1791,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
                           }
                           propValue = {
                             "additionalProperties1": addTempValue
-                          }
-                          that.log("解析map-=完毕：")
+                          };
+                          that.log("解析map-=完毕：");
                           that.log(propValue);
                           spropObj.type = addrefType;
                           spropObj.refType = addrefType;
@@ -1820,8 +1820,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
                           tempAddValue.push(addTempValue);
                           propValue = {
                             "additionalProperties1": tempAddValue
-                          }
-                          that.log("解析map-=完毕：")
+                          };
+                          that.log("解析map-=完毕：");
                           that.log(propValue);
                           spropObj.type = "array";
                           spropObj.refType = addrefType;
@@ -2051,8 +2051,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                       var refp = new SwaggerBootstrapUiParameter();
                       refp.pid = originalTreeTableModel.id;
                       refp.readOnly = p.readOnly;
-                      refp.parentTypes.push(treeTableModel.name)
-                      refp.parentTypes.push(key)
+                      refp.parentTypes.push(treeTableModel.name);
+                      refp.parentTypes.push(key);
                       //refp.level = minfo.level + 1;
                       refp.name = pkey;
                       refp.type = p.type;
@@ -2320,7 +2320,7 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp, definitions, deepDef
             //获取required属性
             var requiredArrs = def.hasOwnProperty("required") ? def["required"] : new Array();
             for (var pkey in props) {
-              var p = props[pkey]
+              var p = props[pkey];
               p.refType = that.getSwaggerModelRefType(p, oas2);
               var refp = new SwaggerBootstrapUiParameter();
               refp.pid = parentRefp.id;
@@ -2520,7 +2520,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       var apiInfo = null;
       _supportMethods.forEach(function (method) {
         if (pathObject.hasOwnProperty(method)) {
-          apiInfo = pathObject[method]
+          apiInfo = pathObject[method];
           if (apiInfo != null) {
             var ins = that.createApiInfoInstance(path, method, apiInfo, appendBaePathFlag);
             that.currentInstance.paths.push(ins);
@@ -2694,15 +2694,15 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
 
   //自定义文档
   if (that.settings.enableSwaggerBootstrapUi) {
-    var sbu = menu["swaggerBootstrapUi"]
+    var sbu = menu["swaggerBootstrapUi"];
     if (KUtils.checkUndefined(sbu)) {
       if (KUtils.checkUndefined(sbu.markdownFiles)) {
         sbu.markdownFiles.forEach(function (md) {
-          let key = md5(md.title)
+          let key = md5(md.title);
           that.currentInstance.markdownFiles.push({
             ...md,
             id: key
-          })
+          });
         })
       }
     }
@@ -2961,7 +2961,7 @@ SwaggerBootstrapUi.prototype.processModels = function () {
 function deepTreeTableSchemaModel(model, treeTableModel, param, rootParam) {
   ////console(model.name)
   if (KUtils.checkUndefined(param.schemaValue)) {
-    var schema = treeTableModel[param.schemaValue]
+    var schema = treeTableModel[param.schemaValue];
     if (KUtils.checkUndefined(schema)) {
       rootParam.parentTypes.push(param.schemaValue);
       if (KUtils.arrNotEmpty(schema.params)) {
@@ -2990,7 +2990,7 @@ function deepTreeTableSchemaModel(model, treeTableModel, param, rootParam) {
             validateInstance: nmd.validateInstance,
             validateStatus: nmd.validateStatus,
             value: nmd.value
-          }
+          };
           childrenParam.pid = param.id;
           childrenParam.parentParam = param;
           model.data.push(childrenParam);
@@ -3033,7 +3033,7 @@ function findModelChildren(md, modelData) {
         validateInstance: nmd.validateInstance,
         validateStatus: nmd.validateStatus,
         value: nmd.value
-      }
+      };
       if (newnmd.pid == md.id) {
         newnmd.children = [];
         newnmd.childrenIds = [];
@@ -3133,7 +3133,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
       component: 'Authorize',
       icon: 'icon-authenticationsystem',
       path: 'Authorize/' + groupName,
-    })
+    });
   }
   //Swagger通用Models add by xiaoyumin 2018-11-6 13:26:45
   //是否显示SwaggerModels
@@ -3200,7 +3200,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         path: 'Settings'
       }
       ]
-    })
+    });
 
   }
   //自定义文档
@@ -3217,7 +3217,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         icon: 'icon-APIwendang',
         path: groupName + '-' + mdid + '-omd',
         children: []
-      }
+      };
       if (KUtils.arrNotEmpty(mdTag.children)) {
         mdTag.children.forEach(mdfile => {
           mdfolder.children.push({
@@ -3227,7 +3227,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
             component: 'OtherMarkdown',
             name: mdfile.title,
             path: mdfile.id
-          })
+          });
         })
       }
       //console.log(mdfolder)
@@ -3285,7 +3285,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         //path: groupName + "/" + tag.name
         //不存在接口,直接指向home主页
         path: ""
-      })
+      });
     } else {
       if (that.settings.showTagStatus) {
         _lititle = tag.name + "(" + tag.description + ")";
@@ -3302,7 +3302,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         hasNew: tag.hasNew || tag.hasChanged,
         num: null,
         children: []
-      }
+      };
       tag.childrens.forEach(function (children) {
         //})
         //console.log(children)
@@ -3321,7 +3321,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
           url: children.url,
           method: children.methodType.toUpperCase(),
           menuClass: 'knife4j-menu-left-style'
-        }
+        };
         tagMenu.children.push(tabSubMenu);
       })
       //给接口数量赋值
@@ -4020,13 +4020,13 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
                         "originalRef": type,
                         "$ref": "#/components/schemas/" + type
                       }
-                    }
+                    };
                     originalParameterName = originalParameterName + "s";
                   } else {
                     originalSchema = {
                       "originalRef": type,
                       "$ref": "#/components/schemas/" + type
-                    }
+                    };
                   }
                   var originalOpenApiParameter = {
                     "in": "body",
@@ -4038,7 +4038,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
                   if (type == "object") {
                     //如果是object类型，补一个空的请求对象
                     //https://gitee.com/xiaoym/knife4j/issues/I2WCAS
-                    originalOpenApiParameter = Object.assign({}, originalOpenApiParameter, { "default": "{}" })
+                    originalOpenApiParameter = Object.assign({}, originalOpenApiParameter, { "default": "{}" });
                   }
                   that.assembleParameterOAS3(originalOpenApiParameter, swpinfo, []);
 
@@ -4711,7 +4711,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
       //swpinfo.description = marked(swpinfo.description);
       swpinfo.description = marked.parse(swpinfo.description);
     }
-    apiInfo.operationId = apiInfo.operationId || swpinfo.id
+    apiInfo.operationId = apiInfo.operationId || swpinfo.id;
     swpinfo.operationId = apiInfo.operationId;
     swpinfo.summary = KUtils.toString(apiInfo.summary, "").replace(/\//g, "-");
     //针对summary做一次非空判断
@@ -5105,7 +5105,7 @@ SwaggerBootstrapUi.prototype.assembleParameter = function (m, swpinfo) {
         }
       } else {
         var sty = schItem["type"];
-        minfo.schemaValue = schItem["type"]
+        minfo.schemaValue = schItem["type"];
         //此处判断Array的类型,如果
         if (sty == "string") {
           minfo.value = "";
@@ -5415,7 +5415,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
         }
       } else {
         var sty = schItem["type"];
-        minfo.schemaValue = schItem["type"]
+        minfo.schemaValue = schItem["type"];
         //此处判断Array的类型,如果
         if (sty == "string") {
           minfo.value = "";
@@ -5778,7 +5778,7 @@ IncludeAssemble.prototype = {
           this.merge(prev, cur);
           return prev;
         }
-        return cur
+        return cur;
       });
     }
   }
@@ -5919,7 +5919,7 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                           addTempValue = that.findRefDefinition(addtionalName, definitions, false, globalArr, xname, oas);
                           propValue = {
                             "additionalProperties1": addTempValue
-                          }
+                          };
                         }
                       }
                       //判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
@@ -5937,7 +5937,7 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                               addTempValue = that.findRefDefinition(addrefType, definitions, flag, globalArr, xname, oas);
                               propValue = {
                                 "additionalProperties1": addTempValue
-                              }
+                              };
                             }
 
                           }
@@ -6864,43 +6864,43 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   //this.id = 'SwaggerBootstrapUiInstance' + Math.round(Math.random() * 1000000)
   this.id = 'SwaggerBootstrapUiInstance' + md5(name + location + version)
   //默认未加载
-  this.load = false
+  this.load = false;
   //分组名称
-  this.name = name
+  this.name = name;
   //分组url地址
-  this.location = location
+  this.location = location;
   //不分组是url地址
-  this.url = null
+  this.url = null;
   //增强地址
-  this.extUrl = null
+  this.extUrl = null;
   //如果version为空,给一个默认值2.0
   if (KUtils.strNotBlank(version)) {
-    this.groupVersion = version
+    this.groupVersion = version;
   } else {
-    this.groupVersion = "2.0"
+    this.groupVersion = "2.0";
   }
   //所有实例的分组id
   this.allGroupIds = null;
   //分组url请求实例
-  this.basePath = ''
+  this.basePath = '';
   //使用nginx,反向代理服务名称
-  this.baseUrl = ''
-  this.host = ''
-  this.swagger = ''
-  this.description = ''
-  this.title = ''
-  this.version = ''
-  this.termsOfService = ''
-  this.contact = ''
+  this.baseUrl = '';
+  this.host = '';
+  this.swagger = '';
+  this.description = '';
+  this.title = '';
+  this.version = '';
+  this.termsOfService = '';
+  this.contact = '';
   //当前definistion数组
   // SwaggerBootstrapUiDefinition 集合
-  this.difArrs = []
+  this.difArrs = [];
   //difinition的请求value缓存值
   //key-definiationName  -value :requestValue
   // add 2019-12-11 15:06:30
   this.definitionValues = {};
   //针对Swagger Models功能,再存一份SwaggerBootstrapUiDefinition集合
-  this.swaggerModelsDifinitions = []
+  this.swaggerModelsDifinitions = [];
   //add 2019-12-11 20:08:51
   //该属性针对SwaggerModels功能,避免和refTreeTableModels属性功能重叠
   this.swaggerTreeTableModels = {};
@@ -6908,41 +6908,41 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   this.refTreeTableModels = {};
   //标签分类信息组
   //SwaggerBootstrapUiTag 集合
-  this.tags = []
+  this.tags = [];
   //接口url信息
   //存储SwaggerBootstrapUiApiInfo 集合
-  this.paths = []
+  this.paths = [];
   //字典
-  this.pathsDictionary = {}
+  this.pathsDictionary = {};
   //全局参数,存放SwaggerBootstrapUiParameter集合
-  this.globalParameters = []
+  this.globalParameters = [];
   //参数统计信息，存放SwaggerBootstrapUiPathCountDownLatch集合
-  this.pathArrs = []
+  this.pathArrs = [];
   //key-value方式存放
   //key-存放接口地址
   //value:存放实际值
-  this.pathFilters = {}
+  this.pathFilters = {};
   //权限信息
-  this.securityArrs = []
+  this.securityArrs = [];
   //Models
-  this.models = []
-  this.modelNames = []
+  this.models = [];
+  this.modelNames = [];
   //新版本的models 适配antd的属性表格
-  this.modelArrs = []
+  this.modelArrs = [];
 
   //SwaggerBootstrapCacheGroupApis 对象的集合
   //add by xiaoyumin 2018-12-12 18:49:22
-  this.groupId = md5(name)
-  this.firstLoad = true
-  this.groupApis = []
+  this.groupId = md5(name);
+  this.firstLoad = true;
+  this.groupApis = [];
   //缓存对象
   //this.cacheInstance=new SwaggerBootstrapUiCacheApis({id:this.groupId,name:this.name});
-  this.cacheInstance = null
+  this.cacheInstance = null;
   //自定义文档
   //存放SwaggerBootstarpUiMarkdownTag的集合
-  this.markdownFiles = []
+  this.markdownFiles = [];
 
-  this.i18n = null
+  this.i18n = null;
   //增加header头,servicePath,主要针对Knife4j-aggregation网关聚合模块
   this.header = null;
   this.basicAuth = null;
@@ -7043,57 +7043,57 @@ SwaggerBootstrapUiInstance.prototype.getDefinitionByName = function (name, oas) 
 SwaggerBootstrapUiInstance.prototype.freeMemory = function () {
   //当前definistion数组
   // SwaggerBootstrapUiDefinition 集合
-  this.difArrs = []
+  this.difArrs = [];
   //difinition的请求value缓存值
   //key-definiationName  -value :requestValue
   // add 2019-12-11 15:06:30
   this.definitionValues = {};
   //针对Swagger Models功能,再存一份SwaggerBootstrapUiDefinition集合
-  this.swaggerModelsDifinitions = []
+  this.swaggerModelsDifinitions = [];
   //add 2019-12-11 20:08:51
   //存放treeTable已经递归查询过的schema值
   this.refTreeTableModels = {};
   //标签分类信息组
   //SwaggerBootstrapUiTag 集合
-  this.tags = []
+  this.tags = [];
   //接口url信息
   //存储SwaggerBootstrapUiApiInfo 集合
-  this.paths = []
+  this.paths = [];
   //字典
-  this.pathsDictionary = {}
+  this.pathsDictionary = {};
   //全局参数,存放SwaggerBootstrapUiParameter集合
-  this.globalParameters = []
+  this.globalParameters = [];
   //参数统计信息，存放SwaggerBootstrapUiPathCountDownLatch集合
-  this.pathArrs = []
+  this.pathArrs = [];
   //key-value方式存放
   //key-存放接口地址
   //value:存放实际值
-  this.pathFilters = {}
+  this.pathFilters = {};
   //权限信息
-  this.securityArrs = []
+  this.securityArrs = [];
   //Models
-  this.models = []
-  this.modelNames = []
+  this.models = [];
+  this.modelNames = [];
   //新版本的models 适配antd的属性表格
-  this.modelArrs = []
-  this.firstLoad = true
-  this.groupApis = []
+  this.modelArrs = [];
+  this.firstLoad = true;
+  this.groupApis = [];
   //缓存对象
   //this.cacheInstance=new SwaggerBootstrapUiCacheApis({id:this.groupId,name:this.name});
-  this.cacheInstance = null
+  this.cacheInstance = null;
   //自定义文档
-  this.markdownFiles = []
-  this.i18n = null
+  this.markdownFiles = [];
+  this.i18n = null;
 }
 
 function checkFiledExistsAndEqStr(object, filed, eq) {
-  var flag = false
+  var flag = false;
   if (object.hasOwnProperty(filed)) {
     if (object[filed] == eq) {
-      flag = true
+      flag = true;
     }
   }
-  return flag
+  return flag;
 }
 
 /***
@@ -7110,9 +7110,9 @@ SwaggerBootstrapUi.prototype.ajax = function (config, success, error) {
   var ajax = DebugAxios.create();
   ajax.interceptors.response.use(response => {
     var data = response.data;
-    return data
+    return data;
   }, error => {
-    return Promise.reject(error)
+    return Promise.reject(error);
   })
   ajax.request(config).then(data => {
     success(data);
@@ -7127,8 +7127,8 @@ SwaggerBootstrapUi.prototype.ajax = function (config, success, error) {
  */
 SwaggerBootstrapUi.prototype.error = function (msg) {
   if (window.console) {
-    window.console.error(msg)
+    window.console.error(msg);
   }
 }
 
-export default SwaggerBootstrapUi
+export default SwaggerBootstrapUi;
