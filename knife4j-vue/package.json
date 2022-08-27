@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@babel/generator": "7.14.9",
-    "ast-types": "0.14.2",
     "ant-design-vue": "^1.7.8",
+    "ast-types": "0.14.2",
     "async": "^3.2.2",
     "axios": "^0.21.3",
     "babel-plugin-import": "^1.13.0",

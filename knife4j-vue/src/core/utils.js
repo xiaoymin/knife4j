@@ -229,7 +229,7 @@ const utils = {
         //console.log("ignoreParameterAllKeys")
         //console.log(ignoreParameterAllKeys)
         return !ignoreParameterAllKeys.some(key =>
-          new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/' + key + '/g').test(name));
+          new RegExp(`^(${key}$|${key}[.[])`).test(name) || new RegExp(key, "g").test(name));
       } else {
         return !ignoreParameterAllKeys.includes(name);
       }
