@@ -1,4 +1,4 @@
->大家好,我在GitChat中开了一篇关于[《Knife4j 及 Swagger 在企业开发中的实践》](https://gitbook.cn/gitchat/activity/5f86b4cb1772090f20e13b03)
+>大家好,我在GitChat中写了一篇关于[《Knife4j 及 Swagger 在企业开发中的实践》](https://gitbook.cn/gitchat/activity/5f86b4cb1772090f20e13b03)
 >地址：[https://gitbook.cn/gitchat/activity/5f86b4cb1772090f20e13b03](https://gitbook.cn/gitchat/activity/5f86b4cb1772090f20e13b03)
 >
 >欢迎对 SpringFox、Swagger、Knife4j 感兴趣以及想了解的人员一起来chat 
@@ -23,17 +23,12 @@ knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 
 **交流：**
 
-[![](https://img.shields.io/badge/加入QQ1群-608374991(满)-red.svg)](//shang.qq.com/wpa/qunwpa?idkey=16b81902c23fbca82780fa107da1b6612e2ee44a05c4103c9176ad9d61c2f6bf) 
- 
-[![](https://img.shields.io/badge/加入QQ2群-621154782(满)-red.svg)](//shang.qq.com/wpa/qunwpa?idkey=11e0a1453a6a3695bd8ed709fbc8359c9c48dd8538aaafbece7b84ecd325b91c) 
-
-[![](https://img.shields.io/badge/加入QQ3群-453925079(满)-red.svg)](//shang.qq.com/wpa/qunwpa?idkey=9a160903786b88bf3ca112842e501d3623510db4f1c307eec81849165485bf5f)
-
-[![](https://img.shields.io/badge/加入QQ4群-593495275-red.svg)](https://qm.qq.com/cgi-bin/qm/qr?k=8mdCNeiPZsMuUtB8rC8jIopW5vfmYAXQ&jump_from=webapi)
+关注公众号"Knife4j"，点击菜单“交流群”获取加群二维码
+![输入图片说明](https://foruda.gitee.com/images/1661053867569480310/扫码_搜索联合传播样式-标准色版.png "扫码_搜索联合传播样式-标准色版.png")
 
 **文档**:[https://doc.xiaominfo.com/](https://doc.xiaominfo.com/)
 
-**源码分析**:[https://www.xiaominfo.com/2019/05/20/springfox-0/](https://www.xiaominfo.com/2019/05/20/springfox-0/)
+**源码分析**:[https://doc.xiaominfo.com/docs/action/springfox](https://doc.xiaominfo.com/docs/action/springfox)
 
 ## 项目模块
 

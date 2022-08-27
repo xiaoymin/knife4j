@@ -15,6 +15,8 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /***
  *
@@ -112,7 +114,7 @@ public class CommonUtils {
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            closeQuiltly(in);
+            close(in);
         }
 
         return bytes;
@@ -132,12 +134,42 @@ public class CommonUtils {
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            closeQuiltly(ins);
+            close(ins);
         }
         return byteOutArr.toByteArray();
     }
 
-    public static void closeQuiltly(InputStream ins){
+    /**
+     * Resolve MarkdownFile Content Title
+     * @param inputStream markdown file inputStream
+     * @param fileName fileName
+     * @return markdown title
+     */
+    public static String resolveMarkdownTitle(InputStream inputStream,String fileName){
+        String title=fileName;
+        try(BufferedReader reader=new BufferedReader(new InputStreamReader(inputStream,StandardCharsets.UTF_8))){
+            String le=null;
+            String reg="#{1,3}\\s{1}(.*)";
+            Pattern pattern=Pattern.compile(reg,Pattern.CASE_INSENSITIVE);
+            Matcher matcher=null;
+            while ((le=reader.readLine())!=null){
+                //判断line是否是包含标题
+                matcher=pattern.matcher(le);
+                if (matcher.matches()){
+                    title=matcher.group(1);
+                }
+                break;
+            }
+        } catch (UnsupportedEncodingException e) {
+            //ignore
+        } catch (IOException e) {
+            //ignore
+            logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
+        }
+        return title;
+    }
+
+    public static void close(InputStream ins){
         if (ins!=null){
             try {
                 ins.close();
@@ -148,7 +180,7 @@ public class CommonUtils {
         }
     }
 
-    public static void closeQuiltly(Reader reader){
+    public static void close(Reader reader){
         if (reader!=null){
             try {
                 reader.close();

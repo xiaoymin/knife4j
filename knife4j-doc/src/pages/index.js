@@ -128,6 +128,17 @@ function Contributor({ name, url, avatar }) {
 }
 
 
+function Knife4jFramWork() {
+    return (
+        <section className={clsx(styles.try, 'container')}>
+            <div className="col">
+                <img src='/images/website/knife4j-framework2.png' />
+            </div>
+        </section>
+    );
+}
+
+
 function Contributors() {
     const contributorDatas = require('../../static/json/contributors.json');
 
@@ -160,6 +171,7 @@ export default function Home() {
             description={siteConfig.description}>
             <Hero />
             <Hightlights />
+            <Knife4jFramWork />
             <Contributors />
             <ActorExample />
             <div className="container">

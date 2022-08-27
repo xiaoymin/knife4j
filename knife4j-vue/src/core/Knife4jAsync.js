@@ -40,7 +40,7 @@ import {
   urlToList
 } from '@/components/utils/pathTools'
 import KUtils from './utils'
-import marked from 'marked'
+import { marked } from 'marked'
 import async from 'async'
 import {
   findComponentsByPath,
@@ -1253,7 +1253,8 @@ SwaggerBootstrapUi.prototype.basicInfoOAS2 = function (menu) {
     //that.currentInstance.host = host;
     that.currentInstance.title = title;
     //impl markdown syntax
-    that.currentInstance.description = marked(description);
+    //that.currentInstance.description = marked(description);
+    that.currentInstance.description = marked.parse(description);
     that.currentInstance.contact = name;
     that.currentInstance.version = version;
     that.currentInstance.termsOfService = termsOfService;
@@ -1307,7 +1308,8 @@ SwaggerBootstrapUi.prototype.basicInfoOAS3 = function (menu) {
 
       that.currentInstance.title = title;
       //impl markdown syntax
-      that.currentInstance.description = marked(description);
+      //that.currentInstance.description = marked(description);
+      that.currentInstance.description = marked.parse(description);
       that.currentInstance.contact = name;
       that.currentInstance.version = version;
       that.currentInstance.termsOfService = termsOfService;
@@ -1651,6 +1653,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2 = function (menu, swud,
  */
 SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud, oas2) {
   var that = this;
+  //console.log("analysisDefinitionAsyncOAS3")
   var modelName = swud.name;
   var definitions = {};
   if (KUtils.checkUndefined(menu) && menu.hasOwnProperty("components")) {
@@ -1670,7 +1673,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
         /* swud = new SwaggerBootstrapUiDefinition();
         swud.name = name;
         swud.ignoreFilterName = name; */
-        //that.log("开始解析Definition:"+name);
+        //console.log("开始解析Definition:" + name);
         //获取value
         var value = definitions[name];
         if (KUtils.checkUndefined(value)) {
@@ -1731,6 +1734,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
               if (propobj.hasOwnProperty("type")) {
                 var type = propobj["type"];
                 //判断是否有example
+                //console.log(propobj)
                 if (propobj.hasOwnProperty("example")) {
                   if (type == "string") {
                     //propValue = String(KUtils.propValue("example", propobj, ""));
@@ -1738,6 +1742,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
                   } else {
                     propValue = propobj["example"];
                   }
+                } else if (propobj.hasOwnProperty("default")) {
+                  propValue = KUtils.propValue("default", propobj, "")
                 } else if (KUtils.checkIsBasicType(type)) {
                   propValue = KUtils.getBasicTypeValue(type);
                   //此处如果是object情况,需要判断additionalProperties属性的情况
@@ -1908,6 +1914,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
                 }
               }
             }
+            //console.log('proValue:', defiTypeValue)
             swud.value = defiTypeValue;
           }
         }
@@ -2039,8 +2046,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                     for (var pkey in props) {
                       var p = props[pkey];
                       p.refType = that.getSwaggerModelRefType(p, oas2);
-                      //console.log("------------------analyslsldiflsjfdlsfaaaaaaaaaaaaaaaaaaa")
-                      //console.log(p);
+                      // console.log("------------------analyslsldiflsjfdlsfaaaaaaaaaaaaaaaaaaa")
+                      // console.log(p);
                       var refp = new SwaggerBootstrapUiParameter();
                       refp.pid = originalTreeTableModel.id;
                       refp.readOnly = p.readOnly;
@@ -2070,6 +2077,14 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                         }
                       }
                       refp.example = p.example;
+                      refp.txtValue = p.example;
+                      //判断是否是存在值
+                      if (!KUtils.checkUndefined(p.example)) {
+                        //console.log("aa ssss")
+                        refp.example = p.default;
+                        refp.txtValue = p.default;
+                        refp.value = p.default;
+                      }
                       var description = KUtils.propValue("description", p, "");
                       //判断是否包含枚举
                       if (p.hasOwnProperty("enum")) {
@@ -2333,6 +2348,13 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp, definitions, deepDef
                 }
               }
               refp.example = p.example;
+              refp.txtValue = p.example;
+              //判断是否是存在值
+              if (!KUtils.checkUndefined(p.example)) {
+                refp.example = p.default;
+                refp.txtValue = p.default;
+                refp.value = p.default;
+              }
               var description = KUtils.propValue("description", p, "");
               //判断是否包含枚举
               if (p.hasOwnProperty("enum")) {
@@ -2422,6 +2444,7 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   //解析definition
   //放弃解析所有的Model结构
   that.analysisDefinitionRefModel(menu);
+  //console.log("解析tags")
   //解析tags标签
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("tags")) {
     var tags = menu["tags"];
@@ -2450,6 +2473,11 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
           tagauth = KUtils.getValue(tagexte, "x-author", "", true);
           tagorder = KUtils.getValue(tagexte, "x-order", "", true);
         }
+        //如果当前扩展对象为空
+        //https://github.com/xiaoymin/swagger-bootstrap-ui/issues/487
+        if (KUtils.strBlank(tagorder)) {
+          tagorder = KUtils.getValue(tag, "x-order", "", true);
+        }
       }
 
       var swuTag = new SwaggerBootstrapUiTag(KUtils.toString(tag.name, "").replace(/\//g, '-'), tagdes);
@@ -2461,11 +2489,13 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       }
       tmpTags.push(swuTag);
     })
+    // console.log(tmpTags)
     if (KUtils.arrNotEmpty(tmpTags)) {
       //排序
-      tmpTags.sort(function (a, b) {
-        return a.order - b.order;
-      })
+      tmpTags.sort((a, b) => a.order - b.order);
+      // tmpTags.sort(function (a, b) {
+      //   return a.order - b.order;
+      // })
     } else {
       //当前接口tags不存在，给一个默认tag-default
       //https://gitee.com/xiaoym/knife4j/issues/I27M98
@@ -4678,7 +4708,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     swpinfo.description = KUtils.getValue(apiInfo, "description", "", true);
     //描述支持markdown
     if (KUtils.strNotBlank(swpinfo.description)) {
-      swpinfo.description = marked(swpinfo.description);
+      //swpinfo.description = marked(swpinfo.description);
+      swpinfo.description = marked.parse(swpinfo.description);
     }
     apiInfo.operationId = apiInfo.operationId || swpinfo.id
     swpinfo.operationId = apiInfo.operationId;
@@ -5850,7 +5881,7 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
     for (var definition in definitions) {
       if (definitionName == definition) {
         //不解析本身
-        //that.log("解析definitionName:"+definitionName);
+        that.log("解析definitionName:" + definitionName);
         //that.log("是否递归："+flag);
         var value = definitions[definition];
         //是否有properties
@@ -5869,6 +5900,8 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                 if (propobj.hasOwnProperty("example")) {
                   //propValue = propobj["example"];
                   propValue = KUtils.getExample("example", propobj, "");
+                } else if (propobj.hasOwnProperty("default")) {
+                  propValue = KUtils.getExample("default", propobj, "");
                 } else if (KUtils.checkIsBasicType(type)) {
                   propValue = KUtils.getBasicTypeValue(type);
                   //此处如果是object情况,需要判断additionalProperties属性的情况
@@ -5912,6 +5945,9 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                       }
                     }
                   }
+
+
+
                 } else {
                   if (type == "array") {
                     propValue = new Array();

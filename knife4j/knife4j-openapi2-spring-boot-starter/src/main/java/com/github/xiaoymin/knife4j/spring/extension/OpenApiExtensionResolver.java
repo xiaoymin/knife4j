@@ -14,6 +14,7 @@ import com.github.xiaoymin.knife4j.core.model.MarkdownProperty;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.spring.util.MarkdownUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -23,10 +24,7 @@ import springfox.documentation.service.VendorExtension;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -147,44 +145,7 @@ public class OpenApiExtensionResolver {
     }
 
     private OpenApiExtendMarkdownChildren readMarkdownChildren(Resource resource){
-        try{
-            if (resource!=null){
-                OpenApiExtendMarkdownChildren markdownFile=new OpenApiExtendMarkdownChildren();
-                if (logger.isDebugEnabled()){
-                    logger.debug("read file:"+resource.getFilename());
-                }
-                //只读取md
-                if (resource.getFilename().toLowerCase().endsWith(".md")){
-                    BufferedReader reader=null;
-                    try {
-                        reader=new BufferedReader(new InputStreamReader(resource.getInputStream(),"UTF-8"));
-                        String le=null;
-                        String title=resource.getFilename();
-                        String reg="#{1,3}\\s{1}(.*)";
-                        Pattern pattern=Pattern.compile(reg,Pattern.CASE_INSENSITIVE);
-                        Matcher matcher=null;
-                        while ((le=reader.readLine())!=null){
-                            //判断line是否是包含标题
-                            matcher=pattern.matcher(le);
-                            if (matcher.matches()){
-                                title=matcher.group(1);
-                            }
-                            break;
-                        }
-                        markdownFile.setTitle(title);
-                        markdownFile.setContent(new String(CommonUtils.readBytes(resource.getInputStream()),"UTF-8"));
-                        return markdownFile;
-                    } catch (Exception e) {
-                        logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
-                    }finally {
-                        CommonUtils.closeQuiltly(reader);
-                    }
-                }
-            }
-        }catch (Exception e){
-            logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
-        }
-        return null;
+        return MarkdownUtils.resolveMarkdownResource(resource);
     }
 
     /**

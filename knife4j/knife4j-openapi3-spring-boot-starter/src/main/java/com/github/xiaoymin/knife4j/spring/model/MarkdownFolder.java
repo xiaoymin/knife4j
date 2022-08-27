@@ -7,7 +7,7 @@
 
 package com.github.xiaoymin.knife4j.spring.model;
 
-import com.github.xiaoymin.knife4j.core.model.MarkdownFile;
+import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendMarkdownChildren;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class MarkdownFolder {
     /**
      * md文件
      */
-    private List<MarkdownFile> markdownFiles;
+    private List<OpenApiExtendMarkdownChildren> markdownFiles;
 
     public String getDirectory() {
         return directory;
@@ -47,11 +47,11 @@ public class MarkdownFolder {
         this.locations = locations;
     }
 
-    public List<MarkdownFile> getMarkdownFiles() {
+    public List<OpenApiExtendMarkdownChildren> getMarkdownFiles() {
         return markdownFiles;
     }
 
-    public void setMarkdownFiles(List<MarkdownFile> markdownFiles) {
+    public void setMarkdownFiles(List<OpenApiExtendMarkdownChildren> markdownFiles) {
         this.markdownFiles = markdownFiles;
     }
 }
