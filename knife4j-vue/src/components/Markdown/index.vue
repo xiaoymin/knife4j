@@ -4,28 +4,28 @@
 </template>
 
 <script>
-import marked from 'marked'
+import { marked } from 'marked'
 marked.setOptions({
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false
+    gfm: true,
+    tables: true,
+    breaks: false,
+    pedantic: false,
+    sanitize: false,
+    smartLists: true,
+    smartypants: false
 })
 export default {
-    name:"Markdown",
-    props:{
-        source:{
-            type:String
+    name: "Markdown",
+    props: {
+        source: {
+            type: String
         }
     },
-    computed:{
-        markdownSource(){
-            return marked(this.source);
+    computed: {
+        markdownSource() {
+            return marked.parse(this.source);
         }
     }
-    
+
 }
 </script>

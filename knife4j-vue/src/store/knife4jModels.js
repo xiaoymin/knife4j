@@ -14,18 +14,18 @@ var knife4jModels = new Vue({
   },
   methods: {
     setTags(key, value) {
-      //该方法是递归遍历tags的方法
-      //console("setTags--------")
-      //console(value);
+      // 该方法是递归遍历tags的方法
+      // console("setTags--------")
+      // console(value);
 
     },
     setValue(key, value) {
-      //该方法是递归Models的方法
-      //判断是否已经赋值
+      // 该方法是递归Models的方法
+      // 判断是否已经赋值
       var that = this;
       var tmp = this.instance[key];
       if (tmp == undefined || tmp == null) {
-        //开始递归初始化
+        // 开始递归初始化
         var data = value;
         for (var modelName in data) {
           var model = data[modelName];
@@ -34,19 +34,19 @@ var knife4jModels = new Vue({
             if (params != undefined && params != null) {
               params.forEach(function (p) {
                 if (p.schema) {
-                  //存在
-                  //p.children=deepModel(shareModels,data,p,p);
-                  //查找该schema的子类属性
+                  // 存在
+                  // p.children=deepModel(shareModels,data,p,p);
+                  // 查找该schema的子类属性
                   p.children = that.deepModel(data, p, p);
                 }
               })
             }
           }
         }
-        //初始化一个空的instance对象
+        // 初始化一个空的instance对象
         this.instance[key] = data;
-        // window.//console("递归初始化完成-----------")
-        // window.//console(this.instance[key])
+        //  window.//console("递归初始化完成-----------")
+        //  window.//console(this.instance[key])
       }
     },
     deepModel(data, param, rootParam) {
@@ -56,13 +56,13 @@ var knife4jModels = new Vue({
       if (model != undefined && model != null) {
         if (model.params != undefined && model.params != null) {
           model.params.forEach(function (chp) {
-            //深拷贝一个对象
+            // 深拷贝一个对象
             var childrenParam = that.deepCopy(chp);
             childrenParam.pid = param.id;
-            //判断是否是schema参数
+            // 判断是否是schema参数
             if (childrenParam.schema) {
               rootParam.parentTypes.push(param.schemaValue);
-              //判断该程序是否已经查找过了
+              // 判断该程序是否已经查找过了
               if (rootParam.parentTypes.indexOf(childrenParam.schemaValue) == -1) {
                 childrenParam.children = that.deepModel(data, childrenParam, rootParam);
               }
@@ -115,7 +115,7 @@ var knife4jModels = new Vue({
       if (!KUtils.checkUndefined(this.instance[key])) {
         this.initInstance(key);
       }
-      //判断是否存在
+      // 判断是否存在
       var flag = false;
       var value = this.instance[key][modelName];
       if (value != null && value != undefined) {

@@ -272,14 +272,14 @@ export default {
   data() {
     return {
       i18n: null,
-      //当前回调数据是否太大
+      // 当前回调数据是否太大
       bigFlag: false,
-      //数据很大,raw显示会导致内存溢出
+      // 数据很大,raw显示会导致内存溢出
       bigBlobFlag: false,
-      //是否开启缓存
+      // 是否开启缓存
       debugUrlStyle: "width: 80%",
       enableRequestCache: false,
-      //是否动态参数
+      // 是否动态参数
       enableDynamicParameter: false,
       enableHost: false,
       enableHostText: '',
@@ -295,9 +295,9 @@ export default {
       headerCountFlag: false,
       headerSelectName: "",
       selectedRowKeys: [],
-      //是否允许有请求参数,一般get情况下直接屏蔽
+      // 是否允许有请求参数,一般get情况下直接屏蔽
       requestParameterAllow: true,
-      //请求头的选中框
+      // 请求头的选中框
       rowSelection: {
         selectedRowKeys: [],
         onChange: (selectrowkey, selectrows) => {
@@ -324,33 +324,33 @@ export default {
       },
       headerData: [],
       headerTableFlag: true,
-      //本地缓存全局参数
+      // 本地缓存全局参数
       globalParameters: [],
-      //调试接口
+      // 调试接口
       debugUrl: "",
-      //当前请求接口地址是否为path类型,如果是,在发送请求时需要对地址栏进行替换
+      // 当前请求接口地址是否为path类型,如果是,在发送请求时需要对地址栏进行替换
       debugPathFlag: false,
-      //需要替换的参数值key
+      // 需要替换的参数值key
       debugPathParams: [],
-      //loading效果
+      // loading效果
       debugLoading: false,
       oAuthApi: false,
       debugSend: false,
-      //form参数值对象
+      // form参数值对象
       formData: [],
       formFlag: false,
       formTableFlag: true,
       urlFormData: [],
       urlFormFlag: false,
       urlFormTableFlag: true,
-      //raw类型请求存在query类型的参数
+      // raw类型请求存在query类型的参数
       rawFormData: [],
       rawFormFlag: false,
       rawFormTableFlag: true,
       rawDefaultText: "Auto",
       rawFlag: false,
       rawTypeFlag: false,
-      //格式化按钮显示标志
+      // 格式化按钮显示标志
       formatFlag: false,
       rawText: "",
       rawScript: "",
@@ -364,7 +364,7 @@ export default {
       responseStatus: null,
       responseContent: null,
       responseFieldDescriptionChecked: true,
-      //网关转发请求Header标志
+      // 网关转发请求Header标志
       routeHeader: null,
       oas2: true
     };
@@ -373,11 +373,11 @@ export default {
     this.routeHeader = this.swaggerInstance.header;
     this.oas2 = this.swaggerInstance.oas2();
     this.initI18n();
-    //初始化读取本地缓存全局参数
+    // 初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
     this.initDebugUrl();
-    //显示表单参数
-    //this.initShowFormTable();
+    // 显示表单参数
+    // this.initShowFormTable();
     if (this.enableReloadCacheParameter) {
       this.debugUrlStyle = "width: 70%;"
     } else {
@@ -402,15 +402,15 @@ export default {
   },
   methods: {
     reloadCacheParameter() {
-      //console.log("刷新变量,从缓存中重新读取变量值")
-      //刷新变量,从缓存中重新读取变量值
-      //初始化读取本地缓存全局参数
-      //this.initLocalGlobalParameters();
-      //只更新变量,不做增加等任何处理
+      // console.log("刷新变量,从缓存中重新读取变量值")
+      // 刷新变量,从缓存中重新读取变量值
+      // 初始化读取本地缓存全局参数
+      // this.initLocalGlobalParameters();
+      // 只更新变量,不做增加等任何处理
       var tempglobalParameters = [];
       const key = this.api.instanceId;
-      //console.log(this.headerData);
-      //初始化读取本地缓存全局参数
+      // console.log(this.headerData);
+      // 初始化读取本地缓存全局参数
       this.$localStore.getItem(constant.globalParameter).then(val => {
         if (val != null) {
           if (val[key] != undefined && val[key] != null) {
@@ -418,17 +418,17 @@ export default {
           }
         }
         if (KUtils.arrNotEmpty(tempglobalParameters)) {
-          //更新header
+          // 更新header
           this.reloadUpdateHeader(tempglobalParameters);
-          //根据不同的请求类型,更新不同的请求参数
+          // 根据不同的请求类型,更新不同的请求参数
           if (this.rawFlag) {
-            //更新rawForm
+            // 更新rawForm
             this.reloadUpdateRawForm(tempglobalParameters);
           } else if (this.formFlag) {
-            //更新form
+            // 更新form
             this.reloadUpdateForm(tempglobalParameters);
           } else if (this.urlFormFlag) {
-            //更新url-form
+            // 更新url-form
             this.reloadUpdateUrlForm(tempglobalParameters);
           }
         }
@@ -443,39 +443,39 @@ export default {
       var tempArrays = [];
       var tempUpdateFlag = false;
       var add = false;
-      //1、判断原始数据中是否存在要更新的值
+      // 1、判断原始数据中是否存在要更新的值
       if (KUtils.arrNotEmpty(originalDatas)) {
         originalDatas.forEach(tempData => {
-          //查找是否存在
+          // 查找是否存在
           var tempId = tempData.name + type;
           var tempFilterArr = tempglobalParameters.filter(t => t.pkid == tempId);
           if (KUtils.arrNotEmpty(tempFilterArr)) {
             var tempCache = tempFilterArr[0];
             var teampValue = KUtils.getValue(tempCache, "value", "", true);
-            //更新
+            // 更新
             tempData.content = teampValue;
             tempUpdateFlag = true;
           }
           tempArrays.push(tempData);
         })
       }
-      //第2种情况，判断是否有新增的值
+      // 第2种情况，判断是否有新增的值
       var tempFilterArr = tempglobalParameters.filter(tp => tp.in == type);
       if (KUtils.arrNotEmpty(tempFilterArr)) {
-        //查找是否有新增的值
+        // 查找是否有新增的值
         tempFilterArr.forEach(tpdata => {
-          //判断是否存在,如果不存在，代表新增
+          // 判断是否存在,如果不存在，代表新增
           var addDateArr = tempArrays.filter(th => th.name == tpdata.name);
           if (!KUtils.arrNotEmpty(addDateArr)) {
-            //存在新增的值
+            // 存在新增的值
             var newData = {
               id: KUtils.randomMd5(),
               name: tpdata.name,
               content: tpdata.value,
               require: true,
               description: "",
-              enums: null, //枚举下拉框
-              //枚举是否支持多选('default' | 'multiple' )
+              enums: null, // 枚举下拉框
+              // 枚举是否支持多选('default' | 'multiple' )
               enumsMode: "default",
               new: false
             };
@@ -494,15 +494,15 @@ export default {
     },
     reloadUpdateHeader(tempglobalParameters) {
       var newDataObject = this.reloadUpdateCommons(tempglobalParameters, this.headerData, "header");
-      //如果两种情况只需要1种情况存在更新,那么重新更新当前Header
+      // 如果两种情况只需要1种情况存在更新,那么重新更新当前Header
       if (newDataObject.update) {
         this.headerData = [];
         setTimeout(() => {
           this.headerData = newDataObject.data;
           if (newDataObject.add) {
-            //如果有新增，刷新选中
+            // 如果有新增，刷新选中
             this.initSelectionHeaders();
-            //计算heaer数量
+            // 计算heaer数量
             this.headerResetCalc();
           }
         }, 10)
@@ -510,7 +510,7 @@ export default {
     },
     reloadUpdateUrlForm(tempglobalParameters) {
       var newDataObject = this.reloadUpdateCommons(tempglobalParameters, this.urlFormData, "query");
-      //判断是否需要更新
+      // 判断是否需要更新
       if (newDataObject.update) {
         this.urlFormData = [];
         setTimeout(() => {
@@ -551,7 +551,7 @@ export default {
       return this.$i18n.messages[this.language];
     },
     initI18n() {
-      //根据i18n初始化部分参数
+      // 根据i18n初始化部分参数
       var inst = this.getCurrentI18nInstance();
       this.i18n = inst;
       this.headerColumn = inst.table.debugRequestHeaderColumns;
@@ -563,9 +563,9 @@ export default {
     },
     initDebugUrl() {
       this.debugUrl = this.api.url;
-      //判断是否为paht类型
+      // 判断是否为paht类型
       var reg = new RegExp("{(.*?)}", "ig");
-      //console("地址是否为path");
+      // console("地址是否为path");
       if (reg.test(this.debugUrl)) {
         this.debugPathFlag = true;
         var ma = null;
@@ -577,57 +577,57 @@ export default {
     },
     initLocalGlobalParameters() {
       const key = this.api.instanceId;
-      //console.log(this.api)
-      //读取是否开启请求缓存标志
+      // console.log(this.api)
+      // 读取是否开启请求缓存标志
       this.$localStore.getItem(constant.globalSettingsKey).then(settings => {
         if (KUtils.checkUndefined(settings)) {
           this.enableRequestCache = settings.enableRequestCache;
-          //判断settings是否包含动态参数的配置
+          // 判断settings是否包含动态参数的配置
           if (KUtils.checkUndefined(settings["enableDynamicParameter"])) {
-            //如果存在,赋值
+            // 如果存在,赋值
             this.enableDynamicParameter = settings.enableDynamicParameter;
           }
-          //读取Host配置
+          // 读取Host配置
           if (KUtils.checkUndefined(settings["enableHost"])) {
             this.enableHost = settings.enableHost;
-            //判断Host的值
+            // 判断Host的值
             var tmpHostValue = settings.enableHostText;
             if (KUtils.checkUndefined(tmpHostValue)) {
               if (!tmpHostValue.startWith("http")) {
-                tmpHostValue = "http://" + tmpHostValue;
+                tmpHostValue = "http:// " + tmpHostValue;
               }
               this.enableHostText = tmpHostValue;
             } else {
-              //hostvalue为空,默认取消
+              // hostvalue为空,默认取消
               this.enableHost = false;
             }
           }
         }
-        //初始化读取本地缓存全局参数
+        // 初始化读取本地缓存全局参数
         this.$localStore.getItem(constant.globalParameter).then(val => {
           if (val != null) {
             if (val[key] != undefined && val[key] != null) {
               this.globalParameters = val[key];
             }
           }
-          //当前接口的id作为缓存key值
+          // 当前接口的id作为缓存key值
           var cacheApiKey = constant.debugCacheApiId + this.api.id;
           this.$localStore.getItem(cacheApiKey).then(cacheApi => {
-            //开始同步执行其他方法-初始化请求头参数
+            // 开始同步执行其他方法-初始化请求头参数
             this.initHeaderParameter(cacheApi);
-            //判断是否authorize中包含query
-            //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
-            //读取Author的参数情况
+            // 判断是否authorize中包含query
+            // 不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
+            // 读取Author的参数情况
             var securitykey = constant.globalSecurityParamPrefix + this.api.instanceId;
             this.$localStore.getItem(securitykey).then(val => {
-              //console.log(val);
-              //console.log(this.api)
-              //console("读取本都Auth请");
+              // console.log(val);
+              // console.log(this.api)
+              // console("读取本都Auth请");
               if (KUtils.arrNotEmpty(val)) {
-                //不为空
+                // 不为空
                 val.forEach(security => {
                   if (security.in == 'query') {
-                    //console.log(security)
+                    // console.log(security)
                     var newquery = {
                       id: KUtils.randomMd5(),
                       name: security.name,
@@ -635,12 +635,12 @@ export default {
                       value: security.value,
                       require: true,
                       description: "",
-                      enums: null, //枚举下拉框
-                      //枚举是否支持多选('default' | 'multiple' )
+                      enums: null, // 枚举下拉框
+                      // 枚举是否支持多选('default' | 'multiple' )
                       enumsMode: "default",
                       new: false
                     };
-                    //判断该接口是否security-Authorize
+                    // 判断该接口是否security-Authorize
                     if (this.api.securityFlag) {
                       if (this.api.securityKeys.includes(security.key)) {
                         this.authorizeQueryParameters.push(newquery);
@@ -649,7 +649,7 @@ export default {
                   }
                 });
               }
-              //请求体参数初始化
+              // 请求体参数初始化
               this.initBodyParameter(cacheApi);
             });
           });
@@ -666,16 +666,16 @@ export default {
           content: oauth.accessToken,
           require: true,
           description: "",
-          enums: null, //枚举下拉框
-          //枚举是否支持多选('default' | 'multiple' )
+          enums: null, // 枚举下拉框
+          // 枚举是否支持多选('default' | 'multiple' )
           enumsMode: "default",
           new: false
         };
         this.addDebugHeader(oAuthHeader);
       }
-      //console.log("initHeaderParameter")
-      //console.log(this.globalParameters)
-      //本都缓存读取到参数，初始化header参数
+      // console.log("initHeaderParameter")
+      // console.log(this.globalParameters)
+      // 本都缓存读取到参数，初始化header参数
       this.globalParameters.forEach(param => {
         console.log(param)
         if (param.in == "header") {
@@ -685,42 +685,42 @@ export default {
             content: param.value,
             require: false,
             description: "",
-            enums: null, //枚举下拉框
-            //枚举是否支持多选('default' | 'multiple' )
+            enums: null, // 枚举下拉框
+            // 枚举是否支持多选('default' | 'multiple' )
             enumsMode: "default",
             new: false
           };
-          //this.headerData.push(newHeader);
+          // this.headerData.push(newHeader);
           this.addDebugHeader(newHeader);
         }
       });
-      //不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
-      //读取Author的参数情况
+      // 不读api的默认请求头,根据用户选择的表单请求类型做自动请求头适配
+      // 读取Author的参数情况
       var key = constant.globalSecurityParamPrefix + this.api.instanceId;
       this.$localStore.getItem(key).then(val => {
-        //console("读取本都Auth请");
+        // console("读取本都Auth请");
         if (KUtils.arrNotEmpty(val)) {
-          //不为空
+          // 不为空
           val.forEach(security => {
-            //追加一个schema
-            //https://gitee.com/xiaoym/knife4j/issues/I4WDQ4
+            // 追加一个schema
+            // https://gitee.com/xiaoym/knife4j/issues/I4WDQ4
             let securityHeaderTmpValue = KUtils.getOAuth2BearerValue(security.schema, security.value);
-            //console.log(security)
+            // console.log(security)
             var newHeader = {
               id: KUtils.randomMd5(),
               name: security.name,
               content: securityHeaderTmpValue,
               require: true,
               description: "",
-              enums: null, //枚举下拉框
-              //枚举是否支持多选('default' | 'multiple' )
+              enums: null, // 枚举下拉框
+              // 枚举是否支持多选('default' | 'multiple' )
               enumsMode: "default",
               new: false
             };
             if (security.in == 'header') {
-              //console.log("addHeader.", security)
-              //this.headerData.push(newHeader);
-              //判断该接口是否security-Authorize
+              // console.log("addHeader.", security)
+              // this.headerData.push(newHeader);
+              // 判断该接口是否security-Authorize
               if (this.api.securityFlag) {
                 if (this.api.securityKeys.includes(security.key)) {
                   this.addDebugHeader(newHeader);
@@ -730,28 +730,28 @@ export default {
           });
         }
         this.updateHeaderFromCacheApi(cacheApi);
-        //判断是否开启了接口请求参数
+        // 判断是否开启了接口请求参数
         this.addNewLineHeader();
         this.initSelectionHeaders();
-        //计算heaer数量
+        // 计算heaer数量
         this.headerResetCalc();
       });
     },
     updateHeaderFromCacheApi(cacheApi) {
-      //从缓存中更新header参数
+      // 从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheHeaderData = cacheApi.headerData;
           this.headerData.forEach(header => {
-            //判断当前header参数在缓存中是否存在，如果当前header存在值,则不更新
+            // 判断当前header参数在缓存中是否存在，如果当前header存在值,则不更新
             if (!KUtils.strNotBlank(header.content)) {
               var cacheHeaderArr = cacheHeaderData.filter(
                 ch => ch.name == header.name
               );
               if (cacheHeaderArr.length > 0) {
                 if (!this.oAuthApi) {
-                  //非auth请求
-                  //update
+                  // 非auth请求
+                  // update
                   header.content = cacheHeaderArr[0].content;
                 } else {
                   if (header.name != "Authorization") {
@@ -765,8 +765,8 @@ export default {
       }
     },
     updateUrlFormCacheApi(cacheApi) {
-      //console("从缓存中更新UrlForm参数");
-      //从缓存中更新header参数
+      // console("从缓存中更新UrlForm参数");
+      // 从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheUrlFormData = cacheApi.urlFormData;
@@ -784,22 +784,22 @@ export default {
       }
     },
     updateRawFormCacheApi(cacheApi) {
-      //从缓存中更新header参数
+      // 从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheFormData = cacheApi.rawFormData;
           this.rawFormData.forEach(form => {
             if (!KUtils.strNotBlank(form.content)) {
-              //console("缓存-raw:" + form.id);
-              //console(cacheFormData);
+              // console("缓存-raw:" + form.id);
+              // console(cacheFormData);
               var cacheFormArr = cacheFormData.filter(f => f.name == form.name);
-              //console(cacheFormArr);
+              // console(cacheFormArr);
               if (cacheFormArr.length > 0) {
                 form.content = cacheFormArr[0].content;
               }
             }
           });
-          //更新Txt
+          // 更新Txt
           this.rawText = cacheApi.rawText;
         }
       }
@@ -807,12 +807,12 @@ export default {
     syncFromOAuth2() {
       var instanceId = this.swaggerInstance.id;
       var key = "SELFOAuth" + instanceId;
-      //console.log("syncFromOAuth2")
+      // console.log("syncFromOAuth2")
       if (window.localStorage) {
         var value = window.localStorage.getItem(key);
-        //console.log(value)
+        // console.log(value)
         if (KUtils.strNotBlank(value)) {
-          //包含OAuth2参数
+          // 包含OAuth2参数
           var oauth = KUtils.json5parse(value);
           return oauth;
         }
@@ -820,8 +820,8 @@ export default {
       return null;
     },
     updateFormCacheApi(cacheApi) {
-      //console("从缓存中更新Form参数");
-      //从缓存中更新header参数
+      // console("从缓存中更新Form参数");
+      // 从缓存中更新header参数
       if (this.enableRequestCache) {
         if (KUtils.checkUndefined(cacheApi)) {
           var cacheFormData = cacheApi.formData;
@@ -837,40 +837,40 @@ export default {
       }
     },
     initBodyParameter(cacheApi) {
-      //this.initBodyType();
-      //初始化请求体参数
-      //得到body类型的请求参数
+      // this.initBodyType();
+      // 初始化请求体参数
+      // 得到body类型的请求参数
       var bodyParameters = this.globalParameters.filter(
         param => param.in != "header"
       );
       var bodyData = [];
-      //接口本身的参数对象
+      // 接口本身的参数对象
       var tmpApiParameters = this.api.parameters;
-      //本身全局参数显示集合
+      // 本身全局参数显示集合
       var showGlobalParameters = [];
-      //本身接口api参数显示集合
+      // 本身接口api参数显示集合
       var showApiParameters = [];
-      //是否存在全局参数
+      // 是否存在全局参数
       if (bodyParameters.length > 0) {
-        //存在，判断全局参数中和parameter对比，是否存在相同参数，如果存在，判断是否parameters参数有值，如果后端有值,则globalParams中的参数值不显示
+        // 存在，判断全局参数中和parameter对比，是否存在相同参数，如果存在，判断是否parameters参数有值，如果后端有值,则globalParams中的参数值不显示
         bodyParameters.forEach(global => {
           if (KUtils.arrNotEmpty(tmpApiParameters)) {
             var show = true;
             tmpApiParameters.forEach(param => {
               if (global.name == param.name && global.in == param.in) {
-                //在全局参数中存在相同的参数
-                //判断txtValue是否有值
+                // 在全局参数中存在相同的参数
+                // 判断txtValue是否有值
                 if (KUtils.strNotBlank(param.txtValue)) {
                   show = false;
                 }
               }
             });
-            //如果show=true，则显示该参数
+            // 如果show=true，则显示该参数
             if (show) {
               showGlobalParameters.push(global);
             }
           } else {
-            //当前接口不存在参数,但是开发者在界面添加了全局参数
+            // 当前接口不存在参数,但是开发者在界面添加了全局参数
             showGlobalParameters.push(global);
           }
         });
@@ -900,45 +900,45 @@ export default {
           showGlobalParameters.push(aqp);
         })
       }
-      //console.log(showGlobalParameters)
-      //根据参数列表、参数类型,开始自动判断接口的请求类型
-      //如果是单个@RequestBody类型,则参数只有一个,且只有一个，类型必须是body类型
+      // console.log(showGlobalParameters)
+      // 根据参数列表、参数类型,开始自动判断接口的请求类型
+      // 如果是单个@RequestBody类型,则参数只有一个,且只有一个，类型必须是body类型
       var paramSize = showGlobalParameters.length + showApiParameters.length;
-      //console("参数大小:" + paramSize);
+      // console("参数大小:" + paramSize);
       if (KUtils.arrNotEmpty(showApiParameters)) {
-        //判断参数是否为body类型
+        // 判断参数是否为body类型
         var bodySize = showApiParameters.filter(param => param.in == "body")
           .length;
         if (bodySize == 1) {
-          //console(showApiParameters);
-          //判断raw类型是否还存在query类型的参数,如果存在,加入rawFormdata集合中
+          // console(showApiParameters);
+          // 判断raw类型是否还存在query类型的参数,如果存在,加入rawFormdata集合中
           var rawQueryParams = showApiParameters.filter(
             param => param.in != "body" && param.in != "header"
           );
           this.addGlobalParameterToRawForm(showGlobalParameters);
           if (rawQueryParams.length > 0) {
-            //存在
+            // 存在
             this.rawFormFlag = true;
-            //添加参数
+            // 添加参数
             this.addApiParameterToRawForm(rawQueryParams);
           }
           if (KUtils.arrNotEmpty(this.rawFormData)) {
-            //存在
+            // 存在
             this.rawFormFlag = true;
           }
-          //raw类型
-          //raw类型之中可能有表格参数-待写
+          // raw类型
+          // raw类型之中可能有表格参数-待写
           this.showTabRaw();
           this.addApiParameterToRaw(showApiParameters);
-          //从缓存更新
+          // 从缓存更新
           this.updateRawFormCacheApi(cacheApi);
           if (this.rawFormFlag) {
-            //raw-form-data表单
+            // raw-form-data表单
             this.initFirstRawFormValue();
-            //console(this.rawFormData);
+            // console(this.rawFormData);
           }
         } else {
-          //判断是否包含文件
+          // 判断是否包含文件
           var fileSize = showApiParameters.filter(
             param =>
               param.schemaValue == "MultipartFile" ||
@@ -947,38 +947,38 @@ export default {
               param.in == "formData" ||
               param.in == "formdata"
           ).length;
-          //console("文件大小参数---" + fileSize);
+          // console("文件大小参数---" + fileSize);
 
           if (fileSize > 0) {
-            //form-data
+            // form-data
             this.showTabForm();
             this.addGlobalParameterToForm(showGlobalParameters);
             this.addApiParameterToForm(showApiParameters);
             this.updateFormCacheApi(cacheApi);
-            //form-data表单
+            // form-data表单
             this.initFirstFormValue();
           } else {
-            //url-form
+            // url-form
             this.showTabUrlForm();
             this.addGlobalParameterToUrlForm(showGlobalParameters);
             this.addApiParameterToUrlForm(showApiParameters);
             this.updateUrlFormCacheApi(cacheApi);
-            //url-form-data表单
+            // url-form-data表单
             this.initUrlFormValue();
           }
         }
       } else {
-        //判断类型
+        // 判断类型
         if (this.api.contentValue == "raw") {
           this.showTabRaw();
           this.initFirstRawFormValue();
         } else {
-          //url-form类型
+          // url-form类型
           this.showTabUrlForm();
           this.addGlobalParameterToUrlForm(showGlobalParameters);
           this.addApiParameterToUrlForm(showApiParameters);
           this.updateUrlFormCacheApi(cacheApi);
-          //url-form-data表单
+          // url-form-data表单
           this.initUrlFormValue();
         }
 
@@ -986,36 +986,36 @@ export default {
       this.updateScriptFromCache(cacheApi);
       this.updateHeaderFromCacheApi(cacheApi);
       this.hideDynamicParameterTable();
-      //console.log(this.urlFormData);
+      // console.log(this.urlFormData);
     },
     updateScriptFromCache(cacheApi) {
-      //更新script脚本功能,add by xiaoyumin 2020年10月21日
+      // 更新script脚本功能,add by xiaoyumin 2020年10月21日
       if (KUtils.checkUndefined(cacheApi) && KUtils.strNotBlank(cacheApi.rawScript)) {
         this.rawScript = cacheApi.rawScript;
       }
     },
     hideDynamicParameterTable() {
-      //如果当前确定未开启动态参数调试,且参数为0的情况下,关闭table 的参数显示
+      // 如果当前确定未开启动态参数调试,且参数为0的情况下,关闭table 的参数显示
       if (!this.enableDynamicParameter) {
-        //关闭header
+        // 关闭header
         if (this.headerData.length == 0) {
           this.headerTableFlag = false;
         } else {
           this.headerTableFlag = true;
         }
-        //关闭urlform
+        // 关闭urlform
         if (this.urlFormData.length == 0) {
           this.urlFormTableFlag = false;
         } else {
           this.urlFormTableFlag = true;
         }
-        //关闭form
+        // 关闭form
         if (this.formData.length == 0) {
           this.formTableFlag = false;
         } else {
           this.formTableFlag = true;
         }
-        //关闭rawtable
+        // 关闭rawtable
         if (this.rawFormData.length == 0) {
           this.rawFormTableFlag = false;
         } else {
@@ -1023,7 +1023,7 @@ export default {
         }
       }
       this.initSelectionHeaders();
-      //计算heaer数量
+      // 计算heaer数量
       this.headerResetCalc();
     },
     addNewLineHeader() {
@@ -1034,45 +1034,45 @@ export default {
           content: "",
           require: false,
           description: "",
-          enums: null, //枚举下拉框
-          //枚举是否支持多选('default' | 'multiple' )
+          enums: null, // 枚举下拉框
+          // 枚举是否支持多选('default' | 'multiple' )
           enumsMode: "default",
           new: true
         };
-        //延时处理，保证新增的空行在最后一行
+        // 延时处理，保证新增的空行在最后一行
         setTimeout(() => this.addDebugHeader(newHeader), 100);
-        //this.addDebugHeader(newHeader);
+        // this.addDebugHeader(newHeader);
       }
       this.hideDynamicParameterTable();
     },
     addDebugHeader(newHeader) {
       if (KUtils.strNotBlank(newHeader.name)) {
-        //判断新的header的内容是否为空
-        //判断是否当前的header数据中是否已经存在
+        // 判断新的header的内容是否为空
+        // 判断是否当前的header数据中是否已经存在
         var filterHeaders = this.headerData.filter(header => header.name == newHeader.name);
         if (KUtils.strBlank(newHeader.content)) {
-          //如果当前newHeader的数据为空,则判断当前的header数据中是否已经存在
+          // 如果当前newHeader的数据为空,则判断当前的header数据中是否已经存在
           if (filterHeaders.length == 0) {
-            //不存在,插入新行
+            // 不存在,插入新行
             this.headerData.push(newHeader);
           }
         } else {
           this.headerData.push(newHeader);
         }
       } else {
-        //动态调试,新行
+        // 动态调试,新行
         this.headerData.push(newHeader);
       }
     },
     initFirstFormValue() {
-      //添加一行初始form的值
+      // 添加一行初始form的值
       this.addNewLineFormValue();
       this.initFormSelections();
     },
     initFormSelections(selectedKey) {
-      //表单
+      // 表单
       if (KUtils.strNotBlank(selectedKey)) {
-        //判断是否添加过
+        // 判断是否添加过
         var len = this.rowFormSelection.selectedRowKeys.filter(
           id => id == selectedKey
         ).length;
@@ -1089,7 +1089,7 @@ export default {
     },
     initRawFormSelections(selectedKey) {
       if (KUtils.strNotBlank(selectedKey)) {
-        //判断是否添加过
+        // 判断是否添加过
         var len = this.rowRawFormSelection.selectedRowKeys.filter(
           id => id == selectedKey
         ).length;
@@ -1106,7 +1106,7 @@ export default {
     },
     initUrlFormSelections(selectedKey) {
       if (KUtils.strNotBlank(selectedKey)) {
-        //判断是否添加过
+        // 判断是否添加过
         var len = this.rowUrlFormSelection.selectedRowKeys.filter(
           id => id == selectedKey
         ).length;
@@ -1114,7 +1114,7 @@ export default {
           this.rowUrlFormSelection.selectedRowKeys.push(selectedKey);
         }
       } else {
-        //全选
+        // 全选
         this.urlFormData.forEach(form => {
           if (form.require) {
             this.rowUrlFormSelection.selectedRowKeys.push(form.id);
@@ -1146,7 +1146,7 @@ export default {
       this.rawTypeFlag = true;
       this.formFlag = false;
       this.urlFormFlag = false;
-      //如果是raw类型，则赋值
+      // 如果是raw类型，则赋值
       this.rawText = KUtils.toString(this.api.requestValue, "");
       if (this.api.xmlRequest) {
         this.rawRequestType = "application/xml";
@@ -1168,19 +1168,19 @@ export default {
     },
     addNewLineFormValue() {
       if (this.enableDynamicParameter) {
-        //添加新行form表单值
+        // 添加新行form表单值
         var newFormHeader = {
           id: KUtils.randomMd5(),
           name: "",
           type: "text",
           require: false,
-          //文件表单域的target
+          // 文件表单域的target
           target: null,
           multipart: false,
           content: "",
           description: "",
-          enums: null, //枚举下拉框
-          //枚举是否支持多选('default' | 'multiple' )
+          enums: null, // 枚举下拉框
+          // 枚举是否支持多选('default' | 'multiple' )
           enumsMode: "default",
           new: true
         };
@@ -1190,7 +1190,7 @@ export default {
       }
     },
     addGlobalParameterToRawForm(globalParameters) {
-      //raw-form-data类型添加参数
+      // raw-form-data类型添加参数
       if (KUtils.arrNotEmpty(globalParameters)) {
         globalParameters.forEach(global => {
           var newFormHeader = {
@@ -1198,13 +1198,13 @@ export default {
             name: global.name,
             type: "text",
             require: false,
-            //文件表单域的target
+            // 文件表单域的target
             target: null,
             multipart: false,
             content: global.value,
             description: "",
-            enums: null, //枚举下拉框
-            //枚举是否支持多选('default' | 'multiple' )
+            enums: null, // 枚举下拉框
+            // 枚举是否支持多选('default' | 'multiple' )
             enumsMode: "default",
             new: false
           };
@@ -1213,7 +1213,7 @@ export default {
       }
     },
     addGlobalParameterToForm(globalParameters) {
-      //form-data类型添加参数
+      // form-data类型添加参数
       if (KUtils.arrNotEmpty(globalParameters)) {
         globalParameters.forEach(global => {
           var newFormHeader = {
@@ -1221,13 +1221,13 @@ export default {
             name: global.name,
             type: "text",
             require: false,
-            //文件表单域的target
+            // 文件表单域的target
             target: null,
             multipart: false,
             content: global.value,
             description: "",
-            enums: null, //枚举下拉框
-            //枚举是否支持多选('default' | 'multiple' )
+            enums: null, // 枚举下拉框
+            // 枚举是否支持多选('default' | 'multiple' )
             enumsMode: "default",
             new: false
           };
@@ -1236,39 +1236,39 @@ export default {
       }
     },
     addApiParameterToRaw(apiParameters) {
-      //raw类型添加header
+      // raw类型添加header
       if (KUtils.arrNotEmpty(apiParameters)) {
         var headers = apiParameters.filter(param => param.in == "header");
         if (headers.length > 0) {
           headers.forEach(param => {
-            //console(param);
+            // console(param);
             var newHeader = {
               id: KUtils.randomMd5(),
               name: param.name,
               require: param.require,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
-              enums: this.getEnumOptions(param), //枚举下拉框
-              //枚举是否支持多选('default' | 'multiple' )
+              enums: this.getEnumOptions(param), // 枚举下拉框
+              // 枚举是否支持多选('default' | 'multiple' )
               enumsMode: "default",
               new: false
             };
-            //判断枚举类型是否为空
+            // 判断枚举类型是否为空
             if (newHeader.enums != null) {
-              //判断content是否为空
+              // 判断content是否为空
               if (!KUtils.strNotBlank(newHeader.content)) {
-                //默认取第一个枚举值
+                // 默认取第一个枚举值
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            //this.headerData.push(newHeader);
+            // this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           });
         }
       }
     },
     addApiParameterToForm(apiParameters) {
-      //form-data类型
+      // form-data类型
       if (KUtils.arrNotEmpty(apiParameters)) {
         apiParameters.forEach(param => {
           if (param.in == "header") {
@@ -1278,20 +1278,20 @@ export default {
               require: param.require,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
-              enums: this.getEnumOptions(param), //枚举下拉框
-              //枚举是否支持多选('default' | 'multiple' )
+              enums: this.getEnumOptions(param), // 枚举下拉框
+              // 枚举是否支持多选('default' | 'multiple' )
               enumsMode: "default",
               new: false
             };
-            //判断枚举类型是否为空
+            // 判断枚举类型是否为空
             if (newHeader.enums != null) {
-              //判断content是否为空
+              // 判断content是否为空
               if (!KUtils.strNotBlank(newHeader.content)) {
-                //默认取第一个枚举值
+                // 默认取第一个枚举值
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            //this.headerData.push(newHeader);
+            // this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
             var ptype = "text";
@@ -1302,34 +1302,34 @@ export default {
               param.type == "file"
             ) {
               ptype = "file";
-              //文件类型,判断是否是arrar
+              // 文件类型,判断是否是arrar
               if (param.type == "array") {
                 multipart = true;
               }
             }
-            //form-data的参数多一个文件是否允许多个上传的属性
+            // form-data的参数多一个文件是否允许多个上传的属性
             var newFormHeader = {
               id: KUtils.randomMd5(),
               name: param.name,
               type: ptype,
-              //是否必须
+              // 是否必须
               require: param.require,
-              //文件表单域的target
+              // 文件表单域的target
               target: null,
-              //文件是否允许多个上传
+              // 文件是否允许多个上传
               multipart: multipart,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
-              enums: this.getEnumOptions(param), //枚举下拉框
-              //枚举是否支持多选('default' | 'multiple' )
+              enums: this.getEnumOptions(param), // 枚举下拉框
+              // 枚举是否支持多选('default' | 'multiple' )
               enumsMode: "default",
               new: false
             };
-            //判断枚举类型是否为空
+            // 判断枚举类型是否为空
             if (newFormHeader.enums != null) {
-              //判断content是否为空
+              // 判断content是否为空
               if (!KUtils.strNotBlank(newFormHeader.content)) {
-                //默认取第一个枚举值
+                // 默认取第一个枚举值
                 newFormHeader.content = newFormHeader.enums[0].value;
               }
             }
@@ -1346,12 +1346,12 @@ export default {
             name: global.name,
             type: "text",
             require: false,
-            //文件表单域的target
+            // 文件表单域的target
             target: null,
             content: global.value,
             description: "",
-            enums: null, //枚举下拉框
-            //枚举是否支持多选('default' | 'multiple' )
+            enums: null, // 枚举下拉框
+            // 枚举是否支持多选('default' | 'multiple' )
             enumsMode: "default",
             new: false
           };
@@ -1369,42 +1369,42 @@ export default {
               require: param.require,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
-              enums: this.getEnumOptions(param), //枚举下拉框
-              //枚举是否支持多选('default' | 'multiple' )
+              enums: this.getEnumOptions(param), // 枚举下拉框
+              // 枚举是否支持多选('default' | 'multiple' )
               enumsMode: "default",
               new: false
             };
-            //判断枚举类型是否为空
+            // 判断枚举类型是否为空
             if (newHeader.enums != null) {
-              //判断content是否为空
+              // 判断content是否为空
               if (!KUtils.strNotBlank(newHeader.content)) {
-                //默认取第一个枚举值
+                // 默认取第一个枚举值
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            //this.headerData.push(newHeader);
+            // this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
             var newFormHeader = {
               id: KUtils.randomMd5(),
               name: param.name,
               type: "text",
-              //是否必须
+              // 是否必须
               require: param.require,
-              //文件表单域的target
+              // 文件表单域的target
               target: null,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
-              enums: this.getEnumOptions(param), //枚举下拉框
-              //枚举是否支持多选('default' | 'multiple' )
+              enums: this.getEnumOptions(param), // 枚举下拉框
+              // 枚举是否支持多选('default' | 'multiple' )
               enumsMode: "default",
               new: false
             };
-            //判断枚举类型是否为空
+            // 判断枚举类型是否为空
             if (newFormHeader.enums != null) {
-              //判断content是否为空
+              // 判断content是否为空
               if (!KUtils.strNotBlank(newFormHeader.content)) {
-                //默认取第一个枚举值
+                // 默认取第一个枚举值
                 newFormHeader.content = newFormHeader.enums[0].value;
               }
             }
@@ -1423,27 +1423,27 @@ export default {
               require: param.require,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
-              enums: this.getEnumOptions(param), //枚举下拉框
-              //枚举是否支持多选('default' | 'multiple' )
+              enums: this.getEnumOptions(param), // 枚举下拉框
+              // 枚举是否支持多选('default' | 'multiple' )
               enumsMode: "default",
               new: false
             };
-            //判断枚举类型是否为空
+            // 判断枚举类型是否为空
             if (newHeader.enums != null) {
-              //判断content是否为空
+              // 判断content是否为空
               if (!KUtils.strNotBlank(newHeader.content)) {
-                //默认取第一个枚举值
+                // 默认取第一个枚举值
                 newHeader.content = newHeader.enums[0].value;
               }
             }
-            //this.headerData.push(newHeader);
+            // this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
-            //console.log(param)
-            //判断该参数是否是枚举
+            // console.log(param)
+            // 判断该参数是否是枚举
             var enumsMode = "default";
             if (KUtils.arrNotEmpty(param.enum)) {
-              //枚举类型，判断是否是数组
+              // 枚举类型，判断是否是数组
               if (param.type == "array") {
                 enumsMode = "multiple";
               }
@@ -1452,22 +1452,22 @@ export default {
               id: KUtils.randomMd5(),
               name: param.name,
               type: "text",
-              //是否必须
+              // 是否必须
               require: param.require,
-              //文件表单域的target
+              // 文件表单域的target
               target: null,
               content: param.txtValue,
               description: KUtils.propValue("description", param, ""),
-              enums: this.getEnumOptions(param), //枚举下拉框
-              //枚举是否支持多选('default' | 'multiple' )
+              enums: this.getEnumOptions(param), // 枚举下拉框
+              // 枚举是否支持多选('default' | 'multiple' )
               enumsMode: enumsMode,
               new: false
             };
-            //判断枚举类型是否为空
+            // 判断枚举类型是否为空
             if (newFormHeader.enums != null) {
-              //判断content是否为空
+              // 判断content是否为空
               if (!KUtils.strNotBlank(newFormHeader.content)) {
-                //默认取第一个枚举值
+                // 默认取第一个枚举值
                 newFormHeader.content = newFormHeader.enums[0].value;
               }
             }
@@ -1482,14 +1482,14 @@ export default {
           id: KUtils.randomMd5(),
           name: "",
           type: "text",
-          //是否必须
+          // 是否必须
           require: false,
-          //文件表单域的target
+          // 文件表单域的target
           target: null,
           content: "",
           description: "",
-          enums: null, //枚举下拉框
-          //枚举是否支持多选('default' | 'multiple' )
+          enums: null, // 枚举下拉框
+          // 枚举是否支持多选('default' | 'multiple' )
           enumsMode: "default",
           new: true
         };
@@ -1504,14 +1504,14 @@ export default {
           id: KUtils.randomMd5(),
           name: "",
           type: "text",
-          //是否必须
+          // 是否必须
           require: false,
-          //文件表单域的target
+          // 文件表单域的target
           target: null,
           content: "",
           description: "",
-          enums: null, //枚举下拉框
-          //枚举是否支持多选('default' | 'multiple' )
+          enums: null, // 枚举下拉框
+          // 枚举是否支持多选('default' | 'multiple' )
           enumsMode: "default",
           new: true
         };
@@ -1549,7 +1549,7 @@ export default {
     },
     initSelectionHeaders(selectedKey) {
       if (KUtils.strNotBlank(selectedKey)) {
-        //判断是否添加过
+        // 判断是否添加过
         var len = this.rowSelection.selectedRowKeys.filter(
           id => id == selectedKey
         ).length;
@@ -1570,7 +1570,7 @@ export default {
 
     },
     headerCookieValue(header) {
-      //https://gitee.com/xiaoym/knife4j/issues/I439PO
+      // https://gitee.com/xiaoym/knife4j/issues/I439PO
       if (header.name.toLowerCase() == "cookie") {
         document.cookie = header.content;
       }
@@ -1593,7 +1593,7 @@ export default {
 
           }
         });
-        //插入一行
+        // 插入一行
         this.addNewLineHeader();
       } else {
         this.headerData.forEach(header => {
@@ -1631,7 +1631,7 @@ export default {
       this.headerSelectName = value;
     },
     headerNameChange(record) {
-      //判断是否是new标志位,如果是new标志位,当前标志位置为false，重新生成一个new标志位的行
+      // 判断是否是new标志位,如果是new标志位,当前标志位置为false，重新生成一个new标志位的行
       if (record.new) {
         this.headerData.forEach(header => {
           if (header.id == record.id) {
@@ -1639,7 +1639,7 @@ export default {
             header.new = false;
           }
         });
-        //插入一行
+        // 插入一行
         this.addNewLineHeader();
       } else {
         this.headerData.forEach(header => {
@@ -1663,7 +1663,7 @@ export default {
       this.headerResetCalc();
     },
     headerResetCalc() {
-      //重新计算header请求头数量
+      // 重新计算header请求头数量
       var noNewHeaderArrs = this.headerData.filter(
         header => header.new == false
       );
@@ -1676,7 +1676,7 @@ export default {
       }
     },
     requestContentTypeChange(e) {
-      //console("radio checked", e.target.value);
+      // console("radio checked", e.target.value);
       this.requestContentType = e.target.value;
       this.initShowFormTable();
     },
@@ -1690,7 +1690,7 @@ export default {
       this.formData = nforms;
     },
     formFileUploadClick(record) {
-      //触发file隐藏表单域的click事件
+      // 触发file隐藏表单域的click事件
       document.getElementById("file" + record.id).click();
     },
     formNameChange(e) {
@@ -1721,17 +1721,17 @@ export default {
       var formId = arr[1];
       this.formData.forEach(form => {
         if (form.id == formId) {
-          //选择表单类型后,表单值置空
+          // 选择表单类型后,表单值置空
           form.content = "";
           form.type = formType;
-          //判断是否是文件类型，如果是文件类型，给定一个目标input-file域的target属性
+          // 判断是否是文件类型，如果是文件类型，给定一个目标input-file域的target属性
         }
       });
     },
     formFileChange(e) {
-      //console("文件发生变化了");
-      //console(e);
-      //console(e.target.files);
+      // console("文件发生变化了");
+      // console(e);
+      // console(e.target.files);
       var files = e.target.files;
       var fileStr = [];
       for (var i = 0; i < files.length; i++) {
@@ -1749,7 +1749,7 @@ export default {
             form.new = false;
           }
         });
-        //console(this.formData);
+        // console(this.formData);
         this.addNewLineFormValue();
       } else {
         this.formData.forEach(form => {
@@ -1783,14 +1783,14 @@ export default {
       this.initFormSelections(record.id);
     },
     formContentEnumChange(formValue, option) {
-      //console.log(option);
+      // console.log(option);
       var formId = option.context.$attrs["data-key"];
-      //console.log("value:" + formValue + ",formId:" + formId);
+      // console.log("value:" + formValue + ",formId:" + formId);
       this.formContentUpdate(formValue, formId);
     },
     formContentChange(e) {
       var formValue = e.target.value;
-      ////console("formcontent-value:" + formValue);
+      // //console("formcontent-value:" + formValue);
       var formId = e.target.getAttribute("data-key");
       this.formContentUpdate(formValue, formId);
     },
@@ -1886,7 +1886,7 @@ export default {
       this.rawFormContentUpdate(formValue, formId);
     },
     urlFormContentUpdate(formValue, formId) {
-      //更新urlForm的表单内容
+      // 更新urlForm的表单内容
       var record = this.urlFormData.filter(form => form.id == formId)[0];
       if (record.new) {
         this.urlFormData.forEach(form => {
@@ -1908,21 +1908,21 @@ export default {
     },
     urlFormContentEnumChange(formValue, option) {
       if (KUtils.checkUndefined(option)) {
-        //支持枚举下拉多选
+        // 支持枚举下拉多选
         var formId = "";
-        //判断formValue是否是数组,如果是数组代表多选
-        //console.log(typeof(option))
+        // 判断formValue是否是数组,如果是数组代表多选
+        // console.log(typeof(option))
         if (Array.isArray(option)) {
-          //任取1个
+          // 任取1个
           formId = option[0].context.$attrs["data-key"];
         } else {
           formId = option.context.$attrs["data-key"];
         }
-        //console.log("枚举选择")
-        //console.log(formValue);
-        //console.log(option)
-        //console.log(formId)
-        //var formId = option.context.$attrs["data-key"];
+        // console.log("枚举选择")
+        // console.log(formValue);
+        // console.log(option)
+        // console.log(formId)
+        // var formId = option.context.$attrs["data-key"];
         this.urlFormContentUpdate(formValue, formId);
       }
     },
@@ -1940,7 +1940,7 @@ export default {
     beautifyJson() {
       let jsontext = this.rawText;
       if (KUtils.strNotBlank(jsontext)) {
-        //格式化操作
+        // 格式化操作
         try {
           let j = KUtils.json5stringify(KUtils.json5parse(jsontext));
           this.rawText = j;
@@ -1950,7 +1950,7 @@ export default {
       }
     },
     toggleBeautifyButtonStatus() {
-      //格式化JSON按钮标志
+      // 格式化JSON按钮标志
       let flag = false;
       if (this.rawFlag) {
         if (this.rawMode == 'json') {
@@ -1967,12 +1967,12 @@ export default {
     },
     sendRestfulApi(e) {
       e.preventDefault();
-      //验证公共请求头
+      // 验证公共请求头
       var validateHeader = this.validateCommonHeaders();
-      //console("公共请求头验证");
-      //console(validateHeader);
+      // console("公共请求头验证");
+      // console(validateHeader);
       if (validateHeader.validate) {
-        //根据不同的请求类型,发送不同的请求
+        // 根据不同的请求类型,发送不同的请求
         if (this.rawFlag) {
           this.debugSendRawRequest();
         } else if (this.formFlag) {
@@ -1985,15 +1985,15 @@ export default {
       }
     },
     callChildEditorShow() {
-      //console("调用子类方法---");
+      // console("调用子类方法---");
       if (!this.bigFlag) {
         this.$refs.childDebugResponse.showEditorFieldDescription();
       }
     },
     debugHeaders() {
-      //获取发送请求的自定义等等请求头参数
+      // 获取发送请求的自定义等等请求头参数
       var headers = {};
-      //判断accept
+      // 判断accept
       var apiInfo = this.api;
       if (
         apiInfo.produces != undefined &&
@@ -2005,21 +2005,21 @@ export default {
       }
       this.headerData.forEach(header => {
         if (!header.new) {
-          //不是新行
-          //判断header是否选中
+          // 不是新行
+          // 判断header是否选中
           var tmphArrs = this.rowSelection.selectedRowKeys.filter(
             rs => rs == header.id
           );
           if (tmphArrs.length > 0) {
-            //获取选中的headers才能发送
+            // 获取选中的headers才能发送
             if (KUtils.strNotBlank(header.name)) {
-              //此处去除header名称为cookie的值，因为已经更新了，浏览器发送时会自动带上
+              // 此处去除header名称为cookie的值，因为已经更新了，浏览器发送时会自动带上
               if (header.name.toLowerCase() != "cookie") {
-                //需要判断请求头是否为中文,如果是中文,对其进行encode处理
+                // 需要判断请求头是否为中文,如果是中文,对其进行encode处理
                 if (KUtils.isChinese(header.content)) {
                   headers[header.name] = encodeURIComponent(header.content);
                 } else {
-                  //header名称不等于空
+                  // header名称不等于空
                   headers[header.name] = KUtils.toString(header.content, "");
                 }
               }
@@ -2028,30 +2028,30 @@ export default {
         }
       });
 
-      //追加1个Knife4j的默认请求头参数
+      // 追加1个Knife4j的默认请求头参数
       headers["Request-Origion"] = "Knife4j";
-      //判断是否包含请求Content-Type类型，如果不包含，则添加
+      // 判断是否包含请求Content-Type类型，如果不包含，则添加
       if (!KUtils.checkUndefined(headers["Content-Type"])) {
         if (this.rawFlag) {
           headers["Content-Type"] = this.rawRequestType;
         } else if (this.urlFormFlag) {
           headers["Content-Type"] = "application/x-www-form-urlencoded";
         } else if (this.formFlag) {
-          //此处需要验证是否是文件上传的表单类型
+          // 此处需要验证是否是文件上传的表单类型
           if (this.validateFormDataContaintsFile()) {
-            //包含文件
+            // 包含文件
             headers["Content-Type"] = "multipart/form-data";
           } else {
             headers["Content-Type"] = "application/x-www-form-urlencoded";
           }
         }
       }
-      //判断是否routeProxy请求，基于Knife4j自研aggre聚合组件请求header
-      //add by xiaoymin 2020年11月13日 21:33:18
+      // 判断是否routeProxy请求，基于Knife4j自研aggre聚合组件请求header
+      // add by xiaoymin 2020年11月13日 21:33:18
       if (KUtils.checkUndefined(this.routeHeader)) {
         headers["knfie4j-gateway-request"] = this.routeHeader;
       }
-      //Knife4jAggregationDesktop组件header
+      // Knife4jAggregationDesktop组件header
       if (this.swaggerInstance.desktop) {
         headers["knife4j-gateway-code"] = this.swaggerInstance.desktopCode;
       }
@@ -2059,16 +2059,16 @@ export default {
       return headers;
     },
     debugRawFormParams() {
-      //获取url-form类型的参数
+      // 获取url-form类型的参数
       var params = {};
       this.rawFormData.forEach(form => {
         if (!form.new) {
-          //判断header是否选中
+          // 判断header是否选中
           var tmphArrs = this.rowRawFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
-            //必须选中
+            // 必须选中
             if (KUtils.strNotBlank(form.name)) {
               params[form.name] = form.content;
             }
@@ -2078,17 +2078,17 @@ export default {
       return params;
     },
     debugUrlFormParams() {
-      //获取url-form类型的参数
+      // 获取url-form类型的参数
       var params = {};
-      //对于GET 类型请求编码处理
+      // 对于GET 类型请求编码处理
       this.urlFormData.forEach(form => {
         if (!form.new) {
-          //判断header是否选中
+          // 判断header是否选中
           var tmphArrs = this.rowUrlFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
-            //必须选中
+            // 必须选中
             if (KUtils.strNotBlank(form.name)) {
               params[form.name] = form.content;
             }
@@ -2098,29 +2098,29 @@ export default {
       return params;
     },
     debugFormDataParams(fileFlag) {
-      //form-data类型的请求参数
+      // form-data类型的请求参数
       var validateForm = { url: "", params: {} };
       var url = this.debugUrl;
-      //console("表单验证url:" + url);
+      // console("表单验证url:" + url);
       if (fileFlag) {
-        //文件
+        // 文件
         var formData = new FormData();
         this.formData.forEach(form => {
           if (!form.new) {
-            //判断header是否选中
+            // 判断header是否选中
             var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
               rs => rs == form.id
             );
             if (tmphArrs.length > 0) {
-              //必须选中
+              // 必须选中
               if (KUtils.strNotBlank(form.name)) {
-                //判断类型
+                // 判断类型
                 if (form.type == "text") {
-                  //判断是否是urlPath参数
+                  // 判断是否是urlPath参数
                   if (this.debugPathFlag) {
                     if (this.debugPathParams.indexOf(form.name) == -1) {
-                      //非空判断
-                      //https://gitee.com/xiaoym/knife4j/issues/I3AHDQ
+                      // 非空判断
+                      // https://gitee.com/xiaoym/knife4j/issues/I3AHDQ
                       if (KUtils.strNotBlank(form.content)) {
                         formData.append(form.name, form.content);
                       }
@@ -2129,17 +2129,17 @@ export default {
                       url = url.replace(replaceRege, form.content);
                     }
                   } else {
-                    //非空判断
-                    //https://gitee.com/xiaoym/knife4j/issues/I3AHDQ
+                    // 非空判断
+                    // https://gitee.com/xiaoym/knife4j/issues/I3AHDQ
                     if (KUtils.strNotBlank(form.content)) {
                       formData.append(form.name, form.content);
                     }
                   }
                 } else {
-                  //文件
+                  // 文件
                   if (KUtils.checkUndefined(form.target)) {
                     var files = form.target.files;
-                    //判断是否是运行多个上传
+                    // 判断是否是运行多个上传
                     if (files.length > 0) {
                       for (var i = 0; i < files.length; i++) {
                         formData.append(form.name, files[i]);
@@ -2156,14 +2156,14 @@ export default {
         var params = {};
         this.formData.forEach(form => {
           if (!form.new) {
-            //判断header是否选中
+            // 判断header是否选中
             var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
               rs => rs == form.id
             );
             if (tmphArrs.length > 0) {
-              //必须选中
+              // 必须选中
               if (KUtils.strNotBlank(form.name)) {
-                //判断是否是urlPath参数
+                // 判断是否是urlPath参数
                 if (this.debugPathFlag) {
                   if (this.debugPathParams.indexOf(form.name) == -1) {
                     params[form.name] = form.content;
@@ -2179,7 +2179,7 @@ export default {
           }
         });
         validateForm.params = params;
-        //return params;
+        // return params;
       }
       validateForm.url = url;
       return validateForm;
@@ -2187,7 +2187,7 @@ export default {
     debugStreamFlag() {
       var streamFlag = false;
       var apiInfo = this.api;
-      //console.log(apiInfo);
+      // console.log(apiInfo);
       if (
         apiInfo.produces != undefined &&
         apiInfo.produces != null &&
@@ -2200,23 +2200,23 @@ export default {
       return streamFlag;
     },
     validateCommonHeaders() {
-      //验证公共请求头
+      // 验证公共请求头
       var validate = true;
       var message = "";
       for (var i = 0; i < this.headerData.length; i++) {
         var header = this.headerData[i];
         if (!header.new) {
-          //判断header是否选中
+          // 判断header是否选中
           var tmphArrs = this.rowSelection.selectedRowKeys.filter(
             rs => rs == header.id
           );
           if (tmphArrs.length > 0) {
-            //必须选中
+            // 必须选中
             if (KUtils.strNotBlank(header.name)) {
               if (header.require) {
                 if (!KUtils.strNotBlank(header.content)) {
                   validate = false;
-                  //message = "请求头" + header.name + "不能为空";
+                  // message = "请求头" + header.name + "不能为空";
                   message = this.i18n.validate.header + header.name + this.i18n.validate.notEmpty;
                   break;
                 }
@@ -2228,33 +2228,33 @@ export default {
       return { validate: validate, message: message };
     },
     validateFormData() {
-      //验证form-data的参数
+      // 验证form-data的参数
       var validate = true;
       var message = "";
       for (var i = 0; i < this.formData.length; i++) {
         var form = this.formData[i];
         if (!form.new) {
-          //判断header是否选中
+          // 判断header是否选中
           var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
-            //必须选中
+            // 必须选中
             if (KUtils.strNotBlank(form.name)) {
               if (form.require) {
-                //判断参数类型,如果是text，则验证content，否则验证target
+                // 判断参数类型,如果是text，则验证content，否则验证target
                 if (form.type == "text") {
                   if (!KUtils.strNotBlank(form.content)) {
                     validate = false;
-                    //message = form.name + "不能为空";
+                    // message = form.name + "不能为空";
                     message = form.name + this.i18n.validate.notEmpty;
                     break;
                   }
                 } else {
-                  //文件
+                  // 文件
                   if (form.target == null) {
                     validate = false;
-                    //message = form.name + "文件不能为空";
+                    // message = form.name + "文件不能为空";
                     message = form.name + this.i18n.validate.fileNotEmpty;
                     break;
                   }
@@ -2267,23 +2267,23 @@ export default {
       return { validate: validate, message: message };
     },
     validateRawForm() {
-      //验证raw-form的参数
+      // 验证raw-form的参数
       var validate = true;
       var message = "";
       for (var i = 0; i < this.rawFormData.length; i++) {
         var form = this.rawFormData[i];
         if (!form.new) {
-          //判断header是否选中
+          // 判断header是否选中
           var tmphArrs = this.rowRawFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
-            //必须选中
+            // 必须选中
             if (KUtils.strNotBlank(form.name)) {
               if (form.require) {
                 if (!KUtils.strNotBlank(form.content)) {
                   validate = false;
-                  //message = form.name + "不能为空";
+                  // message = form.name + "不能为空";
                   message = form.name + this.i18n.validate.notEmpty;
                   break;
                 }
@@ -2295,23 +2295,23 @@ export default {
       return { validate: validate, message: message };
     },
     validateUrlForm() {
-      //验证url-form的参数
+      // 验证url-form的参数
       var validate = true;
       var message = "";
       for (var i = 0; i < this.urlFormData.length; i++) {
         var form = this.urlFormData[i];
         if (!form.new) {
-          //判断header是否选中
+          // 判断header是否选中
           var tmphArrs = this.rowUrlFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
-            //必须选中
+            // 必须选中
             if (KUtils.strNotBlank(form.name)) {
               if (form.require) {
                 if (!KUtils.strNotBlank(form.content)) {
                   validate = false;
-                  //message = form.name + "不能为空";
+                  // message = form.name + "不能为空";
                   message = form.name + this.i18n.validate.notEmpty;
                   break;
                 }
@@ -2323,11 +2323,11 @@ export default {
       return { validate: validate, message: message };
     },
     validateFormDataContaintsFile() {
-      //验证form-data中是否包含file文件
+      // 验证form-data中是否包含file文件
       var flag = false;
       this.formData.forEach(form => {
         if (!form.new) {
-          //判断header是否选中
+          // 判断header是否选中
           var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
@@ -2341,33 +2341,33 @@ export default {
       return flag;
     },
     checkUrlParams(url) {
-      //如果开发者自己在url栏添加了后缀参数,则解析动态添加
-      //https://gitee.com/xiaoym/knife4j/issues/I1C5OQ
-      //校验url请求参数是否携带参数
-      //如果开发者自己在url栏添加了后缀参数,则解析动态添加
-      //https://gitee.com/xiaoym/knife4j/issues/I1C5OQ
+      // 如果开发者自己在url栏添加了后缀参数,则解析动态添加
+      // https://gitee.com/xiaoym/knife4j/issues/I1C5OQ
+      // 校验url请求参数是否携带参数
+      // 如果开发者自己在url栏添加了后缀参数,则解析动态添加
+      // https://gitee.com/xiaoym/knife4j/issues/I1C5OQ
       var paramIndex = url.indexOf("?");
       var checkResult = {
-        result: false, //不包含参数
+        result: false, // 不包含参数
         params: {},
         url: url
       };
       if (paramIndex > -1) {
-        //包含参数
+        // 包含参数
         var subParam = url.substring(paramIndex + 1);
-        //存在
-        //url重新赋值
+        // 存在
+        // url重新赋值
         checkResult.url = url.substring(0, paramIndex);
         checkResult.result = true;
-        //url重新赋值
-        //split
+        // url重新赋值
+        // split
         if (KUtils.strNotBlank(subParam)) {
           var subParamArrs = subParam.split("&");
           subParamArrs.forEach(suba => {
             if (KUtils.strNotBlank(suba)) {
               var realpa = suba.split("=");
               if (realpa.length == 2) {
-                //追加参数
+                // 追加参数
                 checkResult.params[realpa[0]] = realpa[1];
               }
             }
@@ -2377,26 +2377,26 @@ export default {
       return checkResult;
     },
     debugSendHasCookie(headers) {
-      //判断请求头中是否包含Cookie
+      // 判断请求头中是否包含Cookie
       var flag = false;
-      //console.log("校验请求头是否存在Cookie");
-      //console.log(headers);
+      // console.log("校验请求头是否存在Cookie");
+      // console.log(headers);
       if (KUtils.checkUndefined(headers)) {
         var headerNameArrs = Object.keys(headers);
         if (KUtils.arrNotEmpty(headerNameArrs)) {
           var cookieArr = headerNameArrs.filter(headerName => headerName.toLocaleLowerCase() === "cookie").length;
           if (cookieArr > 0) {
-            //存在cookie
+            // 存在cookie
             var cookieValue = headers["Cookie"];
             if (KUtils.strNotBlank(cookieValue)) {
-              //前端JS写入
+              // 前端JS写入
               document.cookie = cookieValue;
               flag = true;
             }
           }
         }
       }
-      //console.log("校验结果："+flag);
+      // console.log("校验结果："+flag);
       return flag;
     },
     applyRequestParams(formParams, methodType) {
@@ -2414,10 +2414,10 @@ export default {
       }
     },
     debugCheckUrl(url) {
-      //如果服务端开启了enableUrlTemplating，正常参数会出现在url中
-      //比如：/api/nxew205/reqEnumArr{?errorCodes,name}
-      //https://gitee.com/xiaoym/knife4j/issues/I22J5Q
-      //针对这种形式，直接去除地址栏后面的{?errorCodes,name}模板参数，因为axios在发送的时候会直接带上参数地址,这样也避免参数丢失和访问接口出现404
+      // 如果服务端开启了enableUrlTemplating，正常参数会出现在url中
+      // 比如：/api/nxew205/reqEnumArr{?errorCodes,name}
+      // https://gitee.com/xiaoym/knife4j/issues/I22J5Q
+      // 针对这种形式，直接去除地址栏后面的{?errorCodes,name}模板参数，因为axios在发送的时候会直接带上参数地址,这样也避免参数丢失和访问接口出现404
       var checkUrl = url;
       try {
         var reg = new RegExp('.*?(\{.*?\})$', "ig");
@@ -2426,7 +2426,7 @@ export default {
           checkUrl = url.replace(rr, "");
         }
       } catch (e) {
-        //ignore
+        // ignore
         if (window.console) {
           console.error(e);
         }
@@ -2434,37 +2434,37 @@ export default {
       return checkUrl;
     },
     debugSendUrlFormRequest() {
-      //发送url-form类型的请求
-      //console("发送url-form接口");
+      // 发送url-form类型的请求
+      // console("发送url-form接口");
       var validateForm = this.validateUrlForm();
-      //console(validateForm);
+      // console(validateForm);
       if (validateForm.validate) {
         this.debugLoading = true;
-        //发送状态置为已发送请求
+        // 发送状态置为已发送请求
         this.debugSend = true;
-        //raw类型的请求需要判断是何种类型
+        // raw类型的请求需要判断是何种类型
         var headers = this.debugHeaders();
         var url = this.debugUrl;
         var methodType = this.api.methodType.toLowerCase();
         var formParams = this.debugUrlFormParams();
-        //得到key-value的参数值,对请求类型进行判断，判断是否为path
+        // 得到key-value的参数值,对请求类型进行判断，判断是否为path
         if (this.debugPathFlag) {
           const realFormParams = {};
-          //是path类型的接口,需要对地址、参数进行replace处理
+          // 是path类型的接口,需要对地址、参数进行replace处理
           this.debugPathParams.forEach(pathKey => {
             var replaceRege = "{" + pathKey + "}";
-            //var value = formParams[pathKey];
+            // var value = formParams[pathKey];
             var value = KUtils.getValue(formParams, pathKey, "", true);
             url = url.replace(replaceRege, value);
           });
           for (var key in formParams) {
-            //判断key在debugPath中是否存在
+            // 判断key在debugPath中是否存在
             if (this.debugPathParams.indexOf(key) == -1) {
-              //不存在
+              // 不存在
               realFormParams[key] = formParams[key];
             }
           }
-          //重新赋值
+          // 重新赋值
           formParams = realFormParams;
         }
         var checkResult = this.checkUrlParams(url);
@@ -2473,13 +2473,13 @@ export default {
           formParams = Object.assign(formParams, checkResult.params);
         }
         var baseUrl = '';
-        //是否启用Host
+        // 是否启用Host
         if (this.enableHost) {
           baseUrl = this.enableHostText;
         }
-        //console.log(headers)
+        // console.log(headers)
         var applyReuqest = this.applyRequestParams(formParams, methodType);
-        //console.log(applyReuqest)
+        // console.log(applyReuqest)
         var requestConfig = {
           baseURL: baseUrl,
           url: this.debugCheckUrl(url),
@@ -2487,29 +2487,29 @@ export default {
           headers: headers,
           params: applyReuqest.params,
           timeout: 0,
-          //Cookie标志
+          // Cookie标志
           withCredentials: this.debugSendHasCookie(headers),
-          //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
-          //否则axios会忽略请求头Content-Type
+          // 此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
+          // 否则axios会忽略请求头Content-Type
           data: applyReuqest.data
         };
-        //判断当前接口规范是OAS3还是Swagger2
+        // 判断当前接口规范是OAS3还是Swagger2
         if (this.oas2) {
-          //OAS2规范制定了produces的定义,需要判断请求头
-          //需要判断是否是下载请求
+          // OAS2规范制定了produces的定义,需要判断请求头
+          // 需要判断是否是下载请求
           if (this.debugStreamFlag()) {
-            //流请求
+            // 流请求
             requestConfig = { ...requestConfig, responseType: "blob" };
           }
         } else {
-          //统一追加一个blob类型的响应,在OpenAPI3.0的规范中,没有关于produces的设定，因此无法判断当前请求是否是流的请求
-          //https://gitee.com/xiaoym/knife4j/issues/I374SP
+          // 统一追加一个blob类型的响应,在OpenAPI3.0的规范中,没有关于produces的设定，因此无法判断当前请求是否是流的请求
+          // https://gitee.com/xiaoym/knife4j/issues/I374SP
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
-        //console.log(requestConfig);
+        // console.log(requestConfig);
         const debugInstance = DebugAxios.create();
-        //get请求编码问题
-        //https://gitee.com/xiaoym/knife4j/issues/I19C8Y
+        // get请求编码问题
+        // https://gitee.com/xiaoym/knife4j/issues/I19C8Y
         debugInstance.interceptors.request.use(config => {
           let url = config.url;
           if (config.method === "get" && config.params) {
@@ -2525,34 +2525,34 @@ export default {
             url = url.substring(0, url.length - 1);
             config.params = {};
           }
-          // get参数编码
+          //  get参数编码
           config.url = url;
           return config;
         });
-        //console(headers);
-        //console(requestConfig);
-        //开始时间定义在发送之前
+        // console(headers);
+        // console(requestConfig);
+        // 开始时间定义在发送之前
         var startTime = new Date();
         debugInstance
           .request(requestConfig)
           .then(res => {
-            //console("url-form-success");
-            //console.log(res);
-            // console.log("响应成功")
-            //console.log(res);
+            // console("url-form-success");
+            // console.log(res);
+            //  console.log("响应成功")
+            // console.log(res);
             this.debugLoading = false;
             this.handleDebugSuccess(startTime, new Date(), res);
           })
           .catch(err => {
-            //console("触发url-form-error");
-            //console.info(err);
+            // console("触发url-form-error");
+            // console.info(err);
             this.debugLoading = false;
-            //虽然是错误,但依然有返回值
+            // 虽然是错误,但依然有返回值
             if (err.response) {
               this.handleDebugError(startTime, new Date(), err.response);
             } else {
               this.$message.error(err.message);
-              ////console(err.message);
+              // //console(err.message);
             }
           });
       } else {
@@ -2560,27 +2560,27 @@ export default {
       }
     },
     debugSendFormRequest() {
-      //发送form类型的请求
+      // 发送form类型的请求
       var validateForm = this.validateFormData();
-      //console(validateForm);
+      // console(validateForm);
       if (validateForm.validate) {
-        //console("验证通过---");
+        // console("验证通过---");
         this.debugLoading = true;
-        //发送状态置为已发送请求
+        // 发送状态置为已发送请求
         this.debugSend = true;
-        //raw类型的请求需要判断是何种类型
+        // raw类型的请求需要判断是何种类型
         var headers = this.debugHeaders();
         var url = this.debugUrl;
 
         var methodType = this.api.methodType.toLowerCase();
         var fileFlag = this.validateFormDataContaintsFile();
         var validateFormd = this.debugFormDataParams(fileFlag);
-        //console(validateFormd);
+        // console(validateFormd);
         url = validateFormd.url;
-        //var formParams = this.debugFormDataParams(fileFlag);
+        // var formParams = this.debugFormDataParams(fileFlag);
         var formParams = validateFormd.params;
         var baseUrl = '';
-        //是否启用Host
+        // 是否启用Host
         if (this.enableHost) {
           baseUrl = this.enableHostText;
         }
@@ -2590,10 +2590,10 @@ export default {
           method: methodType,
           headers: headers,
           timeout: 0,
-          //Cookie标志
+          // Cookie标志
           withCredentials: this.debugSendHasCookie(headers),
-          //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
-          //否则axios会忽略请求头Content-Type
+          // 此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
+          // 否则axios会忽略请求头Content-Type
           data: null
         };
         if (fileFlag) {
@@ -2606,31 +2606,31 @@ export default {
           }
           requestConfig = { ...requestConfig, params: formParams };
         }
-        //需要判断是否是下载请求
+        // 需要判断是否是下载请求
         if (this.debugStreamFlag()) {
-          //流请求
+          // 流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
         let debugInstance = DebugAxios.create();
-        //console(headers);
-        //console(requestConfig);
+        // console(headers);
+        // console(requestConfig);
         var startTime = new Date();
         debugInstance
           .request(requestConfig)
           .then(res => {
-            //console("url-form-success");
-            //console(res);
+            // console("url-form-success");
+            // console(res);
             this.debugLoading = false;
             this.handleDebugSuccess(startTime, new Date(), res);
           })
           .catch(err => {
             this.debugLoading = false;
-            //console("触发url-form-error");
+            // console("触发url-form-error");
             if (err.response) {
               this.handleDebugError(startTime, new Date(), err.response);
             } else {
               this.$message.error(err.message);
-              ////console(err.message);
+              // //console(err.message);
             }
           });
       } else {
@@ -2638,37 +2638,37 @@ export default {
       }
     },
     debugSendRawRequest() {
-      //发送raw类型的请求
-      //console("发送raw接口");
+      // 发送raw类型的请求
+      // console("发送raw接口");
       var validateForm = this.validateRawForm();
       if (validateForm.validate) {
         this.debugLoading = true;
-        //发送状态置为已发送请求
+        // 发送状态置为已发送请求
         this.debugSend = true;
-        //raw类型的请求需要判断是何种类型
+        // raw类型的请求需要判断是何种类型
         var headers = this.debugHeaders();
         var url = this.debugUrl;
         var methodType = this.api.methodType.toLowerCase();
         var data = this.rawText;
         var formParams = this.debugRawFormParams();
-        //得到key-value的参数值,对请求类型进行判断，判断是否为path
+        // 得到key-value的参数值,对请求类型进行判断，判断是否为path
         if (this.debugPathFlag) {
           const realFormParams = {};
-          //是path类型的接口,需要对地址、参数进行replace处理
+          // 是path类型的接口,需要对地址、参数进行replace处理
           this.debugPathParams.forEach(pathKey => {
             var replaceRege = "{" + pathKey + "}";
-            //var value = formParams[pathKey];
+            // var value = formParams[pathKey];
             var value = KUtils.getValue(formParams, pathKey, "", true);
             url = url.replace(replaceRege, value);
           });
           for (var key in formParams) {
-            //判断key在debugPath中是否存在
+            // 判断key在debugPath中是否存在
             if (this.debugPathParams.indexOf(key) == -1) {
-              //不存在
+              // 不存在
               realFormParams[key] = formParams[key];
             }
           }
-          //重新赋值
+          // 重新赋值
           formParams = realFormParams;
         }
         var checkResult = this.checkUrlParams(url);
@@ -2677,7 +2677,7 @@ export default {
           formParams = Object.assign(formParams, checkResult.params);
         }
         var baseUrl = '';
-        //是否启用Host
+        // 是否启用Host
         if (this.enableHost) {
           baseUrl = this.enableHostText;
         }
@@ -2688,18 +2688,18 @@ export default {
           headers: headers,
           params: formParams,
           data: data,
-          //Cookie标志
+          // Cookie标志
           withCredentials: this.debugSendHasCookie(headers),
           timeout: 0
         }
-        //需要判断是否是下载请求
-        //https://gitee.com/xiaoym/knife4j/issues/I1U4LA
+        // 需要判断是否是下载请求
+        // https://gitee.com/xiaoym/knife4j/issues/I1U4LA
         if (this.debugStreamFlag()) {
-          //流请求
+          // 流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
-        //console(headers);
-        //console(this.rawText);
+        // console(headers);
+        // console(this.rawText);
         var startTime = new Date();
         DebugAxios.create()
           .request(requestConfig)
@@ -2720,13 +2720,13 @@ export default {
       }
     },
     executeAfterScript(res) {
-      //console.log("executeAfterScript");
-      //console.log(res);
+      // console.log("executeAfterScript");
+      // console.log(res);
       if (KUtils.strNotBlank(this.rawScript)) {
         var groupid = this.swaggerInstance.id;
         var allgroupid = this.swaggerInstance.allGroupIds;
-        //console.log("groupid:"+groupid);
-        //script不为空
+        // console.log("groupid:"+groupid);
+        // script不为空
         var settings = {
           allgroupids: allgroupid,
           groupid: groupid,
@@ -2738,10 +2738,10 @@ export default {
         var ke = new KEnvironment(settings);
         try {
           var func = new Function('ke', this.rawScript);
-          //执行
+          // 执行
           func(ke);
           setTimeout(() => {
-            //console.log("开始执行...")
+            // console.log("开始执行...")
             ke.global.action();
           }, 1000);
         } catch (e) {
@@ -2752,24 +2752,24 @@ export default {
     handleDebugSuccess(startTime, endTime, res) {
       this.bigFlag = false;
       this.bigBlobFlag = false;
-      //成功的情况
+      // 成功的情况
       this.setResponseBody(res);
       this.setResponseHeaders(res.headers);
       this.setResponseRaw(res);
-      //console("开始执行status--");
+      // console("开始执行status--");
       this.setResponseStatus(startTime, endTime, res);
       this.setResponseCurl(res.request);
       this.callChildEditorShow();
-      //执行成功后,执行afterScript中的脚本
+      // 执行成功后,执行afterScript中的脚本
       this.executeAfterScript(res);
       this.storeApiParams();
     },
     handleDebugError(startTime, endTime, resp) {
       this.bigFlag = false;
       this.bigBlobFlag = false;
-      //console.log("失败情况---");
-      //console.log(resp);
-      //失败的情况
+      // console.log("失败情况---");
+      // console.log(resp);
+      // 失败的情况
       this.setResponseBody(resp);
       this.setResponseHeaders(resp.headers);
       this.setResponseRaw(resp);
@@ -2779,9 +2779,9 @@ export default {
       this.storeApiParams();
     },
     storeApiParams() {
-      //对于开启请求参数缓存的配置,在接口发送后,缓存配置
+      // 对于开启请求参数缓存的配置,在接口发送后,缓存配置
       if (this.enableRequestCache) {
-        //console.log("开启缓存--")
+        // console.log("开启缓存--")
         var cacheApi = {
           headerData: [],
           formData: [],
@@ -2790,30 +2790,30 @@ export default {
           rawText: ""
         };
         var cacheApiKey = constant.debugCacheApiId + this.api.id;
-        //得到headercans
+        // 得到headercans
         cacheApi.headerData = this.headerData.filter(
           header => header.new == false
         );
-        //得到form
+        // 得到form
         cacheApi.formData = this.formData.filter(form => form.new == false);
-        //url-form
+        // url-form
         cacheApi.urlFormData = this.urlFormData.filter(
           form => form.new == false
         );
-        //raw-form
+        // raw-form
         cacheApi.rawFormData = this.rawFormData.filter(
           form => form.new == false
         );
         cacheApi.rawText = this.rawText;
-        //增加script功能 2020年10月21日
+        // 增加script功能 2020年10月21日
         cacheApi.rawScript = this.rawScript;
-        //console("缓存请求参数");
-        //console(cacheApi);
+        // console("缓存请求参数");
+        // console(cacheApi);
         this.$localStore.setItem(cacheApiKey, cacheApi);
       }
     },
     setResponseHeaders(respHeaders) {
-      //给相应请求头表格赋值
+      // 给相应请求头表格赋值
       var tmpRespHeaderArrs = [];
       if (KUtils.checkUndefined(respHeaders)) {
         for (var k in respHeaders) {
@@ -2832,65 +2832,65 @@ export default {
         var resp = res.request;
         var headers = res.headers;
         if (KUtils.checkUndefined(resp)) {
-          //判断是否是blob类型
+          // 判断是否是blob类型
           if (resp.responseType != "blob") {
             var _tmpRawText = KUtils.toString(resp.responseText, "");
-            //123
-            //console.log(_tmpRawText)
+            // 123
+            // console.log(_tmpRawText)
             this.responseRawText = _tmpRawText;
           }
         }
       }
     },
     setResponseStatus(startTime, endTime, res) {
-      //console("响应状态------------");
+      // console("响应状态------------");
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
-        //响应状态
+        // 响应状态
         if (KUtils.checkUndefined(resp)) {
-          //var endTime = new Date();
+          // var endTime = new Date();
           var costStr = "";
           var cost = endTime.getTime() - startTime.getTime();
           var code = resp.status;
           if (cost > 1000) {
-            //超过1秒钟
+            // 超过1秒钟
             var sec = Math.floor(cost / 1000).toFixed(1);
             costStr = sec + "s";
           } else {
-            //接口响应毫秒级别
+            // 接口响应毫秒级别
             costStr = cost + "ms";
           }
-          //判断是否包含text
+          // 判断是否包含text
           var size = 0;
-          //判断是否是blob类型
+          // 判断是否是blob类型
           if (resp.responseType == "blob") {
-            //blob类型
+            // blob类型
             size = resp.response.size;
           } else {
             if (KUtils.checkUndefined(resp.responseText)) {
               size = resp.responseText.gblen();
             }
           }
-          //赋值
+          // 赋值
           this.responseStatus = {
             code: code,
             cost: costStr,
             size: size
           };
-          //console(this.responseStatus);
+          // console(this.responseStatus);
         }
       }
     },
     setResponseCurl(resp) {
       var that = this;
       var url = this.debugCheckUrl(this.debugUrl);
-      //console.log("setResponseCurl:"+url)
-      //构建请求响应CURL
+      // console.log("setResponseCurl:"+url)
+      // 构建请求响应CURL
       var curlified = new Array();
       var protocol = "http";
-      //获取location
+      // 获取location
       var href = window.location.href;
-      //判断是否是https
+      // 判断是否是https
       var proRegex = new RegExp("^https.*", "ig");
       if (proRegex.test(href)) {
         protocol = "https";
@@ -2898,23 +2898,23 @@ export default {
       var httpReg = new RegExp("^(http|https):.*", "ig");
       var fullurl = "";
       if (httpReg.test(this.api.host)) {
-        //如果包含,则不追究
+        // 如果包含,则不追究
         fullurl = this.api.host;
       } else {
-        fullurl = protocol + "://" + this.api.host;
+        fullurl = protocol + ":// " + this.api.host;
       }
-      //判断是否开启了Host的配置,如果开启则直接使用Host中的地址
+      // 判断是否开启了Host的配置,如果开启则直接使用Host中的地址
       if (this.enableHost) {
         fullurl = this.enableHostText;
       }
-      //判断url是否是以/开头
+      // 判断url是否是以/开头
       if (!url.startWith("/")) {
         fullurl += "/";
       }
       fullurl += url;
       curlified.push("curl");
       curlified.push("-X", this.api.methodType.toUpperCase());
-      //设置请求头
+      // 设置请求头
       var headers = this.debugHeaders();
       var ignoreHeaders = [];
       ignoreHeaders.push("knfie4j-gateway-request");
@@ -2930,14 +2930,14 @@ export default {
       }
 
       if (this.rawFlag) {
-        //headers["Content-Type"] = this.rawRequestType;
-        //console("raw------------------curl");
+        // headers["Content-Type"] = this.rawRequestType;
+        // console("raw------------------curl");
         var formParams = this.debugRawFormParams();
         var tmpUrls = [];
         if (KUtils.checkUndefined(formParams)) {
           for (var p in formParams) {
             if (that.debugPathFlag) {
-              //确实是，判断该参数是否出现
+              // 确实是，判断该参数是否出现
               if (that.debugPathParams.indexOf(p) == -1) {
                 tmpUrls.push(p + "=" + KUtils.toString(formParams[p], ""));
               } else {
@@ -2952,7 +2952,7 @@ export default {
         }
         var tmpUrlStr = tmpUrls.join("&");
         if (KUtils.strNotBlank(tmpUrlStr)) {
-          //地址栏追加参数
+          // 地址栏追加参数
           if (fullurl.indexOf("?") == -1) {
             fullurl = fullurl + "?" + tmpUrlStr;
           } else {
@@ -2966,7 +2966,7 @@ export default {
             var objstr = JSON.stringify(jobj)
               .replace(/\\n/g, "")
               .replace(/"/g, '\\"');
-            //console(objstr);
+            // console(objstr);
             curlified.push("-d");
             curlified.push('"' + objstr + '"');
           } catch (error) {
@@ -2976,14 +2976,14 @@ export default {
           }
         }
       } else if (this.urlFormFlag) {
-        //判断请求类型是否为get或者delete
+        // 判断请求类型是否为get或者delete
         var urlFormParams = this.debugUrlFormParams();
         if (KUtils.checkUndefined(urlFormParams)) {
           var tmpUrls = [];
-          //此处需要判断url是否是path类型
+          // 此处需要判断url是否是path类型
           for (var p in urlFormParams) {
             if (that.debugPathFlag) {
-              //确实是，判断该参数是否出现
+              // 确实是，判断该参数是否出现
               if (that.debugPathParams.indexOf(p) == -1) {
                 tmpUrls.push(p + "=" + KUtils.toString(urlFormParams[p], ''));
               } else {
@@ -3001,37 +3001,37 @@ export default {
               this.api.methodType.toLowerCase() == "get" ||
               this.api.methodType.toLowerCase() == "delete"
             ) {
-              //地址栏追加参数
+              // 地址栏追加参数
               if (fullurl.indexOf("?") == -1) {
                 fullurl = fullurl + "?" + tmpUrlStr;
               } else {
                 fullurl = fullurl + "&" + tmpUrlStr;
               }
             } else {
-              //-d 追加参数
+              // -d 追加参数
               curlified.push("--data-urlencode ");
               curlified.push('"' + tmpUrlStr + '"');
             }
           }
         }
       } else if (this.formFlag) {
-        //此处需要验证是否是文件上传的表单类型
+        // 此处需要验证是否是文件上传的表单类型
         var params = this.debugFormCurlParams();
         if (KUtils.checkUndefined(params)) {
           if (this.validateFormDataContaintsFile()) {
-            //包含文件
-            //headers["Content-Type"] = "multipart/form-data";
+            // 包含文件
+            // headers["Content-Type"] = "multipart/form-data";
             this.formData.forEach(form => {
               if (!form.new) {
-                //判断header是否选中
+                // 判断header是否选中
                 var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
                   rs => rs == form.id
                 );
                 if (tmphArrs.length > 0) {
-                  //必须选中
+                  // 必须选中
                   if (KUtils.strNotBlank(form.name)) {
                     curlified.push("-F ");
-                    //判断类型
+                    // 判断类型
                     if (form.type == "text") {
                       curlified.push(
                         '"' +
@@ -3051,10 +3051,10 @@ export default {
             });
           } else {
             var tmpUrls = [];
-            //此处需要判断url是否是path类型
+            // 此处需要判断url是否是path类型
             for (var p in params) {
               if (that.debugPathFlag) {
-                //确实是，判断该参数是否出现
+                // 确实是，判断该参数是否出现
                 if (that.debugPathParams.indexOf(p) == -1) {
                   tmpUrls.push(p + "=" + KUtils.toString(params[p], ''));
                 } else {
@@ -3070,20 +3070,20 @@ export default {
               tmpUrls.push(p + "=" + params[p]);
             } */
             var tmpUrlStr = tmpUrls.join("&");
-            //console("tmpUrlStr:" + tmpUrlStr);
+            // console("tmpUrlStr:" + tmpUrlStr);
             if (KUtils.strNotBlank(tmpUrlStr)) {
               if (
                 this.api.methodType.toLowerCase() == "get" ||
                 this.api.methodType.toLowerCase() == "delete"
               ) {
-                //地址栏追加参数
+                // 地址栏追加参数
                 if (fullurl.indexOf("?") == -1) {
                   fullurl = fullurl + "?" + tmpUrlStr;
                 } else {
                   fullurl = fullurl + "&" + tmpUrlStr;
                 }
               } else {
-                //-d 追加参数
+                // -d 追加参数
                 curlified.push("--data-urlencode ");
                 curlified.push('"' + tmpUrlStr + '"');
               }
@@ -3091,7 +3091,7 @@ export default {
           }
         }
       }
-      //此处url需要encoding
+      // 此处url需要encoding
       curlified.push('"' + encodeURI(fullurl) + '"');
       this.responseCurlText = curlified.join(" ");
     },
@@ -3099,12 +3099,12 @@ export default {
       var params = {};
       this.formData.forEach(form => {
         if (!form.new) {
-          //判断header是否选中
+          // 判断header是否选中
           var tmphArrs = this.rowFormSelection.selectedRowKeys.filter(
             rs => rs == form.id
           );
           if (tmphArrs.length > 0) {
-            //必须选中
+            // 必须选中
             if (KUtils.strNotBlank(form.name)) {
               params[form.name] = form.content;
             }
@@ -3114,29 +3114,29 @@ export default {
       return params;
     },
     setResponseBody(res) {
-      //console.log("成功");
-      //console.log(res);
+      // console.log("成功");
+      // console.log(res);
       let that = this;
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
-        //console.log(res);
+        // console.log(res);
         var headers = res.headers;
         if (KUtils.checkUndefined(resp)) {
           var ctype = KUtils.propValue("content-type", headers, "");
-          //判断是否是blob类型
+          // 判断是否是blob类型
           var contentDisposition = KUtils.propValue("content-disposition", headers, "");
           if (resp.responseType == "blob" || KUtils.strNotBlank(contentDisposition)) {
-            //针对OpenAPI3的规范,由于统一添加了blob类型，此处需要判断
+            // 针对OpenAPI3的规范,由于统一添加了blob类型，此处需要判断
             if (res.data.type == "application/json" ||
               res.data.type == "application/xml" ||
               res.data.type == "text/html" ||
               res.data.type == "text/plain") {
-              //服务端返回JSON数据,Blob对象转为JSON
+              // 服务端返回JSON数据,Blob对象转为JSON
               const reader = new FileReader();
               reader.onload = e => {
-                //let message=KUtils.json5parse(e.target.result);
-                //console.log(e.target.result);
-                //重新赋值
+                // let message=KUtils.json5parse(e.target.result);
+                // console.log(e.target.result);
+                // 重新赋值
                 let readerResponse = {
                   responseText: e.target.result,
                   response: e.target.result,
@@ -3153,10 +3153,10 @@ export default {
             } else if (ctype == "text/html" || ctype == "text/plain" || ctype == "application/xml") {
               this.setResponseJsonBody(resp, headers);
             } else {
-              //从响应头中得到文件名称
+              // 从响应头中得到文件名称
               var fileName = "Knife4j.txt";
               if (!KUtils.strNotBlank(contentDisposition)) {
-                //如果是空,获取小写的请求头
+                // 如果是空,获取小写的请求头
                 contentDisposition = KUtils.propValue(
                   "content-disposition",
                   headers,
@@ -3180,7 +3180,7 @@ export default {
                           _hdvalue.toLowerCase() == "filename*" ||
                           _hdvalue.toLowerCase() == "filename"
                         ) {
-                          //对filename进行decode处理,防止出现中文的情况,去除双引号
+                          // 对filename进行decode处理,防止出现中文的情况,去除双引号
                           let tmpHeader = headerValu[1].replace(/\"/g, "");
                           fileName = decodeURIComponent(tmpHeader);
                         }
@@ -3189,13 +3189,13 @@ export default {
                   }
                 }
               }
-              //双重验证,判断是否为图片
+              // 双重验证,判断是否为图片
               var imageFlag = false;
               if (ctype.indexOf("image") != -1) {
                 imageFlag = true;
               } else {
-                //如果contentType非image,判断文件名称
-                //png,jpg,jpeg,gif
+                // 如果contentType非image,判断文件名称
+                // png,jpg,jpeg,gif
                 var imageArrs = [
                   "bmp",
                   "jpg",
@@ -3224,9 +3224,9 @@ export default {
                   }
                 });
               }
-              //最后再判断produces
+              // 最后再判断produces
               var produces = this.api.produces;
-              //判断是否是image
+              // 判断是否是image
               var imgProduceFlag = false;
               if (KUtils.arrNotEmpty(produces)) {
                 produces.forEach(prd => {
@@ -3238,15 +3238,15 @@ export default {
               if (!imageFlag) {
                 imageFlag = imgProduceFlag;
               }
-              //console.log(imgProduceFlag);
-              //application/octet-stream
-              //判断url是否存在
+              // console.log(imgProduceFlag);
+              // application/octet-stream
+              // 判断url是否存在
               let downloadurl = "";
               try {
                 downloadurl = window.URL ? window.URL.createObjectURL(res.data) : window.webkitURL.createObjectURL(res.data);
               } catch (e) {
-                //https://gitee.com/xiaoym/knife4j/issues/I5DKE8
-                //捕获异常
+                // https://gitee.com/xiaoym/knife4j/issues/I5DKE8
+                // 捕获异常
                 if (window.console) {
                   window.console.error(e);
                 }
@@ -3254,8 +3254,8 @@ export default {
                 let blobFile = new Blob(binaryData);
                 downloadurl = window.URL ? window.URL.createObjectURL(blobFile) : window.webkitURL.createObjectURL(blobFile);
               }
-              //let blobTarget=new Blob([res.data])
-              //var downloadurl = window.URL.createObjectURL(blobTarget);
+              // let blobTarget=new Blob([res.data])
+              // var downloadurl = window.URL.createObjectURL(blobTarget);
               this.responseContent = {
                 text: "",
                 mode: "blob",
@@ -3273,54 +3273,54 @@ export default {
       }
     },
     setResponseJsonBody(resp, headers) {
-      //判断响应的类型
-      //var _text = resp.responseText;
-      //console.log("setResponseJsonBody")
-      //console.log(resp);
+      // 判断响应的类型
+      // var _text = resp.responseText;
+      // console.log("setResponseJsonBody")
+      // console.log(resp);
       var _text = "";
       var _base64 = "";
       var mode = this.getContentTypeByHeaders(headers);
-      //console.log("动态mode-- ---" + mode);
-      //console(res);
+      // console.log("动态mode-- ---" + mode);
+      // console(res);
       if (mode == "json") {
-        //_text = KUtils.json5stringify(KUtils.json5parse(_text));
-        //不能使用res.data对象,必须使用stringfy重新转换1次,否则会出现精度丢失的情况
-        //_text = KUtils.json5stringify(res.data);
+        // _text = KUtils.json5stringify(KUtils.json5parse(_text));
+        // 不能使用res.data对象,必须使用stringfy重新转换1次,否则会出现精度丢失的情况
+        // _text = KUtils.json5stringify(res.data);
         var responseSize = resp.responseText.gblen();
         var mbSize = (responseSize / 1024).toFixed(1);
         var maxSize = 150;
-        //数据大小
+        // 数据大小
         this.bigBlobFlag = mbSize > 300;
-        //console.log(mbSize)
+        // console.log(mbSize)
         if (mbSize > maxSize) {
           this.bigFlag = true;
-          //_text = resp.responseText;
-          //var messageInfo='接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看';
+          // _text = resp.responseText;
+          // var messageInfo='接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看';
           var messageInfo = this.i18n.message.debug.contentToBig;
           this.$message.info(messageInfo);
           mode = "text";
-          //_text=resp.responseText;
-          //console.log("1")
+          // _text=resp.responseText;
+          // console.log("1")
         } else {
-          //console.log("2")
-          //此处存在空指针异常
+          // console.log("2")
+          // 此处存在空指针异常
           if (KUtils.strNotBlank(resp.responseText)) {
             try {
               _text = KUtils.json5stringify(KUtils.json5parse(resp.responseText));
             } catch (e) {
-              //json处理失败,捕获异常,作为text文本处理
+              // json处理失败,捕获异常,作为text文本处理
               _text = resp.responseText;
               mode = "text";
             }
           }
-          //console.log("2-1")
+          // console.log("2-1")
         }
         if (KUtils.strNotBlank(resp.responseText)) {
-          //console.log("3")
+          // console.log("3")
           if (!this.bigFlag) {
-            //数据太大,查找缓慢
+            // 数据太大,查找缓慢
             if (resp.responseText.indexOf("data:image") > -1) {
-              //console.log("3-1.5")
+              // console.log("3-1.5")
               var base64ImageRegex = new RegExp(".*?\"(data:image.*?base64.*?)\".*", "ig");
               if (base64ImageRegex.test(resp.responseText)) {
                 var s = RegExp.$1;
@@ -3329,7 +3329,7 @@ export default {
 
             }
           }
-          //console.log("3-1")
+          // console.log("3-1")
         }
         /* if(_text.indexOf("data:image/jpg;base64") > -1) {
             let newStr = _text.substring(_text.indexOf("data:image/jpg;base64"));
@@ -3342,12 +3342,12 @@ export default {
         } else {
           _text = tmpXmlText;
         }
-        //console.log("4")
+        // console.log("4")
       } else {
-        //console.log("5")
+        // console.log("5")
         _text = resp.responseText;
       }
-      //console.log('set value before')
+      // console.log('set value before')
       this.responseContent = {
         text: _text,
         mode: mode,
@@ -3357,24 +3357,24 @@ export default {
         blobUrl: "",
         base64: _base64
       };
-      //console.log(this.responseContent)
+      // console.log(this.responseContent)
     },
     debugEditorChange(value) {
-      //针对Debug调试框inputchange事件做的处理
+      // 针对Debug调试框inputchange事件做的处理
       if (KUtils.checkUndefined(this.responseContent)) {
         this.responseContent.text = value;
       }
     },
     getContentTypeByHeaders(headers) {
-      //根据响应请求头判断响应的数据类型,默认JSON
+      // 根据响应请求头判断响应的数据类型,默认JSON
       var mode = "json";
       var contentType = KUtils.propValue("Content-Type", headers, "");
       if (!KUtils.strNotBlank(contentType)) {
         contentType = KUtils.propValue("content-type", headers, "");
       }
-      //console("contentType:" + contentType);
+      // console("contentType:" + contentType);
       if (KUtils.strNotBlank(contentType)) {
-        //不为空
+        // 不为空
         if (contentType.indexOf("json") >= 0) {
           mode = "json";
         } else if (contentType.indexOf("xml") >= 0) {

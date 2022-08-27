@@ -1,14 +1,7 @@
 <template>
   <div>
-    <editor
-      :value="value"
-      @init="editorInit"
-      :lang="lang"
-      theme="eclipse"
-      width="100%"
-      :height="editorHeight"
-      @input="change" 
-    ></editor>
+    <editor :value="value" @init="editorInit" :lang="lang" theme="eclipse" width="100%" :height="editorHeight"
+      @input="change"></editor>
   </div>
 </template>
 
@@ -36,12 +29,12 @@ export default {
     };
   },
   methods: {
-    change(value){
+    change(value) {
       this.$emit("change", value);
     },
     resetEditorHeight() {
       var that = this;
-      //重设高度
+      // 重设高度
       setTimeout(() => {
         var length_editor = that.editor.session.getLength();
         if (length_editor == 1) {
@@ -61,10 +54,10 @@ export default {
         this.lang = "xml";
       }
       require("brace/theme/eclipse");
-      //重设高度
+      // 重设高度
       this.resetEditorHeight();
-      this.editor.renderer.on("afterRender", function() {
-        that.$emit("showDescription","123")
+      this.editor.renderer.on("afterRender", function () {
+        that.$emit("showDescription", "123")
       });
     }
   }

@@ -201,13 +201,13 @@ export default {
   data() {
     return {
       content: "<span>Hello</span>",
-      contentType: "*/*",//请求数据类型
+      contentType: "*/*",//  请求数据类型
       columns: [],
       responseHeaderColumns: [],
       responseStatuscolumns: [],
       responseParametersColumns: [],
       expanRows: true,
-      //接收一个响应信息对象,遍历得到树形结构的值
+      // 接收一个响应信息对象,遍历得到树形结构的值
       multipCode: false,
       multipCodeDatas: [],
       multipData: {},
@@ -217,8 +217,8 @@ export default {
   },
   created() {
     var that = this;
-    //console.log("Document")
-    //console.log(this.api);
+    // console.log("Document")
+    // console.log(this.api);
     var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
     var treeTableModel = this.swaggerInstance.swaggerTreeTableModels;
     this.$Knife4jModels.setValue(key, treeTableModel);
@@ -229,7 +229,7 @@ export default {
       that.copyApiAddress();
       that.copyApiMarkdown();
       that.copyApiUrl();
-      //console.log("status", this.responseCodeDisplayStatus)
+      // console.log("status", this.responseCodeDisplayStatus)
     }, 1500);
   },
   computed: {
@@ -253,7 +253,7 @@ export default {
       return this.$i18n.messages[this.language];
     },
     initI18n() {
-      //根据i18n初始化部分参数
+      // 根据i18n初始化部分参数
       var inst = this.getCurrentI18nInstance();
       this.columns = inst.table.documentRequestColumns;
       this.responseStatuscolumns = inst.table.documentResponseStatusColumns;
@@ -272,14 +272,14 @@ export default {
 
       clipboard.on("success", () => {
         var inst = that.getCurrentI18nInstance();
-        //"复制地址成功"
+        // "复制地址成功"
         var successMessage = inst.message.copy.method.success;
         that.$message.info(successMessage);
       })
       clipboard.on("error", function (e) {
         var inst = that.getCurrentI18nInstance();
         console.log(inst)
-        //"复制地址失败"
+        // "复制地址失败"
         var failMessage = inst.message.copy.method.fail;
         that.$message.info(failMessage);
       });
@@ -296,13 +296,13 @@ export default {
 
       clipboard.on("success", function (e) {
         var inst = that.getCurrentI18nInstance();
-        //"复制地址成功"
+        // "复制地址成功"
         var successMessage = inst.message.copy.url.success;
         that.$message.info(successMessage);
       });
       clipboard.on("error", function (e) {
         var inst = that.getCurrentI18nInstance();
-        //"复制地址失败"
+        // "复制地址失败"
         var failMessage = inst.message.copy.url.fail;
         that.$message.info(failMessage);
       });
@@ -316,7 +316,7 @@ export default {
         multipCodeDatas: that.multipCodeDatas,
         multipData: that.multipData
       };
-      //console.log(api);
+      // console.log(api);
       var clipboard = new ClipboardJS("#" + btnId, {
         text() {
           var inst = that.getCurrentI18nInstance();
@@ -329,13 +329,13 @@ export default {
       });
       clipboard.on("success", function (e) {
         var inst = that.getCurrentI18nInstance();
-        //"复制文档成功"
+        // "复制文档成功"
         var successMessage = inst.message.copy.document.success;
         that.$message.info(successMessage);
       });
       clipboard.on("error", function (e) {
         var inst = that.getCurrentI18nInstance();
-        //"复制文档失败"
+        // "复制文档失败"
         var failMessage = inst.message.copy.document.fail;
         that.$message.info(failMessage);
       });
@@ -353,7 +353,7 @@ export default {
         ? childrens.filter(child => !keys.includes(`${parent}.${child.name}`))
         : childrens.filter(child => !keys.includes(child.name));
       return arrs.map(child => {
-        child.id = uniqueId("param"); // 这里顺带重置一下 id , 避免与相应参数对象服用时组件 id 相同报错
+        child.id = uniqueId("param"); //  这里顺带重置一下 id , 避免与相应参数对象服用时组件 id 相同报错
         if (child.children)
           child.children = that.filterChildrens(
             keys,
@@ -374,9 +374,9 @@ export default {
       if (apiInfo.contentType == "application/x-www-form-urlencoded;charset=UTF-8") {
         this.contentType = "application/x-www-form-urlencoded";
       }
-      //console.log(apiInfo);
-      //针对数组类型的ignore写法,在这里不需要,table树里面是对象点属性
-      //忽略数组的写法 name[0]
+      // console.log(apiInfo);
+      // 针对数组类型的ignore写法,在这里不需要,table树里面是对象点属性
+      // 忽略数组的写法 name[0]
       var tmpKeys = Object.keys(apiInfo.ignoreParameters || {});
       var ignoreParameterAllKeys = [];
       var reg = new RegExp("\\[0\\]", "gm");
@@ -394,7 +394,7 @@ export default {
       if (apiInfo.parameters != null && apiInfo.parameters.length > 0) {
         var dx = apiInfo.parameters.filter(function (pm) {
           if (pm.name.indexOf("[0]") > -1) {
-            //存在数组的情况
+            // 存在数组的情况
             if (ignoreParameterAllKeys.length > 0) {
               return (
                 ignoreParameterAllKeys.filter(name => !pm.name.startsWith(name))
@@ -410,13 +410,13 @@ export default {
         data = data.concat(dx);
         /*  data = data.concat(
           apiInfo.parameters
-            // 过滤掉忽略参数
+            //  过滤掉忽略参数
             .filter(
               ({ name }) =>
                 !ignoreParameterAllKeys.includes(name) 
             )
         ); */
-        //console.log(data);
+        // console.log(data);
       }
       if (
         apiInfo.refTreetableparameters != null &&
@@ -433,35 +433,35 @@ export default {
       }
       let reqParameters = [];
       if (data != null && data.length > 0) {
-        //console("初始化请求参数----------");
-        //console(data);
+        // console("初始化请求参数----------");
+        // console(data);
         data.forEach(function (param) {
           if (param.pid == "-1") {
             param.children = null;
-            //判断该参数是否存在schema参数
+            // 判断该参数是否存在schema参数
             if (param.schema) {
-              //判断当前缓存是否存在
+              // 判断当前缓存是否存在
               var schemaName = param.schemaValue;
-              //console.log("param,", param)
+              // console.log("param,", param)
               if (KUtils.checkUndefined(schemaName)) {
-                // //console("schemaValue--checkUndefined");
+                //  //console("schemaValue--checkUndefined");
                 if (that.$Knife4jModels.exists(key, schemaName)) {
-                  ////console("存在-不用查找---" + schemaName);
-                  ////console(that.$Knife4jModels.instance);
+                  // //console("存在-不用查找---" + schemaName);
+                  // //console(that.$Knife4jModels.instance);
                   var model = that.$Knife4jModels.getByModelName(
                     key,
                     schemaName
                   );
                   model = that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id, model);
-                  //console.log("findmodel")
-                  //console.log(model)
+                  // console.log("findmodel")
+                  // console.log(model)
                   if (model && model.params) {
                     const childrens = model.params
                       .filter(({ name }) => {
-                        // 过滤第一层忽略的参数
+                        //  过滤第一层忽略的参数
                         return !(
                           (
-                            ignoreParameterAllKeys.includes(name) || // 处理 form 表单提交
+                            ignoreParameterAllKeys.includes(name) || //  处理 form 表单提交
                             ignoreParameterAllKeys.includes(name + "[0]") ||
                             ignoreParameterAllKeys.includes(
                               `${param.name}.${name}`
@@ -469,7 +469,7 @@ export default {
                             ignoreParameterAllKeys.some(key =>
                               new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/' + key + '/g').test(name)
                             )
-                          ) // 处理 json 提交
+                          ) //  处理 json 提交
                         );
                       })
                       .map(swaggerBootstrapUiParameter => {
@@ -513,19 +513,19 @@ export default {
           }
         });
       }
-      //此处需要递归去除include之外的parameters
+      // 此处需要递归去除include之外的parameters
       if (apiInfo.includeParameters != null) {
         var tmpIncludeKeys = Object.keys(apiInfo.includeParameters || {});
         var bodyParam = reqParameters.filter(req => req.in == "body").length;
         if (tmpIncludeKeys.length > 0 && bodyParam > 0) {
           var includeParameters = [];
-          //rootkey代表的JSON的父级path,父级path必须保留
+          // rootkey代表的JSON的父级path,父级path必须保留
           var rootKeys = [];
           this.deepRootKeys(tmpIncludeKeys, rootKeys);
-          //console.log(rootKeys)
-          //console.log(tmpIncludeKeys)
+          // console.log(rootKeys)
+          // console.log(tmpIncludeKeys)
           reqParameters.forEach(param => {
-            //判断是否有childrens
+            // 判断是否有childrens
             if (rootKeys.includes(param.name)) {
               var copyParam = cloneDeep(param);
               copyParam.children = null;
@@ -553,8 +553,8 @@ export default {
       } else {
         that.reqParameters = reqParameters;
       }
-      //console.log("document")
-      //console.log(reqParameters);
+      // console.log("document")
+      // console.log(reqParameters);
     },
     deepRootKeys(tmpIncludeKeys, rootKeys) {
       var tmpRooks = [];
@@ -575,10 +575,10 @@ export default {
       if (children != null && children.length > 0) {
         children.forEach(childrenParam => {
           var jsonPath = parentName + "." + childrenParam.name;
-          //判断root
+          // 判断root
           if (rootKeys.includes(jsonPath)) {
             var copyParam = cloneDeep(childrenParam);
-            //初始化children需要判断当前的param.name是否在includes中
+            // 初始化children需要判断当前的param.name是否在includes中
             copyParam.children = null;
             deepParams.children.push(copyParam)
             if (KUtils.arrNotEmpty(childrenParam.children)) {
@@ -603,9 +603,9 @@ export default {
           renewId(row.children);
         });
       };
-      // 拷贝原始对象
+      //  拷贝原始对象
       const target = Object.assign({}, source);
-      // 这里需要重新生成新的 id, 否则对象被重复引用时参数 id 是相同的,造成组件出现重复 key 引起页面报错
+      //  这里需要重新生成新的 id, 否则对象被重复引用时参数 id 是相同的,造成组件出现重复 key 引起页面报错
       target.id = uniqueId("param");
       renewId(target.children);
 
@@ -620,7 +620,7 @@ export default {
           rootParam.parentTypes.push(param.schemaValue);
           if (KUtils.arrNotEmpty(schema.params)) {
             schema.params.forEach(function (nmd) {
-              //childrenparam需要深拷贝一个对象
+              // childrenparam需要深拷贝一个对象
               var childrenParam = {
                 childrenTypes: nmd.childrenTypes,
                 def: nmd.def,
@@ -648,7 +648,7 @@ export default {
               childrenParam.pid = param.id;
               param.children.push(childrenParam);
               if (childrenParam.schema) {
-                //存在schema,判断是否出现过
+                // 存在schema,判断是否出现过
                 if (
                   rootParam.parentTypes.indexOf(childrenParam.schemaValue) == -1
                 ) {
@@ -675,7 +675,7 @@ export default {
           if (nmd.pid == md.id) {
             nmd.children = [];
             that.findModelChildren(nmd, modelData);
-            //查找后如果没有,则将children置空
+            // 查找后如果没有,则将children置空
             if (nmd.children.length == 0) {
               nmd.children = null;
             }
@@ -685,20 +685,20 @@ export default {
       }
     },
     initResponseCodeParams() {
-      //遍历响应参数
+      // 遍历响应参数
       var that = this;
       var key = Constants.globalTreeTableModelParams + this.swaggerInstance.id;
-      //添加自定义属性
+      // 添加自定义属性
       that.multipCode = this.api.multipartResponseSchema;
       that.multipCodeDatas = [];
-      //这里不
+      // 这里不
       that.multipData = {};
       let rcodes = this.api.responseCodes;
-      //console.log("rcodes")
-      //console.log(rcodes)
+      // console.log("rcodes")
+      // console.log(rcodes)
       if (rcodes != null && rcodes != undefined) {
         rcodes.forEach(function (rc) {
-          //遍历
+          // 遍历
           if (rc.schema != undefined && rc.schema != null) {
             var respdata = [];
             if (
@@ -716,21 +716,21 @@ export default {
               });
             }
             let nrecodedatas = [];
-            //遍历得到新的符合antd的树形结构
+            // 遍历得到新的符合antd的树形结构
             if (respdata != null && respdata.length > 0) {
               respdata.forEach(function (param) {
                 if (param.pid == "-1") {
                   param.children = [];
-                  //判断该参数是否存在schema参数
+                  // 判断该参数是否存在schema参数
                   if (param.schema) {
-                    //判断当前缓存是否存在
+                    // 判断当前缓存是否存在
                     var schemaName = param.schemaValue;
-                    // console.log("schemaName:"+schemaName)
+                    //  console.log("schemaName:"+schemaName)
                     if (KUtils.checkUndefined(schemaName)) {
-                      // //console("schemaValue--checkUndefined");
+                      //  //console("schemaValue--checkUndefined");
                       if (that.$Knife4jModels.exists(key, schemaName)) {
-                        ////console("存在-不用查找---" + schemaName);
-                        ////console(that.$Knife4jModels.instance);
+                        // //console("存在-不用查找---" + schemaName);
+                        // //console(that.$Knife4jModels.instance);
                         var model = that.$Knife4jModels.getByModelName(
                           key,
                           schemaName
@@ -744,13 +744,13 @@ export default {
                           });
                         }
                       } else {
-                        ////console("schemavalue--Not Existis");
+                        // //console("schemavalue--Not Existis");
                       }
                     }
                   }
 
-                  //that.findModelChildren(md, respdata);
-                  //查找后如果没有,则将children置空
+                  // that.findModelChildren(md, respdata);
+                  // 查找后如果没有,则将children置空
                   if (param.children.length == 0) {
                     param.children = null;
                   }
@@ -774,26 +774,26 @@ export default {
           }
         }
       }
-      //console.log(that.multipData);
+      // console.log(that.multipData);
     },
     showResponseEditFieldDescription(p) {
-      //显示说明
-      //console.log("接收emit事件,数据："+p);
+      // 显示说明
+      // console.log("接收emit事件,数据："+p);
       var that = this;
       if (this.api.multipartResponseSchema) {
-        //多个
-        //默认只显示第1个
+        // 多个
+        // 默认只显示第1个
         var resp = this.multipCodeDatas[0];
         var id = "knife4jDocumentShowEditor" + that.api.id + resp.code;
-        //console("editorShowID:" + id);
+        // console("editorShowID:" + id);
         that.showEditorFieldAnyWay(id);
         /* this.multipCodeDatas.forEach(function(resp) {
           var id = "knife4jDocumentShowEditor" + that.api.id + resp.code;
-          //console("editorShowID:" + id);
+          // console("editorShowID:" + id);
           that.showEditorFieldAnyWay(id);
         }); */
       } else {
-        //单个
+        // 单个
         var id = "knife4jDocumentShowEditor" + this.api.id;
         this.showEditorFieldAnyWay(id);
       }
@@ -810,7 +810,7 @@ export default {
       var responseCode = this.api.getHttpSuccessCodeObject();
       var editorContainer = document.getElementById(containerId);
       var paths = [];
-      //var aceJsonText = $aceJsonContent.find(".ace_text-layer");
+      // var aceJsonText = $aceJsonContent.find(".ace_text-layer");
       var aceJsonText = editorContainer.getElementsByClassName(
         "ace_text-layer"
       );
@@ -828,7 +828,7 @@ export default {
               /^"(.*)"$/g,
               "$1"
             );
-            //判断是否存在
+            // 判断是否存在
             var sfd = item.getElementsByClassName(
               "knife4j-debug-editor-field-description"
             );
@@ -846,12 +846,12 @@ export default {
           }
           var itemParen = item.getElementsByClassName("ace_paren");
           if (KUtils.arrNotEmpty(itemParen)) {
-            //如果元素大于0,拼装多个
+            // 如果元素大于0,拼装多个
             var parentArrs = [];
             for (var e = 0; e < itemParen.length; e++) {
               parentArrs.push(itemParen[e].innerHTML);
             }
-            //var parentText = itemParen[0].innerHTML;
+            // var parentText = itemParen[0].innerHTML;
             var parentText = parentArrs.join("");
             switch (parentText) {
               case "[":

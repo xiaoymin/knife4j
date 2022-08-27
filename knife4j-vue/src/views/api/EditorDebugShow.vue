@@ -1,10 +1,12 @@
 <template>
   <div>
     <div v-if="debugResponse">
-      <editor class="knife4j-debug-ace-editor" @input="change" :options="debugOptions" :value="value" @init="editorInit" :lang="mode" theme="eclipse" width="100%" :height="editorHeight"></editor>
+      <editor class="knife4j-debug-ace-editor" @input="change" :options="debugOptions" :value="value" @init="editorInit"
+        :lang="mode" theme="eclipse" width="100%" :height="editorHeight"></editor>
     </div>
     <div v-else>
-      <editor :value="value" @init="editorInit" @input="change" :lang="mode" theme="eclipse" width="100%" :height="editorHeight"></editor>
+      <editor :value="value" @init="editorInit" @input="change" :lang="mode" theme="eclipse" width="100%"
+        :height="editorHeight"></editor>
     </div>
 
   </div>
@@ -48,7 +50,7 @@ export default {
   methods: {
     resetEditorHeight() {
       var that = this;
-      //重设高度
+      //  重设高度
       setTimeout(() => {
         var length_editor = that.editor.session.getLength();
         if (length_editor == 1) {
@@ -67,16 +69,16 @@ export default {
           }
         }
         var rows_editor = length_editor * 16;
-        if(rows_editor>2000){
-          rows_editor=2000;
+        if (rows_editor > 2000) {
+          rows_editor = 2000;
         }
-        //console.log(rows_editor)
+        // console.log(rows_editor)
         that.editorHeight = rows_editor;
       }, 10);
     },
     change(value) {
-      //this.value = value;
-      //重设高度
+      // this.value = value;
+      // 重设高度
       if (!this.debugResponse) {
         this.resetEditorHeight();
         this.$emit("change", value);
@@ -86,9 +88,9 @@ export default {
     },
     editorInit(editor) {
       var that = this;
-      //console("aaa");
+      // console("aaa");
       this.editor = editor;
-      require("brace/ext/language_tools"); //language extension prerequsite...
+      require("brace/ext/language_tools"); // language extension prerequsite...
       require("brace/theme/eclipse");
       require("brace/mode/json");
       require("brace/mode/text");
@@ -101,9 +103,9 @@ export default {
       } else if (this.mode == "xml") {
       } else if (this.mode == "javascript") {
       } */
-      //this.editor.gotoLine(1);
+      // this.editor.gotoLine(1);
       if (this.debugResponse) {
-        //启动换行
+        // 启动换行
         this.editor.getSession().setUseWrapMode(true);
         this.editor.setOptions(this.debugOptions);
         if (this.mode == "text") {
@@ -112,11 +114,11 @@ export default {
       } else {
         this.editor.setOptions(this.commonOptions);
       }
-      //重设高度
+      // 重设高度
       this.resetEditorHeight();
-      this.editor.renderer.on("afterRender", function() {
+      this.editor.renderer.on("afterRender", function () {
         var length_editor = that.editor.session.getLength();
-        that.$emit("showDescription",length_editor)
+        that.$emit("showDescription", length_editor)
       });
     }
   }

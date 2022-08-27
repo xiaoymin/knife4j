@@ -1,5 +1,6 @@
 <template>
-  <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="onCollapse" :width="menuWidth" class="sider">
+  <a-layout-sider :trigger="null" collapsible :collapsed="collapsed" breakpoint="lg" @collapse="onCollapse"
+    :width="menuWidth" class="sider">
     <div class="knife4j-logo-data" key="logo" v-if="!collapsed">
       <a to="/" style="float:left;">
         <a-select :value="defaultOption" style="width: 30px" :options="serviceOptions">
@@ -13,7 +14,8 @@
       </a>
     </div>
     <div class="knife4j-menu">
-      <a-menu key="Menu" theme="dark" mode="inline" @openChange="handleOpenChange" @select="selected" :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 16px 0; width: 100%">
+      <a-menu key="Menu" theme="dark" mode="inline" @openChange="handleOpenChange" @select="selected"
+        :openKeys="openKeys" :selectedKeys="selectedKeys" style="padding: 16px 0; width: 100%">
         <ThreeMenu :menuData="menuData" />
       </a-menu>
     </div>
@@ -60,10 +62,10 @@ export default {
     }
   },
   mounted() {
-    //console("men5u-mounted------------------");
-    //console(this.location.path);
+    // console("men5u-mounted------------------");
+    // console(this.location.path);
     const pathArr = urlToList(this.location.path);
-    //console(pathArr);
+    // console(pathArr);
     if (pathArr[2] && !this.checkPath(pathArr[2])) {
       this.openKeys = [pathArr[0]];
       this.selectedKeys = [pathArr[1]];
@@ -73,28 +75,28 @@ export default {
     } else {
       this.openKeys = [pathArr[0]];
     }
-    //console(this.menuData);
-    //console(this.openKeys);
+    // console(this.menuData);
+    // console(this.openKeys);
     if (this.menuData.length > 0) {
-      //console("菜单>0");
+      // console("菜单>0");
       var m = findComponentsByPath(this.location.path, this.menuData);
-      //console(m);
-      //this.selectedKeys = [this.location.path];
+      // console(m);
+      // this.selectedKeys = [this.location.path];
       this.selectedKeys = [m.key];
     } else {
       this.selectedKeys = ["kmain"];
     }
-    //console(this.selectedKeys);
-    //console("传递父级参数---");
+    // console(this.selectedKeys);
+    // console("传递父级参数---");
     this.openTab();
   },
   watch: {
     collapsed: "collapsedChange",
     $route() {
-      //console("menu -watch-------------");
+      // console("menu -watch-------------");
       const pathArr = urlToList(this.location.path);
-      //console(pathArr);
-      //console(this.menuData);
+      // console(pathArr);
+      // console(this.menuData);
       /* if (pathArr[2] && !this.checkPath(pathArr[2])) {
         this.openKeys = [pathArr[0]];
         this.selectedKeys = [pathArr[1]];
@@ -102,27 +104,27 @@ export default {
       } else if (pathArr[2]) {
         this.openKeys = [pathArr[0], pathArr[1]];
       } else {
-        //console("设置openKeys");
+        // console("设置openKeys");
         var m = findComponentsByPath(pathArr[0], this.menuData);
-        //console(m);
+        // console(m);
         this.openKeys = [m.key];
-        //console()
+        // console()
       } */
-      //只有一个菜单
+      // 只有一个菜单
       setTimeout(() => {
         var m = findComponentsByPath(this.location.path, this.menuData);
         if (pathArr.length == 2) {
-          //二级子菜单
+          // 二级子菜单
           var parentM = findComponentsByPath(pathArr[0], this.menuData);
           this.openKeys = [parentM.key];
-          //console("openkeys----");
-          //console(this.openKeys);
+          // console("openkeys----");
+          // console(this.openKeys);
         } else {
           this.openKeys = [m.key];
         }
-        //this.selectedKeys = [this.location.path];
+        // this.selectedKeys = [this.location.path];
         this.selectedKeys = [m.key];
-        //console(this.selectedKeys);
+        // console(this.selectedKeys);
         this.openTab();
       }, 2000);
     }
@@ -134,10 +136,10 @@ export default {
       status: false
     };
   },
-  created() {},
+  created() { },
   methods: {
     openTab() {
-      //因为菜单是动态的,所以此处应该有延迟
+      // 因为菜单是动态的,所以此处应该有延迟
       setTimeout(() => {
         this.$emit("menuClick", this.selectedKeys);
       }, 1000);
@@ -148,7 +150,7 @@ export default {
         data.map(item => {
           if (item.path == url) status = true;
           if (item.children) {
-            haveChildren(item.children); // eslint-disable-line
+            haveChildren(item.children); //  eslint-disable-line
           }
         });
       };
@@ -211,22 +213,20 @@ export default {
 .drawer .drawer-content {
   background: #001529;
 }
+
 .ant-menu-inline-collapsed {
-  & > .ant-menu-item .sider-menu-item-img + span,
-  &
-    > .ant-menu-item-group
-    > .ant-menu-item-group-list
-    > .ant-menu-item
-    .sider-menu-item-img
-    + span,
-  & > .ant-menu-submenu > .ant-menu-submenu-title .sider-menu-item-img + span {
+
+  &>.ant-menu-item .sider-menu-item-img+span,
+  &>.ant-menu-item-group>.ant-menu-item-group-list>.ant-menu-item .sider-menu-item-img+span,
+  &>.ant-menu-submenu>.ant-menu-submenu-title .sider-menu-item-img+span {
     max-width: 0;
     display: inline-block;
     opacity: 0;
   }
 }
-.ant-menu-item .sider-menu-item-img + span,
-.ant-menu-submenu-title .sider-menu-item-img + span {
+
+.ant-menu-item .sider-menu-item-img+span,
+.ant-menu-submenu-title .sider-menu-item-img+span {
   transition: opacity 0.3s @ease-in-out, width 0.3s @ease-in-out;
   opacity: 1;
 }

@@ -1,7 +1,7 @@
 /**
  * 根据url菜单查找组件名称,用于打开Tab选项卡
- * @param {*} path 
- * @param {*} menuData 
+ * @param {*} path 路径
+ * @param {*} menuData 菜单集合
  */
 export function findComponentsByPath(path, menuData) {
   path = decodeURIComponent(path)
@@ -23,8 +23,8 @@ export function findComponentsByPath(path, menuData) {
 
 /**
  * 根据菜单主键key查找菜单项
- * @param {*} key 
- * @param {*} menuData 
+ * @param {*} key key值
+ * @param {*} menuData 菜单集合
  */
 export function findMenuByKey(key, menuData) {
   var tmpComp = null;
