@@ -106,9 +106,9 @@ export default {
   beforeCreate() { },
   created() {
     //this.initSpringDocOpenApi();
-    this.initKnife4jSpringUi();
+    //this.initKnife4jSpringUi();
     //this.initKnife4jJFinal();
-    //this.initKnife4jFront();
+    this.initKnife4jFront();
     this.initI18n();
   },
   computed: {
@@ -481,7 +481,7 @@ export default {
         configSupport: false,
         i18nInstance: this.getCurrentI18nInstance(),
         //覆盖url地址,多个服务的组合
-        url: "/static/services.json"
+        url: "/services.json"
       };
       this.initSwagger(swaggerOptions);
     },

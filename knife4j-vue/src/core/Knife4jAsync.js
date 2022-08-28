@@ -42,6 +42,7 @@ import {
 import KUtils from './utils';
 import { marked } from 'marked';
 import async from 'async';
+import Knife4jOAS3ResponseExampleReader from './oas3/OAS3ResponseExampleReader';
 import {
   findComponentsByPath,
   findMenuByKey
@@ -3926,6 +3927,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
   if (!swpinfo.init) {
     let oa3Data = that.currentInstance.swaggerData;
     let refParameterObject = oa3Data['components']['parameters'];
+    let responseExample = null;
     // 如果当前对象未初始化,进行初始化
     if (apiInfo.hasOwnProperty('parameters')) {
       var pameters = apiInfo['parameters'];
@@ -4141,6 +4143,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
                 }
               }
               var schema = respContentProduces['schema'];
+              responseExample = new Knife4jOAS3ResponseExampleReader(schema);
               // 单引用类型
               // 判断是否是数组类型
               // var regex = new RegExp('#/definitions/(.*)$', 'ig');
@@ -4253,6 +4256,9 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
                   }
                 }
               }
+            } else {
+
+              responseExample = new Knife4jOAS3ResponseExampleReader(respContentProduces);
             }
             break;
           }
@@ -4361,6 +4367,16 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
             swpinfo.responseHeaderParameters = swaggerResp.responseHeaderParameters;
           }
         }
+        //判断example
+        //判断example
+        console.log('example', responseExample)
+        if (KUtils.checkUndefined(responseExample)) {
+          if (KUtils.checkUndefined(responseExample.responseText)) {
+            swaggerResp.responseValue = responseExample.responseValue;
+            swaggerResp.responseJson = responseExample.responseText;
+          }
+        }
+
         swpinfo.responseCodes.push(swaggerResp);
       }
       swpinfo.multipartResponseSchemaCount = rpcount;
@@ -4585,9 +4601,17 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
         swpinfo.contentValue = defaultValue;
       }
     }
+    //判断example
+    console.log('example', responseExample)
+    if (KUtils.checkUndefined(responseExample)) {
+      if (KUtils.checkUndefined(responseExample.responseText)) {
+        swpinfo.responseValue = responseExample.responseValue;
+        swpinfo.responseJson = responseExample.responseText;
+      }
+    }
     swpinfo.init = true;
-    // console.log('异步初始化ApiInfo完成')
-    // console.log(swpinfo);
+    console.log('异步初始化ApiInfo完成')
+    console.log(swpinfo);
   }
 }
 /**
@@ -6734,6 +6758,10 @@ var SwaggerBootstrapUiApiInfo = function () {
   this.responseValue = null;
   this.responseJson = null;
   this.responseText = null;
+  //针对OAS3规范是否存在examples的支持
+  this.hasMoreExample = false;
+  this.responseTextArray = []
+
   this.responseBasicType = false;
   // 响应Header字段说明
   this.responseHeaderParameters = null;
