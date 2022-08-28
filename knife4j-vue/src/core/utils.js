@@ -410,7 +410,11 @@ const utils = {
 
   },
   checkParamArrsExists: function (arr, param) {
-    return (arr || []).some(row => row.name == param.name)
+    // console.log('arr:', arr)
+    // console.log('param:', param)
+    // 名称不能保证唯一，需要考虑输入类型
+    // https://gitee.com/xiaoym/knife4j/issues/I3R9B3
+    return (arr || []).some(row => row.name + row.in == param.name + param.in)
     //  var flag = false;
     //  if (arr != null && arr.length > 0) {
     //    arr.forEach(function (a) {

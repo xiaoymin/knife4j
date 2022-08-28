@@ -5067,6 +5067,7 @@ SwaggerBootstrapUi.prototype.assembleParameter = function (m, swpinfo) {
   var that = this;
   var originalName = KUtils.propValue('name', m, '');
   var inType = KUtils.propValue('in', m, '');
+  //console.log('name:' + originalName + ",in:" + inType)
   var minfo = new SwaggerBootstrapUiParameter();
   minfo.name = originalName;
   minfo.ignoreFilterName = originalName;

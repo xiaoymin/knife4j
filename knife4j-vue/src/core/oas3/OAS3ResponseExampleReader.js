@@ -22,7 +22,7 @@ function Knife4jOAS3ResponseExampleReader(source) {
  * https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#mediaTypeObject
  */
 Knife4jOAS3ResponseExampleReader.prototype.init = function () {
-    console.log('init,', this.source);
+    //console.log('init,', this.source);
     // 判断当前是否包含example
     if (KUtils.checkUndefined(this.source)) {
         let example = KUtils.propValue('example', this.source, null);
