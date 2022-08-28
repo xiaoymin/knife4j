@@ -104,7 +104,6 @@ public class NacosRepository extends AbstractRepository {
         thread=new Thread(()->{
             while (!stop){
                 try{
-                    ThreadUtil.sleep(HEART_BEAT_DURATION);
                     logger.debug("nacos hearbeat start working...");
                     this.nacosSetting.initAccessToken();
                     //校验该服务是否在线
@@ -128,7 +127,7 @@ public class NacosRepository extends AbstractRepository {
                 }catch (Exception e){
                     logger.debug(e.getMessage(),e);
                 }
-
+                ThreadUtil.sleep(HEART_BEAT_DURATION);
             }
         });
         thread.setDaemon(true);

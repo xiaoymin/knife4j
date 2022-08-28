@@ -71,7 +71,6 @@ public class CloudRepository extends AbstractRepository {
         thread=new Thread(()->{
             while (!stop){
                 try{
-                    ThreadUtil.sleep(HEART_BEAT_DURATION);
                     logger.debug("Cloud hearbeat start working...");
                     if (this.cloudSetting!=null&&CollectionUtil.isNotEmpty(this.cloudSetting.getRoutes())){
                         this.cloudSetting.getRoutes().forEach(cloudRoute -> {
@@ -115,7 +114,7 @@ public class CloudRepository extends AbstractRepository {
                 }catch (Exception e){
                     logger.debug(e.getMessage(),e);
                 }
-
+                ThreadUtil.sleep(HEART_BEAT_DURATION);
             }
         });
         thread.setDaemon(true);

@@ -189,7 +189,6 @@ public class EurekaRepository extends AbstractRepository {
         thread=new Thread(()->{
             while (!this.stop){
                 try{
-                    ThreadUtil.sleep(HEART_BEAT_DURATION);
                     if (logger.isDebugEnabled()){
                         logger.debug("Knife4jAggregation Eureka heartbeat working...");
                     }
@@ -225,6 +224,7 @@ public class EurekaRepository extends AbstractRepository {
                 }catch (Exception e){
                     logger.debug(e.getMessage(),e);
                 }
+                ThreadUtil.sleep(HEART_BEAT_DURATION);
             }
         });
         thread.setDaemon(true);
