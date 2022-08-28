@@ -39,7 +39,7 @@ public class Knife4jAggregationProperties {
     private DiskSetting disk;
 
     /**
-     * 任意聚合
+     * HTTP接口聚合
      */
     private CloudSetting cloud;
 
@@ -52,6 +52,19 @@ public class Knife4jAggregationProperties {
      * 从Nacos注册中心中获取
      */
     private NacosSetting nacos;
+
+    /**
+     * http链接对象属性配置
+     */
+    private HttpConnectionSetting connectionSetting;
+
+    public HttpConnectionSetting getConnectionSetting() {
+        return connectionSetting;
+    }
+
+    public void setConnectionSetting(HttpConnectionSetting connectionSetting) {
+        this.connectionSetting = connectionSetting;
+    }
 
     public boolean isEnableAggregation() {
         return enableAggregation;

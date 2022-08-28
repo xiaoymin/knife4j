@@ -29,7 +29,7 @@ import java.io.InputStream;
  * 2020/11/17 22:16
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
-public class DiskRepository extends AbsctractRepository {
+public class DiskRepository extends AbstractRepository {
 
     Logger logger= LoggerFactory.getLogger(DiskRepository.class);
 

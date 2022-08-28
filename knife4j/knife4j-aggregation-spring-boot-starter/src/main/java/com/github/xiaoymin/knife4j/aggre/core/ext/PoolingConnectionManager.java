@@ -16,7 +16,6 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,14 +33,6 @@ import java.net.UnknownHostException;
 public  class PoolingConnectionManager {
 
     Logger logger= LoggerFactory.getLogger(PoolingConnectionManager.class);
-
-    private static PoolingHttpClientConnectionManager poolingHttpClientConnectionManager;
-
-    /***
-     * 默认连接配置参数
-     */
-    private final RequestConfig defaultRequestConfig=RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).build();
-
 
     //Request retry handler
     private HttpRequestRetryHandler retryHandler = new HttpRequestRetryHandler() {
@@ -81,16 +72,9 @@ public  class PoolingConnectionManager {
         }
     };
 
-    static{
-        poolingHttpClientConnectionManager=new PoolingHttpClientConnectionManager();
-        //将最大连接数增加到200
-        poolingHttpClientConnectionManager.setMaxTotal(200);
-        //将每个路由基础的连接数增加到20
-        poolingHttpClientConnectionManager.setDefaultMaxPerRoute(20);
-    }
 
     protected RequestConfig getRequestConfig(){
-        return defaultRequestConfig;
+        return ConnectionSettingHolder.ME.getDefaultRequestConfig();
     }
 
     /***
@@ -99,8 +83,8 @@ public  class PoolingConnectionManager {
      */
     public CloseableHttpClient getClient(){
         return HttpClients.custom()
-                .setConnectionManager(poolingHttpClientConnectionManager)
-                .setDefaultRequestConfig(defaultRequestConfig)
+                .setConnectionManager(ConnectionSettingHolder.ME.getPoolingHttpClientConnectionManager())
+                .setDefaultRequestConfig(ConnectionSettingHolder.ME.getDefaultRequestConfig())
                 .setRetryHandler(retryHandler)
                 .setConnectionManagerShared(true)
                 .build();
@@ -108,8 +92,8 @@ public  class PoolingConnectionManager {
 
     public CloseableHttpClient getClient(CredentialsProvider credentialsProvider){
         return HttpClients.custom()
-                .setConnectionManager(poolingHttpClientConnectionManager)
-                .setDefaultRequestConfig(defaultRequestConfig)
+                .setConnectionManager(ConnectionSettingHolder.ME.getPoolingHttpClientConnectionManager())
+                .setDefaultRequestConfig(ConnectionSettingHolder.ME.getDefaultRequestConfig())
                 .setRetryHandler(retryHandler)
                 .setDefaultCredentialsProvider(credentialsProvider)
                 .setConnectionManagerShared(true)

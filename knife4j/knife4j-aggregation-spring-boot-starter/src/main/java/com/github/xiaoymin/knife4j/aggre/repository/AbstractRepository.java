@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * 2020/11/16 22:36
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
-public abstract class AbsctractRepository extends PoolingConnectionManager implements RouteRepository {
+public abstract class AbstractRepository extends PoolingConnectionManager implements RouteRepository {
 
     /**
      * 心跳检测间隔(30s)

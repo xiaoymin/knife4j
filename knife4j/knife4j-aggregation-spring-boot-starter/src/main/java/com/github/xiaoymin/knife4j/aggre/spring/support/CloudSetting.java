@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.aggre.spring.support;
 
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.cloud.CloudRoute;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  * 2020/11/16 22:32
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
+@ConfigurationProperties(prefix = "knife4j.cloud")
 public class CloudSetting {
     /**
      * 是否启用

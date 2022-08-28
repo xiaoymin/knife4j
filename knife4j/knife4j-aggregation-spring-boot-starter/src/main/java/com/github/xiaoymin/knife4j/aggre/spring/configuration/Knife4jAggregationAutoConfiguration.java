@@ -15,11 +15,16 @@ import com.github.xiaoymin.knife4j.aggre.core.cache.RouteInMemoryCache;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
 import com.github.xiaoymin.knife4j.aggre.core.filter.Knife4jRouteProxyFilter;
 import com.github.xiaoymin.knife4j.aggre.core.filter.Knife4jSecurityBasicAuthFilter;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.repository.CloudRepository;
 import com.github.xiaoymin.knife4j.aggre.repository.DiskRepository;
 import com.github.xiaoymin.knife4j.aggre.repository.EurekaRepository;
 import com.github.xiaoymin.knife4j.aggre.repository.NacosRepository;
+import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
+import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
+import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
+import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,8 +39,8 @@ import org.springframework.core.env.Environment;
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 @Configuration
-@EnableConfigurationProperties({Knife4jAggregationProperties.class})
-@ConditionalOnProperty(name = "knife4j.enableAggregation",havingValue = "true")
+@EnableConfigurationProperties({Knife4jAggregationProperties.class, DiskSetting.class, CloudSetting.class, EurekaSetting.class, NacosSetting.class, BasicAuth.class,HttpConnectionSetting.class})
+@ConditionalOnProperty(name = "knife4j.enable-aggregation",havingValue = "true")
 public class Knife4jAggregationAutoConfiguration {
 
     final Environment environment;
@@ -103,7 +108,7 @@ public class Knife4jAggregationAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "knife4j.basicAuth.enable",havingValue = "true")
+    @ConditionalOnProperty(name = "knife4j.basic-auth.enable",havingValue = "true")
     public FilterRegistrationBean routeBasicFilter(@Autowired Knife4jAggregationProperties knife4jAggregationProperties)
     {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();

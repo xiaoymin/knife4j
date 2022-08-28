@@ -10,6 +10,7 @@ package com.github.xiaoymin.knife4j.aggre.spring.support;
 
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * 2020/11/16 22:33
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
+@ConfigurationProperties(prefix = "knife4j.eureka")
 public class EurekaSetting {
 
     /**

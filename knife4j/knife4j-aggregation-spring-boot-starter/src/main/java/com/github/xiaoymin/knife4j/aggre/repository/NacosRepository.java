@@ -27,7 +27,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 2020/11/16 22:56
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
-public class NacosRepository extends AbsctractRepository{
+public class NacosRepository extends AbstractRepository {
     private volatile boolean stop=false;
     private Thread thread;
     Logger logger= LoggerFactory.getLogger(NacosRepository.class);

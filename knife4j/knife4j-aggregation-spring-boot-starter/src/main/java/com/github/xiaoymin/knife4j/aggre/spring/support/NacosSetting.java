@@ -7,10 +7,10 @@
 
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
-import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosOpenApi;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -21,6 +21,7 @@ import java.util.List;
  * 2020/11/16 22:52
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
+@ConfigurationProperties(prefix = "knife4j.nacos")
 public class NacosSetting {
 
     /**

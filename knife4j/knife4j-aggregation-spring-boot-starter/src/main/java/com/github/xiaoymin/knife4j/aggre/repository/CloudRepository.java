@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2020/10/29 20:11
  */
-public class CloudRepository extends AbsctractRepository{
+public class CloudRepository extends AbstractRepository {
     final Logger logger= LoggerFactory.getLogger(CloudRepository.class);
     private volatile boolean stop=false;
     private Thread thread;
