@@ -37,7 +37,8 @@ public class MarkdownUtils {
                     logger.debug("read file:"+resource.getFilename());
                 }
                 //只读取md
-                if (".md".equals(Objects.toString(resource.getFilename(),""))){
+                if (Objects.toString(resource.getFilename(),"").toLowerCase().endsWith(".md")){
+                    //if (".md".equals(Objects.toString(resource.getFilename(),""))){
                     try {
                         String title= CommonUtils.resolveMarkdownTitle(resource.getInputStream(),resource.getFilename());
                         markdownFile.setTitle(title);
