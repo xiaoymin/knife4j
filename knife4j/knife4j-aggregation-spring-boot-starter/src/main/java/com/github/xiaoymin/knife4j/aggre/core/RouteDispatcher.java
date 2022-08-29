@@ -232,6 +232,8 @@ public class RouteDispatcher {
         //判断当前聚合项目的contextPath
         if (StrUtil.isNotBlank(this.rootPath) && !StrUtil.equals(this.rootPath, ROUTE_BASE_PATH)) {
             fromUri = fromUri.replaceFirst(this.rootPath, "");
+            //此处需要追加一个请求头basePath，因为父项目设置了context-path
+            routeRequestContext.addHeader("X-Forwarded-Prefix",this.rootPath);
         }
         //判断servicePath
         if (StrUtil.isNotBlank(swaggerRoute.getServicePath()) && !StrUtil.equals(swaggerRoute.getServicePath(),
@@ -298,5 +300,9 @@ public class RouteDispatcher {
 
     public List<SwaggerRoute> getRoutes() {
         return routeRepository.getRoutes();
+    }
+
+    public String getRootPath() {
+        return rootPath;
     }
 }
