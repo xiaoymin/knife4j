@@ -248,9 +248,9 @@ module.exports = {
                 copyright: `Apache License 2.0 | Copyright © 2018-${new Date().getFullYear()}-八一菜刀 浙ICP备18027673号-1 `
             },
             algolia: {
-                appId: 'QBZ7705DZF',
-                apiKey: '1313849822aa41d52248c7b4a10a79e7', // search only (public) API key
-                indexName: 'knife4j',
+                appId: '3CRIMRK623',
+                apiKey: '69d77aed70b67e21c81c6b4a38d0cf1a', // search only (public) API key
+                indexName: 'xiaominfo',
                 algoliaOptions: {
                     facetFilters: ['version:VERSION'],
                 },
