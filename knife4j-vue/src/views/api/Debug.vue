@@ -594,7 +594,7 @@ export default {
             var tmpHostValue = settings.enableHostText;
             if (KUtils.checkUndefined(tmpHostValue)) {
               if (!tmpHostValue.startWith("http")) {
-                tmpHostValue = "http:// " + tmpHostValue;
+                tmpHostValue = "http://" + tmpHostValue;
               }
               this.enableHostText = tmpHostValue;
             } else {
@@ -2506,7 +2506,7 @@ export default {
           // https://gitee.com/xiaoym/knife4j/issues/I374SP
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
-        // console.log(requestConfig);
+        //console.log(requestConfig);
         const debugInstance = DebugAxios.create();
         // get请求编码问题
         // https://gitee.com/xiaoym/knife4j/issues/I19C8Y
@@ -3153,6 +3153,7 @@ export default {
             } else if (ctype == "text/html" || ctype == "text/plain" || ctype == "application/xml") {
               this.setResponseJsonBody(resp, headers);
             } else {
+              let inlineFlag = false;
               // 从响应头中得到文件名称
               var fileName = "Knife4j.txt";
               if (!KUtils.strNotBlank(contentDisposition)) {
@@ -3168,6 +3169,9 @@ export default {
                 for (var i = 0; i < respcds.length; i++) {
                   var header = respcds[i];
                   if (header != null && header != "") {
+                    if (header.toLowerCase().indexOf("inline") > -1) {
+                      inlineFlag = true;
+                    }
                     var headerValu = header.split("=");
                     if (headerValu != null && headerValu.length > 0) {
                       var _hdvalue = headerValu[0];
@@ -3241,30 +3245,37 @@ export default {
               // console.log(imgProduceFlag);
               // application/octet-stream
               // 判断url是否存在
-              let downloadurl = "";
-              try {
-                downloadurl = window.URL ? window.URL.createObjectURL(res.data) : window.webkitURL.createObjectURL(res.data);
-              } catch (e) {
-                // https://gitee.com/xiaoym/knife4j/issues/I5DKE8
-                // 捕获异常
-                if (window.console) {
-                  window.console.error(e);
+              if (inlineFlag) {
+                //判断content-disposition	inline;filename=f.txt的情况
+                //直接解析
+                this.setResponseJsonBody(resp, headers);
+              } else {
+                let downloadurl = "";
+                try {
+                  downloadurl = window.URL ? window.URL.createObjectURL(res.data) : window.webkitURL.createObjectURL(res.data);
+                } catch (e) {
+                  // https://gitee.com/xiaoym/knife4j/issues/I5DKE8
+                  // 捕获异常
+                  if (window.console) {
+                    window.console.error(e);
+                  }
+                  let binaryData = [].concat(res.data);
+                  let blobFile = new Blob(binaryData);
+                  downloadurl = window.URL ? window.URL.createObjectURL(blobFile) : window.webkitURL.createObjectURL(blobFile);
                 }
-                let binaryData = [].concat(res.data);
-                let blobFile = new Blob(binaryData);
-                downloadurl = window.URL ? window.URL.createObjectURL(blobFile) : window.webkitURL.createObjectURL(blobFile);
+                // let blobTarget=new Blob([res.data])
+                // var downloadurl = window.URL.createObjectURL(blobTarget);
+                this.responseContent = {
+                  text: "",
+                  mode: "blob",
+                  blobFlag: true,
+                  imageFlag: imageFlag,
+                  blobFileName: fileName,
+                  blobUrl: downloadurl,
+                  base64: ""
+                };
               }
-              // let blobTarget=new Blob([res.data])
-              // var downloadurl = window.URL.createObjectURL(blobTarget);
-              this.responseContent = {
-                text: "",
-                mode: "blob",
-                blobFlag: true,
-                imageFlag: imageFlag,
-                blobFileName: fileName,
-                blobUrl: downloadurl,
-                base64: ""
-              };
+
             }
           } else {
             this.setResponseJsonBody(resp, headers);
