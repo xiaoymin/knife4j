@@ -15,6 +15,7 @@ module.exports = {
     },
         'quick-start/quick-start',
         'v4/plan',
+        'community/contributing',
     {
         type: 'category',
         label: '序章',
