@@ -1971,6 +1971,7 @@ export default {
       var validateHeader = this.validateCommonHeaders();
       // console("公共请求头验证");
       // console(validateHeader);
+      // console.log(this)
       if (validateHeader.validate) {
         // 根据不同的请求类型,发送不同的请求
         if (this.rawFlag) {
@@ -1978,6 +1979,7 @@ export default {
         } else if (this.formFlag) {
           this.debugSendFormRequest();
         } else if (this.urlFormFlag) {
+          // console.log("urlForm")
           this.debugSendUrlFormRequest();
         }
       } else {
@@ -2402,11 +2404,15 @@ export default {
     applyRequestParams(formParams, methodType) {
       var requestData = null;
       var requestParams = null;
+      // console.log(formParams)
       if (["post", "put", "patch"].includes(methodType.toLowerCase())) {
         if (KUtils.checkUndefined(formParams)) {
           requestData = qs.stringify(formParams);
+          //requestParams = qs.stringify(formParams);
+          //requestParams = formParams;
         }
       } else {
+        //requestData = formParams;
         requestParams = formParams;
       }
       return {
@@ -2506,7 +2512,7 @@ export default {
           // https://gitee.com/xiaoym/knife4j/issues/I374SP
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
-        //console.log(requestConfig);
+        // console.log(requestConfig);
         const debugInstance = DebugAxios.create();
         // get请求编码问题
         // https://gitee.com/xiaoym/knife4j/issues/I19C8Y
