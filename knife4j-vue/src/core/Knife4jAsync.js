@@ -1221,6 +1221,7 @@ SwaggerBootstrapUi.prototype.setInstanceBasicPorperties = function (menu) {
   if (this.currentInstance.oas2()) {
     this.basicInfoOAS2(menu);
   } else {
+    console.log("====>", menu)
     this.basicInfoOAS3(menu);
   }
 
@@ -2753,15 +2754,61 @@ SwaggerBootstrapUi.prototype.readSecurityContextSchemesCommon = function (securi
       var sdobj = securityDefinitions[j];
       // console.log(sdobj)
       if (sdobj.type == 'oauth2') {
-        // oauth2认证
-        var oauth = new SwaggerBootstrapUiOAuth2(
-          KUtils.getValue(sdobj, 'flow', '', true),
-          KUtils.getValue(sdobj, 'tokenUrl', '', true),
-          KUtils.getValue(sdobj, 'authorizationUrl', '', true),
-          that.currentInstance.id
-        );
-        oauth.sync();
-        that.currentInstance.oauths = oauth;
+        if (this.currentInstance.oas2()) {
+          /*
+          securityDefinitions的格式：
+          {
+            "My_OAuth":{
+                "type": "oauth2",
+                "tokenUrl": "https://127.0.0.1/oauth/docTokenr",
+                "flow": "password",
+                "scopes": {
+                    "server": "server all"
+                }
+            }
+          }
+          */
+          // oauth2认证
+          var oauth = new SwaggerBootstrapUiOAuth2(
+            KUtils.getValue(sdobj, 'flow', '', true),
+            KUtils.getValue(sdobj, 'tokenUrl', '', true),
+            KUtils.getValue(sdobj, 'authorizationUrl', '', true),
+            that.currentInstance.id
+          );
+          // console.log("oauth", oauth);
+          oauth.sync();
+          that.currentInstance.oauths = oauth;
+        } else {
+          /*
+          securityDefinitions的格式：
+          {
+            "My_OAuth":
+            {
+                  "type": "oauth2",
+                  "flows": {
+                      "password": {
+                          "tokenUrl": "https://127.0.0.1/oauth/docTokenr",
+                          "scopes": {
+                              "server": "server all"
+                          }
+                      }
+                  }
+              } 
+          }
+          */
+          //OAS3 oauth2认证
+          for (var flow in sdobj.flows) {
+            var oauth = new SwaggerBootstrapUiOAuth2(
+              flow,
+              sdobj.flows[flow].tokenUrl || '',
+              sdobj.flows[flow].authorizationUrl || '',
+              that.currentInstance.id
+            );
+            // console.log("oauth", oauth);
+            oauth.sync();
+            that.currentInstance.oauths = oauth;
+          }
+        }
       } else {
         var sdf = new SwaggerBootstrapUiSecurityDefinition();
         sdf.key = j;
@@ -7014,6 +7061,7 @@ function SwaggerBootstrapUiMarkdownFile(title) {
 SwaggerBootstrapUiInstance.prototype.oas2 = function () {
   // 非空判断
   //  https://gitee.com/xiaoym/knife4j/issues/I37X0Q
+  console.log("groupVersion", this.groupVersion)
   if (KUtils.strNotBlank(this.groupVersion)) {
     if (this.groupVersion.indexOf('3') >= 0) {
       return false;
