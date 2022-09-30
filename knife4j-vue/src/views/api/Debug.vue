@@ -5,10 +5,26 @@
         <a-row>
           <a-col :class="'knife4j-debug-api-' + api.methodType.toLowerCase()" :span="24">
             <a-input-group compact>
-              <span class="knife4j-api-summary-method">
-                <a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}
+              <span v-if="api.securityFlag" class="knife4j-api-summary-method">
+                <a-icon style="font-size:16px;" type="unlock" />
               </span>
-              <a-input :style="debugUrlStyle" :value="debugUrl" @change="debugUrlChange" />
+              <a-input :style="debugUrlStyle" :value="debugUrl" @change="debugUrlChange" >
+                <template #addonBefore>
+                  <a-select v-model:value="api.methodType" style="width: 110px">
+                    <a-select-option value="GET">GET</a-select-option>
+                    <a-select-option value="POST">POST</a-select-option>
+                    <a-select-option value="PUT">PUT</a-select-option>
+                    <a-select-option value="PATCH">PATCH</a-select-option>
+                    <a-select-option value="DELETE">DELETE</a-select-option>
+                    <a-select-option value="COPY">COPY</a-select-option>
+                    <a-select-option value="HEAD">HEAD</a-select-option>
+                    <a-select-option value="OPTIONS">OPTIONS</a-select-option>
+                    <a-select-option value="LINK">LINK</a-select-option>
+                    <a-select-option value="UNLINK">UNLINK</a-select-option>
+                    <a-select-option value="PURGE">PURGE</a-select-option>
+                  </a-select>
+                </template>
+              </a-input>
               <a-button v-html="$t('debug.send')" class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送
               </a-button>
               <a-button v-if="enableReloadCacheParameter" @click="reloadCacheParameter">刷新变量</a-button>
