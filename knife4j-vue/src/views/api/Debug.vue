@@ -8,18 +8,20 @@
             :span="24"
           >
             <a-input-group compact>
-              <span class="knife4j-api-summary-method"><a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}</span>
               <a-input
-                :style="debugUrlStyle"
+                style="width: calc(100% - 80px)"
                 :value="debugUrl"
                 @change="debugUrlChange"
               />
-              <a-button v-html="$t('debug.send')"
-                class="knife4j-api-send"
-                type="primary"
-                @click="sendRestfulApi"
-                >发 送</a-button
-              >
+              <a-button type="primary" class="knife4j-api-summary-method" @click="sendRestfulApi">
+                <a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}
+              </a-button>
+<!--              <a-button v-html="$t('debug.send')"-->
+<!--                class="knife4j-api-summary-method"-->
+<!--                type="primary"-->
+<!--                @click="sendRestfulApi"-->
+<!--                >{{ api.methodType }}</a-button-->
+<!--              >-->
               <a-button v-if="enableReloadCacheParameter" @click="reloadCacheParameter">刷新变量</a-button>
             </a-input-group>
           </a-col>
@@ -407,7 +409,7 @@
               <a-row>
                 <editor-script
                   style="margin-top:5px;"
-                  :value="rawScript" 
+                  :value="rawScript"
                   @change="rawScriptChange"
                 ></editor-script>
               </a-row>
@@ -450,7 +452,7 @@ export default {
   components: {
     "EditorScript":()=>import('./EditorScript'),
     "EditorDebugShow":()=>import('./EditorDebugShow'),
-    "DebugResponse":()=>import('./DebugResponse') 
+    "DebugResponse":()=>import('./DebugResponse')
   },
   props: {
     api: {
@@ -1081,7 +1083,7 @@ export default {
           }
         });
       }
-     
+
       if(KUtils.arrNotEmpty(this.authorizeQueryParameters)){
         this.authorizeQueryParameters.forEach(aqp=>{
           showGlobalParameters.push(aqp);
@@ -1168,7 +1170,7 @@ export default {
           //url-form-data表单
           this.initUrlFormValue();
         }
-       
+
       }
       this.updateScriptFromCache(cacheApi);
       this.updateHeaderFromCacheApi(cacheApi);
@@ -1751,7 +1753,7 @@ export default {
       var headerValue = e.target.value;
       var headerId = e.target.getAttribute("data-key");
       this.headerContentChnageUpdate(headerValue,headerId);
-      
+
     },
     headerContentChnageUpdate(headerValue,headerId){
       var record = this.headerData.filter(header => header.id == headerId)[0];

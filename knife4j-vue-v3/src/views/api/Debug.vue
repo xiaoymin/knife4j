@@ -6,19 +6,21 @@
         :span="24"
       >
         <a-input-group compact>
-          <span class="knife4j-api-summary-method">{{ api.methodType }}</span>
           <a-input
-            style="width: 80%"
+            style="width: calc(100% - 80px)"
             :value="debugUrl"
             @change="debugUrlChange"
           />
-          <a-button
-            :loading="debugLoading"
-            class="knife4j-api-send"
-            type="primary"
-            @click="sendRestfulApi"
-            >发 送</a-button
-          >
+          <a-button type="primary" class="knife4j-api-summary-method" @click="sendRestfulApi">
+            <a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}
+          </a-button>
+<!--          <a-button-->
+<!--            :loading="debugLoading"-->
+<!--            class="knife4j-api-send"-->
+<!--            type="primary"-->
+<!--            @click="sendRestfulApi"-->
+<!--            >发 送</a-button-->
+<!--          >-->
         </a-input-group>
       </a-col>
     </a-row>
