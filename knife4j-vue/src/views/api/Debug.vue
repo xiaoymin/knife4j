@@ -28,6 +28,7 @@
               <a-button v-html="$t('debug.send')" class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送
               </a-button>
               <a-button v-if="enableReloadCacheParameter" @click="reloadCacheParameter">刷新变量</a-button>
+              <a-button @click="resetCacheParameter" >重置</a-button>
             </a-input-group>
           </a-col>
         </a-row>
@@ -266,6 +267,7 @@ import constant from "@/store/constants";
 /* import EditorDebugShow from "./EditorDebugShow";
 import DebugResponse from "./DebugResponse"; */
 import DebugAxios from "axios";
+import cloneDeep from 'lodash/cloneDeep'
 import vkbeautify from "@/components/utils/vkbeautify";
 
 export default {
@@ -287,6 +289,7 @@ export default {
   },
   data() {
     return {
+      oldApi: {},
       i18n: null,
       // 当前回调数据是否太大
       bigFlag: false,
@@ -394,6 +397,7 @@ export default {
     // 初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
     this.initDebugUrl();
+    this.oldApi = cloneDeep(this.api);
     // 显示表单参数
     // this.initShowFormTable();
     if (this.enableReloadCacheParameter) {
@@ -419,6 +423,22 @@ export default {
     }
   },
   methods: {
+    // 重置参数为原始默认值
+      resetCacheParameter() {
+      // this.$emit('update:api', cloneDeep(this.oldApi))
+      this.headerData = [];
+      this.formData = [];
+      this.urlFormData = [];
+      this.rawFormData = [];
+      this.rawText = KUtils.toString(this.oldApi.requestValue, "");
+      this.rawScript = "";
+      this.storeApiParams();
+      this.initLocalGlobalParameters()
+      this.initDebugUrl();
+      // this.debugUrl = cloneDeep(this.oldApi.url);
+      // this.debugMethodType = cloneDeep(this.oldApi.methodType)
+      // this.rawScript = cloneDeep(this.oldApi.rawScript);
+    },
     reloadCacheParameter() {
       // console.log("刷新变量,从缓存中重新读取变量值")
       // 刷新变量,从缓存中重新读取变量值
