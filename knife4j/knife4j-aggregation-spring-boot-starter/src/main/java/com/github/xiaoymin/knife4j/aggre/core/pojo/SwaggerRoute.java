@@ -118,7 +118,7 @@ public class SwaggerRoute {
             }
             if (StrUtil.isNotBlank(cloudRoute.getServicePath())&&!StrUtil.equals(cloudRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)){
                 //判断是否是/开头
-                if (!StrUtil.startWith(cloudRoute.getServicePath(),RouteDispatcher.ROUTE_BASE_PATH)){
+                if (!StrUtil.startWithAny(cloudRoute.getServicePath(),RouteDispatcher.ROUTE_BASE_PATH,"http://","https://")){
                     this.servicePath= RouteDispatcher.ROUTE_BASE_PATH+cloudRoute.getServicePath();
                 }else{
                     this.servicePath=cloudRoute.getServicePath();
