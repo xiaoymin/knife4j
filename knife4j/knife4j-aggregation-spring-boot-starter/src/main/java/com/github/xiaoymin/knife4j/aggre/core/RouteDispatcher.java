@@ -70,7 +70,7 @@ public class RouteDispatcher {
         this.rootPath = rootPath;
         initExecutor(executorEnum);
         ignoreHeaders.addAll(Arrays.asList(new String[]{
-                "host", "content-length", ROUTE_PROXY_HEADER_NAME, ROUTE_PROXY_HEADER_BASIC_NAME, "Request-Origion"
+                "host", "content-length", ROUTE_PROXY_HEADER_NAME, ROUTE_PROXY_HEADER_BASIC_NAME, "Request-Origion","language","knife4j-gateway-code"
         }));
     }
 
