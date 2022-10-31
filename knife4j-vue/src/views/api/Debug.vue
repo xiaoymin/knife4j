@@ -8,7 +8,7 @@
               <span v-if="api.securityFlag" class="knife4j-api-summary-method">
                 <a-icon style="font-size:16px;" type="unlock" />
               </span>
-              <a-input :style="debugUrlStyle" :value="debugUrl" @change="debugUrlChange" >
+              <a-input :style="debugUrlStyle" :value="debugUrl" @change="debugUrlChange">
                 <template #addonBefore>
                   <a-select v-model:value="debugMethodType" style="width: 110px">
                     <a-select-option value="GET">GET</a-select-option>
@@ -28,7 +28,7 @@
               <a-button v-html="$t('debug.send')" class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送
               </a-button>
               <a-button v-if="enableReloadCacheParameter" @click="reloadCacheParameter">刷新变量</a-button>
-              <a-button @click="resetCacheParameter" >重置</a-button>
+              <a-button @click="resetCacheParameter">重置</a-button>
             </a-input-group>
           </a-col>
         </a-row>
@@ -38,7 +38,7 @@
               <template slot="tab">
                 <span>
                   <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
-                      headerCount
+                  headerCount
                   }}</a-tag><span v-html="$t('debug.headers')">请求头部</span>
                 </span>
               </template>
@@ -424,7 +424,7 @@ export default {
   },
   methods: {
     // 重置参数为原始默认值
-      resetCacheParameter() {
+    resetCacheParameter() {
       // this.$emit('update:api', cloneDeep(this.oldApi))
       this.headerData = [];
       this.formData = [];
@@ -3226,8 +3226,8 @@ export default {
                         _hdvalue != ""
                       ) {
                         if (
-                          _hdvalue.toLowerCase() == "filename*" ||
-                          _hdvalue.toLowerCase() == "filename"
+                          _hdvalue.toLowerCase().trim() == "filename*" ||
+                          _hdvalue.toLowerCase().trim() == "filename"
                         ) {
                           // 对filename进行decode处理,防止出现中文的情况,去除双引号
                           let tmpHeader = headerValu[1].replace(/\"/g, "");
