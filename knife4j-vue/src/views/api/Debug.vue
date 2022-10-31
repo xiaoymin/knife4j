@@ -296,7 +296,7 @@ export default {
       // 数据很大,raw显示会导致内存溢出
       bigBlobFlag: false,
       // 是否开启缓存
-      debugUrlStyle: "width: 80%",
+      debugUrlStyle: "width: 75%",
       enableRequestCache: false,
       // 是否动态参数
       enableDynamicParameter: false,
@@ -403,7 +403,7 @@ export default {
     if (this.enableReloadCacheParameter) {
       this.debugUrlStyle = "width: 70%;"
     } else {
-      this.debugUrlStyle = "width: 80%;"
+      this.debugUrlStyle = "width: 75%;"
     }
   },
   computed: {
