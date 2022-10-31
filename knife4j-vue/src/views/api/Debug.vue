@@ -3,15 +3,32 @@
     <a-spin tip="Loading..." :spinning="debugLoading">
       <div class="spin-content">
         <a-row>
-          <a-col :class="'knife4j-debug-api-' + api.methodType.toLowerCase()" :span="24">
+          <a-col :class="'knife4j-debug-api-' + debugMethodType.toLowerCase()" :span="24">
             <a-input-group compact>
-              <span class="knife4j-api-summary-method">
-                <a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}
+              <span v-if="api.securityFlag" class="knife4j-api-summary-method">
+                <a-icon style="font-size:16px;" type="unlock" />
               </span>
-              <a-input :style="debugUrlStyle" :value="debugUrl" @change="debugUrlChange" />
+              <a-input :style="debugUrlStyle" :value="debugUrl" @change="debugUrlChange" >
+                <template #addonBefore>
+                  <a-select v-model:value="debugMethodType" style="width: 110px">
+                    <a-select-option value="GET">GET</a-select-option>
+                    <a-select-option value="POST">POST</a-select-option>
+                    <a-select-option value="PUT">PUT</a-select-option>
+                    <a-select-option value="PATCH">PATCH</a-select-option>
+                    <a-select-option value="DELETE">DELETE</a-select-option>
+                    <a-select-option value="COPY">COPY</a-select-option>
+                    <a-select-option value="HEAD">HEAD</a-select-option>
+                    <a-select-option value="OPTIONS">OPTIONS</a-select-option>
+                    <a-select-option value="LINK">LINK</a-select-option>
+                    <a-select-option value="UNLINK">UNLINK</a-select-option>
+                    <a-select-option value="PURGE">PURGE</a-select-option>
+                  </a-select>
+                </template>
+              </a-input>
               <a-button v-html="$t('debug.send')" class="knife4j-api-send" type="primary" @click="sendRestfulApi">发 送
               </a-button>
               <a-button v-if="enableReloadCacheParameter" @click="reloadCacheParameter">刷新变量</a-button>
+              <a-button @click="resetCacheParameter" >重置</a-button>
             </a-input-group>
           </a-col>
         </a-row>
@@ -250,6 +267,7 @@ import constant from "@/store/constants";
 /* import EditorDebugShow from "./EditorDebugShow";
 import DebugResponse from "./DebugResponse"; */
 import DebugAxios from "axios";
+import cloneDeep from 'lodash/cloneDeep'
 import vkbeautify from "@/components/utils/vkbeautify";
 
 export default {
@@ -271,6 +289,7 @@ export default {
   },
   data() {
     return {
+      oldApi: {},
       i18n: null,
       // 当前回调数据是否太大
       bigFlag: false,
@@ -328,6 +347,8 @@ export default {
       globalParameters: [],
       // 调试接口
       debugUrl: "",
+      // 请求方式
+      debugMethodType: "",
       // 当前请求接口地址是否为path类型,如果是,在发送请求时需要对地址栏进行替换
       debugPathFlag: false,
       // 需要替换的参数值key
@@ -376,6 +397,7 @@ export default {
     // 初始化读取本地缓存全局参数
     this.initLocalGlobalParameters();
     this.initDebugUrl();
+    this.oldApi = cloneDeep(this.api);
     // 显示表单参数
     // this.initShowFormTable();
     if (this.enableReloadCacheParameter) {
@@ -401,6 +423,22 @@ export default {
     }
   },
   methods: {
+    // 重置参数为原始默认值
+      resetCacheParameter() {
+      // this.$emit('update:api', cloneDeep(this.oldApi))
+      this.headerData = [];
+      this.formData = [];
+      this.urlFormData = [];
+      this.rawFormData = [];
+      this.rawText = KUtils.toString(this.oldApi.requestValue, "");
+      this.rawScript = "";
+      this.storeApiParams();
+      this.initLocalGlobalParameters()
+      this.initDebugUrl();
+      // this.debugUrl = cloneDeep(this.oldApi.url);
+      // this.debugMethodType = cloneDeep(this.oldApi.methodType)
+      // this.rawScript = cloneDeep(this.oldApi.rawScript);
+    },
     reloadCacheParameter() {
       // console.log("刷新变量,从缓存中重新读取变量值")
       // 刷新变量,从缓存中重新读取变量值
@@ -563,6 +601,7 @@ export default {
     },
     initDebugUrl() {
       this.debugUrl = this.api.url;
+      this.debugMethodType = this.api.methodType;
       // 判断是否为paht类型
       var reg = new RegExp("{(.*?)}", "ig");
       // console("地址是否为path");
@@ -2451,7 +2490,7 @@ export default {
         // raw类型的请求需要判断是何种类型
         var headers = this.debugHeaders();
         var url = this.debugUrl;
-        var methodType = this.api.methodType.toLowerCase();
+        var methodType = this.debugMethodType.toLowerCase();
         var formParams = this.debugUrlFormParams();
         // 得到key-value的参数值,对请求类型进行判断，判断是否为path
         if (this.debugPathFlag) {
@@ -2578,7 +2617,7 @@ export default {
         var headers = this.debugHeaders();
         var url = this.debugUrl;
 
-        var methodType = this.api.methodType.toLowerCase();
+        var methodType = this.debugMethodType.toLowerCase();
         var fileFlag = this.validateFormDataContaintsFile();
         var validateFormd = this.debugFormDataParams(fileFlag);
         // console(validateFormd);
@@ -2654,7 +2693,7 @@ export default {
         // raw类型的请求需要判断是何种类型
         var headers = this.debugHeaders();
         var url = this.debugUrl;
-        var methodType = this.api.methodType.toLowerCase();
+        var methodType = this.debugMethodType.toLowerCase();
         var data = this.rawText;
         var formParams = this.debugRawFormParams();
         // 得到key-value的参数值,对请求类型进行判断，判断是否为path
@@ -2919,7 +2958,7 @@ export default {
       }
       fullurl += url;
       curlified.push("curl");
-      curlified.push("-X", this.api.methodType.toUpperCase());
+      curlified.push("-X", this.debugMethodType.toUpperCase());
       // 设置请求头
       var headers = this.debugHeaders();
       var ignoreHeaders = [];
@@ -3004,8 +3043,8 @@ export default {
           var tmpUrlStr = tmpUrls.join("&");
           if (KUtils.strNotBlank(tmpUrlStr)) {
             if (
-              this.api.methodType.toLowerCase() == "get" ||
-              this.api.methodType.toLowerCase() == "delete"
+              this.debugMethodType.toLowerCase() == "get" ||
+              this.debugMethodType.toLowerCase() == "delete"
             ) {
               // 地址栏追加参数
               if (fullurl.indexOf("?") == -1) {
@@ -3079,8 +3118,8 @@ export default {
             // console("tmpUrlStr:" + tmpUrlStr);
             if (KUtils.strNotBlank(tmpUrlStr)) {
               if (
-                this.api.methodType.toLowerCase() == "get" ||
-                this.api.methodType.toLowerCase() == "delete"
+                this.debugMethodType.toLowerCase() == "get" ||
+                this.debugMethodType.toLowerCase() == "delete"
               ) {
                 // 地址栏追加参数
                 if (fullurl.indexOf("?") == -1) {

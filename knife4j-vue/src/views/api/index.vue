@@ -4,7 +4,7 @@
       <a-tabs defaultActiveKey="doc" tabPosition="left" class="api-tab">
         <a-tab-pane key="doc">
           <span slot="tab">
-            <my-icon type="icon-wendang" /><span v-html="$t('doc.title')">调试</span>
+            <my-icon type="icon-wendang" /><span v-html="$t('doc.title')">文档</span>
           </span>
           <Document :api="api" :swaggerInstance="swaggerInstance" />
         </a-tab-pane>
