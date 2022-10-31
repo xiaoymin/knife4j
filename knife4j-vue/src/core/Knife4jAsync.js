@@ -118,7 +118,7 @@ function SwaggerBootstrapUi(options) {
   //  文档id
   this.docId = 'content';
   this.title = 'knife4j';
-  this.titleOfUrl = 'https://  gitee.com/xiaoym/knife4j';
+  this.titleOfUrl = 'https://gitee.com/xiaoym/knife4j';
   this.load = 1;
   //  tabid
   this.tabId = 'tabUl';
@@ -2071,7 +2071,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                         }
                       }
                       // refp.in = minfo.in;
-                      if (KUtils.checkUndefined(p.require)) {
+                      //https://gitee.com/xiaoym/knife4j/issues/I5TMAW
+                      if (KUtils.checkUndefined(p.required)) {
                         refp.require = p.required;
                       } else {
                         if (requiredArrs.includes(pkey)) {
