@@ -78,7 +78,6 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                     .termsOfServiceUrl(info.getTermsOfServiceUrl())
                     .contact(new Contact(info.getConcat(),info.getUrl(),info.getEmail()))
                     .build();
-            OAuth2Properties oauth2Common= info.getOauth2();
             for (Map.Entry<String,Knife4jDocketInfo> map:info.getGroup().entrySet()){
                 String beanName=CommonUtils.getRandomBeanName(map.getKey());
                 Knife4jDocketInfo docketInfo=map.getValue();
@@ -121,8 +120,7 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                 //build
                 docketBean.select().apis(apiPredicate).paths(pathPredicate).build();
                 //设置oauth2信息
-                OAuth2Properties docketOAuth2= docketInfo.getOauth2();
-                OAuth2Utils.config(docketBean,docketOAuth2!=null?docketOAuth2:oauth2Common);
+                OAuth2Utils.config(docketBean,docketInfo.getOauth2());
                 //增加Knife4j的增强属性
                 docketBean.extensions(openApiExtensionResolver.buildExtensions(groupName));
             }
