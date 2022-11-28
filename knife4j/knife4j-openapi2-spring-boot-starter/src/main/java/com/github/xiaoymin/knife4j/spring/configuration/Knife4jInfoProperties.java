@@ -6,6 +6,7 @@
  */
 package com.github.xiaoymin.knife4j.spring.configuration;
 
+import com.github.xiaoymin.knife4j.core.oauth2.OAuth2Properties;
 import com.github.xiaoymin.knife4j.spring.model.docket.Knife4jDocketInfo;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -67,4 +68,9 @@ public class Knife4jInfoProperties   {
      * the group of OpenAPI
      */
     private Map<String,Knife4jDocketInfo> group;
+
+    /**
+     * OAuth2 config
+     */
+    private OAuth2Properties oauth2;
 }

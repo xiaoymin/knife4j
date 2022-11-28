@@ -9,6 +9,7 @@ package com.github.xiaoymin.knife4j.spring.common.bean;
 import com.github.xiaoymin.knife4j.core.enums.AnnotationClassEnums;
 import com.github.xiaoymin.knife4j.core.enums.ApiRuleEnums;
 import com.github.xiaoymin.knife4j.core.enums.PathRuleEnums;
+import com.github.xiaoymin.knife4j.core.oauth2.OAuth2Properties;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
@@ -16,6 +17,7 @@ import com.github.xiaoymin.knife4j.spring.configuration.Knife4jInfoProperties;
 import com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties;
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import com.github.xiaoymin.knife4j.spring.model.docket.Knife4jDocketInfo;
+import com.github.xiaoymin.knife4j.spring.util.OAuth2Utils;
 import com.github.xiaoymin.knife4j.spring.util.RequestHandlerSelectorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -76,6 +78,7 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                     .termsOfServiceUrl(info.getTermsOfServiceUrl())
                     .contact(new Contact(info.getConcat(),info.getUrl(),info.getEmail()))
                     .build();
+            OAuth2Properties oauth2Common= info.getOauth2();
             for (Map.Entry<String,Knife4jDocketInfo> map:info.getGroup().entrySet()){
                 String beanName=CommonUtils.getRandomBeanName(map.getKey());
                 Knife4jDocketInfo docketInfo=map.getValue();
@@ -117,6 +120,9 @@ public class Knife4jDocketAutoRegistry implements BeanFactoryAware, Initializing
                 }
                 //build
                 docketBean.select().apis(apiPredicate).paths(pathPredicate).build();
+                //设置oauth2信息
+                OAuth2Properties docketOAuth2= docketInfo.getOauth2();
+                OAuth2Utils.config(docketBean,docketOAuth2!=null?docketOAuth2:oauth2Common);
                 //增加Knife4j的增强属性
                 docketBean.extensions(openApiExtensionResolver.buildExtensions(groupName));
             }

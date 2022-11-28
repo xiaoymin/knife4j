@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ClassUtils;
 import springfox.documentation.RequestHandler;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 
 import java.lang.annotation.Annotation;
@@ -51,6 +52,24 @@ public class RequestHandlerSelectorUtils {
      */
     public static Predicate<RequestHandler> basePackage(final String basePackage) {
         return input -> declaringClass(input).map(handlerPackage(basePackage)).orElse(true);
+    }
+
+    /**
+     * math multiple path selector,see{@link springfox.documentation.builders.PathSelectors}
+     * @param rules path rules
+     * @return
+     */
+    public static Predicate<String> multiplePathSelector(List<String> rules){
+        if (rules==null||rules.size()==0){
+            return PathSelectors.none();
+        }
+        Predicate<String> predicate= PathSelectors.ant(rules.get(0));
+        if (rules.size()>1){
+            for (int i=1;i<rules.size();i++){
+                predicate=predicate.or(PathSelectors.ant(rules.get(i)));
+            }
+        }
+        return predicate;
     }
 
     /**

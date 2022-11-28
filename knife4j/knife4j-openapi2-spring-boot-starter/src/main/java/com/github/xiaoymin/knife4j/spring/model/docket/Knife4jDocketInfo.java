@@ -8,6 +8,7 @@ package com.github.xiaoymin.knife4j.spring.model.docket;
 
 import com.github.xiaoymin.knife4j.core.enums.ApiRuleEnums;
 import com.github.xiaoymin.knife4j.core.enums.PathRuleEnums;
+import com.github.xiaoymin.knife4j.core.oauth2.OAuth2Properties;
 import lombok.Data;
 
 import java.util.List;
@@ -44,5 +45,10 @@ public class Knife4jDocketInfo {
      * The resource set corresponding to the grouping policy Withs Paths strategy
      */
     private List<String> pathRuleResources;
+
+    /**
+     * OAuth2 config
+     */
+    private OAuth2Properties oauth2;
 
 }
