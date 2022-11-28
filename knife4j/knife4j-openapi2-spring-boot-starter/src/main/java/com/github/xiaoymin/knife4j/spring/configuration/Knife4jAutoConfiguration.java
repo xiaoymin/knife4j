@@ -13,6 +13,7 @@ import com.github.xiaoymin.knife4j.spring.common.bean.Knife4jI18nServiceModelToS
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.filter.SecurityBasicAuthFilter;
+import com.github.xiaoymin.knife4j.spring.model.docket.Knife4jAuthInfoProperties;
 import com.github.xiaoymin.knife4j.spring.util.EnvironmentUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ import java.util.Objects;
  * 2019/08/28 21:08
  */
 @Configuration
-@EnableConfigurationProperties({Knife4jProperties.class,Knife4jInfoProperties.class,Knife4jHttpBasic.class,Knife4jSetting.class})
+@EnableConfigurationProperties({Knife4jProperties.class,Knife4jInfoProperties.class,Knife4jHttpBasic.class,Knife4jSetting.class, Knife4jAuthInfoProperties.class})
 @ConditionalOnProperty(name = "knife4j.enable",havingValue = "true")
 public class Knife4jAutoConfiguration {
 

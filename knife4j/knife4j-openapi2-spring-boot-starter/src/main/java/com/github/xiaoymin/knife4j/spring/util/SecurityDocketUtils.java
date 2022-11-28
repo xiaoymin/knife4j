@@ -6,11 +6,14 @@
  */
 package com.github.xiaoymin.knife4j.spring.util;
 
+import com.github.xiaoymin.knife4j.core.enums.BasicAuthTypeEnums;
 import com.github.xiaoymin.knife4j.core.enums.OAuth2TypeEnums;
 import com.github.xiaoymin.knife4j.core.oauth2.OAuth2Properties;
 import com.github.xiaoymin.knife4j.core.oauth2.OAuth2Scope;
 import com.github.xiaoymin.knife4j.core.util.Assert;
+import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.spring.model.docket.Knife4jAuthInfoProperties;
 import springfox.documentation.builders.OAuthBuilder;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.service.contexts.SecurityContext;
@@ -25,7 +28,7 @@ import java.util.List;
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/11/28 21:10
  */
-public class OAuth2Utils {
+public class SecurityDocketUtils {
 
     /**
      * Default token name
@@ -33,12 +36,42 @@ public class OAuth2Utils {
     public static final String OAUTH2_TOKEN_NAME="access_token";
     public static final String OAUTH2_NAME="oauth2";
 
+    public static final String BASIC_AUTH_NAME="Authorization";
+
+    public static final String API_KEY_DEFAULT_PASS="header";
+
+
+    /**
+     * Config Custom Authorization
+     * @param docket docket instance
+     * @param authInfoProperties basic config
+     */
+    public static void configCustomAuth(Docket docket, List<Knife4jAuthInfoProperties> authInfoProperties){
+        if (CollectionUtils.isNotEmpty(authInfoProperties)){
+            List<SecurityContext> securityContexts=new ArrayList<>();
+            List<SecurityScheme> securitySchemes=new ArrayList<>();
+            for (Knife4jAuthInfoProperties authInfo:authInfoProperties){
+                if (authInfo.getAuthType()== BasicAuthTypeEnums.BASIC){
+                    securitySchemes.add(new BasicAuth(BASIC_AUTH_NAME));
+                }else if(authInfo.getAuthType()==BasicAuthTypeEnums.API_KEY){
+                    securitySchemes.add(new ApiKey(authInfo.getKeyName(),authInfo.getName(),API_KEY_DEFAULT_PASS));
+                }
+                SecurityContext securityContext=SecurityContext.builder()
+                        .securityReferences(Arrays.asList(new SecurityReference(authInfo.getName(),createAuthScope(authInfo.getScopes(),true).toArray(new AuthorizationScope[]{}))))
+                        .forPaths(RequestHandlerSelectorUtils.multiplePathSelector(authInfo.getPaths()))
+                        .build();
+                securityContexts.add(securityContext);
+            }
+            docket.securityContexts(securityContexts).securitySchemes(securitySchemes);
+        }
+    }
+
     /**
      * Config OAuth information
      * @param docket docket instance
      * @param oAuth2Properties oauth2 config
      */
-    public static void config(Docket docket, OAuth2Properties oAuth2Properties){
+    public static void configOAuth2(Docket docket, OAuth2Properties oAuth2Properties){
         if (oAuth2Properties!=null){
             Assert.notNull(oAuth2Properties.getConfig(),"OAuth2 Config can't be Empty!");
             Assert.notBlank(oAuth2Properties.getConfig().getUrl(),"OAuth2 URL can't be empty!");
@@ -53,7 +86,7 @@ public class OAuth2Utils {
                 grantTypes=password(docket,oAuth2Properties);
             }
             OAuth oAuth=createOAuth2(grantTypes);
-            List<AuthorizationScope> scopes=createAuthScope(oAuth2Properties);
+            List<AuthorizationScope> scopes=createAuthScope(oAuth2Properties.getScopes(),false);
             SecurityReference securityReference=new SecurityReference(OAUTH2_NAME,scopes.toArray(new AuthorizationScope[]{}));
             SecurityContext securityContext=new SecurityContext(Arrays.asList(securityReference),RequestHandlerSelectorUtils.multiplePathSelector(oAuth2Properties.getPaths()));
             //schemas
@@ -119,15 +152,28 @@ public class OAuth2Utils {
         return oAuth;
     }
 
-    public static List<AuthorizationScope> createAuthScope(OAuth2Properties oAuth2Properties){
+    /**
+     * build scope collection
+     * @param auth2Scopes
+     * @param createDefault
+     * @return
+     */
+    public static List<AuthorizationScope> createAuthScope(List<OAuth2Scope> auth2Scopes,boolean createDefault){
         //scope方位
         List<AuthorizationScope> scopes=new ArrayList<>();
-        if (oAuth2Properties.getScopes()!=null){
-            for (OAuth2Scope scope: oAuth2Properties.getScopes()){
+        if (CollectionUtils.isNotEmpty(auth2Scopes)){
+            for (OAuth2Scope scope: auth2Scopes){
                 scopes.add(new AuthorizationScope(scope.getName(),scope.getDescription()));
+            }
+        }else{
+            if (createDefault){
+                AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+                scopes.add(authorizationScope);
             }
         }
         return scopes;
     }
+
+
 
 }

@@ -51,4 +51,9 @@ public class Knife4jDocketInfo {
      */
     private OAuth2Properties oauth2;
 
+    /**
+     * Custom Authorization config
+     */
+    private List<Knife4jAuthInfoProperties> basicAuths;
+
 }
