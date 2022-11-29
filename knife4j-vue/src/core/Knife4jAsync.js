@@ -370,7 +370,7 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
     that.ajax({
       url: that.url,
       type: 'get',
-      timeout: 20000,
+      timeout: 60000,
       dataType: 'json',
       headers: headers
     }, data => {
@@ -742,7 +742,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       var requestConfig = {
         url: api,
         dataType: 'json',
-        timeout: 20000,
+        timeout: 60000,
         type: 'get',
         // # 发送一个语言的header头给后端
         transformResponse: [function (data) {
