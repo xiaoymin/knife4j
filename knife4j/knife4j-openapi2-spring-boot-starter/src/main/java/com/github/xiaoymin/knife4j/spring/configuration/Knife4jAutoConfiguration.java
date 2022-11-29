@@ -7,6 +7,7 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
+import com.github.xiaoymin.knife4j.core.enums.OpenAPILanguageEnums;
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
 import com.github.xiaoymin.knife4j.spring.common.bean.Knife4jDocketAutoRegistry;
 import com.github.xiaoymin.knife4j.spring.common.bean.Knife4jI18nServiceModelToSwagger2MapperImpl;
@@ -99,7 +100,12 @@ public class Knife4jAutoConfiguration {
         @Qualifier("ServiceModelToSwagger2Mapper")
         @Primary
         public Knife4jI18nServiceModelToSwagger2MapperImpl knife4jI18nServiceModelToSwagger2Mapper(Knife4jProperties knife4jProperties, MessageSource messageSource, ModelMapper modelMapper, ParameterMapper parameterMapper, SecurityMapper securityMapper, LicenseMapper licenseMapper, VendorExtensionsMapper vendorExtensionsMapper){
-            Locale locale=Locale.forLanguageTag(knife4jProperties.getSetting().getLanguage().getValue());
+            //fixed npe
+            String language= OpenAPILanguageEnums.ZH_CN.getValue();
+            if (knife4jProperties.getSetting()!=null){
+                language=knife4jProperties.getSetting().getLanguage().getValue();
+            }
+            Locale locale=Locale.forLanguageTag(language);
             return new Knife4jI18nServiceModelToSwagger2MapperImpl(messageSource,locale,modelMapper,parameterMapper,securityMapper,licenseMapper,vendorExtensionsMapper);
         }
     }
