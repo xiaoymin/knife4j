@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>knife4j-openapi2-ui</artifactId>
     <name>knife4j-openapi2-ui</name>
-    <description>前端Swagger文档ui模块</description>
+    <description>前端Swagger文档ui模块-20221202-2350</description>
 
     <properties>
         <!--<destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</destDir>-->
