@@ -1,15 +1,15 @@
 const langOptions = {
-  lang:'us',
+  lang: 'us',
   title: 'title',
   searchHolderText: 'Enter keyword search',
   docLinkTip: 'Documentation',
   langText: 'EN',
   settingText: 'Settings',
   cacheText: 'Clear Caches',
-   //文档中各个表格的属性
-  table:{
+  //文档中各个表格的属性
+  table: {
     //SwaggerModels
-    swaggerModelsColumns:[
+    swaggerModelsColumns: [
       {
         title: 'name',
         dataIndex: 'name',
@@ -33,7 +33,7 @@ const langOptions = {
       }
     ],
     //文档说明-请求参数
-    documentRequestColumns:[
+    documentRequestColumns: [
       {
         title: 'name',
         dataIndex: 'name',
@@ -67,7 +67,7 @@ const langOptions = {
       }
     ],
     //文档说明-响应状态
-    documentResponseStatusColumns:[
+    documentResponseStatusColumns: [
       {
         title: 'code',
         dataIndex: 'code',
@@ -86,7 +86,7 @@ const langOptions = {
       }
     ],
     //文档说明-响应Header
-    documentResponseHeaderColumns:[
+    documentResponseHeaderColumns: [
       {
         title: 'name',
         dataIndex: 'name',
@@ -103,7 +103,7 @@ const langOptions = {
       }
     ],
     //文档说明-响应参数
-    documentResponseColumns:[
+    documentResponseColumns: [
       {
         title: 'name',
         dataIndex: 'name',
@@ -126,7 +126,7 @@ const langOptions = {
       }
     ],
     //调试-请求头参数
-    debugRequestHeaderColumns:[
+    debugRequestHeaderColumns: [
       {
         title: 'name',
         dataIndex: 'name',
@@ -152,7 +152,7 @@ const langOptions = {
       }
     ],
     //调试-FormData类型请求头
-    debugFormDataRequestColumns:[
+    debugFormDataRequestColumns: [
       {
         title: 'name',
         dataIndex: 'name',
@@ -186,7 +186,7 @@ const langOptions = {
       }
     ],
     //调试-url-form类型请求参数头
-    debugUrlFormRequestColumns:[
+    debugUrlFormRequestColumns: [
       {
         title: 'name',
         dataIndex: 'name',
@@ -212,7 +212,7 @@ const langOptions = {
       }
     ],
     //调试-响应Header
-    debugResponseHeaderColumns:[
+    debugResponseHeaderColumns: [
       {
         title: 'name',
         dataIndex: 'name',
@@ -224,7 +224,7 @@ const langOptions = {
       }
     ],
     //auth中的header
-    authHeaderColumns:[
+    authHeaderColumns: [
       {
         title: 'key',
         dataIndex: 'key',
@@ -268,31 +268,31 @@ const langOptions = {
   },
   message: {
     success: 'Save successfully',
-    settingTip:'When personalization is enabled, close the interface tab or refresh the current pageAfter personalization is enabled, the interface tab tab needs to be closed and then reopened or the current page needs to be refreshed',
-    settingHost:'The host is enabled successfully. Please close the interface tab or refresh the current page to enable debuggingThe host is enabled successfully. Please close the interface tab or refresh the current page before debugging',
+    settingTip: 'When personalization is enabled, close the interface tab or refresh the current pageAfter personalization is enabled, the interface tab tab needs to be closed and then reopened or the current page needs to be refreshed',
+    settingHost: 'The host is enabled successfully. Please close the interface tab or refresh the current page to enable debuggingThe host is enabled successfully. Please close the interface tab or refresh the current page before debugging',
     unsupportstore: 'Current browsers do not support localStorage objects and cannot use this feature',
     copy: {
-      url:{
+      url: {
         success: 'Copy address successfully',
         fail: 'Failed to copy the address, your current browser version is not compatible, please copy manually.'
       },
-      method:{
+      method: {
         success: 'Copy Url successfully',
         fail: 'Failed to copy the url, your current browser version is not compatible, please copy manually.'
       },
-      document:{
+      document: {
         success: 'Copy document successful',
         fail: 'Failed to copy the document, your current browser version is not compatible, please copy it manually.'
       },
-      raw:{
+      raw: {
         success: 'Copy raw successfully',
         fail: 'Failed to copy raw, your current browser version is not compatible, please copy manually.'
       },
-      curl:{
+      curl: {
         success: 'Copy curl successfully',
         fail: 'Copy curl failed, your current browser version is not compatible, please copy manually.'
       },
-      open:{
+      open: {
         success: 'Copy OpenAPI successfully',
         fail: 'Copy OpenAPI failed, your current browser version is not compatible, please copy manually.'
       }
@@ -318,10 +318,10 @@ const langOptions = {
       success: 'Save successfully, please refresh the document page'
     },
     offline: {
-      imple:'This feature has not been implemented ...',
-      markdown:'Downloading Markdown file, please wait...',
-      html:'Downloading Html file, please wait...',
-      word:'Downloading Word file, please wait...',
+      imple: 'This feature has not been implemented ...',
+      markdown: 'Downloading Markdown file, please wait...',
+      html: 'Downloading Html file, please wait...',
+      word: 'Downloading Word file, please wait...',
       copy: 'Copy',
       toomany: 'The current number of interfaces exceeds the limit. Please use the third-party markdown conversion software for conversion to see the effect.',
       note: 'swagger-bootstrap-ui provides markdwon-formatted offline documents that developers can copy and convert to HTML or PDF through other markdown conversion tools..'
@@ -330,8 +330,8 @@ const langOptions = {
       urlNotEmpty: 'Request URL address cannot be empty',
       fieldNotEmpty: 'cannot be empty',
       networkErr: 'The server is restarting or hanging up:(~~~~',
-      contentToBig:'The amount of interface response data exceeds the limit and is not displayed in the response content. Please check it in raw',
-      contentToBigBlob:'The amount of interface response data exceeds the limit and is not displayed in the response content.'
+      contentToBig: 'The amount of interface response data exceeds the limit and is not displayed in the response content. Please check it in raw',
+      contentToBigBlob: 'The amount of interface response data exceeds the limit and is not displayed in the response content.'
     },
     sys: {
       loadErr: 'Make sure the swagger resource interface is correct.'
@@ -359,51 +359,51 @@ const langOptions = {
   global: {
     tab: 'Global Parameter Settings',
     add: 'Add',
-    model:'Add Parameter',
+    model: 'Add Parameter',
     tableHeader: [{
-        title: 'name',
-        dataIndex: 'name',
-        width: '15%',
-        scopedSlots: {
-          customRender: 'name'
-        }
-      },
-      {
-        title: 'value',
-        className: 'column-money',
-        dataIndex: 'value',
-        width: '65%',
-        scopedSlots: {
-          customRender: 'paramContentLabel'
-        }
-      },
-      {
-        title: 'type',
-        dataIndex: 'in',
-        width: '10%',
-        scopedSlots: {
-          customRender: 'paramTypeLable'
-        }
-      },
-      {
-        title: 'operation',
-        dataIndex: 'operation',
-        scopedSlots: {
-          customRender: 'operation'
-        }
-      }
-    ],
-    form:{
-      name:'name',
-      value:'value',
-      type:'type',
-      validate:{
-        name:'Please enter the parameter name',
-        value:'Please enter the parameter value'
+      title: 'name',
+      dataIndex: 'name',
+      width: '15%',
+      scopedSlots: {
+        customRender: 'name'
       }
     },
-    ok:'ok',
-    cancel:'cancel',
+    {
+      title: 'value',
+      className: 'column-money',
+      dataIndex: 'value',
+      width: '65%',
+      scopedSlots: {
+        customRender: 'paramContentLabel'
+      }
+    },
+    {
+      title: 'type',
+      dataIndex: 'in',
+      width: '10%',
+      scopedSlots: {
+        customRender: 'paramTypeLable'
+      }
+    },
+    {
+      title: 'operation',
+      dataIndex: 'operation',
+      scopedSlots: {
+        customRender: 'operation'
+      }
+    }
+    ],
+    form: {
+      name: 'name',
+      value: 'value',
+      type: 'type',
+      validate: {
+        name: 'Please enter the parameter name',
+        value: 'Please enter the parameter value'
+      }
+    },
+    ok: 'ok',
+    cancel: 'cancel',
     save: 'Save',
     delete: 'Delete',
     note: 'Knife4j Provide global parameter Debug function, currently default to provide header (request header), query (form) two ways of entry.<br /><br />After adding the global parameter here, the default Debug debug tab page will take this parameter.'
@@ -440,8 +440,8 @@ const langOptions = {
     globalsettings: 'GlobalParams',
     officeline: 'OfflineDocument',
     selfSettings: 'Settings',
-    other:'Others',
-    menuItemList:[
+    other: 'Others',
+    menuItemList: [
       { key: '1', icon: 'caret-left', text: 'Close Left' },
       { key: '2', icon: 'caret-right', text: 'Close Right' },
       { key: '3', icon: 'close-circle', text: 'Close Other' }
@@ -452,7 +452,7 @@ const langOptions = {
     note: 'Description',
     copy: 'Copy',
     copyHash: 'Copy Address',
-    copyMethod:'Copy Url',
+    copyMethod: 'Copy Url',
     produces: 'produces',
     consumes: 'consumes',
     author: 'Developer',
@@ -460,6 +460,7 @@ const langOptions = {
     method: 'method',
     des: 'Note',
     params: 'Params',
+    example: 'example',
     requestExample: 'Example',
     paramsHeader: {
       name: 'name',
@@ -487,11 +488,11 @@ const langOptions = {
   },
   offline: {
     des: 'Knife4j provides export of offline documents in 4 formats (Html/Markdown/Word/OpenAPI)',
-    download:{
-      markdown:'Markdown',
-      html:'Html',
-      word:'Word',
-      pdf:'Pdf'
+    download: {
+      markdown: 'Markdown',
+      html: 'Html',
+      word: 'Word',
+      pdf: 'Pdf'
     },
     contact: 'Contact',
     url: 'api url',
@@ -501,17 +502,17 @@ const langOptions = {
   debug: {
     title: 'Debug',
     send: 'Send',
-    headers:'Headers',
+    headers: 'Headers',
     params: 'Params',
-    form:{
-      upload:'Upload',
-      itemText:'text',
-      itemFile:'file'
+    form: {
+      upload: 'Upload',
+      itemText: 'text',
+      itemFile: 'file'
     },
     tableHeader: {
-      holderName:'Name',
-      holderValue:'Value',
-      holderDel:'Delete',
+      holderName: 'Name',
+      holderValue: 'Value',
+      holderDel: 'Delete',
       selectAll: 'Select All',
       type: 'type',
       name: 'name',
@@ -525,23 +526,23 @@ const langOptions = {
       size: 'size:',
       header: 'Request Header',
       download: 'Download File',
-      copy:'copy'
+      copy: 'copy'
     }
 
   },
-  open:{
-    copy:' Copy ',
-    download:' Download '
+  open: {
+    copy: ' Copy ',
+    download: ' Download '
   },
   tab: {
     closeCurrent: 'Close Current Tab',
     closeOther: 'Close Other Tab',
     closeAll: 'Close All Tab'
   },
-  validate:{
-    header:'Request Header ',
-    notEmpty:' cannot be empty',
-    fileNotEmpty:' file cannot be empty'
+  validate: {
+    header: 'Request Header ',
+    notEmpty: ' cannot be empty',
+    fileNotEmpty: ' file cannot be empty'
   },
   script: {
     JSExample: 'JSExample',

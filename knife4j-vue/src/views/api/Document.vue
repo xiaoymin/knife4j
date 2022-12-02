@@ -68,7 +68,7 @@
       :pagination="page">
       <template slot="descriptionValueTemplate" slot-scope="text,record">
         <span v-html="text"></span>
-        <span v-if="record.example">,示例值({{ record.example }})</span>
+        <span v-if="record.example">,<span v-html="$t('doc.example')"></span>({{ record.example }})</span>
       </template>
       <template slot="requireTemplate" slot-scope="text">
         <span v-if="text" style="color:red">{{ text.toLocaleString() }}</span>
@@ -158,9 +158,9 @@
       </div>
       <a-row :id="'knife4jDocumentShowEditor' + api.id">
         <editor-show @showDescription="showResponseEditFieldDescription" :value="
-          multipData.responseBasicType
-            ? multipData.responseText
-            : multipData.responseValue
+  multipData.responseBasicType
+    ? multipData.responseText
+    : multipData.responseValue
         "></editor-show>
 
       </a-row>
