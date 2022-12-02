@@ -16,8 +16,8 @@ import java.util.List;
 
 /***
  * 配置文件
- * @since:knife4j 1.9.6
- * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
+ * {@code @since:knife4j} 1.9.6
+ * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2019/08/27 15:40
  */
 @Component
@@ -26,11 +26,11 @@ public class Knife4jProperties {
     /**
      * 是否开启Knife4j增强模式
      */
-    private boolean enable=false;
+    private boolean enable = false;
     /**
      * 是否开启默认跨域
      */
-    private boolean cors=false;
+    private boolean cors = false;
 
     /**
      * 是否开启BasicHttp验证
@@ -40,7 +40,7 @@ public class Knife4jProperties {
     /**
      * 是否生产环境
      */
-    private boolean production=false;
+    private boolean production = false;
 
     /**
      * 个性化配置
