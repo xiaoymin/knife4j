@@ -461,6 +461,7 @@ const langOptions = {
     des: 'Note',
     params: 'Params',
     example: 'example',
+    enumAvalible: 'Avalible',
     requestExample: 'Example',
     paramsHeader: {
       name: 'name',

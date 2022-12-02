@@ -798,6 +798,25 @@ const utils = {
       result += new Array((6 - tail) / 2 + 1).join("=");
     }
     return result;
+  },
+  /**
+   * 处理枚举类型的标签显示方法，针对i18n
+   * @param {*} i18n 当前i18n对象，从Knife4j对象的上下文获取
+   * @param {*} enumCollection 枚举集合
+   */
+  enumAvalibleLabel(i18n, enumCollection) {
+    //处理枚举类型的标签显示方法，针对i18n
+    if (this.checkUndefined(i18n) && this.checkUndefined(enumCollection)) {
+      try {
+        // see assets/common/lang/en|zh.js
+        return i18n.doc.enumAvalible + ":" + enumCollection.join(",");
+      } catch (e) {
+        //ignore.
+      }
+    }
+    if (this.checkUndefined(enumCollection)) {
+      return "可用值:" + enumCollection.join(",");
+    }
   }
 }
 

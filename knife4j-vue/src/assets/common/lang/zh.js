@@ -464,6 +464,7 @@ const langOptions = {
     des: '接口描述',
     params: '请求参数',
     example: '示例值',
+    enumAvalible: '可用值',
     requestExample: '请求示例',
     paramsHeader: {
       name: '参数名称',
