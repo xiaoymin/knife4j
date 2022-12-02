@@ -1,0 +1,464 @@
+{
+  "groups": [
+    {
+      "name": "knife4j",
+      "type": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "knife4j.enable",
+      "type": "java.lang.Boolean",
+      "description": "Enable Knife4j enhanced mode",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.basic",
+      "type": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jHttpBasic",
+      "description": "Basic Http",
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties"
+    },{
+      "name": "knife4j.basic.enable",
+      "type": "java.lang.Boolean",
+      "description": "Enable Basic Http authentication.default false",
+      "defaultValue": false
+    },{
+      "name": "knife4j.basic.username",
+      "type": "java.lang.String",
+      "description": "Basic username"
+    },{
+      "name": "knife4j.basic.password",
+      "type": "java.lang.String",
+      "description": "Basic password"
+    },
+    {
+      "name": "knife4j.documents",
+      "type": "java.util.List<com.github.xiaoymin.knife4j.core.model.MarkdownProperty>",
+      "description": "Other documents"
+    },
+    {
+      "name": "knife4j.production",
+      "type": "java.lang.Boolean",
+      "description": "Open the production environmental protection document strategy",
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.cors",
+      "type": "java.lang.Boolean",
+      "description": "Enable cross-domain",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.setting",
+      "type": "com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting",
+      "description": "Setting",
+      "sourceType": "com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties"
+    },
+    {
+      "name": "knife4j.setting.language",
+      "type": "java.lang.String",
+      "description": "i18n",
+      "defaultValue": "zh-CN"
+    },
+    {
+      "name": "knife4j.setting.enableSwaggerModels",
+      "type": "java.lang.Boolean",
+      "description": "Display the (Swagger Models) function",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.swaggerModelName",
+      "type": "java.lang.String",
+      "description": "Display Swagger Model Name",
+      "defaultValue": "Swagger Models"
+    },
+    {
+      "name": "knife4j.setting.enableReloadCacheParameter",
+      "type": "java.lang.Boolean",
+      "description": "Display the Debug Reload Parameter Button function",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.setting.enableAfterScript",
+      "type": "java.lang.Boolean",
+      "description": "Display the Debug AfterScript function",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableDocumentManage",
+      "type": "java.lang.Boolean",
+      "description": "Display the (document management) function",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableVersion",
+      "type": "java.lang.Boolean",
+      "description": "Display the GitVersion function",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableRequestCache",
+      "type": "java.lang.Boolean",
+      "description": "Enable request parameter caching",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableFilterMultipartApis",
+      "type": "java.lang.Boolean",
+      "description": "Enable filtering for the request type of @RequestMapping",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.setting.enableFilterMultipartApiMethodType",
+      "type": "java.lang.String",
+      "description": "Filter request method type",
+      "defaultValue": "POST"
+    },
+    {
+      "name": "knife4j.setting.enableHost",
+      "type": "java.lang.Boolean",
+      "description": "Enable RESTful API Cross-domain debugging",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.setting.enableHostText",
+      "type": "java.lang.String",
+      "description": "Host Value"
+    },
+    {
+      "name": "knife4j.setting.enableDebug",
+      "type": "java.lang.Boolean",
+      "description": "Enable RESTful API debugging",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableFooter",
+      "type": "java.lang.Boolean",
+      "description": "Display Footer",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableFooterCustom",
+      "type": "java.lang.Boolean",
+      "description": "Enable Customize the footer content",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.setting.footerCustomContent",
+      "type": "java.lang.String",
+      "description": "Customize the footer content at the bottom"
+    },
+    {
+      "name": "knife4j.setting.enableSearch",
+      "type": "java.lang.Boolean",
+      "description": "Enable Search input",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableOpenApi",
+      "type": "java.lang.Boolean",
+      "description": "Display OpenApi Tab",
+      "defaultValue": true
+    },
+    {
+      "name": "knife4j.setting.enableHomeCustom",
+      "type": "java.lang.Boolean",
+      "description": "Enable Customize the home content",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.setting.homeCustomLocation",
+      "type": "java.lang.String",
+      "description": "Customize the home content at the index"
+    },
+    {
+      "name": "knife4j.setting.enableDynamicParameter",
+      "type": "java.lang.Boolean",
+      "description": "Enable Dynamic Request Parameter",
+      "defaultValue": false
+    },
+    {
+      "name": "knife4j.setting.enableGroup",
+      "type": "java.lang.Boolean",
+      "description": "Enable Show Select Group Element",
+      "defaultValue": true
+    }
+  ],
+  "hints": [
+    {
+      "name": "knife4j.enable",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable the use of Knife4j enhanced mode"
+        },
+        {
+          "value": false,
+          "description": "Disable Knife4j enhanced mode"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.basic.enable",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Basic Http authentication to protect documents"
+        },
+        {
+          "value": false,
+          "description": "Disable Basic Http authentication"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.production",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable the production environmental protection document strategy"
+        },
+        {
+          "value": false,
+          "description": "Disable the production environmental protection document strategy"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.cors",
+      "values":[
+        {
+          "value": true,
+          "description": "Start a simple cross-domain configuration"
+        },
+        {
+          "value": false,
+          "description": "Disable cross-domain"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableSwaggerModels",
+      "values":[
+        {
+          "value": true,
+          "description": "Display Swagger Model Functions"
+        },
+        {
+          "value": false,
+          "description": "Hidden Swagger Model Functions"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableReloadCacheParameter",
+      "values":[
+        {
+          "value": true,
+          "description": "Display the Debug Reload Parameter Button function"
+        },
+        {
+          "value": false,
+          "description": "Hidden the Debug Reload Parameter Button function"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableAfterScript",
+      "values":[
+        {
+          "value": true,
+          "description": "Display AfterScript Functions"
+        },
+        {
+          "value": false,
+          "description": "Hidden AfterScript Functions"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableDocumentManage",
+      "values":[
+        {
+          "value": true,
+          "description": "Display DocumentManage Functions"
+        },
+        {
+          "value": false,
+          "description": "Hidden DocumentManage Functions"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableVersion",
+      "values":[
+        {
+          "value": true,
+          "description": "Display GitVersion Functions"
+        },
+        {
+          "value": false,
+          "description": "Hidden GitVersion Functions"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableRequestCache",
+      "values":[
+        {
+          "value": true,
+          "description": "Request parameters after debugging will be cached"
+        },
+        {
+          "value": false,
+          "description": "Request parameters after debugging will not be cached"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableFilterMultipartApis",
+      "values":[
+        {
+          "value": true,
+          "description": "The method request type for @RequestMapping will be filtered according to the configured methodType"
+        },
+        {
+          "value": false,
+          "description": "Display all method"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableHost",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Host to enable RESTful API debugging"
+        },
+        {
+          "value": false,
+          "description": "Disable RESTful API debugging"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.language",
+      "values": [
+        {
+          "value": "zh-CN",
+          "description": "Display Ui in Chinese"
+        },
+        {
+          "value": "en-US",
+          "description": "Display Ui in English"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableDebug",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Host to enable debugging"
+        },
+        {
+          "value": false,
+          "description": "Disable RESTful API debugging"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableDynamicParameter",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Dynamic Request Parameter for debugging"
+        },
+        {
+          "value": false,
+          "description": "Disable Dynamic Request Parameter for debugging"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableFooter",
+      "values":[
+        {
+          "value": true,
+          "description": "Display default footer"
+        },
+        {
+          "value": false,
+          "description": "Hidden default footer"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableFooterCustom",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Customize the footer content"
+        },
+        {
+          "value": false,
+          "description": "Disalbe Customize the footer content"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableSearch",
+      "values":[
+        {
+          "value": true,
+          "description": "Display the Search input"
+        },
+        {
+          "value": false,
+          "description": "Hidden the Search input"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableOpenApi",
+      "values":[
+        {
+          "value": true,
+          "description": "Display the OpenAPI tab"
+        },
+        {
+          "value": false,
+          "description": "Hidden the OpenApi tab"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableHomeCustom",
+      "values":[
+        {
+          "value": true,
+          "description": "Enable Customize the home content"
+        },
+        {
+          "value": false,
+          "description": "Disable Customize the home content"
+        }
+      ]
+    },
+    {
+      "name": "knife4j.setting.enableGroup",
+      "values":[
+        {
+          "value": true,
+          "description": "Show Select Group Element"
+        },
+        {
+          "value": false,
+          "description": "Hidden Select Group Element"
+        }
+      ]
+    }
+  ]
+}
