@@ -8,9 +8,9 @@
 package com.github.xiaoymin.knife4j.spring.model;
 
 /***
- *
- * @since:swagger-bootstrap-ui 1.0
- * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
+ * <p>
+ * {@code @since:swagger-bootstrap-ui} 1.0
+ * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2018/10/12 20:11
  */
 public class SwaggerBootstrapUiPath {

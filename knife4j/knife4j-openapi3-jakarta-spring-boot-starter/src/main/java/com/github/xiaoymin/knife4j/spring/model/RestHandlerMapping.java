@@ -13,9 +13,9 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 /***
- *
- * @since:swagger-bootstrap-ui 1.8.7
- * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
+ * <p>
+ * {@code @since:swagger-bootstrap-ui} 1.8.7
+ * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2018/11/10 20:48
  */
 public class RestHandlerMapping {
@@ -64,7 +64,7 @@ public class RestHandlerMapping {
         this.url = url;
         this.beanType = beanType;
         this.beanOfMethod = beanOfMethod;
-        this.requestMethods=requestMethods;
+        this.requestMethods = requestMethods;
     }
 
     public RestHandlerMapping() {

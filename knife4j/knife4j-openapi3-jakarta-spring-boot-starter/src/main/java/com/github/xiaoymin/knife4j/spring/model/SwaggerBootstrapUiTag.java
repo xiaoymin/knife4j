@@ -11,9 +11,9 @@ package com.github.xiaoymin.knife4j.spring.model;
 import io.swagger.v3.oas.models.tags.Tag;
 
 /***
- *
- * @since:swagger-bootstrap-ui 1.8.5
- * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
+ * <p>
+ * {@code @since:swagger-bootstrap-ui} 1.8.5
+ * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2018/10/11 16:32
  */
 public class SwaggerBootstrapUiTag extends Tag {

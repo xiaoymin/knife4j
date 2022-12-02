@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /***
- *
- * @since:swagger-bootstrap-ui 1.8.5
- * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
+ * <p>
+ * {@code @since:swagger-bootstrap-ui} 1.8.5
+ * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2018/10/11 21:06
  */
 public class SwaggerBootstrapUi {
@@ -23,17 +23,17 @@ public class SwaggerBootstrapUi {
     /***
      * tag排序属性
      */
-    protected List<SwaggerBootstrapUiTag> tagSortLists=new ArrayList<>();
+    protected List<SwaggerBootstrapUiTag> tagSortLists = new ArrayList<>();
 
     /***
      * path排序
      */
-    private List<SwaggerBootstrapUiPath> pathSortLists=new ArrayList<>();
+    private List<SwaggerBootstrapUiPath> pathSortLists = new ArrayList<>();
 
     /***
      * 自定义菜单内容
      */
-    private List<OpenApiExtendMarkdownChildren> markdownFiles=new ArrayList<>();
+    private List<OpenApiExtendMarkdownChildren> markdownFiles = new ArrayList<>();
 
     /***
      * 开启增强失败,错误原因

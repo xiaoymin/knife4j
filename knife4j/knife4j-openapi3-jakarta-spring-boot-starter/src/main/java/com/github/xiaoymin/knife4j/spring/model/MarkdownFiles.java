@@ -23,23 +23,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /***
- *
- * @since:swagger-bootstrap-ui 1.9.3
- * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
+ * <p>
+ * {@code @since:swagger-bootstrap-ui} 1.9.3
+ * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2019/04/17 19:54
  */
 public class MarkdownFiles {
 
     private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 
-    Logger logger= LoggerFactory.getLogger(MarkdownFiles.class);
+    Logger logger = LoggerFactory.getLogger(MarkdownFiles.class);
 
     /***
      * markdown files dir
      */
     private String basePath;
 
-    private List<OpenApiExtendMarkdownChildren> markdownFiles=new ArrayList<>();
+    private List<OpenApiExtendMarkdownChildren> markdownFiles = new ArrayList<>();
 
     public List<OpenApiExtendMarkdownChildren> getMarkdownFiles() {
         return markdownFiles;
@@ -64,55 +64,55 @@ public class MarkdownFiles {
         this.basePath = basePath;
     }
 
-    public void init(){
+    public void init() {
         //初始化
-        if (basePath!=null&&basePath!=""&&!"".equals(basePath)){
+        if (basePath != null && basePath != "" && !"".equals(basePath)) {
             try {
-                Resource[] resources=resourceResolver.getResources(basePath);
-                if (resources!=null&&resources.length>0){
-                    for (Resource resource:resources){
-                        OpenApiExtendMarkdownChildren markdownFile=createMarkdownFile(resource);
-                        if (markdownFile!=null){
+                Resource[] resources = resourceResolver.getResources(basePath);
+                if (resources != null && resources.length > 0) {
+                    for (Resource resource : resources) {
+                        OpenApiExtendMarkdownChildren markdownFile = createMarkdownFile(resource);
+                        if (markdownFile != null) {
                             getMarkdownFiles().add(markdownFile);
                         }
                     }
                 }
             } catch (Exception e) {
-                logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
+                logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ", e.getMessage());
             }
         }
     }
 
-    private OpenApiExtendMarkdownChildren createMarkdownFile(Resource resource){
-        OpenApiExtendMarkdownChildren markdownFile=new OpenApiExtendMarkdownChildren();
-        if (resource!=null){
+    private OpenApiExtendMarkdownChildren createMarkdownFile(Resource resource) {
+        OpenApiExtendMarkdownChildren markdownFile = new OpenApiExtendMarkdownChildren();
+        if (resource != null) {
             logger.info(resource.getFilename());
             //只读取md
-            if (resource.getFilename().toLowerCase().endsWith(".md")){
-                BufferedReader reader=null;
+            if (resource.getFilename().toLowerCase().endsWith(".md")) {
+                BufferedReader reader = null;
                 try {
-                    reader=new BufferedReader(new InputStreamReader(resource.getInputStream(),"UTF-8"));
-                    String le=null;
-                    String title=resource.getFilename();
-                    String reg="#{1,3}\\s{1}(.*)";
-                    Pattern pattern=Pattern.compile(reg,Pattern.CASE_INSENSITIVE);
-                    Matcher matcher=null;
-                    while ((le=reader.readLine())!=null){
+                    reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), "UTF-8"));
+                    String le = null;
+                    String title = resource.getFilename();
+                    String reg = "#{1,3}\\s{1}(.*)";
+                    Pattern pattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
+                    Matcher matcher = null;
+                    while ((le = reader.readLine()) != null) {
                         //判断line是否是包含标题
-                        matcher=pattern.matcher(le);
-                        if (matcher.matches()){
-                            title=matcher.group(1);
+                        matcher = pattern.matcher(le);
+                        if (matcher.matches()) {
+                            title = matcher.group(1);
                         }
                         break;
                     }
                     CommonUtils.close(reader);
 
                     markdownFile.setTitle(title);
-                    markdownFile.setContent(new String(CommonUtils.readBytes(resource.getInputStream()),"UTF-8"));
+                    markdownFile.setContent(new String(CommonUtils.readBytes(resource.getInputStream()), "UTF-8"));
                     return markdownFile;
                 } catch (Exception e) {
-                    logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
-                }finally {
+                    logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ", e.getMessage());
+                } finally {
                     CommonUtils.close(reader);
                 }
             }

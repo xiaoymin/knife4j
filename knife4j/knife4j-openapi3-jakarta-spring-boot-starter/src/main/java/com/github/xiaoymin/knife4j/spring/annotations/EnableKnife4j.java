@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 
 /***
  * Enable Knife4j enhanced annotation and use @EnableSwagger2 annotation together.
- *
+ * <p>
  * inlude:
  * <ul>
  *     <li>Interface sorting </li>
