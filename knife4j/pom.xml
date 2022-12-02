@@ -14,6 +14,7 @@
         <module>knife4j-openapi2-spring-boot-starter</module>
         <module>knife4j-openapi3-spring-boot-starter</module>
         <module>knife4j-aggregation-spring-boot-starter</module>
+        <module>knife4j-openapi3-jakarta-spring-boot-starter</module>
     </modules>
     <packaging>pom</packaging>
     <name>knife4j</name>
