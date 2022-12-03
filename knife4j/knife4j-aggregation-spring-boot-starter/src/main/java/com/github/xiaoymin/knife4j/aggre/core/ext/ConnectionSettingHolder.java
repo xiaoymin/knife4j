@@ -1,9 +1,21 @@
 /*
- * Copyright (C) 2022 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
+
 package com.github.xiaoymin.knife4j.aggre.core.ext;
 
 import com.github.xiaoymin.knife4j.aggre.spring.configuration.HttpConnectionSetting;
@@ -16,37 +28,40 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
  * 2022/8/28 19:17
  */
 public class ConnectionSettingHolder {
-    private HttpConnectionSetting  connectionSetting;
+    
+    private HttpConnectionSetting connectionSetting;
     private volatile RequestConfig defaultRequestConfig;
     private volatile PoolingHttpClientConnectionManager poolingHttpClientConnectionManager;
-    private ConnectionSettingHolder(){}
-
-    public static final ConnectionSettingHolder ME=new ConnectionSettingHolder();
-
+    private ConnectionSettingHolder() {
+    }
+    
+    public static final ConnectionSettingHolder ME = new ConnectionSettingHolder();
+    
     public synchronized HttpConnectionSetting getConnectionSetting() {
-        if (this.connectionSetting==null){
-            this.connectionSetting=new HttpConnectionSetting();
+        if (this.connectionSetting == null) {
+            this.connectionSetting = new HttpConnectionSetting();
         }
         return connectionSetting;
     }
-
+    
     public void setConnectionSetting(HttpConnectionSetting connectionSetting) {
         this.connectionSetting = connectionSetting;
     }
-
+    
     public synchronized RequestConfig getDefaultRequestConfig() {
-        if (this.defaultRequestConfig==null){
-            this.defaultRequestConfig=RequestConfig.custom().setSocketTimeout(this.getConnectionSetting().getSocketTimeout()).setConnectTimeout(this.getConnectionSetting().getConnectTimeout()).build();
+        if (this.defaultRequestConfig == null) {
+            this.defaultRequestConfig =
+                    RequestConfig.custom().setSocketTimeout(this.getConnectionSetting().getSocketTimeout()).setConnectTimeout(this.getConnectionSetting().getConnectTimeout()).build();
         }
         return defaultRequestConfig;
     }
-
+    
     public synchronized PoolingHttpClientConnectionManager getPoolingHttpClientConnectionManager() {
-        if (this.poolingHttpClientConnectionManager==null){
-            this.poolingHttpClientConnectionManager=new PoolingHttpClientConnectionManager();
-            //将最大连接数增加到200
+        if (this.poolingHttpClientConnectionManager == null) {
+            this.poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
+            // 将最大连接数增加到200
             this.poolingHttpClientConnectionManager.setMaxTotal(this.getConnectionSetting().getMaxConnectionTotal());
-            //将每个路由基础的连接数增加到20
+            // 将每个路由基础的连接数增加到20
             this.poolingHttpClientConnectionManager.setDefaultMaxPerRoute(this.getConnectionSetting().getMaxPreRoute());
         }
         return poolingHttpClientConnectionManager;

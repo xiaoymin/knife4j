@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.aggre.spring.configuration;
 
@@ -23,12 +34,12 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "knife4j")
 public class Knife4jAggregationProperties {
-
+    
     /**
      * 是否开启Knife4j聚合模式
      */
-    private boolean enableAggregation=false;
-
+    private boolean enableAggregation = false;
+    
     /**
      * 文档Basic保护
      */
@@ -37,79 +48,79 @@ public class Knife4jAggregationProperties {
      * 本地json
      */
     private DiskSetting disk;
-
+    
     /**
      * HTTP接口聚合
      */
     private CloudSetting cloud;
-
+    
     /**
      * 从Eureka注册中心中获取
      */
     private EurekaSetting eureka;
-
+    
     /**
      * 从Nacos注册中心中获取
      */
     private NacosSetting nacos;
-
+    
     /**
      * http链接对象属性配置
      */
     private HttpConnectionSetting connectionSetting;
-
+    
     public HttpConnectionSetting getConnectionSetting() {
         return connectionSetting;
     }
-
+    
     public void setConnectionSetting(HttpConnectionSetting connectionSetting) {
         this.connectionSetting = connectionSetting;
     }
-
+    
     public boolean isEnableAggregation() {
         return enableAggregation;
     }
-
+    
     public void setEnableAggregation(boolean enableAggregation) {
         this.enableAggregation = enableAggregation;
     }
-
+    
     public BasicAuth getBasicAuth() {
         return basicAuth;
     }
-
+    
     public void setBasicAuth(BasicAuth basicAuth) {
         this.basicAuth = basicAuth;
     }
-
+    
     public DiskSetting getDisk() {
         return disk;
     }
-
+    
     public void setDisk(DiskSetting disk) {
         this.disk = disk;
     }
-
+    
     public CloudSetting getCloud() {
         return cloud;
     }
-
+    
     public void setCloud(CloudSetting cloud) {
         this.cloud = cloud;
     }
-
+    
     public EurekaSetting getEureka() {
         return eureka;
     }
-
+    
     public void setEureka(EurekaSetting eureka) {
         this.eureka = eureka;
     }
-
+    
     public NacosSetting getNacos() {
         return nacos;
     }
-
+    
     public void setNacos(NacosSetting nacos) {
         this.nacos = nacos;
     }

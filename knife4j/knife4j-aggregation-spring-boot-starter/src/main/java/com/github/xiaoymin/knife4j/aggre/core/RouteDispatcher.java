@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.aggre.core;
 
@@ -40,6 +51,7 @@ import java.util.*;
  * 2020/10/29 20:08
  */
 public class RouteDispatcher {
+    
     /**
      * 请求头
      */
@@ -48,21 +60,21 @@ public class RouteDispatcher {
     public static final String OPENAPI_GROUP_ENDPOINT = "/swagger-resources";
     public static final String OPENAPI_GROUP_INSTANCE_ENDPOINT = "/swagger-instance";
     public static final String ROUTE_BASE_PATH = "/";
-
+    
     Logger logger = LoggerFactory.getLogger(RouteDispatcher.class);
     /**
      * 当前项目的contextPath
      */
     private String rootPath;
-
+    
     private RouteRepository routeRepository;
-
+    
     private RouteExecutor routeExecutor;
-
+    
     private RouteCache<String, SwaggerRoute> routeCache;
-
+    
     private Set<String> ignoreHeaders = new HashSet<>();
-
+    
     public RouteDispatcher(RouteRepository routeRepository, RouteCache<String, SwaggerRoute> routeRouteCache,
                            ExecutorEnum executorEnum, String rootPath) {
         this.routeRepository = routeRepository;
@@ -70,10 +82,10 @@ public class RouteDispatcher {
         this.rootPath = rootPath;
         initExecutor(executorEnum);
         ignoreHeaders.addAll(Arrays.asList(new String[]{
-                "host", "content-length", ROUTE_PROXY_HEADER_NAME, ROUTE_PROXY_HEADER_BASIC_NAME, "Request-Origion","language","knife4j-gateway-code"
+                "host", "content-length", ROUTE_PROXY_HEADER_NAME, ROUTE_PROXY_HEADER_BASIC_NAME, "Request-Origion", "language", "knife4j-gateway-code"
         }));
     }
-
+    
     private void initExecutor(ExecutorEnum executorEnum) {
         if (executorEnum == null) {
             throw new IllegalArgumentException("ExecutorEnum can not be empty");
@@ -89,7 +101,7 @@ public class RouteDispatcher {
                 throw new UnsupportedOperationException("UnSupported ExecutorType:" + executorEnum.name());
         }
     }
-
+    
     public boolean checkRoute(String header) {
         if (StrUtil.isNotBlank(header)) {
             SwaggerRoute swaggerRoute = routeRepository.getRoute(header);
@@ -99,7 +111,7 @@ public class RouteDispatcher {
         }
         return false;
     }
-
+    
     public void execute(HttpServletRequest request, HttpServletResponse response) {
         try {
             RouteRequestContext routeContext = new RouteRequestContext();
@@ -111,11 +123,11 @@ public class RouteDispatcher {
         } catch (Exception e) {
             logger.error("has Error:{}", e.getMessage());
             logger.error(e.getMessage(), e);
-            //write Default
+            // write Default
             writeDefault(request, response, e.getMessage());
         }
     }
-
+    
     protected void writeDefault(HttpServletRequest request, HttpServletResponse response, String errMsg) {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -128,10 +140,10 @@ public class RouteDispatcher {
             new JSONObject(map).write(printWriter);
             printWriter.close();
         } catch (IOException e) {
-            //ignore
+            // ignore
         }
     }
-
+    
     /**
      * Write 响应状态码
      *
@@ -143,7 +155,7 @@ public class RouteDispatcher {
             response.setStatus(routeResponse.getStatusCode());
         }
     }
-
+    
     /**
      * Write响应头
      *
@@ -169,7 +181,7 @@ public class RouteDispatcher {
             response.setCharacterEncoding(routeResponse.getCharsetEncoding().displayName());
         }
     }
-
+    
     /**
      * 响应内容
      *
@@ -198,10 +210,10 @@ public class RouteDispatcher {
                     printWriter.close();
                 }
             }
-
+            
         }
     }
-
+    
     /**
      * 构建路由的请求上下文
      *
@@ -209,18 +221,18 @@ public class RouteDispatcher {
      * @param request 请求对象
      */
     protected void buildContext(RouteRequestContext routeRequestContext, HttpServletRequest request) throws IOException {
-        //当前请求是否basic请求
+        // 当前请求是否basic请求
         String basicHeader = request.getHeader(ROUTE_PROXY_HEADER_BASIC_NAME);
         if (StrUtil.isNotBlank(basicHeader)) {
             BasicAuth basicAuth = routeRepository.getAuth(basicHeader);
             if (basicAuth != null) {
-                //增加Basic请求头
+                // 增加Basic请求头
                 routeRequestContext.addHeader("Authorization", RouteUtils.authorize(basicAuth.getUsername(),
                         basicAuth.getPassword()));
             }
         }
         SwaggerRoute swaggerRoute = getRoute(request.getHeader(ROUTE_PROXY_HEADER_NAME));
-        //String uri="http://knife4j.xiaominfo.com";
+        // String uri="http://knife4j.xiaominfo.com";
         String uri = swaggerRoute.getUri();
         if (StrUtil.isBlank(uri)) {
             throw new RuntimeException("Uri is Empty");
@@ -229,22 +241,22 @@ public class RouteDispatcher {
         String fromUri = request.getRequestURI();
         StringBuilder requestUrlBuilder = new StringBuilder();
         requestUrlBuilder.append(uri);
-        //判断当前聚合项目的contextPath
+        // 判断当前聚合项目的contextPath
         if (StrUtil.isNotBlank(this.rootPath) && !StrUtil.equals(this.rootPath, ROUTE_BASE_PATH)) {
             fromUri = fromUri.replaceFirst(this.rootPath, "");
-            //此处需要追加一个请求头basePath，因为父项目设置了context-path
-            routeRequestContext.addHeader("X-Forwarded-Prefix",this.rootPath);
+            // 此处需要追加一个请求头basePath，因为父项目设置了context-path
+            routeRequestContext.addHeader("X-Forwarded-Prefix", this.rootPath);
         }
-        //判断servicePath
+        // 判断servicePath
         if (StrUtil.isNotBlank(swaggerRoute.getServicePath()) && !StrUtil.equals(swaggerRoute.getServicePath(),
                 ROUTE_BASE_PATH)) {
             if (StrUtil.startWith(fromUri, swaggerRoute.getServicePath())) {
-                //实际在请求时,剔除servicePath,否则会造成404
+                // 实际在请求时,剔除servicePath,否则会造成404
                 fromUri = fromUri.replaceFirst(swaggerRoute.getServicePath(), "");
             }
         }
         requestUrlBuilder.append(fromUri);
-        //String requestUrl=uri+fromUri;
+        // String requestUrl=uri+fromUri;
         String requestUrl = requestUrlBuilder.toString();
         if (logger.isDebugEnabled()) {
             logger.debug("目标请求Url:{},请求类型:{},Host:{}", requestUrl, request.getMethod(), host);
@@ -265,10 +277,10 @@ public class RouteDispatcher {
         while (params.hasMoreElements()) {
             String name = params.nextElement();
             String value = request.getParameter(name);
-            //logger.info("param-name:{},value:{}",name,value);
+            // logger.info("param-name:{},value:{}",name,value);
             routeRequestContext.addParam(name, value);
         }
-        //增加文件，sinc 2.0.9
+        // 增加文件，sinc 2.0.9
         String contentType = request.getContentType();
         if ((!StringUtils.isEmpty(contentType)) &&
                 contentType.contains("multipart/form-data")) {
@@ -284,24 +296,24 @@ public class RouteDispatcher {
                     });
                 }
             } catch (ServletException e) {
-                //ignore
+                // ignore
                 logger.warn("get part error,message:" + e.getMessage());
             }
         }
         routeRequestContext.setRequestContent(request.getInputStream());
     }
-
+    
     public SwaggerRoute getRoute(String header) {
-        //去除缓存机制，由于Eureka以及Nacos设立了心跳检测机制，服务在多节点部署时，节点ip可能存在变化,导致调试最终转发给已经下线的服务
-        //since 2.0.9
+        // 去除缓存机制，由于Eureka以及Nacos设立了心跳检测机制，服务在多节点部署时，节点ip可能存在变化,导致调试最终转发给已经下线的服务
+        // since 2.0.9
         SwaggerRoute swaggerRoute = routeRepository.getRoute(header);
         return swaggerRoute;
     }
-
+    
     public List<SwaggerRoute> getRoutes() {
         return routeRepository.getRoutes();
     }
-
+    
     public String getRootPath() {
         return rootPath;
     }

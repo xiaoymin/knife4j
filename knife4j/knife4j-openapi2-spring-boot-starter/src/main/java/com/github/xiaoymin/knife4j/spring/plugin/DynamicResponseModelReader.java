@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.spring.plugin;
 
@@ -49,78 +60,78 @@ import static springfox.documentation.spring.web.readers.operation.ResponseMessa
  * 2019/07/31 9:12
  */
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE+1050)
-public class DynamicResponseModelReader  implements OperationBuilderPlugin {
-
+@Order(Ordered.HIGHEST_PRECEDENCE + 1050)
+public class DynamicResponseModelReader implements OperationBuilderPlugin {
+    
     private final TypeNameExtractor typeNameExtractor;
     private final EnumTypeDeterminer typeDeterminer;
     private final SchemaPluginsManager pluginsManager;
-
-    private final Map<String,String> cacheGenModelMaps=new HashMap<>();
+    
+    private final Map<String, String> cacheGenModelMaps = new HashMap<>();
     @Autowired
     private TypeResolver typeResolver;
-
+    
     @Autowired
     public DynamicResponseModelReader(TypeNameExtractor typeNameExtractor, EnumTypeDeterminer typeDeterminer, SchemaPluginsManager pluginsManager) {
         this.typeNameExtractor = typeNameExtractor;
         this.typeDeterminer = typeDeterminer;
         this.pluginsManager = pluginsManager;
     }
-
+    
     @Override
     public void apply(OperationContext context) {
-        Optional<ApiOperationSupport> optional= context.findAnnotation(ApiOperationSupport.class);
-        //两个动态响应取1个
-        boolean flag=false;
-        if (optional.isPresent()){
-            DynamicResponseParameters dynamicResponseParameters=optional.get().responses();
-            if (dynamicResponseParameters!=null&&dynamicResponseParameters.properties()!=null&&dynamicResponseParameters.properties().length>0){
-                long count=Arrays.asList(dynamicResponseParameters.properties()).stream().filter(dynamicParameter -> StrUtil.isNotBlank(dynamicParameter.name())).count();
-                if (count>0){
-                    flag=true;
-                    changeResponseModel(optional.get().responses(),context);
+        Optional<ApiOperationSupport> optional = context.findAnnotation(ApiOperationSupport.class);
+        // 两个动态响应取1个
+        boolean flag = false;
+        if (optional.isPresent()) {
+            DynamicResponseParameters dynamicResponseParameters = optional.get().responses();
+            if (dynamicResponseParameters != null && dynamicResponseParameters.properties() != null && dynamicResponseParameters.properties().length > 0) {
+                long count = Arrays.asList(dynamicResponseParameters.properties()).stream().filter(dynamicParameter -> StrUtil.isNotBlank(dynamicParameter.name())).count();
+                if (count > 0) {
+                    flag = true;
+                    changeResponseModel(optional.get().responses(), context);
                 }
             }
         }
-        if(!flag){
-            Optional<DynamicResponseParameters> parametersOptional=context.findAnnotation(DynamicResponseParameters.class);
-            if (parametersOptional.isPresent()){
-                changeResponseModel(parametersOptional.get(),context);
+        if (!flag) {
+            Optional<DynamicResponseParameters> parametersOptional = context.findAnnotation(DynamicResponseParameters.class);
+            if (parametersOptional.isPresent()) {
+                changeResponseModel(parametersOptional.get(), context);
             }
         }
     }
-
+    
     /***
      * 改变响应Model的状态码200指定类
      * @param dynamicResponseParameters
      * @param operationContext
      */
-    private void changeResponseModel(DynamicResponseParameters dynamicResponseParameters, OperationContext operationContext){
-        if (dynamicResponseParameters!=null){
-            DynamicParameter[] parameters=dynamicResponseParameters.properties();
-            int fieldCount=0;
-            for (DynamicParameter dynamicParameter:parameters){
-                if (dynamicParameter.name()!=null&&!"".equals(dynamicParameter.name())&&!"null".equals(dynamicParameter.name())){
+    private void changeResponseModel(DynamicResponseParameters dynamicResponseParameters, OperationContext operationContext) {
+        if (dynamicResponseParameters != null) {
+            DynamicParameter[] parameters = dynamicResponseParameters.properties();
+            int fieldCount = 0;
+            for (DynamicParameter dynamicParameter : parameters) {
+                if (dynamicParameter.name() != null && !"".equals(dynamicParameter.name()) && !"null".equals(dynamicParameter.name())) {
                     fieldCount++;
                 }
             }
-            if (fieldCount>0){
-                //name是否包含
-                String name=dynamicResponseParameters.name();
-                if (name==null||"".equals(name)){
-                    //gen
-                    name=genClassName(operationContext);
+            if (fieldCount > 0) {
+                // name是否包含
+                String name = dynamicResponseParameters.name();
+                if (name == null || "".equals(name)) {
+                    // gen
+                    name = genClassName(operationContext);
                 }
-                //判断是否存在
-                if (cacheGenModelMaps.containsKey(name)){
-                    //存在,以方法名称作为ClassName
-                    name=genClassName(operationContext);
+                // 判断是否存在
+                if (cacheGenModelMaps.containsKey(name)) {
+                    // 存在,以方法名称作为ClassName
+                    name = genClassName(operationContext);
                 }
-                //追加groupController
-                name=operationContext.getGroupName().replaceAll("[_-]","")+"."+name+"Response";
-                String classPath= Consts.BASE_PACKAGE_PREFIX+name;
-                Class<?> loadClass= ByteUtils.load(classPath);
-                if (loadClass!=null) {
+                // 追加groupController
+                name = operationContext.getGroupName().replaceAll("[_-]", "") + "." + name + "Response";
+                String classPath = Consts.BASE_PACKAGE_PREFIX + name;
+                Class<?> loadClass = ByteUtils.load(classPath);
+                if (loadClass != null) {
                     ResolvedType returnType = operationContext.alternateFor(typeResolver.resolve(loadClass));
                     int httpStatusCode = httpStatusCode(operationContext);
                     String message = message(operationContext);
@@ -132,41 +143,41 @@ public class DynamicResponseModelReader  implements OperationBuilderPlugin {
                                 "",
                                 operationContext.getGroupName(),
                                 returnType,
-                                viewProvider.viewFor(returnType,operationContext),
+                                viewProvider.viewFor(returnType, operationContext),
                                 operationContext.getDocumentationType(),
                                 operationContext.getAlternateTypeProvider(),
                                 operationContext.getGenericsNamingStrategy(),
                                 operationContext.getIgnorableParameterTypes());
-                        modelRef = modelRefFactory(modelContext,typeDeterminer, typeNameExtractor).apply(returnType);
+                        modelRef = modelRefFactory(modelContext, typeDeterminer, typeNameExtractor).apply(returnType);
                     }
                     ResponseMessage built = new ResponseMessageBuilder()
                             .code(httpStatusCode)
                             .message(message)
                             .responseModel(modelRef)
                             .build();
-                    Set<ResponseMessage> sets=new HashSet<>();
+                    Set<ResponseMessage> sets = new HashSet<>();
                     sets.add(built);
                     operationContext.operationBuilder().responseMessages(sets);
                 }
-
+                
             }
         }
     }
-
+    
     @Override
     public boolean supports(DocumentationType delimiter) {
         return true;
     }
-
-    public String genClassName(OperationContext context){
-        //gen
-        String name=context.getName();
-        if (name!=null&&!"".equals(name)){
-            name=name.replaceAll("[_-]","");
-            if (name.length()==1){
-                name=name.toUpperCase();
-            }else{
-                name=name.substring(0,1).toUpperCase()+name.substring(1);
+    
+    public String genClassName(OperationContext context) {
+        // gen
+        String name = context.getName();
+        if (name != null && !"".equals(name)) {
+            name = name.replaceAll("[_-]", "");
+            if (name.length() == 1) {
+                name = name.toUpperCase();
+            } else {
+                name = name.substring(0, 1).toUpperCase() + name.substring(1);
             }
         }
         return name;

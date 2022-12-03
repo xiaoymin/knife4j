@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.spring.common;
 
@@ -25,44 +36,44 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
  * 2019/01/14 16:29
  */
 public class SwaggerBootstrapUiHostNameProvider {
-
+    
     public SwaggerBootstrapUiHostNameProvider() {
         throw new UnsupportedOperationException();
     }
-
+    
     public static UriComponents componentsFrom(
-            HttpServletRequest request,
-            String basePath) {
-
+                                               HttpServletRequest request,
+                                               String basePath) {
+        
         ServletUriComponentsBuilder builder = fromServletMapping(request, basePath);
-
+        
         UriComponents components = UriComponentsBuilder.fromHttpRequest(
                 new ServletServerHttpRequest(request))
                 .build();
-
+        
         String host = components.getHost();
         if (!hasText(host)) {
             return builder.build();
         }
-
+        
         builder.host(host);
         builder.port(components.getPort());
-
+        
         return builder.build();
     }
-
+    
     private static ServletUriComponentsBuilder fromServletMapping(
-            HttpServletRequest request,
-            String basePath) {
-
+                                                                  HttpServletRequest request,
+                                                                  String basePath) {
+        
         ServletUriComponentsBuilder builder = fromContextPath(request);
-
+        
         SwaggerBootstrapUiXForwardPrefixPathAdjuster adjuster = new SwaggerBootstrapUiXForwardPrefixPathAdjuster(request);
         builder.replacePath(adjuster.adjustedPath(basePath));
         if (hasText(new UrlPathHelper().getPathWithinServletMapping(request))) {
             builder.path(request.getServletPath());
         }
-
+        
         return builder;
     }
 }

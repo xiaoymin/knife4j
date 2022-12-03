@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.aggre.core.executor;
 
@@ -31,92 +42,92 @@ import java.util.List;
  * 2020/10/29 22:04
  */
 public class ApacheClientResponse implements RouteResponse {
-
-    Logger logger= LoggerFactory.getLogger(ApacheClientResponse.class);
-
+    
+    Logger logger = LoggerFactory.getLogger(ApacheClientResponse.class);
+    
     private final HttpResponse httpResponse;
-
+    
     private HttpEntity httpEntity;
-
+    
     public ApacheClientResponse(HttpResponse httpResponse) {
-        if (httpResponse==null){
+        if (httpResponse == null) {
             throw new IllegalArgumentException("响应请求体不能为空");
         }
         this.httpResponse = httpResponse;
-        if (httpResponse!=null){
-            httpEntity=httpResponse.getEntity();
+        if (httpResponse != null) {
+            httpEntity = httpResponse.getEntity();
         }
     }
-
+    
     @Override
     public List<HeaderWrapper> getHeaders() {
         Header[] headers = this.httpResponse.getAllHeaders();
         List<HeaderWrapper> headerWrappers = new ArrayList<>();
-        if (ArrayUtil.isNotEmpty(headers)){
-            for (Header header:headers){
-                if (header!=null){
-                    headerWrappers.add(new HeaderWrapper(header.getName(),header.getValue()));
+        if (ArrayUtil.isNotEmpty(headers)) {
+            for (Header header : headers) {
+                if (header != null) {
+                    headerWrappers.add(new HeaderWrapper(header.getName(), header.getValue()));
                 }
             }
         }
         return headerWrappers;
     }
-
+    
     @Override
     public boolean success() {
         return true;
     }
-
+    
     @Override
     public int getStatusCode() {
         return httpResponse.getStatusLine().getStatusCode();
     }
-
+    
     @Override
     public String getContentType() {
-        if (httpEntity!=null){
-            Header header=httpEntity.getContentType();
-            if (header!=null){
+        if (httpEntity != null) {
+            Header header = httpEntity.getContentType();
+            if (header != null) {
                 return header.getValue();
             }
         }
         return "application/json";
     }
-
+    
     @Override
     public Long getContentLength() {
-        if (httpEntity!=null){
+        if (httpEntity != null) {
             return httpEntity.getContentLength();
         }
         return Long.valueOf(-1);
     }
-
+    
     @Override
     public Charset getCharsetEncoding() {
-        if (httpEntity!=null){
-            Header header= httpEntity.getContentEncoding();
-            if (header!=null && StrUtil.isNotBlank(header.getValue())){
+        if (httpEntity != null) {
+            Header header = httpEntity.getContentEncoding();
+            if (header != null && StrUtil.isNotBlank(header.getValue())) {
                 return Charset.forName(header.getValue());
             }
         }
         return Charset.forName("UTF-8");
     }
-
+    
     @Override
     public InputStream getBody() {
         try {
-            return httpEntity!=null?httpEntity.getContent():null;
+            return httpEntity != null ? httpEntity.getContent() : null;
         } catch (IOException e) {
         }
         return null;
     }
-
+    
     @Override
     public String text() {
         try {
-            return EntityUtils.toString(httpEntity,getCharsetEncoding());
+            return EntityUtils.toString(httpEntity, getCharsetEncoding());
         } catch (IOException e) {
-            logger.error("transform text error:"+e.getMessage(),e);
+            logger.error("transform text error:" + e.getMessage(), e);
         }
         return null;
     }

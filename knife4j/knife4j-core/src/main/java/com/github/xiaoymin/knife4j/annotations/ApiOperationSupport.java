@@ -1,13 +1,24 @@
 /*
- * Copyright (C) 2019 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: https://www.xiaominfo.com.
- * Developer Web Site: https://doc.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
+
 package com.github.xiaoymin.knife4j.annotations;
 
 import java.lang.annotation.*;
-
 
 /**
  * <p>Help Java development engineers build powerful Swagger documents</p>
@@ -20,21 +31,19 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ApiOperationSupport {
-
+    
     /***
      * Sort Fields
      * @return 排序
      */
     int order() default 0;
-
-
+    
     /***
      * author
      * @return 开发者
      */
     String author() default "";
-
-
+    
     /**
      * A list of {@link DynamicParameter}s available to the API operation.
      * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
@@ -42,7 +51,7 @@ public @interface ApiOperationSupport {
      */
     @Deprecated
     DynamicParameters params() default @DynamicParameters;
-
+    
     /**
      * 动态构建response响应参数说明
      * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
@@ -51,7 +60,7 @@ public @interface ApiOperationSupport {
      */
     @Deprecated
     DynamicResponseParameters responses() default @DynamicResponseParameters;
-
+    
     /**
      * 请求忽略参数数组
      * @since 1.9.5
@@ -65,8 +74,7 @@ public @interface ApiOperationSupport {
      */
     @Deprecated
     String[] ignoreParameters() default {};
-
-
+    
     /**
      * 请求接口包含的参数数组,和ignoreParameters属性对立
      * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
@@ -75,5 +83,5 @@ public @interface ApiOperationSupport {
      */
     @Deprecated
     String[] includeParameters() default {};
-
+    
 }

@@ -1,9 +1,21 @@
 /*
- * Copyright (C) 2022 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
+
 package com.github.xiaoymin.knife4j.spring.util;
 
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendMarkdownChildren;
@@ -21,36 +33,36 @@ import java.util.Objects;
  * 2022/8/26 23:20
  */
 public class MarkdownUtils {
-
-    static final Logger logger= LoggerFactory.getLogger(MarkdownUtils.class);
-
+    
+    static final Logger logger = LoggerFactory.getLogger(MarkdownUtils.class);
+    
     /**
      * Resolve markdown files
      * @param resource markdown file
      * @return OpenApiExtendMarkdownChildren
      */
-    public static OpenApiExtendMarkdownChildren resolveMarkdownResource(Resource resource){
-        try{
-            if (resource!=null){
-                OpenApiExtendMarkdownChildren markdownFile=new OpenApiExtendMarkdownChildren();
-                if (logger.isDebugEnabled()){
-                    logger.debug("read file:"+resource.getFilename());
+    public static OpenApiExtendMarkdownChildren resolveMarkdownResource(Resource resource) {
+        try {
+            if (resource != null) {
+                OpenApiExtendMarkdownChildren markdownFile = new OpenApiExtendMarkdownChildren();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("read file:" + resource.getFilename());
                 }
-                //只读取md
-                if (Objects.toString(resource.getFilename(),"").toLowerCase().endsWith(".md")){
-                    //if (".md".equals(Objects.toString(resource.getFilename(),""))){
+                // 只读取md
+                if (Objects.toString(resource.getFilename(), "").toLowerCase().endsWith(".md")) {
+                    // if (".md".equals(Objects.toString(resource.getFilename(),""))){
                     try {
-                        String title= CommonUtils.resolveMarkdownTitle(resource.getInputStream(),resource.getFilename());
+                        String title = CommonUtils.resolveMarkdownTitle(resource.getInputStream(), resource.getFilename());
                         markdownFile.setTitle(title);
                         markdownFile.setContent(new String(CommonUtils.readBytes(resource.getInputStream()), StandardCharsets.UTF_8));
                         return markdownFile;
                     } catch (Exception e) {
-                        logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
+                        logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ", e.getMessage());
                     }
                 }
             }
-        }catch (Exception e){
-            logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ",e.getMessage());
+        } catch (Exception e) {
+            logger.warn("(Ignores) Failed to read Markdown files,Error Message:{} ", e.getMessage());
         }
         return null;
     }

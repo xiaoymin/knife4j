@@ -1,15 +1,25 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.spring.model;
 
 import io.swagger.models.Swagger;
 import org.springframework.beans.BeanUtils;
-
 
 /***
  *
@@ -18,18 +28,18 @@ import org.springframework.beans.BeanUtils;
  * 2018/10/11 16:30
  */
 public class SwaggerExt extends Swagger {
-
+    
     protected SwaggerBootstrapUi swaggerBootstrapUi;
-
+    
     public SwaggerBootstrapUi getSwaggerBootstrapUi() {
         return swaggerBootstrapUi;
     }
-
+    
     public void setSwaggerBootstrapUi(SwaggerBootstrapUi swaggerBootstrapUi) {
         this.swaggerBootstrapUi = swaggerBootstrapUi;
     }
-
-    public SwaggerExt(Swagger swagger){
-        BeanUtils.copyProperties(swagger,this);
+    
+    public SwaggerExt(Swagger swagger) {
+        BeanUtils.copyProperties(swagger, this);
     }
 }

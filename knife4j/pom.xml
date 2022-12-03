@@ -15,6 +15,7 @@
         <module>knife4j-openapi3-spring-boot-starter</module>
         <module>knife4j-aggregation-spring-boot-starter</module>
         <module>knife4j-openapi3-jakarta-spring-boot-starter</module>
+        <module>knife4j-gateway-spring-boot-starter</module>
     </modules>
     <packaging>pom</packaging>
     <name>knife4j</name>
@@ -54,6 +55,8 @@
         <knife4j-swagger-models-v3.version>2.2.2</knife4j-swagger-models-v3.version>
         <knife4j-javassist.version>3.25.0-GA</knife4j-javassist.version>
         <knife4j-lombok.version>1.18.24</knife4j-lombok.version>
+
+        <knife4j-spotless-maven-plugin.version>2.22.1</knife4j-spotless-maven-plugin.version>
         <!-- 打包跳过单元测试1 -->
         <knife4j-skipTests>true</knife4j-skipTests>
     </properties>
@@ -314,6 +317,30 @@
                         <goals>
                             <goal>clean</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${knife4j-spotless-maven-plugin.version}</version>
+                <configuration>
+                    <java>
+                        <eclipse>
+                            <file>src/main/resources/spotless_knife4j_formatter.xml</file>
+                        </eclipse>
+                        <licenseHeader>
+                            <file>src/main/resources/license-header</file>
+                        </licenseHeader>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <phase>compile</phase>
                     </execution>
                 </executions>
             </plugin>

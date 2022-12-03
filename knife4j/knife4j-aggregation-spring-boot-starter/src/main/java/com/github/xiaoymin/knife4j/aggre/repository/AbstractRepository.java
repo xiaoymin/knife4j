@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.aggre.repository;
 
@@ -21,17 +32,17 @@ import java.util.stream.Collectors;
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 public abstract class AbstractRepository extends PoolingConnectionManager implements RouteRepository {
-
+    
     /**
      * 心跳检测间隔(30s)
      */
-    protected static final Long HEART_BEAT_DURATION=30000L;
-
-    protected final Map<String, SwaggerRoute> routeMap=new HashMap<>();
-
+    protected static final Long HEART_BEAT_DURATION = 30000L;
+    
+    protected final Map<String, SwaggerRoute> routeMap = new HashMap<>();
+    
     @Override
     public boolean checkRoute(String header) {
-        if (StrUtil.isNotBlank(header)){
+        if (StrUtil.isNotBlank(header)) {
             return routeMap.containsKey(header);
         }
         return false;
@@ -40,16 +51,16 @@ public abstract class AbstractRepository extends PoolingConnectionManager implem
     public SwaggerRoute getRoute(String header) {
         return routeMap.get(header);
     }
-
+    
     @Override
     public List<SwaggerRoute> getRoutes() {
-        //排序规则,asc
-        Collection<SwaggerRoute> swaggerRoutes=routeMap.values();
-        if (swaggerRoutes!=null){
+        // 排序规则,asc
+        Collection<SwaggerRoute> swaggerRoutes = routeMap.values();
+        if (swaggerRoutes != null) {
             return swaggerRoutes.stream().sorted(Comparator.comparingInt(SwaggerRoute::getOrder))
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();
     }
-
+    
 }

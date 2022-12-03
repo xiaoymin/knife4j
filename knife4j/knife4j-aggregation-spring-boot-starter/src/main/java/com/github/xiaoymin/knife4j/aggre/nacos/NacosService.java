@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.aggre.nacos;
 
@@ -33,11 +44,12 @@ import java.util.concurrent.Callable;
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 public class NacosService extends PoolingConnectionManager implements Callable<Optional<NacosInstance>> {
-    Logger logger= LoggerFactory.getLogger(NacosService.class);
+    
+    Logger logger = LoggerFactory.getLogger(NacosService.class);
     /**
      * Nacos获取实例列表OpenAPI接口，详情参考：https://nacos.io/zh-cn/docs/open-api.html
      */
-    private static final String NACOS_INSTANCE_LIST_API="/v1/ns/instance/list";
+    private static final String NACOS_INSTANCE_LIST_API = "/v1/ns/instance/list";
     /**
      * 服务名称
      */
@@ -51,70 +63,70 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
      * Nacos配置
      */
     private final NacosRoute nacosRoute;
-
+    
     public NacosService(String serviceUrl, String accessToken, NacosRoute nacosRoute) {
         this.serviceUrl = serviceUrl;
         this.accessToken = accessToken;
         this.nacosRoute = nacosRoute;
     }
-
-
+    
     @Override
     public Optional<NacosInstance> call() throws Exception {
-        List<String> params=new ArrayList<>();
-        params.add("serviceName="+nacosRoute.getServiceName());
-        //默认聚合时只返回健康实例
+        List<String> params = new ArrayList<>();
+        params.add("serviceName=" + nacosRoute.getServiceName());
+        // 默认聚合时只返回健康实例
         params.add("healthyOnly=true");
-        if (StrUtil.isNotBlank(nacosRoute.getGroupName())){
-            params.add("groupName="+nacosRoute.getGroupName());
+        if (StrUtil.isNotBlank(nacosRoute.getGroupName())) {
+            params.add("groupName=" + nacosRoute.getGroupName());
         }
-        if (StrUtil.isNotBlank(nacosRoute.getNamespaceId())){
-            params.add("namespaceId="+nacosRoute.getNamespaceId());
+        if (StrUtil.isNotBlank(nacosRoute.getNamespaceId())) {
+            params.add("namespaceId=" + nacosRoute.getNamespaceId());
         }
-        if (StrUtil.isNotBlank(nacosRoute.getClusters())){
-            params.add("clusters="+nacosRoute.getClusters());
+        if (StrUtil.isNotBlank(nacosRoute.getClusters())) {
+            params.add("clusters=" + nacosRoute.getClusters());
         }
-        //Nacos鉴权 since2.0.9
-        if (StrUtil.isNotBlank(this.accessToken)){
-            params.add("accessToken="+this.accessToken);
+        // Nacos鉴权 since2.0.9
+        if (StrUtil.isNotBlank(this.accessToken)) {
+            params.add("accessToken=" + this.accessToken);
         }
-        String parameter=CollectionUtil.join(params,"&");
-        String api=serviceUrl+NACOS_INSTANCE_LIST_API+"?"+parameter;
-        if (logger.isDebugEnabled()){
-            logger.debug("Nacos API:{}",api);
+        String parameter = CollectionUtil.join(params, "&");
+        String api = serviceUrl + NACOS_INSTANCE_LIST_API + "?" + parameter;
+        if (logger.isDebugEnabled()) {
+            logger.debug("Nacos API:{}", api);
         }
-        HttpGet get=new HttpGet(api);
-        CloseableHttpResponse response=getClient().execute(get);
-        if (response!=null){
-            int statusCode=response.getStatusLine().getStatusCode();
-            if (logger.isDebugEnabled()){
-                logger.debug("Nacos Response Status:{}",statusCode);
+        HttpGet get = new HttpGet(api);
+        CloseableHttpResponse response = getClient().execute(get);
+        if (response != null) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Nacos Response Status:{}", statusCode);
             }
-            if (statusCode== HttpStatus.SC_OK){
-                String content= EntityUtils.toString(response.getEntity(),"UTF-8");
-                if (StrUtil.isNotBlank(content)){
-                    if (logger.isDebugEnabled()){
-                        logger.debug("Response Content:{}",content);
+            if (statusCode == HttpStatus.SC_OK) {
+                String content = EntityUtils.toString(response.getEntity(), "UTF-8");
+                if (StrUtil.isNotBlank(content)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Response Content:{}", content);
                     }
-                    JsonElement jsonElement=JsonParser.parseString(content);
-                    if (jsonElement!=null&&jsonElement.isJsonObject()){
-                        JsonElement instances=jsonElement.getAsJsonObject().get("hosts");
-                        if (instances!=null&&instances.isJsonArray()){
-                            Type type=new TypeToken<List<NacosInstance>>(){}.getType();
-                            List<NacosInstance> nacosInstances=new Gson().fromJson(instances,type);
-                            if (CollectionUtil.isNotEmpty(nacosInstances)){
-                                NacosInstance nacosInstance=nacosInstances.stream().findAny().get();
+                    JsonElement jsonElement = JsonParser.parseString(content);
+                    if (jsonElement != null && jsonElement.isJsonObject()) {
+                        JsonElement instances = jsonElement.getAsJsonObject().get("hosts");
+                        if (instances != null && instances.isJsonArray()) {
+                            Type type = new TypeToken<List<NacosInstance>>() {
+                            }.getType();
+                            List<NacosInstance> nacosInstances = new Gson().fromJson(instances, type);
+                            if (CollectionUtil.isNotEmpty(nacosInstances)) {
+                                NacosInstance nacosInstance = nacosInstances.stream().findAny().get();
                                 nacosInstance.setServiceName(nacosRoute.getServiceName());
                                 return Optional.of(nacosInstance);
                             }
                         }
                     }
                 }
-            }else{
+            } else {
                 get.abort();
             }
         }
         return Optional.empty();
     }
-
+    
 }

@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.aggre.repository;
 
@@ -30,70 +41,69 @@ import java.io.InputStream;
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 public class DiskRepository extends AbstractRepository {
-
-    Logger logger= LoggerFactory.getLogger(DiskRepository.class);
-
+    
+    Logger logger = LoggerFactory.getLogger(DiskRepository.class);
+    
     private final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
-
-    public DiskRepository(DiskSetting diskSetting){
-        if (diskSetting!=null&& CollectionUtils.isNotEmpty(diskSetting.getRoutes())){
+    
+    public DiskRepository(DiskSetting diskSetting) {
+        if (diskSetting != null && CollectionUtils.isNotEmpty(diskSetting.getRoutes())) {
             init(diskSetting);
         }
     }
-
+    
     private void init(DiskSetting diskSetting) {
-        for (DiskRoute diskRoute:diskSetting.getRoutes()){
-            if (StrUtil.isNotBlank(diskRoute.getLocation())){
+        for (DiskRoute diskRoute : diskSetting.getRoutes()) {
+            if (StrUtil.isNotBlank(diskRoute.getLocation())) {
                 try {
-                    InputStream resource=getResource(diskRoute.getLocation());
-                    if (resource!=null){
-                        String content=new String(readBytes(resource),"UTF-8");
-                        //添加分组
-                        this.routeMap.put(diskRoute.pkId(),new SwaggerRoute(diskRoute,content));
+                    InputStream resource = getResource(diskRoute.getLocation());
+                    if (resource != null) {
+                        String content = new String(readBytes(resource), "UTF-8");
+                        // 添加分组
+                        this.routeMap.put(diskRoute.pkId(), new SwaggerRoute(diskRoute, content));
                     }
                 } catch (Exception e) {
                     //
-                    logger.error("read err:"+e.getMessage());
+                    logger.error("read err:" + e.getMessage());
                 }
             }
         }
     }
-
-
-    private InputStream getResource(String location){
-        InputStream resource=null;
-        try{
-            Resource[] resources=resourceResolver.getResources(location);
-            if (resources!=null&&resources.length>0){
-                resource=resources[0].getInputStream();
-            }else{
-                resource=new FileSystemResource(new File(location)).getInputStream();
+    
+    private InputStream getResource(String location) {
+        InputStream resource = null;
+        try {
+            Resource[] resources = resourceResolver.getResources(location);
+            if (resources != null && resources.length > 0) {
+                resource = resources[0].getInputStream();
+            } else {
+                resource = new FileSystemResource(new File(location)).getInputStream();
             }
-        }catch (Exception e){
-            try{
-                if (logger.isDebugEnabled()){
-                    logger.error("read from resource error:"+e.getMessage());
-                    logger.debug("read from local file:{}",location);
+        } catch (Exception e) {
+            try {
+                if (logger.isDebugEnabled()) {
+                    logger.error("read from resource error:" + e.getMessage());
+                    logger.debug("read from local file:{}", location);
                 }
-                //从本地读取
-                resource=new FileSystemResource(new File(location)).getInputStream();
-            }catch (Exception ef){
-                //ignore
+                // 从本地读取
+                resource = new FileSystemResource(new File(location)).getInputStream();
+            } catch (Exception ef) {
+                // ignore
             }
         }
         return resource;
     }
-
-    private byte[] readBytes(InputStream ins){
-        if (ins==null){
+    
+    private byte[] readBytes(InputStream ins) {
+        if (ins == null) {
             return null;
         }
-        ByteArrayOutputStream byteOutArr=new ByteArrayOutputStream();
-        int r=-1;
-        byte[] bytes = new byte[1024*1024];
+        ByteArrayOutputStream byteOutArr = new ByteArrayOutputStream();
+        int r = -1;
+        byte[] bytes = new byte[1024 * 1024];
         try {
-            while ((r=ins.read(bytes))!=-1){
-                byteOutArr.write(bytes,0,r);
+            while ((r = ins.read(bytes)) != -1) {
+                byteOutArr.write(bytes, 0, r);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -102,5 +112,5 @@ public class DiskRepository extends AbstractRepository {
         }
         return byteOutArr.toByteArray();
     }
-
+    
 }

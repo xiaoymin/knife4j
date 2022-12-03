@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.spring.plugin;
 
@@ -26,49 +37,49 @@ import java.util.*;
  * 2019/07/30 15:32
  */
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE+102)
-public class OperationIgnoreParameterPlugin  extends AbstractOperationBuilderPlugin {
-
-    public static final String IGNORE_PARAMETER_EXTENSION_NAME="x-ignoreParameters";
-
-    public static final String INCLUDE_PARAMETER_EXTENSION_NAME="x-includeParameters";
-
+@Order(Ordered.HIGHEST_PRECEDENCE + 102)
+public class OperationIgnoreParameterPlugin extends AbstractOperationBuilderPlugin {
+    
+    public static final String IGNORE_PARAMETER_EXTENSION_NAME = "x-ignoreParameters";
+    
+    public static final String INCLUDE_PARAMETER_EXTENSION_NAME = "x-includeParameters";
+    
     @Override
     public void apply(OperationContext context) {
-        Optional<ApiOperationSupport> apiOperationSupportOptional=context.findAnnotation(ApiOperationSupport.class);
-        if (apiOperationSupportOptional.isPresent()){
-            ApiOperationSupport apiOperationSupport=apiOperationSupportOptional.get();
-            addExtensionParameters(apiOperationSupport.ignoreParameters(),IGNORE_PARAMETER_EXTENSION_NAME,context);
-            addExtensionParameters(apiOperationSupport.includeParameters(),INCLUDE_PARAMETER_EXTENSION_NAME,context);
+        Optional<ApiOperationSupport> apiOperationSupportOptional = context.findAnnotation(ApiOperationSupport.class);
+        if (apiOperationSupportOptional.isPresent()) {
+            ApiOperationSupport apiOperationSupport = apiOperationSupportOptional.get();
+            addExtensionParameters(apiOperationSupport.ignoreParameters(), IGNORE_PARAMETER_EXTENSION_NAME, context);
+            addExtensionParameters(apiOperationSupport.includeParameters(), INCLUDE_PARAMETER_EXTENSION_NAME, context);
         }
     }
-
+    
     @Override
     public boolean supports(DocumentationType delimiter) {
         return true;
     }
-
+    
     /**
      * 添加扩展属性参数
      * @param params 参数
      * @param extensionName 扩展名称
      * @param context 上下文
      */
-    private void addExtensionParameters(String[] params,String extensionName,OperationContext context){
-        if (params!=null&&params.length>0){
-            Map<String,Boolean> map=new HashMap<>();
-            for (String ignore:params){
-                if (ignore!=null&&!"".equals(ignore)&&!"null".equals(ignore)){
-                    map.put(ignore,true);
+    private void addExtensionParameters(String[] params, String extensionName, OperationContext context) {
+        if (params != null && params.length > 0) {
+            Map<String, Boolean> map = new HashMap<>();
+            for (String ignore : params) {
+                if (ignore != null && !"".equals(ignore) && !"null".equals(ignore)) {
+                    map.put(ignore, true);
                 }
             }
-            if (map.size()>0){
-                List<Map<String,Boolean>> maps=new ArrayList<>();
+            if (map.size() > 0) {
+                List<Map<String, Boolean>> maps = new ArrayList<>();
                 maps.add(map);
-                ListVendorExtension<Map<String,Boolean>> listVendorExtension=new ListVendorExtension<>(extensionName,maps);
-                List<VendorExtension> vendorExtensions=new ArrayList<>();
+                ListVendorExtension<Map<String, Boolean>> listVendorExtension = new ListVendorExtension<>(extensionName, maps);
+                List<VendorExtension> vendorExtensions = new ArrayList<>();
                 vendorExtensions.add(listVendorExtension);
-                //context.operationBuilder().extensions(Lists.newArrayList(listVendorExtension));
+                // context.operationBuilder().extensions(Lists.newArrayList(listVendorExtension));
                 context.operationBuilder().extensions(vendorExtensions);
             }
         }
