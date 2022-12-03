@@ -62,7 +62,8 @@
                     </a-select>
                   </a-row>
                   <a-row v-else>
-                    <a-input :placeholder="$t('debug.tableHeader.holderValue')"
+                    <a-input
+                      :placeholder="(record.description != null && record.description != '') ? record.description : $t('debug.tableHeader.holderValue')"
                       :class="'knife4j-debug-param-require' + record.require" :data-key="record.id" :defaultValue="text"
                       @change="headerContentChnage" />
                   </a-row>
