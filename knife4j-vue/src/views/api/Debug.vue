@@ -38,7 +38,7 @@
               <template slot="tab">
                 <span>
                   <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
-                  headerCount
+                      headerCount
                   }}</a-tag><span v-html="$t('debug.headers')">请求头部</span>
                 </span>
               </template>

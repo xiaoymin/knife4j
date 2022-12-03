@@ -43,6 +43,9 @@ import KUtils from './utils';
 import { marked } from 'marked';
 import async from 'async';
 import Knife4jOAS3ResponseExampleReader from './oas3/OAS3ResponseExampleReader';
+import { Knife4jOAS2AdditionalModel, Knife4jOAS2AdditionalModelClassFinder } from './oas2/OAS2AdditionalModel'
+
+
 import {
   findComponentsByPath,
   findMenuByKey
@@ -1329,42 +1332,6 @@ SwaggerBootstrapUi.prototype.basicInfoOAS3 = function (menu) {
     that.currentInstance.openApiBaseInfo = openApiBaseInfo;
   }
 }
-
-/**
- * 递归查询additionalProperties中的类型，针对Map类型会存在一直递归下去的情况，程序中则一直递归查询到包含属性additionalProperties的情况，直到找到类则跳出
- * @param {*} addtionalObject
- * @param {*} oas 是否v2
- */
-SwaggerBootstrapUi.prototype.deepAdditionalProperties = function (addtionalObject, oas) {
-  var definiationName = '';
-  // console.log(addtionalObject)
-  if (KUtils.checkUndefined(addtionalObject)) {
-    if (addtionalObject.hasOwnProperty('additionalProperties')) {
-      var dpAddtional = addtionalObject['additionalProperties'];
-      return this.deepAdditionalProperties(dpAddtional, oas);
-    } else {
-      // 不存在了，
-      if (addtionalObject.hasOwnProperty('$ref')) {
-        var adref = addtionalObject['$ref'];
-        var regex = new RegExp(KUtils.oasmodel(oas), 'ig');
-        if (regex.test(adref)) {
-          definiationName = RegExp.$1;
-        }
-      } else if (addtionalObject.hasOwnProperty('items')) {
-        var addItem = addtionalObject['items'];
-        if (addItem.hasOwnProperty('$ref')) {
-          var adrefItem = addItem['$ref'];
-          var regexItem = new RegExp(KUtils.oasmodel(oas), 'ig');
-          if (regexItem.test(adrefItem)) {
-            definiationName = RegExp.$1;
-          }
-        }
-      }
-    }
-  }
-  return definiationName;
-
-}
 /**
  * 异步解析类
  * @param {*} menu
@@ -1472,7 +1439,9 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2 = function (menu, swud,
                       var addpties = propobj['additionalProperties'];
                       that.log('------解析map-=-----------additionalProperties,defName:' + name);
                       // 判断是否additionalProperties中还包含additionalProperties属性
-                      var addtionalName = this.deepAdditionalProperties(addpties, oas2);
+                      let addtionalClassFinder = new Knife4jOAS2AdditionalModelClassFinder(addpties, oas2);
+                      //var addtionalName = this.deepAdditionalProperties(addpties, oas2);
+                      let addtionalName = addtionalClassFinder.findClassName();
                       // console.log('递归类型---'+addtionalName)
                       // 判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
                       if (KUtils.strNotBlank(addtionalName)) {
@@ -1487,10 +1456,12 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2 = function (menu, swud,
                         } else {
                           addTempValue = that.findRefDefinition(addtionalName, definitions, true, globalArr, name, oas2);
                         }
-                        propValue = {
+                        let addionalModel = new Knife4jOAS2AdditionalModel(addpties, addtionalName, addTempValue);
+                        /**propValue = {
                           'additionalProperties1': addTempValue
-                        };
-                        // console.log(propValue)
+                        };**/
+                        propValue = addionalModel.additionalMapValue(null);
+                        //console.log(propValue)
                         spropObj.type = addtionalName;
                         spropObj.refType = addtionalName;
                       } else if (addpties.hasOwnProperty('$ref')) {
@@ -1758,7 +1729,9 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
                       var addpties = propobj['additionalProperties'];
                       that.log('------解析map-=-----------additionalProperties,defName:' + name);
                       // 判断是否additionalProperties中还包含additionalProperties属性
-                      var addtionalName = this.deepAdditionalProperties(addpties, oas2);
+                      let addtionalClassFinder = new Knife4jOAS2AdditionalModelClassFinder(addpties, oas2);
+                      //var addtionalName = this.deepAdditionalProperties(addpties, oas2);
+                      let addtionalName = addtionalClassFinder.findClassName();
                       // console.log('递归类型---'+addtionalName)
                       // 判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
                       if (KUtils.strNotBlank(addtionalName)) {
@@ -2247,7 +2220,9 @@ SwaggerBootstrapUi.prototype.getSwaggerModelRefType = function (propobj, oas2) {
         if (propobj.hasOwnProperty('additionalProperties')) {
           var addpties = propobj['additionalProperties'];
           // 判断是否additionalProperties中还包含additionalProperties属性
-          var addtionalName = this.deepAdditionalProperties(addpties, oas2);
+          let addtionalClassFinder = new Knife4jOAS2AdditionalModelClassFinder(addpties, oas2);
+          //var addtionalName = this.deepAdditionalProperties(addpties, oas2);
+          let addtionalName = addtionalClassFinder.findClassName();
           // console.log('递归类型---'+addtionalName)
           // 判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
           if (KUtils.strNotBlank(addtionalName)) {
@@ -5997,7 +5972,9 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                   if (type == 'object') {
                     if (propobj.hasOwnProperty('additionalProperties')) {
                       var addpties = propobj['additionalProperties'];
-                      var addtionalName = this.deepAdditionalProperties(addpties, oas);
+                      let addtionalClassFinder = new Knife4jOAS2AdditionalModelClassFinder(addpties, oas2);
+                      //var addtionalName = this.deepAdditionalProperties(addpties, oas2);
+                      let addtionalName = addtionalClassFinder.findClassName();
                       // console.log('递归类型---'+addtionalName)
                       // 判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
                       if (KUtils.strNotBlank(addtionalName)) {
@@ -6006,9 +5983,11 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                         if (globalArr.indexOf(addtionalName) == -1) {
                           globalArr.push(addtionalName);
                           addTempValue = that.findRefDefinition(addtionalName, definitions, false, globalArr, xname, oas);
+                          let addionalModel = new Knife4jOAS2AdditionalModel(addpties, addtionalName, addTempValue);
                           propValue = {
                             'additionalProperties1': addTempValue
                           };
+                          propValue = addionalModel.additionalMapValue(null);
                         }
                       }
                       // 判断是否有ref属性,如果有,存在引用类,否则默认是{}object的情况
