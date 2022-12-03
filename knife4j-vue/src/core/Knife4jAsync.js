@@ -60,6 +60,7 @@ import isNull from 'lodash/isNull';
 import isUndefined from 'lodash/isUndefined';
 import xml2js from 'xml2js';
 import DebugAxios from 'axios';
+import { ref } from 'vue';
 
 marked.setOptions({
   gfm: true,
@@ -1556,6 +1557,13 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2 = function (menu, swud,
                     } else {
                       // schema基础类型显示
                       spropObj.refType = items['type'];
+                      //判断schema
+                      if (KUtils.checkIsBasicType(spropObj.refType)) {
+                        let _formatName = KUtils.numberFormat(propobj);
+                        if (KUtils.checkUndefined(_formatName)) {
+                          spropObj.refType = spropObj.refType + "(" + _formatName + ")";
+                        }
+                      }
                     }
                   }
                 }
@@ -2100,7 +2108,9 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                          } */
                       } else {
                         if (p.type == 'array') {
-                          if (p.refType != null && p.refType != undefined && p.refType != '') {
+                          //if (p.refType != null && p.refType != undefined && p.refType != '') {
+                          //}
+                          if (KUtils.checkUndefined(p.refType)) {
                             // 修复针对schema类型的参数,显示类型为schema类型
                             refp.schemaValue = p.refType;
                             // 属性名称不同,或者ref类型不同
@@ -2112,7 +2122,16 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                                 deepSwaggerModelsTreeTableRefParameter(refp, definitions, deepDef, originalTreeTableModel, that, oas2);
                               }
                             }
+                            //判断是否是基础类型
+                            if (KUtils.checkIsBasicType(p.refType)) {
+                              //基础类型
+                              let _formatName = KUtils.numberFormat(p);
+                              if (KUtils.checkUndefined(_formatName)) {
+                                refp.schemaValue = refp.schemaValue + "(" + _formatName + ")";
+                              }
+                            }
                           }
+
                         }
                       }
                     }
@@ -3678,6 +3697,8 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2 = function (swpinfo) {
                         resParam.parentTypes.push(p.type);
                         deepTreeTableResponseRefParameter(swaggerResp, that, deepDef, resParam);
                       }
+                    } else {
+
                     }
                   }
                 }
@@ -5127,7 +5148,7 @@ SwaggerBootstrapUi.prototype.assembleParameter = function (m, swpinfo) {
       minfo.description = m.description + ',' + KUtils.enumAvalibleLabel(that.i18nInstance, m.enum);
     } else {
       //minfo.description = '枚举类型,可用值:' + avaiableArrStr;
-      minfo.description = '枚举类型,' + KUtils.enumAvalibleLabel(that.i18nInstance, m.enum);
+      minfo.description = KUtils.enumAvalibleLabel(that.i18nInstance, m.enum);
     }
 
   }
@@ -5163,26 +5184,35 @@ SwaggerBootstrapUi.prototype.assembleParameter = function (m, swpinfo) {
         }
       } else {
         var sty = schItem['type'];
-        minfo.schemaValue = schItem['type'];
+        let _tmpSchemaName = sty;
         // 此处判断Array的类型,如果
         if (sty == 'string') {
           minfo.value = '';
         }
         if (sty == 'integer') {
+          let _tempFormat = schItem['format'];
           // 判断format
-          if (schItem['format'] != undefined && schItem['format'] != null && schItem['format'] == 'int32') {
+          if (_tempFormat != undefined && _tempFormat != null && _tempFormat == 'int32') {
             minfo.value = 0;
           } else {
             minfo.value = 1054661322597744642;
           }
+          if (KUtils.checkUndefined(_tempFormat)) {
+            _tmpSchemaName = _tmpSchemaName + '(' + _tempFormat + ")";
+          }
         }
         if (sty == 'number') {
+          let _tempFormat = schItem['format'];
           if (schItem['format'] != undefined && schItem['format'] != null && schItem['format'] == 'double') {
             minfo.value = 0.5;
           } else {
             minfo.value = 0;
           }
+          if (KUtils.checkUndefined(_tempFormat)) {
+            _tmpSchemaName = _tmpSchemaName + '(' + _tempFormat + ")";
+          }
         }
+        minfo.schemaValue = _tmpSchemaName;
       }
     } else {
       if (schemaObject.hasOwnProperty('$ref')) {

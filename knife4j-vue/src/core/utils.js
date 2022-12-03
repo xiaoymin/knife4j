@@ -369,6 +369,16 @@ const utils = {
     return md5(new Date().getTime().toString() +
       Math.floor(Math.random() * 10000).toString() + str);
   },
+  numberFormat(obj) {
+    let items = obj["items"];
+    if (this.checkUndefined(items)) {
+      let format = items["format"];
+      if (this.checkUndefined(format)) {
+        return format;
+      }
+    }
+    return null;
+  },
   formatter: function (data, parentPath = "/", parentAuthority) {
     return data.map(item => {
       let {
