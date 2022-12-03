@@ -297,7 +297,7 @@ export default {
       // 数据很大,raw显示会导致内存溢出
       bigBlobFlag: false,
       // 是否开启缓存
-      debugUrlStyle: "width: 75%",
+      debugUrlStyle: "width: 70%",
       enableRequestCache: false,
       // 是否动态参数
       enableDynamicParameter: false,
@@ -402,9 +402,9 @@ export default {
     // 显示表单参数
     // this.initShowFormTable();
     if (this.enableReloadCacheParameter) {
-      this.debugUrlStyle = "width: 70%;"
+      this.debugUrlStyle = "width: 65%;"
     } else {
-      this.debugUrlStyle = "width: 75%;"
+      this.debugUrlStyle = "width: 70%;"
     }
   },
   computed: {
