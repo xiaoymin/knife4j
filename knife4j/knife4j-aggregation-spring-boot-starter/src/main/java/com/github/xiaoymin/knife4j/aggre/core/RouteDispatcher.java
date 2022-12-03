@@ -53,7 +53,7 @@ import java.util.*;
 public class RouteDispatcher {
     
     /**
-     * 请求头
+     * header
      */
     public static final String ROUTE_PROXY_HEADER_NAME = "knfie4j-gateway-request";
     public static final String ROUTE_PROXY_HEADER_BASIC_NAME = "knife4j-gateway-basic-request";
@@ -63,7 +63,7 @@ public class RouteDispatcher {
     
     Logger logger = LoggerFactory.getLogger(RouteDispatcher.class);
     /**
-     * 当前项目的contextPath
+     * current project contextPath
      */
     private String rootPath;
     
@@ -145,7 +145,7 @@ public class RouteDispatcher {
     }
     
     /**
-     * Write 响应状态码
+     * Write Http Status Code
      *
      * @param routeResponse routeResponse
      * @param response      response
@@ -157,10 +157,10 @@ public class RouteDispatcher {
     }
     
     /**
-     * Write响应头
+     * Write Response Header
      *
-     * @param routeResponse route响应对象
-     * @param response 响应response
+     * @param routeResponse route instance
+     * @param response Servlet Response
      */
     protected void writeResponseHeader(RouteResponse routeResponse, HttpServletResponse response) {
         if (routeResponse != null) {
@@ -172,7 +172,7 @@ public class RouteDispatcher {
                 }
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("响应类型:{},响应编码:{}", routeResponse.getContentType(), routeResponse.getCharsetEncoding());
+                logger.debug("Content-Type:{},Charset-Encoding:{}", routeResponse.getContentType(), routeResponse.getCharsetEncoding());
             }
             response.setContentType(routeResponse.getContentType());
             if (routeResponse.getContentLength() > 0) {
@@ -183,10 +183,10 @@ public class RouteDispatcher {
     }
     
     /**
-     * 响应内容
+     * Write Body
      *
-     * @param routeResponse route响应对象
-     * @param response 响应对象
+     * @param routeResponse route
+     * @param response Servlet Response
      */
     protected void writeBody(RouteResponse routeResponse, HttpServletResponse response) throws IOException {
         if (routeResponse != null) {
@@ -215,18 +215,17 @@ public class RouteDispatcher {
     }
     
     /**
-     * 构建路由的请求上下文
-     *
-     * @param routeRequestContext 请求上下文
-     * @param request 请求对象
+     * Build Context of Route
+     * @param routeRequestContext Route Context
+     * @param request Servlet Request
      */
     protected void buildContext(RouteRequestContext routeRequestContext, HttpServletRequest request) throws IOException {
-        // 当前请求是否basic请求
+        // Whether Basic
         String basicHeader = request.getHeader(ROUTE_PROXY_HEADER_BASIC_NAME);
         if (StrUtil.isNotBlank(basicHeader)) {
             BasicAuth basicAuth = routeRepository.getAuth(basicHeader);
             if (basicAuth != null) {
-                // 增加Basic请求头
+                // add Basic header
                 routeRequestContext.addHeader("Authorization", RouteUtils.authorize(basicAuth.getUsername(),
                         basicAuth.getPassword()));
             }
@@ -241,7 +240,7 @@ public class RouteDispatcher {
         String fromUri = request.getRequestURI();
         StringBuilder requestUrlBuilder = new StringBuilder();
         requestUrlBuilder.append(uri);
-        // 判断当前聚合项目的contextPath
+        // get project servlet.contextPath
         if (StrUtil.isNotBlank(this.rootPath) && !StrUtil.equals(this.rootPath, ROUTE_BASE_PATH)) {
             fromUri = fromUri.replaceFirst(this.rootPath, "");
             // 此处需要追加一个请求头basePath，因为父项目设置了context-path

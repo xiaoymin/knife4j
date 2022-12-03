@@ -28,23 +28,23 @@ public interface RouteCache<K, V> {
     
     /**
      *
-     * @param k 键
-     * @param v 值
-     * @return 是否缓存成功
+     * @param k key
+     * @param v value
+     * @return true: cache success,false:error
      */
     boolean put(K k, V v);
     
     /**
-     * 获取缓存值
-     * @param k 键
-     * @return 缓存值
+     * get cache value
+     * @param k key
+     * @return cache value
      */
     V get(K k);
     
     /**
-     * 移除缓存
-     * @param k 键
-     * @return 是否删除成功
+     * remove cache
+     * @param k key
+     * @return true: remove cache success,false:error
      */
     boolean remove(K k);
 }

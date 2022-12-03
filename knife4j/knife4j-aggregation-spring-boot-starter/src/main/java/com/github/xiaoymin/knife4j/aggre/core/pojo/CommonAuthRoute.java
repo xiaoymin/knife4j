@@ -26,7 +26,7 @@ package com.github.xiaoymin.knife4j.aggre.core.pojo;
 public abstract class CommonAuthRoute extends CommonRoute {
     
     /**
-     * swagger访问接口请求是否需要Basic验证
+     * Whether the OpenApi instance interface access implementation need to enable Basic verification?
      */
     private BasicAuth routeAuth;
     

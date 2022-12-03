@@ -28,7 +28,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.CommonAuthRoute;
 public class CloudRoute extends CommonAuthRoute {
     
     /**
-     * 地址，例如：http://192.179.0.1:8999
+     * OpenAPi Instance URI，example：http://192.179.0.1:8999
      */
     private String uri;
     

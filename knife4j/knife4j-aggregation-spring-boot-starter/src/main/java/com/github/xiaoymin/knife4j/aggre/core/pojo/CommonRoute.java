@@ -28,33 +28,33 @@ import cn.hutool.crypto.digest.MD5;
 public abstract class CommonRoute {
     
     /**
-     * 服务名称
+     * Service Name
      */
     private String name;
     /**
-     * openapi本地文件路径
+     * openapi file(Local)
      */
     private String location;
     
     /**
-     * OpenAPI版本，2.0 or 3.0
+     * OpenAPI Version，2.0 or 3.0
      */
     private String swaggerVersion = "2.0";
     
     /**
-     * 微服务路径,主要是针对在网关使用时，追加的basePath，主要是为了和在网关转发时路径在文档上展示一致的问题
+     * The microservice path is mainly for the added basePath when using the gateway, mainly for the same problem that the path is displayed on the document when the gateway forwards
      */
     private String servicePath;
     
     /**
-     * 增加聚合显示顺序,参考issues：https://gitee.com/xiaoym/knife4j/issues/I27ST2
+     * Instance Order,see issue：https://gitee.com/xiaoym/knife4j/issues/I27ST2
      * @since 2.0.9
      */
     private Integer order = 1;
     
     /**
-     * 当前Route主键唯一id
-     * @return 唯一id
+     * Primary Key
+     * @return Primary Key
      */
     public String pkId() {
         return MD5.create().digestHex(this.toString());
