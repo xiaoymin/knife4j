@@ -18,7 +18,7 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
-import com.github.xiaoymin.knife4j.core.conf.Consts;
+import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.core.enums.OpenAPILanguageEnums;
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
 import com.github.xiaoymin.knife4j.spring.common.bean.Knife4jDocketAutoRegistry;
@@ -136,7 +136,7 @@ public class Knife4jAutoConfiguration {
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.setMaxAge(Consts.CORS_MAX_AGE);
+        corsConfiguration.setMaxAge(GlobalConstants.CORS_MAX_AGE);
         // 匹配所有API
         source.registerCorsConfiguration("/**", corsConfiguration);
         CorsFilter corsFilter = new CorsFilter(source);
@@ -175,12 +175,12 @@ public class Knife4jAutoConfiguration {
         if (knife4jProperties == null) {
             securityBasicAuthFilter = new SecurityBasicAuthFilter(
                     EnvironmentUtils.resolveBool(environment,"knife4j.basic.enable",Boolean.FALSE),
-                    EnvironmentUtils.resolveString(environment,"knife4j.basic.username",Consts.BASIC_DEFAULT_USERNAME),
-                    EnvironmentUtils.resolveString(environment,"knife4j.basic.password",Consts.BASIC_DEFAULT_PASSWORD));
+                    EnvironmentUtils.resolveString(environment,"knife4j.basic.username", GlobalConstants.BASIC_DEFAULT_USERNAME),
+                    EnvironmentUtils.resolveString(environment,"knife4j.basic.password", GlobalConstants.BASIC_DEFAULT_PASSWORD));
         } else {
             // 判断非空
             if (knife4jProperties.getBasic() == null) {
-                securityBasicAuthFilter = new SecurityBasicAuthFilter(Boolean.FALSE, Consts.BASIC_DEFAULT_USERNAME, Consts.BASIC_DEFAULT_PASSWORD);
+                securityBasicAuthFilter = new SecurityBasicAuthFilter(Boolean.FALSE, GlobalConstants.BASIC_DEFAULT_USERNAME, GlobalConstants.BASIC_DEFAULT_PASSWORD);
             } else {
                 securityBasicAuthFilter = new SecurityBasicAuthFilter(knife4jProperties.getBasic().isEnable(), knife4jProperties.getBasic().getUsername(), knife4jProperties.getBasic().getPassword());
             }

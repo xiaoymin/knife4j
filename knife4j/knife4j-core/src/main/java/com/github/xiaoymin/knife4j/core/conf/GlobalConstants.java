@@ -24,7 +24,7 @@ package com.github.xiaoymin.knife4j.core.conf;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/02/02 19:57
  */
-public class Consts {
+public class GlobalConstants {
 
     /**
      * Knife4j provider default username with basic auth.

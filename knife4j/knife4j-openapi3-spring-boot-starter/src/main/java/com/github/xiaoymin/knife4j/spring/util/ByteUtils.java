@@ -20,7 +20,7 @@ package com.github.xiaoymin.knife4j.spring.util;
 
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
-import com.github.xiaoymin.knife4j.core.conf.Consts;
+import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.core.model.DynamicClass;
 import io.swagger.v3.oas.annotations.media.Schema;
 import javassist.*;
@@ -53,7 +53,7 @@ public class ByteUtils {
      * @return 动态生成类
      */
     public static Class<?> createDynamicModelClass(String name, DynamicParameter[] parameters) {
-        String clazzName = Consts.BASE_PACKAGE_PREFIX + name;
+        String clazzName = GlobalConstants.BASE_PACKAGE_PREFIX + name;
         try {
             CtClass tmp = classPool.getCtClass(clazzName);
             if (tmp != null) {
@@ -92,7 +92,7 @@ public class ByteUtils {
         DynamicClass dynamicClass = new DynamicClass();
         try {
             if (originalGenericType != null) {
-                String clazzName = Consts.BASE_PACKAGE_PREFIX + name;
+                String clazzName = GlobalConstants.BASE_PACKAGE_PREFIX + name;
                 try {
                     CtClass tmp = classPool.getCtClass(clazzName);
                     if (tmp != null) {

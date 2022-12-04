@@ -23,7 +23,7 @@ import com.fasterxml.classmate.TypeResolver;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
-import com.github.xiaoymin.knife4j.core.conf.Consts;
+import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.spring.util.ByteUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,7 +129,7 @@ public class DynamicResponseModelReader implements OperationBuilderPlugin {
                 }
                 // 追加groupController
                 name = operationContext.getGroupName().replaceAll("[_-]", "") + "." + name + "Response";
-                String classPath = Consts.BASE_PACKAGE_PREFIX + name;
+                String classPath = GlobalConstants.BASE_PACKAGE_PREFIX + name;
                 Class<?> loadClass = ByteUtils.load(classPath);
                 if (loadClass != null) {
                     ResolvedType returnType = operationContext.alternateFor(typeResolver.resolve(loadClass));
