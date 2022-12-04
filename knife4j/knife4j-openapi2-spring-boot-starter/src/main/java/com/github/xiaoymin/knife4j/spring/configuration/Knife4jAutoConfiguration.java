@@ -136,7 +136,7 @@ public class Knife4jAutoConfiguration {
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.setMaxAge(10000L);
+        corsConfiguration.setMaxAge(Consts.CORS_MAX_AGE);
         // 匹配所有API
         source.registerCorsConfiguration("/**", corsConfiguration);
         CorsFilter corsFilter = new CorsFilter(source);

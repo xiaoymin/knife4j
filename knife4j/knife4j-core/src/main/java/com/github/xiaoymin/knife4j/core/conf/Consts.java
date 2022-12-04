@@ -36,6 +36,11 @@ public class Consts {
      */
     public static final String BASIC_DEFAULT_PASSWORD="123321";
 
+    /**
+     * Cors max_age
+     */
+    public static final Long CORS_MAX_AGE=10000L;
+
     
     /**
      * 动态生成class包名前缀
