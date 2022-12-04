@@ -18,6 +18,7 @@
 
 package com.github.xiaoymin.knife4j.spring.util;
 
+import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import org.springframework.core.env.Environment;
 
 import java.util.Objects;
@@ -28,6 +29,23 @@ import java.util.Objects;
  * 2022/8/18 22:26
  */
 public class EnvironmentUtils {
+
+    /**
+     * get String property
+     * @param environment Spring Context Environment
+     * @param key hash-key
+     * @param defaultValue default
+     * @return
+     */
+    public static String resolveString(Environment environment,String key,String defaultValue){
+        if (environment!=null){
+            String envValue=environment.getProperty(key);
+            if (StrUtil.isNotBlank(envValue)){
+                return envValue;
+            }
+        }
+        return defaultValue;
+    }
     
     /**
      * 获取int类型的值

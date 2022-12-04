@@ -18,6 +18,7 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
+import com.github.xiaoymin.knife4j.core.conf.Consts;
 import com.github.xiaoymin.knife4j.core.enums.OpenAPILanguageEnums;
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
 import com.github.xiaoymin.knife4j.spring.common.bean.Knife4jDocketAutoRegistry;
@@ -48,7 +49,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 import springfox.documentation.swagger2.mappers.*;
 
 import java.util.Locale;
-import java.util.Objects;
 
 /***
  * Knife4j AutoConfiguration
@@ -171,30 +171,16 @@ public class Knife4jAutoConfiguration {
     @ConditionalOnMissingBean(SecurityBasicAuthFilter.class)
     @ConditionalOnProperty(name = "knife4j.basic.enable", havingValue = "true")
     public SecurityBasicAuthFilter securityBasicAuthFilter(Knife4jProperties knife4jProperties) {
-        boolean enableSwaggerBasicAuth = false;
-        String dftUserName = "admin", dftPass = "123321";
         SecurityBasicAuthFilter securityBasicAuthFilter = null;
         if (knife4jProperties == null) {
-            if (environment != null) {
-                String enableAuth = Objects.toString(environment.getProperty("knife4j.basic.enable"), "false");
-                enableSwaggerBasicAuth = Boolean.valueOf(enableAuth);
-                if (enableSwaggerBasicAuth) {
-                    // 如果开启basic验证,从配置文件中获取用户名和密码
-                    String pUser = environment.getProperty("knife4j.basic.username");
-                    String pPass = environment.getProperty("knife4j.basic.password");
-                    if (pUser != null && !"".equals(pUser)) {
-                        dftUserName = pUser;
-                    }
-                    if (pPass != null && !"".equals(pPass)) {
-                        dftPass = pPass;
-                    }
-                }
-                securityBasicAuthFilter = new SecurityBasicAuthFilter(enableSwaggerBasicAuth, dftUserName, dftPass);
-            }
+            securityBasicAuthFilter = new SecurityBasicAuthFilter(
+                    EnvironmentUtils.resolveBool(environment,"knife4j.basic.enable",Boolean.FALSE),
+                    EnvironmentUtils.resolveString(environment,"knife4j.basic.username",Consts.BASIC_DEFAULT_USERNAME),
+                    EnvironmentUtils.resolveString(environment,"knife4j.basic.password",Consts.BASIC_DEFAULT_PASSWORD));
         } else {
             // 判断非空
             if (knife4jProperties.getBasic() == null) {
-                securityBasicAuthFilter = new SecurityBasicAuthFilter(enableSwaggerBasicAuth, dftUserName, dftPass);
+                securityBasicAuthFilter = new SecurityBasicAuthFilter(Boolean.FALSE, Consts.BASIC_DEFAULT_USERNAME, Consts.BASIC_DEFAULT_PASSWORD);
             } else {
                 securityBasicAuthFilter = new SecurityBasicAuthFilter(knife4jProperties.getBasic().isEnable(), knife4jProperties.getBasic().getUsername(), knife4jProperties.getBasic().getPassword());
             }
