@@ -29,7 +29,7 @@ import java.util.Objects;
  * 2022/8/18 22:26
  */
 public class EnvironmentUtils {
-
+    
     /**
      * get String property
      * @param environment Spring Context Environment
@@ -37,10 +37,10 @@ public class EnvironmentUtils {
      * @param defaultValue default
      * @return
      */
-    public static String resolveString(Environment environment,String key,String defaultValue){
-        if (environment!=null){
-            String envValue=environment.getProperty(key);
-            if (StrUtil.isNotBlank(envValue)){
+    public static String resolveString(Environment environment, String key, String defaultValue) {
+        if (environment != null) {
+            String envValue = environment.getProperty(key);
+            if (StrUtil.isNotBlank(envValue)) {
                 return envValue;
             }
         }

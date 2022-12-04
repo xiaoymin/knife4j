@@ -25,22 +25,21 @@ package com.github.xiaoymin.knife4j.core.conf;
  * 2019/02/02 19:57
  */
 public class GlobalConstants {
-
+    
     /**
      * Knife4j provider default username with basic auth.
      */
-    public static final String BASIC_DEFAULT_USERNAME="admin";
-
+    public static final String BASIC_DEFAULT_USERNAME = "admin";
+    
     /**
      * Knife4j provider default password with basic auth.
      */
-    public static final String BASIC_DEFAULT_PASSWORD="123321";
-
+    public static final String BASIC_DEFAULT_PASSWORD = "123321";
+    
     /**
      * Cors max_age
      */
-    public static final Long CORS_MAX_AGE=10000L;
-
+    public static final Long CORS_MAX_AGE = 10000L;
     
     /**
      * 动态生成class包名前缀

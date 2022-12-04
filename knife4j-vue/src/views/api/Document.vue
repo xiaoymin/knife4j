@@ -697,7 +697,8 @@ export default {
       //console.log("rcodes")
       //console.log(rcodes)
       if (rcodes != null && rcodes != undefined) {
-        rcodes.forEach(function (rc) {
+        for(let i=0;i<rcodes.length;i++){
+          let rc=rcodes[i];
           // 遍历
           if (rc.schema != undefined && rc.schema != null) {
             var respdata = [];
@@ -764,10 +765,15 @@ export default {
             }
             that.multipCodeDatas.push(nresobj);
           }else{
-            //不存在schema，直接赋值
-            that.multipData=rc;
+            // 只获取第一个
+            // https://gitee.com/xiaoym/knife4j/issues/I5W145
+            if(i==0){
+              //不存在schema，直接赋值
+              that.multipData=rc;
+            }
+            
           }
-        });
+        }
         var multipKeys = Object.keys(that.multipData);
         if (KUtils.arrNotEmpty(rcodes) && !KUtils.arrNotEmpty(multipKeys)) {
           var rc = rcodes[0];

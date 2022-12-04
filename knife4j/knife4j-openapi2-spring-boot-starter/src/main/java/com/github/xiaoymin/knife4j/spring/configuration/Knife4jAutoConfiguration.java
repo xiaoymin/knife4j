@@ -174,9 +174,9 @@ public class Knife4jAutoConfiguration {
         SecurityBasicAuthFilter securityBasicAuthFilter = null;
         if (knife4jProperties == null) {
             securityBasicAuthFilter = new SecurityBasicAuthFilter(
-                    EnvironmentUtils.resolveBool(environment,"knife4j.basic.enable",Boolean.FALSE),
-                    EnvironmentUtils.resolveString(environment,"knife4j.basic.username", GlobalConstants.BASIC_DEFAULT_USERNAME),
-                    EnvironmentUtils.resolveString(environment,"knife4j.basic.password", GlobalConstants.BASIC_DEFAULT_PASSWORD));
+                    EnvironmentUtils.resolveBool(environment, "knife4j.basic.enable", Boolean.FALSE),
+                    EnvironmentUtils.resolveString(environment, "knife4j.basic.username", GlobalConstants.BASIC_DEFAULT_USERNAME),
+                    EnvironmentUtils.resolveString(environment, "knife4j.basic.password", GlobalConstants.BASIC_DEFAULT_PASSWORD));
         } else {
             // 判断非空
             if (knife4jProperties.getBasic() == null) {
