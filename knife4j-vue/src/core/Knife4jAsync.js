@@ -1225,7 +1225,6 @@ SwaggerBootstrapUi.prototype.setInstanceBasicPorperties = function (menu) {
   if (this.currentInstance.oas2()) {
     this.basicInfoOAS2(menu);
   } else {
-    console.log("====>", menu)
     this.basicInfoOAS3(menu);
   }
 
@@ -4421,10 +4420,10 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
         }
         //判断example
         //判断example
-        console.log('example', responseExample)
         if (KUtils.checkUndefined(responseExample)) {
           if (KUtils.checkUndefined(responseExample.responseText)) {
             swaggerResp.responseValue = responseExample.responseValue;
+            swaggerResp.responseText = responseExample.responseText;
             swaggerResp.responseJson = responseExample.responseText;
           }
         }
@@ -4654,16 +4653,14 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
       }
     }
     //判断example
-    console.log('example', responseExample)
     if (KUtils.checkUndefined(responseExample)) {
       if (KUtils.checkUndefined(responseExample.responseText)) {
         swpinfo.responseValue = responseExample.responseValue;
+        swpinfo.responseText = responseExample.responseText;
         swpinfo.responseJson = responseExample.responseText;
       }
     }
     swpinfo.init = true;
-    console.log('异步初始化ApiInfo完成')
-    console.log(swpinfo);
   }
 }
 /**

@@ -694,8 +694,8 @@ export default {
       // 这里不
       that.multipData = {};
       let rcodes = this.api.responseCodes;
-      // console.log("rcodes")
-      // console.log(rcodes)
+      //console.log("rcodes")
+      //console.log(rcodes)
       if (rcodes != null && rcodes != undefined) {
         rcodes.forEach(function (rc) {
           // 遍历
@@ -763,6 +763,9 @@ export default {
               that.multipData = nresobj;
             }
             that.multipCodeDatas.push(nresobj);
+          }else{
+            //不存在schema，直接赋值
+            that.multipData=rc;
           }
         });
         var multipKeys = Object.keys(that.multipData);
@@ -774,7 +777,7 @@ export default {
           }
         }
       }
-      // console.log(that.multipData);
+      //console.log(that.multipData);
     },
     showResponseEditFieldDescription(p) {
       // 显示说明
