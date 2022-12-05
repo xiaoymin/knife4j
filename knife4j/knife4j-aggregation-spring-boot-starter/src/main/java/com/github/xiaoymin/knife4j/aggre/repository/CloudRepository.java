@@ -106,6 +106,16 @@ public class CloudRepository extends AbstractRepository {
                                     if (statusCode < 0) {
                                         // 服务不存在,下线处理
                                         this.routeMap.remove(cloudRoute.pkId());
+                                    }else {
+                                        //fixed 服务存在下线后又上线的情况，需要重新上线
+                                        //https://gitee.com/xiaoym/knife4j/issues/I64P8J
+                                        if (!this.routeMap.containsKey(cloudRoute.pkId())){
+                                            //已经被剔除过，重新上线
+                                            if (cloudRoute.getRouteAuth() == null || !cloudRoute.getRouteAuth().isEnable()) {
+                                                cloudRoute.setRouteAuth(cloudSetting.getRouteAuth());
+                                            }
+                                            routeMap.put(cloudRoute.pkId(), new SwaggerRoute(cloudRoute));
+                                        }
                                     }
                                 } else {
                                     // 服务不存在,下线处理
