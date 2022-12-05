@@ -86,7 +86,11 @@ function SwaggerBootstrapUi(options) {
     const index = path.lastIndexOf('/');
     const basePath = path.length == index + 1 ? path : path.substring(0, index);
     //   swagger请求api地址
-    this.url = options.url || basePath + 'v3/api-docs/swagger-config';
+    if (basePath != '' && basePath != '/') {
+      this.url = options.url || basePath + '/v3/api-docs/swagger-config';
+    } else {
+      this.url = options.url || 'v3/api-docs/swagger-config';
+    }
     //  console.log(this.url)
     //  this.url = options.url || 'v3/api-docs/swagger-config'
   } else {
@@ -358,14 +362,7 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
     if (that.desktop) {
       var loc = window.location.pathname;
       // 默认根目录
-      var code = 'ROOT';
-      var reg = new RegExp('(?:/(.*?))?/doc.html', 'ig');
-      if (reg.exec(loc)) {
-        var c = RegExp.$1;
-        if (KUtils.strNotBlank(c)) {
-          code = c;
-        }
-      }
+      var code = KUtils.getDesktopCode();
       headers = {
         'knife4j-gateway-code': code
       };
@@ -1319,7 +1316,16 @@ SwaggerBootstrapUi.prototype.basicInfoOAS3 = function (menu) {
       that.currentInstance.version = version;
       that.currentInstance.termsOfService = termsOfService;
       // that.currentInstance.basePath = menu['basePath'];
-      that.currentInstance.basePath = KUtils.getValue(menu, 'basePath', '/', true);
+      let _tempBasePath = KUtils.getValue(menu, 'basePath', '/', true);
+      // 2022.12.5 aggregation组件聚合openapi3存在404的问题
+      if (_tempBasePath == '/') {
+        let dkCode = KUtils.getDesktopCode();
+        if (dkCode != 'ROOT') {
+          _tempBasePath = "/" + dkCode;
+        }
+      }
+      //that.currentInstance.basePath = KUtils.getValue(menu, 'basePath', '/', true);
+      that.currentInstance.basePath = _tempBasePath;
     } else {
       title = that.currentInstance.title;
     }
@@ -4703,12 +4709,18 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   // 在微服务的情况下springfox不会追加basePath
   // 单体架构下springfox会追加basePath
   // 根据appendBasePathFlag标志位判断是否需要追加basePath
-  if (!appendBaePathFlag) {
-    newfullPath += basePath;
+  if (swpinfo.oas2) {
+    if (!appendBaePathFlag) {
+      //校验非空
+      if (KUtils.checkUndefined(basePath)) {
+        newfullPath += basePath;
+      }
+    }
   }
   // 此处追加springdoc-openapi的逻辑
   // springdoc-openapi版本中对于接口不会再paths节点追加basePath,所以Knife4j自动化处理
-  if (that.springdoc) {
+  // 2022.12.5 针对openapi3规范，没有basePath属性，跟随项目Context-Path路径走，避免404
+  if (that.springdoc || !swpinfo.oas2) {
     var pathname = window.location.pathname;
     var reg = new RegExp('(.*?)/doc\.html.*$', 'ig');
     var tempPath = '';

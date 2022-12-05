@@ -188,6 +188,20 @@ const utils = {
     }
     return gname;
   },
+  getDesktopCode() {
+    var loc = window.location.pathname;
+    // 默认根目录
+    var code = 'ROOT';
+    var reg = new RegExp('(?:/(.*?))?/doc.html', 'ig');
+    if (reg.exec(loc)) {
+      var c = RegExp.$1;
+      if (this.strNotBlank(c)) {
+        code = c;
+      }
+    }
+    return code;
+  },
+
   oasmodel(oas2) {
     // 获取oas的definitions解析正则
     if (oas2) {
@@ -240,6 +254,7 @@ const utils = {
     try {
       if (this.checkUndefined(basePath) && this.strNotBlank(basePath) && basePath != '/') {
         var pathKeys = Object.keys(paths || {});
+        console.log("pathKeys,", pathKeys)
         var pathKeyLength = pathKeys.length;
         var num = 0;
         // https://gitee.com/xiaoym/knife4j/issues/I3B5BK
@@ -249,10 +264,21 @@ const utils = {
             num++;
           }
         }
+        console.log(num)
         if (num == pathKeyLength) {
           // 已经追加过basePath，无需再次追加
           appendBasePathFlag = true;
+        } else {
+          //如果是开发自定义添加的接口，会出现不追加basePath的情况，这里计算一个概率占比吧
+          if (pathKeyLength > 0) {
+            let percent = parseFloat(num / pathKeyLength) * 100;
+            if (percent >= 60) {
+              appendBasePathFlag = true;
+            }
+          }
         }
+
+
       } else {
         // 其余情况都代表已经追加过
         appendBasePathFlag = true;
@@ -672,7 +698,7 @@ const utils = {
       if (obj.hasOwnProperty(key)) {
         val = obj[key];
         if (checkEmpty) {
-          if (val == null || val == "") {
+          if (val == null || val == "" || val == undefined) {
             val = defaultValue;
           }
         }
