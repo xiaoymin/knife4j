@@ -1,7 +1,7 @@
 <template>
     <template v-if="menuData">
       <template v-for="item in menuData" :key="item.key">
-        <a-sub-menu :title="item.name" :key="item.key" v-if="item.children && item.children.some((child) => child.name)">
+        <a-sub-menu :key="item.key" v-if="item.children && item.children.some((child) => child.name)">
           <template #title>
             <three-title :collapsed="collapsed" :item="item"/>
           </template>
@@ -36,12 +36,6 @@ export default defineComponent({
       type: Boolean,
       default: false
     }
-  },
-  setup(props) {
-    watch(() => props.menuData, () => {
-      console.log(props.menuData)
-    })
-    return {};
   }
 })
 </script>
