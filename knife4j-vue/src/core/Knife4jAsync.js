@@ -416,7 +416,9 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
         name: KUtils.getValue(gu, 'name', 'knife4j', true),
         url: KUtils.getValue(gu, 'url', '', true),
         location: KUtils.getValue(gu, 'url', '', true),
-        swaggerVersion: '3.0.3'
+        swaggerVersion: '3.0.3',
+        tagSort: KUtils.getValue(groupData, 'tagsSorter', 'order', true),
+        operationSort: KUtils.getValue(groupData, 'operationsSorter', 'order', true)
       };
       newGroupData.push(newGroup);
     })
@@ -427,7 +429,9 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
       name: KUtils.getValue(groupData, 'url', 'default', true),
       url: KUtils.getValue(groupData, 'url', '', true),
       location: KUtils.getValue(groupData, 'url', '', true),
-      swaggerVersion: '3.0.3'
+      swaggerVersion: '3.0.3',
+      tagSort: KUtils.getValue(groupData, 'tagsSorter', 'order', true),
+      operationSort: KUtils.getValue(groupData, 'operationsSorter', 'order', true)
     })
   }
   newGroupData.forEach(function (group) {
@@ -439,6 +443,9 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
     g.url = group.url;
     g.desktop = that.desktop;
     g.desktopCode = that.desktopCode;
+    //排序规则2022.12.6
+    g.tagSort = group.tagSort;
+    g.operationSort = group.operationSort;
     // g.url='/test/json';
     var newUrl = '';
     // 此处需要判断basePath路径的情况
@@ -2450,6 +2457,7 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp, definitions, deepDef
  */
 SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   var that = this;
+  console.log("123", menu)
   this.currentInstance.swaggerData = menu;
   // 解析definition
   // 放弃解析所有的Model结构
@@ -2499,13 +2507,9 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       }
       tmpTags.push(swuTag);
     })
-    //  console.log(tmpTags)
     if (KUtils.arrNotEmpty(tmpTags)) {
       // 排序
       tmpTags.sort((a, b) => a.order - b.order);
-      //  tmpTags.sort(function (a, b) {
-      //    return a.order - b.order;
-      //  })
     } else {
       // 当前接口tags不存在，给一个默认tag-default
       // https://gitee.com/xiaoym/knife4j/issues/I27M98
@@ -2582,8 +2586,10 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   that.readSecurityContextSchemes(menu);
   // 当前实例不存在OAuth2验证的情况下需要clear
   that.currentInstance.clearOAuth2();
-  // console.log('分组------------')
-  // console.log(that.currentInstance.cacheInstance)
+  //对当前tags排序
+  if (that.currentInstance.tagSort == 'alpha') {
+    that.currentInstance.tags.sort((a, b) => a.name.localeCompare(b.name));
+  }
   // tag分组
   that.currentInstance.tags.forEach(function (tag) {
     // })
@@ -2664,9 +2670,14 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
       })
     } */
     // 排序childrens
-    tag.childrens.sort(function (a, b) {
-      return a.order - b.order;
-    })
+    //对当前tags排序
+    if (that.currentInstance.operationSort == 'alpha') {
+      tag.childrens.sort((a, b) => a.showUrl.localeCompare(b.showUrl));
+    } else {
+      tag.childrens.sort(function (a, b) {
+        return a.order - b.order;
+      })
+    }
   });
 
   if (that.currentInstance.firstLoad) {
@@ -6022,7 +6033,7 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                   if (type == 'object') {
                     if (propobj.hasOwnProperty('additionalProperties')) {
                       var addpties = propobj['additionalProperties'];
-                      let addtionalClassFinder = new Knife4jOAS2AdditionalModelClassFinder(addpties, oas2);
+                      let addtionalClassFinder = new Knife4jOAS2AdditionalModelClassFinder(addpties, oas);
                       //var addtionalName = this.deepAdditionalProperties(addpties, oas2);
                       let addtionalName = addtionalClassFinder.findClassName();
                       // console.log('递归类型---'+addtionalName)
@@ -7072,6 +7083,11 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   // Knife4jAggregationDesktop
   this.desktop = false;
   this.desktopCode = null;
+  // 增加排序规则 2022.12.6
+  // https://gitee.com/xiaoym/knife4j/issues/I5Z1YP
+  // 因为knife4j在v2.0版本支持了扩展排序的支持，所有目前排序支持两种，order：默认自定义的数值排序，alpha：官方首字母排序，需要后端设置，目前仅在springdoc适配支持，springfox放弃适配
+  this.tagSort = 'order';
+  this.operationSort = 'order';
 }
 SwaggerBootstrapUiInstance.prototype.clearOAuth2 = function () {
   if (!KUtils.checkUndefined(this.oauths)) {
