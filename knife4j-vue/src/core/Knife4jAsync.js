@@ -5546,7 +5546,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
             minfo.description = m.description + ',' + KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray);
           } else {
             //minfo.description = '枚举类型,可用值:' + avaiableArrStr;
-            minfo.description = '枚举类型,' + KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray);
+            minfo.description = KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray);
           }
         }
       }
@@ -5575,7 +5575,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
           minfo.description = m.description + ',' + KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray);
         } else {
           //minfo.description = '枚举类型,可用值:' + avaiableArrStr;
-          minfo.description = '枚举类型,' + KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray);
+          minfo.description = KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray);
         }
       }
       // 3.判断是否包含default默认值
@@ -5677,6 +5677,17 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
       if (items.hasOwnProperty('type')) {
         // minfo.type=items['type'];
         minfo.schemaValue = items['type'];
+        //判断是否是数组类型的file
+        // https://gitee.com/xiaoym/knife4j/issues/I618GW
+
+        var _itemFormat = KUtils.propValue('format', items, '');
+        if (_itemFormat == 'binary') {
+          // 文件上传
+          minfo.type = 'array';
+          minfo.schemaValue = "file"
+        }
+
+
       }
       minfo.value = '';
     }
