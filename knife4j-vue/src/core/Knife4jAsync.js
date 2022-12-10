@@ -44,6 +44,7 @@ import { marked } from 'marked';
 import async from 'async';
 import Knife4jOAS3ResponseExampleReader from './oas3/OAS3ResponseExampleReader';
 import Knife4jOAS3ResponseExamplesReader from './oas3/OAS3ResponseExamplesReader';
+import Knife4jOAS3OAuth2Reader from './oas3/OAS3OAuth2Reader';
 import { Knife4jOAS2AdditionalModel, Knife4jOAS2AdditionalModelClassFinder } from './oas2/OAS2AdditionalModel'
 import OAS3SchemaPropertyReader from './oas3/OAS3SchemaPropertyReader'
 
@@ -2855,12 +2856,14 @@ SwaggerBootstrapUi.prototype.readSecurityContextSchemesCommon = function (securi
           */
           //OAS3 oauth2认证
           for (var flow in sdobj.flows) {
-            var oauth = new SwaggerBootstrapUiOAuth2(
+            let oauth2Reader = new Knife4jOAS3OAuth2Reader(flow, that.currentInstance.id, sdobj.flows[flow]);
+            let oauth = oauth2Reader.readOAuth2();
+            /**var oauth = new SwaggerBootstrapUiOAuth2(
               flow,
               sdobj.flows[flow].tokenUrl || '',
               sdobj.flows[flow].authorizationUrl || '',
               that.currentInstance.id
-            );
+            );**/
             // console.log("oauth", oauth);
             oauth.sync();
             that.currentInstance.oauths = oauth;

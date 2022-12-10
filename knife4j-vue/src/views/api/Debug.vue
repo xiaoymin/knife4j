@@ -38,7 +38,7 @@
               <template slot="tab">
                 <span>
                   <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
-                      headerCount
+                  headerCount
                   }}</a-tag><span v-html="$t('debug.headers')">请求头部</span>
                 </span>
               </template>
@@ -2553,6 +2553,7 @@ export default {
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
         // console.log(requestConfig);
+        //requestConfig.data = null;
         const debugInstance = DebugAxios.create();
         // get请求编码问题
         // https://gitee.com/xiaoym/knife4j/issues/I19C8Y
