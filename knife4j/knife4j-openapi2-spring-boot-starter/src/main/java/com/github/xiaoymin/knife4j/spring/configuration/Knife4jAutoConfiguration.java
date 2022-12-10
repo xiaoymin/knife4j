@@ -48,6 +48,7 @@ import org.springframework.web.filter.CorsFilter;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 import springfox.documentation.swagger2.mappers.*;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 /***
@@ -133,9 +134,10 @@ public class Knife4jAutoConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.addAllowedOrigin("*");
+        // corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.setAllowedOriginPatterns(Arrays.asList("*"));
         corsConfiguration.setMaxAge(GlobalConstants.CORS_MAX_AGE);
         // 匹配所有API
         source.registerCorsConfiguration("/**", corsConfiguration);
