@@ -38,7 +38,7 @@
               <template slot="tab">
                 <span>
                   <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
-                  headerCount
+                      headerCount
                   }}</a-tag><span v-html="$t('debug.headers')">请求头部</span>
                 </span>
               </template>
@@ -2447,9 +2447,9 @@ export default {
       // console.log(formParams)
       if (["post", "put", "patch"].includes(methodType.toLowerCase())) {
         if (KUtils.checkUndefined(formParams)) {
-          requestData = qs.stringify(formParams);
-          //requestParams = qs.stringify(formParams);
-          //requestParams = formParams;
+          // requestData = qs.stringify(formParams);
+          // 改回query的形式？
+          requestParams = formParams;
         }
       } else {
         //requestData = formParams;
