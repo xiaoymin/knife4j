@@ -63,17 +63,17 @@ public abstract class AbstractRepository extends PoolingConnectionManager implem
         }
         return new ArrayList<>();
     }
-
+    
     /**
      * Nacos用户可能存在修改服务配置的情况，需要nacosSetting配置与缓存的routeMap做一次compare，避免出现重复服务的情况出现
      * https://gitee.com/xiaoym/knife4j/issues/I3ZPUS
      * @param settingRouteIds
      */
-    protected void heartRepeatClear(List<String> settingRouteIds){
-        if (CollectionUtils.isNotEmpty(this.routeMap)&&CollectionUtils.isNotEmpty(settingRouteIds)){
-            List<String> settingCacheRouteIds = this.routeMap.entrySet().stream().filter(s->!settingRouteIds.contains(s.getKey())).map(s->s.getKey()).collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(settingRouteIds)){
-                //缓存中移出，避免重复
+    protected void heartRepeatClear(List<String> settingRouteIds) {
+        if (CollectionUtils.isNotEmpty(this.routeMap) && CollectionUtils.isNotEmpty(settingRouteIds)) {
+            List<String> settingCacheRouteIds = this.routeMap.entrySet().stream().filter(s -> !settingRouteIds.contains(s.getKey())).map(s -> s.getKey()).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(settingRouteIds)) {
+                // 缓存中移出，避免重复
                 settingCacheRouteIds.forEach(s -> this.routeMap.remove(s));
             }
         }
