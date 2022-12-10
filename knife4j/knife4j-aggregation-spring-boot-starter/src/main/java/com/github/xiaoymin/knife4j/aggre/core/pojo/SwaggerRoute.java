@@ -28,6 +28,8 @@ import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute;
+import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
+import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 
 import java.util.Objects;
 
@@ -45,6 +47,12 @@ public class SwaggerRoute {
      * add since 4.0.0
      */
     private transient String pkId;
+    
+    /**
+     * 调试地址,开发者可自定义，获取OpenAPI地址与最终Debug调试的地址可以不相同
+     * add since 4.0.0
+     */
+    private transient String debugUrl;
     /**
      * 该属性JSON序列化时不能序列化出去,防止暴露服务的真实地址,存在安全隐患
      */
@@ -97,17 +105,27 @@ public class SwaggerRoute {
             this.content = content;
             this.debug = false;
             this.swaggerVersion = diskRoute.getSwaggerVersion();
-            // 如果服务端设置了Disk模式的Host，代表可以调试
-            if (StrUtil.isNotBlank(diskRoute.getHost())) {
+            // 调试地址
+            this.debugUrl = diskRoute.getDebugUrl();
+            // since 4.0 优先使用debugUrl
+            if (StrUtil.isNotBlank(diskRoute.getDebugUrl())) {
                 // disk模式不需要，只有debug调试时才需要
                 this.routeProxy = false;
-                // 判断
-                if (!ReUtil.isMatch("(http|https)://.*?$", diskRoute.getHost())) {
-                    this.uri = "http://" + diskRoute.getHost();
-                } else {
-                    this.uri = diskRoute.getHost();
-                }
                 this.header = diskRoute.pkId();
+                this.uri = CommonUtils.getDebugUri(diskRoute.getDebugUrl());
+            } else {
+                // 如果服务端设置了Disk模式的Host，代表可以调试
+                if (StrUtil.isNotBlank(diskRoute.getHost())) {
+                    // disk模式不需要，只有debug调试时才需要
+                    this.routeProxy = false;
+                    // 判断
+                    if (!ReUtil.isMatch("(http|https)://.*?$", diskRoute.getHost())) {
+                        this.uri = "http://" + diskRoute.getHost();
+                    } else {
+                        this.uri = diskRoute.getHost();
+                    }
+                    this.header = diskRoute.pkId();
+                }
             }
             // since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
             this.order = diskRoute.getOrder();
@@ -126,6 +144,8 @@ public class SwaggerRoute {
                 this.basicAuth = cloudRoute.pkId();
             }
             this.name = cloudRoute.getName();
+            // 调试地址
+            this.debugUrl = cloudRoute.getDebugUrl();
             if (StrUtil.isNotBlank(cloudRoute.getUri())) {
                 // 判断
                 if (!ReUtil.isMatch("(http|https)://.*?$", cloudRoute.getUri())) {
@@ -165,6 +185,8 @@ public class SwaggerRoute {
             if (StrUtil.isNotBlank(eurekaRoute.getName())) {
                 this.name = eurekaRoute.getName();
             }
+            // 调试地址
+            this.debugUrl = eurekaRoute.getDebugUrl();
             // 如果端口获取不到，给一个默认值80
             this.uri = "http://" + eurekaInstance.getIpAddr() + ":" + NumberUtil.parseInt(Objects.toString(eurekaInstance.getPort().get("$"), "80"));
             if (StrUtil.isNotBlank(eurekaRoute.getServicePath()) && !StrUtil.equals(eurekaRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
@@ -198,8 +220,10 @@ public class SwaggerRoute {
             if (StrUtil.isNotBlank(nacosRoute.getName())) {
                 this.name = nacosRoute.getName();
             }
+            // 调试地址
+            this.debugUrl = nacosRoute.getDebugUrl();
             // 远程uri
-            this.uri = "http://" + nacosInstance.getIp() + ":" + nacosInstance.getPort();
+            this.uri = GlobalConstants.PROTOCOL_HTTP + nacosInstance.getIp() + ":" + nacosInstance.getPort();
             if (StrUtil.isNotBlank(nacosRoute.getServicePath()) && !StrUtil.equals(nacosRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
                 if (!StrUtil.startWith(nacosRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
@@ -318,5 +342,13 @@ public class SwaggerRoute {
     
     public void setOrder(Integer order) {
         this.order = order;
+    }
+    
+    public String getDebugUrl() {
+        return debugUrl;
+    }
+    
+    public void setDebugUrl(String debugUrl) {
+        this.debugUrl = debugUrl;
     }
 }

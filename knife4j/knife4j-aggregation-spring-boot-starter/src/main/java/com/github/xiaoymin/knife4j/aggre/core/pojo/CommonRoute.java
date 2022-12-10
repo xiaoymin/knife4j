@@ -28,6 +28,11 @@ import cn.hutool.crypto.digest.MD5;
 public abstract class CommonRoute {
     
     /**
+     * Debug URL
+     */
+    private String debugUrl;
+    
+    /**
      * Service Name
      */
     private String name;
@@ -110,5 +115,13 @@ public abstract class CommonRoute {
     
     public void setOrder(Integer order) {
         this.order = order;
+    }
+    
+    public String getDebugUrl() {
+        return debugUrl;
+    }
+    
+    public void setDebugUrl(String debugUrl) {
+        this.debugUrl = debugUrl;
     }
 }

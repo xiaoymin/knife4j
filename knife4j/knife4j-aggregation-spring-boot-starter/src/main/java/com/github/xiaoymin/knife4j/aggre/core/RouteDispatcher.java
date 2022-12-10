@@ -20,6 +20,7 @@ package com.github.xiaoymin.knife4j.aggre.core;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
@@ -233,13 +234,7 @@ public class RouteDispatcher {
         SwaggerRoute swaggerRoute = getRoute(request.getHeader(ROUTE_PROXY_HEADER_NAME));
         // String uri="http://knife4j.xiaominfo.com";
         String uri = swaggerRoute.getUri();
-        if (StrUtil.isBlank(uri)) {
-            throw new RuntimeException("Uri is Empty");
-        }
-        String host = URI.create(uri).getHost();
         String fromUri = request.getRequestURI();
-        StringBuilder requestUrlBuilder = new StringBuilder();
-        requestUrlBuilder.append(uri);
         // get project servlet.contextPath
         if (StrUtil.isNotBlank(this.rootPath) && !StrUtil.equals(this.rootPath, ROUTE_BASE_PATH)) {
             fromUri = fromUri.replaceFirst(this.rootPath, "");
@@ -254,9 +249,24 @@ public class RouteDispatcher {
                 fromUri = fromUri.replaceFirst(swaggerRoute.getServicePath(), "");
             }
         }
+        if (StrUtil.isNotBlank(swaggerRoute.getLocation())) {
+            if (swaggerRoute.getLocation().indexOf(fromUri) == -1) {
+                logger.debug("location:{},fromURI:{}", swaggerRoute.getLocation(), fromUri);
+                // 当前路径是请求非获取OpenAPI实例路径地址，判断debugURL
+                if (StrUtil.isNotBlank(swaggerRoute.getDebugUrl())) {
+                    // 设置为调试地址
+                    uri = swaggerRoute.getDebugUrl();
+                }
+            }
+        }
+        logger.debug("Debug URI:{},fromURI:{}", uri, fromUri);
+        Assert.notEmpty(uri, "Uri is Empty");
+        StringBuilder requestUrlBuilder = new StringBuilder();
+        requestUrlBuilder.append(uri);
         requestUrlBuilder.append(fromUri);
         // String requestUrl=uri+fromUri;
         String requestUrl = requestUrlBuilder.toString();
+        String host = URI.create(uri).getHost();
         if (logger.isDebugEnabled()) {
             logger.debug("目标请求Url:{},请求类型:{},Host:{}", requestUrl, request.getMethod(), host);
         }

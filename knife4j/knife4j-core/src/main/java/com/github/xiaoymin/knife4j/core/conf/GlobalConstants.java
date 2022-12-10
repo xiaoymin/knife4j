@@ -27,6 +27,21 @@ package com.github.xiaoymin.knife4j.core.conf;
 public class GlobalConstants {
     
     /**
+     * HTTP Schema
+     */
+    public static final String PROTOCOL_HTTP = "http://";
+    
+    /**
+     * HTTPS Schema
+     */
+    public static final String PROTOCOL_HTTPS = "https://";
+    
+    /**
+     * 空字符串
+     */
+    public static final String EMPTY_STR = "";
+    
+    /**
      * Knife4j provider default username with basic auth.
      */
     public static final String BASIC_DEFAULT_USERNAME = "admin";

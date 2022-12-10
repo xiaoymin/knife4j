@@ -77,10 +77,10 @@ public class Knife4jRouteProxyFilter implements Filter {
                 // 响应当前服务聚合结构
                 writeRouteResponse(response, gson.toJson(routeDispatcher.getRoutes()));
             } else if (StrUtil.endWith(uri, RouteDispatcher.OPENAPI_GROUP_INSTANCE_ENDPOINT)) {
+                // 响应当前服务disk-实例
                 String group = request.getParameter("group");
                 SwaggerRoute swaggerRoute = routeDispatcher.getRoute(group);
                 writeRouteResponse(response, swaggerRoute == null ? "" : swaggerRoute.getContent());
-                // 响应当前服务disk-实例
             } else {
                 filterChain.doFilter(servletRequest, servletResponse);
             }

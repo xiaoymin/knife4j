@@ -33,8 +33,16 @@ public class DiskRoute {
     private String name;
     /**
      * disk模式调试目标服务器的Host地址，如果不为空，则配置可以调试走代理转发
+     * since v4.0.0版本过时,请使用debugUrl字段，该字段优先级高于host字段
      */
+    @Deprecated
     private String host;
+    
+    /**
+     * 调试地址
+     */
+    private String debugUrl;
+    
     /**
      * openapi本地文件路径或者OpenAPI访问接口路径
      */
@@ -54,6 +62,14 @@ public class DiskRoute {
      * @since 2.0.9
      */
     private Integer order = 1;
+    
+    public String getDebugUrl() {
+        return debugUrl;
+    }
+    
+    public void setDebugUrl(String debugUrl) {
+        this.debugUrl = debugUrl;
+    }
     
     public Integer getOrder() {
         return order;

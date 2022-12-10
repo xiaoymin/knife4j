@@ -44,6 +44,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+import java.util.Objects;
+
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/13 13:12
@@ -94,7 +96,7 @@ public class Knife4jAggregationAutoConfiguration {
     public RouteDispatcher routeDispatcher(@Autowired RouteRepository routeRepository,
                                            @Autowired RouteCache<String, SwaggerRoute> routeCache) {
         // 获取当前项目的contextPath
-        String contextPath = environment.getProperty("server.servlet.context-path");
+        String contextPath = Objects.toString(environment.getProperty("server.servlet.context-path"), "");
         if (StrUtil.isBlank(contextPath)) {
             contextPath = "/";
         }

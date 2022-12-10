@@ -18,6 +18,7 @@
 
 package com.github.xiaoymin.knife4j.core.util;
 
+import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,17 @@ public class CommonUtils {
     static final String COMMON_BEAN_NAME_PREFIX = "Knife4jDocket";
     
     static Logger logger = LoggerFactory.getLogger(CommonUtils.class);
+    
+    public static String getDebugUri(String source) {
+        if (StrUtil.isNotBlank(source)) {
+            String trimSource = source.trim();
+            if (trimSource.startsWith(GlobalConstants.PROTOCOL_HTTP) || trimSource.startsWith(GlobalConstants.PROTOCOL_HTTPS)) {
+                return trimSource;
+            }
+            return GlobalConstants.PROTOCOL_HTTP + trimSource;
+        }
+        return GlobalConstants.EMPTY_STR;
+    }
     
     public static String getRandomBeanName(String source) {
         String beanName = "";
