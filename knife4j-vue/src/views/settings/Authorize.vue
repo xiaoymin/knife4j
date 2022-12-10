@@ -228,8 +228,9 @@ export default {
           .request(requestConfig)
           .then(res => {
             var data = res.data;
-            this.oauth.accessToken = data.token_type + " " + data.access_token;
-            this.oauth.tokenType = data.token_type
+            this.applyHignSecurityVersion(data);
+            //this.oauth.accessToken = data.token_type + " " + data.access_token;
+            //this.oauth.tokenType = data.token_type
             this.oauth.granted = true;
             this.oauth.sync();
             this.$message.info("SUCCESS");
@@ -263,8 +264,9 @@ export default {
           .request(requestConfig)
           .then(res => {
             var data = res.data;
-            this.oauth.accessToken = data.token_type + " " + data.access_token;
-            this.oauth.tokenType = data.token_type
+            this.applyHignSecurityVersion(data);
+            //this.oauth.accessToken = data.token_type + " " + data.access_token;
+            //this.oauth.tokenType = data.token_type
             this.oauth.granted = true;
             this.oauth.sync();
             this.$message.info("SUCCESS");
@@ -277,6 +279,19 @@ export default {
               // //console(err.message);
             }
           });
+      }
+    },
+    applyHignSecurityVersion(data) {
+      //兼容高版本security针对oauth授权后字段变更
+      //https://gitee.com/xiaoym/knife4j/issues/I4TI9V
+      if (KUtils.checkUndefined(data)) {
+        if (KUtils.checkUndefined(data.token_type)) {
+          this.oauth.accessToken = data.token_type + " " + data.access_token;
+          this.oauth.tokenType = data.token_type
+        } else if (KUtils.checkUndefined(data.tokenType)) {
+          this.oauth.accessToken = data.tokenType + " " + data.value;
+          this.oauth.tokenType = data.tokenType
+        }
       }
     },
     initLocalOAuth() {
