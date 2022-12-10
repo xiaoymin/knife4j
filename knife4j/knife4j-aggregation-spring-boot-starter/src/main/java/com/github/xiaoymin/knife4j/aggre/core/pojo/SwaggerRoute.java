@@ -41,6 +41,11 @@ public class SwaggerRoute {
     
     private String name;
     /**
+     * 唯一主键id
+     * add since 4.0.0
+     */
+    private transient String pkId;
+    /**
      * 该属性JSON序列化时不能序列化出去,防止暴露服务的真实地址,存在安全隐患
      */
     private transient String uri;
@@ -78,6 +83,7 @@ public class SwaggerRoute {
      */
     public SwaggerRoute(DiskRoute diskRoute, String content) {
         if (diskRoute != null && StrUtil.isNotBlank(content)) {
+            this.pkId=diskRoute.pkId();
             this.name = diskRoute.getName();
             if (StrUtil.isNotBlank(diskRoute.getServicePath()) && !StrUtil.equals(diskRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
@@ -114,6 +120,7 @@ public class SwaggerRoute {
      */
     public SwaggerRoute(CloudRoute cloudRoute) {
         if (cloudRoute != null) {
+            this.pkId=cloudRoute.pkId();
             this.header = cloudRoute.pkId();
             if (cloudRoute.getRouteAuth() != null && cloudRoute.getRouteAuth().isEnable()) {
                 this.basicAuth = cloudRoute.pkId();
@@ -149,6 +156,7 @@ public class SwaggerRoute {
      */
     public SwaggerRoute(EurekaRoute eurekaRoute, EurekaInstance eurekaInstance) {
         if (eurekaRoute != null && eurekaInstance != null) {
+            this.pkId=eurekaRoute.pkId();
             this.header = eurekaRoute.pkId();
             if (eurekaRoute.getRouteAuth() != null && eurekaRoute.getRouteAuth().isEnable()) {
                 this.basicAuth = eurekaRoute.pkId();
@@ -181,6 +189,7 @@ public class SwaggerRoute {
      */
     public SwaggerRoute(NacosRoute nacosRoute, NacosInstance nacosInstance) {
         if (nacosRoute != null && nacosInstance != null) {
+            this.pkId=nacosRoute.pkId();
             this.header = nacosRoute.pkId();
             if (nacosRoute.getRouteAuth() != null && nacosRoute.getRouteAuth().isEnable()) {
                 this.basicAuth = nacosRoute.pkId();
@@ -206,7 +215,15 @@ public class SwaggerRoute {
         }
         
     }
-    
+
+    public String getPkId() {
+        return pkId;
+    }
+
+    public void setPkId(String pkId) {
+        this.pkId = pkId;
+    }
+
     public boolean isRouteProxy() {
         return routeProxy;
     }

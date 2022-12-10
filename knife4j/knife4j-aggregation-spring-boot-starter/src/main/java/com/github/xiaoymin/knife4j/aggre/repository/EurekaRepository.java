@@ -27,6 +27,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaApplication;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
+import com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.google.gson.Gson;
@@ -231,6 +232,10 @@ public class EurekaRepository extends AbstractRepository {
                             // 没有在线服务，清空routes中的数据
                             this.routeMap.clear();
                         }
+                        // Nacos用户可能存在修改服务配置的情况，需要nacosSetting配置与缓存的routeMap做一次compare，避免出现重复服务的情况出现
+                        // https://gitee.com/xiaoym/knife4j/issues/I3ZPUS
+                        List<String> settingRouteIds = this.eurekaSetting.getRoutes().stream().map(EurekaRoute::pkId).collect(Collectors.toList());
+                        this.heartRepeatClear(settingRouteIds);
                     }
                 } catch (Exception e) {
                     logger.debug(e.getMessage(), e);

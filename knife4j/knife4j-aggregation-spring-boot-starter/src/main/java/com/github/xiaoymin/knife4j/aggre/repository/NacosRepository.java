@@ -22,6 +22,7 @@ import cn.hutool.core.thread.ThreadUtil;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
+import com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -135,6 +137,10 @@ public class NacosRepository extends AbstractRepository {
                             logger.debug(e.getMessage(), e);
                         }
                     });
+                    // Nacos用户可能存在修改服务配置的情况，需要nacosSetting配置与缓存的routeMap做一次compare，避免出现重复服务的情况出现
+                    // https://gitee.com/xiaoym/knife4j/issues/I3ZPUS
+                    List<String> settingRouteIds = this.nacosSetting.getRoutes().stream().map(NacosRoute::pkId).collect(Collectors.toList());
+                    this.heartRepeatClear(settingRouteIds);
                 } catch (Exception e) {
                     logger.debug(e.getMessage(), e);
                 }

@@ -21,8 +21,10 @@ package com.github.xiaoymin.knife4j.aggre.repository;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.aggre.cloud.CloudRoute;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -30,6 +32,9 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /***
  * 基于本地配置的方式动态聚合云端(http)任意OpenAPI
@@ -131,6 +136,10 @@ public class CloudRepository extends AbstractRepository {
                             }
                             
                         });
+                        // Nacos用户可能存在修改服务配置的情况，需要nacosSetting配置与缓存的routeMap做一次compare，避免出现重复服务的情况出现
+                        // https://gitee.com/xiaoym/knife4j/issues/I3ZPUS
+                        List<String> settingRouteIds = this.cloudSetting.getRoutes().stream().map(CloudRoute::pkId).collect(Collectors.toList());
+                        this.heartRepeatClear(settingRouteIds);
                     }
                 } catch (Exception e) {
                     logger.debug(e.getMessage(), e);
