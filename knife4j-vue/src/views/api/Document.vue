@@ -699,6 +699,7 @@ export default {
       if (rcodes != null && rcodes != undefined) {
         for(let i=0;i<rcodes.length;i++){
           let rc=rcodes[i];
+          
           // 遍历
           if (rc.schema != undefined && rc.schema != null) {
             var respdata = [];
@@ -745,6 +746,17 @@ export default {
                           });
                         }
                       } else {
+                        //console.log("schemavalue--Not Existis,",schemaName)
+                        //非ref类型，在当前自己的params在过滤一边
+                        let childrenParamArray=respdata.filter(childrenParam=>childrenParam.pid==param.id);
+                        //console.log(childrenParamArray)
+                        if(KUtils.checkUndefined(childrenParamArray)){
+                          param.children=childrenParamArray.map(cd=>{
+                            const newObj = that.copyNewParameter(cd);
+                            newObj.pid = param.id;
+                            return newObj;
+                          })
+                        }
                         // //console("schemavalue--Not Existis");
                       }
                     }
