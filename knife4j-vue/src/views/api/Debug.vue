@@ -2019,7 +2019,6 @@ export default {
         } else if (this.formFlag) {
           this.debugSendFormRequest();
         } else if (this.urlFormFlag) {
-          // console.log("urlForm")
           this.debugSendUrlFormRequest();
         }
       } else {
@@ -3161,14 +3160,15 @@ export default {
       return params;
     },
     setResponseBody(res) {
-      // console.log("成功");
-      // console.log(res);
+      //console.log("成功");
+      //console.log(res);
       let that = this;
       if (KUtils.checkUndefined(res)) {
         var resp = res.request;
         // console.log(res);
         var headers = res.headers;
         if (KUtils.checkUndefined(resp)) {
+          //console.log('resp,', resp)
           var ctype = KUtils.propValue("content-type", headers, "");
           // 判断是否是blob类型
           var contentDisposition = KUtils.propValue("content-disposition", headers, "");
