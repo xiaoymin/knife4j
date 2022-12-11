@@ -18,7 +18,6 @@
 
 package com.github.xiaoymin.knife4j.proxy.servlet;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -123,7 +122,7 @@ public class ServletDesktopDispatcherFilter implements Filter {
                     if (classPathResource.exists()) {
                         log.info("exists:{}", classPathResource.exists());
                         Optional<MediaType> mediaTypeOptional = MediaTypeFactory.getMediaType(webjarURL);
-                        MediaType mediaType = mediaTypeOptional.get();
+                        MediaType mediaType = mediaTypeOptional.isPresent()?mediaTypeOptional.get():MediaType.TEXT_PLAIN;
                         log.info("mediaType:{}", mediaType);
                         String content = IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
                         WebJarFile webJarFile = new WebJarFile();
@@ -144,8 +143,8 @@ public class ServletDesktopDispatcherFilter implements Filter {
     }
     
     protected void writeRouteResponse(HttpServletResponse response, String content) throws IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         PrintWriter printWriter = response.getWriter();
         printWriter.write(content);
         printWriter.close();
