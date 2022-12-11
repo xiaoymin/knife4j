@@ -138,18 +138,21 @@ public class ServletProxyHttpClient extends AbstractProxyHttpClient {
         }
         requestUrlBuilder.append(fromUri);
         String requestUrl = requestUrlBuilder.toString();
-        logger.info("Target Request Url:{},Method:{},Host:{}", requestUrl, servletRequest.getMethod(), host);
+        logger.debug("Target Request Url:{},Method:{},Host:{}", requestUrl, servletRequest.getMethod(), host);
         routeRequestContext.setOriginalUri(fromUri);
         routeRequestContext.setUrl(requestUrl);
         routeRequestContext.setMethod(servletRequest.getMethod());
         
         List<String> headerValues = CollectionUtil.newArrayList(servletRequest.getHeaderNames());
         if (CollectionUtil.isNotEmpty(headerValues)) {
+            logger.debug("Add Request Header Value");
             for (String key : headerValues) {
                 if (!this.ignoreHeaders.contains(key.toLowerCase())) {
                     List<String> headerValue = CollectionUtil.newArrayList(servletRequest.getHeaders(key));
                     if (CollectionUtil.isNotEmpty(headerValue)) {
-                        routeRequestContext.addHeader(key, CollectionUtil.join(headerValue, StrUtil.COMMA));
+                        String headerStringValue=CollectionUtil.join(headerValue,StrUtil.COMMA);
+                        logger.debug("{}:{}",key,headerStringValue);
+                        routeRequestContext.addHeader(key, headerStringValue);
                     }
                 }
             }
@@ -157,9 +160,10 @@ public class ServletProxyHttpClient extends AbstractProxyHttpClient {
         routeRequestContext.addHeader("Host", host);
         List<String> parameters = CollectionUtil.newArrayList(servletRequest.getParameterNames());
         if (CollectionUtil.isNotEmpty(parameters)) {
+            logger.debug("Add Parameter Value");
             for (String name : parameters) {
                 String value = servletRequest.getParameter(name);
-                logger.info("param-name:{},value:{}", name, value);
+                logger.debug("{}:{}", name, value);
                 routeRequestContext.addParam(name, value);
             }
         }
