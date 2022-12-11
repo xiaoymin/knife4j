@@ -95,6 +95,7 @@ export default {
       openKeys: [],
       selectedKeys: [],
       status: false,
+      firstLoad: true,
       menuVisible: false,
       nextUrl: '',
       nextKey: '',
@@ -110,6 +111,7 @@ export default {
     //this.initKnife4jJFinal();
     //this.initKnife4jFront();
     this.initI18n();
+
   },
   computed: {
     currentUser() {
@@ -142,9 +144,13 @@ export default {
   },
   updated() {
     this.openDefaultTabByPath();
+
     //this.selectDefaultMenu();
   },
+  beforeMount() {
+  },
   mounted() {
+
     //this.selectDefaultMenu();
   },
   watch: {
@@ -677,6 +683,20 @@ export default {
       }
       return url;
     },
+    openFirstTabMenu() {
+      if (this.firstLoad) {
+        //第一次加载
+        this.firstLoad = false;
+        //console.log("需要打开menu菜单")
+        //console.log('this.MenuData,', this.MenuData)
+        // bfd1cc9fa1b2c0775d3d36e1ec92275c
+        //db32866d4bce265d18086e3eecfca4cb
+        //this.selectedKeys = [].concat('db32866d4bce265d18086e3eecfca4cb', 'bfd1cc9fa1b2c0775d3d36e1ec92275c');
+        //this.openKeys = [].concat('bfd1cc9fa1b2c0775d3d36e1ec92275c')
+        //this.selectDefaultMenu();
+        this.watchPathMenuSelect();
+      }
+    },
     openDefaultTabByPath() {
       //根据地址栏打开Tab选项卡
       var that = this;
@@ -688,11 +708,12 @@ export default {
         url = "/home";
       } */
       var url = this.getDefaultBrowserPath();
-      //console.log("url 1")
       if (this.nextUrl === url) {
         //console.log("nextUrl eq--return..")
+        // this.openKeys = [menu.key];
         return false;
       }
+      var menu = findComponentsByPath(url, this.swagger.globalMenuDatas);
       //console.log("url 2")
       //var menu = findComponentsByPath(url, this.MenuData);
       var menu = findComponentsByPath(url, this.swagger.globalMenuDatas);
@@ -712,6 +733,7 @@ export default {
           this.linkList.push("kmain");
         }
         const tabKeys = panes.map(tab => tab.key);
+        let openMenuFlag = false;
 
         //判断tab是否已加载
         if (tabKeys.indexOf(menu.key) == -1) {
@@ -727,11 +749,15 @@ export default {
           });
           this.linkList.push(menu.key);
           this.panels = panes;
+          openMenuFlag = true;
         }
         this.activeKey = menu.key;
         this.nextUrl = url;
         this.nextKey = menu.key;
         this.freePanelMemory(this.activeKey);
+        if (openMenuFlag) {
+          this.openFirstTabMenu();
+        }
       } else {
         //主页
         this.activeKey = "kmain";
@@ -763,12 +789,11 @@ export default {
     watchPathMenuSelect() {
       var url = this.$route.path;
       const tmpcol = this.collapsed;
-      //console.log("watch-------------------------");
+      //console.log("watch1-------------------------");
       const pathArr = urlToList(url);
       //console.log(pathArr);
       //console.log(this.MenuData)
       var m = findComponentsByPath(url, this.MenuData);
-      //console.log(m);
       //如果菜单面板已折叠,则不用打开openKeys
       if (!tmpcol) {
         if (pathArr.length == 2) {
