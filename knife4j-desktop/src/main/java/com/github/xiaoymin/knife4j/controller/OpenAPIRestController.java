@@ -16,16 +16,12 @@
  */
 
 
-package com.github.xiaoymin.knife4j;
+package com.github.xiaoymin.knife4j.controller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class Knife4jDesktopApplication {
-    
-    public static void main(String[] args) {
-        SpringApplication.run(Knife4jDesktopApplication.class, args);
-    }
-    
+/**
+ * @since:knife4j-desktop
+ * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * 2022/12/11 14:12
+ */
+public class OpenAPIRestController {
 }

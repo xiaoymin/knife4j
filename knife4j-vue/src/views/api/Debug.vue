@@ -718,7 +718,6 @@ export default {
       // console.log(this.globalParameters)
       // 本都缓存读取到参数，初始化header参数
       this.globalParameters.forEach(param => {
-        console.log(param)
         if (param.in == "header") {
           var newHeader = {
             id: KUtils.randomMd5(),
