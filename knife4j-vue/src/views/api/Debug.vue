@@ -263,6 +263,7 @@
 import md5 from "js-md5";
 import qs from "qs"
 import KUtils from "@/core/utils";
+import Knife4jDebugger from "../../core/common/Knife4jDebugger";
 import KEnvironment from "@/core/Environment"
 import constant from "@/store/constants";
 /* import EditorDebugShow from "./EditorDebugShow";
@@ -2551,7 +2552,7 @@ export default {
           // https://gitee.com/xiaoym/knife4j/issues/I374SP
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
-        // console.log(requestConfig);
+        //console.log(requestConfig);
         //requestConfig.data = null;
         const debugInstance = DebugAxios.create();
         // get请求编码问题
@@ -2765,34 +2766,48 @@ export default {
         this.$message.info(validateForm.message);
       }
     },
+    callAfterScript(data, headers) {
+      var groupid = this.swaggerInstance.id;
+      var allgroupid = this.swaggerInstance.allGroupIds;
+      // console.log("groupid:"+groupid);
+      // script不为空
+      var settings = {
+        allgroupids: allgroupid,
+        groupid: groupid,
+        response: {
+          data: data,
+          headers: headers
+        }
+      }
+      var ke = new KEnvironment(settings);
+      try {
+        var func = new Function('ke', this.rawScript);
+        // 执行
+        func(ke);
+        setTimeout(() => {
+          // console.log("开始执行...")
+          ke.global.action();
+        }, 1000);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    resolveOAS3Response(data) {
+      let _tempData = data.responseText;
+      if (data.responseTextType === 'application/json') {
+        _tempData = KUtils.json5parse(data.responseText);
+      }
+      this.callAfterScript(_tempData, data.headers);
+    },
     executeAfterScript(res) {
-      // console.log("executeAfterScript");
-      // console.log(res);
       if (KUtils.strNotBlank(this.rawScript)) {
-        var groupid = this.swaggerInstance.id;
-        var allgroupid = this.swaggerInstance.allGroupIds;
-        // console.log("groupid:"+groupid);
-        // script不为空
-        var settings = {
-          allgroupids: allgroupid,
-          groupid: groupid,
-          response: {
-            data: res.data,
-            headers: res.headers
-          }
+        if (!this.oas2) {
+          // OpenAPI3规范不是服务端响应的数据类型是什么，都是Blob类型，需要单独处理
+          Knife4jDebugger.resolveBlobResponse(res, this.resolveOAS3Response)
+        } else {
+          this.callAfterScript(res.data, res.headers);
         }
-        var ke = new KEnvironment(settings);
-        try {
-          var func = new Function('ke', this.rawScript);
-          // 执行
-          func(ke);
-          setTimeout(() => {
-            // console.log("开始执行...")
-            ke.global.action();
-          }, 1000);
-        } catch (e) {
-          console.error(e);
-        }
+
       }
     },
     handleDebugSuccess(startTime, endTime, res) {
