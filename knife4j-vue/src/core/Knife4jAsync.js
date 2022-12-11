@@ -5053,7 +5053,7 @@ SwaggerBootstrapUi.prototype.readOpenApiSpeci = function (path, swpinfo, apiInfo
 SwaggerBootstrapUi.prototype.readOpenApiSpeciOAS2 = function (apiInfo, swaggerData) {
   var definitionCopy = {};
   var apiStr = KUtils.json5stringify(apiInfo);
-  var reg = new RegExp('\'#/definitions/(.*?)\'', 'ig');
+  var reg = new RegExp('\"#/definitions/(.*?)\"', 'ig');
   let result;
   var definitions = swaggerData['definitions'];
   var modelArrays = new Array();
@@ -5085,9 +5085,9 @@ function readOpenAPIModel(model, modelArrays, definitions, oas2) {
       // 找子属性的model
       var reg;
       if (oas2) {
-        reg = new RegExp('\'#/definitions/(.*?)\'', 'ig');
+        reg = new RegExp('\"#/definitions/(.*?)\"', 'ig');
       } else {
-        reg = new RegExp('\'#/components/schemas/(.*?)\'', 'ig');
+        reg = new RegExp('\"#/components/schemas/(.*?)\"', 'ig');
       }
       let result;
       while ((result = reg.exec(defStr)) != null) {
@@ -5110,10 +5110,9 @@ function readOpenAPIModel(model, modelArrays, definitions, oas2) {
 SwaggerBootstrapUi.prototype.readOpenApiSpeciOAS3 = function (apiInfo, swaggerData) {
   var definitionCopy = {};
   var apiStr = KUtils.json5stringify(apiInfo);
-  var reg = new RegExp('\'#/components/schemas/(.*?)\'', 'ig');
-  let result;
-  var definitions = swaggerData['components'];
   var modelArrays = new Array();
+  var reg = new RegExp('\"#/components/schemas/(.*?)\"', 'ig');
+  let result;
   while ((result = reg.exec(apiStr)) != null) {
     var model = result[1];
     if (KUtils.checkUndefined(model)) {
@@ -5122,14 +5121,18 @@ SwaggerBootstrapUi.prototype.readOpenApiSpeciOAS3 = function (apiInfo, swaggerDa
       }
     }
   }
-  if (modelArrays.length > 0) {
-    // 不为空,找model的子属性是否包含model
-    modelArrays.forEach(model => {
-      readOpenAPIModel(model, modelArrays, definitions, false);
-    })
-    modelArrays.forEach(model => {
-      definitionCopy[model] = definitions[model];
-    })
+  var components = swaggerData['components'];
+  if (KUtils.checkUndefined(components)) {
+    let definitions = components["schemas"];
+    if (modelArrays.length > 0) {
+      // 不为空,找model的子属性是否包含model
+      modelArrays.forEach(model => {
+        readOpenAPIModel(model, modelArrays, definitions, false);
+      })
+      modelArrays.forEach(model => {
+        definitionCopy[model] = definitions[model];
+      })
+    }
   }
   return definitionCopy;
 }
