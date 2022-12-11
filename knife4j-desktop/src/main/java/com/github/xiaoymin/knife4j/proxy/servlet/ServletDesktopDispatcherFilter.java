@@ -113,6 +113,7 @@ public class ServletDesktopDispatcherFilter implements Filter {
                 String webjarURL = ReUtil.get(WEBJAR_RESOURCE_PATTERN, uri, 2);
                 if (webJarFileMap.containsKey(webjarURL)) {
                     WebJarFile webJarFile = webJarFileMap.get(webjarURL);
+                    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                     ServletUtil.write(response, webJarFile.getContent(), webJarFile.getMediaType().toString());
                 } else {
                     log.info("webjars.{},real:{}", uri, webjarURL);
@@ -130,6 +131,7 @@ public class ServletDesktopDispatcherFilter implements Filter {
                         webJarFile.setMediaType(mediaType);
                         webJarFile.setWebjar(webjarURL);
                         webJarFileMap.put(webjarURL, webJarFile);
+                        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                         ServletUtil.write(response, content, mediaType.toString());
                     } else {
                         filterChain.doFilter(servletRequest, servletResponse);
