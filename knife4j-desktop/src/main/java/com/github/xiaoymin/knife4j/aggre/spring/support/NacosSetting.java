@@ -32,8 +32,8 @@ import java.util.List;
  * 2020/11/16 22:52
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
-public class NacosSetting extends BaseSetting{
-
+public class NacosSetting extends BaseSetting {
+    
     /**
      * Nacos注册中心服务地址,例如：http://192.168.0.223:8888/nacos
      */
@@ -83,7 +83,7 @@ public class NacosSetting extends BaseSetting{
     public void setRouteAuth(BasicAuth routeAuth) {
         this.routeAuth = routeAuth;
     }
-
+    
     public String getServiceUrl() {
         return serviceUrl;
     }

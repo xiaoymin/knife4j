@@ -28,13 +28,13 @@ import java.util.List;
  * 2020/11/18 11:17
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
-public class DiskSetting extends BaseSetting{
-
+public class DiskSetting extends BaseSetting {
+    
     /**
      * disk模式聚合资源
      */
     private List<DiskRoute> routes;
-
+    
     public List<DiskRoute> getRoutes() {
         return routes;
     }

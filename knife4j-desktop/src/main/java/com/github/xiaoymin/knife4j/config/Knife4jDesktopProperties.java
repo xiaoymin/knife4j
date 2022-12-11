@@ -1,9 +1,21 @@
 /*
- * Copyright (C) 2022 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
+
 package com.github.xiaoymin.knife4j.config;
 
 import lombok.Data;
@@ -19,15 +31,14 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "knife4j")
 public class Knife4jDesktopProperties {
-
+    
     /**
      * 数据data目录
      */
     private String data;
-
+    
     /**
      * MetaDataMonitor组件刷新频率,单位:毫秒(data文件夹变更时触发Knife4jAggregationDesktop将从硬盘properties配置文件加载文档),默认是5000毫秒
      */
-    private long duration=5000L;
+    private long duration = 5000L;
 }
-

@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.data.watcher;
 
@@ -29,29 +40,29 @@ import java.util.Objects;
  * @since:knife4j-aggregation-desktop 1.0
  */
 public class MetaDataWatcher implements Watcher {
-
-    Logger logger= LoggerFactory.getLogger(MetaDataWatcher.class);
-
+    
+    Logger logger = LoggerFactory.getLogger(MetaDataWatcher.class);
+    
     private final String dataDir;
-
+    
     public MetaDataWatcher(String dataDir) {
         this.dataDir = dataDir;
         init();
     }
-
-    private void init(){
-        //初始化所有
-        File dataFile=new File(dataDir);
-        if (dataFile.exists()){
-            File[] files=dataFile.listFiles(File::isDirectory);
-            if (ArrayUtil.isNotEmpty(files)){
-                for (File file:files){
-                    resolver(file,MetaDataResolverKey.create);
+    
+    private void init() {
+        // 初始化所有
+        File dataFile = new File(dataDir);
+        if (dataFile.exists()) {
+            File[] files = dataFile.listFiles(File::isDirectory);
+            if (ArrayUtil.isNotEmpty(files)) {
+                for (File file : files) {
+                    resolver(file, MetaDataResolverKey.create);
                 }
             }
         }
     }
-
+    
     /**
      * 创建文件夹或者文件
      * 当项目code即文件夹名称变更时，会触发create事件
@@ -60,30 +71,30 @@ public class MetaDataWatcher implements Watcher {
      */
     @Override
     public void onCreate(WatchEvent<?> event, Path currentPath) {
-        String context=Objects.toString(event.context());
-        if (checkFileValidate(context,currentPath)){
-            File createFile=currentPath.resolve(context).toFile();
-            logger.info("onCreateFile:{}",createFile.getAbsolutePath());
-            resolver(createFile,MetaDataResolverKey.create);
+        String context = Objects.toString(event.context());
+        if (checkFileValidate(context, currentPath)) {
+            File createFile = currentPath.resolve(context).toFile();
+            logger.info("onCreateFile:{}", createFile.getAbsolutePath());
+            resolver(createFile, MetaDataResolverKey.create);
         }
     }
-
+    
     @Override
     public void onModify(WatchEvent<?> event, Path currentPath) {
-        String context=Objects.toString(event.context());
-        logger.info("onModify:{},path:{}",context,currentPath.toString());
-        if (checkFileValidate(context,currentPath)){
-            File modifyFile=currentPath.resolve(context).toFile();
-            //当前目录变更,需要变量
-            resolver(modifyFile,MetaDataResolverKey.modify);
-        }else{
-            File currentFile=currentPath.toFile();
-            if (StrUtil.equalsIgnoreCase(currentFile.getParentFile().getName(),"data")){
-                resolver(currentFile,MetaDataResolverKey.modify);
+        String context = Objects.toString(event.context());
+        logger.info("onModify:{},path:{}", context, currentPath.toString());
+        if (checkFileValidate(context, currentPath)) {
+            File modifyFile = currentPath.resolve(context).toFile();
+            // 当前目录变更,需要变量
+            resolver(modifyFile, MetaDataResolverKey.modify);
+        } else {
+            File currentFile = currentPath.toFile();
+            if (StrUtil.equalsIgnoreCase(currentFile.getParentFile().getName(), "data")) {
+                resolver(currentFile, MetaDataResolverKey.modify);
             }
         }
     }
-
+    
     /**
      * 当文件夹删除或者文件夹名称变更时都会触发delete事件
      * @param event
@@ -91,49 +102,49 @@ public class MetaDataWatcher implements Watcher {
      */
     @Override
     public void onDelete(WatchEvent<?> event, Path currentPath) {
-        String context=Objects.toString(event.context());
-        logger.info("onDelete:{},path:{}",context,currentPath.toString());
-        File deleteFile=currentPath.resolve(context).toFile();
-        if (!deleteFile.exists()&&StrUtil.equalsIgnoreCase(deleteFile.getParentFile().getName(),"data")){
-            logger.info("Remove OpenAPI document,code：{}",deleteFile.getName());
-            resolver(deleteFile,MetaDataResolverKey.delete);
+        String context = Objects.toString(event.context());
+        logger.info("onDelete:{},path:{}", context, currentPath.toString());
+        File deleteFile = currentPath.resolve(context).toFile();
+        if (!deleteFile.exists() && StrUtil.equalsIgnoreCase(deleteFile.getParentFile().getName(), "data")) {
+            logger.info("Remove OpenAPI document,code：{}", deleteFile.getName());
+            resolver(deleteFile, MetaDataResolverKey.delete);
         }
     }
-
+    
     @Override
     public void onOverflow(WatchEvent<?> event, Path currentPath) {
-        logger.info("overflow,path:{}",currentPath.toString());
+        logger.info("overflow,path:{}", currentPath.toString());
     }
-
+    
     /**
      * 处理文件变化状态
      * @param targetFile 目标目录
      * @param metaDataResolverKey 事件
      */
-    private void resolver(File targetFile, MetaDataResolverKey metaDataResolverKey){
-        try{
-            MetaDataResolver metaDataResolver=MetaDataResolverFactory.resolver(targetFile);
-            if (metaDataResolver!=null){
-                metaDataResolver.resolve(targetFile,metaDataResolverKey);
-            }else{
-                //针对删除
-                metaDataResolver= MetaDataResolverFactory.resolverByCode(targetFile.getName());
-                if (metaDataResolver!=null){
-                    metaDataResolver.resolve(targetFile,metaDataResolverKey);
+    private void resolver(File targetFile, MetaDataResolverKey metaDataResolverKey) {
+        try {
+            MetaDataResolver metaDataResolver = MetaDataResolverFactory.resolver(targetFile);
+            if (metaDataResolver != null) {
+                metaDataResolver.resolve(targetFile, metaDataResolverKey);
+            } else {
+                // 针对删除
+                metaDataResolver = MetaDataResolverFactory.resolverByCode(targetFile.getName());
+                if (metaDataResolver != null) {
+                    metaDataResolver.resolve(targetFile, metaDataResolverKey);
                 }
             }
-        }catch (Exception e){
-            logger.error("resolver exception:"+e.getMessage(),e);
+        } catch (Exception e) {
+            logger.error("resolver exception:" + e.getMessage(), e);
         }
     }
-
-    private boolean checkFileValidate(String context,Path currentPath){
-        boolean flag=false;
-        Path targetPath=currentPath.resolve(context);
-        File targetFile=targetPath.toFile();
-        if (targetFile.isDirectory()&& StrUtil.equalsIgnoreCase(targetFile.getParentFile().getName(),"data")){
-            //判断fileName是否符合要求
-            flag= ReUtil.isMatch(PatternPool.GENERAL,targetFile.getName());
+    
+    private boolean checkFileValidate(String context, Path currentPath) {
+        boolean flag = false;
+        Path targetPath = currentPath.resolve(context);
+        File targetFile = targetPath.toFile();
+        if (targetFile.isDirectory() && StrUtil.equalsIgnoreCase(targetFile.getParentFile().getName(), "data")) {
+            // 判断fileName是否符合要求
+            flag = ReUtil.isMatch(PatternPool.GENERAL, targetFile.getName());
         }
         return flag;
     }

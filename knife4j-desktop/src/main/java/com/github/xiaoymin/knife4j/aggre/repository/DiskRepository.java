@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.aggre.repository;
 
@@ -34,92 +45,90 @@ import java.util.Map;
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 public class DiskRepository extends AbsctractRepository {
-
-    Logger logger= LoggerFactory.getLogger(DiskRepository.class);
-
-    private final Gson gson=new GsonBuilder().create();
-
-    private final Map<String,DiskSetting> diskSettingMap=new HashMap<>();
-
+    
+    Logger logger = LoggerFactory.getLogger(DiskRepository.class);
+    
+    private final Gson gson = new GsonBuilder().create();
+    
+    private final Map<String, DiskSetting> diskSettingMap = new HashMap<>();
+    
     @Override
     public void remove(String code) {
         this.diskSettingMap.remove(code);
         this.multipartRouteMap.remove(code);
         GlobalDesktopManager.me.remove(code);
     }
-
+    
     @Override
     public BasicAuth getAccessAuth(String code) {
-        BasicAuth basicAuth=null;
-        DiskSetting setting=this.diskSettingMap.get(code);
-        if (setting!=null){
-            basicAuth=setting.getBasic();
+        BasicAuth basicAuth = null;
+        DiskSetting setting = this.diskSettingMap.get(code);
+        if (setting != null) {
+            basicAuth = setting.getBasic();
         }
         return basicAuth;
     }
-
+    
     /**
      * 根据Disk配置新增
      * @param code
      * @param diskSetting
      */
-    public void add(String code,DiskSetting diskSetting){
-        if (diskSetting!=null&& CollectionUtil.isNotEmpty(diskSetting.getRoutes())){
-            Map<String, SwaggerRoute> diskRouteMap=new HashMap<>();
-            for (DiskRoute diskRoute:diskSetting.getRoutes()){
-                if (StrUtil.isNotBlank(diskRoute.getLocation())){
-                    File file=new File(diskRoute.getLocation());
-                    try (InputStream resource=getResource(diskRoute.getLocation())){
-                        if (resource!=null){
-                            //判断file类型是json还是yaml
-                            String content="";
-                            if (StrUtil.endWith(file.getName(),".json")){
-                                content=new String(readBytes(resource),"UTF-8");
-                            }else if(StrUtil.endWith(file.getName(),".yml")){
-                                Yaml yaml=new Yaml();
-                                Object object=yaml.load(resource);
-                                content=gson.toJson(object);
+    public void add(String code, DiskSetting diskSetting) {
+        if (diskSetting != null && CollectionUtil.isNotEmpty(diskSetting.getRoutes())) {
+            Map<String, SwaggerRoute> diskRouteMap = new HashMap<>();
+            for (DiskRoute diskRoute : diskSetting.getRoutes()) {
+                if (StrUtil.isNotBlank(diskRoute.getLocation())) {
+                    File file = new File(diskRoute.getLocation());
+                    try (InputStream resource = getResource(diskRoute.getLocation())) {
+                        if (resource != null) {
+                            // 判断file类型是json还是yaml
+                            String content = "";
+                            if (StrUtil.endWith(file.getName(), ".json")) {
+                                content = new String(readBytes(resource), "UTF-8");
+                            } else if (StrUtil.endWith(file.getName(), ".yml")) {
+                                Yaml yaml = new Yaml();
+                                Object object = yaml.load(resource);
+                                content = gson.toJson(object);
                             }
-                            if (StrUtil.isNotBlank(content)){
-                                //添加分组
-                                diskRouteMap.put(diskRoute.pkId(),new SwaggerRoute(diskRoute,content));
+                            if (StrUtil.isNotBlank(content)) {
+                                // 添加分组
+                                diskRouteMap.put(diskRoute.pkId(), new SwaggerRoute(diskRoute, content));
                             }
                         }
                     } catch (Exception e) {
                         //
-                        logger.error("read err:"+e.getMessage());
+                        logger.error("read err:" + e.getMessage());
                     }
                 }
             }
-            if (CollectionUtil.isNotEmpty(diskRouteMap)){
-                this.multipartRouteMap.put(code,diskRouteMap);
-                this.diskSettingMap.put(code,diskSetting);
+            if (CollectionUtil.isNotEmpty(diskRouteMap)) {
+                this.multipartRouteMap.put(code, diskRouteMap);
+                this.diskSettingMap.put(code, diskSetting);
             }
         }
     }
-
-
-
-    private InputStream getResource(String location){
-        InputStream resource=null;
-        try{
-           return new FileInputStream(new File(location));
-        }catch (Exception e){
-            logger.error("read from resource error:"+e.getMessage());
+    
+    private InputStream getResource(String location) {
+        InputStream resource = null;
+        try {
+            return new FileInputStream(new File(location));
+        } catch (Exception e) {
+            logger.error("read from resource error:" + e.getMessage());
         }
         return resource;
     }
-
-    private byte[] readBytes(InputStream ins){
-        if (ins==null){
+    
+    private byte[] readBytes(InputStream ins) {
+        if (ins == null) {
             return null;
         }
-        ByteArrayOutputStream byteOutArr=new ByteArrayOutputStream();
-        int r=-1;
-        byte[] bytes = new byte[1024*1024];
+        ByteArrayOutputStream byteOutArr = new ByteArrayOutputStream();
+        int r = -1;
+        byte[] bytes = new byte[1024 * 1024];
         try {
-            while ((r=ins.read(bytes))!=-1){
-                byteOutArr.write(bytes,0,r);
+            while ((r = ins.read(bytes)) != -1) {
+                byteOutArr.write(bytes, 0, r);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -128,5 +137,5 @@ public class DiskRepository extends AbsctractRepository {
         }
         return byteOutArr.toByteArray();
     }
-
+    
 }

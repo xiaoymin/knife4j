@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.data.impl;
 
@@ -27,46 +38,46 @@ import java.util.Optional;
  */
 @Slf4j
 public abstract class AbstractMetaDataResolver implements MetaDataResolver {
+    
     @Override
     public void resolve(File file, MetaDataResolverKey metaDataResolverKey) {
-        String code=file.getName();
-        Long fileLastChange=GlobalDesktopManager.me.getFileValue(code);
-        if (fileLastChange!=null){
-            //判断文件是否发生了变化
-            if (NumberUtil.compare(file.lastModified(),fileLastChange)==0){
-                //log.info("文件未发生变化,不用处理,file:{}",file.getAbsolutePath());
+        String code = file.getName();
+        Long fileLastChange = GlobalDesktopManager.me.getFileValue(code);
+        if (fileLastChange != null) {
+            // 判断文件是否发生了变化
+            if (NumberUtil.compare(file.lastModified(), fileLastChange) == 0) {
+                // log.info("文件未发生变化,不用处理,file:{}",file.getAbsolutePath());
                 return;
             }
         }
-        log.info("file modifier:{}，file:{}",file.lastModified(),file.getAbsolutePath());
-        RouteRepository routeRepository=GlobalDesktopManager.me.repository(code);
-        if (routeRepository!=null){
+        log.info("file modifier:{}，file:{}", file.lastModified(), file.getAbsolutePath());
+        RouteRepository routeRepository = GlobalDesktopManager.me.repository(code);
+        if (routeRepository != null) {
             GlobalDesktopManager.me.repository(code).remove(code);
-            //GlobalDesktopManager.me.remove(code);
-            //routeRepository.remove(code);
+            // GlobalDesktopManager.me.remove(code);
+            // routeRepository.remove(code);
         }
-        if (metaDataResolverKey==MetaDataResolverKey.create||metaDataResolverKey==MetaDataResolverKey.modify){
+        if (metaDataResolverKey == MetaDataResolverKey.create || metaDataResolverKey == MetaDataResolverKey.modify) {
             resolverModifyAndCreate(file);
         }
     }
-
+    
     /**
      * properties配置文件转换为java实体类
      * @param propertiesFile
      * @return
      */
-    protected Knife4jAggregationProperties loadFromProperties(File propertiesFile){
-        Optional<Knife4jSettingProperties> knife4jSettingPropertiesOptional= PropertyUtil.resolveSingle(propertiesFile,Knife4jSettingProperties.class);
+    protected Knife4jAggregationProperties loadFromProperties(File propertiesFile) {
+        Optional<Knife4jSettingProperties> knife4jSettingPropertiesOptional = PropertyUtil.resolveSingle(propertiesFile, Knife4jSettingProperties.class);
         if (knife4jSettingPropertiesOptional.isPresent()) {
-            Knife4jSettingProperties knife4jSettingProperties=knife4jSettingPropertiesOptional.get();
-            if (knife4jSettingProperties!=null){
+            Knife4jSettingProperties knife4jSettingProperties = knife4jSettingPropertiesOptional.get();
+            if (knife4jSettingProperties != null) {
                 return knife4jSettingProperties.getKnife4j();
             }
         }
         return null;
     }
-
+    
     public abstract void resolverModifyAndCreate(File file);
-
-
+    
 }

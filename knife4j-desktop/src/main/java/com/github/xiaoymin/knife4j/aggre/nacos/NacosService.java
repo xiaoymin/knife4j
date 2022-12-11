@@ -50,11 +50,11 @@ public class NacosService extends PoolingConnectionManager implements Callable<O
      * Nacos获取实例列表OpenAPI接口，详情参考：https://nacos.io/zh-cn/docs/open-api.html
      */
     private static final String NACOS_INSTANCE_LIST_API = "/v1/ns/instance/list";
-
+    
     /**
      * 登录接口
      */
-    public static final String NACOS_LOGIN="/v1/auth/login";
+    public static final String NACOS_LOGIN = "/v1/auth/login";
     /**
      * 服务名称
      */

@@ -33,7 +33,7 @@ import org.springframework.core.env.Environment;
  */
 @Configuration
 public class Knife4jAggregationAutoConfiguration {
-
+    
     final Environment environment;
     
     @Autowired
@@ -45,5 +45,5 @@ public class Knife4jAggregationAutoConfiguration {
     public RouteCache<String, SwaggerRoute> routeCache() {
         return new RouteInMemoryCache();
     }
-
+    
 }

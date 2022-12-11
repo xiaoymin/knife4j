@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.util;
 
@@ -23,18 +34,18 @@ import java.util.Map;
  * @since:knife4j-aggregation-desktop 1.0
  */
 public class NetUtils {
-
-    static Logger logger= LoggerFactory.getLogger(NetUtils.class);
-
-    static final Gson gson=new GsonBuilder().create();
-
+    
+    static Logger logger = LoggerFactory.getLogger(NetUtils.class);
+    
+    static final Gson gson = new GsonBuilder().create();
+    
     /**
      * 401错误
      * @param response
      */
-    public static void writeServletForbiddenCode(HttpServletResponse response){
+    public static void writeServletForbiddenCode(HttpServletResponse response) {
         response.setStatus(401);
-        response.addHeader("WWW-Authenticate","Basic realm=\"input Document Basic userName & password \"");
+        response.addHeader("WWW-Authenticate", "Basic realm=\"input Document Basic userName & password \"");
     }
     /**
      * 默认响应对象
@@ -42,31 +53,30 @@ public class NetUtils {
      * @param message 错误信息
      * @return
      */
-    public static Map<String,String> defaultResponseMap(String uri,String message){
-        Map<String,String> map= new HashMap<>();
-        map.put("message",message);
-        map.put("code","500");
-        map.put("path",uri);
+    public static Map<String, String> defaultResponseMap(String uri, String message) {
+        Map<String, String> map = new HashMap<>();
+        map.put("message", message);
+        map.put("code", "500");
+        map.put("path", uri);
         return map;
     }
     /**
      * 设置响应JSON类型
      * @param response
      */
-    public static void responseJsonContentType(HttpServletResponse response){
+    public static void responseJsonContentType(HttpServletResponse response) {
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
     }
-
-
-    public static String decodeBase64(String source){
-        String decodeStr=null;
-        if (source!=null){
+    
+    public static String decodeBase64(String source) {
+        String decodeStr = null;
+        if (source != null) {
             try {
-                byte[] bytes= Base64.getDecoder().decode(source);
-                decodeStr=new String(bytes);
+                byte[] bytes = Base64.getDecoder().decode(source);
+                decodeStr = new String(bytes);
             } catch (Exception e) {
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
             }
         }
         return decodeStr;

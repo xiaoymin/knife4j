@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2018 Zhejiang xiaominfo Technology CO.,LTD.
- * All rights reserved.
- * Official Web Site: http://www.xiaominfo.com.
- * Developer Web Site: http://open.xiaominfo.com.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.data.commons;
 
@@ -33,36 +44,37 @@ import java.util.Set;
  * @since:knife4j-aggregation-desktop 1.0
  */
 public class DataMonitorListener extends FileAlterationListenerAdaptor {
-
-    Logger logger= LoggerFactory.getLogger(DataMonitorListener.class);
-
+    
+    Logger logger = LoggerFactory.getLogger(DataMonitorListener.class);
+    
     private final String dataPath;
-
-    final Set<String> propertiesSet= CollectionUtil.newHashSet(GlobalDesktopManager.CLOUD_PROPERTIES,GlobalDesktopManager.DISK_PROPERTIES,GlobalDesktopManager.NACOS_PROPERTIES,GlobalDesktopManager.EUREKA_PROPERTIES);
-
+    
+    final Set<String> propertiesSet =
+            CollectionUtil.newHashSet(GlobalDesktopManager.CLOUD_PROPERTIES, GlobalDesktopManager.DISK_PROPERTIES, GlobalDesktopManager.NACOS_PROPERTIES, GlobalDesktopManager.EUREKA_PROPERTIES);
+    
     public DataMonitorListener(String dataPath) {
         this.dataPath = dataPath;
         init();
     }
-
-    public void readAllFile(){
-        File dataFile=new File(dataPath);
-        if (dataFile.exists()){
-            File[] files=dataFile.listFiles(File::isDirectory);
-            if (ArrayUtil.isNotEmpty(files)){
-                for (File file:files){
-                    resolver(file,MetaDataResolverKey.create);
+    
+    public void readAllFile() {
+        File dataFile = new File(dataPath);
+        if (dataFile.exists()) {
+            File[] files = dataFile.listFiles(File::isDirectory);
+            if (ArrayUtil.isNotEmpty(files)) {
+                for (File file : files) {
+                    resolver(file, MetaDataResolverKey.create);
                 }
             }
         }
     }
-    public void clear(){
-        //清理不存在的项目
-        Set<String> codeSets=GlobalDesktopManager.me.getCodes();
-        if (CollectionUtil.isNotEmpty(codeSets)){
-            for (String code:codeSets){
-                String file=this.dataPath+File.separator+code;
-                if (!FileUtil.exist(file)){
+    public void clear() {
+        // 清理不存在的项目
+        Set<String> codeSets = GlobalDesktopManager.me.getCodes();
+        if (CollectionUtil.isNotEmpty(codeSets)) {
+            for (String code : codeSets) {
+                String file = this.dataPath + File.separator + code;
+                if (!FileUtil.exist(file)) {
                     GlobalDesktopManager.me.remove(code);
                 }
             }
@@ -71,117 +83,108 @@ public class DataMonitorListener extends FileAlterationListenerAdaptor {
     /**
      * 初始化所有
      */
-    public void init(){
-        ThreadUtil.execute(()->{
+    public void init() {
+        ThreadUtil.execute(() -> {
             logger.info("inits data");
             this.readAllFile();
         });
     }
-
+    
     @Override
     public void onDirectoryChange(File directory) {
-        if (checkDirectoryValidate(directory)){
-            //do
-            logger.info("directoryChange.directory:{}",directory.getAbsolutePath());
-            //当前目录变更,需要变量
-            resolver(directory,MetaDataResolverKey.modify);
+        if (checkDirectoryValidate(directory)) {
+            // do
+            logger.info("directoryChange.directory:{}", directory.getAbsolutePath());
+            // 当前目录变更,需要变量
+            resolver(directory, MetaDataResolverKey.modify);
         }
     }
-
+    
     @Override
     public void onDirectoryCreate(File directory) {
-        if (checkDirectoryValidate(directory)){
-            logger.info("directoryCreate.directory:{}",directory.getAbsolutePath());
-            resolver(directory,MetaDataResolverKey.create);
+        if (checkDirectoryValidate(directory)) {
+            logger.info("directoryCreate.directory:{}", directory.getAbsolutePath());
+            resolver(directory, MetaDataResolverKey.create);
         }
     }
-
+    
     @Override
     public void onDirectoryDelete(File directory) {
-        if (checkDirectoryValidate(directory)){
-            logger.info("directoryDelete.directory:{}",directory.getAbsolutePath());
-            logger.info("Remove OpenAPI document,code：{}",directory.getName());
-            resolver(directory,MetaDataResolverKey.delete);
+        if (checkDirectoryValidate(directory)) {
+            logger.info("directoryDelete.directory:{}", directory.getAbsolutePath());
+            logger.info("Remove OpenAPI document,code：{}", directory.getName());
+            resolver(directory, MetaDataResolverKey.delete);
         }
     }
-
-   @Override
-    public void onFileChange(File file) {
-        if (checkFileValidate(file)){
-            logger.info("fileChange.file:{}",file.getAbsolutePath());
-            //当前目录变更,需要变量
-            resolver(file.getParentFile(),MetaDataResolverKey.modify);
-        }
-    }
-
-    /* @Override
-    public void onFileCreate(File file) {
-        if (checkFileValidate(file)){
-            logger.info("fileCreate.file:{}",file.getAbsolutePath());
-        }
-    }
-
+    
     @Override
-    public void onFileDelete(File file) {
-        if (checkFileValidate(file)){
-            logger.info("fileDelete.file:{}",file.getAbsolutePath());
+    public void onFileChange(File file) {
+        if (checkFileValidate(file)) {
+            logger.info("fileChange.file:{}", file.getAbsolutePath());
+            // 当前目录变更,需要变量
+            resolver(file.getParentFile(), MetaDataResolverKey.modify);
         }
     }
-*/
+    
+    /*
+     * @Override public void onFileCreate(File file) { if (checkFileValidate(file)){ logger.info("fileCreate.file:{}",file.getAbsolutePath()); } }
+     * 
+     * @Override public void onFileDelete(File file) { if (checkFileValidate(file)){ logger.info("fileDelete.file:{}",file.getAbsolutePath()); } }
+     */
     /**
      * 校验文件夹是否符合规则
      * @param directory data目录下文件夹
      * @return 是否符合规则
      */
-    private boolean checkDirectoryValidate(File directory){
-        boolean flag=false;
-        if (StrUtil.equalsIgnoreCase(directory.getParentFile().getName(),"data")){
-            //判断fileName是否符合要求
-            flag= ReUtil.isMatch(PatternPool.GENERAL,directory.getName());
+    private boolean checkDirectoryValidate(File directory) {
+        boolean flag = false;
+        if (StrUtil.equalsIgnoreCase(directory.getParentFile().getName(), "data")) {
+            // 判断fileName是否符合要求
+            flag = ReUtil.isMatch(PatternPool.GENERAL, directory.getName());
         }
         return flag;
     }
-
+    
     /**
      * 校验变更文件是否符合规则
      * @param file 文件
      * @return
      */
-    private boolean checkFileValidate(File file){
-        boolean flag=false;
-        String parentNme=file.getParentFile().getParentFile().getName();
-        if (StrUtil.equals(parentNme,"data")){
-            //文件名称 需要满足几种情况
-            //1、是否以.json结尾
-            //2.是否以.properties结尾
-            //3.是否是nacos\disk\eureka\cloud等properties配置文件
-            String name=file.getName();
-            if (CommonUtils.checkDiskFileName(name) ||propertiesSet.contains(name)){
-                flag=true;
+    private boolean checkFileValidate(File file) {
+        boolean flag = false;
+        String parentNme = file.getParentFile().getParentFile().getName();
+        if (StrUtil.equals(parentNme, "data")) {
+            // 文件名称 需要满足几种情况
+            // 1、是否以.json结尾
+            // 2.是否以.properties结尾
+            // 3.是否是nacos\disk\eureka\cloud等properties配置文件
+            String name = file.getName();
+            if (CommonUtils.checkDiskFileName(name) || propertiesSet.contains(name)) {
+                flag = true;
             }
         }
         return flag;
     }
-
+    
     /**
      * 处理文件变化状态
      * @param targetFile 目标目录
      * @param metaDataResolverKey 事件
      */
-    private void resolver(File targetFile, MetaDataResolverKey metaDataResolverKey){
-        try{
-            MetaDataResolver metaDataResolver= MetaDataResolverFactory.resolver(targetFile);
-            if (metaDataResolver!=null){
-                metaDataResolver.resolve(targetFile,metaDataResolverKey);
-            }else{
-                //针对删除
-                metaDataResolver= MetaDataResolverFactory.resolverByCode(targetFile.getName());
-                if (metaDataResolver!=null){
-                    metaDataResolver.resolve(targetFile,metaDataResolverKey);
+    private void resolver(File targetFile, MetaDataResolverKey metaDataResolverKey) {
+        try {
+            MetaDataResolver metaDataResolver = MetaDataResolverFactory.resolver(targetFile);
+            if (metaDataResolver != null) {
+                metaDataResolver.resolve(targetFile, metaDataResolverKey);
+            } else {
+                // 针对删除
+                metaDataResolver = MetaDataResolverFactory.resolverByCode(targetFile.getName());
+                if (metaDataResolver != null) {
+                    metaDataResolver.resolve(targetFile, metaDataResolverKey);
                 }
             }
-        }catch (Exception e){
-            logger.error("resolver exception:"+e.getMessage(),e);
+        } catch (Exception e) {
+            logger.error("resolver exception:" + e.getMessage(), e);
         }
     }
 }

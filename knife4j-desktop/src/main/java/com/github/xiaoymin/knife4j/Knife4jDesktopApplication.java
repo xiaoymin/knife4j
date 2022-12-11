@@ -30,20 +30,20 @@ import java.net.InetAddress;
 @Slf4j
 @SpringBootApplication
 public class Knife4jDesktopApplication {
-
+    
     @SneakyThrows
     public static void main(String[] args) {
-        //启动项目
+        // 启动项目
         ConfigurableApplicationContext application = SpringApplication.run(Knife4jDesktopApplication.class, args);
         Environment env = application.getEnvironment();
         String host = InetAddress.getLocalHost().getHostAddress();
         String port = env.getProperty("server.port");
         log.info("\n----------------------------------------------------------\n\t" +
-                        "Application '{}' is running! Access URLs:\n\t" +
-                        "Local: \t\thttp://localhost:{}\n\t" +
-                        "External: \thttp://{}:{}\n\t" +
-                        "Doc: \thttp://{}:{}/doc.html\n\t" +
-                        "----------------------------------------------------------",
+                "Application '{}' is running! Access URLs:\n\t" +
+                "Local: \t\thttp://localhost:{}\n\t" +
+                "External: \thttp://{}:{}\n\t" +
+                "Doc: \thttp://{}:{}/doc.html\n\t" +
+                "----------------------------------------------------------",
                 env.getProperty("spring.application.name"),
                 env.getProperty("server.port"),
                 host, port,
