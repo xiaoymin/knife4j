@@ -18,6 +18,7 @@
 
 package com.github.xiaoymin.knife4j.spring.filter;
 
+import com.github.xiaoymin.knife4j.extend.filter.BasicFilter;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;

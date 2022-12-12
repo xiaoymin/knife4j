@@ -13,8 +13,8 @@
 
     <properties>
         <knife4j-java.version>17</knife4j-java.version>
-        <knife4j-spring.version>6.0.2</knife4j-spring.version>
-        <knife4j-spring-boot.version>3.0.0</knife4j-spring-boot.version>
+        <knife4j-spring3.version>6.0.2</knife4j-spring3.version>
+        <knife4j-spring-boot3.version>3.0.0</knife4j-spring-boot3.version>
 
         <knife4j-springdoc-openapi.version>2.0.0</knife4j-springdoc-openapi.version>
         <knife4j-servlet.version>6.0.0</knife4j-servlet.version>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>${knife4j-spring-boot.version}</version>
+            <version>${knife4j-spring-boot3.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -41,21 +41,17 @@
             <artifactId>knife4j-openapi3-ui</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>${knife4j-javassist.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>${knife4j-spring.version}</version>
+            <version>${knife4j-spring3.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>${knife4j-spring.version}</version>
+            <version>${knife4j-spring3.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

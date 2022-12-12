@@ -18,6 +18,8 @@
 
 package com.github.xiaoymin.knife4j.spring.filter;
 
+import com.github.xiaoymin.knife4j.extend.filter.BasicFilter;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

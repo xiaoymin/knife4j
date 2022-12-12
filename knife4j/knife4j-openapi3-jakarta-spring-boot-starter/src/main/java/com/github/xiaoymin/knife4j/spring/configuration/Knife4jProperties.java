@@ -20,6 +20,7 @@ package com.github.xiaoymin.knife4j.spring.configuration;
 
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
 import com.github.xiaoymin.knife4j.core.model.MarkdownProperty;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,7 @@ import java.util.List;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2019/08/27 15:40
  */
+@Data
 @Component
 @ConfigurationProperties(prefix = "knife4j")
 public class Knife4jProperties {
@@ -57,58 +59,11 @@ public class Knife4jProperties {
     /**
      * 个性化配置
      */
-    private OpenApiExtendSetting setting;
+    private Knife4jSetting setting;
     
     /**
      * 分组文档集合
      */
     private List<MarkdownProperty> documents;
     
-    public Knife4jHttpBasic getBasic() {
-        return basic;
-    }
-    
-    public void setBasic(Knife4jHttpBasic basic) {
-        this.basic = basic;
-    }
-    
-    public boolean isProduction() {
-        return production;
-    }
-    
-    public void setProduction(boolean production) {
-        this.production = production;
-    }
-    
-    public List<MarkdownProperty> getDocuments() {
-        return documents;
-    }
-    
-    public void setDocuments(List<MarkdownProperty> documents) {
-        this.documents = documents;
-    }
-    
-    public OpenApiExtendSetting getSetting() {
-        return setting;
-    }
-    
-    public void setSetting(OpenApiExtendSetting setting) {
-        this.setting = setting;
-    }
-    
-    public boolean isCors() {
-        return cors;
-    }
-    
-    public void setCors(boolean cors) {
-        this.cors = cors;
-    }
-    
-    public boolean isEnable() {
-        return enable;
-    }
-    
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
 }

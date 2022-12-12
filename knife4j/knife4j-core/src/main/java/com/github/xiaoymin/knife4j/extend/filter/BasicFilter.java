@@ -16,7 +16,7 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.filter;
+package com.github.xiaoymin.knife4j.extend.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
