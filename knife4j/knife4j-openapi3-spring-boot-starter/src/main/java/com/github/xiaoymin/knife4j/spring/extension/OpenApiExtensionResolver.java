@@ -20,18 +20,17 @@ package com.github.xiaoymin.knife4j.spring.extension;
 
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendMarkdownChildren;
 import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendMarkdownFile;
-import com.github.xiaoymin.knife4j.core.extend.OpenApiExtendSetting;
 import com.github.xiaoymin.knife4j.core.model.MarkdownProperty;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.spring.configuration.Knife4jSetting;
 import com.github.xiaoymin.knife4j.spring.util.MarkdownUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
-import springfox.documentation.service.VendorExtension;
 
 import java.util.*;
 
@@ -50,14 +49,28 @@ public class OpenApiExtensionResolver {
     /**
      * 个性化配置
      */
-    private final OpenApiExtendSetting setting;
+    private final Knife4jSetting setting;
     
     /**
      * 分组文档集合
      */
     private final List<MarkdownProperty> markdownProperties;
     
-    private void start() {
+    public List<OpenApiExtendMarkdownFile> getMarkdownFiles() {
+        if (CollectionUtils.isNotEmpty(markdownFileMaps)) {
+            List<OpenApiExtendMarkdownFile> markdownFiles = new LinkedList<>();
+            for (Map.Entry<String, List<OpenApiExtendMarkdownFile>> entry : this.markdownFileMaps.entrySet()) {
+                if (CollectionUtils.isNotEmpty(entry.getValue())) {
+                    markdownFiles.addAll(entry.getValue());
+                }
+            }
+            return markdownFiles;
+            
+        }
+        return Collections.EMPTY_LIST;
+    }
+    
+    public void start() {
         if (logger.isDebugEnabled()) {
             logger.debug("Resolver method start...");
         }
@@ -156,36 +169,7 @@ public class OpenApiExtensionResolver {
         return MarkdownUtils.resolveMarkdownResource(resource);
     }
     
-    /**
-     * 构造扩展插件
-     * @param groupName Swagger分组名称
-     * @return 扩展插件集合
-     */
-    public List<VendorExtension> buildExtensions(String groupName) {
-        String swaggerGroupName = StrUtil.isNotBlank(groupName) ? groupName : "default";
-        OpenApiExtension openApiExtension = new OpenApiExtension(OpenApiExtension.EXTENSION_NAME);
-        // 增加Markdown和setting
-        openApiExtension.addProperty(new OpenApiSettingExtension(this.setting));
-        openApiExtension.addProperty(new OpenApiMarkdownExtension(markdownFileMaps.get(swaggerGroupName)));
-        List<VendorExtension> vendorExtensions = new ArrayList<>();
-        vendorExtensions.add(openApiExtension);
-        return vendorExtensions;
-    }
-    
-    /**
-     * 构建个性化增强插件，个性化增强配置无需传递分组名称
-     * @return 扩展插件集合
-     */
-    public List<VendorExtension> buildSettingExtensions() {
-        OpenApiExtension openApiExtension = new OpenApiExtension(OpenApiExtension.EXTENSION_NAME);
-        // 增加Markdown和setting
-        openApiExtension.addProperty(new OpenApiSettingExtension(this.setting));
-        List<VendorExtension> vendorExtensions = new ArrayList<>();
-        vendorExtensions.add(openApiExtension);
-        return vendorExtensions;
-    }
-    
-    public OpenApiExtensionResolver(OpenApiExtendSetting setting, List<MarkdownProperty> markdownProperties) {
+    public OpenApiExtensionResolver(Knife4jSetting setting, List<MarkdownProperty> markdownProperties) {
         this.setting = setting;
         this.markdownProperties = markdownProperties;
     }

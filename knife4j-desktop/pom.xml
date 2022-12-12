@@ -68,9 +68,9 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>2.0.21</version>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-client</artifactId>
+            <version>2.2.0-BETA</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

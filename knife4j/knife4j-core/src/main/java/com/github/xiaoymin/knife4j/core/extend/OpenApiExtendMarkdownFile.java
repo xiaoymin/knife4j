@@ -18,6 +18,8 @@
 
 package com.github.xiaoymin.knife4j.core.extend;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
@@ -25,31 +27,24 @@ import java.util.List;
  * 2020/10/24 6:58
  * @since:knife4j 2.0.6
  */
+@Data
 public class OpenApiExtendMarkdownFile {
-    
+
     /**
-     * 分组名称
+     * OpenAPI分组名称
+     * since v4.0.0
+     */
+    private String group;
+
+    /**
+     * markdown分组名称
      */
     private String name;
+
     
     /**
      * 分组下文档集合
      */
     private List<OpenApiExtendMarkdownChildren> children;
-    
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public List<OpenApiExtendMarkdownChildren> getChildren() {
-        return children;
-    }
-    
-    public void setChildren(List<OpenApiExtendMarkdownChildren> children) {
-        this.children = children;
-    }
+
 }

@@ -18,6 +18,7 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
+import com.github.xiaoymin.knife4j.spring.extension.Knife4jOpenApiCustomizer;
 import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.filter.SecurityBasicAuthFilter;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ import org.springframework.web.filter.CorsFilter;
  * 2019/08/28 21:08
  */
 @Configuration
-@EnableConfigurationProperties({Knife4jProperties.class})
+@EnableConfigurationProperties({Knife4jProperties.class, Knife4jHttpBasic.class, Knife4jSetting.class})
 @ConditionalOnProperty(name = "knife4j.enable", havingValue = "true")
 public class Knife4jAutoConfiguration {
     
@@ -49,6 +50,17 @@ public class Knife4jAutoConfiguration {
     private Environment environment;
     Logger logger = LoggerFactory.getLogger(Knife4jAutoConfiguration.class);
     
+    /**
+     * 增强自定义配置
+     * @param knife4jProperties
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public Knife4jOpenApiCustomizer knife4jOpenApiCustomizer(Knife4jProperties knife4jProperties) {
+        logger.debug("Register Knife4jOpenApiCustomizer");
+        return new Knife4jOpenApiCustomizer(knife4jProperties);
+    }
     /**
      * 配置Cors
      * @since 2.0.4

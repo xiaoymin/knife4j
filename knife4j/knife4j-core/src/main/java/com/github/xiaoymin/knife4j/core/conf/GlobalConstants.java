@@ -60,4 +60,24 @@ public class GlobalConstants {
      * 动态生成class包名前缀
      */
     public static final String BASE_PACKAGE_PREFIX = "com.github.xiaoymin.knife4j.model.";
+    
+    /**
+     * Knife4j增强扩展属性名称
+     */
+    public static final String EXTENSION_NAME = "extensions";
+    
+    /**
+     * Knife4j增强扩展属性名称
+     */
+    public static final String EXTENSION_OPEN_API_NAME = "x-openapi";
+    
+    /**
+     * Knife4j增强扩展配置属性
+     */
+    public static final String EXTENSION_OPEN_SETTING_NAME = "x-setting";
+    
+    /**
+     * Knife4j增强扩展配置属性
+     */
+    public static final String EXTENSION_OPEN_MARKDOWN_NAME = "x-markdownFiles";
 }

@@ -18,8 +18,13 @@
 
 package com.github.xiaoymin.knife4j;
 
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.exception.NacosException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Properties;
 
 @SpringBootTest
 class Knife4jDesktopApplicationTests {
@@ -27,5 +32,17 @@ class Knife4jDesktopApplicationTests {
     @Test
     void contextLoads() {
     }
-    
+
+
+    @Test
+    public void testNacos() throws NacosException {
+        Properties properties=new Properties();
+        properties.put("serverAddr","k8s.local.cn:30685");
+        properties.put("namespace","xiaoyumin");
+        //properties.put("username","nacos");
+        //properties.put("password","nacos");
+        ConfigService configService=NacosFactory.createConfigService(properties);
+        String content=configService.getConfig("test123","TEST_GROUP",200000);
+        System.out.println(content);
+    }
 }

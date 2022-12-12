@@ -1097,11 +1097,15 @@ SwaggerBootstrapUi.prototype.openV3Settings = function (data) {
         }, 500);
       }
     } else {
+      //调用v2版本，后端做适配
+      this.openSettings(data);
       // 不存在，直接移除缓存
-      that.setDefaultSettings();
+      //that.setDefaultSettings();
     }
   } else {
-    that.setDefaultSettings();
+    //调用v2版本，后端做适配
+    this.openSettings(data);
+    //that.setDefaultSettings();
   }
 
 }
@@ -1178,7 +1182,11 @@ SwaggerBootstrapUi.prototype.openV3Documents = function (data) {
       var currentCacheFilesKey = that.currentInstance.id + 'markdownFiles';
       that.localStore.removeItem(currentCacheFilesKey);
       that.localStore.setItem(currentCacheFilesKey, currentInstanceMarkdownFileMap);
+    } else {
+      this.openDocuments(data);
     }
+  } else {
+    this.openDocuments(data);
   }
 }
 /***
