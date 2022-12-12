@@ -1136,7 +1136,14 @@ SwaggerBootstrapUi.prototype.openDocuments = function (data) {
             currentInstanceMarkdownFileMap[mdf.id] = KUtils.getValue(mdFile, 'content', '', true);
           })
         }
-        that.currentInstance.markdownFiles.push(swuFileTag);
+        //openapi3规范无法自定义group分组名称，故前端做区分
+        if (KUtils.checkUndefined(mdTag.group)) {
+          if (mdTag.group == that.currentInstance.name) {
+            that.currentInstance.markdownFiles.push(swuFileTag);
+          }
+        } else {
+          that.currentInstance.markdownFiles.push(swuFileTag);
+        }
       })
       // 离线文件缓存到本地local,先删除后更新
       var currentCacheFilesKey = that.currentInstance.id + 'markdownFiles';
@@ -1176,7 +1183,14 @@ SwaggerBootstrapUi.prototype.openV3Documents = function (data) {
             currentInstanceMarkdownFileMap[mdf.id] = mdContentTmp;
           })
         }
-        that.currentInstance.markdownFiles.push(swuFileTag);
+        //openapi3规范无法自定义group分组名称，故前端做区分
+        if (KUtils.checkUndefined(mdTag.group)) {
+          if (mdTag.group == that.currentInstance.name) {
+            that.currentInstance.markdownFiles.push(swuFileTag);
+          }
+        } else {
+          that.currentInstance.markdownFiles.push(swuFileTag);
+        }
       })
       // 离线文件缓存到本地local,先删除后更新
       var currentCacheFilesKey = that.currentInstance.id + 'markdownFiles';
@@ -3346,6 +3360,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
           });
         })
       }
+      //自定义文档显示数量
+      mdfolder.num = mdfolder.children.length;
       // console.log(mdfolder)
       menuArr.push(mdfolder);
     })
