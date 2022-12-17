@@ -32,6 +32,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ExecutorType {
+    
     /**
      * 基于Apache HttpClient组件
      */
@@ -40,12 +41,12 @@ public enum ExecutorType {
      * 基于Okhttp3
      */
     OKHTTP("okhttp3", OkHttpClientExecutor.class);
-
+    
     /**
      * 名称
      */
     private String value;
-
+    
     /**
      * 实现类
      */

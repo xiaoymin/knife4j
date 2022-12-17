@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.datasource.config.nacos;
 
 import cn.hutool.core.lang.Assert;
@@ -25,59 +43,58 @@ import java.util.Properties;
  */
 @Slf4j
 public class NacosConfigDataProvider implements ConfigDataProvider {
+    
     /**
      * 获取Nacos配置超时时间
      */
-    private final static Long TIME_OUT=20000L;
+    private final static Long TIME_OUT = 20000L;
     /**
      * Nacos配置中心客户端对象
      */
     private ConfigService configService;
-
+    
     private ConfigNacosEnv configEnv;
-
+    
     @Override
     public ConfigMode mode() {
         return ConfigMode.NACOS;
     }
-
+    
     @Override
     public void configArgs(ConfigInfo configInfo) {
         log.info("configArgs...");
-        //初始化nacos配置中心
-        Assert.notNull(configInfo,"The configuration attribute in config nacos mode must be specified");
-        Assert.notNull(configInfo.getNacos(),"The configuration attribute in config nacos mode must be specified");
-        ConfigNacosEnv configEnv= configInfo.getNacos();
+        // 初始化nacos配置中心
+        Assert.notNull(configInfo, "The configuration attribute in config nacos mode must be specified");
+        Assert.notNull(configInfo.getNacos(), "The configuration attribute in config nacos mode must be specified");
+        ConfigNacosEnv configEnv = configInfo.getNacos();
         configEnv.validate();
-        this.configEnv=configEnv;
-        Properties properties=new Properties();
-        properties.put("serverAddr",configEnv.getServer());
-        properties.put("namespace",configEnv.getNamespace());
-        properties.put("username",configEnv.getUsername());
-        properties.put("password",configEnv.getPassword());
+        this.configEnv = configEnv;
+        Properties properties = new Properties();
+        properties.put("serverAddr", configEnv.getServer());
+        properties.put("namespace", configEnv.getNamespace());
+        properties.put("username", configEnv.getUsername());
+        properties.put("password", configEnv.getPassword());
         try {
-            this.configService= NacosFactory.createConfigService(properties);
+            this.configService = NacosFactory.createConfigService(properties);
         } catch (NacosException e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
     }
-
+    
     @Override
     public List<? extends ConfigMeta> getConfig() {
         return null;
     }
-
+    
     public Map<String, List<? extends ConfigRoute>> getRoutes() {
         try {
-            //获取远程配置信息
-            String configContent=this.configService.getConfig(this.configEnv.getDataId(),this.configEnv.getGroup(),TIME_OUT);
-
-
+            // 获取远程配置信息
+            String configContent = this.configService.getConfig(this.configEnv.getDataId(), this.configEnv.getGroup(), TIME_OUT);
+            
         } catch (NacosException e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
         return Collections.EMPTY_MAP;
     }
-
-
+    
 }

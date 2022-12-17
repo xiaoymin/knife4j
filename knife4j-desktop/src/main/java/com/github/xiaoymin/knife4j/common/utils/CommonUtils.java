@@ -41,17 +41,16 @@ public class CommonUtils {
         
         return StrUtil.endWith(name, ".json") || StrUtil.endWith(name, ".yml");
     }
-
+    
     /**
      * 校验context-path是否合法，只支持：英文字母 、数字和下划线
      * @param contextPath
      * @return
      */
-    public static boolean checkContextPath(String contextPath){
-        return ReUtil.isMatch(PatternPool.GENERAL,contextPath);
+    public static boolean checkContextPath(String contextPath) {
+        return ReUtil.isMatch(PatternPool.GENERAL, contextPath);
     }
-
-
+    
     /**
      * HTTP Basic校验
      * @param username

@@ -68,7 +68,7 @@ public abstract class ConfigRoute {
      * @since 2.0.9
      */
     private Integer order = 1;
-
+    
     /**
      * 注册中心模式
      */
@@ -79,7 +79,7 @@ public abstract class ConfigRoute {
      * @return Primary Key
      */
     public String pkId() {
-        String str=this.routeConfig();
+        String str = this.routeConfig();
         return MD5.create().digestHex(str);
     }
     

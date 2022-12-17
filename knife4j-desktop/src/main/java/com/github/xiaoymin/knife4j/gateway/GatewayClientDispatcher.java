@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.gateway;
 
 import cn.hutool.core.io.IoUtil;
@@ -30,7 +48,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
-
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/17 21:30
@@ -38,19 +55,20 @@ import java.util.Optional;
  */
 @Slf4j
 public class GatewayClientDispatcher implements Filter {
+    
     final DocumentSessionHolder sessionHolder;
     final ExecutorType executorType;
-
-    final WebJarHolder webJarHolder=new WebJarHolder();
-    final GatewayContext gatewayContext=new GatewayContextImpl();
+    
+    final WebJarHolder webJarHolder = new WebJarHolder();
+    final GatewayContext gatewayContext = new GatewayContextImpl();
     final GatewayClientExecutor gatewayClientExecutor;
-
+    
     public GatewayClientDispatcher(DocumentSessionHolder sessionHolder, ExecutorType executorType) {
         this.sessionHolder = sessionHolder;
         this.executorType = executorType;
-        this.gatewayClientExecutor= ReflectUtil.newInstance(executorType.getExecutorClazz());
+        this.gatewayClientExecutor = ReflectUtil.newInstance(executorType.getExecutorClazz());
     }
-
+    
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -64,7 +82,7 @@ public class GatewayClientDispatcher implements Filter {
                 // 路由请求
                 log.info("Proxy URI:{}", uri);
                 try {
-                    GatewayClientResponse gatewayClientResponse=gatewayClientExecutor.executor(gatewayContext.buildContext(sessionHolder,request,response));
+                    GatewayClientResponse gatewayClientResponse = gatewayClientExecutor.executor(gatewayContext.buildContext(sessionHolder, request, response));
                     GatewayUtils.writeResponseStatus(gatewayClientResponse, response);
                     GatewayUtils.writeResponseHeader(gatewayClientResponse, response);
                     GatewayUtils.writeBody(gatewayClientResponse, response);
@@ -75,24 +93,24 @@ public class GatewayClientDispatcher implements Filter {
                     GatewayUtils.writeDefault(request, response, e.getMessage());
                 }
             } else {
-                Optional<ServiceDocument> documentOptional=sessionHolder.getContext(code);
-                if (documentOptional.isPresent()){
-                    ServiceDocument serviceDocument=documentOptional.get();
+                Optional<ServiceDocument> documentOptional = sessionHolder.getContext(code);
+                if (documentOptional.isPresent()) {
+                    ServiceDocument serviceDocument = documentOptional.get();
                     if (StrUtil.endWith(uri, DesktopConstants.OPENAPI_GROUP_ENDPOINT)) {
                         List<ServiceRoute> serviceRoutes = serviceDocument.getRoutes();
-                        GatewayUtils.writeContentResponse(response,DesktopConstants.GSON.toJson(serviceRoutes));
+                        GatewayUtils.writeContentResponse(response, DesktopConstants.GSON.toJson(serviceRoutes));
                     } else if (StrUtil.endWith(uri, DesktopConstants.OPENAPI_GROUP_INSTANCE_ENDPOINT)) {
                         // 响应当前服务disk-实例
                         String group = request.getParameter("group");
                         Optional<ServiceRoute> routeOptional = serviceDocument.getRoute(group);
-                        String content=routeOptional.isPresent()?routeOptional.get().getContent():"";
-                        GatewayUtils.writeContentResponse(response,content);
+                        String content = routeOptional.isPresent() ? routeOptional.get().getContent() : "";
+                        GatewayUtils.writeContentResponse(response, content);
                     } else {
                         // 路由请求
                         log.info("process URI:{}", uri);
                         filterChain.doFilter(servletRequest, servletResponse);
                     }
-                }else{
+                } else {
                     log.info("project {} not exists", code);
                     filterChain.doFilter(servletRequest, servletResponse);
                 }
@@ -100,12 +118,12 @@ public class GatewayClientDispatcher implements Filter {
         } else {
             if (ReUtil.isMatch(DesktopConstants.WEBJAR_RESOURCE_PATTERN, uri)) {
                 String webjarURL = ReUtil.get(DesktopConstants.WEBJAR_RESOURCE_PATTERN, uri, 2);
-                Optional<WebJarFile> webJarFileOptional=this.webJarHolder.getWebJar(webjarURL);
-                if (webJarFileOptional.isPresent()){
+                Optional<WebJarFile> webJarFileOptional = this.webJarHolder.getWebJar(webjarURL);
+                if (webJarFileOptional.isPresent()) {
                     WebJarFile webJarFile = webJarFileOptional.get();
                     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                     ServletUtil.write(response, webJarFile.getContent(), webJarFile.getMediaType().toString());
-                }else{
+                } else {
                     log.info("webjars.{},real:{}", uri, webjarURL);
                     String resourcePath = "/META-INF/resources/" + webjarURL;
                     log.info("resourcePath:{}", resourcePath);
@@ -113,14 +131,14 @@ public class GatewayClientDispatcher implements Filter {
                     if (classPathResource.exists()) {
                         log.info("exists:{}", classPathResource.exists());
                         Optional<MediaType> mediaTypeOptional = MediaTypeFactory.getMediaType(webjarURL);
-                        MediaType mediaType = mediaTypeOptional.isPresent()?mediaTypeOptional.get():MediaType.TEXT_PLAIN;
+                        MediaType mediaType = mediaTypeOptional.isPresent() ? mediaTypeOptional.get() : MediaType.TEXT_PLAIN;
                         log.info("mediaType:{}", mediaType);
                         String content = IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
                         WebJarFile webJarFile = new WebJarFile();
                         webJarFile.setContent(content);
                         webJarFile.setMediaType(mediaType);
                         webJarFile.setWebjar(webjarURL);
-                        this.webJarHolder.addFile(webjarURL,webJarFile);
+                        this.webJarHolder.addFile(webjarURL, webJarFile);
                         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                         ServletUtil.write(response, content, mediaType.toString());
                     } else {

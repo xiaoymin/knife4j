@@ -65,20 +65,20 @@ public class PropertyUtils {
         }
         return propertyMap;
     }
-
-    public static <T> Optional<T> resolveSingle(Map<String,String> propertyMap,Class<T> tClass){
+    
+    public static <T> Optional<T> resolveSingle(Map<String, String> propertyMap, Class<T> tClass) {
         if (CollectionUtil.isNotEmpty(propertyMap)) {
             try {
                 T t = javaPropsMapper.readMapAs(propertyMap, tClass);
                 return Optional.ofNullable(t);
             } catch (Exception e) {
-                logger.error("resolve error",e);
+                logger.error("resolve error", e);
             }
         }
         // return Optional.ofNullable(gson.fromJson(content,tClass));
         return Optional.empty();
     }
-
+    
     /**
      * 单个properties对象转对象实体
      * @param propertyFile

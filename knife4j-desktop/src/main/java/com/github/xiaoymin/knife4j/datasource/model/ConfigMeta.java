@@ -1,10 +1,27 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.datasource.model;
 
 import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
 import lombok.Data;
 
 import java.util.List;
-
 
 /**
  * 配置属性定义，所有配置中心支持的属性需要继承此类
@@ -13,22 +30,22 @@ import java.util.List;
  * @since:knife4j-desktop
  */
 @Data
-public abstract class ConfigMeta<T extends ConfigRoute,S extends ServiceDataProvider> {
-
+public abstract class ConfigMeta<T extends ConfigRoute, S extends ServiceDataProvider> {
+    
     /**
      * 当前项目文档的context-path属性值
      */
     private String contextPath;
-
+    
     /**
      * 微服务集合
      */
     private List<T> routes;
-
+    
     /**
      * 获取当前服务类型ProviderClass
      * @return
      */
     public abstract Class<S> serviceDataProvider();
-
+    
 }

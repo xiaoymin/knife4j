@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.datasource;
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -24,73 +42,74 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class DocumentSessionHolder implements DisposableBean {
+    
     /**
      * 全局文档对象
      */
-    private Map<String, ServiceDocument> documentMap=new ConcurrentHashMap<>();
-
+    private Map<String, ServiceDocument> documentMap = new ConcurrentHashMap<>();
+    
     /**
      * ServiceProvider全局缓存对象
      */
-    private Map<Class<? extends ServiceDataProvider>,ServiceDataProvider> providerMap=new HashMap<>();
-
+    private Map<Class<? extends ServiceDataProvider>, ServiceDataProvider> providerMap = new HashMap<>();
+    
     /**
      * 获取上下文对象
      * @param contextPath
      * @return
      */
-    public Optional<ServiceDocument> getContext(String contextPath){
+    public Optional<ServiceDocument> getContext(String contextPath) {
         return Optional.ofNullable(this.documentMap.get(contextPath));
     }
-
+    
     /**
      * 添加文档
      * @param document 文档对象
      */
-    public void addContext(ServiceDocument document){
+    public void addContext(ServiceDocument document) {
         Assert.notNull(document);
         this.documentMap.put(document.getContextPath(), document);
     }
-
+    
     /**
      * 清空缓存
      * @param contextPaths
      */
-    public void clearContext(List<String> contextPaths){
-        if (CollectionUtil.isNotEmpty(contextPaths)){
-            List<String> clearKeys= this.documentMap.entrySet().stream().map(s->s.getKey()).filter(s->!contextPaths.contains(s)).collect(Collectors.toList());
-            if (CollectionUtil.isNotEmpty(clearKeys)){
-                for (String key:clearKeys){
-                    log.info("remove contextPath:{}",key);
+    public void clearContext(List<String> contextPaths) {
+        if (CollectionUtil.isNotEmpty(contextPaths)) {
+            List<String> clearKeys = this.documentMap.entrySet().stream().map(s -> s.getKey()).filter(s -> !contextPaths.contains(s)).collect(Collectors.toList());
+            if (CollectionUtil.isNotEmpty(clearKeys)) {
+                for (String key : clearKeys) {
+                    log.info("remove contextPath:{}", key);
                     this.documentMap.remove(key);
                 }
             }
-        }else{
+        } else {
             MapUtil.clear(this.documentMap);
         }
     }
-
+    
     /**
      * 添加ServiceProvider对象
      * @param providerClazz provider反射类型
      * @param dataProvider 实例
      */
-    public void addServiceProvider(Class<? extends ServiceDataProvider> providerClazz,ServiceDataProvider dataProvider){
-        this.providerMap.put(providerClazz,dataProvider);
+    public void addServiceProvider(Class<? extends ServiceDataProvider> providerClazz, ServiceDataProvider dataProvider) {
+        this.providerMap.put(providerClazz, dataProvider);
     }
-
+    
     /**
      * 获取provider实例对象
      * @param providerClazz
      * @return
      */
-    public Optional<ServiceDataProvider> getServiceProvider(Class<? extends ServiceDataProvider> providerClazz){
+    public Optional<ServiceDataProvider> getServiceProvider(Class<? extends ServiceDataProvider> providerClazz) {
         return Optional.ofNullable(this.providerMap.get(providerClazz));
     }
-
+    
     @SneakyThrows
     @Override
-    public void destroy(){
-        MapUtil.clear(this.providerMap,this.documentMap);
+    public void destroy() {
+        MapUtil.clear(this.providerMap, this.documentMap);
     }
 }

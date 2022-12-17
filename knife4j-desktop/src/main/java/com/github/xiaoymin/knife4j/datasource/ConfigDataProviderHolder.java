@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.datasource;
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -36,97 +54,97 @@ import java.util.*;
  */
 @Slf4j
 public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAware, InitializingBean, DisposableBean {
-
+    
     private final DocumentSessionHolder sessionHolder;
-
+    
     private Environment environment;
     private BeanFactory beanFactory;
     private ConfigDataProvider configDataProvider;
     private Thread thread;
     private volatile boolean stop = false;
-
+    
     public ConfigDataProviderHolder(DocumentSessionHolder sessionHolder) {
         this.sessionHolder = sessionHolder;
     }
-
+    
     @Override
     public void setEnvironment(Environment environment) {
-        this.environment=environment;
+        this.environment = environment;
     }
-
+    
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory=beanFactory;
+        this.beanFactory = beanFactory;
     }
-
+    
     @Override
     public void afterPropertiesSet() {
-        String source=this.environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY);
+        String source = this.environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY);
         ConfigMode configMode = ConfigMode.config(source);
-        log.info("Config mode:{}",configMode);
-        try{
-            ApplicationArguments applicationArguments=this.beanFactory.getBean(ApplicationArguments.class);
-            Set<String> optionNames=applicationArguments.getOptionNames();
-            Map<String,String> params=new HashMap<>();
-            for (String key:optionNames){
-                params.put(key,this.environment.getProperty(key));
+        log.info("Config mode:{}", configMode);
+        try {
+            ApplicationArguments applicationArguments = this.beanFactory.getBean(ApplicationArguments.class);
+            Set<String> optionNames = applicationArguments.getOptionNames();
+            Map<String, String> params = new HashMap<>();
+            for (String key : optionNames) {
+                params.put(key, this.environment.getProperty(key));
             }
-            BeanDefinitionBuilder builder=BeanDefinitionBuilder.genericBeanDefinition(configMode.getConfigClazz());
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(configMode.getConfigClazz());
             builder.setRole(BeanDefinition.ROLE_SUPPORT);
             builder.setPrimary(true);
             DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) beanFactory;
             // 注入
-            String beanName= configMode.getValue() + DesktopConstants.CONFIG_SERVICE_NAME;
-            beanRegistry.registerBeanDefinition(beanName,builder.getBeanDefinition());
-            //回调配置
-            Optional<ConfigEnv> configEnvOptional= PropertyUtils.resolveSingle(params, ConfigEnv.class);
-            ConfigInfo configInfo=configEnvOptional.isPresent()?configEnvOptional.get().getKnife4j():ConfigInfo.defaultConfig();
-            //callback
-            ConfigDataProvider configDataProvider =beanRegistry.getBean(beanName, ConfigDataProvider.class);
+            String beanName = configMode.getValue() + DesktopConstants.CONFIG_SERVICE_NAME;
+            beanRegistry.registerBeanDefinition(beanName, builder.getBeanDefinition());
+            // 回调配置
+            Optional<ConfigEnv> configEnvOptional = PropertyUtils.resolveSingle(params, ConfigEnv.class);
+            ConfigInfo configInfo = configEnvOptional.isPresent() ? configEnvOptional.get().getKnife4j() : ConfigInfo.defaultConfig();
+            // callback
+            ConfigDataProvider configDataProvider = beanRegistry.getBean(beanName, ConfigDataProvider.class);
             configDataProvider.configArgs(configInfo);
-            this.configDataProvider=configDataProvider;
+            this.configDataProvider = configDataProvider;
             this.start();
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
-
+    
     public void start() {
         log.info("start data monitor.");
         thread = new Thread(() -> {
             while (!stop) {
                 try {
-                    List<? extends ConfigMeta> configRoutes= this.configDataProvider.getConfig();
-                    if (CollectionUtil.isNotEmpty(configRoutes)){
-                        List<String> documentIds=new ArrayList<>();
-                        for (ConfigMeta configMeta:configRoutes){
-                            Optional<ServiceDataProvider> providerOptional=this.sessionHolder.getServiceProvider(configMeta.serviceDataProvider());
-                            ServiceDataProvider serviceDataProvider=null;
-                            if (providerOptional.isPresent()){
-                                serviceDataProvider=providerOptional.get();
-                            }else {
-                                serviceDataProvider= (ServiceDataProvider) ReflectUtil.newInstance(configMeta.serviceDataProvider());
-                                this.sessionHolder.addServiceProvider(configMeta.serviceDataProvider(),serviceDataProvider);
+                    List<? extends ConfigMeta> configRoutes = this.configDataProvider.getConfig();
+                    if (CollectionUtil.isNotEmpty(configRoutes)) {
+                        List<String> documentIds = new ArrayList<>();
+                        for (ConfigMeta configMeta : configRoutes) {
+                            Optional<ServiceDataProvider> providerOptional = this.sessionHolder.getServiceProvider(configMeta.serviceDataProvider());
+                            ServiceDataProvider serviceDataProvider = null;
+                            if (providerOptional.isPresent()) {
+                                serviceDataProvider = providerOptional.get();
+                            } else {
+                                serviceDataProvider = (ServiceDataProvider) ReflectUtil.newInstance(configMeta.serviceDataProvider());
+                                this.sessionHolder.addServiceProvider(configMeta.serviceDataProvider(), serviceDataProvider);
                             }
-                            ServiceDocument serviceDocument=serviceDataProvider.getDocument(configMeta);
-                            if (serviceDocument!=null){
+                            ServiceDocument serviceDocument = serviceDataProvider.getDocument(configMeta);
+                            if (serviceDocument != null) {
                                 documentIds.add(serviceDocument.getContextPath());
-                                Optional<ServiceDocument> documentOptional= this.sessionHolder.getContext(serviceDocument.getContextPath());
-                                if (documentOptional.isPresent()){
-                                    ServiceDocument cacheDocument=documentOptional.get();
-                                    //对比,无变化
-                                    if (!StrUtil.equalsIgnoreCase(serviceDocument.contextId(),cacheDocument.contextId())){
-                                        log.info("文档发生变化，context-path:{}",serviceDocument.getContextPath());
+                                Optional<ServiceDocument> documentOptional = this.sessionHolder.getContext(serviceDocument.getContextPath());
+                                if (documentOptional.isPresent()) {
+                                    ServiceDocument cacheDocument = documentOptional.get();
+                                    // 对比,无变化
+                                    if (!StrUtil.equalsIgnoreCase(serviceDocument.contextId(), cacheDocument.contextId())) {
+                                        log.info("文档发生变化，context-path:{}", serviceDocument.getContextPath());
                                         this.sessionHolder.addContext(serviceDocument);
                                     }
-                                }else{
+                                } else {
                                     this.sessionHolder.addContext(serviceDocument);
                                 }
                             }
-                            //log.info("config:{}", DesktopConstants.GSON.toJson(serviceDocument));
+                            // log.info("config:{}", DesktopConstants.GSON.toJson(serviceDocument));
                         }
-                        //清理
+                        // 清理
                         this.sessionHolder.clearContext(documentIds);
                     }
                 } catch (Exception e) {
@@ -138,7 +156,7 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
         thread.setDaemon(true);
         thread.start();
     }
-
+    
     @SneakyThrows
     @Override
     public void destroy() {
@@ -148,5 +166,5 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
             ThreadUtil.interrupt(thread, true);
         }
     }
-
+    
 }

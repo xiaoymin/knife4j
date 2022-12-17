@@ -55,7 +55,7 @@ public class DiskRepository extends AbsctractRepository {
         this.diskSettingMap.remove(code);
         this.multipartRouteMap.remove(code);
     }
-
+    
     /**
      * 根据Disk配置新增
      * @param code

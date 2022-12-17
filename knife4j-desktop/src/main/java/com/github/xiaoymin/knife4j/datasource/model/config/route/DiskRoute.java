@@ -28,12 +28,12 @@ import lombok.Data;
  */
 @Data
 public class DiskRoute extends ConfigRoute {
-
+    
     /**
      * disk模式调试目标服务器的Host地址，如果不为空，则配置可以调试走代理转发
      * since v4.0.0版本过时,请使用debugUrl字段，该字段优先级高于host字段
      */
     @Deprecated
     private String host;
-
+    
 }

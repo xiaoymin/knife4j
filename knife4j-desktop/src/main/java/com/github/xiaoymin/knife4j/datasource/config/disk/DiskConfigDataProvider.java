@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.datasource.config.disk;
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -29,77 +47,78 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class DiskConfigDataProvider implements ConfigDataProvider {
+    
     private ConfigDiskEnv configEnv;
     private DiskConfigMetaProvider metaProvider;
     /**
      * 缓存本地文件变化时间值,避免文件太多的情况下多次遍历解析，效率低下
      */
-    private Map<String,Long> cacheFileMap=new HashMap<>();
-
+    private Map<String, Long> cacheFileMap = new HashMap<>();
+    
     /**
      * 缓存当前文档对象的ConfigMeta
      */
-    private Map<String,List<? extends ConfigMeta>> cacheRouteMap=new HashMap<>();
-
+    private Map<String, List<? extends ConfigMeta>> cacheRouteMap = new HashMap<>();
+    
     @Override
     public ConfigMode mode() {
         return ConfigMode.DISK;
     }
     @Override
     public void configArgs(ConfigInfo configInfo) {
-        Assert.notNull(configInfo,"The configuration attribute in config disk mode must be specified");
-        Assert.notNull(configInfo.getDisk(),"The configuration attribute in config disk mode must be specified");
-        ConfigDiskEnv configEnv=configInfo.getDisk();
-        if (StrUtil.isBlank(configEnv.getDir())){
-            String defaultDir=System.getProperty("user.home")+ File.separator+ DesktopConstants.DESKTOP_TEMP_DIR_NAME;
-            //创建临时目录
+        Assert.notNull(configInfo, "The configuration attribute in config disk mode must be specified");
+        Assert.notNull(configInfo.getDisk(), "The configuration attribute in config disk mode must be specified");
+        ConfigDiskEnv configEnv = configInfo.getDisk();
+        if (StrUtil.isBlank(configEnv.getDir())) {
+            String defaultDir = System.getProperty("user.home") + File.separator + DesktopConstants.DESKTOP_TEMP_DIR_NAME;
+            // 创建临时目录
             FileUtil.mkdir(defaultDir);
             configEnv.setDir(defaultDir);
         }
-        log.info("listener Dir:{}",configEnv.getDir());
-        this.configEnv=configEnv;
-        this.metaProvider= (DiskConfigMetaProvider) ReflectUtils.newInstance(this.mode().getConfigMetaClazz());
+        log.info("listener Dir:{}", configEnv.getDir());
+        this.configEnv = configEnv;
+        this.metaProvider = (DiskConfigMetaProvider) ReflectUtils.newInstance(this.mode().getConfigMetaClazz());
     }
-
+    
     @Override
     public List<? extends ConfigMeta> getConfig() {
-        //遍历当前目录文件
+        // 遍历当前目录文件
         File dataFile = new File(this.configEnv.getDir());
         if (dataFile.exists()) {
             File[] files = dataFile.listFiles(File::isDirectory);
             if (ArrayUtil.isNotEmpty(files)) {
-                List<ConfigMeta> configMetas=new ArrayList<>();
-                List<String> contextPathCollection=new ArrayList<>();
+                List<ConfigMeta> configMetas = new ArrayList<>();
+                List<String> contextPathCollection = new ArrayList<>();
                 for (File file : files) {
-                    try{
-                        //判断当前文件下是否包含配置文件
-                        String contextPath=file.getName();
-                        if (CommonUtils.checkContextPath(contextPath)){
+                    try {
+                        // 判断当前文件下是否包含配置文件
+                        String contextPath = file.getName();
+                        if (CommonUtils.checkContextPath(contextPath)) {
                             contextPathCollection.add(contextPath);
-                            Long lastModifiedTime=this.cacheFileMap.get(contextPath);
-                            if (lastModifiedTime==null){
+                            Long lastModifiedTime = this.cacheFileMap.get(contextPath);
+                            if (lastModifiedTime == null) {
                                 configMetas.addAll(resolver(file));
-                            }else{
-                                //判断时间是否一样
-                                long last=file.lastModified();
-                                if (NumberUtil.compare(last,lastModifiedTime)==0){
-                                    //没有变化
+                            } else {
+                                // 判断时间是否一样
+                                long last = file.lastModified();
+                                if (NumberUtil.compare(last, lastModifiedTime) == 0) {
+                                    // 没有变化
                                     configMetas.addAll(this.cacheRouteMap.get(contextPath));
-                                }else{
+                                } else {
                                     log.info("file changed.");
                                     configMetas.addAll(resolver(file));
                                 }
                             }
                         }
-                    }catch (Exception e){
-                        log.error(e.getMessage(),e);
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
                     }
                 }
-                //存在删文件或者重命名的情况,需要compare对比释放cache对象
+                // 存在删文件或者重命名的情况,需要compare对比释放cache对象
                 compareAndFree(contextPathCollection);
                 return configMetas;
-            }else{
-                //一个文件都没有了，释放cache
+            } else {
+                // 一个文件都没有了，释放cache
                 this.freeAll();
             }
         }
@@ -110,29 +129,29 @@ public class DiskConfigDataProvider implements ConfigDataProvider {
      * @param file 配置文件夹
      * @return
      */
-    private List<? extends ConfigMeta> resolver(File file){
-        List<? extends ConfigMeta> fileConfigRoutes=this.metaProvider.resolver(file, DiskConfigMetaProps.class);
-        this.cacheFileMap.put(file.getName(),file.lastModified());
-        this.cacheRouteMap.put(file.getName(),fileConfigRoutes);
+    private List<? extends ConfigMeta> resolver(File file) {
+        List<? extends ConfigMeta> fileConfigRoutes = this.metaProvider.resolver(file, DiskConfigMetaProps.class);
+        this.cacheFileMap.put(file.getName(), file.lastModified());
+        this.cacheRouteMap.put(file.getName(), fileConfigRoutes);
         return fileConfigRoutes;
     }
-
-    private void freeAll(){
-        MapUtil.clear(this.cacheFileMap,this.cacheRouteMap);
+    
+    private void freeAll() {
+        MapUtil.clear(this.cacheFileMap, this.cacheRouteMap);
     }
-
-    private void compareAndFree(List<String> contextPathCollection){
-        if (CollectionUtil.isNotEmpty(contextPathCollection)){
-            List<String> cacheKeys=this.cacheRouteMap.entrySet().stream().map(s->s.getKey()).filter(s -> !contextPathCollection.contains(s)).collect(Collectors.toList());
-            if (CollectionUtil.isNotEmpty(cacheKeys)){
-                cacheKeys.forEach(key->{
+    
+    private void compareAndFree(List<String> contextPathCollection) {
+        if (CollectionUtil.isNotEmpty(contextPathCollection)) {
+            List<String> cacheKeys = this.cacheRouteMap.entrySet().stream().map(s -> s.getKey()).filter(s -> !contextPathCollection.contains(s)).collect(Collectors.toList());
+            if (CollectionUtil.isNotEmpty(cacheKeys)) {
+                cacheKeys.forEach(key -> {
                     this.cacheRouteMap.remove(key);
                     this.cacheFileMap.remove(key);
                 });
             }
-        }else{
+        } else {
             this.freeAll();
         }
     }
-
+    
 }

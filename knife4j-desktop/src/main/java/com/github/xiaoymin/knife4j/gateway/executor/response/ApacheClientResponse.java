@@ -52,7 +52,7 @@ public class ApacheClientResponse implements GatewayClientResponse {
     private HttpEntity httpEntity;
     
     public ApacheClientResponse(HttpResponse httpResponse) {
-        Assert.notNull(httpResponse,"响应请求体不能为空");
+        Assert.notNull(httpResponse, "响应请求体不能为空");
         this.httpResponse = httpResponse;
         if (httpResponse != null) {
             httpEntity = httpResponse.getEntity();

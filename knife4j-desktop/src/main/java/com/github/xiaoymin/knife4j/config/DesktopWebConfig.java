@@ -49,21 +49,21 @@ public class DesktopWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/**")
                 .addResourceLocations(RESOURCES);
     }
-
+    
     @Bean
-    public DocumentSessionHolder documentSessionHolder(){
+    public DocumentSessionHolder documentSessionHolder() {
         return new DocumentSessionHolder();
     }
-
+    
     @Bean
-    public ConfigDataProviderHolder configDataServiceLoader(DocumentSessionHolder documentSessionHolder){
+    public ConfigDataProviderHolder configDataServiceLoader(DocumentSessionHolder documentSessionHolder) {
         return new ConfigDataProviderHolder(documentSessionHolder);
     }
-
+    
     @Bean
     public FilterRegistrationBean routeProxyFilter(DocumentSessionHolder documentSessionHolder) {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
-        filterRegistrationBean.setFilter(new GatewayClientDispatcher(documentSessionHolder,ExecutorType.APACHE));
+        filterRegistrationBean.setFilter(new GatewayClientDispatcher(documentSessionHolder, ExecutorType.APACHE));
         filterRegistrationBean.setOrder(99);
         filterRegistrationBean.setEnabled(true);
         filterRegistrationBean.addUrlPatterns("/*");

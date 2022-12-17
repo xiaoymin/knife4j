@@ -32,18 +32,17 @@ class Knife4jDesktopApplicationTests {
     @Test
     void contextLoads() {
     }
-
-
+    
     @Test
     public void testNacos() throws NacosException {
-        Properties properties=new Properties();
-        properties.put("serverAddr","k8s.local.cn:30685");
-        properties.put("namespace","xiaoyumin");
-        //properties.put("username","nacos");
-        //properties.put("password","nacos");
-        ConfigService configService=NacosFactory.createConfigService(properties);
-        String content=configService.getConfig("test123","TEST_GROUP",200000);
+        Properties properties = new Properties();
+        properties.put("serverAddr", "k8s.local.cn:30685");
+        properties.put("namespace", "xiaoyumin");
+        // properties.put("username","nacos");
+        // properties.put("password","nacos");
+        ConfigService configService = NacosFactory.createConfigService(properties);
+        String content = configService.getConfig("test123", "TEST_GROUP", 200000);
         System.out.println(content);
-       // configService.addListener();
+        // configService.addListener();
     }
 }

@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.gateway.context;
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -24,6 +42,7 @@ import java.util.*;
  */
 @Slf4j
 public class GatewayContextImpl implements GatewayContext {
+    
     /**
      * 转发忽略header
      */
@@ -36,23 +55,23 @@ public class GatewayContextImpl implements GatewayContext {
             "Request-Origion",
             "language"
     });
-
+    
     @Override
     public GatewayRequestContext buildContext(DocumentSessionHolder sessionHolder, HttpServletRequest request, HttpServletResponse response) {
         GatewayRequestContext gatewayRequestContext = new GatewayRequestContext();
-        Optional<ServiceDocument> documentOptional= sessionHolder.getContext(request.getHeader(DesktopConstants.ROUTE_PROXY_DOCUMENT_CODE));
-        Assert.isTrue(documentOptional.isPresent(),"请求非法,项目不存在");
-        ServiceDocument serviceDocument=documentOptional.get();
-        Optional<ServiceRoute>  routeOptional=serviceDocument.getRoute(request.getHeader(DesktopConstants.ROUTE_PROXY_HEADER_NAME));
-        Assert.isTrue(routeOptional.isPresent(),"请求非法,分组不存在");
+        Optional<ServiceDocument> documentOptional = sessionHolder.getContext(request.getHeader(DesktopConstants.ROUTE_PROXY_DOCUMENT_CODE));
+        Assert.isTrue(documentOptional.isPresent(), "请求非法,项目不存在");
+        ServiceDocument serviceDocument = documentOptional.get();
+        Optional<ServiceRoute> routeOptional = serviceDocument.getRoute(request.getHeader(DesktopConstants.ROUTE_PROXY_HEADER_NAME));
+        Assert.isTrue(routeOptional.isPresent(), "请求非法,分组不存在");
         ServiceRoute serviceRoute = routeOptional.get();
         // String uri="http://knife4j.xiaominfo.com";
         String uri = serviceRoute.getUri();
         String fromUri = request.getRequestURI();
-        if (!StrUtil.equalsIgnoreCase(serviceDocument.getContextPath(),DesktopConstants.DESKTOP_ROOT_CONTEXT_DIR)){
+        if (!StrUtil.equalsIgnoreCase(serviceDocument.getContextPath(), DesktopConstants.DESKTOP_ROOT_CONTEXT_DIR)) {
             fromUri = fromUri.replaceFirst(serviceDocument.getContextPath(), "");
             // 此处需要追加一个请求头basePath，因为父项目设置了context-path
-            gatewayRequestContext.addHeader("X-Forwarded-Prefix", "/"+serviceDocument.getContextPath());
+            gatewayRequestContext.addHeader("X-Forwarded-Prefix", "/" + serviceDocument.getContextPath());
         }
         // 判断servicePath
         if (StrUtil.isNotBlank(serviceRoute.getServicePath()) && !StrUtil.equals(serviceRoute.getServicePath(),
@@ -120,10 +139,10 @@ public class GatewayContextImpl implements GatewayContext {
                 log.warn("get part error,message:" + e.getMessage());
             }
         }
-        try{
+        try {
             gatewayRequestContext.setRequestContent(request.getInputStream());
-        }catch (IOException e){
-            log.warn(e.getMessage(),e);
+        } catch (IOException e) {
+            log.warn(e.getMessage(), e);
         }
         return gatewayRequestContext;
     }

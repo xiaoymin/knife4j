@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.common.lang;
 
 import com.google.gson.Gson;
@@ -9,34 +27,34 @@ import com.google.gson.GsonBuilder;
  * @since:knife4j-desktop
  */
 public class DesktopConstants {
-
+    
     /**
      * 全局Gson对象
      */
-    public static final Gson GSON=new GsonBuilder().create();
+    public static final Gson GSON = new GsonBuilder().create();
     /**
      * 根目录文件夹名称
      */
-    public static final String DESKTOP_ROOT_CONTEXT_DIR="ROOT";
-
+    public static final String DESKTOP_ROOT_CONTEXT_DIR = "ROOT";
+    
     /**
      * 根路径
      */
-    public static final String DESKTOP_ROOT_CONTEXT_PATH="/";
-
+    public static final String DESKTOP_ROOT_CONTEXT_PATH = "/";
+    
     /**
      * 配置中心类别，参考{@link ConfigMode#getValue()}
      */
-    public static final String DESKTOP_SOURCE_KEY="knife4j.source";
-
+    public static final String DESKTOP_SOURCE_KEY = "knife4j.source";
+    
     /**
      * 默认本地disk模式临时目录名称
      */
-    public static final String DESKTOP_TEMP_DIR_NAME=".knife4j";
+    public static final String DESKTOP_TEMP_DIR_NAME = ".knife4j";
     /**
      * 配置中心服务名称
      */
-    public static final String CONFIG_SERVICE_NAME="ConfigDataService";
+    public static final String CONFIG_SERVICE_NAME = "ConfigDataService";
     /**
      * 项目code
      */
@@ -49,15 +67,15 @@ public class DesktopConstants {
     public static final String OPENAPI_GROUP_ENDPOINT = "/swagger-resources";
     public static final String OPENAPI_GROUP_INSTANCE_ENDPOINT = "/swagger-instance";
     public static final String ROUTE_BASE_PATH = "/";
-
+    
     /**
      * 正则表达式
      */
     public static final String WEBJAR_RESOURCE_PATTERN = "/(.*?)/(webjars.*)";
-
+    
     /**
      * 401状态响应内容
      */
     public static final String RESPONSE_TEXT_FORBIDDEN = "You do not have permission to access this resource";
-
+    
 }
