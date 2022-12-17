@@ -19,8 +19,7 @@
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
-import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.github.xiaoymin.knife4j.datasource.model.config.route.EurekaRoute;
 
 import java.util.List;
 

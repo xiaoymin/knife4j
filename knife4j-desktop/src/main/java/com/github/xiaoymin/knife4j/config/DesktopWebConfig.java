@@ -18,23 +18,15 @@
 
 package com.github.xiaoymin.knife4j.config;
 
-import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
-import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
-import com.github.xiaoymin.knife4j.data.compoents.DesktopDataMonitor;
-import com.github.xiaoymin.knife4j.proxy.ProxyHttpClient;
-import com.github.xiaoymin.knife4j.proxy.impl.ServletProxyHttpClient;
-import com.github.xiaoymin.knife4j.proxy.servlet.ServletDesktopDispatcherFilter;
-import lombok.AllArgsConstructor;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import com.github.xiaoymin.knife4j.gateway.GatewayClientDispatcher;
+import com.github.xiaoymin.knife4j.gateway.executor.ExecutorType;
+import com.github.xiaoymin.knife4j.datasource.ConfigDataProviderHolder;
+import com.github.xiaoymin.knife4j.datasource.DocumentSessionHolder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.Objects;
 
 /**
  * @since:knife4j-desktop
@@ -57,42 +49,24 @@ public class DesktopWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/**")
                 .addResourceLocations(RESOURCES);
     }
-    
-    @AllArgsConstructor
-    @Configuration
-    @EnableConfigurationProperties(value = Knife4jDesktopProperties.class)
-    public class Knife4jDesktopAutoConfiguration {
-        
-        final Environment environment;
-        
-        @Bean
-        public DesktopDataMonitor desktopDataMonitor(Knife4jDesktopProperties knife4jDesktopProperties) {
-            return new DesktopDataMonitor(knife4jDesktopProperties);
-        }
-        
-        @Bean
-        public FilterRegistrationBean routeProxyFilter() {
-            // 获取当前项目的contextPath
-            String contextPath = Objects.toString(environment.getProperty("server.servlet.context-path"), "");
-            if (StrUtil.isBlank(contextPath)) {
-                contextPath = "/";
-            }
-            if (StrUtil.isNotBlank(contextPath) && !StrUtil.equals(contextPath, RouteDispatcher.ROUTE_BASE_PATH)) {
-                // 判断是否/开头
-                if (!StrUtil.startWith(contextPath, RouteDispatcher.ROUTE_BASE_PATH)) {
-                    contextPath = RouteDispatcher.ROUTE_BASE_PATH + contextPath;
-                }
-            }
-            ProxyHttpClient proxyHttpClient = new ServletProxyHttpClient(ExecutorEnum.APACHE, contextPath);
-            ServletDesktopDispatcherFilter servletDesktopDispatcherFilter = new ServletDesktopDispatcherFilter(proxyHttpClient);
-            
-            FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
-            filterRegistrationBean.setFilter(servletDesktopDispatcherFilter);
-            filterRegistrationBean.setOrder(99);
-            filterRegistrationBean.setEnabled(true);
-            filterRegistrationBean.addUrlPatterns("/*");
-            return filterRegistrationBean;
-        }
-        
+
+    @Bean
+    public DocumentSessionHolder documentSessionHolder(){
+        return new DocumentSessionHolder();
+    }
+
+    @Bean
+    public ConfigDataProviderHolder configDataServiceLoader(DocumentSessionHolder documentSessionHolder){
+        return new ConfigDataProviderHolder(documentSessionHolder);
+    }
+
+    @Bean
+    public FilterRegistrationBean routeProxyFilter(DocumentSessionHolder documentSessionHolder) {
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        filterRegistrationBean.setFilter(new GatewayClientDispatcher(documentSessionHolder,ExecutorType.APACHE));
+        filterRegistrationBean.setOrder(99);
+        filterRegistrationBean.setEnabled(true);
+        filterRegistrationBean.addUrlPatterns("/*");
+        return filterRegistrationBean;
     }
 }

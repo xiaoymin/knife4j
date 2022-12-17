@@ -19,7 +19,7 @@
 package com.github.xiaoymin.knife4j.aggre.core.cache;
 
 import com.github.xiaoymin.knife4j.aggre.core.RouteCache;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
 
 import java.util.concurrent.ConcurrentHashMap;
 /***
@@ -28,18 +28,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2020/10/31 11:07
  */
-public class RouteInMemoryCache implements RouteCache<String, SwaggerRoute> {
+public class RouteInMemoryCache implements RouteCache<String, ServiceRoute> {
     
-    private final ConcurrentHashMap<String, SwaggerRoute> cache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ServiceRoute> cache = new ConcurrentHashMap<>();
     
     @Override
-    public boolean put(String s, SwaggerRoute swaggerRoute) {
-        cache.put(s, swaggerRoute);
+    public boolean put(String s, ServiceRoute serviceRoute) {
+        cache.put(s, serviceRoute);
         return true;
     }
     
     @Override
-    public SwaggerRoute get(String s) {
+    public ServiceRoute get(String s) {
         return cache.get(s);
     }
     

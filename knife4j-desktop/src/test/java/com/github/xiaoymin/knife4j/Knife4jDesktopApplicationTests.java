@@ -44,5 +44,6 @@ class Knife4jDesktopApplicationTests {
         ConfigService configService=NacosFactory.createConfigService(properties);
         String content=configService.getConfig("test123","TEST_GROUP",200000);
         System.out.println(content);
+       // configService.addListener();
     }
 }

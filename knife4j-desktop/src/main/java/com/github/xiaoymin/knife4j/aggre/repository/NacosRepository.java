@@ -21,12 +21,10 @@ package com.github.xiaoymin.knife4j.aggre.repository;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.thread.ThreadUtil;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosService;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
-import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.http.HttpStatus;
@@ -68,19 +66,9 @@ public class NacosRepository extends AbsctractRepository {
         }
     }
     @Override
-    public BasicAuth getAccessAuth(String code) {
-        BasicAuth basicAuth = null;
-        NacosSetting setting = this.nacosSettingMap.get(code);
-        if (setting != null) {
-            basicAuth = setting.getBasic();
-        }
-        return basicAuth;
-    }
-    @Override
     public void remove(String code) {
         this.multipartRouteMap.remove(code);
         this.nacosSettingMap.remove(code);
-        GlobalDesktopManager.me.remove(code);
     }
     
     /**
@@ -89,14 +77,11 @@ public class NacosRepository extends AbsctractRepository {
      */
     private void applyRoutes(String code, Map<String, NacosInstance> nacosInstanceMap, NacosSetting nacosSetting) {
         if (CollectionUtil.isNotEmpty(nacosInstanceMap)) {
-            Map<String, SwaggerRoute> nacosRouteMap = new HashMap<>();
+            Map<String, ServiceRoute> nacosRouteMap = new HashMap<>();
             nacosSetting.getRoutes().forEach(nacosRoute -> {
-                if (nacosRoute.getRouteAuth() == null || !nacosRoute.getRouteAuth().isEnable()) {
-                    nacosRoute.setRouteAuth(nacosSetting.getRouteAuth());
-                }
-                nacosRouteMap.put(nacosRoute.pkId(), new SwaggerRoute(nacosRoute, nacosInstanceMap.get(nacosRoute.getServiceName())));
+                nacosRouteMap.put(nacosRoute.pkId(), new ServiceRoute(nacosRoute, nacosInstanceMap.get(nacosRoute.getServiceName())));
             });
-            nacosSetting.getRoutes().forEach(nacosRoute -> nacosRouteMap.put(nacosRoute.pkId(), new SwaggerRoute(nacosRoute, nacosInstanceMap.get(nacosRoute.getServiceName()))));
+            nacosSetting.getRoutes().forEach(nacosRoute -> nacosRouteMap.put(nacosRoute.pkId(), new ServiceRoute(nacosRoute, nacosInstanceMap.get(nacosRoute.getServiceName()))));
             if (CollectionUtil.isNotEmpty(nacosRouteMap)) {
                 this.multipartRouteMap.put(code, nacosRouteMap);
                 this.nacosSettingMap.put(code, nacosSetting);
@@ -160,24 +145,5 @@ public class NacosRepository extends AbsctractRepository {
         }
         return accessToken;
     }
-    
-    @Override
-    public BasicAuth getAuth(String code, String header) {
-        BasicAuth basicAuth = null;
-        NacosSetting nacosSetting = this.nacosSettingMap.get(code);
-        if (nacosSetting != null && CollectionUtil.isNotEmpty(nacosSetting.getRoutes())) {
-            if (nacosSetting.getRouteAuth() != null && nacosSetting.getRouteAuth().isEnable()) {
-                basicAuth = nacosSetting.getRouteAuth();
-                // 判断route服务中是否再单独配置
-                BasicAuth routeBasicAuth = getAuthByRoute(header, nacosSetting.getRoutes());
-                if (routeBasicAuth != null) {
-                    basicAuth = routeBasicAuth;
-                }
-            } else {
-                basicAuth = getAuthByRoute(header, nacosSetting.getRoutes());
-            }
-        }
-        return basicAuth;
-    }
-    
+
 }

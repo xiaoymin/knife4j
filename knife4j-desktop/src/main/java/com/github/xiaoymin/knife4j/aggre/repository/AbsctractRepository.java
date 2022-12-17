@@ -21,8 +21,8 @@ package com.github.xiaoymin.knife4j.aggre.repository;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteRepository;
-import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.gateway.executor.apache.PoolingConnectionManager;
+import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
 
 import java.util.*;
 
@@ -36,12 +36,12 @@ public abstract class AbsctractRepository extends PoolingConnectionManager imple
     /**
      * 多项目版本
      */
-    protected final Map<String, Map<String, SwaggerRoute>> multipartRouteMap = new HashMap<>();
+    protected final Map<String, Map<String, ServiceRoute>> multipartRouteMap = new HashMap<>();
     
     @Override
     public boolean checkRoute(String code, String header) {
         if (StrUtil.isNotBlank(code) && StrUtil.isNotBlank(header)) {
-            Map<String, SwaggerRoute> routeMap = this.multipartRouteMap.get(code);
+            Map<String, ServiceRoute> routeMap = this.multipartRouteMap.get(code);
             if (CollectionUtil.isNotEmpty(routeMap)) {
                 return routeMap.containsKey(header);
             }
@@ -49,9 +49,9 @@ public abstract class AbsctractRepository extends PoolingConnectionManager imple
         return false;
     }
     @Override
-    public SwaggerRoute getRoute(String code, String header) {
+    public ServiceRoute getRoute(String code, String header) {
         if (StrUtil.isNotBlank(code) && StrUtil.isNotBlank(header)) {
-            Map<String, SwaggerRoute> routeMap = this.multipartRouteMap.get(code);
+            Map<String, ServiceRoute> routeMap = this.multipartRouteMap.get(code);
             if (CollectionUtil.isNotEmpty(routeMap)) {
                 return routeMap.get(header);
             }
@@ -60,20 +60,20 @@ public abstract class AbsctractRepository extends PoolingConnectionManager imple
     }
     
     @Override
-    public List<SwaggerRoute> getRoutes(String code) {
+    public List<ServiceRoute> getRoutes(String code) {
         if (StrUtil.isNotBlank(code)) {
-            Map<String, SwaggerRoute> routeMap = this.multipartRouteMap.get(code);
+            Map<String, ServiceRoute> routeMap = this.multipartRouteMap.get(code);
             if (CollectionUtil.isNotEmpty(routeMap)) {
-                List<SwaggerRoute> swaggerRoutes = CollectionUtil.newArrayList(routeMap.values());
-                Collections.sort(swaggerRoutes, Comparator.comparingInt(SwaggerRoute::getOrder));
-                return swaggerRoutes;
+                List<ServiceRoute> serviceRoutes = CollectionUtil.newArrayList(routeMap.values());
+                Collections.sort(serviceRoutes, Comparator.comparingInt(ServiceRoute::getOrder));
+                return serviceRoutes;
             }
         }
         return new ArrayList<>();
     }
     
     @Override
-    public void add(String code, Map<String, SwaggerRoute> routeMap) {
+    public void add(String code, Map<String, ServiceRoute> routeMap) {
         this.multipartRouteMap.put(code, routeMap);
     }
 }

@@ -26,13 +26,14 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 @Slf4j
 @SpringBootApplication
 public class Knife4jDesktopApplication {
-    
+
     @SneakyThrows
-    public static void main(String[] args) {
+    public static void main(String[] args){
         // 启动项目
         ConfigurableApplicationContext application = SpringApplication.run(Knife4jDesktopApplication.class, args);
         Environment env = application.getEnvironment();
@@ -48,6 +49,7 @@ public class Knife4jDesktopApplication {
                 env.getProperty("server.port"),
                 host, port,
                 host, port);
+
     }
     
 }

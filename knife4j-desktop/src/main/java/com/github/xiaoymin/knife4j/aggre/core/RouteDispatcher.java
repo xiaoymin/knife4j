@@ -23,13 +23,14 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
-import com.github.xiaoymin.knife4j.aggre.core.common.ExecutorEnum;
-import com.github.xiaoymin.knife4j.aggre.core.common.RouteUtils;
-import com.github.xiaoymin.knife4j.aggre.core.executor.ApacheClientExecutor;
-import com.github.xiaoymin.knife4j.aggre.core.executor.OkHttpClientExecutor;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.HeaderWrapper;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.gateway.executor.ExecutorType;
+import com.github.xiaoymin.knife4j.gateway.executor.apache.ApacheClientExecutor;
+import com.github.xiaoymin.knife4j.gateway.executor.okhttp.OkHttpClientExecutor;
+import com.github.xiaoymin.knife4j.common.model.HeaderWrapper;
+import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
+import com.github.xiaoymin.knife4j.gateway.executor.response.GatewayClientResponse;
+import com.github.xiaoymin.knife4j.gateway.executor.GatewayClientExecutor;
+import com.github.xiaoymin.knife4j.gateway.context.GatewayRequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -70,44 +71,44 @@ public class RouteDispatcher {
     
     private RouteRepository routeRepository;
     
-    private RouteExecutor routeExecutor;
+    private GatewayClientExecutor gatewayClientExecutor;
     
-    private RouteCache<String, SwaggerRoute> routeCache;
+    private RouteCache<String, ServiceRoute> routeCache;
     
     private Set<String> ignoreHeaders = new HashSet<>();
     
-    public RouteDispatcher(RouteRepository routeRepository, RouteCache<String, SwaggerRoute> routeRouteCache,
-                           ExecutorEnum executorEnum, String rootPath) {
+    public RouteDispatcher(RouteRepository routeRepository, RouteCache<String, ServiceRoute> routeRouteCache,
+                           ExecutorType executorType, String rootPath) {
         this.routeRepository = routeRepository;
         this.routeCache = routeRouteCache;
         this.rootPath = rootPath;
-        initExecutor(executorEnum);
+        initExecutor(executorType);
         ignoreHeaders.addAll(Arrays.asList(new String[]{
                 "host", "content-length", ROUTE_PROXY_HEADER_NAME, ROUTE_PROXY_HEADER_BASIC_NAME, "Request-Origion", "language", "knife4j-gateway-code"
         }));
     }
     
-    private void initExecutor(ExecutorEnum executorEnum) {
-        if (executorEnum == null) {
+    private void initExecutor(ExecutorType executorType) {
+        if (executorType == null) {
             throw new IllegalArgumentException("ExecutorEnum can not be empty");
         }
-        switch (executorEnum) {
+        switch (executorType) {
             case APACHE:
-                this.routeExecutor = new ApacheClientExecutor();
+                this.gatewayClientExecutor = new ApacheClientExecutor();
                 break;
             case OKHTTP:
-                this.routeExecutor = new OkHttpClientExecutor();
+                this.gatewayClientExecutor = new OkHttpClientExecutor();
                 break;
             default:
-                throw new UnsupportedOperationException("UnSupported ExecutorType:" + executorEnum.name());
+                throw new UnsupportedOperationException("UnSupported ExecutorType:" + executorType.name());
         }
     }
     
     public boolean checkRoute(String header) {
         if (StrUtil.isNotBlank(header)) {
-            SwaggerRoute swaggerRoute = routeRepository.getRoute("", header);
-            if (swaggerRoute != null) {
-                return StrUtil.isNotBlank(swaggerRoute.getUri());
+            ServiceRoute serviceRoute = routeRepository.getRoute("", header);
+            if (serviceRoute != null) {
+                return StrUtil.isNotBlank(serviceRoute.getUri());
             }
         }
         return false;
@@ -115,12 +116,12 @@ public class RouteDispatcher {
     
     public void execute(HttpServletRequest request, HttpServletResponse response) {
         try {
-            RouteRequestContext routeContext = new RouteRequestContext();
+            GatewayRequestContext routeContext = new GatewayRequestContext();
             this.buildContext(routeContext, request);
-            RouteResponse routeResponse = routeExecutor.executor(routeContext);
-            writeResponseStatus(routeResponse, response);
-            writeResponseHeader(routeResponse, response);
-            writeBody(routeResponse, response);
+            GatewayClientResponse gatewayClientResponse = gatewayClientExecutor.executor(routeContext);
+            writeResponseStatus(gatewayClientResponse, response);
+            writeResponseHeader(gatewayClientResponse, response);
+            writeBody(gatewayClientResponse, response);
         } catch (Exception e) {
             logger.error("has Error:{}", e.getMessage());
             logger.error(e.getMessage(), e);
@@ -148,51 +149,51 @@ public class RouteDispatcher {
     /**
      * Write Http Status Code
      *
-     * @param routeResponse routeResponse
+     * @param gatewayClientResponse routeResponse
      * @param response      response
      */
-    protected void writeResponseStatus(RouteResponse routeResponse, HttpServletResponse response) {
-        if (routeResponse != null) {
-            response.setStatus(routeResponse.getStatusCode());
+    protected void writeResponseStatus(GatewayClientResponse gatewayClientResponse, HttpServletResponse response) {
+        if (gatewayClientResponse != null) {
+            response.setStatus(gatewayClientResponse.getStatusCode());
         }
     }
     
     /**
      * Write Response Header
      *
-     * @param routeResponse route instance
+     * @param gatewayClientResponse route instance
      * @param response Servlet Response
      */
-    protected void writeResponseHeader(RouteResponse routeResponse, HttpServletResponse response) {
-        if (routeResponse != null) {
-            if (CollectionUtil.isNotEmpty(routeResponse.getHeaders())) {
-                for (HeaderWrapper header : routeResponse.getHeaders()) {
+    protected void writeResponseHeader(GatewayClientResponse gatewayClientResponse, HttpServletResponse response) {
+        if (gatewayClientResponse != null) {
+            if (CollectionUtil.isNotEmpty(gatewayClientResponse.getHeaders())) {
+                for (HeaderWrapper header : gatewayClientResponse.getHeaders()) {
                     if (!StrUtil.equalsIgnoreCase(header.getName(), "Transfer-Encoding")) {
                         response.addHeader(header.getName(), header.getValue());
                     }
                 }
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Content-Type:{},Charset-Encoding:{}", routeResponse.getContentType(), routeResponse.getCharsetEncoding());
+                logger.debug("Content-Type:{},Charset-Encoding:{}", gatewayClientResponse.getContentType(), gatewayClientResponse.getCharsetEncoding());
             }
-            response.setContentType(routeResponse.getContentType());
-            if (routeResponse.getContentLength() > 0) {
-                response.setContentLengthLong(routeResponse.getContentLength());
+            response.setContentType(gatewayClientResponse.getContentType());
+            if (gatewayClientResponse.getContentLength() > 0) {
+                response.setContentLengthLong(gatewayClientResponse.getContentLength());
             }
-            response.setCharacterEncoding(routeResponse.getCharsetEncoding().displayName());
+            response.setCharacterEncoding(gatewayClientResponse.getCharsetEncoding().displayName());
         }
     }
     
     /**
      * Write Body
      *
-     * @param routeResponse route
+     * @param gatewayClientResponse route
      * @param response Servlet Response
      */
-    protected void writeBody(RouteResponse routeResponse, HttpServletResponse response) throws IOException {
-        if (routeResponse != null) {
-            if (routeResponse.success()) {
-                InputStream inputStream = routeResponse.getBody();
+    protected void writeBody(GatewayClientResponse gatewayClientResponse, HttpServletResponse response) throws IOException {
+        if (gatewayClientResponse != null) {
+            if (gatewayClientResponse.success()) {
+                InputStream inputStream = gatewayClientResponse.getBody();
                 if (inputStream != null) {
                     int read = -1;
                     byte[] bytes = new byte[1024 * 1024];
@@ -204,7 +205,7 @@ public class RouteDispatcher {
                     IoUtil.close(outputStream);
                 }
             } else {
-                String text = routeResponse.text();
+                String text = gatewayClientResponse.text();
                 if (StrUtil.isNotBlank(text)) {
                     PrintWriter printWriter = response.getWriter();
                     printWriter.write(text);
@@ -217,45 +218,45 @@ public class RouteDispatcher {
     
     /**
      * Build Context of Route
-     * @param routeRequestContext Route Context
+     * @param gatewayRequestContext Route Context
      * @param request Servlet Request
      */
-    protected void buildContext(RouteRequestContext routeRequestContext, HttpServletRequest request) throws IOException {
+    protected void buildContext(GatewayRequestContext gatewayRequestContext, HttpServletRequest request) throws IOException {
         // Whether Basic
         String basicHeader = request.getHeader(ROUTE_PROXY_HEADER_BASIC_NAME);
         if (StrUtil.isNotBlank(basicHeader)) {
-            BasicAuth basicAuth = routeRepository.getAuth("", basicHeader);
+            /**BasicAuth basicAuth = routeRepository.getAuth("", basicHeader);
             if (basicAuth != null) {
                 // add Basic header
                 routeRequestContext.addHeader("Authorization", RouteUtils.authorize(basicAuth.getUsername(),
                         basicAuth.getPassword()));
-            }
+            }**/
         }
-        SwaggerRoute swaggerRoute = getRoute(request.getHeader(ROUTE_PROXY_HEADER_NAME));
+        ServiceRoute serviceRoute = getRoute(request.getHeader(ROUTE_PROXY_HEADER_NAME));
         // String uri="http://knife4j.xiaominfo.com";
-        String uri = swaggerRoute.getUri();
+        String uri = serviceRoute.getUri();
         String fromUri = request.getRequestURI();
         // get project servlet.contextPath
         if (StrUtil.isNotBlank(this.rootPath) && !StrUtil.equals(this.rootPath, ROUTE_BASE_PATH)) {
             fromUri = fromUri.replaceFirst(this.rootPath, "");
             // 此处需要追加一个请求头basePath，因为父项目设置了context-path
-            routeRequestContext.addHeader("X-Forwarded-Prefix", this.rootPath);
+            gatewayRequestContext.addHeader("X-Forwarded-Prefix", this.rootPath);
         }
         // 判断servicePath
-        if (StrUtil.isNotBlank(swaggerRoute.getServicePath()) && !StrUtil.equals(swaggerRoute.getServicePath(),
+        if (StrUtil.isNotBlank(serviceRoute.getServicePath()) && !StrUtil.equals(serviceRoute.getServicePath(),
                 ROUTE_BASE_PATH)) {
-            if (StrUtil.startWith(fromUri, swaggerRoute.getServicePath())) {
+            if (StrUtil.startWith(fromUri, serviceRoute.getServicePath())) {
                 // 实际在请求时,剔除servicePath,否则会造成404
-                fromUri = fromUri.replaceFirst(swaggerRoute.getServicePath(), "");
+                fromUri = fromUri.replaceFirst(serviceRoute.getServicePath(), "");
             }
         }
-        if (StrUtil.isNotBlank(swaggerRoute.getLocation())) {
-            if (swaggerRoute.getLocation().indexOf(fromUri) == -1) {
-                logger.debug("location:{},fromURI:{}", swaggerRoute.getLocation(), fromUri);
+        if (StrUtil.isNotBlank(serviceRoute.getLocation())) {
+            if (serviceRoute.getLocation().indexOf(fromUri) == -1) {
+                logger.debug("location:{},fromURI:{}", serviceRoute.getLocation(), fromUri);
                 // 当前路径是请求非获取OpenAPI实例路径地址，判断debugURL
-                if (StrUtil.isNotBlank(swaggerRoute.getDebugUrl())) {
+                if (StrUtil.isNotBlank(serviceRoute.getDebugUrl())) {
                     // 设置为调试地址
-                    uri = swaggerRoute.getDebugUrl();
+                    uri = serviceRoute.getDebugUrl();
                 }
             }
         }
@@ -270,24 +271,24 @@ public class RouteDispatcher {
         if (logger.isDebugEnabled()) {
             logger.debug("目标请求Url:{},请求类型:{},Host:{}", requestUrl, request.getMethod(), host);
         }
-        routeRequestContext.setOriginalUri(fromUri);
-        routeRequestContext.setUrl(requestUrl);
-        routeRequestContext.setMethod(request.getMethod());
+        gatewayRequestContext.setOriginalUri(fromUri);
+        gatewayRequestContext.setUrl(requestUrl);
+        gatewayRequestContext.setMethod(request.getMethod());
         Enumeration<String> enumeration = request.getHeaderNames();
         while (enumeration.hasMoreElements()) {
             String key = enumeration.nextElement();
             String value = request.getHeader(key);
             if (!ignoreHeaders.contains(key.toLowerCase())) {
-                routeRequestContext.addHeader(key, value);
+                gatewayRequestContext.addHeader(key, value);
             }
         }
-        routeRequestContext.addHeader("Host", host);
+        gatewayRequestContext.addHeader("Host", host);
         Enumeration<String> params = request.getParameterNames();
         while (params.hasMoreElements()) {
             String name = params.nextElement();
             String value = request.getParameter(name);
             // logger.info("param-name:{},value:{}",name,value);
-            routeRequestContext.addParam(name, value);
+            gatewayRequestContext.addParam(name, value);
         }
         // 增加文件，sinc 2.0.9
         String contentType = request.getContentType();
@@ -296,11 +297,11 @@ public class RouteDispatcher {
             try {
                 Collection<Part> parts = request.getParts();
                 if (CollectionUtil.isNotEmpty(parts)) {
-                    Map<String, String> paramMap = routeRequestContext.getParams();
+                    Map<String, String> paramMap = gatewayRequestContext.getParams();
                     parts.forEach(part -> {
                         String key = part.getName();
                         if (!paramMap.containsKey(key)) {
-                            routeRequestContext.addPart(part);
+                            gatewayRequestContext.addPart(part);
                         }
                     });
                 }
@@ -309,17 +310,17 @@ public class RouteDispatcher {
                 logger.warn("get part error,message:" + e.getMessage());
             }
         }
-        routeRequestContext.setRequestContent(request.getInputStream());
+        gatewayRequestContext.setRequestContent(request.getInputStream());
     }
     
-    public SwaggerRoute getRoute(String header) {
+    public ServiceRoute getRoute(String header) {
         // 去除缓存机制，由于Eureka以及Nacos设立了心跳检测机制，服务在多节点部署时，节点ip可能存在变化,导致调试最终转发给已经下线的服务
         // since 2.0.9
-        SwaggerRoute swaggerRoute = routeRepository.getRoute("", header);
-        return swaggerRoute;
+        ServiceRoute serviceRoute = routeRepository.getRoute("", header);
+        return serviceRoute;
     }
     
-    public List<SwaggerRoute> getRoutes() {
+    public List<ServiceRoute> getRoutes() {
         return routeRepository.getRoutes("");
     }
     

@@ -20,8 +20,7 @@ package com.github.xiaoymin.knife4j.aggre.spring.support;
 
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosOpenApi;
-import com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

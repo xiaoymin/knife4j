@@ -21,11 +21,9 @@ package com.github.xiaoymin.knife4j.aggre.repository;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
-import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
+import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
+import com.github.xiaoymin.knife4j.datasource.model.config.route.DiskRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
-import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
@@ -56,19 +54,8 @@ public class DiskRepository extends AbsctractRepository {
     public void remove(String code) {
         this.diskSettingMap.remove(code);
         this.multipartRouteMap.remove(code);
-        GlobalDesktopManager.me.remove(code);
     }
-    
-    @Override
-    public BasicAuth getAccessAuth(String code) {
-        BasicAuth basicAuth = null;
-        DiskSetting setting = this.diskSettingMap.get(code);
-        if (setting != null) {
-            basicAuth = setting.getBasic();
-        }
-        return basicAuth;
-    }
-    
+
     /**
      * 根据Disk配置新增
      * @param code
@@ -76,7 +63,7 @@ public class DiskRepository extends AbsctractRepository {
      */
     public void add(String code, DiskSetting diskSetting) {
         if (diskSetting != null && CollectionUtil.isNotEmpty(diskSetting.getRoutes())) {
-            Map<String, SwaggerRoute> diskRouteMap = new HashMap<>();
+            Map<String, ServiceRoute> diskRouteMap = new HashMap<>();
             for (DiskRoute diskRoute : diskSetting.getRoutes()) {
                 if (StrUtil.isNotBlank(diskRoute.getLocation())) {
                     File file = new File(diskRoute.getLocation());
@@ -93,7 +80,7 @@ public class DiskRepository extends AbsctractRepository {
                             }
                             if (StrUtil.isNotBlank(content)) {
                                 // 添加分组
-                                diskRouteMap.put(diskRoute.pkId(), new SwaggerRoute(diskRoute, content));
+                                diskRouteMap.put(diskRoute.pkId(), new ServiceRoute(diskRoute, content));
                             }
                         }
                     } catch (Exception e) {

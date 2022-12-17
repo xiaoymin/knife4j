@@ -6,8 +6,3 @@ spring:
     suffix: .html
   application:
     name: knife4j-desktop
-knife4j:
-  # MetaDataMonitor组件刷新频率,单位:毫秒(data文件夹变更时触发Knife4jAggregationDesktop将从硬盘properties配置文件加载文档),默认是5000毫秒
-  duration: 5000
-  # 数据目录DIR文件
-  data: /Users/xiaoyumin/tmp/knife4j-desktop

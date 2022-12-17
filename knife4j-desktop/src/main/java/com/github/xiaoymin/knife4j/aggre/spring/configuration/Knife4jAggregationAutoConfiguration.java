@@ -20,7 +20,7 @@ package com.github.xiaoymin.knife4j.aggre.spring.configuration;
 
 import com.github.xiaoymin.knife4j.aggre.core.RouteCache;
 import com.github.xiaoymin.knife4j.aggre.core.cache.RouteInMemoryCache;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +42,7 @@ public class Knife4jAggregationAutoConfiguration {
     }
     
     @Bean
-    public RouteCache<String, SwaggerRoute> routeCache() {
+    public RouteCache<String, ServiceRoute> routeCache() {
         return new RouteInMemoryCache();
     }
     

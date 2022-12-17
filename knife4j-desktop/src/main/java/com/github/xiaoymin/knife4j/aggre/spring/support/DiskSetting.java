@@ -18,8 +18,7 @@
 
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
-import com.github.xiaoymin.knife4j.aggre.disk.DiskRoute;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.github.xiaoymin.knife4j.datasource.model.config.route.DiskRoute;
 
 import java.util.List;
 

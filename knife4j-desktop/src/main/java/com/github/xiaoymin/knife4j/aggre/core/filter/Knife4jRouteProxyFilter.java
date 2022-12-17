@@ -20,7 +20,7 @@ package com.github.xiaoymin.knife4j.aggre.core.filter;
 
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
@@ -62,8 +62,8 @@ public class Knife4jRouteProxyFilter implements Filter {
         if (routeDispatcher.checkRoute(request.getHeader(RouteDispatcher.ROUTE_PROXY_HEADER_NAME))) {
             if (StrUtil.endWith(uri, RouteDispatcher.OPENAPI_GROUP_INSTANCE_ENDPOINT)) {
                 String group = request.getParameter("group");
-                SwaggerRoute swaggerRoute = routeDispatcher.getRoute(group);
-                writeRouteResponse(response, swaggerRoute == null ? "" : swaggerRoute.getContent());
+                ServiceRoute serviceRoute = routeDispatcher.getRoute(group);
+                writeRouteResponse(response, serviceRoute == null ? "" : serviceRoute.getContent());
                 // 响应当前服务disk-实例
             } else {
                 if (logger.isDebugEnabled()) {
@@ -79,8 +79,8 @@ public class Knife4jRouteProxyFilter implements Filter {
             } else if (StrUtil.endWith(uri, RouteDispatcher.OPENAPI_GROUP_INSTANCE_ENDPOINT)) {
                 // 响应当前服务disk-实例
                 String group = request.getParameter("group");
-                SwaggerRoute swaggerRoute = routeDispatcher.getRoute(group);
-                writeRouteResponse(response, swaggerRoute == null ? "" : swaggerRoute.getContent());
+                ServiceRoute serviceRoute = routeDispatcher.getRoute(group);
+                writeRouteResponse(response, serviceRoute == null ? "" : serviceRoute.getContent());
             } else {
                 filterChain.doFilter(servletRequest, servletResponse);
             }

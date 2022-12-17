@@ -19,7 +19,7 @@
 package com.github.xiaoymin.knife4j.aggre.nacos;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
+import com.github.xiaoymin.knife4j.gateway.executor.apache.PoolingConnectionManager;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;

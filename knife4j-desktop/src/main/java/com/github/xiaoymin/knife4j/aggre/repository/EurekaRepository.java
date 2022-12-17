@@ -22,13 +22,11 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.aggre.core.common.RouteUtils;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaApplication;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
-import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
+import com.github.xiaoymin.knife4j.datasource.model.config.route.EurekaRoute;
 import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
-import com.github.xiaoymin.knife4j.core.GlobalDesktopManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -70,15 +68,6 @@ public class EurekaRepository extends AbsctractRepository {
             // 根据EurekaApplication转换为Knife4j内部SwaggerRoute结构
             applyRoutes(code, eurekaApplications, eurekaSetting);
         }
-    }
-    @Override
-    public BasicAuth getAccessAuth(String code) {
-        BasicAuth basicAuth = null;
-        EurekaSetting setting = this.eurekaSettingMap.get(code);
-        if (setting != null) {
-            basicAuth = setting.getBasic();
-        }
-        return basicAuth;
     }
     /**
      * 初始化
@@ -141,7 +130,7 @@ public class EurekaRepository extends AbsctractRepository {
      * @param eurekaSetting 配置
      */
     private void applyRoutes(String code, List<EurekaApplication> eurekaApplications, EurekaSetting eurekaSetting) {
-        Map<String, SwaggerRoute> eurekaRouteMap = new HashMap<>();
+        Map<String, ServiceRoute> eurekaRouteMap = new HashMap<>();
         if (CollectionUtil.isNotEmpty(eurekaApplications)) {
             // 获取服务列表
             List<String> serviceNames = eurekaSetting.getRoutes().stream().map(EurekaRoute::getServiceName).map(String::toLowerCase).collect(Collectors.toList());
@@ -157,11 +146,8 @@ public class EurekaRepository extends AbsctractRepository {
                         if (eurekaRouteOptional.isPresent()) {
                             EurekaRoute eurekaRoute = eurekaRouteOptional.get();
                             EurekaInstance eurekaInstance = instanceOptional.get();
-                            if (eurekaRoute.getRouteAuth() == null || !eurekaRoute.getRouteAuth().isEnable()) {
-                                eurekaRoute.setRouteAuth(eurekaSetting.getRouteAuth());
-                            }
                             // 转换为SwaggerRoute
-                            eurekaRouteMap.put(eurekaRoute.pkId(), new SwaggerRoute(eurekaRoute, eurekaInstance));
+                            eurekaRouteMap.put(eurekaRoute.pkId(), new ServiceRoute(eurekaRoute, eurekaInstance));
                         }
                     }
                 }
@@ -172,30 +158,9 @@ public class EurekaRepository extends AbsctractRepository {
             this.eurekaSettingMap.put(code, eurekaSetting);
         }
     }
-    
-    @Override
-    public BasicAuth getAuth(String code, String header) {
-        BasicAuth basicAuth = null;
-        EurekaSetting eurekaSetting = this.eurekaSettingMap.get(code);
-        if (eurekaSetting != null && CollectionUtil.isNotEmpty(eurekaSetting.getRoutes())) {
-            if (eurekaSetting.getRouteAuth() != null && eurekaSetting.getRouteAuth().isEnable()) {
-                basicAuth = eurekaSetting.getRouteAuth();
-                // 判断route服务中是否再单独配置
-                BasicAuth routeBasicAuth = getAuthByRoute(header, eurekaSetting.getRoutes());
-                if (routeBasicAuth != null) {
-                    basicAuth = routeBasicAuth;
-                }
-            } else {
-                basicAuth = getAuthByRoute(header, eurekaSetting.getRoutes());
-            }
-        }
-        return basicAuth;
-    }
-    
     @Override
     public void remove(String code) {
         this.multipartRouteMap.remove(code);
         this.eurekaSettingMap.remove(code);
-        GlobalDesktopManager.me.remove(code);
     }
 }
