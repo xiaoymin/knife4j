@@ -26,7 +26,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 @Slf4j
 @SpringBootApplication
