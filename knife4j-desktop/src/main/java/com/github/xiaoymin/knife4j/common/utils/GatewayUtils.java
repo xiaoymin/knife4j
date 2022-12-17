@@ -24,12 +24,12 @@ import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.common.model.HeaderWrapper;
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import com.github.xiaoymin.knife4j.gateway.executor.response.GatewayClientResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;

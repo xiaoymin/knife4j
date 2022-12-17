@@ -25,12 +25,12 @@ import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import com.github.xiaoymin.knife4j.datasource.DocumentSessionHolder;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;

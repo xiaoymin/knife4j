@@ -26,6 +26,7 @@ import com.github.xiaoymin.knife4j.gateway.executor.response.GatewayClientRespon
 import com.github.xiaoymin.knife4j.common.model.HeaderWrapper;
 import com.github.xiaoymin.knife4j.gateway.executor.response.ApacheClientResponse;
 import com.github.xiaoymin.knife4j.gateway.executor.response.DefaultClientResponse;
+import jakarta.servlet.http.Part;
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -38,7 +39,6 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.Part;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;

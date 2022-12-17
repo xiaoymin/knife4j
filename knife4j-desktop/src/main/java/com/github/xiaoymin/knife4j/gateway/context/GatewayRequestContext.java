@@ -19,9 +19,9 @@
 package com.github.xiaoymin.knife4j.gateway.context;
 
 import com.github.xiaoymin.knife4j.common.model.HeaderWrapper;
+import jakarta.servlet.http.Part;
 import lombok.Data;
 
-import javax.servlet.http.Part;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;

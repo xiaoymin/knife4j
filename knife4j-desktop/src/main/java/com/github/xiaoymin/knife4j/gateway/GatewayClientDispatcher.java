@@ -22,7 +22,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import com.github.xiaoymin.knife4j.common.model.WebJarFile;
 import com.github.xiaoymin.knife4j.datasource.DocumentSessionHolder;
@@ -35,14 +35,14 @@ import com.github.xiaoymin.knife4j.gateway.executor.GatewayClientExecutor;
 import com.github.xiaoymin.knife4j.common.holder.WebJarHolder;
 import com.github.xiaoymin.knife4j.common.utils.GatewayUtils;
 import com.github.xiaoymin.knife4j.gateway.executor.response.GatewayClientResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -70,7 +70,7 @@ public class GatewayClientDispatcher implements Filter {
     }
     
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String code = request.getHeader(DesktopConstants.ROUTE_PROXY_DOCUMENT_CODE);
@@ -122,7 +122,7 @@ public class GatewayClientDispatcher implements Filter {
                 if (webJarFileOptional.isPresent()) {
                     WebJarFile webJarFile = webJarFileOptional.get();
                     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-                    ServletUtil.write(response, webJarFile.getContent(), webJarFile.getMediaType().toString());
+                    JakartaServletUtil.write(response, webJarFile.getContent(), webJarFile.getMediaType().toString());
                 } else {
                     log.info("webjars.{},real:{}", uri, webjarURL);
                     String resourcePath = "/META-INF/resources/" + webjarURL;
@@ -140,7 +140,7 @@ public class GatewayClientDispatcher implements Filter {
                         webJarFile.setWebjar(webjarURL);
                         this.webJarHolder.addFile(webjarURL, webJarFile);
                         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-                        ServletUtil.write(response, content, mediaType.toString());
+                        JakartaServletUtil.write(response, content, mediaType.toString());
                     } else {
                         filterChain.doFilter(servletRequest, servletResponse);
                     }

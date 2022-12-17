@@ -19,10 +19,9 @@
 package com.github.xiaoymin.knife4j.gateway.context;
 
 import com.github.xiaoymin.knife4j.datasource.DocumentSessionHolder;
-import com.github.xiaoymin.knife4j.gateway.context.GatewayRequestContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>

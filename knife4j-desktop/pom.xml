@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.6</version>
+        <version>3.0.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.github.xiaoymin</groupId>
@@ -14,13 +14,13 @@
     <name>knife4j-desktop</name>
     <description>knife4j-desktop重构版本,基于Spring Boot重构,方便后期接入各种生态</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>18</java.version>
         <skipTests>true</skipTests>
-        <slf4j.version>1.7.36</slf4j.version>
-        <hutool.version>5.8.5</hutool.version>
+        <slf4j.version>2.0.5</slf4j.version>
+        <hutool.version>5.8.10</hutool.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <gson.version>2.9.0</gson.version>
-        <logback.version>1.2.11</logback.version>
+        <gson.version>2.10</gson.version>
+        <logback.version>1.4.5</logback.version>
         <knife4j-spotless-maven-plugin.version>2.22.1</knife4j-spotless-maven-plugin.version>
     </properties>
     <repositories>
@@ -93,7 +93,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-properties</artifactId>
-            <version>2.13.3</version>
+            <version>2.14.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
         <dependency>
