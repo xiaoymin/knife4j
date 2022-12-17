@@ -18,7 +18,6 @@
 
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.EurekaRoute;
 
 import java.util.List;
@@ -35,27 +34,14 @@ public class EurekaSetting extends BaseSetting {
      * Eureka注册中心地址,例如(http://localhost:10000/eureka/)
      */
     private String serviceUrl;
-    /**
-     * 注册中心请求接口是否需要Basic验证
-     */
-    private BasicAuth serviceAuth;
-    /**
-     * 配置的Route路由服务的公共Basic验证信息，仅作用与访问Swagger接口时使用，具体服务的其他接口不使用该配置
-     */
-    private BasicAuth routeAuth;
+
     
     /**
      * 路由列表
      */
     private List<EurekaRoute> routes;
     
-    public BasicAuth getRouteAuth() {
-        return routeAuth;
-    }
-    
-    public void setRouteAuth(BasicAuth routeAuth) {
-        this.routeAuth = routeAuth;
-    }
+
     public String getServiceUrl() {
         return serviceUrl;
     }
@@ -72,11 +58,4 @@ public class EurekaSetting extends BaseSetting {
         this.routes = routes;
     }
     
-    public BasicAuth getServiceAuth() {
-        return serviceAuth;
-    }
-    
-    public void setServiceAuth(BasicAuth serviceAuth) {
-        this.serviceAuth = serviceAuth;
-    }
 }

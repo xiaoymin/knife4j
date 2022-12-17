@@ -16,9 +16,8 @@
  */
 
 
-package com.github.xiaoymin.knife4j.gateway.executor.apache;
+package com.github.xiaoymin.knife4j.gateway.executor.apache.pool;
 
-import com.github.xiaoymin.knife4j.aggre.core.ext.ConnectionSettingHolder;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.CredentialsProvider;

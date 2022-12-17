@@ -17,12 +17,8 @@
 
 
 package com.github.xiaoymin.knife4j.aggre.spring.support;
-
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
-import com.github.xiaoymin.knife4j.aggre.nacos.NacosOpenApi;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,11 +34,6 @@ public class NacosSetting extends BaseSetting {
      */
     private String serviceUrl;
     /**
-     * Nacos注册中心鉴权,参考issue：https://gitee.com/xiaoym/knife4j/issues/I28IF9
-     * since 2.0.9
-     */
-    private BasicAuth serviceAuth;
-    /**
      * 接口访问密钥
      */
     private String secret;
@@ -51,12 +42,7 @@ public class NacosSetting extends BaseSetting {
      * Nacos注册聚合服务路由集合
      */
     private List<NacosRoute> routes;
-    
-    /**
-     * 配置的Route路由服务的公共Basic验证信息，仅作用与访问Swagger接口时使用，具体服务的其他接口不使用该配置
-     */
-    private BasicAuth routeAuth;
-    
+
     /**
      * Nacos-token失效时间
      */
@@ -74,15 +60,7 @@ public class NacosSetting extends BaseSetting {
     public void setSecretDateTime(LocalDateTime secretDateTime) {
         this.secretDateTime = secretDateTime;
     }
-    
-    public BasicAuth getRouteAuth() {
-        return routeAuth;
-    }
-    
-    public void setRouteAuth(BasicAuth routeAuth) {
-        this.routeAuth = routeAuth;
-    }
-    
+
     public String getServiceUrl() {
         return serviceUrl;
     }
@@ -106,18 +84,10 @@ public class NacosSetting extends BaseSetting {
     public void setRoutes(List<NacosRoute> routes) {
         this.routes = routes;
     }
-    
-    public BasicAuth getServiceAuth() {
-        return serviceAuth;
-    }
-    
-    public void setServiceAuth(BasicAuth serviceAuth) {
-        this.serviceAuth = serviceAuth;
-    }
-    
+
     public void initAccessToken() {
         // 判断当前Nacos是否需要鉴权访问
-        if (this.serviceAuth != null && this.serviceAuth.isEnable()) {
+        /**if (this.serviceAuth != null && this.serviceAuth.isEnable()) {
             if (this.secretDateTime == null) {
                 setSecret(NacosOpenApi.me().getAccessToken(this.serviceUrl, this.serviceAuth));
                 setSecretDateTime(LocalDateTime.now().plusSeconds(this.tokenExpire));
@@ -130,6 +100,6 @@ public class NacosSetting extends BaseSetting {
                     setSecretDateTime(LocalDateTime.now().plusSeconds(this.tokenExpire));
                 }
             }
-        }
+        }**/
     }
 }

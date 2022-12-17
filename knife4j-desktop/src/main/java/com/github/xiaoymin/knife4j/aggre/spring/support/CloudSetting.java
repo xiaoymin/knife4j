@@ -19,7 +19,6 @@
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
 import com.github.xiaoymin.knife4j.datasource.model.config.route.CloudRoute;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 
 import java.util.List;
 
@@ -35,20 +34,6 @@ public class CloudSetting extends BaseSetting {
      * 微服务集合
      */
     private List<CloudRoute> routes;
-    
-    /**
-     * 配置的Route路由服务的公共Basic验证信息，仅作用与访问Swagger接口时使用，具体服务的其他接口不使用该配置
-     */
-    private BasicAuth routeAuth;
-    
-    public BasicAuth getRouteAuth() {
-        return routeAuth;
-    }
-    
-    public void setRouteAuth(BasicAuth routeAuth) {
-        this.routeAuth = routeAuth;
-    }
-    
     public List<CloudRoute> getRoutes() {
         return routes;
     }

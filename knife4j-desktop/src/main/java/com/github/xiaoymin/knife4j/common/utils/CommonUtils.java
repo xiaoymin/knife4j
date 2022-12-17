@@ -21,6 +21,7 @@ package com.github.xiaoymin.knife4j.common.utils;
 import cn.hutool.core.lang.PatternPool;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -30,6 +31,7 @@ import java.util.Base64;
  * 2020/12/26 13:09
  * @since:knife4j-aggregation-desktop 1.0
  */
+@Slf4j
 public class CommonUtils {
     
     /**
@@ -63,5 +65,25 @@ public class CommonUtils {
         String encodeStr = username + ":" + password;
         stringBuilder.append(Base64.getEncoder().encodeToString(encodeStr.getBytes(StandardCharsets.UTF_8)));
         return stringBuilder.toString();
+    }
+
+    /**
+     * BASE64 Decode
+     * @param source
+     * @return
+     */
+    protected static String decodeBase64(String source) {
+        String decodeStr = null;
+        if (source != null) {
+            // BASE64Decoder decoder=new BASE64Decoder();
+            try {
+                // byte[] bytes=decoder.decodeBuffer(source);
+                byte[] bytes = Base64.getDecoder().decode(source);
+                decodeStr = new String(bytes);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+        return decodeStr;
     }
 }

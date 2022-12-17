@@ -19,8 +19,7 @@
 package com.github.xiaoymin.knife4j.aggre.nacos;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.gateway.executor.apache.PoolingConnectionManager;
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
+import com.github.xiaoymin.knife4j.gateway.executor.apache.pool.PoolingConnectionManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.http.HttpStatus;
@@ -58,18 +57,14 @@ public class NacosOpenApi extends PoolingConnectionManager {
     /**
      * 获取Nacos注册中心鉴权token
      * @param serviceUrl Nacos注册中心地址
-     * @param basicAuth 鉴权用户信息
      * @return 鉴权Token
      */
-    public String getAccessToken(String serviceUrl, BasicAuth basicAuth) {
+    public String getAccessToken(String serviceUrl) {
         if (serviceUrl == null) {
             throw new IllegalArgumentException("Nacos serviceUrl can't be Null!");
         }
-        if (basicAuth == null) {
-            throw new IllegalArgumentException("basicAuth can't be Null!");
-        }
         if (logger.isDebugEnabled()) {
-            logger.debug("get Nacos OpenApi accessToken,serviceUrl:{},argument:{}", serviceUrl, basicAuth.toString());
+            //logger.debug("get Nacos OpenApi accessToken,serviceUrl:{},argument:{}", serviceUrl, basicAuth.toString());
         }
         String api = serviceUrl + NACOS_AUTH_API;
         if (logger.isDebugEnabled()) {
@@ -77,10 +72,10 @@ public class NacosOpenApi extends PoolingConnectionManager {
         }
         HttpPost post = new HttpPost(api);
         List<BasicNameValuePair> pairs = new ArrayList<>();
-        pairs.add(new BasicNameValuePair("username", basicAuth.getUsername()));
+        //pairs.add(new BasicNameValuePair("username", basicAuth.getUsername()));
         // 访问Nacos时bug
         // https://gitee.com/xiaoym/knife4j/issues/I4UF84
-        pairs.add(new BasicNameValuePair("password", basicAuth.getPassword()));
+       // pairs.add(new BasicNameValuePair("password", basicAuth.getPassword()));
         try {
             post.setEntity(new UrlEncodedFormEntity(pairs, "UTF-8"));
             CloseableHttpResponse response = getClient().execute(post);

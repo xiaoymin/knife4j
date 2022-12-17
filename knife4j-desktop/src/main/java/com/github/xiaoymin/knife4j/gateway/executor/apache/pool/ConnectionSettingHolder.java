@@ -16,9 +16,8 @@
  */
 
 
-package com.github.xiaoymin.knife4j.aggre.core.ext;
+package com.github.xiaoymin.knife4j.gateway.executor.apache.pool;
 
-import com.github.xiaoymin.knife4j.aggre.spring.configuration.HttpConnectionSetting;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 

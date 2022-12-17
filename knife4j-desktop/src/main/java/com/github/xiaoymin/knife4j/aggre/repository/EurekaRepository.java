@@ -21,7 +21,6 @@ package com.github.xiaoymin.knife4j.aggre.repository;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.aggre.core.common.RouteUtils;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaApplication;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
@@ -85,9 +84,9 @@ public class EurekaRepository extends AbsctractRepository {
         get.addHeader("Accept", "application/json");
         try {
             // 判断是否开启basic认证
-            if (eurekaSetting.getServiceAuth() != null && eurekaSetting.getServiceAuth().isEnable()) {
-                get.addHeader("Authorization", RouteUtils.authorize(eurekaSetting.getServiceAuth().getUsername(), eurekaSetting.getServiceAuth().getPassword()));
-            }
+//            if (eurekaSetting.getServiceAuth() != null && eurekaSetting.getServiceAuth().isEnable()) {
+//                get.addHeader("Authorization", RouteUtils.authorize(eurekaSetting.getServiceAuth().getUsername(), eurekaSetting.getServiceAuth().getPassword()));
+//            }
             CloseableHttpResponse response = getClient().execute(get);
             if (response != null) {
                 int statusCode = response.getStatusLine().getStatusCode();

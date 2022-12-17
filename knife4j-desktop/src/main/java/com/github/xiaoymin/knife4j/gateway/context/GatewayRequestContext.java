@@ -18,7 +18,6 @@
 
 package com.github.xiaoymin.knife4j.gateway.context;
 
-import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.common.model.HeaderWrapper;
 import lombok.Data;
 
@@ -72,11 +71,6 @@ public class GatewayRequestContext {
      * 请求长度
      */
     private Long contentLength;
-    /**
-     * Basic验证
-     */
-    private BasicAuth basicAuth;
-    
     /**
      * 添加请求头
      * @param key 请求头

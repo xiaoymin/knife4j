@@ -114,7 +114,7 @@ public class NacosRepository extends AbsctractRepository {
      */
     private String login(NacosSetting nacosSetting) {
         String accessToken = null;
-        if (nacosSetting.getServiceAuth() != null && nacosSetting.getServiceAuth().isEnable()) {
+        /**if (nacosSetting.getServiceAuth() != null && nacosSetting.getServiceAuth().isEnable()) {
             String loginUrl = nacosSetting.getServiceUrl() + NacosService.NACOS_LOGIN;
             logger.info("Nacos Login url:{}", loginUrl);
             HttpPost post = new HttpPost(loginUrl);
@@ -142,7 +142,7 @@ public class NacosRepository extends AbsctractRepository {
             } catch (Exception e) {
                 logger.error("login fail:" + e.getMessage(), e);
             }
-        }
+        }**/
         return accessToken;
     }
     

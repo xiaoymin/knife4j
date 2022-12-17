@@ -21,6 +21,7 @@ package com.github.xiaoymin.knife4j.gateway.executor.apache;
 import cn.hutool.core.collection.CollectionUtil;
 import com.github.xiaoymin.knife4j.gateway.executor.GatewayClientExecutor;
 import com.github.xiaoymin.knife4j.gateway.context.GatewayRequestContext;
+import com.github.xiaoymin.knife4j.gateway.executor.apache.pool.PoolingConnectionManager;
 import com.github.xiaoymin.knife4j.gateway.executor.response.GatewayClientResponse;
 import com.github.xiaoymin.knife4j.common.model.HeaderWrapper;
 import com.github.xiaoymin.knife4j.gateway.executor.response.ApacheClientResponse;

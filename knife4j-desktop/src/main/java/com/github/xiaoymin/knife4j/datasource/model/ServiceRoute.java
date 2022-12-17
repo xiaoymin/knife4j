@@ -21,8 +21,8 @@ package com.github.xiaoymin.knife4j.datasource.model;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.CloudRoute;
-import com.github.xiaoymin.knife4j.aggre.core.RouteDispatcher;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.DiskRoute;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.EurekaRoute;
@@ -97,15 +97,15 @@ public class ServiceRoute {
         if (diskRoute != null && StrUtil.isNotBlank(content)) {
             this.pkId = diskRoute.pkId();
             this.name = diskRoute.getName();
-            if (StrUtil.isNotBlank(diskRoute.getServicePath()) && !StrUtil.equals(diskRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
+            if (StrUtil.isNotBlank(diskRoute.getServicePath()) && !StrUtil.equals(diskRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
-                if (!StrUtil.startWith(diskRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
-                    this.servicePath = RouteDispatcher.ROUTE_BASE_PATH + diskRoute.getServicePath();
+                if (!StrUtil.startWith(diskRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
+                    this.servicePath = DesktopConstants.ROUTE_BASE_PATH + diskRoute.getServicePath();
                 } else {
                     this.servicePath = diskRoute.getServicePath();
                 }
             }
-            this.location = RouteDispatcher.OPENAPI_GROUP_INSTANCE_ENDPOINT + "?group=" + diskRoute.pkId();
+            this.location = DesktopConstants.OPENAPI_GROUP_INSTANCE_ENDPOINT + "?group=" + diskRoute.pkId();
             this.content = content;
             this.debug = false;
             this.swaggerVersion = diskRoute.getSwaggerVersion();
@@ -155,10 +155,10 @@ public class ServiceRoute {
                     this.uri = cloudRoute.getUri();
                 }
             }
-            if (StrUtil.isNotBlank(cloudRoute.getServicePath()) && !StrUtil.equals(cloudRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
+            if (StrUtil.isNotBlank(cloudRoute.getServicePath()) && !StrUtil.equals(cloudRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
-                if (!StrUtil.startWithAny(cloudRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH, "http://", "https://")) {
-                    this.servicePath = RouteDispatcher.ROUTE_BASE_PATH + cloudRoute.getServicePath();
+                if (!StrUtil.startWithAny(cloudRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH, "http://", "https://")) {
+                    this.servicePath = DesktopConstants.ROUTE_BASE_PATH + cloudRoute.getServicePath();
                 } else {
                     this.servicePath = cloudRoute.getServicePath();
                 }
@@ -187,10 +187,10 @@ public class ServiceRoute {
             this.debugUrl = eurekaRoute.getDebugUrl();
             // 如果端口获取不到，给一个默认值80
             this.uri = "http://" + eurekaInstance.getIpAddr() + ":" + NumberUtil.parseInt(Objects.toString(eurekaInstance.getPort().get("$"), "80"));
-            if (StrUtil.isNotBlank(eurekaRoute.getServicePath()) && !StrUtil.equals(eurekaRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
+            if (StrUtil.isNotBlank(eurekaRoute.getServicePath()) && !StrUtil.equals(eurekaRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
-                if (!StrUtil.startWith(eurekaRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
-                    this.servicePath = RouteDispatcher.ROUTE_BASE_PATH + eurekaRoute.getServicePath();
+                if (!StrUtil.startWith(eurekaRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
+                    this.servicePath = DesktopConstants.ROUTE_BASE_PATH + eurekaRoute.getServicePath();
                 } else {
                     this.servicePath = eurekaRoute.getServicePath();
                 }
@@ -219,10 +219,10 @@ public class ServiceRoute {
             this.debugUrl = nacosRoute.getDebugUrl();
             // 远程uri
             this.uri = GlobalConstants.PROTOCOL_HTTP + nacosInstance.getIp() + ":" + nacosInstance.getPort();
-            if (StrUtil.isNotBlank(nacosRoute.getServicePath()) && !StrUtil.equals(nacosRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
+            if (StrUtil.isNotBlank(nacosRoute.getServicePath()) && !StrUtil.equals(nacosRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
-                if (!StrUtil.startWith(nacosRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
-                    this.servicePath = RouteDispatcher.ROUTE_BASE_PATH + nacosRoute.getServicePath();
+                if (!StrUtil.startWith(nacosRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
+                    this.servicePath = DesktopConstants.ROUTE_BASE_PATH + nacosRoute.getServicePath();
                 } else {
                     this.servicePath = nacosRoute.getServicePath();
                 }

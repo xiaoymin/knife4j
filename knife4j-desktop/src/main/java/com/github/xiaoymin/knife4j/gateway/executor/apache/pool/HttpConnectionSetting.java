@@ -16,11 +16,9 @@
  */
 
 
-package com.github.xiaoymin.knife4j.aggre.spring.configuration;
+package com.github.xiaoymin.knife4j.gateway.executor.apache.pool;
 
-import com.github.xiaoymin.knife4j.aggre.core.ext.ConnectionSettingHolder;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * https://gitee.com/xiaoym/knife4j/issues/I3UHV0

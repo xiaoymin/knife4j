@@ -22,7 +22,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
-import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jSettingProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +102,6 @@ public class PropertyUtils {
     public static void main(String[] args) {
         File file = new File("F:\\开发项目\\开源中国\\knife4j\\Knife4j-Aggregation\\软件目录\\data\\cloud\\cloud.properties");
         // Optional<CloudSetting> cloudSettingOptional=resolveSingle(file,CloudSetting.class);
-        Optional<Knife4jSettingProperties> cloudSettingOptional = resolveSingle(file, Knife4jSettingProperties.class);
         // CloudSetting cloudSetting=javaPropsMapper.readValue(file,CloudSetting.class);
         System.out.println("123");
     }

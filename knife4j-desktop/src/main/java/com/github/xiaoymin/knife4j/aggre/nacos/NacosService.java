@@ -20,7 +20,7 @@ package com.github.xiaoymin.knife4j.aggre.nacos;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.gateway.executor.apache.PoolingConnectionManager;
+import com.github.xiaoymin.knife4j.gateway.executor.apache.pool.PoolingConnectionManager;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
