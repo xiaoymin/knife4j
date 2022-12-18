@@ -29,6 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -121,8 +122,8 @@ public class GatewayContextImpl implements GatewayContext {
         }
         // 增加文件，sinc 2.0.9
         String contentType = request.getContentType();
-        if ((!StringUtils.isEmpty(contentType)) &&
-                contentType.contains("multipart/form-data")) {
+        if (StrUtil.isNotBlank(contentType) && contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
+            // if ((!StringUtils.isEmpty(contentType)) && contentType.contains("multipart/form-data")) {
             try {
                 Collection<Part> parts = request.getParts();
                 if (CollectionUtil.isNotEmpty(parts)) {

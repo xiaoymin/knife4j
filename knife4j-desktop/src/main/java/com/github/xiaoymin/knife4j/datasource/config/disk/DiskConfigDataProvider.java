@@ -20,6 +20,7 @@ package com.github.xiaoymin.knife4j.datasource.config.disk;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -35,8 +36,10 @@ import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.disk.DiskConfigMetaProps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.ReflectUtils;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,7 +62,38 @@ public class DiskConfigDataProvider implements ConfigDataProvider {
      * 缓存当前文档对象的ConfigMeta
      */
     private Map<String, List<? extends ConfigMeta>> cacheRouteMap = new HashMap<>();
-    
+
+    /**
+     * 如果是disk模式，默认初始化存放一个openapi文件供开发者直接打开使用
+     * @param dir disk模式监听数据目录
+     */
+    private void initDefault(String dir){
+        log.info("init default,dir:{}",dir);
+        if (StrUtil.isNotBlank(dir)){
+            File file=new File(dir);
+            if (file.exists()){
+                File[] sourceFiles=file.listFiles(File::isDirectory);
+                //判断子文件夹 存在目录，如果
+                if (ArrayUtil.isEmpty(sourceFiles)){
+                    try {
+                        String rootFilePath=file.getAbsolutePath()+File.separator+DesktopConstants.DESKTOP_ROOT_CONTEXT_DIR;
+                        FileUtil.mkdir(rootFilePath);
+                        //写入文件
+                        ClassPathResource classPathResource = new ClassPathResource("templates/default.yml");
+                        String content=IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
+                        String defaultFilePath=rootFilePath+File.separator+"default.yml";
+                        FileUtil.writeString(content,defaultFilePath,StandardCharsets.UTF_8);
+                        log.info("init default success");
+                    } catch (Exception e) {
+                        //ignore
+                        log.warn("init error,message:{}",e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+
     @Override
     public ConfigMode mode() {
         return ConfigMode.DISK;
@@ -78,6 +112,7 @@ public class DiskConfigDataProvider implements ConfigDataProvider {
         log.info("listener Dir:{}", configEnv.getDir());
         this.configEnv = configEnv;
         this.metaProvider = (DiskConfigMetaProvider) ReflectUtils.newInstance(this.mode().getConfigMetaClazz());
+        this.initDefault(configEnv.getDir());
     }
     
     @Override

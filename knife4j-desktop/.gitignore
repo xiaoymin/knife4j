@@ -1,4 +1,3 @@
-README.md
 target/
 !**/src/main/**/target/
 !**/src/test/**/target/

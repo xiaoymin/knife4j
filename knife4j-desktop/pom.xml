@@ -18,7 +18,7 @@
         <skipTests>true</skipTests>
         <slf4j.version>2.0.5</slf4j.version>
         <hutool.version>5.8.10</hutool.version>
-        <httpclient.version>4.5.13</httpclient.version>
+        <httpclient.version>4.5.14</httpclient.version>
         <gson.version>2.10</gson.version>
         <logback.version>1.4.5</logback.version>
         <knife4j-spotless-maven-plugin.version>2.22.1</knife4j-spotless-maven-plugin.version>
@@ -28,6 +28,11 @@
             <id>nexus-maven</id>
             <name>nexus-maven</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>spring-lib</id>
+            <name>spring-lib</name>
+            <url>https://repo.spring.io/libs-release/</url>
         </repository>
     </repositories>
     <dependencyManagement>
@@ -70,7 +75,7 @@
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-client</artifactId>
-            <version>2.2.0-BETA</version>
+            <version>2.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -143,10 +148,22 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
+            <!--https://graalvm.github.io/native-build-tools/latest/maven-plugin.html -->
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>0.9.18</version>
+                <configuration>
+                    <imageName>knife4j</imageName>
+                    <mainClass>com.github.xiaoymin.knife4j.Knife4jDesktopApplication</mainClass>
+                    <skipNativeTests>true</skipNativeTests>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

@@ -79,15 +79,17 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
     
     @Override
     public void afterPropertiesSet() {
-        String source = this.environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY);
-        ConfigMode configMode = ConfigMode.config(source);
-        log.info("Config mode:{}", configMode);
         try {
+            String source = this.environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY);
+            ConfigMode configMode = ConfigMode.config(source);
+            log.info("Config mode:{}", configMode);
             ApplicationArguments applicationArguments = this.beanFactory.getBean(ApplicationArguments.class);
             Set<String> optionNames = applicationArguments.getOptionNames();
             Map<String, String> params = new HashMap<>();
             for (String key : optionNames) {
-                params.put(key, this.environment.getProperty(key));
+                String value=this.environment.getProperty(key);
+                log.info("Args -> {}:{}",key,value);
+                params.put(key, value);
             }
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(configMode.getConfigClazz());
             builder.setRole(BeanDefinition.ROLE_SUPPORT);
@@ -106,7 +108,7 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
             this.start();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
+            // throw new RuntimeException(e);
         }
     }
     
@@ -116,8 +118,8 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
             while (!stop) {
                 try {
                     List<? extends ConfigMeta> configRoutes = this.configDataProvider.getConfig();
+                    List<String> documentIds = new ArrayList<>();
                     if (CollectionUtil.isNotEmpty(configRoutes)) {
-                        List<String> documentIds = new ArrayList<>();
                         for (ConfigMeta configMeta : configRoutes) {
                             Optional<ServiceDataProvider> providerOptional = this.sessionHolder.getServiceProvider(configMeta.serviceDataProvider());
                             ServiceDataProvider serviceDataProvider = null;
@@ -144,9 +146,9 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
                             }
                             // log.info("config:{}", DesktopConstants.GSON.toJson(serviceDocument));
                         }
-                        // 清理
-                        this.sessionHolder.clearContext(documentIds);
                     }
+                    // 清理
+                    this.sessionHolder.clearContext(documentIds);
                 } catch (Exception e) {
                     log.debug(e.getMessage(), e);
                 }
@@ -156,7 +158,8 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
         thread.setDaemon(true);
         thread.start();
     }
-    
+
+
     @SneakyThrows
     @Override
     public void destroy() {
@@ -166,5 +169,4 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
             ThreadUtil.interrupt(thread, true);
         }
     }
-    
 }
