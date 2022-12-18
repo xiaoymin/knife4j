@@ -23,10 +23,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.common.lang.UserProfileType;
 import lombok.Data;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Knife4j单个项目文档对象信息
@@ -50,7 +47,15 @@ public class ServiceDocument {
     /**
      * 分组OpenAPI资源
      */
-    private List<ServiceRoute> routes;
+    private List<ServiceRoute> routes=new ArrayList<>();
+
+    /**
+     * 添加服务分组
+     * @param route
+     */
+    public void addRoute(ServiceRoute route){
+        this.routes.add(route);
+    }
     
     /**
      * 根据route唯一id获取Route对象

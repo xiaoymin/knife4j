@@ -16,7 +16,7 @@
  */
 
 
-package com.github.xiaoymin.knife4j.aggre.eureka;
+package com.github.xiaoymin.knife4j.datasource.model.service.eureka;
 
 import java.util.Map;
 

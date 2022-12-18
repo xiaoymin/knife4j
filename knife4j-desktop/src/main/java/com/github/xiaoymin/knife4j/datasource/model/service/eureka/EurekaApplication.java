@@ -16,29 +16,41 @@
  */
 
 
-package com.github.xiaoymin.knife4j.aggre.spring.support;
-
-import com.github.xiaoymin.knife4j.datasource.model.config.route.CloudRoute;
+package com.github.xiaoymin.knife4j.datasource.model.service.eureka;
 
 import java.util.List;
 
 /**
- * 任意聚合OpenAPI,无注册中心
+ * Eureka注册中心应用Model
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2020/11/16 22:32
+ * 2020/11/16 22:20
  * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
-public class CloudSetting extends BaseSetting {
+public class EurekaApplication {
     
     /**
-     * 微服务集合
+     * 服务列表
      */
-    private List<CloudRoute> routes;
-    public List<CloudRoute> getRoutes() {
-        return routes;
+    private String name;
+    
+    /**
+     * 实例列表
+     */
+    private List<EurekaInstance> instance;
+    
+    public String getName() {
+        return name;
     }
     
-    public void setRoutes(List<CloudRoute> routes) {
-        this.routes = routes;
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public List<EurekaInstance> getInstance() {
+        return instance;
+    }
+    
+    public void setInstance(List<EurekaInstance> instance) {
+        this.instance = instance;
     }
 }

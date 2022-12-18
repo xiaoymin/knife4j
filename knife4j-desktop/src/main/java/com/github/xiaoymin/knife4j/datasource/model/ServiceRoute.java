@@ -21,12 +21,13 @@ package com.github.xiaoymin.knife4j.datasource.model;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.MD5;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.CloudRoute;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.DiskRoute;
-import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
+import com.github.xiaoymin.knife4j.datasource.model.service.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.EurekaRoute;
-import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
@@ -177,8 +178,6 @@ public class ServiceRoute {
      */
     public ServiceRoute(EurekaRoute eurekaRoute, EurekaInstance eurekaInstance) {
         if (eurekaRoute != null && eurekaInstance != null) {
-            this.pkId = eurekaRoute.pkId();
-            this.header = eurekaRoute.pkId();
             this.name = eurekaRoute.getServiceName();
             if (StrUtil.isNotBlank(eurekaRoute.getName())) {
                 this.name = eurekaRoute.getName();
@@ -186,7 +185,11 @@ public class ServiceRoute {
             // 调试地址
             this.debugUrl = eurekaRoute.getDebugUrl();
             // 如果端口获取不到，给一个默认值80
-            this.uri = "http://" + eurekaInstance.getIpAddr() + ":" + NumberUtil.parseInt(Objects.toString(eurekaInstance.getPort().get("$"), "80"));
+            this.uri = GlobalConstants.PROTOCOL_HTTP + eurekaInstance.getIpAddr() + ":" + NumberUtil.parseInt(Objects.toString(eurekaInstance.getPort().get("$"), "80"));
+            //微服务模式下的服务需要关注ip变化
+            this.pkId = MD5.create().digestHex(eurekaRoute.pkId()+this.uri);
+            this.header = this.pkId;
+
             if (StrUtil.isNotBlank(eurekaRoute.getServicePath()) && !StrUtil.equals(eurekaRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
                 if (!StrUtil.startWith(eurekaRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
@@ -201,16 +204,13 @@ public class ServiceRoute {
             this.order = eurekaRoute.getOrder();
         }
     }
-    
     /**
      * 根据nacos配置
      * @param nacosRoute nacos配置
      * @param nacosInstance nacos实例
      */
-    public ServiceRoute(NacosRoute nacosRoute, NacosInstance nacosInstance) {
+    public ServiceRoute(NacosRoute nacosRoute, Instance nacosInstance) {
         if (nacosRoute != null && nacosInstance != null) {
-            this.pkId = nacosRoute.pkId();
-            this.header = nacosRoute.pkId();
             this.name = nacosRoute.getServiceName();
             if (StrUtil.isNotBlank(nacosRoute.getName())) {
                 this.name = nacosRoute.getName();
@@ -219,6 +219,9 @@ public class ServiceRoute {
             this.debugUrl = nacosRoute.getDebugUrl();
             // 远程uri
             this.uri = GlobalConstants.PROTOCOL_HTTP + nacosInstance.getIp() + ":" + nacosInstance.getPort();
+            //nacos模式的pkid需要设置每次的uri，因为服务可能下线，在k8s等环境中会存在新分配ip的情况
+            this.pkId = MD5.create().digestHex(nacosRoute.pkId()+this.uri);
+            this.header = this.pkId;
             if (StrUtil.isNotBlank(nacosRoute.getServicePath()) && !StrUtil.equals(nacosRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
                 if (!StrUtil.startWith(nacosRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
@@ -232,7 +235,7 @@ public class ServiceRoute {
             // since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
             this.order = nacosRoute.getOrder();
         }
-        
+
     }
     
 }

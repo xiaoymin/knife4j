@@ -18,17 +18,32 @@
 
 package com.github.xiaoymin.knife4j.datasource.service.nacos;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.nacos.api.PropertyKeyConst;
+import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.api.naming.NamingFactory;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import com.github.xiaoymin.knife4j.common.lang.ServiceMode;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
+import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosMeta;
+import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/17 17:05
  * @since:knife4j-desktop
  */
+@Slf4j
 public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<ConfigDefaultNacosMeta> {
     
     @Override
@@ -40,9 +55,54 @@ public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<Conf
     public ServiceMode mode() {
         return ServiceMode.NACOS;
     }
-    
+
     @Override
     public ServiceDocument getDocument(ConfigDefaultNacosMeta configMeta) {
+        if (configMeta!=null&& CollectionUtil.isNotEmpty(configMeta.getRoutes())){
+            NamingService namingService=getNamingService(configMeta);
+            if (namingService==null){
+                return null;
+            }
+            ServiceDocument serviceDocument=new ServiceDocument();
+            serviceDocument.setContextPath(configMeta.getContextPath());
+            for (NacosRoute nacosRoute:configMeta.getRoutes()){
+                try {
+                    List<String> cluster=new ArrayList<>();
+                    if (StrUtil.isNotBlank(nacosRoute.getClusters())){
+                        cluster.addAll(StrUtil.split(nacosRoute.getClusters(),StrUtil.COMMA));
+                    }
+                    Instance instance=namingService.selectOneHealthyInstance(nacosRoute.getServiceName(),nacosRoute.getGroupName(),cluster);
+                    if (instance==null){
+                        continue;
+                    }
+                    serviceDocument.addRoute(new ServiceRoute(nacosRoute,instance));
+                } catch (Exception e) {
+                    log.error("Get Nacos Service Instance error,service:{}",nacosRoute.getServiceName(),e);
+                }
+            }
+            return serviceDocument;
+
+        }
+        return null;
+    }
+
+    /**
+     * 获取Nacos服务配置
+     * @param configMeta
+     * @return
+     */
+    private NamingService getNamingService(ConfigDefaultNacosMeta configMeta){
+        Properties properties = new Properties();
+        properties.put(PropertyKeyConst.SERVER_ADDR, configMeta.getServiceUrl());
+        properties.put(PropertyKeyConst.NAMESPACE, configMeta.getNamespace());
+        properties.put(PropertyKeyConst.USERNAME,configMeta.getUsername());
+        properties.put(PropertyKeyConst.PASSWORD,configMeta.getPassword());
+        try {
+            NamingService namingService=NamingFactory.createNamingService(properties);
+            return namingService;
+        } catch (NacosException e) {
+            log.error("Init Nacos NamingService Error:"+e.getMessage(),e);
+        }
         return null;
     }
 }
