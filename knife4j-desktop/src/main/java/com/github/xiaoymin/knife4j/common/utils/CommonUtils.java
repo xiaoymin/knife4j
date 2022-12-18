@@ -66,7 +66,7 @@ public class CommonUtils {
         stringBuilder.append(Base64.getEncoder().encodeToString(encodeStr.getBytes(StandardCharsets.UTF_8)));
         return stringBuilder.toString();
     }
-
+    
     /**
      * BASE64 Decode
      * @param source

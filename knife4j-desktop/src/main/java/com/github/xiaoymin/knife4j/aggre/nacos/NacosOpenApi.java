@@ -64,7 +64,7 @@ public class NacosOpenApi extends PoolingConnectionManager {
             throw new IllegalArgumentException("Nacos serviceUrl can't be Null!");
         }
         if (logger.isDebugEnabled()) {
-            //logger.debug("get Nacos OpenApi accessToken,serviceUrl:{},argument:{}", serviceUrl, basicAuth.toString());
+            // logger.debug("get Nacos OpenApi accessToken,serviceUrl:{},argument:{}", serviceUrl, basicAuth.toString());
         }
         String api = serviceUrl + NACOS_AUTH_API;
         if (logger.isDebugEnabled()) {
@@ -72,10 +72,10 @@ public class NacosOpenApi extends PoolingConnectionManager {
         }
         HttpPost post = new HttpPost(api);
         List<BasicNameValuePair> pairs = new ArrayList<>();
-        //pairs.add(new BasicNameValuePair("username", basicAuth.getUsername()));
+        // pairs.add(new BasicNameValuePair("username", basicAuth.getUsername()));
         // 访问Nacos时bug
         // https://gitee.com/xiaoym/knife4j/issues/I4UF84
-       // pairs.add(new BasicNameValuePair("password", basicAuth.getPassword()));
+        // pairs.add(new BasicNameValuePair("password", basicAuth.getPassword()));
         try {
             post.setEntity(new UrlEncodedFormEntity(pairs, "UTF-8"));
             CloseableHttpResponse response = getClient().execute(post);

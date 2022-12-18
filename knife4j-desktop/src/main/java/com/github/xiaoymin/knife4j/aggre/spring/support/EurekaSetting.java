@@ -34,14 +34,12 @@ public class EurekaSetting extends BaseSetting {
      * Eureka注册中心地址,例如(http://localhost:10000/eureka/)
      */
     private String serviceUrl;
-
     
     /**
      * 路由列表
      */
     private List<EurekaRoute> routes;
     
-
     public String getServiceUrl() {
         return serviceUrl;
     }

@@ -17,6 +17,7 @@
 
 
 package com.github.xiaoymin.knife4j.aggre.spring.support;
+
 import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 
 import java.time.LocalDateTime;
@@ -42,7 +43,7 @@ public class NacosSetting extends BaseSetting {
      * Nacos注册聚合服务路由集合
      */
     private List<NacosRoute> routes;
-
+    
     /**
      * Nacos-token失效时间
      */
@@ -60,7 +61,7 @@ public class NacosSetting extends BaseSetting {
     public void setSecretDateTime(LocalDateTime secretDateTime) {
         this.secretDateTime = secretDateTime;
     }
-
+    
     public String getServiceUrl() {
         return serviceUrl;
     }
@@ -84,7 +85,7 @@ public class NacosSetting extends BaseSetting {
     public void setRoutes(List<NacosRoute> routes) {
         this.routes = routes;
     }
-
+    
     public void initAccessToken() {
         // 判断当前Nacos是否需要鉴权访问
         /**if (this.serviceAuth != null && this.serviceAuth.isEnable()) {

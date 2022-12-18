@@ -18,7 +18,6 @@
 
 package com.github.xiaoymin.knife4j.aggre.spring.support;
 
-
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/12/22 13:19
@@ -30,7 +29,7 @@ public class BaseSetting {
      * 是否启用
      */
     private boolean enable;
-
+    
     public boolean isEnable() {
         return enable;
     }
