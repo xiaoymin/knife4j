@@ -40,8 +40,7 @@ public class DesktopConstants {
      * 项目根目录
      */
     public static final String ROUTE_BASE_PATH = "/";
-
-
+    
     /**
      * 配置中心类别，参考{@link ConfigMode#getValue()}
      */
@@ -79,7 +78,7 @@ public class DesktopConstants {
      * 正则表达式
      */
     public static final String WEBJAR_RESOURCE_PATTERN = "/(.*?)/(webjars.*)";
-
+    
     /**
      * 各个外部中间件服务连接超时时间
      */

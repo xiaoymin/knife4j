@@ -45,7 +45,7 @@ import java.util.Properties;
  */
 @Slf4j
 public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosInfo> {
-
+    
     /**
      * Nacos配置中心客户端对象
      */
@@ -58,7 +58,7 @@ public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosIn
     public NacosConfigDataProvider(ConfigNacosInfo configInfo) {
         this.configInfo = configInfo;
     }
-
+    
     @Override
     public ConfigMode mode() {
         return ConfigMode.NACOS;
@@ -67,7 +67,7 @@ public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosIn
     public ConfigNacosInfo getConfigInfo() {
         return configInfo;
     }
-
+    
     @Override
     public List<? extends ConfigProfile> getConfigProfiles() {
         return null;
@@ -83,7 +83,7 @@ public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosIn
         }
         return Collections.EMPTY_MAP;
     }
-
+    
     @Override
     public void afterPropertiesSet() throws Exception {
         log.info("Nacos Config init");
@@ -94,10 +94,10 @@ public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosIn
         Properties properties = new Properties();
         properties.put(PropertyKeyConst.SERVER_ADDR, configInfo.getServer());
         properties.put(PropertyKeyConst.NAMESPACE, configInfo.getNamespace());
-        properties.put(PropertyKeyConst.USERNAME,configInfo.getUsername());
-        properties.put(PropertyKeyConst.PASSWORD,configInfo.getPassword());
+        properties.put(PropertyKeyConst.USERNAME, configInfo.getUsername());
+        properties.put(PropertyKeyConst.PASSWORD, configInfo.getPassword());
         try {
-            profileProvider=(NacosConfigProfileProvider) ReflectUtils.newInstance(this.mode().getConfigProfileClazz());
+            profileProvider = (NacosConfigProfileProvider) ReflectUtils.newInstance(this.mode().getConfigProfileClazz());
             this.configService = NacosFactory.createConfigService(properties);
         } catch (NacosException e) {
             log.error(e.getMessage(), e);

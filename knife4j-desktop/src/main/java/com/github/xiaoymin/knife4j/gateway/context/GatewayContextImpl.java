@@ -70,7 +70,7 @@ public class GatewayContextImpl implements GatewayContext {
         String uri = serviceRoute.getUri();
         String fromUri = request.getRequestURI();
         if (!StrUtil.equalsIgnoreCase(serviceDocument.getContextPath(), DesktopConstants.DESKTOP_ROOT_CONTEXT_DIR)) {
-            fromUri = fromUri.replaceFirst(DesktopConstants.ROUTE_BASE_PATH+serviceDocument.getContextPath(), "");
+            fromUri = fromUri.replaceFirst(DesktopConstants.ROUTE_BASE_PATH + serviceDocument.getContextPath(), "");
             // 此处需要追加一个请求头basePath，因为父项目设置了context-path
             gatewayRequestContext.addHeader("X-Forwarded-Prefix", "/" + serviceDocument.getContextPath());
         }
@@ -109,7 +109,7 @@ public class GatewayContextImpl implements GatewayContext {
             String key = enumeration.nextElement();
             String value = request.getHeader(key);
             if (!ignoreHeaders.contains(key.toLowerCase())) {
-                log.debug("header -> {}:{}",key,value);
+                log.debug("header -> {}:{}", key, value);
                 gatewayRequestContext.addHeader(key, value);
             }
         }
@@ -118,7 +118,7 @@ public class GatewayContextImpl implements GatewayContext {
         while (params.hasMoreElements()) {
             String name = params.nextElement();
             String value = request.getParameter(name);
-            log.debug("params -> {}:{}",name,value);
+            log.debug("params -> {}:{}", name, value);
             gatewayRequestContext.addParam(name, value);
         }
         // 增加文件，sinc 2.0.9
@@ -131,7 +131,7 @@ public class GatewayContextImpl implements GatewayContext {
                     parts.forEach(part -> {
                         String key = part.getName();
                         if (!paramMap.containsKey(key)) {
-                            log.debug("Part Name:{}",key);
+                            log.debug("Part Name:{}", key);
                             gatewayRequestContext.addPart(part);
                         }
                     });

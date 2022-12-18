@@ -47,13 +47,13 @@ public class ServiceDocument {
     /**
      * 分组OpenAPI资源
      */
-    private List<ServiceRoute> routes=new ArrayList<>();
-
+    private List<ServiceRoute> routes = new ArrayList<>();
+    
     /**
      * 添加服务分组
      * @param route
      */
-    public void addRoute(ServiceRoute route){
+    public void addRoute(ServiceRoute route) {
         this.routes.add(route);
     }
     

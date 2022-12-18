@@ -33,7 +33,7 @@ import java.util.List;
  */
 @Data
 public class NacosConfigProfileInfo {
-
+    
     /**
      * disk模式，nacos中的配置从nacos上面直接获取
      */

@@ -65,7 +65,7 @@ public enum ConfigMode {
      * 元数据实现
      */
     private Class<? extends ConfigProfileProvider> configProfileClazz;
-
+    
     /**
      * 配置中心初始化配置属性clazz
      */

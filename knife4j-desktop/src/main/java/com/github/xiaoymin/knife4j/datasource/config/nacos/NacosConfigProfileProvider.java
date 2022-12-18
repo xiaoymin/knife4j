@@ -42,26 +42,22 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
     
     @Override
     public List<? extends ConfigProfile> resolver(String config, Class<NacosConfigProfileProps> metaClazz) {
-        //nacos配置则直接对当前config进行反射即可
-        //PropertyUtils.resolveSingle()
-        Properties properties=new Properties();
+        // nacos配置则直接对当前config进行反射即可
+        // PropertyUtils.resolveSingle()
+        Properties properties = new Properties();
         try {
             properties.load(IoUtil.toStream(config, StandardCharsets.UTF_8));
-            return loadByProperties(properties,metaClazz);
+            return loadByProperties(properties, metaClazz);
         } catch (IOException e) {
-            log.error("Nacos config prop error:"+e.getMessage());
+            log.error("Nacos config prop error:" + e.getMessage());
         }
         return null;
     }
-
-    private List<? extends ConfigProfile> loadByProperties(Properties properties, Class<NacosConfigProfileProps> metaClazz){
-        Map<String,String> map= PropertyUtils.loadProperties(properties);
+    
+    private List<? extends ConfigProfile> loadByProperties(Properties properties, Class<NacosConfigProfileProps> metaClazz) {
+        Map<String, String> map = PropertyUtils.loadProperties(properties);
         Optional<NacosConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(map, metaClazz);
         return null;
     }
-
-
-
-
-
+    
 }

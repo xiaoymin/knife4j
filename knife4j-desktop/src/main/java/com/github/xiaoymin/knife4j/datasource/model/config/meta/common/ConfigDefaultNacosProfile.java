@@ -61,9 +61,9 @@ public class ConfigDefaultNacosProfile extends ConfigProfile<NacosRoute, NacosDe
     public Class<NacosDefaultServiceProvider> serviceDataProvider() {
         return NacosDefaultServiceProvider.class;
     }
-
-    public String pkId(){
-        StringBuilder stringBuilder=new StringBuilder();
+    
+    public String pkId() {
+        StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(this.serviceUrl).append(username).append(password).append(namespace).append(clusters);
         return MD5.create().digestHex(stringBuilder.toString());
     }

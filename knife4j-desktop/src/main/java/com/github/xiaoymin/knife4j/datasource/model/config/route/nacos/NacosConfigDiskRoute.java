@@ -30,20 +30,20 @@ import lombok.Data;
  */
 @Data
 public class NacosConfigDiskRoute extends DiskRoute {
-
+    
     /**
      * Nacos配置中心的命名空间，如果当前命名空间为空，则取Nacos配置中心模式下的namespace名称，参考{@link ConfigNacosInfo#getNamespace()}
      */
     private String namespace;
-
+    
     /**
      * Nacos配置中心的dataId
      */
     private String dataId;
-
+    
     /**
      * Nacos配中心中的分组
      */
     private String group;
-
+    
 }

@@ -56,12 +56,12 @@ public class ConfigInfo {
         configInfo.setDisk(new ConfigDiskInfo());
         return configInfo;
     }
-
-    public ConfigCommonInfo getConfigInfo(){
-        ConfigMode configMode=ConfigMode.config(this.source);
-        if (configMode==ConfigMode.DISK){
+    
+    public ConfigCommonInfo getConfigInfo() {
+        ConfigMode configMode = ConfigMode.config(this.source);
+        if (configMode == ConfigMode.DISK) {
             return this.disk;
-        }else if(configMode==ConfigMode.NACOS){
+        } else if (configMode == ConfigMode.NACOS) {
             return this.nacos;
         }
         return defaultConfig().getDisk();

@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo> {
-
+    
     private final ConfigDiskInfo configInfo;
     private DiskConfigProfileProvider profileProvider;
     /**
@@ -61,22 +61,22 @@ public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo
      * 缓存当前文档对象的ConfigMeta
      */
     private Map<String, List<? extends ConfigProfile>> cacheRouteMap = new HashMap<>();
-
+    
     public DiskConfigDataProvider(ConfigDiskInfo configInfo) {
         log.info("call disk construct.");
-        this.configInfo=configInfo;
+        this.configInfo = configInfo;
     }
-
+    
     @Override
     public ConfigMode mode() {
         return ConfigMode.DISK;
     }
-
+    
     @Override
     public ConfigDiskInfo getConfigInfo() {
         return this.configInfo;
     }
-
+    
     @Override
     public List<? extends ConfigProfile> getConfigProfiles() {
         // 遍历当前目录文件
@@ -150,7 +150,7 @@ public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo
             this.freeAll();
         }
     }
-
+    
     @Override
     public void afterPropertiesSet() {
         log.info("Init Disk Config .");
@@ -165,34 +165,34 @@ public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo
         this.profileProvider = (DiskConfigProfileProvider) ReflectUtils.newInstance(this.mode().getConfigProfileClazz());
         this.initDefault(configInfo.getDir());
     }
-
+    
     /**
      * 如果是disk模式，默认初始化存放一个openapi文件供开发者直接打开使用
      * @param dir disk模式监听数据目录
      */
-    private void initDefault(String dir){
-        if (StrUtil.isNotBlank(dir)){
-            File file=new File(dir);
-            if (file.exists()){
-                File[] sourceFiles=file.listFiles(File::isDirectory);
-                //判断子文件夹 存在目录，如果
-                if (ArrayUtil.isEmpty(sourceFiles)){
+    private void initDefault(String dir) {
+        if (StrUtil.isNotBlank(dir)) {
+            File file = new File(dir);
+            if (file.exists()) {
+                File[] sourceFiles = file.listFiles(File::isDirectory);
+                // 判断子文件夹 存在目录，如果
+                if (ArrayUtil.isEmpty(sourceFiles)) {
                     try {
-                        String rootFilePath=file.getAbsolutePath()+File.separator+DesktopConstants.DESKTOP_ROOT_CONTEXT_DIR;
+                        String rootFilePath = file.getAbsolutePath() + File.separator + DesktopConstants.DESKTOP_ROOT_CONTEXT_DIR;
                         FileUtil.mkdir(rootFilePath);
-                        //写入文件
+                        // 写入文件
                         ClassPathResource classPathResource = new ClassPathResource("templates/default.yml");
-                        String content=IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
-                        String defaultFilePath=rootFilePath+File.separator+"default.yml";
-                        FileUtil.writeString(content,defaultFilePath,StandardCharsets.UTF_8);
+                        String content = IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
+                        String defaultFilePath = rootFilePath + File.separator + "default.yml";
+                        FileUtil.writeString(content, defaultFilePath, StandardCharsets.UTF_8);
                         log.info("init default success");
                     } catch (Exception e) {
-                        //ignore
-                        log.warn("init error,message:{}",e.getMessage());
+                        // ignore
+                        log.warn("init error,message:{}", e.getMessage());
                     }
                 }
             }
         }
     }
-
+    
 }

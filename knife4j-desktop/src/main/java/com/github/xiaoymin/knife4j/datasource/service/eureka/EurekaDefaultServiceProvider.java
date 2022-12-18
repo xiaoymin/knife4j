@@ -55,6 +55,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class EurekaDefaultServiceProvider extends PoolingConnectionManager implements ServiceDataProvider<ConfigDefaultEurekaProfile> {
+    
     @Override
     public ConfigMode configMode() {
         return ConfigMode.DISK;
@@ -71,11 +72,11 @@ public class EurekaDefaultServiceProvider extends PoolingConnectionManager imple
             log.info("eureka address:{},user:{},pwd:{}", configMeta.getServiceUrl(), configMeta.getUsername(), configMeta.getPassword());
             // 从注册中心进行初始化获取EurekaApplication
             List<EurekaApplication> eurekaApplications = initEurekaApps(configMeta);
-            return applyRoutes(configMeta,eurekaApplications);
+            return applyRoutes(configMeta, eurekaApplications);
         }
         return null;
     }
-
+    
     /**
      * 初始化获取Eureka注册中心应用列表
      * @param configMeta
@@ -93,7 +94,7 @@ public class EurekaDefaultServiceProvider extends PoolingConnectionManager imple
         get.addHeader("Accept", MediaType.APPLICATION_JSON_VALUE);
         try {
             // 判断Eureka注册中心是否开启basic认证
-            if (StrUtil.isNotBlank(configMeta.getUsername())&&StrUtil.isNotBlank(configMeta.getPassword())){
+            if (StrUtil.isNotBlank(configMeta.getUsername()) && StrUtil.isNotBlank(configMeta.getPassword())) {
                 get.addHeader("Authorization", CommonUtils.authorize(configMeta.getUsername(), configMeta.getPassword()));
             }
             CloseableHttpResponse response = getClient().execute(get);
@@ -118,7 +119,7 @@ public class EurekaDefaultServiceProvider extends PoolingConnectionManager imple
                                 }
                             }
                         }
-
+                        
                     }
                 } else {
                     get.abort();
@@ -132,12 +133,12 @@ public class EurekaDefaultServiceProvider extends PoolingConnectionManager imple
         }
         return eurekaApplications;
     }
-
+    
     /**
      * 内部参数转换
      */
     private ServiceDocument applyRoutes(ConfigDefaultEurekaProfile configMeta, List<EurekaApplication> eurekaApplications) {
-        ServiceDocument serviceDocument=new ServiceDocument();
+        ServiceDocument serviceDocument = new ServiceDocument();
         serviceDocument.setContextPath(configMeta.getContextPath());
         if (CollectionUtil.isNotEmpty(eurekaApplications)) {
             // 获取服务列表
@@ -154,7 +155,7 @@ public class EurekaDefaultServiceProvider extends PoolingConnectionManager imple
                         if (eurekaRouteOptional.isPresent()) {
                             EurekaRoute eurekaRoute = eurekaRouteOptional.get();
                             EurekaInstance eurekaInstance = instanceOptional.get();
-                            serviceDocument.addRoute(new ServiceRoute(eurekaRoute,eurekaInstance));
+                            serviceDocument.addRoute(new ServiceRoute(eurekaRoute, eurekaInstance));
                         }
                     }
                 }
@@ -162,5 +163,5 @@ public class EurekaDefaultServiceProvider extends PoolingConnectionManager imple
         }
         return serviceDocument;
     }
-
+    
 }

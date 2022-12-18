@@ -42,7 +42,7 @@ public interface ServiceDataProvider<T extends ConfigProfile> {
      * @return
      */
     ServiceMode mode();
-
+    
     /**
      * 从各个服务中心获取聚合Swagger文档路由
      * @param configMeta 配置元数据信息

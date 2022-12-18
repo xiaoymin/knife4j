@@ -30,7 +30,7 @@ import lombok.Data;
  */
 @Data
 public class NacosConfigDiskProfile extends ConfigProfile<NacosConfigDiskRoute, NacosConfigDiskServiceProvider> {
-
+    
     @Override
     public Class<NacosConfigDiskServiceProvider> serviceDataProvider() {
         return NacosConfigDiskServiceProvider.class;

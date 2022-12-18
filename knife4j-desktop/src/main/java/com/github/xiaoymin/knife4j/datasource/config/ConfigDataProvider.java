@@ -43,13 +43,13 @@ public interface ConfigDataProvider<T extends ConfigCommonInfo> extends Initiali
      * @return
      */
     ConfigMode mode();
-
+    
     /**
      * 获取当前配置中心的基础配置信息
      * @return
      */
     T getConfigInfo();
-
+    
     /**
      * 从配置中心获取各个支持模式的OpenAPI聚合文档
      * @return

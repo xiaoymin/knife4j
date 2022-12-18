@@ -84,8 +84,8 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
             Set<String> optionNames = applicationArguments.getOptionNames();
             Map<String, String> params = new HashMap<>();
             for (String key : optionNames) {
-                String value=this.environment.getProperty(key);
-                log.info("Args -> {}:{}",key,value);
+                String value = this.environment.getProperty(key);
+                log.info("Args -> {}:{}", key, value);
                 params.put(key, value);
             }
             String source = this.environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY);
@@ -94,13 +94,13 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
             // 回调配置
             Optional<ConfigEnv> configEnvOptional = PropertyUtils.resolveSingle(params, ConfigEnv.class);
             ConfigInfo configInfo = configEnvOptional.isPresent() ? configEnvOptional.get().getKnife4j() : ConfigInfo.defaultConfig();
-
-            //bean 注入
-            Class<? extends ConfigDataProvider> clazz=configMode.getConfigDataProviderClazz();
+            
+            // bean 注入
+            Class<? extends ConfigDataProvider> clazz = configMode.getConfigDataProviderClazz();
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
             builder.setRole(BeanDefinition.ROLE_SUPPORT);
             builder.setPrimary(true);
-            //构造参数value
+            // 构造参数value
             builder.addConstructorArgValue(configInfo.getConfigInfo());
             DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) beanFactory;
             String beanName = configMode.getValue() + DesktopConstants.CONFIG_SERVICE_NAME;
@@ -132,7 +132,7 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
                                 serviceDataProvider = (ServiceDataProvider) ReflectUtil.newInstance(configProfile.serviceDataProvider());
                                 this.sessionHolder.addServiceProvider(configProfile.serviceDataProvider(), serviceDataProvider);
                             }
-                            ServiceDocument serviceDocument = serviceDataProvider.getDocument(configProfile,this.configDataProvider.getConfigInfo());
+                            ServiceDocument serviceDocument = serviceDataProvider.getDocument(configProfile, this.configDataProvider.getConfigInfo());
                             if (serviceDocument != null) {
                                 documentIds.add(serviceDocument.getContextPath());
                                 Optional<ServiceDocument> documentOptional = this.sessionHolder.getContext(serviceDocument.getContextPath());
@@ -161,8 +161,7 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
         thread.setDaemon(true);
         thread.start();
     }
-
-
+    
     @SneakyThrows
     @Override
     public void destroy() {

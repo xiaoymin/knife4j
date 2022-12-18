@@ -187,10 +187,10 @@ public class ServiceRoute {
             this.debugUrl = eurekaRoute.getDebugUrl();
             // 如果端口获取不到，给一个默认值80
             this.uri = GlobalConstants.PROTOCOL_HTTP + eurekaInstance.getIpAddr() + ":" + NumberUtil.parseInt(Objects.toString(eurekaInstance.getPort().get("$"), "80"));
-            //微服务模式下的服务需要关注ip变化
-            this.pkId = MD5.create().digestHex(eurekaRoute.pkId()+this.uri);
+            // 微服务模式下的服务需要关注ip变化
+            this.pkId = MD5.create().digestHex(eurekaRoute.pkId() + this.uri);
             this.header = this.pkId;
-
+            
             if (StrUtil.isNotBlank(eurekaRoute.getServicePath()) && !StrUtil.equals(eurekaRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
                 if (!StrUtil.startWith(eurekaRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
@@ -220,8 +220,8 @@ public class ServiceRoute {
             this.debugUrl = nacosRoute.getDebugUrl();
             // 远程uri
             this.uri = GlobalConstants.PROTOCOL_HTTP + nacosInstance.getIp() + ":" + nacosInstance.getPort();
-            //nacos模式的pkid需要设置每次的uri，因为服务可能下线，在k8s等环境中会存在新分配ip的情况
-            this.pkId = MD5.create().digestHex(nacosRoute.pkId()+this.uri);
+            // nacos模式的pkid需要设置每次的uri，因为服务可能下线，在k8s等环境中会存在新分配ip的情况
+            this.pkId = MD5.create().digestHex(nacosRoute.pkId() + this.uri);
             this.header = this.pkId;
             if (StrUtil.isNotBlank(nacosRoute.getServicePath()) && !StrUtil.equals(nacosRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
@@ -236,7 +236,7 @@ public class ServiceRoute {
             // since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
             this.order = nacosRoute.getOrder();
         }
-
+        
     }
     /**
      * 根据nacos配置
@@ -253,8 +253,8 @@ public class ServiceRoute {
             this.debugUrl = nacosRoute.getDebugUrl();
             // 远程uri
             this.uri = GlobalConstants.PROTOCOL_HTTP + nacosInstance.getIp() + ":" + nacosInstance.getPort();
-            //nacos模式的pkid需要设置每次的uri，因为服务可能下线，在k8s等环境中会存在新分配ip的情况
-            this.pkId = MD5.create().digestHex(nacosRoute.pkId()+this.uri);
+            // nacos模式的pkid需要设置每次的uri，因为服务可能下线，在k8s等环境中会存在新分配ip的情况
+            this.pkId = MD5.create().digestHex(nacosRoute.pkId() + this.uri);
             this.header = this.pkId;
             if (StrUtil.isNotBlank(nacosRoute.getServicePath()) && !StrUtil.equals(nacosRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
@@ -269,7 +269,7 @@ public class ServiceRoute {
             // since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
             this.order = nacosRoute.getOrder();
         }
-
+        
     }
     
 }

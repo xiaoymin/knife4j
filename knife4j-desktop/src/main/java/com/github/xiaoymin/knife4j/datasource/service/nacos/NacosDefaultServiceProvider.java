@@ -49,12 +49,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 public class NacosDefaultServiceProvider implements ServiceDataProvider<ConfigDefaultNacosProfile> {
+    
     /**
      * Nacos客户端对象池
      */
-    private Map<String,NacosClient> nacosClientMap=new ConcurrentHashMap<>();
-
-    private Map<String,NamingService> namingServiceMap=new ConcurrentHashMap<>();
+    private Map<String, NacosClient> nacosClientMap = new ConcurrentHashMap<>();
+    
+    private Map<String, NamingService> namingServiceMap = new ConcurrentHashMap<>();
     @Override
     public ConfigMode configMode() {
         return ConfigMode.DISK;
@@ -64,76 +65,75 @@ public class NacosDefaultServiceProvider implements ServiceDataProvider<ConfigDe
     public ServiceMode mode() {
         return ServiceMode.NACOS;
     }
-
+    
     @Override
     public ServiceDocument getDocument(ConfigDefaultNacosProfile configMeta, ConfigCommonInfo configCommonInfo) {
-        if (configMeta!=null&& CollectionUtil.isNotEmpty(configMeta.getRoutes())){
-            NacosClient nacosClient=this.nacosClientMap.get(configMeta.pkId());
-            if (nacosClient==null){
-                nacosClient=new NacosClient(configMeta);
-                this.nacosClientMap.put(configMeta.pkId(),nacosClient);
+        if (configMeta != null && CollectionUtil.isNotEmpty(configMeta.getRoutes())) {
+            NacosClient nacosClient = this.nacosClientMap.get(configMeta.pkId());
+            if (nacosClient == null) {
+                nacosClient = new NacosClient(configMeta);
+                this.nacosClientMap.put(configMeta.pkId(), nacosClient);
             }
-            //return nacosClient.getServiceDocument();
+            // return nacosClient.getServiceDocument();
             return this.processClientSdk(configMeta);
         }
         return null;
     }
-
-
+    
     /**
      * 基于Nacos-client方式，nacos2.0版本
      * @param configMeta
      * @return
      */
-    private ServiceDocument processClientSdk(ConfigDefaultNacosProfile configMeta){
-        NamingService namingService=getNamingService(configMeta);
-        if (namingService==null){
+    private ServiceDocument processClientSdk(ConfigDefaultNacosProfile configMeta) {
+        NamingService namingService = getNamingService(configMeta);
+        if (namingService == null) {
             return null;
         }
-        ServiceDocument serviceDocument=new ServiceDocument();
+        ServiceDocument serviceDocument = new ServiceDocument();
         serviceDocument.setContextPath(configMeta.getContextPath());
-        for (NacosRoute nacosRoute:configMeta.getRoutes()){
+        for (NacosRoute nacosRoute : configMeta.getRoutes()) {
             try {
-                List<String> cluster=new ArrayList<>();
-                if (StrUtil.isNotBlank(nacosRoute.getClusters())){
-                    cluster.addAll(StrUtil.split(nacosRoute.getClusters(),StrUtil.COMMA));
+                List<String> cluster = new ArrayList<>();
+                if (StrUtil.isNotBlank(nacosRoute.getClusters())) {
+                    cluster.addAll(StrUtil.split(nacosRoute.getClusters(), StrUtil.COMMA));
                 }
                 String groupName = StrUtil.isNotBlank(nacosRoute.getGroupName()) ? nacosRoute.getGroupName() : Constants.DEFAULT_GROUP;
-                Instance instance=namingService.selectOneHealthyInstance(nacosRoute.getServiceName(),groupName,cluster);
-                if (instance==null){
+                Instance instance = namingService.selectOneHealthyInstance(nacosRoute.getServiceName(), groupName, cluster);
+                if (instance == null) {
                     continue;
                 }
-                log.debug("get nacos service instance success,serviceName:{},instance:{}",nacosRoute.getServiceName(),instance);
-                serviceDocument.addRoute(new ServiceRoute(nacosRoute,instance));
+                log.debug("get nacos service instance success,serviceName:{},instance:{}", nacosRoute.getServiceName(), instance);
+                serviceDocument.addRoute(new ServiceRoute(nacosRoute, instance));
             } catch (Exception e) {
-                log.error("Get Nacos Service Instance error,service:{}",nacosRoute.getServiceName(),e);
+                log.error("Get Nacos Service Instance error,service:{}", nacosRoute.getServiceName(), e);
             }
         }
         return serviceDocument;
     }
-
+    
     /**
      * 获取Nacos服务配置
      * @param configMeta
      * @return
      */
-    private NamingService getNamingService(ConfigDefaultNacosProfile configMeta){
-        String key=configMeta.pkId();
-        NamingService namingService=namingServiceMap.get(key);
-        if (namingService!=null){
+    private NamingService getNamingService(ConfigDefaultNacosProfile configMeta) {
+        String key = configMeta.pkId();
+        NamingService namingService = namingServiceMap.get(key);
+        if (namingService != null) {
             return namingService;
         }
         Properties properties = new Properties();
         properties.put(PropertyKeyConst.SERVER_ADDR, configMeta.getServiceUrl());
         properties.put(PropertyKeyConst.NAMESPACE, configMeta.getNamespace());
-        properties.put(PropertyKeyConst.USERNAME,configMeta.getUsername());
-        properties.put(PropertyKeyConst.PASSWORD,configMeta.getPassword());
+        properties.put(PropertyKeyConst.USERNAME, configMeta.getUsername());
+        properties.put(PropertyKeyConst.PASSWORD, configMeta.getPassword());
         try {
-            namingService=NamingFactory.createNamingService(properties);
-            namingServiceMap.put(key,namingService);
+            namingService = NamingFactory.createNamingService(properties);
+            namingServiceMap.put(key, namingService);
             return namingService;
         } catch (NacosException e) {
-            log.error("Init Nacos NamingService Error:"+e.getMessage(),e);
+            log.error("Init Nacos NamingService Error:" + e.getMessage(), e);
         }
         return null;
     }
