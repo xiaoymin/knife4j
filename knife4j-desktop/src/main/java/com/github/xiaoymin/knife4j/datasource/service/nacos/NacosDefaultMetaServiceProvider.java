@@ -75,6 +75,7 @@ public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<Conf
                     if (instance==null){
                         continue;
                     }
+                    log.debug("get nacos service instance success,serviceName:{},instance:{}",nacosRoute.getServiceName(),instance);
                     serviceDocument.addRoute(new ServiceRoute(nacosRoute,instance));
                 } catch (Exception e) {
                     log.error("Get Nacos Service Instance error,service:{}",nacosRoute.getServiceName(),e);

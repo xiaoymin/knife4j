@@ -20,30 +20,29 @@ package com.github.xiaoymin.knife4j.datasource.config;
 
 import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import com.github.xiaoymin.knife4j.datasource.model.ConfigMeta;
-import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigInfo;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.util.List;
 
 /**
- * Knife4j核心配置中心顶级接口,所有扩展支持的配置中心需要实现该接口
+ * Knife4j核心配置中心顶级接口,所有扩展支持的配置中心需要实现该接口 <p />
+ * 注意：
+ * <ul>
+ *     <li>1.所有子类实现都必须提供{@link com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigInfo}参数的构造函数</li>
+ *     <li>2.初始化配置中心,由外部使用者设定传入参数。由此指定Knife4j使用的配置中心的类型，各配置中心的初始化工作可在{@link InitializingBean#afterPropertiesSet()}中实现</li>
+ * </ul>
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/15 20:51
  * @since:knife4j-desktop
  */
-public interface ConfigDataProvider {
+public interface ConfigDataProvider extends InitializingBean {
     
     /**
      * 指定当前配置中心类型
      * @return
      */
     ConfigMode mode();
-    
-    /**
-     * 命令行参数配置处理初始化
-     * @param configInfo 配置信息
-     */
-    void configArgs(ConfigInfo configInfo);
-    
+
     /**
      * 从配置中心获取各个支持模式的OpenAPI聚合文档
      * @return

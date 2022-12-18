@@ -50,7 +50,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class DiskConfigDataProvider implements ConfigDataProvider {
-    
+
+    private final ConfigInfo configInfo;
     private ConfigDiskEnv configEnv;
     private DiskConfigMetaProvider metaProvider;
     /**
@@ -63,58 +64,16 @@ public class DiskConfigDataProvider implements ConfigDataProvider {
      */
     private Map<String, List<? extends ConfigMeta>> cacheRouteMap = new HashMap<>();
 
-    /**
-     * 如果是disk模式，默认初始化存放一个openapi文件供开发者直接打开使用
-     * @param dir disk模式监听数据目录
-     */
-    private void initDefault(String dir){
-        log.info("init default,dir:{}",dir);
-        if (StrUtil.isNotBlank(dir)){
-            File file=new File(dir);
-            if (file.exists()){
-                File[] sourceFiles=file.listFiles(File::isDirectory);
-                //判断子文件夹 存在目录，如果
-                if (ArrayUtil.isEmpty(sourceFiles)){
-                    try {
-                        String rootFilePath=file.getAbsolutePath()+File.separator+DesktopConstants.DESKTOP_ROOT_CONTEXT_DIR;
-                        FileUtil.mkdir(rootFilePath);
-                        //写入文件
-                        ClassPathResource classPathResource = new ClassPathResource("templates/default.yml");
-                        String content=IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
-                        String defaultFilePath=rootFilePath+File.separator+"default.yml";
-                        FileUtil.writeString(content,defaultFilePath,StandardCharsets.UTF_8);
-                        log.info("init default success");
-                    } catch (Exception e) {
-                        //ignore
-                        log.warn("init error,message:{}",e.getMessage());
-                    }
-                }
-            }
-        }
+    public DiskConfigDataProvider(ConfigInfo configInfo) {
+        log.info("call disk construct.");
+        this.configInfo=configInfo;
     }
-
 
     @Override
     public ConfigMode mode() {
         return ConfigMode.DISK;
     }
-    @Override
-    public void configArgs(ConfigInfo configInfo) {
-        Assert.notNull(configInfo, "The configuration attribute in config disk mode must be specified");
-        Assert.notNull(configInfo.getDisk(), "The configuration attribute in config disk mode must be specified");
-        ConfigDiskEnv configEnv = configInfo.getDisk();
-        if (StrUtil.isBlank(configEnv.getDir())) {
-            String defaultDir = System.getProperty("user.home") + File.separator + DesktopConstants.DESKTOP_TEMP_DIR_NAME;
-            // 创建临时目录
-            FileUtil.mkdir(defaultDir);
-            configEnv.setDir(defaultDir);
-        }
-        log.info("listener Dir:{}", configEnv.getDir());
-        this.configEnv = configEnv;
-        this.metaProvider = (DiskConfigMetaProvider) ReflectUtils.newInstance(this.mode().getConfigMetaClazz());
-        this.initDefault(configEnv.getDir());
-    }
-    
+
     @Override
     public List<? extends ConfigMeta> getConfig() {
         // 遍历当前目录文件
@@ -188,5 +147,53 @@ public class DiskConfigDataProvider implements ConfigDataProvider {
             this.freeAll();
         }
     }
-    
+
+    @Override
+    public void afterPropertiesSet() {
+        log.info("Init Disk Config .");
+        Assert.notNull(configInfo, "The configuration attribute in config disk mode must be specified");
+        Assert.notNull(configInfo.getDisk(), "The configuration attribute in config disk mode must be specified");
+        ConfigDiskEnv configEnv = configInfo.getDisk();
+        if (StrUtil.isBlank(configEnv.getDir())) {
+            String defaultDir = System.getProperty("user.home") + File.separator + DesktopConstants.DESKTOP_TEMP_DIR_NAME;
+            // 创建临时目录
+            FileUtil.mkdir(defaultDir);
+            configEnv.setDir(defaultDir);
+        }
+        log.info("listener Dir:{}", configEnv.getDir());
+        this.configEnv = configEnv;
+        this.metaProvider = (DiskConfigMetaProvider) ReflectUtils.newInstance(this.mode().getConfigMetaClazz());
+        this.initDefault(configEnv.getDir());
+    }
+
+    /**
+     * 如果是disk模式，默认初始化存放一个openapi文件供开发者直接打开使用
+     * @param dir disk模式监听数据目录
+     */
+    private void initDefault(String dir){
+        log.info("init default,dir:{}",dir);
+        if (StrUtil.isNotBlank(dir)){
+            File file=new File(dir);
+            if (file.exists()){
+                File[] sourceFiles=file.listFiles(File::isDirectory);
+                //判断子文件夹 存在目录，如果
+                if (ArrayUtil.isEmpty(sourceFiles)){
+                    try {
+                        String rootFilePath=file.getAbsolutePath()+File.separator+DesktopConstants.DESKTOP_ROOT_CONTEXT_DIR;
+                        FileUtil.mkdir(rootFilePath);
+                        //写入文件
+                        ClassPathResource classPathResource = new ClassPathResource("templates/default.yml");
+                        String content=IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
+                        String defaultFilePath=rootFilePath+File.separator+"default.yml";
+                        FileUtil.writeString(content,defaultFilePath,StandardCharsets.UTF_8);
+                        log.info("init default success");
+                    } catch (Exception e) {
+                        //ignore
+                        log.warn("init error,message:{}",e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
 }

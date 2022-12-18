@@ -43,7 +43,7 @@ import java.util.Properties;
  */
 @Slf4j
 public class NacosConfigDataProvider implements ConfigDataProvider {
-    
+    final ConfigInfo configInfo;
     /**
      * 获取Nacos配置超时时间
      */
@@ -54,14 +54,34 @@ public class NacosConfigDataProvider implements ConfigDataProvider {
     private ConfigService configService;
     
     private ConfigNacosEnv configEnv;
-    
+
+    public NacosConfigDataProvider(ConfigInfo configInfo) {
+        this.configInfo = configInfo;
+    }
+
     @Override
     public ConfigMode mode() {
         return ConfigMode.NACOS;
     }
-    
     @Override
-    public void configArgs(ConfigInfo configInfo) {
+    public List<? extends ConfigMeta> getConfig() {
+        return null;
+    }
+    
+    public Map<String, List<? extends ConfigRoute>> getRoutes() {
+        try {
+            // 获取远程配置信息
+            String configContent = this.configService.getConfig(this.configEnv.getDataId(), this.configEnv.getGroup(), TIME_OUT);
+            
+        } catch (NacosException e) {
+            log.error(e.getMessage(), e);
+        }
+        return Collections.EMPTY_MAP;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        log.info("Nacos Config init");
         log.info("configArgs...");
         // 初始化nacos配置中心
         Assert.notNull(configInfo, "The configuration attribute in config nacos mode must be specified");
@@ -80,21 +100,4 @@ public class NacosConfigDataProvider implements ConfigDataProvider {
             log.error(e.getMessage(), e);
         }
     }
-    
-    @Override
-    public List<? extends ConfigMeta> getConfig() {
-        return null;
-    }
-    
-    public Map<String, List<? extends ConfigRoute>> getRoutes() {
-        try {
-            // 获取远程配置信息
-            String configContent = this.configService.getConfig(this.configEnv.getDataId(), this.configEnv.getGroup(), TIME_OUT);
-            
-        } catch (NacosException e) {
-            log.error(e.getMessage(), e);
-        }
-        return Collections.EMPTY_MAP;
-    }
-    
 }

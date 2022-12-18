@@ -45,6 +45,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 /**
@@ -91,19 +92,24 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
                 log.info("Args -> {}:{}",key,value);
                 params.put(key, value);
             }
-            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(configMode.getConfigClazz());
-            builder.setRole(BeanDefinition.ROLE_SUPPORT);
-            builder.setPrimary(true);
-            DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) beanFactory;
-            // 注入
-            String beanName = configMode.getValue() + DesktopConstants.CONFIG_SERVICE_NAME;
-            beanRegistry.registerBeanDefinition(beanName, builder.getBeanDefinition());
             // 回调配置
             Optional<ConfigEnv> configEnvOptional = PropertyUtils.resolveSingle(params, ConfigEnv.class);
             ConfigInfo configInfo = configEnvOptional.isPresent() ? configEnvOptional.get().getKnife4j() : ConfigInfo.defaultConfig();
+
+            //bean 注入
+            Class<? extends ConfigDataProvider> clazz=configMode.getConfigClazz();
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
+            builder.setRole(BeanDefinition.ROLE_SUPPORT);
+            builder.setPrimary(true);
+            Constructor constructor=clazz.getConstructor(ConfigInfo.class);
+            if (constructor!=null){
+                builder.addConstructorArgValue(configInfo);
+            }
+            DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) beanFactory;
+            String beanName = configMode.getValue() + DesktopConstants.CONFIG_SERVICE_NAME;
+            beanRegistry.registerBeanDefinition(beanName, builder.getBeanDefinition());
             // callback
             ConfigDataProvider configDataProvider = beanRegistry.getBean(beanName, ConfigDataProvider.class);
-            configDataProvider.configArgs(configInfo);
             this.configDataProvider = configDataProvider;
             this.start();
         } catch (Exception e) {
