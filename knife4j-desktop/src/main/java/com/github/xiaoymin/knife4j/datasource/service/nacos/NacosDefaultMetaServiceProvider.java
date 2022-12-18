@@ -52,6 +52,8 @@ public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<Conf
      * Nacos客户端对象池
      */
     private Map<String,NacosClient> nacosClientMap=new ConcurrentHashMap<>();
+
+    private Map<String,NamingService> namingServiceMap=new ConcurrentHashMap<>();
     @Override
     public ConfigMode configMode() {
         return ConfigMode.DISK;
@@ -77,7 +79,11 @@ public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<Conf
     }
 
 
-
+    /**
+     * 基于Nacos-client方式，nacos2.0版本
+     * @param configMeta
+     * @return
+     */
     private ServiceDocument processClientSdk(ConfigDefaultNacosMeta configMeta){
         NamingService namingService=getNamingService(configMeta);
         if (namingService==null){
@@ -111,13 +117,19 @@ public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<Conf
      * @return
      */
     private NamingService getNamingService(ConfigDefaultNacosMeta configMeta){
+        String key=configMeta.pkId();
+        NamingService namingService=namingServiceMap.get(key);
+        if (namingService!=null){
+            return namingService;
+        }
         Properties properties = new Properties();
         properties.put(PropertyKeyConst.SERVER_ADDR, configMeta.getServiceUrl());
         properties.put(PropertyKeyConst.NAMESPACE, configMeta.getNamespace());
         properties.put(PropertyKeyConst.USERNAME,configMeta.getUsername());
         properties.put(PropertyKeyConst.PASSWORD,configMeta.getPassword());
         try {
-            NamingService namingService=NamingFactory.createNamingService(properties);
+            namingService=NamingFactory.createNamingService(properties);
+            namingServiceMap.put(key,namingService);
             return namingService;
         } catch (NacosException e) {
             log.error("Init Nacos NamingService Error:"+e.getMessage(),e);
