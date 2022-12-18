@@ -18,6 +18,7 @@
 
 package com.github.xiaoymin.knife4j.datasource.model.config.meta.common;
 
+import cn.hutool.crypto.digest.MD5;
 import com.github.xiaoymin.knife4j.datasource.model.ConfigMeta;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 import com.github.xiaoymin.knife4j.datasource.service.nacos.NacosDefaultMetaServiceProvider;
@@ -59,5 +60,11 @@ public class ConfigDefaultNacosMeta extends ConfigMeta<NacosRoute, NacosDefaultM
     @Override
     public Class<NacosDefaultMetaServiceProvider> serviceDataProvider() {
         return NacosDefaultMetaServiceProvider.class;
+    }
+
+    public String pkId(){
+        StringBuilder stringBuilder=new StringBuilder();
+        stringBuilder.append(this.serviceUrl).append(username).append(password).append(namespace).append(clusters);
+        return MD5.create().digestHex(stringBuilder.toString());
     }
 }

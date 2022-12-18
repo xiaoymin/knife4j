@@ -46,11 +46,11 @@ public enum ServiceMode {
     /**
      * 基于Nacos注册中心获取OpenAPI数据，本质还是HTTP接口
      */
-    NACOS("nacos", "基于Nacos注册中心获取OpenAPI数据", "nacos.properties", EurekaDefaultMetaServiceProvider.class),
+    NACOS("nacos", "基于Nacos注册中心获取OpenAPI数据", "nacos.properties", NacosDefaultMetaServiceProvider.class),
     /**
      * 基于Eureka注册中心获取OpenAPI数据，本质还是HTTP接口
      */
-    EUREKA("eureka", "基于Eureka注册中心获取OpenAPI数据", "eureka.properties", NacosDefaultMetaServiceProvider.class);
+    EUREKA("eureka", "基于Eureka注册中心获取OpenAPI数据", "eureka.properties", EurekaDefaultMetaServiceProvider.class);
     
     private String value;
     private String label;
