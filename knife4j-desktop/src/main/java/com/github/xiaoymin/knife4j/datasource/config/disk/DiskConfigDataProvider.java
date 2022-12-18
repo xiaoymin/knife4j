@@ -171,7 +171,6 @@ public class DiskConfigDataProvider implements ConfigDataProvider {
      * @param dir disk模式监听数据目录
      */
     private void initDefault(String dir){
-        log.info("init default,dir:{}",dir);
         if (StrUtil.isNotBlank(dir)){
             File file=new File(dir);
             if (file.exists()){

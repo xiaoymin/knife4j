@@ -53,7 +53,7 @@ public class GatewayContextImpl implements GatewayContext {
             DesktopConstants.ROUTE_PROXY_HEADER_NAME,
             DesktopConstants.ROUTE_PROXY_HEADER_BASIC_NAME,
             DesktopConstants.ROUTE_PROXY_DOCUMENT_CODE,
-            "Request-Origion",
+            "request-origion",
             "language"
     });
     
@@ -70,7 +70,7 @@ public class GatewayContextImpl implements GatewayContext {
         String uri = serviceRoute.getUri();
         String fromUri = request.getRequestURI();
         if (!StrUtil.equalsIgnoreCase(serviceDocument.getContextPath(), DesktopConstants.DESKTOP_ROOT_CONTEXT_DIR)) {
-            fromUri = fromUri.replaceFirst(serviceDocument.getContextPath(), "");
+            fromUri = fromUri.replaceFirst(DesktopConstants.ROUTE_BASE_PATH+serviceDocument.getContextPath(), "");
             // 此处需要追加一个请求头basePath，因为父项目设置了context-path
             gatewayRequestContext.addHeader("X-Forwarded-Prefix", "/" + serviceDocument.getContextPath());
         }
@@ -100,7 +100,7 @@ public class GatewayContextImpl implements GatewayContext {
         // String requestUrl=uri+fromUri;
         String requestUrl = requestUrlBuilder.toString();
         String host = URI.create(uri).getHost();
-        log.debug("目标请求Url:{},请求类型:{},Host:{}", requestUrl, request.getMethod(), host);
+        log.debug("target request Url:{},method:{},Host:{}", requestUrl, request.getMethod(), host);
         gatewayRequestContext.setOriginalUri(fromUri);
         gatewayRequestContext.setUrl(requestUrl);
         gatewayRequestContext.setMethod(request.getMethod());
@@ -109,6 +109,7 @@ public class GatewayContextImpl implements GatewayContext {
             String key = enumeration.nextElement();
             String value = request.getHeader(key);
             if (!ignoreHeaders.contains(key.toLowerCase())) {
+                log.debug("header -> {}:{}",key,value);
                 gatewayRequestContext.addHeader(key, value);
             }
         }
@@ -117,13 +118,12 @@ public class GatewayContextImpl implements GatewayContext {
         while (params.hasMoreElements()) {
             String name = params.nextElement();
             String value = request.getParameter(name);
-            // logger.info("param-name:{},value:{}",name,value);
+            log.debug("params -> {}:{}",name,value);
             gatewayRequestContext.addParam(name, value);
         }
         // 增加文件，sinc 2.0.9
         String contentType = request.getContentType();
         if (StrUtil.isNotBlank(contentType) && contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
-            // if ((!StringUtils.isEmpty(contentType)) && contentType.contains("multipart/form-data")) {
             try {
                 Collection<Part> parts = request.getParts();
                 if (CollectionUtil.isNotEmpty(parts)) {
@@ -131,6 +131,7 @@ public class GatewayContextImpl implements GatewayContext {
                     parts.forEach(part -> {
                         String key = part.getName();
                         if (!paramMap.containsKey(key)) {
+                            log.debug("Part Name:{}",key);
                             gatewayRequestContext.addPart(part);
                         }
                     });

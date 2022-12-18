@@ -77,6 +77,7 @@ public class GatewayClientDispatcher implements Filter {
         // 排除SwaggerResource以及SwaggerInstance路由访问
         String uri = request.getRequestURI();
         if (StrUtil.isNotBlank(code)) {
+            log.info("------------------------------------------------------------------------------");
             log.info("project code:{}", code);
             if (!StrUtil.endWith(uri, DesktopConstants.OPENAPI_GROUP_ENDPOINT) && !StrUtil.endWith(uri, DesktopConstants.OPENAPI_GROUP_INSTANCE_ENDPOINT)) {
                 // 路由请求

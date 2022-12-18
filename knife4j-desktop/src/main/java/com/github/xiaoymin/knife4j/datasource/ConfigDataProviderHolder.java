@@ -81,9 +81,6 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
     @Override
     public void afterPropertiesSet() {
         try {
-            String source = this.environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY);
-            ConfigMode configMode = ConfigMode.config(source);
-            log.info("Config mode:{}", configMode);
             ApplicationArguments applicationArguments = this.beanFactory.getBean(ApplicationArguments.class);
             Set<String> optionNames = applicationArguments.getOptionNames();
             Map<String, String> params = new HashMap<>();
@@ -92,6 +89,9 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
                 log.info("Args -> {}:{}",key,value);
                 params.put(key, value);
             }
+            String source = this.environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY);
+            ConfigMode configMode = ConfigMode.config(source);
+            log.info("Config mode:{}", configMode);
             // 回调配置
             Optional<ConfigEnv> configEnvOptional = PropertyUtils.resolveSingle(params, ConfigEnv.class);
             ConfigInfo configInfo = configEnvOptional.isPresent() ? configEnvOptional.get().getKnife4j() : ConfigInfo.defaultConfig();
@@ -119,7 +119,7 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
     }
     
     public void start() {
-        log.info("start data monitor.");
+        log.info("Start Config monitor thread.");
         thread = new Thread(() -> {
             while (!stop) {
                 try {
@@ -143,7 +143,7 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
                                     ServiceDocument cacheDocument = documentOptional.get();
                                     // 对比,无变化
                                     if (!StrUtil.equalsIgnoreCase(serviceDocument.contextId(), cacheDocument.contextId())) {
-                                        log.info("文档发生变化，context-path:{}", serviceDocument.getContextPath());
+                                        log.info("document has changed，context-path:{}", serviceDocument.getContextPath());
                                         this.sessionHolder.addContext(serviceDocument);
                                     }
                                 } else {
@@ -169,7 +169,7 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
     @SneakyThrows
     @Override
     public void destroy() {
-        log.info("stop Config Provvider Holder thread.");
+        log.info("stop Config Provider Holder thread.");
         this.stop = true;
         if (thread != null) {
             ThreadUtil.interrupt(thread, true);
