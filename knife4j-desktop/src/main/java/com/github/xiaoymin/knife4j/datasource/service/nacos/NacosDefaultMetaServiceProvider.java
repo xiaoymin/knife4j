@@ -70,8 +70,8 @@ public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<Conf
                 nacosClient=new NacosClient(configMeta);
                 this.nacosClientMap.put(configMeta.pkId(),nacosClient);
             }
-            return nacosClient.getServiceDocument();
-            //return this.processClientSdk(configMeta);
+            //return nacosClient.getServiceDocument();
+            return this.processClientSdk(configMeta);
         }
         return null;
     }
