@@ -15,12 +15,12 @@ import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
 public class NacosConfigDiskServiceProvider implements ServiceDataProvider<NacosConfigDiskProfile> {
     @Override
     public ConfigMode configMode() {
-        return null;
+        return ConfigMode.NACOS;
     }
 
     @Override
     public ServiceMode mode() {
-        return null;
+        return ServiceMode.DISK;
     }
 
     @Override

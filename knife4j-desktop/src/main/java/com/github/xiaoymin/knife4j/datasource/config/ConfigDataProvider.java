@@ -29,7 +29,7 @@ import java.util.List;
  * Knife4j核心配置中心顶级接口,所有扩展支持的配置中心需要实现该接口 <p />
  * 注意：
  * <ul>
- *     <li>1.所有子类实现都必须提供{@link com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigInfo}参数的构造函数</li>
+ *     <li>1.所有子类实现都必须提供{@link com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo}子类参数的构造函数</li>
  *     <li>2.初始化配置中心,由外部使用者设定传入参数。由此指定Knife4j使用的配置中心的类型，各配置中心的初始化工作可在{@link InitializingBean#afterPropertiesSet()}中实现</li>
  * </ul>
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>

@@ -30,7 +30,6 @@ import com.github.xiaoymin.knife4j.common.utils.CommonUtils;
 import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigDataProvider;
-import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigInfo;
 import com.github.xiaoymin.knife4j.datasource.config.disk.env.ConfigDiskInfo;
 import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.disk.DiskConfigProfileProps;
@@ -51,9 +50,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo> {
 
-    private final ConfigInfo configInfo;
-    private ConfigDiskInfo configEnv;
-    private DiskConfigProfileProvider metaProvider;
+    private final ConfigDiskInfo configInfo;
+    private DiskConfigProfileProvider profileProvider;
     /**
      * 缓存本地文件变化时间值,避免文件太多的情况下多次遍历解析，效率低下
      */
@@ -64,7 +62,7 @@ public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo
      */
     private Map<String, List<? extends ConfigProfile>> cacheRouteMap = new HashMap<>();
 
-    public DiskConfigDataProvider(ConfigInfo configInfo) {
+    public DiskConfigDataProvider(ConfigDiskInfo configInfo) {
         log.info("call disk construct.");
         this.configInfo=configInfo;
     }
@@ -76,13 +74,13 @@ public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo
 
     @Override
     public ConfigDiskInfo getConfigInfo() {
-        return this.configEnv;
+        return this.configInfo;
     }
 
     @Override
     public List<? extends ConfigProfile> getConfigProfiles() {
         // 遍历当前目录文件
-        File dataFile = new File(this.configEnv.getDir());
+        File dataFile = new File(this.configInfo.getDir());
         if (dataFile.exists()) {
             File[] files = dataFile.listFiles(File::isDirectory);
             if (ArrayUtil.isNotEmpty(files)) {
@@ -129,7 +127,7 @@ public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo
      * @return
      */
     private List<? extends ConfigProfile> resolver(File file) {
-        List<? extends ConfigProfile> fileConfigRoutes = this.metaProvider.resolver(file, DiskConfigProfileProps.class);
+        List<? extends ConfigProfile> fileConfigRoutes = this.profileProvider.resolver(file, DiskConfigProfileProps.class);
         this.cacheFileMap.put(file.getName(), file.lastModified());
         this.cacheRouteMap.put(file.getName(), fileConfigRoutes);
         return fileConfigRoutes;
@@ -157,18 +155,15 @@ public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo
     public void afterPropertiesSet() {
         log.info("Init Disk Config .");
         Assert.notNull(configInfo, "The configuration attribute in config disk mode must be specified");
-        Assert.notNull(configInfo.getDisk(), "The configuration attribute in config disk mode must be specified");
-        ConfigDiskInfo configEnv = configInfo.getDisk();
-        if (StrUtil.isBlank(configEnv.getDir())) {
+        if (StrUtil.isBlank(configInfo.getDir())) {
             String defaultDir = System.getProperty("user.home") + File.separator + DesktopConstants.DESKTOP_TEMP_DIR_NAME;
             // 创建临时目录
             FileUtil.mkdir(defaultDir);
-            configEnv.setDir(defaultDir);
+            configInfo.setDir(defaultDir);
         }
-        log.info("listener Dir:{}", configEnv.getDir());
-        this.configEnv = configEnv;
-        this.metaProvider = (DiskConfigProfileProvider) ReflectUtils.newInstance(this.mode().getConfigMetaClazz());
-        this.initDefault(configEnv.getDir());
+        log.info("listener Dir:{}", configInfo.getDir());
+        this.profileProvider = (DiskConfigProfileProvider) ReflectUtils.newInstance(this.mode().getConfigProfileClazz());
+        this.initDefault(configInfo.getDir());
     }
 
     /**

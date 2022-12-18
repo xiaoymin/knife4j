@@ -45,7 +45,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
-import java.lang.reflect.Constructor;
 import java.util.*;
 
 /**
@@ -97,14 +96,12 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
             ConfigInfo configInfo = configEnvOptional.isPresent() ? configEnvOptional.get().getKnife4j() : ConfigInfo.defaultConfig();
 
             //bean 注入
-            Class<? extends ConfigDataProvider> clazz=configMode.getConfigClazz();
+            Class<? extends ConfigDataProvider> clazz=configMode.getConfigDataProviderClazz();
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
             builder.setRole(BeanDefinition.ROLE_SUPPORT);
             builder.setPrimary(true);
-            Constructor constructor=clazz.getConstructor(ConfigInfo.class);
-            if (constructor!=null){
-                builder.addConstructorArgValue(configInfo);
-            }
+            //构造参数value
+            builder.addConstructorArgValue(configInfo.getConfigInfo());
             DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) beanFactory;
             String beanName = configMode.getValue() + DesktopConstants.CONFIG_SERVICE_NAME;
             beanRegistry.registerBeanDefinition(beanName, builder.getBeanDefinition());

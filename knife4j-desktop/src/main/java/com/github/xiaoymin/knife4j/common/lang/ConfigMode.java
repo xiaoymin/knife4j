@@ -23,8 +23,11 @@ import com.github.xiaoymin.knife4j.datasource.config.ConfigProfileProvider;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigDataProvider;
 import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigProfileProvider;
 import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigDataProvider;
+import com.github.xiaoymin.knife4j.datasource.config.disk.env.ConfigDiskInfo;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigDataProvider;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigProfileProvider;
+import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosInfo;
+import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -40,11 +43,11 @@ public enum ConfigMode {
     /**
      * 本地磁盘配置
      */
-    DISK("disk", "本地文件配置", DiskConfigDataProvider.class, DiskConfigProfileProvider.class),
+    DISK("disk", "本地文件配置", DiskConfigDataProvider.class, DiskConfigProfileProvider.class, ConfigDiskInfo.class),
     /**
      * Nacos配置中心
      */
-    NACOS("nacos", "NACOS配置中心", NacosConfigDataProvider.class, NacosConfigProfileProvider.class);
+    NACOS("nacos", "NACOS配置中心", NacosConfigDataProvider.class, NacosConfigProfileProvider.class, ConfigNacosInfo.class);
     
     /**
      * knife4j.source主要类型
@@ -56,12 +59,17 @@ public enum ConfigMode {
     /**
      * 实现类
      */
-    private Class<? extends ConfigDataProvider> configClazz;
+    private Class<? extends ConfigDataProvider> configDataProviderClazz;
     
     /**
      * 元数据实现
      */
-    private Class<? extends ConfigProfileProvider> configMetaClazz;
+    private Class<? extends ConfigProfileProvider> configProfileClazz;
+
+    /**
+     * 配置中心初始化配置属性clazz
+     */
+    private Class<? extends ConfigCommonInfo> configClazz;
     
     /**
      * 获取当前配置类型

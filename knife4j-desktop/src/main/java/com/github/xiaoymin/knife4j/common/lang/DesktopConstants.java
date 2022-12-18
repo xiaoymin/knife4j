@@ -36,12 +36,12 @@ public class DesktopConstants {
      * 根目录文件夹名称
      */
     public static final String DESKTOP_ROOT_CONTEXT_DIR = "ROOT";
-    
     /**
-     * 根路径
+     * 项目根目录
      */
-    public static final String DESKTOP_ROOT_CONTEXT_PATH = "/";
-    
+    public static final String ROUTE_BASE_PATH = "/";
+
+
     /**
      * 配置中心类别，参考{@link ConfigMode#getValue()}
      */
@@ -63,15 +63,27 @@ public class DesktopConstants {
      * 单分组header
      */
     public static final String ROUTE_PROXY_HEADER_NAME = "knfie4j-gateway-request";
+    /**
+     * 分组鉴权-header
+     */
     public static final String ROUTE_PROXY_HEADER_BASIC_NAME = "knife4j-gateway-basic-request";
+    /**
+     * OpenAPI分组接口URL
+     */
     public static final String OPENAPI_GROUP_ENDPOINT = "/swagger-resources";
+    /**
+     * 针对Disk模式提供的接口url
+     */
     public static final String OPENAPI_GROUP_INSTANCE_ENDPOINT = "/swagger-instance";
-    public static final String ROUTE_BASE_PATH = "/";
-    
     /**
      * 正则表达式
      */
     public static final String WEBJAR_RESOURCE_PATTERN = "/(.*?)/(webjars.*)";
+
+    /**
+     * 各个外部中间件服务连接超时时间
+     */
+    public static final Long MIDDLE_WARE_CONNECTION_TIME_OUT = 20000L;
     
     /**
      * 401状态响应内容
