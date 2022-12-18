@@ -16,23 +16,21 @@
  */
 
 
-package com.github.xiaoymin.knife4j.datasource.model.config.meta.common;
+package com.github.xiaoymin.knife4j.datasource.model.config.meta.disk;
 
-import com.github.xiaoymin.knife4j.datasource.model.ConfigMeta;
-import com.github.xiaoymin.knife4j.datasource.model.config.route.CloudRoute;
-import com.github.xiaoymin.knife4j.datasource.service.cloud.CloudDefaultMetaServiceProvider;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.ConfigProfileProps;
 import lombok.Data;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2022/12/17 11:40
+ * 2022/12/17 11:55
  * @since:knife4j-desktop
  */
 @Data
-public class ConfigDefaultCloudMeta extends ConfigMeta<CloudRoute, CloudDefaultMetaServiceProvider> {
+public class DiskConfigProfileProps extends ConfigProfileProps {
     
-    @Override
-    public Class<CloudDefaultMetaServiceProvider> serviceDataProvider() {
-        return CloudDefaultMetaServiceProvider.class;
-    }
+    /**
+     * Disk配置中心下的配置文件属性
+     */
+    private DiskConfigProfileInfo knife4j;
 }

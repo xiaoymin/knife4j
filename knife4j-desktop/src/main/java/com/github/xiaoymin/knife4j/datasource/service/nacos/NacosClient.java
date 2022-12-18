@@ -6,7 +6,7 @@ import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosMeta;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosProfile;
 import com.github.xiaoymin.knife4j.gateway.executor.apache.pool.PoolingConnectionManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -50,9 +50,9 @@ public class NacosClient extends PoolingConnectionManager {
      */
     private LocalDateTime lastLoginTime;
 
-    private final ConfigDefaultNacosMeta configDefaultNacosMeta;
+    private final ConfigDefaultNacosProfile configDefaultNacosMeta;
 
-    public NacosClient(ConfigDefaultNacosMeta configDefaultNacosMeta) {
+    public NacosClient(ConfigDefaultNacosProfile configDefaultNacosMeta) {
         this.configDefaultNacosMeta = configDefaultNacosMeta;
     }
 

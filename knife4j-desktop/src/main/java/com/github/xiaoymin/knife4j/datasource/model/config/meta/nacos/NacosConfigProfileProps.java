@@ -16,17 +16,21 @@
  */
 
 
-package com.github.xiaoymin.knife4j.datasource.model.config.common;
+package com.github.xiaoymin.knife4j.datasource.model.config.meta.nacos;
+
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.ConfigProfileProps;
+import lombok.Data;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2022/12/16 22:47
+ * 2022/12/17 11:56
  * @since:knife4j-desktop
  */
-public interface ConfigEnvValidator {
+@Data
+public class NacosConfigProfileProps extends ConfigProfileProps {
     
     /**
-     * 校验每个属性，是否不能为空，或者非法属性等
+     * nacos注册中心下的配置属性
      */
-    void validate();
+    private NacosConfigProfileInfo knife4j;
 }

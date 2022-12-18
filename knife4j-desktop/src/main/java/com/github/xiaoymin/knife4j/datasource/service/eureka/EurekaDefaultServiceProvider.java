@@ -26,7 +26,8 @@ import com.github.xiaoymin.knife4j.common.lang.ServiceMode;
 import com.github.xiaoymin.knife4j.common.utils.CommonUtils;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultEurekaMeta;
+import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultEurekaProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.EurekaRoute;
 import com.github.xiaoymin.knife4j.datasource.model.service.eureka.EurekaApplication;
 import com.github.xiaoymin.knife4j.datasource.model.service.eureka.EurekaInstance;
@@ -53,7 +54,7 @@ import java.util.stream.Collectors;
  * @since:knife4j-desktop
  */
 @Slf4j
-public class EurekaDefaultMetaServiceProvider extends PoolingConnectionManager implements ServiceDataProvider<ConfigDefaultEurekaMeta> {
+public class EurekaDefaultServiceProvider extends PoolingConnectionManager implements ServiceDataProvider<ConfigDefaultEurekaProfile> {
     @Override
     public ConfigMode configMode() {
         return ConfigMode.DISK;
@@ -65,7 +66,7 @@ public class EurekaDefaultMetaServiceProvider extends PoolingConnectionManager i
     }
     
     @Override
-    public ServiceDocument getDocument(ConfigDefaultEurekaMeta configMeta) {
+    public ServiceDocument getDocument(ConfigDefaultEurekaProfile configMeta, ConfigCommonInfo configCommonInfo) {
         if (configMeta != null) {
             log.info("eureka address:{},user:{},pwd:{}", configMeta.getServiceUrl(), configMeta.getUsername(), configMeta.getPassword());
             // 从注册中心进行初始化获取EurekaApplication
@@ -80,7 +81,7 @@ public class EurekaDefaultMetaServiceProvider extends PoolingConnectionManager i
      * @param configMeta
      * @return
      */
-    private List<EurekaApplication> initEurekaApps(ConfigDefaultEurekaMeta configMeta) {
+    private List<EurekaApplication> initEurekaApps(ConfigDefaultEurekaProfile configMeta) {
         List<EurekaApplication> eurekaApplications = new ArrayList<>();
         StringBuilder requestUrl = new StringBuilder();
         requestUrl.append(configMeta.getServiceUrl());
@@ -135,7 +136,7 @@ public class EurekaDefaultMetaServiceProvider extends PoolingConnectionManager i
     /**
      * 内部参数转换
      */
-    private ServiceDocument applyRoutes(ConfigDefaultEurekaMeta configMeta, List<EurekaApplication> eurekaApplications) {
+    private ServiceDocument applyRoutes(ConfigDefaultEurekaProfile configMeta, List<EurekaApplication> eurekaApplications) {
         ServiceDocument serviceDocument=new ServiceDocument();
         serviceDocument.setContextPath(configMeta.getContextPath());
         if (CollectionUtil.isNotEmpty(eurekaApplications)) {

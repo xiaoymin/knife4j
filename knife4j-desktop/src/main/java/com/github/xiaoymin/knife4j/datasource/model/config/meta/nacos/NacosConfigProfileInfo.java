@@ -18,19 +18,36 @@
 
 package com.github.xiaoymin.knife4j.datasource.model.config.meta.nacos;
 
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.ConfigMetaProps;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultCloudProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultEurekaProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.nacos.service.NacosConfigDiskProfile;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2022/12/17 11:56
+ * 2022/12/17 11:57
  * @since:knife4j-desktop
  */
 @Data
-public class NacosConfigMetaProps extends ConfigMetaProps {
-    
+public class NacosConfigProfileInfo {
+
     /**
-     * nacos注册中心下的配置属性
+     * disk模式，nacos中的配置从nacos上面直接获取
      */
-    private NacosConfigMetaInfo knife4j;
+    private List<NacosConfigDiskProfile> disk;
+    /**
+     * Cloud模式
+     */
+    private List<ConfigDefaultCloudProfile> cloud;
+    /**
+     * nacos模式
+     */
+    private List<ConfigDefaultNacosProfile> nacos;
+    /**
+     * eureka模式
+     */
+    private List<ConfigDefaultEurekaProfile> eureka;
 }

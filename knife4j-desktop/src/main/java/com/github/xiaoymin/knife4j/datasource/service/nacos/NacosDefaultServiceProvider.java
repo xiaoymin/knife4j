@@ -30,7 +30,8 @@ import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import com.github.xiaoymin.knife4j.common.lang.ServiceMode;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosMeta;
+import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since:knife4j-desktop
  */
 @Slf4j
-public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<ConfigDefaultNacosMeta> {
+public class NacosDefaultServiceProvider implements ServiceDataProvider<ConfigDefaultNacosProfile> {
     /**
      * Nacos客户端对象池
      */
@@ -65,7 +66,7 @@ public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<Conf
     }
 
     @Override
-    public ServiceDocument getDocument(ConfigDefaultNacosMeta configMeta) {
+    public ServiceDocument getDocument(ConfigDefaultNacosProfile configMeta, ConfigCommonInfo configCommonInfo) {
         if (configMeta!=null&& CollectionUtil.isNotEmpty(configMeta.getRoutes())){
             NacosClient nacosClient=this.nacosClientMap.get(configMeta.pkId());
             if (nacosClient==null){
@@ -84,7 +85,7 @@ public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<Conf
      * @param configMeta
      * @return
      */
-    private ServiceDocument processClientSdk(ConfigDefaultNacosMeta configMeta){
+    private ServiceDocument processClientSdk(ConfigDefaultNacosProfile configMeta){
         NamingService namingService=getNamingService(configMeta);
         if (namingService==null){
             return null;
@@ -116,7 +117,7 @@ public class NacosDefaultMetaServiceProvider implements ServiceDataProvider<Conf
      * @param configMeta
      * @return
      */
-    private NamingService getNamingService(ConfigDefaultNacosMeta configMeta){
+    private NamingService getNamingService(ConfigDefaultNacosProfile configMeta){
         String key=configMeta.pkId();
         NamingService namingService=namingServiceMap.get(key);
         if (namingService!=null){

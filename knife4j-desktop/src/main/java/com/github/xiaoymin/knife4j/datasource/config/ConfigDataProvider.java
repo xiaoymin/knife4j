@@ -19,7 +19,8 @@
 package com.github.xiaoymin.knife4j.datasource.config;
 
 import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
-import com.github.xiaoymin.knife4j.datasource.model.ConfigMeta;
+import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.List;
  * 2022/12/15 20:51
  * @since:knife4j-desktop
  */
-public interface ConfigDataProvider extends InitializingBean {
+public interface ConfigDataProvider<T extends ConfigCommonInfo> extends InitializingBean {
     
     /**
      * 指定当前配置中心类型
@@ -44,9 +45,15 @@ public interface ConfigDataProvider extends InitializingBean {
     ConfigMode mode();
 
     /**
+     * 获取当前配置中心的基础配置信息
+     * @return
+     */
+    T getConfigInfo();
+
+    /**
      * 从配置中心获取各个支持模式的OpenAPI聚合文档
      * @return
      */
-    List<? extends ConfigMeta> getConfig();
+    List<? extends ConfigProfile> getConfigProfiles();
     
 }

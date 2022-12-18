@@ -23,7 +23,8 @@ import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import com.github.xiaoymin.knife4j.common.lang.ServiceMode;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultCloudMeta;
+import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultCloudProfile;
 import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
  * @since:knife4j-desktop
  */
 @Slf4j
-public class CloudDefaultMetaServiceProvider implements ServiceDataProvider<ConfigDefaultCloudMeta> {
+public class CloudDefaultServiceProvider implements ServiceDataProvider<ConfigDefaultCloudProfile> {
     
     @Override
     public ConfigMode configMode() {
@@ -49,7 +50,7 @@ public class CloudDefaultMetaServiceProvider implements ServiceDataProvider<Conf
     }
     
     @Override
-    public ServiceDocument getDocument(ConfigDefaultCloudMeta configMeta) {
+    public ServiceDocument getDocument(ConfigDefaultCloudProfile configMeta, ConfigCommonInfo configCommonInfo) {
         if (configMeta != null && CollectionUtil.isNotEmpty(configMeta.getRoutes())) {
             ServiceDocument serviceDocument = new ServiceDocument();
             serviceDocument.setContextPath(configMeta.getContextPath());

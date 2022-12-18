@@ -16,44 +16,38 @@
  */
 
 
-package com.github.xiaoymin.knife4j.datasource.model.config.common;
+package com.github.xiaoymin.knife4j.datasource.model.config.meta.disk;
 
-import com.github.xiaoymin.knife4j.datasource.config.disk.env.ConfigDiskInfo;
-import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosInfo;
-import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultCloudProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.disk.service.ConfigDefaultDiskProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultEurekaProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosProfile;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2022/12/16 21:14
+ * 2022/12/17 11:49
  * @since:knife4j-desktop
  */
 @Data
-public class ConfigInfo {
+public class DiskConfigProfileInfo {
     
     /**
-     * 配置属性类别，参考{@link ConfigMode}
+     * disk模式
      */
-    private String source;
-    
+    private List<ConfigDefaultDiskProfile> disk;
     /**
-     * disk模式配置属性
+     * Cloud模式
      */
-    private ConfigDiskInfo disk;
-    
+    private List<ConfigDefaultCloudProfile> cloud;
     /**
-     * Nacos配置属性
+     * nacos模式
      */
-    private ConfigNacosInfo nacos;
-    
+    private List<ConfigDefaultNacosProfile> nacos;
     /**
-     * 默认配置
-     * @return
+     * eureka模式
      */
-    public static ConfigInfo defaultConfig() {
-        ConfigInfo configInfo = new ConfigInfo();
-        // default disk
-        configInfo.setDisk(new ConfigDiskInfo());
-        return configInfo;
-    }
+    private List<ConfigDefaultEurekaProfile> eureka;
 }

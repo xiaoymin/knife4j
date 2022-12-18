@@ -27,7 +27,8 @@ import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import com.github.xiaoymin.knife4j.common.lang.ServiceMode;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.disk.service.DiskConfigDiskMeta;
+import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.disk.service.ConfigDefaultDiskProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.DiskRoute;
 import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,7 @@ import java.util.List;
  * @since:knife4j-desktop
  */
 @Slf4j
-public class DiskConfigDiskMetaServiceProvider implements ServiceDataProvider<DiskConfigDiskMeta> {
+public class DiskDefaultServiceProvider implements ServiceDataProvider<ConfigDefaultDiskProfile> {
     
     @Override
     public ConfigMode configMode() {
@@ -58,7 +59,7 @@ public class DiskConfigDiskMetaServiceProvider implements ServiceDataProvider<Di
     }
     
     @Override
-    public ServiceDocument getDocument(DiskConfigDiskMeta configMeta) {
+    public ServiceDocument getDocument(ConfigDefaultDiskProfile configMeta, ConfigCommonInfo configCommonInfo) {
         if (configMeta != null && CollectionUtil.isNotEmpty(configMeta.getRoutes())) {
             ServiceDocument serviceDocument = new ServiceDocument();
             serviceDocument.setContextPath(configMeta.getContextPath());

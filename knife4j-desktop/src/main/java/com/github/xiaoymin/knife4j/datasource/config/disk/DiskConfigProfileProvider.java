@@ -23,13 +23,13 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.common.lang.ServiceMode;
 import com.github.xiaoymin.knife4j.common.utils.PropertyUtils;
-import com.github.xiaoymin.knife4j.datasource.config.ConfigMetaProvider;
-import com.github.xiaoymin.knife4j.datasource.model.ConfigMeta;
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.disk.DiskConfigMetaProps;
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultCloudMeta;
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.disk.service.DiskConfigDiskMeta;
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultEurekaMeta;
-import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosMeta;
+import com.github.xiaoymin.knife4j.datasource.config.ConfigProfileProvider;
+import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.disk.DiskConfigProfileProps;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultCloudProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.disk.service.ConfigDefaultDiskProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultEurekaProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.DiskRoute;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,10 +45,10 @@ import java.util.Optional;
  * @since:knife4j-desktop
  */
 @Slf4j
-public class DiskConfigMetaProvider implements ConfigMetaProvider<File, DiskConfigMetaProps> {
+public class DiskConfigProfileProvider implements ConfigProfileProvider<File, DiskConfigProfileProps> {
     
     @Override
-    public List<? extends ConfigMeta> resolver(File file, Class<DiskConfigMetaProps> metaClazz) {
+    public List<? extends ConfigProfile> resolver(File file, Class<DiskConfigProfileProps> metaClazz) {
         if (file == null || !file.exists()) {
             return Collections.EMPTY_LIST;
         }
@@ -57,9 +57,9 @@ public class DiskConfigMetaProvider implements ConfigMetaProvider<File, DiskConf
             // cloud模式，解析配置文件
             String cloudProperties = file.getAbsolutePath() + File.separator + ServiceMode.CLOUD.getPropertiesName();
             File cloudPropertiesFile = new File(cloudProperties);
-            Optional<DiskConfigMetaProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(cloudPropertiesFile, metaClazz);
+            Optional<DiskConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(cloudPropertiesFile, metaClazz);
             if (knife4jSettingPropertiesOptional.isPresent()) {
-                List<ConfigDefaultCloudMeta> configRoutes = knife4jSettingPropertiesOptional.get().getKnife4j().getCloud();
+                List<ConfigDefaultCloudProfile> configRoutes = knife4jSettingPropertiesOptional.get().getKnife4j().getCloud();
                 if (CollectionUtil.isNotEmpty(configRoutes)) {
                     configRoutes.forEach(configMeta -> {
                         if (StrUtil.isBlank(configMeta.getContextPath())) {
@@ -78,9 +78,9 @@ public class DiskConfigMetaProvider implements ConfigMetaProvider<File, DiskConf
             // nacos模式，解析配置文件
             String cloudProperties = file.getAbsolutePath() + File.separator + ServiceMode.NACOS.getPropertiesName();
             File cloudPropertiesFile = new File(cloudProperties);
-            Optional<DiskConfigMetaProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(cloudPropertiesFile, metaClazz);
+            Optional<DiskConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(cloudPropertiesFile, metaClazz);
             if (knife4jSettingPropertiesOptional.isPresent()) {
-                List<ConfigDefaultNacosMeta> configRoutes = knife4jSettingPropertiesOptional.get().getKnife4j().getNacos();
+                List<ConfigDefaultNacosProfile> configRoutes = knife4jSettingPropertiesOptional.get().getKnife4j().getNacos();
                 if (CollectionUtil.isNotEmpty(configRoutes)) {
                     configRoutes.forEach(configMeta -> {
                         if (StrUtil.isBlank(configMeta.getContextPath())) {
@@ -99,9 +99,9 @@ public class DiskConfigMetaProvider implements ConfigMetaProvider<File, DiskConf
             // EUREKA模式，解析配置文件
             String cloudProperties = file.getAbsolutePath() + File.separator + ServiceMode.EUREKA.getPropertiesName();
             File cloudPropertiesFile = new File(cloudProperties);
-            Optional<DiskConfigMetaProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(cloudPropertiesFile, metaClazz);
+            Optional<DiskConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(cloudPropertiesFile, metaClazz);
             if (knife4jSettingPropertiesOptional.isPresent()) {
-                List<ConfigDefaultEurekaMeta> configRoutes = knife4jSettingPropertiesOptional.get().getKnife4j().getEureka();
+                List<ConfigDefaultEurekaProfile> configRoutes = knife4jSettingPropertiesOptional.get().getKnife4j().getEureka();
                 if (CollectionUtil.isNotEmpty(configRoutes)) {
                     configRoutes.forEach(configMeta -> {
                         if (StrUtil.isBlank(configMeta.getContextPath())) {
@@ -120,23 +120,23 @@ public class DiskConfigMetaProvider implements ConfigMetaProvider<File, DiskConf
         return resolveDisk(file, metaClazz);
     }
     
-    private List<? extends ConfigMeta> resolveDisk(File file, Class<DiskConfigMetaProps> metaClazz) {
+    private List<? extends ConfigProfile> resolveDisk(File file, Class<DiskConfigProfileProps> metaClazz) {
         String basePath = file.getAbsolutePath() + File.separator;
         // cloud模式，解析配置文件
         String cloudProperties = file.getAbsolutePath() + File.separator + ServiceMode.DISK.getPropertiesName();
         File cloudPropertiesFile = new File(cloudProperties);
         if (cloudPropertiesFile.exists()) {
-            Optional<DiskConfigMetaProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(cloudPropertiesFile, metaClazz);
+            Optional<DiskConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(cloudPropertiesFile, metaClazz);
             if (knife4jSettingPropertiesOptional.isPresent()) {
-                List<DiskConfigDiskMeta> diskRoutes = knife4jSettingPropertiesOptional.get().getKnife4j().getDisk();
+                List<ConfigDefaultDiskProfile> diskRoutes = knife4jSettingPropertiesOptional.get().getKnife4j().getDisk();
                 if (CollectionUtil.isNotEmpty(diskRoutes)) {
-                    diskRoutes.forEach(diskConfigDiskMeta -> {
-                        if (StrUtil.isBlank(diskConfigDiskMeta.getContextPath())) {
-                            diskConfigDiskMeta.setContextPath(file.getName());
+                    diskRoutes.forEach(configDefaultDiskMeta -> {
+                        if (StrUtil.isBlank(configDefaultDiskMeta.getContextPath())) {
+                            configDefaultDiskMeta.setContextPath(file.getName());
                         }
-                        if (CollectionUtil.isNotEmpty(diskConfigDiskMeta.getRoutes())) {
+                        if (CollectionUtil.isNotEmpty(configDefaultDiskMeta.getRoutes())) {
                             // 设置配置中的基础路径
-                            diskConfigDiskMeta.getRoutes().forEach(diskRoute -> {
+                            configDefaultDiskMeta.getRoutes().forEach(diskRoute -> {
                                 diskRoute.setLocation(basePath + diskRoute.getLocation());
                                 diskRoute.setServiceMode(ServiceMode.DISK);
                             });
@@ -149,7 +149,7 @@ public class DiskConfigMetaProvider implements ConfigMetaProvider<File, DiskConf
             // 判断是否包含json文件或者yml文件
             File[] jsons = file.listFiles(((dir, name) -> name.endsWith(".json") || name.endsWith(".yml")));
             if (ArrayUtil.isNotEmpty(jsons)) {
-                DiskConfigDiskMeta diskConfigDiskMeta = new DiskConfigDiskMeta();
+                ConfigDefaultDiskProfile configDefaultDiskMeta = new ConfigDefaultDiskProfile();
                 List<DiskRoute> routes = new ArrayList<>();
                 for (File diskFile : jsons) {
                     DiskRoute diskRoute = new DiskRoute();
@@ -159,9 +159,9 @@ public class DiskConfigMetaProvider implements ConfigMetaProvider<File, DiskConf
                     diskRoute.setServiceMode(ServiceMode.DISK);
                     routes.add(diskRoute);
                 }
-                diskConfigDiskMeta.setRoutes(routes);
-                diskConfigDiskMeta.setContextPath(file.getName());
-                return CollectionUtil.newArrayList(diskConfigDiskMeta);
+                configDefaultDiskMeta.setRoutes(routes);
+                configDefaultDiskMeta.setContextPath(file.getName());
+                return CollectionUtil.newArrayList(configDefaultDiskMeta);
             }
         }
         return Collections.EMPTY_LIST;

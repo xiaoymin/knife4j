@@ -26,7 +26,7 @@ import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import com.github.xiaoymin.knife4j.common.utils.PropertyUtils;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigDataProvider;
-import com.github.xiaoymin.knife4j.datasource.model.ConfigMeta;
+import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
 import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigEnv;
 import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigInfo;
@@ -123,19 +123,19 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
         thread = new Thread(() -> {
             while (!stop) {
                 try {
-                    List<? extends ConfigMeta> configRoutes = this.configDataProvider.getConfig();
+                    List<? extends ConfigProfile> configRoutes = this.configDataProvider.getConfigProfiles();
                     List<String> documentIds = new ArrayList<>();
                     if (CollectionUtil.isNotEmpty(configRoutes)) {
-                        for (ConfigMeta configMeta : configRoutes) {
-                            Optional<ServiceDataProvider> providerOptional = this.sessionHolder.getServiceProvider(configMeta.serviceDataProvider());
+                        for (ConfigProfile configProfile : configRoutes) {
+                            Optional<ServiceDataProvider> providerOptional = this.sessionHolder.getServiceProvider(configProfile.serviceDataProvider());
                             ServiceDataProvider serviceDataProvider = null;
                             if (providerOptional.isPresent()) {
                                 serviceDataProvider = providerOptional.get();
                             } else {
-                                serviceDataProvider = (ServiceDataProvider) ReflectUtil.newInstance(configMeta.serviceDataProvider());
-                                this.sessionHolder.addServiceProvider(configMeta.serviceDataProvider(), serviceDataProvider);
+                                serviceDataProvider = (ServiceDataProvider) ReflectUtil.newInstance(configProfile.serviceDataProvider());
+                                this.sessionHolder.addServiceProvider(configProfile.serviceDataProvider(), serviceDataProvider);
                             }
-                            ServiceDocument serviceDocument = serviceDataProvider.getDocument(configMeta);
+                            ServiceDocument serviceDocument = serviceDataProvider.getDocument(configProfile,this.configDataProvider.getConfigInfo());
                             if (serviceDocument != null) {
                                 documentIds.add(serviceDocument.getContextPath());
                                 Optional<ServiceDocument> documentOptional = this.sessionHolder.getContext(serviceDocument.getContextPath());

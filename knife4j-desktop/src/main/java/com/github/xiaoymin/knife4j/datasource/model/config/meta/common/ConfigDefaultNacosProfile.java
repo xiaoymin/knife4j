@@ -16,52 +16,55 @@
  */
 
 
-package com.github.xiaoymin.knife4j.datasource.config.nacos.env;
+package com.github.xiaoymin.knife4j.datasource.model.config.meta.common;
 
-import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigEnvValidator;
+import cn.hutool.crypto.digest.MD5;
+import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
+import com.github.xiaoymin.knife4j.datasource.service.nacos.NacosDefaultServiceProvider;
 import lombok.Data;
 
 /**
- * Nacos配置中心支持Knife4j所需基础配置属性
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2022/12/16 21:15
+ * 2022/12/17 11:42
  * @since:knife4j-desktop
  */
 @Data
-public class ConfigNacosEnv implements ConfigEnvValidator {
+public class ConfigDefaultNacosProfile extends ConfigProfile<NacosRoute, NacosDefaultServiceProvider> {
     
     /**
-     * Nacos地址，例如：192.168.0.223:8848
+     * Nacos注册中心服务地址,例如：http://192.168.0.223:8888/nacos
      */
-    private String server;
+    private String serviceUrl;
     
     /**
-     * Nacos鉴权用户
+     * Nacos用户名
      */
     private String username;
     
     /**
-     * Nacos鉴权密码
+     * Nacos密码
      */
     private String password;
     
     /**
-     * nacos-namespace
+     * nacos-命名空间
      */
     private String namespace;
     
     /**
-     * Knifej在Nacos上的配置属性-dataId
+     * 集群名称,多个集群用逗号分隔
      */
-    private String dataId;
-    
-    /**
-     * Knife4j在Nacos上配置的group名称
-     */
-    private String group;
+    private String clusters;
     
     @Override
-    public void validate() {
-        
+    public Class<NacosDefaultServiceProvider> serviceDataProvider() {
+        return NacosDefaultServiceProvider.class;
+    }
+
+    public String pkId(){
+        StringBuilder stringBuilder=new StringBuilder();
+        stringBuilder.append(this.serviceUrl).append(username).append(password).append(namespace).append(clusters);
+        return MD5.create().digestHex(stringBuilder.toString());
     }
 }

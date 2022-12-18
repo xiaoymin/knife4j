@@ -19,9 +19,10 @@
 package com.github.xiaoymin.knife4j.datasource.service;
 
 import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
-import com.github.xiaoymin.knife4j.datasource.model.ConfigMeta;
+import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
 import com.github.xiaoymin.knife4j.common.lang.ServiceMode;
+import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
 
 /**
  * Knife4j聚合各个服务OpenAPI数据顶级接口
@@ -29,7 +30,7 @@ import com.github.xiaoymin.knife4j.common.lang.ServiceMode;
  * 2022/12/17 00:09
  * @since:knife4j-desktop
  */
-public interface ServiceDataProvider<T extends ConfigMeta> {
+public interface ServiceDataProvider<T extends ConfigProfile> {
     
     /**
      * 当前配置中心类别
@@ -41,11 +42,12 @@ public interface ServiceDataProvider<T extends ConfigMeta> {
      * @return
      */
     ServiceMode mode();
+
     /**
      * 从各个服务中心获取聚合Swagger文档路由
-     * key: 当前项目文档的context-path，支持：英文、数字、英文+数字
-     * value: 当前项目文档的多个聚合分组文档
+     * @param configMeta 配置元数据信息
+     * @param configCommonInfo 配置中心元数据配置信息
      * @return
      */
-    ServiceDocument getDocument(T configMeta);
+    ServiceDocument getDocument(T configMeta, ConfigCommonInfo configCommonInfo);
 }

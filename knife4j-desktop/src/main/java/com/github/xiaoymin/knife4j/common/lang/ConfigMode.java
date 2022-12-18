@@ -19,12 +19,12 @@
 package com.github.xiaoymin.knife4j.common.lang;
 
 import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.datasource.config.ConfigMetaProvider;
+import com.github.xiaoymin.knife4j.datasource.config.ConfigProfileProvider;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigDataProvider;
-import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigMetaProvider;
+import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigProfileProvider;
 import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigDataProvider;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigDataProvider;
-import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigMetaProvider;
+import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigProfileProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -40,11 +40,11 @@ public enum ConfigMode {
     /**
      * 本地磁盘配置
      */
-    DISK("disk", "本地文件配置", DiskConfigDataProvider.class, DiskConfigMetaProvider.class),
+    DISK("disk", "本地文件配置", DiskConfigDataProvider.class, DiskConfigProfileProvider.class),
     /**
      * Nacos配置中心
      */
-    NACOS("nacos", "NACOS配置中心", NacosConfigDataProvider.class, NacosConfigMetaProvider.class);
+    NACOS("nacos", "NACOS配置中心", NacosConfigDataProvider.class, NacosConfigProfileProvider.class);
     
     /**
      * knife4j.source主要类型
@@ -61,7 +61,7 @@ public enum ConfigMode {
     /**
      * 元数据实现
      */
-    private Class<? extends ConfigMetaProvider> configMetaClazz;
+    private Class<? extends ConfigProfileProvider> configMetaClazz;
     
     /**
      * 获取当前配置类型

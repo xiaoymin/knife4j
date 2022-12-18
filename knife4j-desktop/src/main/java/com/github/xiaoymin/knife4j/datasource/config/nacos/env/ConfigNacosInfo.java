@@ -16,36 +16,52 @@
  */
 
 
-package com.github.xiaoymin.knife4j.datasource.model;
+package com.github.xiaoymin.knife4j.datasource.config.nacos.env;
 
-import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
+import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
 import lombok.Data;
 
-import java.util.List;
-
 /**
- * 配置属性定义，所有配置中心支持的属性需要继承此类
+ * Nacos配置中心支持Knife4j所需基础配置属性
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2022/12/17 11:33
+ * 2022/12/16 21:15
  * @since:knife4j-desktop
  */
 @Data
-public abstract class ConfigMeta<T extends ConfigRoute, S extends ServiceDataProvider> {
+public class ConfigNacosInfo implements ConfigCommonInfo {
     
     /**
-     * 当前项目文档的context-path属性值
+     * Nacos地址，例如：192.168.0.223:8848
      */
-    private String contextPath;
+    private String server;
     
     /**
-     * 微服务集合
+     * Nacos鉴权用户
      */
-    private List<T> routes;
+    private String username;
     
     /**
-     * 获取当前服务类型ProviderClass
-     * @return
+     * Nacos鉴权密码
      */
-    public abstract Class<S> serviceDataProvider();
+    private String password;
     
+    /**
+     * nacos-namespace
+     */
+    private String namespace;
+    
+    /**
+     * Knifej在Nacos上的配置属性-dataId
+     */
+    private String dataId;
+    
+    /**
+     * Knife4j在Nacos上配置的group名称
+     */
+    private String group;
+    
+    @Override
+    public void validate() {
+        
+    }
 }

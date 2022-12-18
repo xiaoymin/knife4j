@@ -40,7 +40,28 @@ public class PropertyUtils {
     private static Logger logger = LoggerFactory.getLogger(PropertyUtils.class);
     
     private static final JavaPropsMapper javaPropsMapper = new JavaPropsMapper();
-    
+
+    /**
+     * properties配置文件转map对象
+     * @param properties
+     * @return
+     */
+    public static Map<String,String> loadProperties(Properties properties){
+        if (properties==null || properties.isEmpty()){
+            return Collections.EMPTY_MAP;
+        }
+        Map<String, String> propertyMap = new HashMap<>();
+        Enumeration<?> enumeration = properties.propertyNames();
+        while (enumeration.hasMoreElements()) {
+            String name = Objects.toString(enumeration.nextElement(), "");
+            if (StrUtil.isNotBlank(name)) {
+                propertyMap.put(name, properties.getProperty(name));
+            }
+            // logger.info("propertyName:{}",name);
+        }
+        return propertyMap;
+    }
+
     /**
      * 加载properties文件转化Map对象
      * @param propertyFile

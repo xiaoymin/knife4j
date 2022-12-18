@@ -20,15 +20,17 @@ package com.github.xiaoymin.knife4j.datasource.config.nacos;
 
 import cn.hutool.core.lang.Assert;
 import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-import com.github.xiaoymin.knife4j.datasource.model.ConfigMeta;
+import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
 import com.github.xiaoymin.knife4j.datasource.model.ConfigRoute;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigDataProvider;
 import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigInfo;
-import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosEnv;
+import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosInfo;
 import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.ReflectUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +44,8 @@ import java.util.Properties;
  * @since:knife4j-desktop
  */
 @Slf4j
-public class NacosConfigDataProvider implements ConfigDataProvider {
+public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosInfo> {
+
     final ConfigInfo configInfo;
     /**
      * 获取Nacos配置超时时间
@@ -52,8 +55,9 @@ public class NacosConfigDataProvider implements ConfigDataProvider {
      * Nacos配置中心客户端对象
      */
     private ConfigService configService;
+    private NacosConfigProfileProvider metaProvider;
     
-    private ConfigNacosEnv configEnv;
+    private ConfigNacosInfo configEnv;
 
     public NacosConfigDataProvider(ConfigInfo configInfo) {
         this.configInfo = configInfo;
@@ -64,7 +68,12 @@ public class NacosConfigDataProvider implements ConfigDataProvider {
         return ConfigMode.NACOS;
     }
     @Override
-    public List<? extends ConfigMeta> getConfig() {
+    public ConfigNacosInfo getConfigInfo() {
+        return configEnv;
+    }
+
+    @Override
+    public List<? extends ConfigProfile> getConfigProfiles() {
         return null;
     }
     
@@ -86,15 +95,16 @@ public class NacosConfigDataProvider implements ConfigDataProvider {
         // 初始化nacos配置中心
         Assert.notNull(configInfo, "The configuration attribute in config nacos mode must be specified");
         Assert.notNull(configInfo.getNacos(), "The configuration attribute in config nacos mode must be specified");
-        ConfigNacosEnv configEnv = configInfo.getNacos();
+        ConfigNacosInfo configEnv = configInfo.getNacos();
         configEnv.validate();
         this.configEnv = configEnv;
         Properties properties = new Properties();
-        properties.put("serverAddr", configEnv.getServer());
-        properties.put("namespace", configEnv.getNamespace());
-        properties.put("username", configEnv.getUsername());
-        properties.put("password", configEnv.getPassword());
+        properties.put(PropertyKeyConst.SERVER_ADDR, configEnv.getServer());
+        properties.put(PropertyKeyConst.NAMESPACE, configEnv.getNamespace());
+        properties.put(PropertyKeyConst.USERNAME,configEnv.getUsername());
+        properties.put(PropertyKeyConst.PASSWORD,configEnv.getPassword());
         try {
+            metaProvider=(NacosConfigProfileProvider) ReflectUtils.newInstance(this.mode().getConfigMetaClazz());
             this.configService = NacosFactory.createConfigService(properties);
         } catch (NacosException e) {
             log.error(e.getMessage(), e);

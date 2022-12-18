@@ -19,10 +19,10 @@
 package com.github.xiaoymin.knife4j.common.lang;
 
 import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
-import com.github.xiaoymin.knife4j.datasource.service.cloud.CloudDefaultMetaServiceProvider;
-import com.github.xiaoymin.knife4j.datasource.service.disk.DiskConfigDiskMetaServiceProvider;
-import com.github.xiaoymin.knife4j.datasource.service.eureka.EurekaDefaultMetaServiceProvider;
-import com.github.xiaoymin.knife4j.datasource.service.nacos.NacosDefaultMetaServiceProvider;
+import com.github.xiaoymin.knife4j.datasource.service.cloud.CloudDefaultServiceProvider;
+import com.github.xiaoymin.knife4j.datasource.service.disk.DiskDefaultServiceProvider;
+import com.github.xiaoymin.knife4j.datasource.service.eureka.EurekaDefaultServiceProvider;
+import com.github.xiaoymin.knife4j.datasource.service.nacos.NacosDefaultServiceProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -38,19 +38,19 @@ public enum ServiceMode {
     /**
      * 本地磁盘OpenAPI文件
      */
-    DISK("disk", "本地磁盘OpenAPI文件", "disk.properties", DiskConfigDiskMetaServiceProvider.class),
+    DISK("disk", "本地磁盘OpenAPI文件", "disk.properties", DiskDefaultServiceProvider.class),
     /**
      * 基于HTTP RESTFul API接口获取OpenAPI数据
      */
-    CLOUD("cloud", "基于HTTP RESTFul API接口获取OpenAPI数据", "cloud.properties", CloudDefaultMetaServiceProvider.class),
+    CLOUD("cloud", "基于HTTP RESTFul API接口获取OpenAPI数据", "cloud.properties", CloudDefaultServiceProvider.class),
     /**
      * 基于Nacos注册中心获取OpenAPI数据，本质还是HTTP接口
      */
-    NACOS("nacos", "基于Nacos注册中心获取OpenAPI数据", "nacos.properties", NacosDefaultMetaServiceProvider.class),
+    NACOS("nacos", "基于Nacos注册中心获取OpenAPI数据", "nacos.properties", NacosDefaultServiceProvider.class),
     /**
      * 基于Eureka注册中心获取OpenAPI数据，本质还是HTTP接口
      */
-    EUREKA("eureka", "基于Eureka注册中心获取OpenAPI数据", "eureka.properties", EurekaDefaultMetaServiceProvider.class);
+    EUREKA("eureka", "基于Eureka注册中心获取OpenAPI数据", "eureka.properties", EurekaDefaultServiceProvider.class);
     
     private String value;
     private String label;

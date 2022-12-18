@@ -16,44 +16,34 @@
  */
 
 
-package com.github.xiaoymin.knife4j.datasource.model.config.common;
+package com.github.xiaoymin.knife4j.datasource.model.config.route.nacos;
 
-import com.github.xiaoymin.knife4j.datasource.config.disk.env.ConfigDiskInfo;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosInfo;
-import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
+import com.github.xiaoymin.knife4j.datasource.model.config.route.DiskRoute;
 import lombok.Data;
 
 /**
- * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2022/12/16 21:14
- * @since:knife4j-desktop
+ * Nacos中的配置文件，可以提供直接配置nacos中的dataId、group
+ * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * 2020/11/17 22:15
+ * @since:knife4j-aggregation-spring-boot-starter 2.0.8
  */
 @Data
-public class ConfigInfo {
-    
+public class NacosConfigDiskRoute extends DiskRoute {
+
     /**
-     * 配置属性类别，参考{@link ConfigMode}
+     * Nacos配置中心的命名空间，如果当前命名空间为空，则取Nacos配置中心模式下的namespace名称，参考{@link ConfigNacosInfo#getNamespace()}
      */
-    private String source;
-    
+    private String namespace;
+
     /**
-     * disk模式配置属性
+     * Nacos配置中心的dataId
      */
-    private ConfigDiskInfo disk;
-    
+    private String dataId;
+
     /**
-     * Nacos配置属性
+     * Nacos配中心中的分组
      */
-    private ConfigNacosInfo nacos;
-    
-    /**
-     * 默认配置
-     * @return
-     */
-    public static ConfigInfo defaultConfig() {
-        ConfigInfo configInfo = new ConfigInfo();
-        // default disk
-        configInfo.setDisk(new ConfigDiskInfo());
-        return configInfo;
-    }
+    private String group;
+
 }
