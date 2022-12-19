@@ -82,6 +82,10 @@ public class DesktopConstants {
      * 各个外部中间件服务连接超时时间
      */
     public static final Long MIDDLE_WARE_CONNECTION_TIME_OUT = 20000L;
+    /**
+     * 各个外部中间件服务连接超时时间
+     */
+    public static final Long MIDDLE_WARE_QUICK_CONNECTION_TIME_OUT = 3000L;
     
     /**
      * 401状态响应内容

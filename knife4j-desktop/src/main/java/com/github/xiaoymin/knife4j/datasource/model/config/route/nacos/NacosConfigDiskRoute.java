@@ -17,7 +17,6 @@
 
 package com.github.xiaoymin.knife4j.datasource.model.config.route.nacos;
 
-import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosInfo;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.DiskRoute;
 import lombok.Data;
 
@@ -29,12 +28,7 @@ import lombok.Data;
  */
 @Data
 public class NacosConfigDiskRoute extends DiskRoute {
-    
-    /**
-     * Nacos配置中心的命名空间，如果当前命名空间为空，则取Nacos配置中心模式下的namespace名称，参考{@link ConfigNacosInfo#getNamespace()}
-     */
-    private String namespace;
-    
+
     /**
      * Nacos配置中心的dataId
      */
