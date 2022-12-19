@@ -26,19 +26,19 @@ import com.google.gson.GsonBuilder;
  * @since:knife4j-desktop
  */
 public class DesktopConstants {
-
+    
     /**
      * disk模式
      */
-    public static final String[] CONFIG_DISK=new String[]{"knife4j.disk.dir"};
+    public static final String[] CONFIG_DISK = new String[]{"knife4j.disk.dir"};
     /**
      * nacos模式
      */
-    public static final String[] CONFIG_NACOS=new String[]{"knife4j.nacos.server",
-            "knife4j.nacos.username","knife4j.nacos.password",
-            "knife4j.nacos.namespace","knife4j.nacos.dataId",
+    public static final String[] CONFIG_NACOS = new String[]{"knife4j.nacos.server",
+            "knife4j.nacos.username", "knife4j.nacos.password",
+            "knife4j.nacos.namespace", "knife4j.nacos.dataId",
             "knife4j.nacos.group"};
-
+    
     /**
      * 全局Gson对象
      */

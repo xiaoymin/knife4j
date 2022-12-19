@@ -80,10 +80,10 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
             String source = this.environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY);
             ConfigMode configMode = ConfigMode.config(source);
             log.info("Config mode:{}", configMode);
-            ConfigParamsConvert paramsConvert= ReflectUtil.newInstance(configMode.getConvertClazz());
+            ConfigParamsConvert paramsConvert = ReflectUtil.newInstance(configMode.getConvertClazz());
             paramsConvert.setEnvironment(this.environment);
-            ConfigCommonInfo configCommonInfo=paramsConvert.getConfigInfo();
-            //校验
+            ConfigCommonInfo configCommonInfo = paramsConvert.getConfigInfo();
+            // 校验
             configCommonInfo.validate();
             // bean 注入
             Class<? extends ConfigDataProvider> clazz = configMode.getConfigDataProviderClazz();

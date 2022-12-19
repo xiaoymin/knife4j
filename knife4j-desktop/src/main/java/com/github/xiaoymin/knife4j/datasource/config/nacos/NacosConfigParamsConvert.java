@@ -1,3 +1,20 @@
+/*
+ * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.datasource.config.nacos;
 
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
@@ -20,24 +37,25 @@ import java.util.Optional;
  */
 @Slf4j
 public class NacosConfigParamsConvert implements ConfigParamsConvert {
+    
     private Environment environment;
-
+    
     @Override
     public ConfigCommonInfo getConfigInfo() {
         Map<String, String> params = new HashMap<>();
-        params.put(DesktopConstants.DESKTOP_SOURCE_KEY,environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY));
-        for (String key:DesktopConstants.CONFIG_NACOS){
-            params.put(key,environment.getProperty(key));
+        params.put(DesktopConstants.DESKTOP_SOURCE_KEY, environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY));
+        for (String key : DesktopConstants.CONFIG_NACOS) {
+            params.put(key, environment.getProperty(key));
         }
         Optional<ConfigEnv> configEnvOptional = PropertyUtils.resolveSingle(params, ConfigEnv.class);
-        if (configEnvOptional.isPresent()){
+        if (configEnvOptional.isPresent()) {
             return configEnvOptional.get().getKnife4j().getNacos();
         }
         return new ConfigNacosInfo();
     }
-
+    
     @Override
     public void setEnvironment(Environment environment) {
-        this.environment=environment;
+        this.environment = environment;
     }
 }

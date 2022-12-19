@@ -33,7 +33,6 @@ import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonIn
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/15 21:02
@@ -73,12 +72,12 @@ public enum ConfigMode {
      * 配置中心初始化配置属性clazz
      */
     private Class<? extends ConfigCommonInfo> configClazz;
-
+    
     /**
      * 配置属性转换
      */
     private Class<? extends ConfigParamsConvert> convertClazz;
-
+    
     /**
      * 获取当前配置类型
      * @param value
@@ -92,6 +91,5 @@ public enum ConfigMode {
         }
         return ConfigMode.DISK;
     }
-
-
+    
 }
