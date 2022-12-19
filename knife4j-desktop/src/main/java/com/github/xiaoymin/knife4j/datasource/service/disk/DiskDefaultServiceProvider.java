@@ -72,8 +72,8 @@ public class DiskDefaultServiceProvider implements ServiceDataProvider<ConfigDef
                             // 判断file类型是json还是yaml
                             String content = "";
                             if (StrUtil.endWith(file.getName(), ".json")) {
-                                content=IoUtil.read(IoUtil.getReader(resource, StandardCharsets.UTF_8));
-                                //content = new String(IoUtil.readBytes(resource), "UTF-8");
+                                content = IoUtil.read(IoUtil.getReader(resource, StandardCharsets.UTF_8));
+                                // content = new String(IoUtil.readBytes(resource), "UTF-8");
                             } else if (StrUtil.endWith(file.getName(), ".yml")) {
                                 Yaml yaml = new Yaml();
                                 Object object = yaml.load(resource);
