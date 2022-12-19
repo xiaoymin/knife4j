@@ -1,10 +1,9 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -41,26 +40,26 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
     
     @Override
     public List<? extends ConfigProfile> resolver(String config, Class<NacosConfigProfileProps> metaClazz) {
-        if (StrUtil.isBlank(config)){
+        if (StrUtil.isBlank(config)) {
             return Collections.EMPTY_LIST;
         }
         // nacos配置则直接对当前config进行反射即可
         // PropertyUtils.resolveSingle()
         try {
             Properties properties = new Properties();
-            properties.load(IoUtil.getReader(IoUtil.toStream(config,StandardCharsets.UTF_8),StandardCharsets.UTF_8));
+            properties.load(IoUtil.getReader(IoUtil.toStream(config, StandardCharsets.UTF_8), StandardCharsets.UTF_8));
             return loadByProperties(properties, metaClazz);
         } catch (Exception e) {
-            log.error("Nacos config properties error:{}" , e.getMessage());
+            log.error("Nacos config properties error:{}", e.getMessage());
         }
-        //处理两次，使用者可以使用properties类型的配置，也可以使用yml
+        // 处理两次，使用者可以使用properties类型的配置，也可以使用yml
         try {
-            NacosConfigProfileProps profileProps=YamlUtil.load(IoUtil.toStream(config,StandardCharsets.UTF_8),NacosConfigProfileProps.class);
-            if (profileProps!=null&&profileProps.getKnife4j()!=null){
+            NacosConfigProfileProps profileProps = YamlUtil.load(IoUtil.toStream(config, StandardCharsets.UTF_8), NacosConfigProfileProps.class);
+            if (profileProps != null && profileProps.getKnife4j() != null) {
                 return profileProps.getKnife4j().profiles();
             }
-        }catch (Exception e){
-            log.error("Nacos Config yaml error:{}" , e.getMessage());
+        } catch (Exception e) {
+            log.error("Nacos Config yaml error:{}", e.getMessage());
         }
         return null;
     }
@@ -68,10 +67,10 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
     private List<ConfigProfile> loadByProperties(Properties properties, Class<NacosConfigProfileProps> metaClazz) {
         Map<String, String> map = PropertyUtils.loadProperties(properties);
         Optional<NacosConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(map, metaClazz);
-        if (knife4jSettingPropertiesOptional.isPresent()){
-            NacosConfigProfileProps profileInfo=knife4jSettingPropertiesOptional.get();
-            NacosConfigProfileInfo configProfileInfo=profileInfo.getKnife4j();
-            if (configProfileInfo!=null){
+        if (knife4jSettingPropertiesOptional.isPresent()) {
+            NacosConfigProfileProps profileInfo = knife4jSettingPropertiesOptional.get();
+            NacosConfigProfileInfo configProfileInfo = profileInfo.getKnife4j();
+            if (configProfileInfo != null) {
                 return configProfileInfo.profiles();
             }
         }

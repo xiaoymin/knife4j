@@ -1,10 +1,9 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -53,24 +52,24 @@ public class NacosConfigProfileInfo {
      * eureka模式
      */
     private List<ConfigDefaultEurekaProfile> eureka;
-
+    
     /**
      * 获取当前Nacos配置中所有模式的profile集合
      * @return
      */
-    public List<ConfigProfile> profiles(){
-
-        List<ConfigProfile> profiles=new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(this.disk)){
+    public List<ConfigProfile> profiles() {
+        
+        List<ConfigProfile> profiles = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(this.disk)) {
             profiles.addAll(disk);
         }
-        if (CollectionUtil.isNotEmpty(cloud)){
+        if (CollectionUtil.isNotEmpty(cloud)) {
             profiles.addAll(this.cloud);
         }
-        if (CollectionUtil.isNotEmpty(this.nacos)){
+        if (CollectionUtil.isNotEmpty(this.nacos)) {
             profiles.addAll(this.nacos);
         }
-        if (CollectionUtil.isNotEmpty(this.eureka)){
+        if (CollectionUtil.isNotEmpty(this.eureka)) {
             profiles.addAll(this.eureka);
         }
         return profiles;

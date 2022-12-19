@@ -1,10 +1,9 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -48,31 +47,31 @@ class Knife4jDesktopApplicationTests {
     @Test
     void contextLoads() {
     }
-
+    
     @Test
     public void testNacosProps() throws IOException {
-        ClassPathResource classPathResource=new ClassPathResource("config_nacos_prop.properties");
-        String config= IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
-        log.info("config:{}",config);
+        ClassPathResource classPathResource = new ClassPathResource("config_nacos_prop.properties");
+        String config = IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
+        log.info("config:{}", config);
         Properties properties = new Properties();
-        //properties.load(classPathResource.getInputStream());
-        properties.load(IoUtil.getReader(IoUtil.toStream(config,StandardCharsets.UTF_8),StandardCharsets.UTF_8));
-        //properties.load(IoUtil.toStream(config.getBytes(StandardCharsets.UTF_8)));
-        //properties.load(IoUtil.toStream(config, StandardCharsets.UTF_8));
+        // properties.load(classPathResource.getInputStream());
+        properties.load(IoUtil.getReader(IoUtil.toStream(config, StandardCharsets.UTF_8), StandardCharsets.UTF_8));
+        // properties.load(IoUtil.toStream(config.getBytes(StandardCharsets.UTF_8)));
+        // properties.load(IoUtil.toStream(config, StandardCharsets.UTF_8));
         Map<String, String> map = PropertyUtils.loadProperties(properties);
         Optional<NacosConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(map, NacosConfigProfileProps.class);
         Assert.isTrue(knife4jSettingPropertiesOptional.isPresent());
-        log.info("json:{}",DesktopConstants.GSON.toJson(knife4jSettingPropertiesOptional.get()));
+        log.info("json:{}", DesktopConstants.GSON.toJson(knife4jSettingPropertiesOptional.get()));
     }
-
+    
     @Test
     public void testNacosYaml() throws IOException {
-        ClassPathResource classPathResource=new ClassPathResource("config_nacos.yml");
-        String content= IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
-        log.info("Content:{}",content);
-        NacosConfigProfileProps profileProps= YamlUtil.load(IoUtil.toStream(content,StandardCharsets.UTF_8),NacosConfigProfileProps.class);
+        ClassPathResource classPathResource = new ClassPathResource("config_nacos.yml");
+        String content = IoUtil.read(classPathResource.getInputStream(), StandardCharsets.UTF_8);
+        log.info("Content:{}", content);
+        NacosConfigProfileProps profileProps = YamlUtil.load(IoUtil.toStream(content, StandardCharsets.UTF_8), NacosConfigProfileProps.class);
         Assert.notNull(profileProps);
-        log.info("json:{}",DesktopConstants.GSON.toJson(profileProps));
+        log.info("json:{}", DesktopConstants.GSON.toJson(profileProps));
     }
     
     @Test
@@ -87,16 +86,16 @@ class Knife4jDesktopApplicationTests {
         System.out.println(content);
         // configService.addListener();
     }
-
+    
     @Test
     public void testNacosService() throws NacosException {
         Properties properties = new Properties();
         properties.put("serverAddr", "k8s.local.cn:30685");
         properties.put("namespace", "dev");
-        properties.put("username","nacos");
-        properties.put("password","nacos");
+        properties.put("username", "nacos");
+        properties.put("password", "nacos");
         NamingService configService = NacosFactory.createNamingService(properties);
-        Instance instance=configService.selectOneHealthyInstance("xz-ai");
+        Instance instance = configService.selectOneHealthyInstance("xz-ai");
         Assert.notNull(instance);
         System.out.println(DesktopConstants.GSON.toJson(instance));
     }

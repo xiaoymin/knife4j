@@ -1,10 +1,9 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -81,12 +80,13 @@ public class NacosDefaultServiceProvider implements ServiceDataProvider<ConfigDe
      * @return
      */
     private ServiceDocument processClientSdk(ConfigDefaultNacosProfile configMeta) {
-        //NamingService namingService = getNamingService(configMeta);
-        Optional<NamingService> namingServiceOptional = NacosClientHolder.ME.getNamingService(configMeta.getServiceUrl(),configMeta.getNamespace(),configMeta.getUsername(),configMeta.getPassword());
-        if (!namingServiceOptional.isPresent()){
+        // NamingService namingService = getNamingService(configMeta);
+        Optional<NamingService> namingServiceOptional =
+                NacosClientHolder.ME.getNamingService(configMeta.getServiceUrl(), configMeta.getNamespace(), configMeta.getUsername(), configMeta.getPassword());
+        if (!namingServiceOptional.isPresent()) {
             return null;
         }
-        NamingService namingService=namingServiceOptional.get();
+        NamingService namingService = namingServiceOptional.get();
         ServiceDocument serviceDocument = new ServiceDocument();
         serviceDocument.setContextPath(configMeta.getContextPath());
         for (NacosRoute nacosRoute : configMeta.getRoutes()) {

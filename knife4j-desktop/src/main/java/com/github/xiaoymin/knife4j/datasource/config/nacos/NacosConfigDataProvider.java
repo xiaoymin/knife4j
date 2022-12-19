@@ -1,10 +1,9 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -76,7 +75,7 @@ public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosIn
         }
         return Collections.EMPTY_LIST;
     }
-
+    
     @Override
     public void afterPropertiesSet() throws Exception {
         log.info("Nacos Config init");
@@ -85,6 +84,6 @@ public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosIn
         Assert.notNull(configInfo, "The configuration attribute in config nacos mode must be specified");
         configInfo.validate();
         profileProvider = (NacosConfigProfileProvider) ReflectUtils.newInstance(this.mode().getConfigProfileClazz());
-        this.configService = NacosClientHolder.ME.getConfigService(configInfo.getServer(),configInfo.getNamespace(),configInfo.getUsername(),configInfo.getPassword()).get();
+        this.configService = NacosClientHolder.ME.getConfigService(configInfo.getServer(), configInfo.getNamespace(), configInfo.getUsername(), configInfo.getPassword()).get();
     }
 }
