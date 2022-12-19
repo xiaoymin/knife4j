@@ -19,10 +19,9 @@
 package com.github.xiaoymin.knife4j.datasource.config.nacos;
 
 import cn.hutool.core.lang.Assert;
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.github.xiaoymin.knife4j.common.holder.NacosClientHolder;
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
 import com.github.xiaoymin.knife4j.datasource.model.ConfigRoute;
@@ -35,7 +34,6 @@ import org.springframework.cglib.core.ReflectUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * 基于Nacos配置中心
@@ -91,16 +89,7 @@ public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosIn
         // 初始化nacos配置中心
         Assert.notNull(configInfo, "The configuration attribute in config nacos mode must be specified");
         configInfo.validate();
-        Properties properties = new Properties();
-        properties.put(PropertyKeyConst.SERVER_ADDR, configInfo.getServer());
-        properties.put(PropertyKeyConst.NAMESPACE, configInfo.getNamespace());
-        properties.put(PropertyKeyConst.USERNAME, configInfo.getUsername());
-        properties.put(PropertyKeyConst.PASSWORD, configInfo.getPassword());
-        try {
-            profileProvider = (NacosConfigProfileProvider) ReflectUtils.newInstance(this.mode().getConfigProfileClazz());
-            this.configService = NacosFactory.createConfigService(properties);
-        } catch (NacosException e) {
-            log.error(e.getMessage(), e);
-        }
+        profileProvider = (NacosConfigProfileProvider) ReflectUtils.newInstance(this.mode().getConfigProfileClazz());
+        this.configService = NacosClientHolder.ME.getConfigService(configInfo.getServer(),configInfo.getNamespace(),configInfo.getUsername(),configInfo.getPassword()).get();
     }
 }

@@ -158,6 +158,22 @@
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
                 <version>0.9.18</version>
+                <!--<executions>
+                    <execution>
+                        <id>build-native</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                    <execution>
+                        <id>test-native</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>test</phase>
+                    </execution>
+                </executions>-->
                 <configuration>
                     <imageName>knife4j</imageName>
                     <mainClass>com.github.xiaoymin.knife4j.Knife4jDesktopApplication</mainClass>
@@ -168,6 +184,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <!--<classifier>exec</classifier>-->
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

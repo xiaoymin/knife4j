@@ -18,9 +18,13 @@
 
 package com.github.xiaoymin.knife4j;
 
+import cn.hutool.core.lang.Assert;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -44,5 +48,18 @@ class Knife4jDesktopApplicationTests {
         String content = configService.getConfig("test123", "TEST_GROUP", 200000);
         System.out.println(content);
         // configService.addListener();
+    }
+
+    @Test
+    public void testNacosService() throws NacosException {
+        Properties properties = new Properties();
+        properties.put("serverAddr", "k8s.local.cn:30685");
+        properties.put("namespace", "dev");
+        properties.put("username","nacos");
+        properties.put("password","nacos");
+        NamingService configService = NacosFactory.createNamingService(properties);
+        Instance instance=configService.selectOneHealthyInstance("xz-ai");
+        Assert.notNull(instance);
+        System.out.println(DesktopConstants.GSON.toJson(instance));
     }
 }

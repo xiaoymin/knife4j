@@ -20,12 +20,10 @@ package com.github.xiaoymin.knife4j.datasource.service.nacos;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.common.Constants;
-import com.alibaba.nacos.api.exception.NacosException;
-import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.github.xiaoymin.knife4j.common.holder.NacosClientHolder;
 import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import com.github.xiaoymin.knife4j.common.lang.ServiceMode;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
@@ -36,10 +34,7 @@ import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -86,10 +81,12 @@ public class NacosDefaultServiceProvider implements ServiceDataProvider<ConfigDe
      * @return
      */
     private ServiceDocument processClientSdk(ConfigDefaultNacosProfile configMeta) {
-        NamingService namingService = getNamingService(configMeta);
-        if (namingService == null) {
+        //NamingService namingService = getNamingService(configMeta);
+        Optional<NamingService> namingServiceOptional = NacosClientHolder.ME.getNamingService(configMeta.getServiceUrl(),configMeta.getNamespace(),configMeta.getUsername(),configMeta.getPassword());
+        if (!namingServiceOptional.isPresent()){
             return null;
         }
+        NamingService namingService=namingServiceOptional.get();
         ServiceDocument serviceDocument = new ServiceDocument();
         serviceDocument.setContextPath(configMeta.getContextPath());
         for (NacosRoute nacosRoute : configMeta.getRoutes()) {
@@ -110,31 +107,5 @@ public class NacosDefaultServiceProvider implements ServiceDataProvider<ConfigDe
             }
         }
         return serviceDocument;
-    }
-    
-    /**
-     * 获取Nacos服务配置
-     * @param configMeta
-     * @return
-     */
-    private NamingService getNamingService(ConfigDefaultNacosProfile configMeta) {
-        String key = configMeta.pkId();
-        NamingService namingService = namingServiceMap.get(key);
-        if (namingService != null) {
-            return namingService;
-        }
-        Properties properties = new Properties();
-        properties.put(PropertyKeyConst.SERVER_ADDR, configMeta.getServiceUrl());
-        properties.put(PropertyKeyConst.NAMESPACE, configMeta.getNamespace());
-        properties.put(PropertyKeyConst.USERNAME, configMeta.getUsername());
-        properties.put(PropertyKeyConst.PASSWORD, configMeta.getPassword());
-        try {
-            namingService = NamingFactory.createNamingService(properties);
-            namingServiceMap.put(key, namingService);
-            return namingService;
-        } catch (NacosException e) {
-            log.error("Init Nacos NamingService Error:" + e.getMessage(), e);
-        }
-        return null;
     }
 }
