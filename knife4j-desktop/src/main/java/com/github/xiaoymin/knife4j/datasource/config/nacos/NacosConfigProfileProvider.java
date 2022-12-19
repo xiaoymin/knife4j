@@ -19,6 +19,8 @@
 package com.github.xiaoymin.knife4j.datasource.config.nacos;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.setting.yaml.YamlUtil;
 import com.github.xiaoymin.knife4j.common.utils.PropertyUtils;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigProfileProvider;
 import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
@@ -39,20 +41,26 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
     
     @Override
     public List<? extends ConfigProfile> resolver(String config, Class<NacosConfigProfileProps> metaClazz) {
+        if (StrUtil.isBlank(config)){
+            return Collections.EMPTY_LIST;
+        }
         // nacos配置则直接对当前config进行反射即可
         // PropertyUtils.resolveSingle()
         try {
             Properties properties = new Properties();
-            properties.load(IoUtil.toStream(config, StandardCharsets.UTF_8));
+            properties.load(IoUtil.getReader(IoUtil.toStream(config,StandardCharsets.UTF_8),StandardCharsets.UTF_8));
             return loadByProperties(properties, metaClazz);
         } catch (Exception e) {
-            log.error("Nacos config prop error:" + e.getMessage());
+            log.error("Nacos config properties error:{}" , e.getMessage());
         }
         //处理两次，使用者可以使用properties类型的配置，也可以使用yml
         try {
-
+            NacosConfigProfileProps profileProps=YamlUtil.load(IoUtil.toStream(config,StandardCharsets.UTF_8),NacosConfigProfileProps.class);
+            if (profileProps!=null&&profileProps.getKnife4j()!=null){
+                return profileProps.getKnife4j().profiles();
+            }
         }catch (Exception e){
-
+            log.error("Nacos Config yaml error:{}" , e.getMessage());
         }
         return null;
     }
@@ -65,7 +73,6 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
             NacosConfigProfileInfo configProfileInfo=profileInfo.getKnife4j();
             if (configProfileInfo!=null){
                 return configProfileInfo.profiles();
-
             }
         }
         return null;
