@@ -23,12 +23,11 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
-import com.github.xiaoymin.knife4j.common.utils.PropertyUtils;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigDataProvider;
+import com.github.xiaoymin.knife4j.datasource.config.ConfigParamsConvert;
 import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceDocument;
-import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigEnv;
-import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigInfo;
+import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
 import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.boot.ApplicationArguments;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
@@ -79,28 +77,21 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
     @Override
     public void afterPropertiesSet() {
         try {
-            ApplicationArguments applicationArguments = this.beanFactory.getBean(ApplicationArguments.class);
-            Set<String> optionNames = applicationArguments.getOptionNames();
-            Map<String, String> params = new HashMap<>();
-            for (String key : optionNames) {
-                String value = this.environment.getProperty(key);
-                log.info("Args -> {}:{}", key, value);
-                params.put(key, value);
-            }
             String source = this.environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY);
             ConfigMode configMode = ConfigMode.config(source);
             log.info("Config mode:{}", configMode);
-            // 回调配置
-            Optional<ConfigEnv> configEnvOptional = PropertyUtils.resolveSingle(params, ConfigEnv.class);
-            ConfigInfo configInfo = configEnvOptional.isPresent() ? configEnvOptional.get().getKnife4j() : ConfigInfo.defaultConfig();
-            
+            ConfigParamsConvert paramsConvert= ReflectUtil.newInstance(configMode.getConvertClazz());
+            paramsConvert.setEnvironment(this.environment);
+            ConfigCommonInfo configCommonInfo=paramsConvert.getConfigInfo();
+            //校验
+            configCommonInfo.validate();
             // bean 注入
             Class<? extends ConfigDataProvider> clazz = configMode.getConfigDataProviderClazz();
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
             builder.setRole(BeanDefinition.ROLE_SUPPORT);
             builder.setPrimary(true);
             // 构造参数value
-            builder.addConstructorArgValue(configInfo.getConfigInfo());
+            builder.addConstructorArgValue(configCommonInfo);
             DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) beanFactory;
             String beanName = configMode.getValue() + DesktopConstants.CONFIG_SERVICE_NAME;
             beanRegistry.registerBeanDefinition(beanName, builder.getBeanDefinition());

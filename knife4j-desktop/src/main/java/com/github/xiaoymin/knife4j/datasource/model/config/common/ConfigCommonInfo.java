@@ -22,10 +22,10 @@ package com.github.xiaoymin.knife4j.datasource.model.config.common;
  * 2022/12/16 22:47
  * @since:knife4j-desktop
  */
-public interface ConfigCommonInfo {
+public abstract class ConfigCommonInfo {
     
     /**
      * 校验每个属性，是否不能为空，或者非法属性等
      */
-    void validate();
+    public abstract void validate();
 }

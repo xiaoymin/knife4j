@@ -18,17 +18,21 @@
 package com.github.xiaoymin.knife4j.common.lang;
 
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.datasource.config.ConfigParamsConvert;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigProfileProvider;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigDataProvider;
+import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigParamsConvert;
 import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigProfileProvider;
 import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigDataProvider;
 import com.github.xiaoymin.knife4j.datasource.config.disk.env.ConfigDiskInfo;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigDataProvider;
+import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigParamsConvert;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigProfileProvider;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosInfo;
 import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -42,11 +46,11 @@ public enum ConfigMode {
     /**
      * 本地磁盘配置
      */
-    DISK("disk", "本地文件配置", DiskConfigDataProvider.class, DiskConfigProfileProvider.class, ConfigDiskInfo.class),
+    DISK("disk", "本地文件配置", DiskConfigDataProvider.class, DiskConfigProfileProvider.class, ConfigDiskInfo.class, DiskConfigParamsConvert.class),
     /**
      * Nacos配置中心
      */
-    NACOS("nacos", "NACOS配置中心", NacosConfigDataProvider.class, NacosConfigProfileProvider.class, ConfigNacosInfo.class);
+    NACOS("nacos", "NACOS配置中心", NacosConfigDataProvider.class, NacosConfigProfileProvider.class, ConfigNacosInfo.class, NacosConfigParamsConvert.class);
     
     /**
      * knife4j.source主要类型
@@ -69,7 +73,12 @@ public enum ConfigMode {
      * 配置中心初始化配置属性clazz
      */
     private Class<? extends ConfigCommonInfo> configClazz;
-    
+
+    /**
+     * 配置属性转换
+     */
+    private Class<? extends ConfigParamsConvert> convertClazz;
+
     /**
      * 获取当前配置类型
      * @param value
@@ -83,5 +92,6 @@ public enum ConfigMode {
         }
         return ConfigMode.DISK;
     }
-    
+
+
 }

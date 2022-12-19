@@ -27,7 +27,7 @@ import lombok.Data;
  * @since:knife4j-desktop
  */
 @Data
-public class ConfigNacosInfo implements ConfigCommonInfo {
+public class ConfigNacosInfo extends ConfigCommonInfo {
     
     /**
      * Nacos地址，例如：192.168.0.223:8848
@@ -59,7 +59,6 @@ public class ConfigNacosInfo implements ConfigCommonInfo {
      */
     private String group;
     
-    @Override
     public void validate() {
         
     }

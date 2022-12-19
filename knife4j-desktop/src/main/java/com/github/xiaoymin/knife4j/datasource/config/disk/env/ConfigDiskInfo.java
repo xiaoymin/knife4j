@@ -27,14 +27,13 @@ import lombok.Data;
  * @since:knife4j-desktop
  */
 @Data
-public class ConfigDiskInfo implements ConfigCommonInfo {
+public class ConfigDiskInfo extends ConfigCommonInfo {
     
     /**
      * 本地磁盘数据目录
      */
     private String dir;
     
-    @Override
     public void validate() {
         Assert.notBlank(dir, "knife4j.disk.dir must specified");
     }
