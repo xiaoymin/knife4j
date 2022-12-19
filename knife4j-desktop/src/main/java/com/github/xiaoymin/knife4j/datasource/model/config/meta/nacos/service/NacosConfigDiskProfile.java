@@ -29,7 +29,7 @@ import lombok.Data;
  * @since:knife4j-desktop
  */
 @Data
-public class NacosConfigDiskProfile extends ConfigProfile<NacosConfigDiskRoute, NacosConfigDiskServiceProvider> {
+public class NacosConfigDiskProfile extends ConfigProfile<NacosConfigDiskRoute> {
     
     @Override
     public Class<NacosConfigDiskServiceProvider> serviceDataProvider() {

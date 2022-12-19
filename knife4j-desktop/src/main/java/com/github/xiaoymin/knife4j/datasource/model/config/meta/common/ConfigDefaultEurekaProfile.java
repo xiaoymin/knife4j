@@ -29,7 +29,7 @@ import lombok.Data;
  * @since:knife4j-desktop
  */
 @Data
-public class ConfigDefaultEurekaProfile extends ConfigProfile<EurekaRoute, EurekaDefaultServiceProvider> {
+public class ConfigDefaultEurekaProfile extends ConfigProfile<EurekaRoute> {
     
     /**
      * Eureka注册中心服务地址,例如：http://192.168.0.223:8888/nacos

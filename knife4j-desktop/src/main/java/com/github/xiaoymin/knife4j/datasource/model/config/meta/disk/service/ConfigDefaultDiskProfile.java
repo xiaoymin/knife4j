@@ -29,7 +29,7 @@ import lombok.Data;
  * @since:knife4j-desktop
  */
 @Data
-public class ConfigDefaultDiskProfile extends ConfigProfile<DiskRoute, DiskDefaultServiceProvider> {
+public class ConfigDefaultDiskProfile extends ConfigProfile<DiskRoute> {
     
     @Override
     public Class<DiskDefaultServiceProvider> serviceDataProvider() {

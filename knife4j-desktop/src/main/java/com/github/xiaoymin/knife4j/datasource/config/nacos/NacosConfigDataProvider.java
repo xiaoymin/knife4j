@@ -28,6 +28,7 @@ import com.github.xiaoymin.knife4j.datasource.model.ConfigRoute;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigDataProvider;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosInfo;
 import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.nacos.NacosConfigProfileProps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.ReflectUtils;
 
@@ -75,7 +76,7 @@ public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosIn
         try {
             // 获取远程配置信息
             String configContent = this.configService.getConfig(this.configInfo.getDataId(), this.configInfo.getGroup(), DesktopConstants.MIDDLE_WARE_CONNECTION_TIME_OUT);
-            
+            this.profileProvider.resolver(configContent, NacosConfigProfileProps.class);
         } catch (NacosException e) {
             log.error(e.getMessage(), e);
         }

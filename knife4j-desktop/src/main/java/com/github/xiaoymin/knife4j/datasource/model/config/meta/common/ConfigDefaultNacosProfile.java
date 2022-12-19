@@ -30,7 +30,7 @@ import lombok.Data;
  * @since:knife4j-desktop
  */
 @Data
-public class ConfigDefaultNacosProfile extends ConfigProfile<NacosRoute, NacosDefaultServiceProvider> {
+public class ConfigDefaultNacosProfile extends ConfigProfile<NacosRoute> {
     
     /**
      * Nacos注册中心服务地址,例如：http://192.168.0.223:8888/nacos

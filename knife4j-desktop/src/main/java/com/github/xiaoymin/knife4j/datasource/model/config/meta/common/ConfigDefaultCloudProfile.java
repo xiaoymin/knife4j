@@ -29,10 +29,10 @@ import lombok.Data;
  * @since:knife4j-desktop
  */
 @Data
-public class ConfigDefaultCloudProfile extends ConfigProfile<CloudRoute, CloudDefaultServiceProvider> {
-    
+public class ConfigDefaultCloudProfile extends ConfigProfile<CloudRoute> {
+
     @Override
-    public Class<CloudDefaultServiceProvider> serviceDataProvider() {
+    public Class serviceDataProvider() {
         return CloudDefaultServiceProvider.class;
     }
 }

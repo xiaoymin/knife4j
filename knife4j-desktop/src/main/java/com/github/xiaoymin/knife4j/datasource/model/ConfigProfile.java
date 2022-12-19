@@ -18,7 +18,7 @@
 
 package com.github.xiaoymin.knife4j.datasource.model;
 
-import com.github.xiaoymin.knife4j.datasource.service.ServiceDataProvider;
+import com.github.xiaoymin.knife4j.datasource.service.ProfileServiceProvider;
 import lombok.Data;
 
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
  * @since:knife4j-desktop
  */
 @Data
-public abstract class ConfigProfile<T extends ConfigRoute, S extends ServiceDataProvider> {
+public abstract class ConfigProfile<T extends ConfigRoute>  implements ProfileServiceProvider {
     
     /**
      * 当前项目文档的context-path属性值
@@ -41,11 +41,5 @@ public abstract class ConfigProfile<T extends ConfigRoute, S extends ServiceData
      * 微服务集合
      */
     private List<T> routes;
-    
-    /**
-     * 获取当前服务类型ProviderClass
-     * @return
-     */
-    public abstract Class<S> serviceDataProvider();
-    
+
 }

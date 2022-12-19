@@ -18,19 +18,17 @@
 
 package com.github.xiaoymin.knife4j.datasource.config.nacos;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import com.github.xiaoymin.knife4j.common.utils.PropertyUtils;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigProfileProvider;
 import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.nacos.NacosConfigProfileInfo;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.nacos.NacosConfigProfileProps;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -44,19 +42,33 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
     public List<? extends ConfigProfile> resolver(String config, Class<NacosConfigProfileProps> metaClazz) {
         // nacos配置则直接对当前config进行反射即可
         // PropertyUtils.resolveSingle()
-        Properties properties = new Properties();
         try {
+            Properties properties = new Properties();
             properties.load(IoUtil.toStream(config, StandardCharsets.UTF_8));
             return loadByProperties(properties, metaClazz);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Nacos config prop error:" + e.getMessage());
         }
         return null;
     }
     
-    private List<? extends ConfigProfile> loadByProperties(Properties properties, Class<NacosConfigProfileProps> metaClazz) {
+    private List<ConfigProfile> loadByProperties(Properties properties, Class<NacosConfigProfileProps> metaClazz) {
         Map<String, String> map = PropertyUtils.loadProperties(properties);
         Optional<NacosConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(map, metaClazz);
+        if (knife4jSettingPropertiesOptional.isPresent()){
+            NacosConfigProfileProps profileInfo=knife4jSettingPropertiesOptional.get();
+            List<ConfigProfile> configProfiles=new ArrayList<>();
+            NacosConfigProfileInfo configProfileInfo=profileInfo.getKnife4j();
+            if (configProfileInfo!=null){
+                if (CollectionUtil.isNotEmpty(configProfileInfo.getDisk())){
+                    configProfiles.addAll(configProfileInfo.getDisk());
+                }
+                if (CollectionUtil.isNotEmpty(configProfileInfo.getNacos())){
+                    configProfiles.addAll(configProfileInfo.getNacos());
+                }
+            }
+            return configProfiles;
+        }
         return null;
     }
     
