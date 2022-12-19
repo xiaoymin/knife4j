@@ -19,7 +19,6 @@ package com.github.xiaoymin.knife4j;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.setting.yaml.YamlUtil;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;

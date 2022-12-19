@@ -21,7 +21,6 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.PatternPool;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.setting.yaml.YamlUtil;
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -38,39 +37,39 @@ import java.util.Base64;
  */
 @Slf4j
 public class CommonUtils {
-
+    
     /**
      * yaml内容转为JSON格式字符串
      * @param yamlContent yaml原始内容
      * @return
      */
-    public static String yamlToJson(String yamlContent){
-        try{
-            if (StrUtil.isNotBlank(yamlContent)){
+    public static String yamlToJson(String yamlContent) {
+        try {
+            if (StrUtil.isNotBlank(yamlContent)) {
                 Yaml yaml = new Yaml();
                 Object object = yaml.load(IoUtil.getReader(IoUtil.toStream(yamlContent, StandardCharsets.UTF_8), StandardCharsets.UTF_8));
                 return DesktopConstants.GSON.toJson(object);
             }
-        }catch (Exception e){
-            //ignore...
+        } catch (Exception e) {
+            // ignore...
         }
         return StrUtil.EMPTY;
     }
-
+    
     /**
      * 判断当前内容是否json字符串
      * @param content 内容字符串
      * @return
      */
-    public static boolean isJson(String content){
-        try{
-            JsonElement jsonElement=JsonParser.parseString(content);
-            if (jsonElement!=null&&jsonElement.isJsonObject()){
+    public static boolean isJson(String content) {
+        try {
+            JsonElement jsonElement = JsonParser.parseString(content);
+            if (jsonElement != null && jsonElement.isJsonObject()) {
                 return Boolean.TRUE;
             }
-        }catch (Exception e){
-            //ignore
-            log.error("not json:{}",e.getMessage());
+        } catch (Exception e) {
+            // ignore
+            log.error("not json:{}", e.getMessage());
         }
         return Boolean.FALSE;
     }

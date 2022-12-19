@@ -28,7 +28,7 @@ import lombok.Data;
  */
 @Data
 public class NacosConfigDiskRoute extends DiskRoute {
-
+    
     /**
      * Nacos配置中心的dataId
      */

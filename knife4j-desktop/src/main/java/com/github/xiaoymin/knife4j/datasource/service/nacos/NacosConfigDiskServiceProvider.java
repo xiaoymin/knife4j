@@ -58,39 +58,39 @@ public class NacosConfigDiskServiceProvider implements ServiceDataProvider<Nacos
     @Override
     public ServiceDocument getDocument(NacosConfigDiskProfile configMeta, ConfigCommonInfo configCommonInfo) {
         try {
-            if (configMeta==null&&CollectionUtil.isEmpty(configMeta.getRoutes())){
+            if (configMeta == null && CollectionUtil.isEmpty(configMeta.getRoutes())) {
                 return null;
             }
             ConfigNacosInfo nacosInfo = (ConfigNacosInfo) configCommonInfo;
-            //nacos上的disk模式不同与其他,开发者可将OpenAPI规范的离线内容(json/yml)存放到nacos上，所以需要通过nacos客户端sdk远程拉取
-            //需要注意的时该配置必须配置在同一个namespace下面
-            Optional<ConfigService> configServiceOptional=NacosClientHolder.ME.getConfigService(nacosInfo.getServer(),nacosInfo.getNamespace(),nacosInfo.getUsername(),nacosInfo.getPassword());
-            if (!configServiceOptional.isPresent()){
+            // nacos上的disk模式不同与其他,开发者可将OpenAPI规范的离线内容(json/yml)存放到nacos上，所以需要通过nacos客户端sdk远程拉取
+            // 需要注意的时该配置必须配置在同一个namespace下面
+            Optional<ConfigService> configServiceOptional = NacosClientHolder.ME.getConfigService(nacosInfo.getServer(), nacosInfo.getNamespace(), nacosInfo.getUsername(), nacosInfo.getPassword());
+            if (!configServiceOptional.isPresent()) {
                 return null;
             }
-            ConfigService configService=configServiceOptional.get();
+            ConfigService configService = configServiceOptional.get();
             // 从nacos配置中心获取解析获取disk模式的内容，使用者可以直接将openapi的文档存放到nacos上面
             List<NacosConfigDiskRoute> configDiskRoutes = configMeta.getRoutes();
-            ServiceDocument serviceDocument=new ServiceDocument();
+            ServiceDocument serviceDocument = new ServiceDocument();
             serviceDocument.setContextPath(configMeta.getContextPath());
-            for (NacosConfigDiskRoute diskRoute:configDiskRoutes){
-                try{
-                    String content=configService.getConfig(diskRoute.getDataId(),diskRoute.getGroup(), DesktopConstants.MIDDLE_WARE_QUICK_CONNECTION_TIME_OUT);
-                    if (!CommonUtils.isJson(content)){
-                        //如果非json，那么默认以yaml格式处理并转JSON
-                        content=CommonUtils.yamlToJson(content);
+            for (NacosConfigDiskRoute diskRoute : configDiskRoutes) {
+                try {
+                    String content = configService.getConfig(diskRoute.getDataId(), diskRoute.getGroup(), DesktopConstants.MIDDLE_WARE_QUICK_CONNECTION_TIME_OUT);
+                    if (!CommonUtils.isJson(content)) {
+                        // 如果非json，那么默认以yaml格式处理并转JSON
+                        content = CommonUtils.yamlToJson(content);
                     }
-                    if (StrUtil.isNotBlank(content)){
-                        serviceDocument.addRoute(new ServiceRoute(diskRoute,content));
+                    if (StrUtil.isNotBlank(content)) {
+                        serviceDocument.addRoute(new ServiceRoute(diskRoute, content));
                     }
-                }catch (Exception e){
-                    log.warn("get disk content error,name:{},dataId:{},group:{},message:{}",diskRoute.getName(),diskRoute.getDataId(),diskRoute.getGroup(),e.getMessage(),e);
+                } catch (Exception e) {
+                    log.warn("get disk content error,name:{},dataId:{},group:{},message:{}", diskRoute.getName(), diskRoute.getDataId(), diskRoute.getGroup(), e.getMessage(), e);
                 }
             }
             return serviceDocument;
         } catch (Exception e) {
-            //ignore
-            log.warn("get Nacos Route error,message:"+e.getMessage(),e);
+            // ignore
+            log.warn("get Nacos Route error,message:" + e.getMessage(), e);
         }
         return null;
     }
