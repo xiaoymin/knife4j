@@ -18,7 +18,6 @@
 
 package com.github.xiaoymin.knife4j.datasource.config.nacos;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import com.github.xiaoymin.knife4j.common.utils.PropertyUtils;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigProfileProvider;
@@ -49,6 +48,12 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
         } catch (Exception e) {
             log.error("Nacos config prop error:" + e.getMessage());
         }
+        //处理两次，使用者可以使用properties类型的配置，也可以使用yml
+        try {
+
+        }catch (Exception e){
+
+        }
         return null;
     }
     
@@ -57,17 +62,11 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
         Optional<NacosConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(map, metaClazz);
         if (knife4jSettingPropertiesOptional.isPresent()){
             NacosConfigProfileProps profileInfo=knife4jSettingPropertiesOptional.get();
-            List<ConfigProfile> configProfiles=new ArrayList<>();
             NacosConfigProfileInfo configProfileInfo=profileInfo.getKnife4j();
             if (configProfileInfo!=null){
-                if (CollectionUtil.isNotEmpty(configProfileInfo.getDisk())){
-                    configProfiles.addAll(configProfileInfo.getDisk());
-                }
-                if (CollectionUtil.isNotEmpty(configProfileInfo.getNacos())){
-                    configProfiles.addAll(configProfileInfo.getNacos());
-                }
+                return configProfileInfo.profiles();
+
             }
-            return configProfiles;
         }
         return null;
     }

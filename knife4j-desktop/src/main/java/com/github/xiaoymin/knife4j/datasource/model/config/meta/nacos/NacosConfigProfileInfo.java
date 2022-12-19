@@ -18,12 +18,15 @@
 
 package com.github.xiaoymin.knife4j.datasource.model.config.meta.nacos;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultCloudProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultEurekaProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.nacos.service.NacosConfigDiskProfile;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,4 +53,26 @@ public class NacosConfigProfileInfo {
      * eureka模式
      */
     private List<ConfigDefaultEurekaProfile> eureka;
+
+    /**
+     * 获取当前Nacos配置中所有模式的profile集合
+     * @return
+     */
+    public List<ConfigProfile> profiles(){
+
+        List<ConfigProfile> profiles=new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(this.disk)){
+            profiles.addAll(disk);
+        }
+        if (CollectionUtil.isNotEmpty(cloud)){
+            profiles.addAll(this.cloud);
+        }
+        if (CollectionUtil.isNotEmpty(this.nacos)){
+            profiles.addAll(this.nacos);
+        }
+        if (CollectionUtil.isNotEmpty(this.eureka)){
+            profiles.addAll(this.eureka);
+        }
+        return profiles;
+    }
 }
