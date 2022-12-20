@@ -22,7 +22,6 @@ import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.filter.SecurityBasicAuthFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -43,20 +42,26 @@ import org.springframework.web.filter.CorsFilter;
 @EnableConfigurationProperties({Knife4jProperties.class, Knife4jSetting.class})
 @ConditionalOnProperty(name = "knife4j.enable", havingValue = "true")
 public class Knife4jAutoConfiguration {
-    
-    @Autowired
-    private Environment environment;
+
+    private final Knife4jProperties properties;
+    private final Knife4jSetting setting;
+
     Logger logger = LoggerFactory.getLogger(Knife4jAutoConfiguration.class);
+
+    public Knife4jAutoConfiguration(Knife4jProperties properties, Knife4jSetting setting) {
+        this.properties = properties;
+        this.setting = setting;
+    }
+
     /**
      * 增强自定义配置
-     * @param knife4jProperties
      * @return
      */
     @Bean
     @ConditionalOnMissingBean
-    public Knife4jOpenApiCustomizer knife4jOpenApiCustomizer(Knife4jProperties knife4jProperties) {
+    public Knife4jOpenApiCustomizer knife4jOpenApiCustomizer() {
         logger.debug("Register Knife4jOpenApiCustomizer");
-        return new Knife4jOpenApiCustomizer(knife4jProperties);
+        return new Knife4jOpenApiCustomizer(this.properties);
     }
     /**
      * 配置Cors
@@ -84,11 +89,11 @@ public class Knife4jAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(SecurityBasicAuthFilter.class)
     @ConditionalOnProperty(name = "knife4j.basic.enable", havingValue = "true")
-    public SecurityBasicAuthFilter securityBasicAuthFilter(Knife4jProperties knife4jProperties) {
+    public SecurityBasicAuthFilter securityBasicAuthFilter(Environment environment) {
         boolean enableSwaggerBasicAuth = false;
         String dftUserName = "admin", dftPass = "123321";
         SecurityBasicAuthFilter securityBasicAuthFilter = null;
-        if (knife4jProperties == null) {
+        if (properties == null) {
             if (environment != null) {
                 String enableAuth = environment.getProperty("knife4j.basic.enable");
                 enableSwaggerBasicAuth = Boolean.valueOf(enableAuth);
@@ -107,10 +112,10 @@ public class Knife4jAutoConfiguration {
             }
         } else {
             // 判断非空
-            if (knife4jProperties.getBasic() == null) {
+            if (properties.getBasic() == null) {
                 securityBasicAuthFilter = new SecurityBasicAuthFilter(enableSwaggerBasicAuth, dftUserName, dftPass);
             } else {
-                securityBasicAuthFilter = new SecurityBasicAuthFilter(knife4jProperties.getBasic().isEnable(), knife4jProperties.getBasic().getUsername(), knife4jProperties.getBasic().getPassword());
+                securityBasicAuthFilter = new SecurityBasicAuthFilter(properties.getBasic().isEnable(), properties.getBasic().getUsername(), properties.getBasic().getPassword());
             }
         }
         return securityBasicAuthFilter;
@@ -119,10 +124,10 @@ public class Knife4jAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(ProductionSecurityFilter.class)
     @ConditionalOnProperty(name = "knife4j.production", havingValue = "true")
-    public ProductionSecurityFilter productionSecurityFilter(Knife4jProperties knife4jProperties) {
+    public ProductionSecurityFilter productionSecurityFilter(Environment environment) {
         boolean prod = false;
         ProductionSecurityFilter p = null;
-        if (knife4jProperties == null) {
+        if (properties == null) {
             if (environment != null) {
                 String prodStr = environment.getProperty("knife4j.production");
                 if (logger.isDebugEnabled()) {
@@ -132,7 +137,7 @@ public class Knife4jAutoConfiguration {
             }
             p = new ProductionSecurityFilter(prod);
         } else {
-            p = new ProductionSecurityFilter(knife4jProperties.isProduction());
+            p = new ProductionSecurityFilter(properties.isProduction());
         }
         
         return p;
