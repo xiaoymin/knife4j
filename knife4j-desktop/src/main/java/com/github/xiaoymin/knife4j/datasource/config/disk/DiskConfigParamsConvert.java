@@ -45,7 +45,9 @@ public class DiskConfigParamsConvert implements ConfigParamsConvert {
         Map<String, String> params = new HashMap<>();
         params.put(DesktopConstants.DESKTOP_SOURCE_KEY, environment.getProperty(DesktopConstants.DESKTOP_SOURCE_KEY));
         for (String key : DesktopConstants.CONFIG_DISK) {
-            params.put(key, environment.getProperty(key));
+            String value = environment.getProperty(key);
+            log.debug("Env -> {}:{}", key, value);
+            params.put(key, value);
         }
         Optional<ConfigEnv> configEnvOptional = PropertyUtils.resolveSingle(params, ConfigEnv.class);
         if (configEnvOptional.isPresent()) {
