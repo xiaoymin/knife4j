@@ -82,7 +82,7 @@ public class NacosDefaultServiceProvider implements ServiceDataProvider<ConfigDe
     private ServiceDocument processClientSdk(ConfigDefaultNacosProfile configMeta) {
         // NamingService namingService = getNamingService(configMeta);
         Optional<NamingService> namingServiceOptional =
-                NacosClientHolder.ME.getNamingService(configMeta.getServiceUrl(), configMeta.getNamespace(), configMeta.getUsername(), configMeta.getPassword());
+                NacosClientHolder.ME.getNamingService(configMeta.getServer(), configMeta.getNamespace(), configMeta.getUsername(), configMeta.getPassword());
         if (!namingServiceOptional.isPresent()) {
             return null;
         }

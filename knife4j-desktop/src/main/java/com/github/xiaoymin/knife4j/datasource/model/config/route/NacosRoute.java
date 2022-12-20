@@ -40,7 +40,7 @@ public class NacosRoute extends ConfigRoute {
     /**
      * 命名空间id
      */
-    private String namespaceId;
+    private String namespace;
     
     /**
      * 集群名称,多个集群用逗号分隔

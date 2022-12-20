@@ -32,9 +32,9 @@ import lombok.Data;
 public class ConfigDefaultNacosProfile extends ConfigProfile<NacosRoute> {
     
     /**
-     * Nacos注册中心服务地址,例如：http://192.168.0.223:8888/nacos
+     * Nacos注册中心服务地址,例如：192.168.0.223:8888
      */
-    private String serviceUrl;
+    private String server;
     
     /**
      * Nacos用户名
@@ -63,7 +63,7 @@ public class ConfigDefaultNacosProfile extends ConfigProfile<NacosRoute> {
     
     public String pkId() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.serviceUrl).append(username).append(password).append(namespace).append(clusters);
+        stringBuilder.append(this.server).append(username).append(password).append(namespace).append(clusters);
         return MD5.create().digestHex(stringBuilder.toString());
     }
 }

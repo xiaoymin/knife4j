@@ -21,6 +21,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
+import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.datasource.model.ServiceRoute;
 import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 import com.github.xiaoymin.knife4j.datasource.model.service.nacos.NacosInstance;
@@ -81,8 +82,8 @@ public class NacosRemoteService extends PoolingConnectionManager implements Call
         if (StrUtil.isNotBlank(nacosRoute.getGroupName())) {
             params.add("groupName=" + nacosRoute.getGroupName());
         }
-        if (StrUtil.isNotBlank(nacosRoute.getNamespaceId())) {
-            params.add("namespaceId=" + nacosRoute.getNamespaceId());
+        if (StrUtil.isNotBlank(nacosRoute.getNamespace())) {
+            params.add("namespaceId=" + nacosRoute.getNamespace());
         }
         if (StrUtil.isNotBlank(nacosRoute.getClusters())) {
             params.add("clusters=" + nacosRoute.getClusters());
@@ -92,7 +93,16 @@ public class NacosRemoteService extends PoolingConnectionManager implements Call
             params.add("accessToken=" + this.accessToken);
         }
         String parameter = CollectionUtil.join(params, "&");
-        String api = serviceUrl + NACOS_INSTANCE_LIST_API + "?" + parameter;
+        StringBuilder stringBuilder = new StringBuilder();
+        if (StrUtil.startWith(this.serviceUrl, GlobalConstants.PROTOCOL_HTTP)) {
+            stringBuilder.append(serviceUrl);
+        } else {
+            stringBuilder.append(GlobalConstants.PROTOCOL_HTTP).append(serviceUrl + "/nacos");
+        }
+        stringBuilder.append(NACOS_INSTANCE_LIST_API).append("?").append(parameter);
+        // String api = serviceUrl + NACOS_INSTANCE_LIST_API + "?" + parameter;
+        String api = stringBuilder.toString();
+        log.info("api:{}", api);
         HttpGet get = new HttpGet(api);
         CloseableHttpResponse response = getClient().execute(get);
         if (response != null) {
