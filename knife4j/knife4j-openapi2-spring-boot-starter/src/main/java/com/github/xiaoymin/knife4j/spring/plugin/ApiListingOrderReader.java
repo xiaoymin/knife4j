@@ -46,7 +46,7 @@ import static springfox.documentation.service.Tags.emptyTags;
  * 接口排序Plugin
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/10/24 13:07
- * @since:knife4j 2.0.6
+ * @since  2.0.6
  */
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE + 2000)

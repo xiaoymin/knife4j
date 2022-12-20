@@ -19,7 +19,7 @@ package com.github.xiaoymin.knife4j.core.enums;
 
 /**
  * Group policy enumeration with paths
- * @since:knife4j 4.0.0
+ * @since  4.0.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/18 22:09
  */

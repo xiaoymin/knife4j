@@ -22,7 +22,7 @@ import cn.hutool.core.util.StrUtil;
 import org.junit.jupiter.api.Test;
 
 /**
- * @since:knife4j
+ * @since 
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/10 21:05
  */

@@ -24,7 +24,7 @@ import java.util.Set;
 
 /***
  *
- * @since:swagger-bootstrap-ui 1.8.7
+ * @since  1.8.7
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2018/11/10 20:48
  */

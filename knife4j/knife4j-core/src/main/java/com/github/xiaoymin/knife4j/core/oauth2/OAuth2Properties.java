@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/11/28 21:07
- * @since:knife4j
+ * @since 
  */
 @Data
 public class OAuth2Properties {

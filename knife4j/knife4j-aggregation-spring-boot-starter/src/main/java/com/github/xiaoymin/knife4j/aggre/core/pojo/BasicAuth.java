@@ -23,7 +23,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Basic验证属性
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/18 19:17
- * @since:knife4j-aggregation-spring-boot-starter 2.0.8
+ * @since  2.0.8
  */
 @ConfigurationProperties(prefix = "knife4j.basic-auth")
 public class BasicAuth {

@@ -20,7 +20,7 @@ package com.github.xiaoymin.knife4j.core.extend;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/10/24 6:56
- * @since:knife4j 2.0.6
+ * @since  2.0.6
  */
 public class OpenApiExtendSetting {
     

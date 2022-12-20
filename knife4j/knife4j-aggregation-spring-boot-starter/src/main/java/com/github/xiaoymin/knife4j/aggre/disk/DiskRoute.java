@@ -22,7 +22,7 @@ import cn.hutool.crypto.digest.MD5;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/17 22:15
- * @since:knife4j-aggregation-spring-boot-starter 2.0.8
+ * @since  2.0.8
  */
 public class DiskRoute {
     

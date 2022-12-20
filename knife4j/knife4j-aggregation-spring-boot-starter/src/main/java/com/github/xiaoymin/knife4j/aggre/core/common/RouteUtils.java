@@ -23,7 +23,7 @@ import java.util.Base64;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/20 15:22
- * @since:knife4j-aggregation-spring-boot-starter 2.0.8
+ * @since  2.0.8
  */
 public class RouteUtils {
     

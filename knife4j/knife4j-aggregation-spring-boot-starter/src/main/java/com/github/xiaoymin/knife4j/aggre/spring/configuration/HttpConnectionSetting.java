@@ -23,7 +23,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * https://gitee.com/xiaoym/knife4j/issues/I3UHV0
- * @since:knife4j 4.0
+ * @since  4.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/28 19:07
  */

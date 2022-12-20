@@ -22,7 +22,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @since:knife4j 4.0.0
+ * @since  4.0.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/18 21:55
  */

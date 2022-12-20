@@ -27,7 +27,7 @@ import java.util.Enumeration;
 
 /***
  *
- * @since:swagger-bootstrap-ui 1.9.0
+ * @since  1.9.0
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/01/18 17:15
  */

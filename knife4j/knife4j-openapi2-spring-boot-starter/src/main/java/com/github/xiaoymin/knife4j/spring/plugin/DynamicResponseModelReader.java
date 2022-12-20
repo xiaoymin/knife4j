@@ -54,7 +54,7 @@ import static springfox.documentation.spring.web.readers.operation.ResponseMessa
  *  SwaggerResponseMessageReader：收集OPen API V2.0规范注解@ApiResponse注解标注的response返回类
  *  两个不同的实现类因为SwaggerResponseMessageReader的默认order是在Integer.MAX_VALUE+1000,因此，如果要最后覆盖此属性的话,自定义实现中的Order值需要高于他,否则就会被覆盖.
  *
- * @since:swagger-bootstrap-ui 1.9.5
+ * @since  1.9.5
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/07/31 9:12
  */

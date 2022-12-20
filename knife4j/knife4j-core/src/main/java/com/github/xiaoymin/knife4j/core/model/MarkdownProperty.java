@@ -20,7 +20,7 @@ package com.github.xiaoymin.knife4j.core.model;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/10/23 20:48
- * @since:knife4j 1.0
+ * @since  1.0
  */
 public class MarkdownProperty {
     

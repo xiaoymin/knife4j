@@ -31,7 +31,7 @@ import java.util.*;
 /***
  * 忽略接口某个参数,避免编写过多的实体类,该插件通过给Open API v2.0 的Path节点添加扩展属性x-ignoreParameters扩展属性,结合前端ui自定义实现过滤规则.
  * 2.0.3版本添加includeParameters属性的支持
- * @since:swagger-bootstrap-ui 1.9.5
+ * @since  1.9.5
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/07/30 15:32
  */

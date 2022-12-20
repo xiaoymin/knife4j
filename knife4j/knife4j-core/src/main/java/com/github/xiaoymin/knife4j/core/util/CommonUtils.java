@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 /***
  *
- * @since:swagger-bootstrap-ui 1.8.5
+ * @since  1.8.5
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2018/10/11 13:47
  */

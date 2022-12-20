@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/10/23 21:22
- * @since:knife4j 1.0
+ * @since  1.0
  */
 public class OpenApiMarkdownExtension implements VendorExtension<List<OpenApiExtendMarkdownFile>> {
     

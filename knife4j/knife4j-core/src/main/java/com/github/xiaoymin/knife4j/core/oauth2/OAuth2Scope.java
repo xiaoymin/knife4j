@@ -22,7 +22,7 @@ import lombok.Data;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/11/28 20:50
- * @since:knife4j
+ * @since 
  */
 @Data
 public class OAuth2Scope {

@@ -23,7 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @since:knife4j
+ * @since 
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/10 21:53
  */

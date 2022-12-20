@@ -35,7 +35,7 @@ import java.lang.reflect.Field;
 
 /***
  *
- * @since:knife4j 1.0
+ * @since  1.0
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/08/27 15:07
  */

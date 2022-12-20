@@ -28,7 +28,7 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 /**
- * @since:knife4j-gateway-spring-boot-starter v4.0.0
+ * @since -gateway-spring-boot-starter v4.0.0
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/03 15:41
  */

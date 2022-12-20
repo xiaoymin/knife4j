@@ -23,7 +23,7 @@ import java.util.List;
  * 此类作为Knife4j提供的增强扩展类
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/10/24 6:55
- * @since:knife4j 2.0.6
+ * @since  2.0.6
  */
 public class OpenApiExtend {
     

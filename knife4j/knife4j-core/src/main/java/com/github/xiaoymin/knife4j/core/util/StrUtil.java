@@ -19,7 +19,7 @@ package com.github.xiaoymin.knife4j.core.util;
 
 /***
  *
- * @since:knife4j 2.0.4
+ * @since  2.0.4
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2020/06/17 10:32
  */

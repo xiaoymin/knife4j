@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2021/05/04 15:00
- * @since:knife4j-aggregation-spring-boot-starter 2.0.9
+ * @since  2.0.9
  */
 public class NacosOpenApi extends PoolingConnectionManager {
     

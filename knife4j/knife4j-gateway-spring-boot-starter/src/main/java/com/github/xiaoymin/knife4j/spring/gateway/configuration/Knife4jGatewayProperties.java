@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * @since:knife4j-gateway-spring-boot-starter v4.0.0
+ * @since -gateway-spring-boot-starter v4.0.0
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/03 15:41
  */

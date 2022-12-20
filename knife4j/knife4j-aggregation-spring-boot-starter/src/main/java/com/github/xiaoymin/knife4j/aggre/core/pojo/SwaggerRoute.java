@@ -34,7 +34,7 @@ import java.util.Objects;
 
 /***
  * 最终返回前端Swagger的数据结构
- * @since:knife4j-aggregation-spring-boot-starter 2.0.8
+ * @since  2.0.8
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2020/10/31 9:34
  */

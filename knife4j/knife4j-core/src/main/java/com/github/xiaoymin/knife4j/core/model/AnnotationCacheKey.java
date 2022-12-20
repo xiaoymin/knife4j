@@ -22,7 +22,7 @@ import java.lang.reflect.AnnotatedElement;
 
 /***
  *
- * @since:knife4j 1.0
+ * @since  1.0
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/06/12 22:26
  */

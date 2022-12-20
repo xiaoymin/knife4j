@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/11/28 22:39
- * @since:knife4j
+ * @since 
  */
 @Data
 @ConfigurationProperties(prefix = "knife4j.openapi.basic-auth")

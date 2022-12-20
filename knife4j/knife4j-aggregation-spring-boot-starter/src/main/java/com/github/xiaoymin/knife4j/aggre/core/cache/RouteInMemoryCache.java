@@ -23,7 +23,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import java.util.concurrent.ConcurrentHashMap;
 /***
  *
- * @since:knife4j-aggregation-spring-boot-starter 2.0.8
+ * @since  2.0.8
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2020/10/31 11:07
  */

@@ -27,7 +27,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.stereotype.Component;
 
 /**
- * @since:knife4j
+ * @since 
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/17 21:50
  */

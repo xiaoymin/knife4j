@@ -23,7 +23,7 @@ import org.springframework.core.env.Environment;
 import java.util.Objects;
 
 /**
- * @since:knife4j
+ * @since 
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/18 22:26
  */

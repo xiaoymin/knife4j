@@ -19,7 +19,7 @@ package com.github.xiaoymin.knife4j.core.model;
 
 /**
  * 基础配置信息
- * @since:knife4j
+ * @since 
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/17 21:34
  */

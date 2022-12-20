@@ -21,7 +21,7 @@ import springfox.documentation.service.VendorExtension;
 
 /***
  *
- * @since:knife4j 1.0
+ * @since  1.0
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2020/03/31 12:55
  */

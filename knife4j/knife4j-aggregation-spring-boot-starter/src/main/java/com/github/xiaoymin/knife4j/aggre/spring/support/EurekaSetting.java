@@ -27,7 +27,7 @@ import java.util.List;
  * 从Eureka注册中心中动态聚合
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/16 22:33
- * @since:knife4j-aggregation-spring-boot-starter 2.0.8
+ * @since  2.0.8
  */
 @ConfigurationProperties(prefix = "knife4j.eureka")
 public class EurekaSetting {

@@ -36,7 +36,7 @@ import java.util.Optional;
 
 /***
  *
- * @since:swagger-bootstrap-ui 1.0
+ * @since  1.0
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/06/09 15:30
  */

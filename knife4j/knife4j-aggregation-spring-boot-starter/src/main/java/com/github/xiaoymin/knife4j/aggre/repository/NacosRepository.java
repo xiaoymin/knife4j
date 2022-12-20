@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/11/16 22:56
- * @since:knife4j-aggregation-spring-boot-starter 2.0.8
+ * @since  2.0.8
  */
 public class NacosRepository extends AbstractRepository {
     

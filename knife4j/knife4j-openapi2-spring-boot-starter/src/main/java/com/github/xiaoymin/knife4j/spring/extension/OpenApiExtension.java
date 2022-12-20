@@ -22,7 +22,7 @@ import springfox.documentation.service.ObjectVendorExtension;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/10/24 7:27
- * @since:knife4j 1.0
+ * @since  1.0
  */
 public class OpenApiExtension extends ObjectVendorExtension {
     

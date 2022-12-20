@@ -29,7 +29,7 @@ import java.util.Base64;
 
 /***
  *
- * @since:knife4j-aggregation-spring-boot-starter 2.0.9
+ * @since  2.0.9
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2020/11/25 19:55
  */

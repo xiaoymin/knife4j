@@ -18,7 +18,7 @@
 package com.github.xiaoymin.knife4j.core.enums;
 
 /**
- * @since:knife4j
+ * @since 
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/21 09:36
  */

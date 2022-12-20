@@ -36,7 +36,7 @@ import java.util.*;
 /**
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/10/24 7:17
- * @since:knife4j 2.0.6
+ * @since  2.0.6
  */
 public class OpenApiExtensionResolver {
     

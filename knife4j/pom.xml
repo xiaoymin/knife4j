@@ -282,6 +282,7 @@
                     <source>${knife4j-java.version}</source>
                     <target>${knife4j-java.version}</target>
                     <encoding>UTF-8</encoding>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
                 </configuration>
             </plugin>
             <plugin>
@@ -376,6 +377,9 @@
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
+                                <configuration>
+                                    <additionalparam>-Xdoclint:none</additionalparam>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

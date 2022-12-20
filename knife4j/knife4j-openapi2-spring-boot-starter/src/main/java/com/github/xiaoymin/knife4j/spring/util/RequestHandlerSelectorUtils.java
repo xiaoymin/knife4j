@@ -39,7 +39,7 @@ import static java.util.Optional.ofNullable;
  * 针对多个包路径的情况提供Api的扫描
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2021/03/02 15:39
- * @since:knife4j 1.0
+ * @since  1.0
  */
 @Slf4j
 public class RequestHandlerSelectorUtils {

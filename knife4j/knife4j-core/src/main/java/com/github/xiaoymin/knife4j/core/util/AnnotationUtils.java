@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /***
  *
- * @since:knife4j 2.0.4
+ * @since  2.0.4
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2020/06/12 22:17
  */

@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * 增强扩展属性支持
- * @since:knife4j
+ * @since 
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/11 22:40
  */

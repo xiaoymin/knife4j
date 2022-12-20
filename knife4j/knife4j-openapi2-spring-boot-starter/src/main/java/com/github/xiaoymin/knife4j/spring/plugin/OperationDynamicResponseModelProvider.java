@@ -39,7 +39,7 @@ import java.util.Optional;
 
 /***
  * 动态添加响应类
- * @since:swagger-bootstrap-ui 1.9.5
+ * @since  1.9.5
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
  * 2019/06/10 13:01
  */

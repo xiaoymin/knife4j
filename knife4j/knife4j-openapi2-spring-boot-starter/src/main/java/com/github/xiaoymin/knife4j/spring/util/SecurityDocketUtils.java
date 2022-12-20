@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @since:knife4j v4.0.0
+ * @since  v4.0.0
  * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/11/28 21:10
  */
