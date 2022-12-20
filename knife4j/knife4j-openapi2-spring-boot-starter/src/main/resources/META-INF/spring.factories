@@ -1,0 +1,8 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.github.xiaoymin.knife4j.spring.configuration.Knife4jAutoConfiguration
+
+
+# Environment Post Processors
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.github.xiaoymin.knife4j.spring.common.bean.SpringFoxEnvironmentPostProcessor

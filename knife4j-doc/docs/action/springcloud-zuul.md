@@ -1,7 +1,7 @@
 # 2.2 Spring Cloud Zuul集成Knife4j
 
 
-在基于[nginx配置](../solution/ui-front-nginx.md)的环节,其实我们已经可以利用nginx的配置,帮助我们聚合文档服务了,而通过代码的方式该如何实现?
+在基于[nginx配置](/docs/solution/ui-front-nginx)的环节,其实我们已经可以利用nginx的配置,帮助我们聚合文档服务了,而通过代码的方式该如何实现?
 
 在Spring Cloud微服务架构中,各个子服务都是分散的,每个服务集成了Swagger文档,但是接口对接时需要单独分别访问,很麻烦,效率低下,
 

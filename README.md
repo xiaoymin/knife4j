@@ -1,4 +1,9 @@
 Knife4j是为Java MVC框架集成Swagger生成Api文档的增强解决方案,前身是swagger-bootstrap-ui,取名kni4j是希望她能像一把匕首一样小巧,轻量,并且功能强悍!
+>大家好,我在GitChat中写了一篇关于[《Knife4j 及 Swagger 在企业开发中的实践》](https://gitbook.cn/gitchat/activity/5f86b4cb1772090f20e13b03)
+>地址：[https://gitbook.cn/gitchat/activity/5f86b4cb1772090f20e13b03](https://gitbook.cn/gitchat/activity/5f86b4cb1772090f20e13b03)
+>
+>欢迎对 SpringFox、Swagger、Knife4j 感兴趣以及想了解的人员一起来chat 
+>
 
 Knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展,由于原来`swagger-bootstrap-ui`采用的是后端Java代码+前端Ui混合打包的方式,在微服务架构下显的很臃肿,因此项目正式更名为`knife4j`
 
@@ -19,7 +24,12 @@ Knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 
 **交流：** [https://doc.xiaominfo.com/knife4j/documentation/help.html](https://doc.xiaominfo.com/knife4j/documentation/help.html)
 
-**源码分析**:[https://www.xiaominfo.com/2019/05/20/springfox-0/](https://www.xiaominfo.com/2019/05/20/springfox-0/)
+关注公众号"Knife4j"，点击菜单“交流群”获取加群二维码
+![输入图片说明](https://foruda.gitee.com/images/1661053867569480310/扫码_搜索联合传播样式-标准色版.png "扫码_搜索联合传播样式-标准色版.png")
+
+**文档**:[https://doc.xiaominfo.com/](https://doc.xiaominfo.com/)
+
+**源码分析**:[https://doc.xiaominfo.com/docs/action/springfox](https://doc.xiaominfo.com/docs/action/springfox)
 
 ## 项目模块
 

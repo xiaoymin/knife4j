@@ -6,9 +6,9 @@
 
 主要步骤如下：
 
-1、创建Spring Boot项目，引入[Knife4jAggregation](../documentation/knife4jAggregation.md)的依赖包，完整pom文件如下：
+1、创建Spring Boot项目，引入[Knife4jAggregation](/docs/middleware/knife4jAggregation)的依赖包，完整pom文件如下：
 
-::: details 点击查看完整代码
+:::tip 点击查看完整代码
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

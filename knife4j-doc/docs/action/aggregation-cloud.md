@@ -1,11 +1,11 @@
 # 4.2 Cloud模式聚合OpenAPI文档
 
-Cloud(云端)模式和[Disk模式](aggregation-disk.md)大同小异，主要的区别是获取OpenAPI规范的方式换成了基于HTTP接口而已
+Cloud(云端)模式和[Disk模式](aggregation-disk)大同小异，主要的区别是获取OpenAPI规范的方式换成了基于HTTP接口而已
 
 
 完整代码请参考[knife4j-aggregation-cloud-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-aggregation-cloud-demo)
 
-本次Cloud聚合以Knife4j目前部署的线上demo为例，本地聚合在线的OpenAPI，并且可以本地调试，[Knife4jAggregation](../documentation/knife4jAggregation.md)组件会自动帮助我们转发
+本次Cloud聚合以Knife4j目前部署的线上demo为例，本地聚合在线的OpenAPI，并且可以本地调试，[Knife4jAggregation](/docs/middleware/knife4jAggregation)组件会自动帮助我们转发
 
 任意取目前Knife4j的线上demo两个OpenAPI规范接口地址：
 
@@ -16,9 +16,9 @@ Cloud(云端)模式和[Disk模式](aggregation-disk.md)大同小异，主要的�
 
 主要步骤如下：
 
-1、创建Spring Boot项目，引入[Knife4jAggregation](../documentation/knife4jAggregation.md)的依赖包，完整pom文件如下：
+1、创建Spring Boot项目，引入[Knife4jAggregation](/docs/middleware/knife4jAggregation)的依赖包，完整pom文件如下：
 
-::: details 点击查看完整代码
+:::tip 点击查看完整代码
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

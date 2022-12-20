@@ -15,7 +15,7 @@ export default {
     }
   },
   components: {
-    "Markdown":()=>import('@/components/Markdown')
+    "Markdown": () => import('@/components/Markdown')
   },
   data() {
     return {
@@ -23,16 +23,16 @@ export default {
     };
   },
   created() {
-    //获取当前地址的id
+    // 获取当前地址的id
     var that = this;
     var id = this.$route.params.id;
-    var key= this.data.instance.id+'markdownFiles';
-    this.$localStore.getItem(key).then(mdfileMap=>{
-      //console.log(mdfileMap)
-      if(KUtils.checkUndefined(mdfileMap)){
-        var content=mdfileMap[id];
-        if(KUtils.strNotBlank(content)){
-          that.content=content;
+    var key = this.data.instance.id + 'markdownFiles';
+    this.$localStore.getItem(key).then(mdfileMap => {
+      // console.log(mdfileMap)
+      if (KUtils.checkUndefined(mdfileMap)) {
+        var content = mdfileMap[id];
+        if (KUtils.strNotBlank(content)) {
+          that.content = content;
         }
       }
     })

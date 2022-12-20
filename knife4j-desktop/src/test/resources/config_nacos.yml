@@ -1,0 +1,37 @@
+knife4j:
+  cloud:
+    - contextPath: test1
+      routes:
+        - name: 分组1
+          uri: http://localhost:8990
+          location: /v2/api-docs?group=根据包名
+        - name: 分组2
+          uri: http://localhost:8990
+          location: /v2/api-docs?group=根据包名1
+    - contextPath: test2
+      routes:
+        - name: 分组1
+          uri: http://localhost:8990
+          location: /v2/api-docs?group=根据包名
+        - name: 分组2
+          uri: http://localhost:8990
+          location: /v2/api-docs?group=根据包名1
+  disk:
+    - contextPath: disk-t1
+      routes:
+        - name: 分组1
+          debugUrl: http://localhost:8990
+          dataId: 123
+          group: DEFAULT_GROUP
+        - name: 分组2
+          debugUrl: http://localhost:8990
+          dataId: 223
+          group: DEFAULT_GROUP
+    - contextPath: disk-t2
+      routes:
+        - name: 分组1
+          dataId: 321
+          group: DEFAULT_GROUP
+        - name: 分组2
+          dataId: 444
+          group: DEFAULT_GROUP

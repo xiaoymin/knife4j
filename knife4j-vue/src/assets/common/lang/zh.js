@@ -1,6 +1,6 @@
 const langOptions = {
   //界面显示
-  lang:'zh',
+  lang: 'zh',
   title: '标题11111',
   searchHolderText: '输入文档关键字搜索',
   docLinkTip: '帮助文档',
@@ -8,9 +8,9 @@ const langOptions = {
   settingText: '个性化配置',
   cacheText: '清除缓存',
   //文档中各个表格的属性
-  table:{
+  table: {
     //SwaggerModels
-    swaggerModelsColumns:[
+    swaggerModelsColumns: [
       {
         title: '名称',
         dataIndex: 'name',
@@ -34,7 +34,7 @@ const langOptions = {
       }
     ],
     //文档说明-请求参数
-    documentRequestColumns:[
+    documentRequestColumns: [
       {
         title: '参数名称',
         dataIndex: 'name',
@@ -68,7 +68,7 @@ const langOptions = {
       }
     ],
     //文档说明-响应状态
-    documentResponseStatusColumns:[
+    documentResponseStatusColumns: [
       {
         title: '状态码',
         dataIndex: 'code',
@@ -87,7 +87,7 @@ const langOptions = {
       }
     ],
     //文档说明-响应Header
-    documentResponseHeaderColumns:[
+    documentResponseHeaderColumns: [
       {
         title: '参数名称',
         dataIndex: 'name',
@@ -104,7 +104,7 @@ const langOptions = {
       }
     ],
     //文档说明-响应参数
-    documentResponseColumns:[
+    documentResponseColumns: [
       {
         title: '参数名称',
         dataIndex: 'name',
@@ -127,7 +127,7 @@ const langOptions = {
       }
     ],
     //调试-请求头参数
-    debugRequestHeaderColumns:[
+    debugRequestHeaderColumns: [
       {
         title: '请求头',
         dataIndex: 'name',
@@ -153,7 +153,7 @@ const langOptions = {
       }
     ],
     //调试-FormData类型请求头
-    debugFormDataRequestColumns:[
+    debugFormDataRequestColumns: [
       {
         title: '参数名称',
         dataIndex: 'name',
@@ -187,7 +187,7 @@ const langOptions = {
       }
     ],
     //调试-url-form类型请求参数头
-    debugUrlFormRequestColumns:[
+    debugUrlFormRequestColumns: [
       {
         title: '参数名称',
         dataIndex: 'name',
@@ -213,7 +213,7 @@ const langOptions = {
       }
     ],
     //调试-响应Header
-    debugResponseHeaderColumns:[
+    debugResponseHeaderColumns: [
       {
         title: '响应头',
         dataIndex: 'name',
@@ -225,7 +225,7 @@ const langOptions = {
       }
     ],
     //auth中的header
-    authHeaderColumns:[
+    authHeaderColumns: [
       {
         title: '参数key',
         dataIndex: 'key',
@@ -269,31 +269,31 @@ const langOptions = {
   },
   message: {
     success: '保存成功',
-    settingTip:'启用个性化配置后,接口Tab标签需关闭后重新打开或者刷新当前页面',
-    settingHost:'启用Host成功,请关闭接口Tab或者刷新当前页面再进行调试',
+    settingTip: '启用个性化配置后,接口Tab标签需关闭后重新打开或者刷新当前页面',
+    settingHost: '启用Host成功,请关闭接口Tab或者刷新当前页面再进行调试',
     unsupportstore: '当前浏览器不支持localStorage对象,无法使用该功能',
     copy: {
-      url:{
+      url: {
         success: '复制地址成功',
         fail: '复制地址失败,您当前浏览器版本不兼容,请手动复制.'
-      }, 
-      method:{
+      },
+      method: {
         success: '复制接口成功',
         fail: '复制接口失败,您当前浏览器版本不兼容,请手动复制.'
       },
-      document:{
+      document: {
         success: '复制文档成功',
         fail: '复制文档失败,您当前浏览器版本不兼容,请手动复制.'
       },
-      raw:{
+      raw: {
         success: '复制raw成功',
         fail: '复制raw失败,您当前浏览器版本不兼容,请手动复制.'
       },
-      curl:{
+      curl: {
         success: '复制curl成功',
         fail: '复制curl失败,您当前浏览器版本不兼容,请手动复制.'
       },
-      open:{
+      open: {
         success: '复制OpenAPI成功',
         fail: '复制OpenAPI失败,您当前浏览器版本不兼容,请手动复制.'
       }
@@ -319,10 +319,10 @@ const langOptions = {
       success: '保存成功,请刷新该文档页'
     },
     offline: {
-      imple:'该功能尚未实现...',
-      markdown:'正在下载Markdown文件中,请稍后...',
-      html:'正在下载Html中,请稍后...',
-      word:'正在下载Word中,请稍后...',
+      imple: '该功能尚未实现...',
+      markdown: '正在下载Markdown文件中,请稍后...',
+      html: '正在下载Html中,请稍后...',
+      word: '正在下载Word中,请稍后...',
       copy: '拷贝文档',
       toomany: '当前接口数量超出限制,请使用第三方markdown转换软件进行转换以查看效果.',
       note: 'swagger-bootstrap-ui 提供markdwon格式类型的离线文档,开发者可拷贝该内容通过其他markdown转换工具进行转换为html或pdf.'
@@ -331,8 +331,8 @@ const langOptions = {
       urlNotEmpty: '请求url地址不能为空',
       fieldNotEmpty: '不能为空',
       networkErr: '服务器正在重启或者已经挂了:(~~~~',
-      contentToBig:'接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看',
-      contentToBigBlob:'接口响应数据量超过限制,不在响应内容中显示'
+      contentToBig: '接口响应数据量超过限制,不在响应内容中显示,请在raw中进行查看',
+      contentToBigBlob: '接口响应数据量超过限制,不在响应内容中显示'
     },
     sys: {
       loadErr: '请确保swagger资源接口正确.'
@@ -349,51 +349,51 @@ const langOptions = {
   global: {
     tab: '全局参数设置',
     add: '添加参数',
-    model:'新增参数',
+    model: '新增参数',
     tableHeader: [{
-        title: '参数名称',
-        dataIndex: 'name',
-        width: '15%',
-        scopedSlots: {
-          customRender: 'name'
-        }
-      },
-      {
-        title: '参数值',
-        className: 'column-money',
-        dataIndex: 'value',
-        width: '65%',
-        scopedSlots: {
-          customRender: 'paramContentLabel'
-        }
-      },
-      {
-        title: '参数类型',
-        dataIndex: 'in',
-        width: '10%',
-        scopedSlots: {
-          customRender: 'paramTypeLable'
-        }
-      },
-      {
-        title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: {
-          customRender: 'operation'
-        }
-      }
-    ],
-    form:{
-      name:'参数名称',
-      value:'参数值',
-      type:'参数类型',
-      validate:{
-        name:'请输入参数名称',
-        value:'请输入参数值'
+      title: '参数名称',
+      dataIndex: 'name',
+      width: '15%',
+      scopedSlots: {
+        customRender: 'name'
       }
     },
-    ok:'确定',
-    cancel:'取消',
+    {
+      title: '参数值',
+      className: 'column-money',
+      dataIndex: 'value',
+      width: '65%',
+      scopedSlots: {
+        customRender: 'paramContentLabel'
+      }
+    },
+    {
+      title: '参数类型',
+      dataIndex: 'in',
+      width: '10%',
+      scopedSlots: {
+        customRender: 'paramTypeLable'
+      }
+    },
+    {
+      title: '操作',
+      dataIndex: 'operation',
+      scopedSlots: {
+        customRender: 'operation'
+      }
+    }
+    ],
+    form: {
+      name: '参数名称',
+      value: '参数值',
+      type: '参数类型',
+      validate: {
+        name: '请输入参数名称',
+        value: '请输入参数值'
+      }
+    },
+    ok: '确定',
+    cancel: '取消',
     save: '保存',
     delete: '删除',
     note: 'Knife4j 提供全局参数Debug功能,目前默认提供header(请求头)、query(form)两种方式的入参.<br /><br />在此添加全局参数后,默认Debug调试tab页会带上该参数'
@@ -430,8 +430,8 @@ const langOptions = {
     globalsettings: '全局参数设置',
     officeline: '离线文档',
     selfSettings: '个性化设置',
-    other:'其他文档',
-    menuItemList:[
+    other: '其他文档',
+    menuItemList: [
       { key: '1', icon: 'caret-left', text: '关闭左侧' },
       { key: '2', icon: 'caret-right', text: '关闭右侧' },
       { key: '3', icon: 'close-circle', text: '关闭其它' }
@@ -439,11 +439,11 @@ const langOptions = {
   },
   offline: {
     des: 'Knife4j提供导出4种格式的离线文档(Html/Markdown/Word/OpenAPI)',
-    download:{
-      markdown:'下载Markdown',
-      html:'下载Html',
-      word:'下载Word',
-      pdf:'下载Pdf'
+    download: {
+      markdown: '下载Markdown',
+      html: '下载Html',
+      word: '下载Word',
+      pdf: '下载Pdf'
     },
     contact: '联系人',
     url: '接口路径',
@@ -455,7 +455,7 @@ const langOptions = {
     note: '接口说明',
     copy: '复制文档',
     copyHash: '复制地址',
-    copyMethod:'复制接口',
+    copyMethod: '复制接口',
     produces: '请求数据类型',
     consumes: '响应数据类型',
     author: '开发者',
@@ -463,6 +463,8 @@ const langOptions = {
     method: '请求方式',
     des: '接口描述',
     params: '请求参数',
+    example: '示例值',
+    enumAvalible: '可用值',
     requestExample: '请求示例',
     paramsHeader: {
       name: '参数名称',
@@ -492,17 +494,17 @@ const langOptions = {
   debug: {
     title: '调试',
     send: ' 发 送 ',
-    headers:'请求头部',
+    headers: '请求头部',
     params: '请求参数',
-    form:{
-      upload:'选择文件',
-      itemText:'文本',
-      itemFile:'文件'
+    form: {
+      upload: '选择文件',
+      itemText: '文本',
+      itemFile: '文件'
     },
     tableHeader: {
-      holderName:'请求头名称',
-      holderValue:'请求头内容',
-      holderDel:'删除',
+      holderName: '请求头名称',
+      holderValue: '请求头内容',
+      holderDel: '删除',
       selectAll: '全选',
       type: '参数类型',
       name: '参数名称',
@@ -516,25 +518,28 @@ const langOptions = {
       size: '大小:',
       header: '请求头',
       download: '下载文件',
-      copy:'复制'
+      copy: '复制'
     }
 
   },
-  open:{
-    copy:' 复 制 ',
-    download:' 下 载 '
+  open: {
+    copy: ' 复 制 ',
+    download: ' 下 载 '
   },
   tab: {
     closeCurrent: '关闭当前标签页',
     closeOther: '关闭其它标签页',
     closeAll: '关闭全部标签页'
   },
-  validate:{
-    header:'请求头 ',
-    notEmpty:' 不能为空',
-    fileNotEmpty:' 文件不能为空'
+  validate: {
+    header: '请求头 ',
+    notEmpty: ' 不能为空',
+    fileNotEmpty: ' 文件不能为空'
+  },
+  script: {
+    JSExample: 'JS模板示例',
+    TSExample: 'TS模板示例',
   }
-
 }
 
 export default langOptions;

@@ -32,34 +32,21 @@
       <div class="api-title">
         接口描述
       </div>
-      <div
-        v-if="api.description"
-        v-html="api.description"
-        class="api-body-desc"
-      ></div>
+      <div v-if="api.description" v-html="api.description" class="api-body-desc"></div>
     </div>
     <!--请求示例-->
     <div v-if="api.requestValue">
       <div class="api-title">
         请求示例
       </div>
-      <pre
-        class="api-editor-show"
-        v-html="formaterJson(api.requestValue)"
-      ></pre>
+      <pre class="api-editor-show" v-html="formaterJson(api.requestValue)"></pre>
       <!-- <editor-show :value="api.requestValue"></editor-show> -->
     </div>
     <div class="api-title">
       请求参数
     </div>
-    <a-table
-      defaultExpandAllRows
-      :columns="columns"
-      :dataSource="reqParameters"
-      :rowKey="genUnionTableKey"
-      size="small"
-      :pagination="page"
-    >
+    <a-table defaultExpandAllRows :columns="columns" :dataSource="reqParameters" :rowKey="genUnionTableKey" size="small"
+      :pagination="page">
       <template slot="requireTemplate" slot-scope="text">
         <span v-if="text" style="color:red">{{ text.toLocaleString() }}</span>
         <span v-else>{{ text.toLocaleString() }}</span>
@@ -76,14 +63,8 @@
     <div class="api-title">
       响应状态
     </div>
-    <a-table
-      :defaultExpandAllRows="expanRows"
-      :columns="responseStatuscolumns"
-      :dataSource="api.responseCodes"
-      rowKey="code"
-      size="small"
-      :pagination="page"
-    >
+    <a-table :defaultExpandAllRows="expanRows" :columns="responseStatuscolumns" :dataSource="api.responseCodes"
+      rowKey="code" size="small" :pagination="page">
       <template slot="descriptionTemplate" slot-scope="text">
         <div v-html="text"></div>
       </template>
@@ -98,28 +79,16 @@
             <div class="api-title">
               响应Header
             </div>
-            <a-table
-              :defaultExpandAllRows="expanRows"
-              :columns="responseHeaderColumns"
-              :dataSource="resp.responseHeaderParameters"
-              rowKey="id"
-              size="small"
-              :pagination="page"
-            >
+            <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns"
+              :dataSource="resp.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
             </a-table>
           </div>
           <!--响应参数-->
           <div class="api-title">
             响应参数
           </div>
-          <a-table
-            :defaultExpandAllRows="expanRows"
-            :columns="responseParametersColumns"
-            :dataSource="resp.data"
-            rowKey="id"
-            size="small"
-            :pagination="page"
-          >
+          <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="resp.data"
+            rowKey="id" size="small" :pagination="page">
           </a-table>
           <div class="api-title">
             响应示例
@@ -127,11 +96,7 @@
           <div class="api-editor-show" v-if="resp.responseBasicType">
             {{ resp.responseText }}
           </div>
-          <pre
-            class="api-editor-show"
-            v-else
-            v-html="formaterJson(resp.responseValue)"
-          ></pre>
+          <pre class="api-editor-show" v-else v-html="formaterJson(resp.responseValue)"></pre>
           <!-- <editor-show :value="resp.responseBasicType ? resp.responseText : resp.responseValue"></editor-show> -->
           <!-- <editor :value="resp.responseBasicType ? resp.responseText : resp.responseValue" @init="multiResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorMultiHeight"></editor> -->
         </a-tab-pane>
@@ -143,28 +108,16 @@
         <div class="api-title">
           响应Header
         </div>
-        <a-table
-          :defaultExpandAllRows="expanRows"
-          :columns="responseHeaderColumns"
-          :dataSource="api.responseHeaderParameters"
-          rowKey="id"
-          size="small"
-          :pagination="page"
-        >
+        <a-table :defaultExpandAllRows="expanRows" :columns="responseHeaderColumns"
+          :dataSource="api.responseHeaderParameters" rowKey="id" size="small" :pagination="page">
         </a-table>
       </div>
       <!--响应参数-->
       <div class="api-title">
         响应参数
       </div>
-      <a-table
-        :defaultExpandAllRows="expanRows"
-        :columns="responseParametersColumns"
-        :dataSource="multipData.data"
-        rowKey="id"
-        size="small"
-        :pagination="page"
-      >
+      <a-table :defaultExpandAllRows="expanRows" :columns="responseParametersColumns" :dataSource="multipData.data"
+        rowKey="id" size="small" :pagination="page">
       </a-table>
       <div class="api-title">
         响应示例
@@ -172,11 +125,7 @@
       <div class="api-editor-show" v-if="multipData.responseBasicType">
         {{ multipData.responseText }}
       </div>
-      <pre
-        class="api-editor-show"
-        v-else
-        v-html="formaterJson(multipData.responseValue)"
-      ></pre>
+      <pre class="api-editor-show" v-else v-html="formaterJson(multipData.responseValue)"></pre>
       <!--  <editor-show :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue"></editor-show> -->
       <!-- <editor :value="multipData.responseBasicType ? multipData.responseText : multipData.responseValue" @init="singleResponseSampleEditorInit" lang="json" theme="eclipse" width="100%" :height="editorSingleHeight"></editor> -->
     </div>
@@ -187,7 +136,7 @@ import KUtils from "@/core/utils";
 import Constants from "@/store/constants";
 /* import DataType from "./DataType";
 import EditorShow from "./EditorShow"; */
-//请求参数table-header
+// 请求参数table-header
 const requestcolumns = [
   {
     title: "参数名称",
@@ -220,7 +169,7 @@ const requestcolumns = [
     width: "15%"
   }
 ];
-//响应状态table-header
+// 响应状态table-header
 const responseStatuscolumns = [
   {
     title: "状态码",
@@ -238,7 +187,7 @@ const responseStatuscolumns = [
     dataIndex: "schema"
   }
 ];
-//响应头-header
+// 响应头-header
 const responseHeaderColumns = [
   {
     title: "参数名称",
@@ -279,9 +228,10 @@ const responseParametersColumns = [
 var instance = null;
 export default {
   name: "Document",
-  components: { editor: require("vue2-ace-editor"), 
-     "DataType":()=>import('./DataType'),
-    "EditorShow":()=>import('./EditorShow')
+  components: {
+    editor: require("vue2-ace-editor"),
+    "DataType": () => import('./DataType'),
+    "EditorShow": () => import('./EditorShow')
   },
   props: {
     api: {
@@ -304,7 +254,7 @@ export default {
       responseStatuscolumns: responseStatuscolumns,
       responseParametersColumns: responseParametersColumns,
       expanRows: true,
-      //接收一个响应信息对象,遍历得到树形结构的值
+      // 接收一个响应信息对象,遍历得到树形结构的值
       multipCode: false,
       multipCodeDatas: [],
       multipData: {},
@@ -313,14 +263,14 @@ export default {
     };
   },
   created() {
-    //var key = Constants.globalTreeTableModelParams + this.api.instanceId;
-    //var treeTableModel = this.swaggerInstance.refTreeTableModels;
-    //instance.$Knife4jModels.setValue(key, treeTableModel);
-    //instance.initRequestParams();
-    //console("该请求参数----------：" + this.api.showUrl);
-    //console(this.api);
-    //console(this.api.reqParameters);
-    //赋值
+    // var key = Constants.globalTreeTableModelParams + this.api.instanceId;
+    // var treeTableModel = this.swaggerInstance.refTreeTableModels;
+    // instance.$Knife4jModels.setValue(key, treeTableModel);
+    // instance.initRequestParams();
+    // console("该请求参数----------：" + this.api.showUrl);
+    // console(this.api);
+    // console(this.api.reqParameters);
+    // 赋值
     this.reqParameters = this.api.reqParameters;
     instance.initResponseCodeParams();
   },
@@ -342,37 +292,37 @@ export default {
         apiInfo.refTreetableparameters != null &&
         apiInfo.refTreetableparameters.length > 0
       ) {
-        apiInfo.refTreetableparameters.forEach(function(ref) {
+        apiInfo.refTreetableparameters.forEach(function (ref) {
           data = data.concat(ref.params);
         });
       }
       if (data != null) {
-        data.sort(function(a, b) {
+        data.sort(function (a, b) {
           return b.require - a.require;
         });
       }
       let reqParameters = [];
       if (data != null && data.length > 0) {
-        data.forEach(function(md) {
+        data.forEach(function (md) {
           if (md.pid == "-1") {
             md.children = [];
             if (md.schema) {
-              //判断当前缓存是否存在
+              // 判断当前缓存是否存在
               var schemaName = md.schemaValue;
               if (KUtils.checkUndefined(schemaName)) {
                 if (that.$Knife4jModels.exists(key, schemaName)) {
-                  //存在
-                  //console("存在-不用查找---" + schemaName);
-                  ////console(that.$Knife4jModels.instance);
+                  // 存在
+                  // console("存在-不用查找---" + schemaName);
+                  // //console(that.$Knife4jModels.instance);
                   var model = that.$Knife4jModels.getByModelName(
                     key,
                     schemaName
                   );
                   if (KUtils.checkUndefined(model)) {
                     var children = model.params;
-                    //更改pid
+                    // 更改pid
                     if (KUtils.arrNotEmpty(children)) {
-                      children.forEach(function(chd) {
+                      children.forEach(function (chd) {
                         var target = that.copyNewParameter(chd);
                         target.pid = md.id;
                         md.children.push(target);
@@ -380,15 +330,15 @@ export default {
                     }
                   }
 
-                  //md.children = children;
+                  // md.children = children;
                 } else {
-                  //不存在
-                  //console("不存在--开始查找---" + schemaName);
+                  // 不存在
+                  // console("不存在--开始查找---" + schemaName);
                 }
               }
             }
-            // that.findModelChildren(md, data);
-            //查找后如果没有,则将children置空
+            //  that.findModelChildren(md, data);
+            // 查找后如果没有,则将children置空
             if (!KUtils.arrNotEmpty(md.children)) {
               md.children = null;
             }
@@ -400,9 +350,9 @@ export default {
         });
       }
       that.reqParameters = reqParameters;
-      //that.storeCacheModels(cacheModelChildrens);
-      ////console("遍历完成");
-      ////console(reqParameters);
+      // that.storeCacheModels(cacheModelChildrens);
+      // //console("遍历完成");
+      // //console(reqParameters);
     },
     storeCacheModels(val) {
       var key = Constants.globalTreeTableModelParams + this.api.instanceId;
@@ -411,46 +361,46 @@ export default {
     deepTreeTableSchemaModel(param, treeTableModel, rootParam) {
       var that = this;
       var key = Constants.globalTreeTableModelParams + this.api.instanceId;
-      ////console(model.name)
+      // //console(model.name)
       if (KUtils.checkUndefined(param.schemaValue)) {
         var schema = treeTableModel[param.schemaValue];
         if (KUtils.checkUndefined(schema)) {
           rootParam.parentTypes.push(param.schemaValue);
           if (KUtils.arrNotEmpty(schema.params)) {
-            schema.params.forEach(function(nmd) {
-              //childrenparam需要深拷贝一个对象
+            schema.params.forEach(function (nmd) {
+              // childrenparam需要深拷贝一个对象
               var childrenParam = that.copyNewParameter(nmd);
               childrenParam.pid = param.id;
               param.children.push(childrenParam);
-              //children.push(childrenParam)
+              // children.push(childrenParam)
               if (childrenParam.schema) {
-                //存在schema,判断是否出现过
+                // 存在schema,判断是否出现过
                 if (
                   rootParam.parentTypes.indexOf(childrenParam.schemaValue) == -1
                 ) {
                   var schemaName = childrenParam.schemaValue;
                   if (KUtils.checkUndefined(schemaName)) {
                     childrenParam.children = [];
-                    //减少递归次数
+                    // 减少递归次数
                     if (that.$Knife4jModels.exists(key, schemaName)) {
-                      //console("递归中存在--不用找了");
+                      // console("递归中存在--不用找了");
                       var children = that.$Knife4jModels.getByModelName(
                         key,
                         schemaName
                       );
-                      //更改pid
+                      // 更改pid
                       if (KUtils.arrNotEmpty(children)) {
-                        children.forEach(function(chd) {
+                        children.forEach(function (chd) {
                           var target = that.copyNewParameter(chd);
                           target.pid = childrenParam.id;
                           childrenParam.children.push(target);
                         });
                       }
-                      //childrenParam.children = children;
+                      // childrenParam.children = children;
                     } else {
-                      //不存在
-                      //console("不存在--开始查找-递归中---" + schemaName);
-                      //根据schema查找当前的子级参数
+                      // 不存在
+                      // console("不存在--开始查找-递归中---" + schemaName);
+                      // 根据schema查找当前的子级参数
                       that.deepTreeTableSchemaModel(
                         childrenParam,
                         treeTableModel,
@@ -464,11 +414,11 @@ export default {
                         schemaName,
                         childrenParam.children
                       );
-                      //更新
-                      //cacheModelChildrens[schemaName] = md.children;
+                      // 更新
+                      // cacheModelChildrens[schemaName] = md.children;
                     }
                   }
-                  //找chlidrenParam的子类
+                  // 找chlidrenParam的子类
                 }
               }
             });
@@ -507,11 +457,11 @@ export default {
     findModelChildren(md, modelData) {
       var that = this;
       if (modelData != null && modelData != undefined && modelData.length > 0) {
-        modelData.forEach(function(nmd) {
+        modelData.forEach(function (nmd) {
           if (nmd.pid == md.id) {
             nmd.children = [];
             that.findModelChildren(nmd, modelData);
-            //查找后如果没有,则将children置空
+            // 查找后如果没有,则将children置空
             if (nmd.children.length == 0) {
               nmd.children = null;
             }
@@ -521,13 +471,13 @@ export default {
       }
     },
     initResponseCodeParams() {
-      //响应体参数
+      // 响应体参数
       var that = this;
       that.multipCode = that.api.multipartResponseSchema;
       let rcodes = that.api.responseCodes;
       if (rcodes != null && rcodes != undefined) {
-        rcodes.forEach(function(rc) {
-          //遍历
+        rcodes.forEach(function (rc) {
+          // 遍历
           if (rc.schema != undefined && rc.schema != null) {
             var respdata = [];
             if (
@@ -540,18 +490,18 @@ export default {
               rc.responseTreetableRefParameters != null &&
               rc.responseTreetableRefParameters.length > 0
             ) {
-              rc.responseTreetableRefParameters.forEach(function(ref) {
+              rc.responseTreetableRefParameters.forEach(function (ref) {
                 respdata = respdata.concat(ref.params);
               });
             }
             let nrecodedatas = [];
-            //遍历得到新的符合antd的树形结构
+            // 遍历得到新的符合antd的树形结构
             if (respdata != null && respdata.length > 0) {
-              respdata.forEach(function(md) {
+              respdata.forEach(function (md) {
                 if (md.pid == "-1") {
                   md.children = [];
-                  //that.findModelChildren(md, respdata);
-                  //查找后如果没有,则将children置空
+                  // that.findModelChildren(md, respdata);
+                  // 查找后如果没有,则将children置空
                   if (md.children.length == 0) {
                     md.children = null;
                   }
@@ -567,9 +517,9 @@ export default {
           }
         });
       }
-      ////console("响应头");
-      ////console(that.multipCodeDatas);
-      ////console(that.multipData);
+      // //console("响应头");
+      // //console(that.multipCodeDatas);
+      // //console(that.multipData);
     },
     formaterJson(json) {
       try {
@@ -582,7 +532,7 @@ export default {
           .replace(/>/g, ">");
         return json.replace(
           /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-          function(match) {
+          function (match) {
             var cls = "number";
             if (/^"/.test(match)) {
               if (/:$/.test(match)) {
@@ -609,6 +559,7 @@ export default {
 .knife4j-document {
   margin-top: 30px;
 }
+
 .api-tab {
   margin-top: 15px;
 
@@ -617,6 +568,7 @@ export default {
     line-height: 32px;
   }
 }
+
 .api-editor-show {
   margin: 15px 0;
   font: 100 12px/18px monaco, andale mono, courier new;
@@ -629,13 +581,16 @@ export default {
   word-wrap: break-word;
   color: #444;
 }
+
 .api-basic {
   padding: 11px;
 }
+
 .api-basic-title {
   font-size: 14px;
   font-weight: 700;
 }
+
 .api-basic-body {
   font-size: 14px;
   font-family: -webkit-body;
@@ -645,15 +600,18 @@ export default {
   border-left: 4px solid #ddd;
   line-height: 30px;
 }
+
 .api-body-desc {
   padding: 10px;
   min-height: 35px;
   box-sizing: border-box;
   border: 1px solid #e8e8e8;
 }
+
 .ant-card-body {
   padding: 5px;
 }
+
 .api-title {
   margin-top: 10px;
   margin-bottom: 5px;
@@ -664,14 +622,17 @@ export default {
   border-left: 4px solid #00ab6d;
   text-indent: 8px;
 }
+
 .content-line {
   height: 25px;
   line-height: 25px;
 }
+
 .content-line-count {
   height: 35px;
   line-height: 35px;
 }
+
 .divider {
   margin: 4px 0;
 }

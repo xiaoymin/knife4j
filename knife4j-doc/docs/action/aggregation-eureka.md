@@ -2,7 +2,7 @@
 
 
 
-从Eureka注册中心进行聚合的模式和[Cloud模式](aggregation-cloud.md)大同小异，主要的区别是通过`serviceName`来替代了真实的目标服务地址，而是从Eureka注册中心进行动态获取
+从Eureka注册中心进行聚合的模式和[Cloud模式](aggregation-cloud)大同小异，主要的区别是通过`serviceName`来替代了真实的目标服务地址，而是从Eureka注册中心进行动态获取
 
 
 完整代码请参考[knife4j-aggregation-eureka-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-aggregation-eureka-demo)
@@ -34,7 +34,7 @@ Eureka注册中心以及service-user、order等都非常简单，按照注册中
 
 1、在`service-doc`工程引入`knife4j-aggregation-spring-boot-starter`依赖
 
-::: details 点击查看完整代码
+:::tip 点击查看完整代码
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -120,4 +120,4 @@ knife4j:
 
 只需要简单的配置，就轻松的将Eureka注册中心的各个服务进行了聚合，是不是比Spring Cloud Gateway、Zuul更加简单和轻量呢？
 
-关于Eureka的更多配置需要开发者参考[文档](../documentation/knife4jAggregation.md)
+关于Eureka的更多配置需要开发者参考[文档](/docs/middleware/knife4jAggregation)

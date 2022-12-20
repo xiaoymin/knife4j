@@ -1,14 +1,7 @@
 <template>
   <div>
-    <editor
-      :value="value"
-      @init="editorInit"
-      :lang="lang"
-      @input="change"
-      theme="eclipse"
-      width="100%"
-      :height="editorHeight"
-    ></editor>
+    <editor :value="value" @init="editorInit" :lang="lang" @input="change" theme="eclipse" width="100%"
+      :height="editorHeight"></editor>
   </div>
 </template>
 
@@ -21,6 +14,11 @@ export default {
       type: String,
       required: true,
       default: ""
+    },
+    tsMode: {
+      type: Boolean,
+      required: false,
+      default: false,
     }
   },
   data() {
@@ -33,7 +31,7 @@ export default {
   methods: {
     resetEditorHeight() {
       var that = this;
-      //重设高度
+      //  重设高度
       setTimeout(() => {
         var length_editor = that.editor.session.getLength();
         if (length_editor == 1) {
@@ -44,21 +42,25 @@ export default {
       }, 300);
     },
     change(value) {
-      //this.value = value;
-      //重设高度
-      //this.resetEditorHeight();
+      // this.value = value;
+      // 重设高度
+      // this.resetEditorHeight();
       this.$emit("change", value);
     },
     editorInit(editor) {
       var that = this;
       this.editor = editor;
-      require("brace/ext/language_tools"); //language extension prerequsite...
-      require('brace/mode/javascript')
+      require("brace/ext/language_tools"); // language extension prerequsite...
+      require('brace/mode/javascript');
+      require('brace/mode/typescript');
       require("brace/theme/eclipse");
-      //重设高度
+      if (this.tsMode) {
+        this.lang = "typescript";
+      }
+      // 重设高度
       this.resetEditorHeight();
-      this.editor.renderer.on("afterRender", function() {
-        that.$emit("showDescription","123")
+      this.editor.renderer.on("afterRender", function () {
+        that.$emit("showDescription", "123")
       });
     }
   }

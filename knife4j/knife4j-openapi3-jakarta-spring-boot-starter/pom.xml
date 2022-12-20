@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.xiaoymin</groupId>
+        <artifactId>knife4j</artifactId>
+        <version>4.0.0</version>
+    </parent>
+
+    <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+
+    <properties>
+        <knife4j-java.version>17</knife4j-java.version>
+        <knife4j-spring3.version>6.0.2</knife4j-spring3.version>
+        <knife4j-spring-boot3.version>3.0.0</knife4j-spring-boot3.version>
+
+        <knife4j-springdoc-openapi.version>2.0.0</knife4j-springdoc-openapi.version>
+        <knife4j-servlet.version>6.0.0</knife4j-servlet.version>
+
+        <knife4j-swagger-models-v3.version>2.2.7</knife4j-swagger-models-v3.version>
+        <knife4j-javassist.version>3.29.2-GA</knife4j-javassist.version>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <knife4j-skipTests>true</knife4j-skipTests>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>${knife4j-spring-boot3.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-ui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${knife4j-spring3.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${knife4j-spring3.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-common</artifactId>
+            <version>${knife4j-springdoc-openapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+            <version>${knife4j-springdoc-openapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${knife4j-springdoc-openapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+            <version>${knife4j-swagger-models-v3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-models-jakarta</artifactId>
+            <version>${knife4j-swagger-models-v3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+            <version>${knife4j-servlet.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${knife4j-java.version}</source>
+                    <target>${knife4j-java.version}</target>
+                    <encoding>${knife4j-project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

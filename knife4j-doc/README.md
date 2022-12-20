@@ -1,7 +1,3 @@
-# swagger-bootstrap-ui-doc
-Use VuePress build Swagger-bootstrap-ui docs
+# knife4j 官方文档
 
-
-
-website:http://doc.xiaominfo.com
-
+访问地址：https://doc.xiaominfo.com

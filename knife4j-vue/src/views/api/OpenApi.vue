@@ -1,13 +1,17 @@
 <template>
   <div class="document">
     <a-row style="margin-top:10px;">
-      <a-button type="primary" :id="'btnCopyOpenApi' + api.id" ><a-icon type="copy" /><span v-html="$t('open.copy')"> 复  制  </span></a-button>
+      <a-button type="primary" :id="'btnCopyOpenApi' + api.id">
+        <a-icon type="copy" /><span v-html="$t('open.copy')"> 复 制 </span>
+      </a-button>
 
-      <a-button style="margin-left:10px;"  @click="triggerDownloadOpen"  ><a-icon type="download" /> <span v-html="$t('open.download')">  下 载 </span></a-button>
+      <a-button style="margin-left:10px;" @click="triggerDownloadOpen">
+        <a-icon type="download" /> <span v-html="$t('open.download')"> 下 载 </span>
+      </a-button>
     </a-row>
-     <a-row style="margin-top:10px;" :id="'knife4jDocumentOpenApiShowEditor' ">
-        <editor-show @change="change" :value="openApiRaw"></editor-show>
-      </a-row>
+    <a-row style="margin-top:10px;" :id="'knife4jDocumentOpenApiShowEditor'">
+      <editor-show @change="change" :value="openApiRaw"></editor-show>
+    </a-row>
   </div>
 </template>
 <script>
@@ -15,8 +19,9 @@ import KUtils from "@/core/utils";
 import ClipboardJS from "clipboard";
 export default {
   name: "Document",
-  components: { editor: require("vue2-ace-editor"), 
-    "EditorShow":()=>import('./EditorShow')
+  components: {
+    editor: require("vue2-ace-editor"),
+    "EditorShow": () => import('./EditorShow')
   },
   props: {
     api: {
@@ -28,36 +33,36 @@ export default {
       required: true
     }
   },
-  computed:{
-    language(){
-       return this.$store.state.globals.language;
+  computed: {
+    language() {
+      return this.$store.state.globals.language;
     }
   },
   data() {
     return {
-      openApiRaw:"",
-      name:"OpenAPI.json"
+      openApiRaw: "",
+      name: "OpenAPI.json"
     }
   },
-  created(){
-    this.openApiRaw=KUtils.json5stringify(this.api.openApiRaw);
-    this.name=this.api.summary+"_OpenAPI.json";
-    //console.log(this.api);
-     setTimeout(() => {
+  created() {
+    this.openApiRaw = KUtils.json5stringify(this.api.openApiRaw);
+    this.name = this.api.summary + "_OpenAPI.json";
+    // console.log(this.api);
+    setTimeout(() => {
       this.copyOpenApi();
     }, 500);
   },
-  methods:{
-    change(value){
-      this.openApiRaw=value;
+  methods: {
+    change(value) {
+      this.openApiRaw = value;
     },
-    getCurrentI18nInstance(){
+    getCurrentI18nInstance() {
       return this.$i18n.messages[this.language];
     },
-    triggerDownloadOpen(){
-      var content=this.openApiRaw;
+    triggerDownloadOpen() {
+      var content = this.openApiRaw;
       var a = document.createElement("a");
-      //var content = this.getHtmlContent(this.data.instance.title);
+      // var content = this.getHtmlContent(this.data.instance.title);
       var option = {};
       var fileName = this.name;
       var url = window.URL.createObjectURL(
@@ -73,7 +78,7 @@ export default {
       a.click();
       window.URL.revokeObjectURL(url);
     },
-    copyOpenApi(){
+    copyOpenApi() {
       var that = this;
       var btnId = "btnCopyOpenApi" + this.api.id;
       var clipboard = new ClipboardJS("#" + btnId, {
@@ -81,17 +86,17 @@ export default {
           return that.openApiRaw;
         }
       });
-      clipboard.on("success",()=>{
-        var inst=that.getCurrentI18nInstance();
-        //"复制地址成功"
-        var successMessage=inst.message.copy.open.success;
+      clipboard.on("success", () => {
+        var inst = that.getCurrentI18nInstance();
+        // "复制地址成功"
+        var successMessage = inst.message.copy.open.success;
         that.$message.info(successMessage);
       })
-      clipboard.on("error", function(e) {
-        var inst=that.getCurrentI18nInstance();
+      clipboard.on("error", function (e) {
+        var inst = that.getCurrentI18nInstance();
         console.log(inst)
-        //"复制地址失败"
-        var failMessage=inst.message.copy.open.fail;
+        // "复制地址失败"
+        var failMessage = inst.message.copy.open.fail;
         that.$message.info(failMessage);
       });
     }

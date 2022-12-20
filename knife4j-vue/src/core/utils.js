@@ -3,7 +3,7 @@ import md5 from 'js-md5'
 import JSON5 from './json5'
 import isObject from 'lodash/isObject'
 import isNumber from 'lodash/isNumber'
- 
+
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
 const binaryContentType = {
   "application/octet-stream": true,
@@ -154,35 +154,64 @@ function isUrl(path) {
 }
 
 const utils = {
-  getOAuth2Html(production){
-    if(production){
+  getOAuth2Html(production) {
+    if (production) {
       return "webjars/oauth/oauth2.html";
     }
     return "oauth/oauth2.html";
   },
-  groupName(url,defaultName){
-    var gname=defaultName;
-    var reg=new RegExp(".*?group=(.*?)(&.*?)?$");
-    if(reg.test(url)){
-      var tmpGroupName=RegExp.$1;
-      if(this.strNotBlank(tmpGroupName)){
-        if(tmpGroupName!=defaultName){
-          gname=tmpGroupName;
+  getOAuth2BearerValue(schema, defaultValue) {
+    if (schema == "bearer") {
+      // 兼容用户已经填写了bearer的情况
+      if (defaultValue != null && defaultValue != '') {
+        let lowerStr = defaultValue.toLocaleLowerCase();
+        if (lowerStr.indexOf("bearer") > -1) {
+          // 不做任何处理，直接返回，用户已经填写了Bearer
+          return defaultValue;
+        } else {
+          return "Bearer " + defaultValue;
+        }
+      }
+    }
+    return defaultValue;
+  },
+  groupName(url, defaultName) {
+    var gname = defaultName;
+    var reg = new RegExp(".*?group=(.*?)(&.*?)?$");
+    if (reg.test(url)) {
+      var tmpGroupName = RegExp.$1;
+      if (this.strNotBlank(tmpGroupName)) {
+        if (tmpGroupName != defaultName) {
+          gname = tmpGroupName;
         }
       }
     }
     return gname;
   },
-  oasmodel(oas2){
-    //获取oas的definitions解析正则
-    if(oas2){
+  getDesktopCode() {
+    var loc = window.location.pathname;
+    // 默认根目录
+    var code = 'ROOT';
+    var reg = new RegExp('(?:/(.*?))?/doc.html', 'ig');
+    if (reg.exec(loc)) {
+      var c = RegExp.$1;
+      if (this.strNotBlank(c)) {
+        code = c;
+      }
+    }
+    return code;
+  },
+
+  oasmodel(oas2) {
+    // 获取oas的definitions解析正则
+    if (oas2) {
       return "#/definitions/(.*)$";
-    }else{
+    } else {
       return "#/components/schemas/(.*)$";
     }
   },
   filterIgnoreParameters(inType, name, ignoreParameters) {
-    //是否过滤参数
+    // 是否过滤参数
     if (ignoreParameters == null) {
       return true;
     }
@@ -198,7 +227,7 @@ const utils = {
       });
     }
     if (name.indexOf("[0]") > -1) {
-      //存在数组的情况
+      // 存在数组的情况
       if (ignoreParameterAllKeys.length > 0) {
         var containtsKey = ignoreParameterAllKeys.filter(ignoreName => name.startsWith(ignoreName));
         if (containtsKey.length > 0) {
@@ -211,40 +240,52 @@ const utils = {
       }
     } else {
       if (inType == 'query') {
-        //console.log("ignoreParameterAllKeys")
-        //console.log(ignoreParameterAllKeys)
+        // console.log("ignoreParameterAllKeys")
+        // console.log(ignoreParameterAllKeys)
         return !ignoreParameterAllKeys.some(key =>
-          new RegExp(`^(${key}$|${key}[.[])`).test(name) || eval('/'+key+'/g').test(name));
+          new RegExp(`^(${key}$|${key}[.[])`).test(name) || new RegExp(key, "g").test(name));
       } else {
         return !ignoreParameterAllKeys.includes(name);
       }
     }
   },
-  appendBasePath(paths,basePath){
-    var appendBasePathFlag=false;
-    try{
-      if(this.checkUndefined(basePath)&&this.strNotBlank(basePath)&&basePath!='/'){
-        var pathKeys=Object.keys(paths||{});
-        var pathKeyLength=pathKeys.length;
-        var num=0;
-        //https://gitee.com/xiaoym/knife4j/issues/I3B5BK
-        let basePathStr=basePath+"/";
-        for(var i=0;i<pathKeys.length;i++){
-          if(pathKeys[i].startsWith(basePathStr)){
+  appendBasePath(paths, basePath) {
+    var appendBasePathFlag = false;
+    try {
+      if (this.checkUndefined(basePath) && this.strNotBlank(basePath) && basePath != '/') {
+        var pathKeys = Object.keys(paths || {});
+        console.log("pathKeys,", pathKeys)
+        var pathKeyLength = pathKeys.length;
+        var num = 0;
+        // https://gitee.com/xiaoym/knife4j/issues/I3B5BK
+        let basePathStr = basePath + "/";
+        for (var i = 0; i < pathKeys.length; i++) {
+          if (pathKeys[i].startsWith(basePathStr)) {
             num++;
           }
         }
-        if(num==pathKeyLength){
-          //已经追加过basePath，无需再次追加
-          appendBasePathFlag=true;
+        console.log(num)
+        if (num == pathKeyLength) {
+          // 已经追加过basePath，无需再次追加
+          appendBasePathFlag = true;
+        } else {
+          //如果是开发自定义添加的接口，会出现不追加basePath的情况，这里计算一个概率占比吧
+          if (pathKeyLength > 0) {
+            let percent = parseFloat(num / pathKeyLength) * 100;
+            if (percent >= 60) {
+              appendBasePathFlag = true;
+            }
+          }
         }
-      }else{
-        //其余情况都代表已经追加过
-        appendBasePathFlag=true;
+
+
+      } else {
+        // 其余情况都代表已经追加过
+        appendBasePathFlag = true;
       }
-    }catch(e){
-      //ignore
-      appendBasePathFlag=true;
+    } catch (e) {
+      // ignore
+      appendBasePathFlag = true;
     }
     return appendBasePathFlag;
   },
@@ -264,7 +305,7 @@ const utils = {
       });
     }
     if (name.indexOf("[0]") > -1) {
-      //存在数组的情况
+      // 存在数组的情况
       if (includeParameterAllKeys.length > 0) {
         var containtsKey = includeParameterAllKeys.filter(includeName => name.startsWith(includeName));
         if (containtsKey.length > 0) {
@@ -288,7 +329,7 @@ const utils = {
     }
   },
   rootKeysPath(rootName, jsonInstance, includeKeys) {
-    //返回一个json对象的key属性集合
+    // 返回一个json对象的key属性集合
     var keyArrs = [];
     if (jsonInstance != null && jsonInstance != undefined) {
       for (var key in jsonInstance) {
@@ -296,14 +337,14 @@ const utils = {
         var parentKeyFlag = includeKeys.some(key => key.startsWith(tmpRootName));
         if (!parentKeyFlag) {
           keyArrs.push(tmpRootName);
-          //是否对象
+          // 是否对象
           var tmpJson = jsonInstance[key];
-          //判断是否是数组
+          // 判断是否是数组
           if (Array.isArray(tmpJson)) {
-            //是
+            // 是
             var tmpArrName = rootName + "." + key + "[0]";
             keyArrs = keyArrs.concat(this.rootKeysPath(tmpArrName, tmpJson[0], includeKeys));
-            //keyArrs = keyArrs.concat(this.rootKeysPath(tmpRootName, tmpJson[0]));
+            // keyArrs = keyArrs.concat(this.rootKeysPath(tmpRootName, tmpJson[0]));
           } else {
             if (isObject(tmpJson)) {
               keyArrs = keyArrs.concat(this.rootKeysPath(tmpRootName, tmpJson, includeKeys));
@@ -345,14 +386,24 @@ const utils = {
     return target;
   },
   randomMd5() {
-    //生成一个随机MD5码
+    // 生成一个随机MD5码
     return md5(new Date().getTime().toString() +
       Math.floor(Math.random() * 100000).toString());
   },
   randomMd5Str(str) {
-    //生成一个随机MD5码
+    // 生成一个随机MD5码
     return md5(new Date().getTime().toString() +
       Math.floor(Math.random() * 10000).toString() + str);
+  },
+  numberFormat(obj) {
+    let items = obj["items"];
+    if (this.checkUndefined(items)) {
+      let format = items["format"];
+      if (this.checkUndefined(format)) {
+        return format;
+      }
+    }
+    return null;
   },
   formatter: function (data, parentPath = "/", parentAuthority) {
     return data.map(item => {
@@ -390,33 +441,37 @@ const utils = {
         }
 
       }
-    } catch (err) {}
+    } catch (err) { }
     return md5Id;
 
   },
   checkParamArrsExists: function (arr, param) {
-    return (arr || []).some(row => row.name == param.name)
-    // var flag = false;
-    // if (arr != null && arr.length > 0) {
-    //   arr.forEach(function (a) {
-    //     if (a.name == param.name) {
-    //       flag = true;
-    //     }
-    //   })
-    // }
-    // return flag;
+    // console.log('arr:', arr)
+    // console.log('param:', param)
+    // 名称不能保证唯一，需要考虑输入类型
+    // https://gitee.com/xiaoym/knife4j/issues/I3R9B3
+    return (arr || []).some(row => row.name + row.in == param.name + param.in)
+    //  var flag = false;
+    //  if (arr != null && arr.length > 0) {
+    //    arr.forEach(function (a) {
+    //      if (a.name == param.name) {
+    //        flag = true;
+    //      }
+    //    })
+    //  }
+    //  return flag;
   },
   isChinese: function (keyword) {
-    //判断是否包含中文
+    // 判断是否包含中文
     var reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
     return reg.test(keyword);
   },
-  json5stringifyNoFormat:function(rtext){
+  json5stringifyNoFormat: function (rtext) {
     var ret = null;
     try {
       ret = JSON5.stringify(rtext);
     } catch (err) {
-      //console(err)
+      // console(err)
       ret = JSON.stringify(rtext);
     }
     return ret;
@@ -426,17 +481,17 @@ const utils = {
     try {
       ret = JSON5.stringify(rtext, null, 2);
     } catch (err) {
-      //console(err)
+      // console(err)
       ret = JSON.stringify(rtext, null, 2);
     }
     return ret;
   },
-  json5stringifyFormat:function(rtext,format,num){
+  json5stringifyFormat: function (rtext, format, num) {
     var ret = null;
     try {
       ret = JSON5.stringify(rtext, format, num);
     } catch (err) {
-      //console(err)
+      // console(err)
       ret = JSON.stringify(rtext, format, num);
     }
     return ret;
@@ -447,7 +502,7 @@ const utils = {
     try {
       ret = JSON5.parse(rtext)
     } catch (err) {
-      //console(err)
+      // console(err)
       ret = JSON.parse(rtext);
     }
     return ret;
@@ -529,11 +584,11 @@ const utils = {
     }
     return flag;
   },
-  validateJSR303:function(parameter, origin){
+  validateJSR303: function (parameter, origin) {
     var max = origin["maximum"],
-    min = origin["minimum"],
-    emin = origin["exclusiveMinimum"],
-    emax = origin["exclusiveMaximum"];
+      min = origin["minimum"],
+      emin = origin["exclusiveMinimum"],
+      emax = origin["exclusiveMaximum"];
     var pattern = origin["pattern"];
     var maxLength = origin["maxLength"],
       minLength = origin["minLength"];
@@ -566,17 +621,17 @@ const utils = {
     return flag;
   },
   arrNotEmpty(arr) {
-    //集合非空
+    // 集合非空
     var flag = false;
     if (arr != undefined && arr != null && arr.length > 0) {
       flag = true;
     }
     return flag;
   },
-  arrEmpty(arr){
+  arrEmpty(arr) {
     return !this.arrNotEmpty(arr);
   },
-  strBlank(str){
+  strBlank(str) {
     return !this.strNotBlank(str);
   },
   strNotBlank(str) {
@@ -597,15 +652,15 @@ const utils = {
     }
     return t;
   },
-  getExample(key, obj, defaultValue){
-    var v=this.propValue(key, obj, defaultValue);
-    //判断是否是双精度64位，如果是，直接返回
-    if(isNumber(v)){
+  getExample(key, obj, defaultValue) {
+    var v = this.propValue(key, obj, defaultValue);
+    // 判断是否是双精度64位，如果是，直接返回
+    if (isNumber(v)) {
       return v;
-    }else{
-      if(typeof(v)=='object'){
-        //v=this.json5stringify(v);
-        v=this.json5stringifyNoFormat(v);
+    } else {
+      if (typeof (v) == 'object') {
+        // v=this.json5stringify(v);
+        v = this.json5stringifyNoFormat(v);
       }
     }
     return v;
@@ -622,7 +677,7 @@ const utils = {
   },
   getBasicTypeValue: function (type) {
     var propValue = "";
-    //是否是基本类型
+    // 是否是基本类型
     if (type == "integer") {
       propValue = 0;
     }
@@ -643,7 +698,7 @@ const utils = {
       if (obj.hasOwnProperty(key)) {
         val = obj[key];
         if (checkEmpty) {
-          if (val == null || val == "") {
+          if (val == null || val == "" || val == undefined) {
             val = defaultValue;
           }
         }
@@ -651,14 +706,14 @@ const utils = {
     }
     return val;
   },
-  getClassName: function (item,oas2) {
-    if(oas2){
+  getClassName: function (item, oas2) {
+    if (oas2) {
       var regex = new RegExp("#/definitions/(.*)$", "ig");
       if (regex.test(item)) {
         var ptype = RegExp.$1;
         return ptype;
       }
-    }else{
+    } else {
       var regex = new RegExp("#/components/schemas/(.*)$", "ig");
       if (regex.test(item)) {
         var ptype = RegExp.$1;
@@ -668,7 +723,7 @@ const utils = {
 
     return null;
   },
-  getRefParameterName:function(item){
+  getRefParameterName: function (item) {
     var regex = new RegExp("#/components/parameters/(.*)$", "ig");
     if (regex.test(item)) {
       var ptype = RegExp.$1;
@@ -720,12 +775,12 @@ const utils = {
     }
     return "";
   },
-  camelCase:function(str){
-    if(str!=null&&str!=undefined&&str!=""){
-      if(str.length==1){
+  camelCase: function (str) {
+    if (str != null && str != undefined && str != "") {
+      if (str.length == 1) {
         return str.toLocaleLowerCase();
-      }else{
-        return str.substr(0,1).toLocaleLowerCase()+str.substr(1);
+      } else {
+        return str.substr(0, 1).toLocaleLowerCase() + str.substr(1);
       }
     }
     return "";
@@ -764,7 +819,7 @@ const utils = {
     return out;
   },
   binToBase64: function (bitString) {
-    var code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split(""); //索引表
+    var code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split(""); // 索引表
     var result = "";
     var tail = bitString.length % 6;
     var bitStringTemp1 = bitString.substr(0, bitString.length - tail);
@@ -779,6 +834,25 @@ const utils = {
       result += new Array((6 - tail) / 2 + 1).join("=");
     }
     return result;
+  },
+  /**
+   * 处理枚举类型的标签显示方法，针对i18n
+   * @param {*} i18n 当前i18n对象，从Knife4j对象的上下文获取
+   * @param {*} enumCollection 枚举集合
+   */
+  enumAvalibleLabel(i18n, enumCollection) {
+    //处理枚举类型的标签显示方法，针对i18n
+    if (this.checkUndefined(i18n) && this.checkUndefined(enumCollection)) {
+      try {
+        // see assets/common/lang/en|zh.js
+        return i18n.doc.enumAvalible + ":" + enumCollection.join(",");
+      } catch (e) {
+        //ignore.
+      }
+    }
+    if (this.checkUndefined(enumCollection)) {
+      return "可用值:" + enumCollection.join(",");
+    }
   }
 }
 

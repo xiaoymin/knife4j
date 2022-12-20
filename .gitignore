@@ -9,7 +9,6 @@ target/
 .settings
 .springBeans
 
-.mvn
 logs
 
 ### IntelliJ IDEA ###
@@ -18,6 +17,8 @@ logs
 *.iml
 *.ipr
 front/.idea
+
+.DS_Store
 
 ### NetBeans ###
 nbproject/private/

@@ -2,7 +2,7 @@
 //@import "~ant-design-vue/lib/style/themes/default.less";
 
 @contentHeight: calc(100vh - 64px);
-@contentAllHeight:calc(100vh);
+@contentAllHeight: calc(100vh);
 @DebugContentBodyHeight: calc(100vh - 395px);
 @headerDefaultWidth: calc(100vw - 310px);
 @headerCollapsedWidth: calc(100vw - 80px);
@@ -45,7 +45,6 @@
       /* background: @GlobalSubMenuBackgroundColor; */
     }
   }
-
 
 
 }
@@ -98,7 +97,6 @@
   }
 
 
-
 }
 
 
@@ -134,19 +132,20 @@
 }
 
 
-.knife4j-menu-line{
+.knife4j-menu-line {
   /* left: 10px; 
   position: absolute;
   */
-  width:65px;
+  width: 65px;
   display: inline-block;
-  
+
 }
 
-.knife4j-menu-left-style{
+.knife4j-menu-left-style {
   margin-left: -12px;
 }
-.knife4j-menu-badge-num{
+
+.knife4j-menu-badge-num {
   float: right;
   margin-top: 12px;
   margin-right: 10px;
@@ -165,13 +164,15 @@
   -webkit-box-shadow: 0 0 0 1px #fff;
   box-shadow: 0 0 0 1px #fff;
   position: absolute;
-    right: 25px;
+  right: 25px;
 }
-.knife4j-menu-badge-num-style{
+
+.knife4j-menu-badge-num-style {
   background: #fff;
   color: #999;
   box-shadow: 0 0 0 1px #d9d9d9 inset;
 }
+
 /**
 * -----------------------------
 * 覆盖antd部分样式
@@ -326,7 +327,6 @@
 }
 
 
-
 .knife4j-router-view {
   min-height: 480px;
   margin: 5px 5px 0;
@@ -412,7 +412,7 @@
 .knife4j-api-summary-method {
   font-size: 14px;
   font-weight: 700;
-  min-width: 80px;
+  min-width: 20px;
   padding: 6px 15px;
   text-align: center;
   border-radius: 3px;
@@ -528,7 +528,16 @@
 
   .knife4j-api-summary-method {
     background: #49cc90;
-    height: 32px;
+    height: 31px;
+    margin-top: 0.6px;
+  }
+
+  .ant-input-group-addon {
+    background: #49cc90;
+
+    .ant-select-selection-selected-value {
+      color: #FFF;
+    }
   }
 }
 
@@ -537,7 +546,16 @@
 
   .knife4j-api-summary-method {
     background: #61affe;
-    height: 32px;
+    height: 31px;
+    margin-top: 0.6px;
+  }
+
+  .ant-input-group-addon {
+    background: #61affe;
+
+    .ant-select-selection-selected-value {
+      color: #FFF;
+    }
   }
 }
 
@@ -546,7 +564,16 @@
 
   .knife4j-api-summary-method {
     background: #9012fe;
-    height: 32px;
+    height: 31px;
+    margin-top: 0.6px;
+  }
+
+  .ant-input-group-addon {
+    background: #9012fe;
+
+    .ant-select-selection-selected-value {
+      color: #FFF;
+    }
   }
 }
 
@@ -555,7 +582,16 @@
 
   .knife4j-api-summary-method {
     background: #fca130;
-    height: 32px;
+    height: 31px;
+    margin-top: 0.6px;
+  }
+
+  .ant-input-group-addon {
+    background: #fca130;
+
+    .ant-select-selection-selected-value {
+      color: #FFF;
+    }
   }
 }
 
@@ -564,7 +600,16 @@
 
   .knife4j-api-summary-method {
     background: #f93e3e;
-    height: 32px;
+    height: 31px;
+    margin-top: 0.6px;
+  }
+
+  .ant-input-group-addon {
+    background: #f93e3e;
+
+    .ant-select-selection-selected-value {
+      color: #FFF;
+    }
   }
 }
 
@@ -573,7 +618,16 @@
 
   .knife4j-api-summary-method {
     background: #0d5aa7;
-    height: 32px;
+    height: 31px;
+    margin-top: 0.6px;
+  }
+
+  .ant-input-group-addon {
+    background: #0d5aa7;
+
+    .ant-select-selection-selected-value {
+      color: #FFF;
+    }
   }
 }
 
@@ -582,11 +636,18 @@
 
   .knife4j-api-summary-method {
     background: #50e3c2;
-    height: 32px;
+    height: 31px;
+    margin-top: 0.6px;
+  }
+
+  .ant-input-group-addon {
+    background: #50e3c2;
+
+    .ant-select-selection-selected-value {
+      color: #FFF;
+    }
   }
 }
-
-
 
 
 .knife4j-debug-request-type {
@@ -611,8 +672,11 @@
   line-height: 35px;
 }
 
-.knife4j-debug-request-content-type-beautify{
-  float: right;margin-right: 50px;height: 35px;line-height: 35px;
+.knife4j-debug-request-content-type-beautify {
+  float: right;
+  margin-right: 50px;
+  height: 35px;
+  line-height: 35px;
 }
 
 .knife4j-debug-raw-span {

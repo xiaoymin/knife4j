@@ -15,7 +15,7 @@
 docker pull xiaoymin/knife4j:latest
 ```
 如果pull速度比较慢的话，开发者可以配置镜像源
-::: details /etc/docker/daemon.json
+:::tip /etc/docker/daemon.json
 ```json
 {
   "registry-mirrors": [
@@ -188,4 +188,4 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 
 ## 注册中心(Eureka && Nacos)
 
-至于从注册中心(Eureka && Nacos)进行OpenAPI的聚合和Cloud模式下一样，开发者只需要修改app.yml配置文件，然后通过-v参数进行挂载覆盖文件即可。更多的配置需要参考聚合组件的文档参数[详细介绍文档](../documentation/knife4jAggregation.md)
+至于从注册中心(Eureka && Nacos)进行OpenAPI的聚合和Cloud模式下一样，开发者只需要修改app.yml配置文件，然后通过-v参数进行挂载覆盖文件即可。更多的配置需要参考聚合组件的文档参数[详细介绍文档](/docs/middleware/knife4jAggregation)
