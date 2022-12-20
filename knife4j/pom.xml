@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.0.0</version>
     <modules>
         <module>knife4j-core</module>
         <module>knife4j-dependencies</module>
@@ -90,17 +90,17 @@
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-core</artifactId>
-                <version>4.0.0-SNAPSHOT</version>
+                <version>4.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi2-ui</artifactId>
-                <version>4.0.0-SNAPSHOT</version>
+                <version>4.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi3-ui</artifactId>
-                <version>4.0.0-SNAPSHOT</version>
+                <version>4.0.0</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
             <dependency>
