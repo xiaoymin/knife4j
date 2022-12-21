@@ -5,15 +5,13 @@
 # 也可以通过npm直接构建，构建openapi2时：npm run build2,构建openapi3时：npm run build3
 
 echo "Knife4j Build doc ";
-
-time=$(date "+%Y%m%d-%H%M%S")
-
+time=$(date "+%Y/%m/%d %H:%M:%S")
 buildDoc(){
     echo "构建doc文档"
     rm -rf gitee/*
     cp -r build/* gitee/
     git add gitee
-    git commit -m 'build doc  $time'
+    git commit -m "build doc  $time"
    
 }
 
