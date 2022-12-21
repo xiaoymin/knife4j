@@ -104,6 +104,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
+                <version>4.0.0</version>
+            </dependency>
+
+            <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${knife4j-springfox.version}</version>
