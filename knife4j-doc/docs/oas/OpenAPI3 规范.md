@@ -81,7 +81,7 @@ OpenAPI规范的每一个新的小版本都应该在相同的主版本中对任�
 
 例如，一个有效的OpenAPI 3.0.2文档，修改openapi的属性为3.1.0之后，应该是一个有效的OpenAPI 3.1.0文档，在语义上与等同于原始的OpenAPI 3.0.2文档。必须编写新的OpenAPI规范的小版本以确保这种形式的向后兼容性。
 
-一个与OAS `3.*.*`兼容的 OpenAPI 文档包含一个必需的 openapi 字段，该字段指定它使用的 OAS 的语义版本。(OAS 2.0 文档包含一个名为[swagger](versions/2.0.md#swagger-object)，其值为“2.0”的顶级版本字段。)
+一个与OAS `3.*.*`兼容的 OpenAPI 文档包含一个必需的 openapi 字段，该字段指定它使用的 OAS 的语义版本。(OAS 2.0 文档包含一个名为[swagger](https://swagger.io/specification/v2/)，其值为“2.0”的顶级版本字段。)
 
 
 
