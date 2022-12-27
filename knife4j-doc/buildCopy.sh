@@ -12,6 +12,7 @@ buildDoc(){
     cp -r build/* gitee/
     git add gitee
     git commit -m "build doc  $time"
+    git pull
     git push -u origin dev
 }
 
