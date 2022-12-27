@@ -1,73 +1,92 @@
-# 2.1 介绍
-
-Knife4jAggregationDesktop是一款基于聚合组件Knife4jAggregation特性的独立部署的聚合OpenAPI文档软件，脱离Spring、Spring Boot技术架构体系，开发者下载后独立部署启动。开发者可以理解为能够渲染OpenAPI规范的独立文档应用
-
-主要功能作用：
-
-- 独立部署(依赖Java JDK8环境)
-- 拥有[Knife4jAggregation](aggregation-introduction)的全部特性
-- 基于动态文件配置方式
-- 支持多个项目动态配置
+# 介绍
 
 
-视频介绍：
- 
-- [第一篇 Knife4jAggregationDesktop介绍](https://www.bilibili.com/video/BV14z4y1r7e9/)
-- [第二篇 Knige4jAggregationDesktiop安装和使用说明](https://www.bilibili.com/video/BV1xV411b7Fe/)
-- [第三篇 Knife4jAggregationDesktop使用-Disk模式](https://www.bilibili.com/video/BV1XA411s73b/)
-- [第四篇 Knife4jAggregationDesktop使用-Cloud模式](https://www.bilibili.com/video/BV14y4y1i7nu/)
-- [第五篇 Knife4jAggregationDesktop使用-Eureka模式](https://www.bilibili.com/video/BV1Cy4y1i7B5/)
-- [第六篇 Knife4jAggregationDesktop使用-Nacos模式](https://www.bilibili.com/video/BV1zh411f7pz/)
+:::tip 温馨提醒
 
-## 2.1.1 软件架构
+1.0老版本请移步[老的文档地址介绍](/v2/resources//)
 
-**技术架构图**如下：
-
-![](/knife4j/assert/aggregation/Knife4jAggregationDesktop.png)
-
-**软件目录**如下：
-
-```shell script
-|-Knife4jAggregationDesktop
-|------bin 
-|------conf
-|------data
-|------lib
-|-----—logs
-|------webapps
-|------LICENSE
-|------readme.txt
-```
-
-目录说明：
-- `bin`:启动命令目录,并且包含启动jar包文件
-- `conf`:配置文件目录，`application.properties`包含`Knife4jAggregationDesktop`软件的相关配置，包括端口号，为文档设置basicAuth权限等
-- `data`:数据目录，默认根目录存放`ROOT`文件夹,多个项目的OpenAPI聚合，开发者只需要在此目录下建文件夹即可
-- `lib`:依赖jar包
-- `logs`:日志
-- `webapps`:Knife4jUi的静态资源文件
+:::
 
 
-## 2.1.2 配置文件
+Knife4jAggregationDesktop是一款致力于基于OpenAPI2及OpenAPI3规范进行聚合的独立中间件
 
-在`conf`文件夹下有`application.properties`配置文件，是`Knife4jAggregationDesktop`软件的独立配置，主要包含启动端口号,资源配置等信息
+在[Knife4j 4.0](/docs/changelog/x/4.0)版本发布之际，作者也对该组件进行了了架构重新设计，代码重构。
 
-> 1、一般情况下,开发者无需更改该配置,如果端口号和系统中的已存在应用存在冲突,那么开发者启动之前进行更改
->
-> 2、更改该配置后,应用需要重启才能生效
+并也发布了该独立中间件的2.0版本，基于Spring Boot 3.0版本进行开发。
 
-目前的配置属性如下：
-```properties
-# Knife4jAggregationDesktop 启动端口号
-knife4j.port=18006
-# MetaDataMonitor组件刷新频率,单位:毫秒(data文件夹变更时触发Knife4jAggregationDesktop将从硬盘properties配置文件加载文档),默认是5000毫秒
-knife4j.duration=5000
-# 静态资源访问后缀,主要是配置在webapp目录下的资源
-knife4j.statics=gif,png,bmp,jpeg,jpg,html,htm,shtml,mp3,wma,flv,mp4,wmv,ogg,avi,doc,docx,xls,xlsx,ppt,txt,pdf,zip,exe,tat,ico,css,js,swf,apk,ts,m3u8,json
+主要功能作用及理念：
 
-# 给所有文档加权,默认不启用,当个文档的加权访问操作,开发者应该配置在单个项目的配置文件中
-knife4j.basic.enable=false
-knife4j.basic.username=test
-knife4j.basic.password=1234
+- 独立部署(推荐使用[docker-compose](https://docs.docker.com/compose/)进行部署)
+- 延续[Knife4jAggregation](aggregation-introduction)组件在Java生态中的四种(PS:后续可以扩展更多)支持的模式
+- 提供多配置中心中间件(目前暂支持Nacos)的支持，数据、功能独立分开
+- 动态配置、实时生效预览
+- 不同文档提供单独鉴权(该特性还待开发中...)
+
+
+## 软件架构
+
+**软件架构图**如下：
+
+![](/images/website/upgrade/v4-0/knife4j-desktop-architecture.png)
+
+整个架构设计分层说明如下：
+
+- **第一层(Web):**对外暴露接口文档层，限定只支持一级`context-path`目录,`context-path`名称由使用者自定义，该组件理论上支持**`N`个项目**的文档聚合展示。
+- **第二层(Security):**提供对当前单个项目文档的鉴权，提供两种鉴权机制，一种是配置写死，另外一种可对接第三方自定义鉴权接口(需符合该组件定义的规范)
+- **第三层(Gateway):**基于Knife4jDesktop，用户在真实调试时，基于当前流行的HttpClient、OkHttp组件库，实现从web层到真实各子服务的请求代理转发.
+- **第四层(DataContext):**数据层，该数据层是Knife4jDesktop的数据来源,主要分两大类型：
+    - **服务中心类型:** 各个服务注册中心模式的解析，通过将服务中心注册的微服务进行聚合，其核心还是RESTFul API接口
+    - **配置中心类型:** Knife4jDesktop支持的配置中心的类型，通过将数据源存放在配置中心中间件上，可以保证使用者灵活使用,目前暂支持了两种模式(本地磁盘(Disk)和Nacos)
+- **第五层(Base):**基础设施层,代表了当前组件所支持的规范类型(OpenAPI2+OpenAPI3),当然，后续有新的规范，在时间允许的情况下，我们都可以进行扩展支持。
+
+
+## 快速开始
+
+以开发常用Windows系统为例，基于`docker-compose`快速拉取Knife4j的服务镜像
+
+```yml title="docker-compose.yml"
+# 通过docker-compose可以快速部署knife4j服务
+version: "2.0"
+services:
+  knife4j:
+    container_name: knife4j-desktop
+    restart: always
+    image: "xiaoymin/knfie4j:v2.0"
+    network_mode: "bridge"
+    # 本地磁盘目录映射
+    volumes:
+      - D:\Temp\data:/knife4j/data
+    ports:
+      - "10000:10000"
+    # 指定配置属性模式为disk本地磁盘
+    environment:
+      - knife4j.source=disk
+      - knife4j.disk.dir=/knife4j/data
 
 ```
+
+注意点：
+
+- volumes挂载目录需要指定本地磁盘指定的目录与Knife4j容器中的目录映射，上面配置中的`D:\Temp\data`开发者可修改为本地任意目录
+- ports端口，Knife4j容器端口默认`10000`
+- environment为初始化环境，本次使用disk模式
+
+
+docker-compose.yml文件配置完成后，即可通过命令启动服务。
+
+```shell
+docker-compose up 
+```
+
+接口在浏览器访问接口文档查看效果：`http://localhost:10000/doc.html`
+
+
+:::info
+
+该镜像服务如果是初次启动，在映射的数据目录`D:\Temp\data`下会存放一个默认的openapi规范的离线yml文件，旨在让使用者有一个快速体验的效果，后面可以替换。
+
+::: 
+
+
+
+

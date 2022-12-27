@@ -102,6 +102,10 @@ module.exports = {
                     hideable: true,
                 },
             },
+            tableOfContents: {
+                minHeadingLevel: 2,
+                maxHeadingLevel: 5
+            },
             navbar: {
                 hideOnScroll: true,
                 title: 'Knife4j',

@@ -188,8 +188,27 @@ module.exports = {
             items: [
                 'middleware-sources/desktop-introduction',
                 'middleware-sources/desktop-install',
-                'middleware-sources/desktop-use',
-                'middleware-sources/desktop-test'
+                {
+                    type: 'category',
+                    label: '数据源-服务中心',
+                    collapsed: true,
+                    link: {
+                        type: 'doc',
+                        id: 'middleware-sources/desktop/service-introduction',
+                    }, items: []
+                },
+                {
+                    type: 'category',
+                    label: '数据源-配置中心',
+                    collapsed: true,
+                    link: {
+                        type: 'doc',
+                        id: 'middleware-sources/desktop/config-introduction',
+                    }, items: [
+                        'middleware-sources/desktop/config-disk',
+                        'middleware-sources/desktop/config-nacos',
+                    ]
+                }
             ],
         }
     ],
