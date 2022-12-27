@@ -29,7 +29,7 @@ Knife4j一直致力于将目前的Ui提供给更多的平台或者别的语言�
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-aggregation-spring-boot-starter</artifactId>
     <!--在引用时请在maven中央仓库搜索aggregation最新版本号-->
-    <version>2.0.8</version>
+    <version>4.0.0</version>
 </dependency>
 ```
 
@@ -53,57 +53,27 @@ Disk、Cloud、Eureka、Nacos这四种模式只能使用其中1种，不能混�
 
 ```yml
 knife4j:
-  enableAggregation: true
+  enable-aggregation: true
   cloud:
     enable: true
     routes:
       - name: 用户体系
         uri: 192.168.0.152:8999
         location: /v2/api-docs?group=2.X版本
-        swaggerVersion: 2.0
-        servicePath: /abbb/ffe
-        routeAuth:
-          enable: true
-          username: test
-          password: 12313
-    routeAuth:
-      enable: true
-      username: test
-      password: 12313
   eureka:
     enable: false
-    serviceUrl: http://localhost:10000/eureka/
-    routeAuth:
-      enable: true
-      username: test
-      password: 12313
+    service-url: http://localhost:10000/eureka/
     routes:
       - name: 订单服务
-        serviceName: service-order
+        service-name: service-order
         location: /v2/api-docs?group=default
-        swaggerVersion: 2.0
-        servicePath: /order
-        routeAuth:
-          enable: true
-          username: test
-          password: 12313
   nacos:
     enable: false
-    serviceUrl: http://localhost:10000/nacos/
-    routeAuth:
-      enable: true
-      username: test
-      password: 12313
+    service-url: http://localhost:8848/nacos/
     routes:
       - name: 订单服务
-        serviceName: service-order
+        service-name: service-order
         location: /v2/api-docs?group=default
-        swaggerVersion: 2.0
-        servicePath: /order
-        routeAuth:
-          enable: true
-          username: test
-          password: 12313
   disk:
     enable: false
     routes:

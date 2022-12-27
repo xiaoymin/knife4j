@@ -8,7 +8,7 @@ Disk模式的配置如下：
 
 ```yml
 knife4j:
-  enableAggregation: true
+  enable-aggregation: true
   disk:
     enable: true
     routes:
