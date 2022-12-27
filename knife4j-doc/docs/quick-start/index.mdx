@@ -18,62 +18,164 @@ import OpenAPI3 from '!!raw-loader!./codeSamples/OpenAPI3.java';
 
 import IndexController2 from '!!raw-loader!./codeSamples/IndexController2.java';
 import IndexController3 from '!!raw-loader!./codeSamples/IndexController3.java';
- 
 
-<p>第一步：<a href='https://spring.io/guides/gs/spring-boot/'>创建Spring Boot项目</a>并且在pom.xml中引入<a href='https://search.maven.org/search?q=a:knife4j'>Knife4j的依赖包</a>，Maven坐标如下：</p>
-<Tabs groupId="quick_start1">
-<TabItem value="cheerio" label="Swagger2" default>
-    <CodeBlock className="language-xml">{openapi2Xml}</CodeBlock>
-</TabItem>
-<TabItem value="openapi3" label="OpenAPI3">
-    <CodeBlock className="language-xml">{openapi3Xml}</CodeBlock>
-</TabItem>
-</Tabs>
-<p>第二步：创建Swagger配置依赖，代码如下：：</p>
-<Tabs groupId="quick_start2">
-    <TabItem value="cheerio2" label="Swagger2" default>
-        <CodeBlock className="language-javascript">
-        {springfox2}
-        </CodeBlock>
-    </TabItem>
-    <TabItem value="openapi32" label="OpenAPI3">
-        <CodeBlock className="language-javascript">
-        {OpenAPI3}
-        </CodeBlock>
-    </TabItem>
-</Tabs>
 
-:::tip 提示信息
+## Spring Boot 3
 
-如果开发者使用的是Knife4j 2.x版本，并且Spring Boot版本高于2.4,那么需要在Spring Boot的yml文件中做如下配置：
+:::tip
 
-```yml
-spring:
-    mvc:
-        pathmatch:
-            # 配置策略
-            matching-strategy: ant-path-matcher
+- Spring Boot 3 只支持OpenAPI3规范
+- Knife4j提供的starter已经引用springdoc-openapi的jar，开发者需注意避免jar包冲突
+- JDK版本必须 > 17
+- 详细Demo请参考[knife4j-spring-boot3-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-spring-boot3-demo)
+
+:::  
+
+
+首先，引用Knife4j的starter,Maven坐标如下：
+
+```xml
+<dependency>
+    <groupId>com.github.xiaoymin</groupId>
+    <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+    <version>4.0.0</version>
+</dependency>
+
 ```
 
-:::
+引入之后，其余的配置，开发者即可完全参考[springdoc-openapi](https://springdoc.org/)的项目说明，Knife4j只提供了增强部分，如果要启用Knife4j的增强功能，可以在配置文件中进行开启
+
+部分配置如下:
+
+```yml
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.xiaominfo.knife4j.demo.web
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+```
+
+Knife4j更多增强配置明细，请移步[文档](features/enhance)进行查看
+
+ 最后，使用OpenAPI3的规范注解，注释各个Spring的REST接口，示例代码如下：
+ ```javascript
+@RestController
+@RequestMapping("body")
+@Tag(name = "body参数")
+public class BodyController {
+
+    @Operation(summary = "普通body请求")
+    @PostMapping("/body")
+    public ResponseEntity<FileResp> body(@RequestBody FileResp fileResp){
+        return ResponseEntity.ok(fileResp);
+    }
+
+    @Operation(summary = "普通body请求+Param+Header+Path")
+    @Parameters({
+            @Parameter(name = "id",description = "文件id",in = ParameterIn.PATH),
+            @Parameter(name = "token",description = "请求token",required = true,in = ParameterIn.HEADER),
+            @Parameter(name = "name",description = "文件名称",required = true,in=ParameterIn.QUERY)
+    })
+    @PostMapping("/bodyParamHeaderPath/{id}")
+    public ResponseEntity<FileResp> bodyParamHeaderPath(@PathVariable("id") String id,@RequestHeader("token") String token, @RequestParam("name")String name,@RequestBody FileResp fileResp){
+        fileResp.setName(fileResp.getName()+",receiveName:"+name+",token:"+token+",pathID:"+id);
+        return ResponseEntity.ok(fileResp);
+    }
+}
+
+ ```
+
+最后，访问Knife4j的文档地址：`http://ip:port/doc.html`即可查看文档
 
 
-<p>第三步:新建一个接口Controller类，如下：</p>
-<Tabs groupId="quick_start3">
-    <TabItem value="cheerio1" label="Swagger2" default>
-        <CodeBlock className="language-javascript">
-        {IndexController2}
-        </CodeBlock>
-    </TabItem>
-    <TabItem value="openapi31" label="OpenAPI3">
-        <CodeBlock className="language-javascript">
-        {IndexController3}
-        </CodeBlock>
-    </TabItem>
-</Tabs>
+## Spring Boot 2
+
+:::tip
+
+- Spring Boot 版本建议 2.4.0~3.0.0之间
+- Spring Boot 版本 < 2.4 版本则建议选择Knife4j 4.0之前的版本
+- Spring Boot 2 + OpenAPI2 demo:[knife4j-spring-boot27-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-spring-boot27-demo)
+- Spring Boot 2 + OpenAPI3 demo:[knife4j-springdoc-openapi-demo ](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-springdoc-openapi-demo)
+
+:::  
+
+### OpenAPI2
+
+OpenAPI2(Swagger)规范是Knife4j之前一直提供支持的版本，底层依赖框架为Springfox,此次在4.0版本开始
+
+Knife4j有了新的变化，主要有以下几点：
+
+- Springfox版本选择的依然是**2.10.5**版本，而并非springfox最新3.0.0版本
+- 不支持以Springfox框架为基础的OpenAPI3规范,放弃Springfox项目的后续版本适配支持工作
+- Spring Boot 版本建议 2.4.0~3.0.0之间
+
+可以使用 `knife4j-openapi2-spring-boot-starter`,maven 坐标如下：
+```xml
+<dependency>
+    <groupId>com.github.xiaoymin</groupId>
+    <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+    <version>4.0.0</version>
+</dependency>
+```
+
+配置yml属性，如下：
+```yml
+knife4j:
+  enable: true
+  openapi:
+    title: Knife4j官方文档
+    description: "`我是测试`,**你知道吗**
+    # aaa"
+    email: xiaoymin@foxmail.com
+    concat: 八一菜刀
+    url: https://docs.xiaominfo.com
+    version: v4.0
+    license: Apache 2.0
+    license-url: https://stackoverflow.com/
+    terms-of-service-url: https://stackoverflow.com/
+    group:
+      test1:
+        group-name: 分组名称
+        api-rule: package
+        api-rule-resources:
+          - com.knife4j.demo.new3
+```
+
+最后，访问Knife4j的文档地址：`http://ip:port/doc.html`即可查看文档
 
 
-<p>万事俱备，启动Spring Boot项目，浏览器访问Knife4j的文档地址即可查看效果</p>
-<CodeBlock className="language-bash">
-    http://localhost:8080/doc.html
-</CodeBlock>
+### OpenAPI3 
+
+OpenAPI3的规范，目前针对Java的Spring Boot项目，主要支持的有2个版本
+- **springfox 3.0.0：** 同时兼容OpenAPI2以及OpenAPI3，但是停更很久了
+- **springdoc-openapi：** 兼容OpenAPI3规范，更新速度频繁
+
+Knife4j在只有的OpenAPI3规范中，底层基础框架选择springdoc-openapi项目
+
+**针对Springfox3.0.0版本会放弃。**
+
+建议开发者如果使用OpenAPI3规范的话，也尽快迁移过来。
+
+可以使用 `knife4j-openapi3-spring-boot-starter`,maven 坐标如下：
+```xml
+<dependency>
+    <groupId>com.github.xiaoymin</groupId>
+    <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
+    <version>4.0.0</version>
+</dependency>
+
+``` 
+
+引入jar包后，同上面的Spring Boot 3版本使用方式一样，进行配置即可。

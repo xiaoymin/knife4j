@@ -83,7 +83,7 @@ public class NacosClient extends PoolingConnectionManager {
                 this.login();
             }
             configDefaultNacosMeta.getRoutes()
-                    .forEach(nacosRoute -> optionalList.add(threadPoolExecutor.submit(new NacosRemoteService(configDefaultNacosMeta.getServiceUrl(), accessToken, nacosRoute))));
+                    .forEach(nacosRoute -> optionalList.add(threadPoolExecutor.submit(new NacosRemoteService(configDefaultNacosMeta.getServer(), accessToken, nacosRoute))));
             optionalList.stream().forEach(optionalFuture -> {
                 try {
                     Optional<ServiceRoute> nacosInstanceOptional = optionalFuture.get();
@@ -105,7 +105,7 @@ public class NacosClient extends PoolingConnectionManager {
      */
     private boolean login() {
         if (StrUtil.isNotBlank(this.configDefaultNacosMeta.getUsername()) && StrUtil.isNotBlank(this.configDefaultNacosMeta.getPassword())) {
-            String loginUrl = this.configDefaultNacosMeta.getServiceUrl() + NACOS_LOGIN;
+            String loginUrl = this.configDefaultNacosMeta.getServer() + NACOS_LOGIN;
             log.info("project:{},Nacos Login url:{}", this.configDefaultNacosMeta.getContextPath(), loginUrl);
             HttpPost post = new HttpPost(loginUrl);
             List<NameValuePair> params = new ArrayList<>();
