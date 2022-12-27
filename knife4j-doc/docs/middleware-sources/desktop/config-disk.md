@@ -1,4 +1,4 @@
-# Disk本地磁盘模式
+# Disk本地配置模式
 
 Disk本地磁盘的配置中心模式是最简单的，用户只需要在本地磁盘建立一个数据目录即可。
 
@@ -34,8 +34,6 @@ services:
 |属性|说明|
 |----|------|
 |volumes|docker磁盘挂载映射目录，规则：`宿主机本地目录(自定义):/knife4j/data`|
-|ports|容器启动后的端口映射|
-|environment|组件启动是所需要的环境变量信息|
 |knife4j.source|代表当前容器以什么模式启动，disk模式则代表是当前本地磁盘模式|
 |knife4j.disk.dir|代表disk模式下的配置信息读取目录，该目录可以存放OpenAPI离线文件(json/yml),也可以存放支持的服务中心以从远端拉取数据进行聚合|
 
@@ -152,7 +150,7 @@ Cloud模式则是需要在创建好的文件夹目录下新建`cloud.properties`
 |------ROOT  
 |--------cloud.properties
 ```
-`cloud.properties`配置文件(该配置和[Knife4jAggregation聚合组件](aggregation-introduction)中声明的[Cloud模式](aggregation-cloud)的route节点配置完全一样)：
+示例配置：
 
 ```properties
 knife4j.cloud[0].routes[0].name=用户
