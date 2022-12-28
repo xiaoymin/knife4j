@@ -560,6 +560,7 @@ SwaggerBootstrapUi.prototype.analysisGroupSuccess = function (data) {
     g.header = KUtils.getValue(group, 'header', null, true);
     g.basicAuth = KUtils.getValue(group, 'basicAuth', null, true);
     g.servicePath = KUtils.getValue(group, 'servicePath', null, true);
+    g.contextPath = KUtils.getValue(group, 'contextPath', null, true);
     g.desktop = that.desktop;
     g.desktopCode = that.desktopCode;
     var newUrl = '';
@@ -4811,6 +4812,10 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
   // 例如,Host:http://192.168.0.1:8080/abc ?
   // var newfullPath = that.currentInstance.host;
   var newfullPath = '';
+  //针对OpenAPI3规范追加contextPath
+  if (KUtils.checkUndefined(that.currentInstance.contextPath)) {
+    newfullPath += that.currentInstance.contextPath;
+  }
   var basePathFlag = false;
   // basePath='/addd/';
   if (basePath != '' && basePath != '/') {
@@ -7201,6 +7206,8 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   // 因为knife4j在v2.0版本支持了扩展排序的支持，所有目前排序支持两种，order：默认自定义的数值排序，alpha：官方首字母排序，需要后端设置，目前仅在springdoc适配支持，springfox放弃适配
   this.tagSort = 'order';
   this.operationSort = 'order';
+  //追加contextPath属性，否则OpenApI3规范聚合时会丢失
+  this.contextPath = null;
 }
 SwaggerBootstrapUiInstance.prototype.clearOAuth2 = function () {
   if (!KUtils.checkUndefined(this.oauths)) {
