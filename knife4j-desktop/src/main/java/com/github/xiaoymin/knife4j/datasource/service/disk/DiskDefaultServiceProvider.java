@@ -63,8 +63,8 @@ public class DiskDefaultServiceProvider implements ServiceDataProvider<ConfigDef
         if (configMeta != null && CollectionUtil.isNotEmpty(configMeta.getRoutes())) {
             ServiceDocument serviceDocument = new ServiceDocument();
             serviceDocument.setContextPath(configMeta.getContextPath());
+            List<ServiceRoute> serviceRoutes = new ArrayList<>();
             for (DiskRoute diskRoute : configMeta.getRoutes()) {
-                List<ServiceRoute> serviceRoutes = new ArrayList<>();
                 if (StrUtil.isNotBlank(diskRoute.getLocation())) {
                     File file = new File(diskRoute.getLocation());
                     try (InputStream resource = FileUtil.getInputStream(diskRoute.getLocation())) {
@@ -88,8 +88,8 @@ public class DiskDefaultServiceProvider implements ServiceDataProvider<ConfigDef
                         log.error("read err:" + e.getMessage());
                     }
                 }
-                serviceDocument.setRoutes(serviceRoutes);
             }
+            serviceDocument.setRoutes(serviceRoutes);
             return serviceDocument;
         }
         return null;
