@@ -55,7 +55,8 @@ public class EnvironmentUtils {
      */
     public static Integer resolveInt(Environment environment, String key, Integer defaultValue) {
         if (environment != null) {
-            return Integer.parseInt(Objects.toString(environment.getProperty(key)), defaultValue);
+            return Integer.parseInt(Objects.toString(environment.getProperty(key,String.valueOf(defaultValue)), String.valueOf(defaultValue)));
+            //return Integer.parseInt(Objects.toString(environment.getProperty(key)), defaultValue);
         }
         return defaultValue;
     }
@@ -69,7 +70,7 @@ public class EnvironmentUtils {
      */
     public static Boolean resolveBool(Environment environment, String key, Boolean defaultValue) {
         if (environment != null) {
-            return Boolean.valueOf(Objects.toString(environment.getProperty(key), defaultValue.toString()));
+            return Boolean.valueOf(Objects.toString(environment.getProperty(key,defaultValue.toString()), defaultValue.toString()));
         }
         return defaultValue;
     }
