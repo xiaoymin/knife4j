@@ -97,6 +97,14 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>${knife4j-spring-boot.version}</version>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 
