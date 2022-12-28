@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright © 2017-2022 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,8 @@ public class EnvironmentUtils {
      */
     public static Integer resolveInt(Environment environment, String key, Integer defaultValue) {
         if (environment != null) {
-            return Integer.parseInt(Objects.toString(environment.getProperty(key,String.valueOf(defaultValue)), String.valueOf(defaultValue)));
-            //return Integer.parseInt(Objects.toString(environment.getProperty(key)), defaultValue);
+            return Integer.parseInt(Objects.toString(environment.getProperty(key, String.valueOf(defaultValue)), String.valueOf(defaultValue)));
+            // return Integer.parseInt(Objects.toString(environment.getProperty(key)), defaultValue);
         }
         return defaultValue;
     }
@@ -70,7 +70,7 @@ public class EnvironmentUtils {
      */
     public static Boolean resolveBool(Environment environment, String key, Boolean defaultValue) {
         if (environment != null) {
-            return Boolean.valueOf(Objects.toString(environment.getProperty(key,defaultValue.toString()), defaultValue.toString()));
+            return Boolean.valueOf(Objects.toString(environment.getProperty(key, defaultValue.toString()), defaultValue.toString()));
         }
         return defaultValue;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright © 2017-2022 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,17 +42,17 @@ import org.springframework.web.filter.CorsFilter;
 @EnableConfigurationProperties({Knife4jProperties.class, Knife4jSetting.class})
 @ConditionalOnProperty(name = "knife4j.enable", havingValue = "true")
 public class Knife4jAutoConfiguration {
-
+    
     private final Knife4jProperties properties;
     private final Knife4jSetting setting;
-
+    
     Logger logger = LoggerFactory.getLogger(Knife4jAutoConfiguration.class);
-
+    
     public Knife4jAutoConfiguration(Knife4jProperties properties, Knife4jSetting setting) {
         this.properties = properties;
         this.setting = setting;
     }
-
+    
     /**
      * 增强自定义配置
      * @return

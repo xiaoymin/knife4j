@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright © 2017-2022 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * @since -gateway-spring-boot-starter v4.0.0
+ * @since gateway-spring-boot-starter v4.0.0
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/03 15:41
  */
@@ -59,6 +59,7 @@ public class Knife4jGatewayProperties {
                 Map<String, String> routeMap = new LinkedHashMap<>();
                 routeMap.put("name", route.getName());
                 routeMap.put("url", route.getUrl());
+                routeMap.put("contextPath", route.getContextPath());
                 String source = route.getName() + route.getUrl() + route.getServiceName();
                 String id = Base64.getEncoder().encodeToString(source.getBytes(StandardCharsets.UTF_8));
                 routeMap.put("id", id);
