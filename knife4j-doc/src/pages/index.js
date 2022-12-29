@@ -142,7 +142,7 @@ function Knife4jFramWork() {
 
 
 function Contributors() {
-    const contributorDatas = require('../../static/json/contributors.json');
+    const contributorDatas = require('../../static/json/contributors1.json');
 
     return (
         <section className={clsx(styles.try, 'container')}>
