@@ -14,15 +14,20 @@ Knife4j自`2.0.8`版本开始,开发者可以底部Footer的内容，可以更�
 knife4j:
   enable: true
   setting:
-    enableFooter: false
-    enableFooterCustom: true
-    footerCustomContent: Apache License 2.0 | Copyright  2019-[浙江八一菜刀研究基地](https://gitee.com/xiaoym/knife4j)
+    enable-footer: false
+    enable-footer-custom: true
+    footer-custom-content: Apache License 2.0 | Copyright  2019-[浙江八一菜刀研究基地](https://gitee.com/xiaoym/knife4j)
 ```
 
 属性说明：
-- `enableFooter`: 禁用默认的Footer显示，如果要自定义的话该属性必须设置为`false`,否则不会生效
-- `enableFooterCustom`:该属性为Boolean值,默认`false`，如果开发者要自定义Footer内容,该选项设置为`true`
-- `footerCustomContent`: 最终在Ui界面底部显示的Footer内容，支持Markdown格式
+- `enable-footer`: 禁用默认的Footer显示，如果要自定义的话该属性必须设置为`false`,否则不会生效
+- `enable-footer-custom`:该属性为Boolean值,默认`false`，如果开发者要自定义Footer内容,该选项设置为`true`
+- `footer-custom-content`: 最终在Ui界面底部显示的Footer内容，支持Markdown格式
+
+
+:::danger 重要提醒
+自Knife4j 4.0版本开始，下面的配置在使用`knife4j-openapi2-spring-boot-starter`组件时才需要，而使用`knife4j-openapi3-spring-boot-starter`或者`knife4j-openapi3-jakarta-spring-boot-starter`组件则**不需要！！！**，开发者需要注意。
+:::
 
 开发者配置好后,最核心的一步，也是最后最重要的一步，开发者需要在创建`Docket`逻辑分组对象时，通过`Knife4j`提供的工具对象`OpenApiExtensionResolver`将扩展属性进行赋值
 

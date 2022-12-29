@@ -69,11 +69,17 @@ knife4j:
 在配置`knife4j.documents`中，该属性是一个集合数组,代表开发者可以添加多个自定义文档分组,因为我们在最终呈现接口文档时，会存在逻辑分组的情况，有时候我们希望不同的逻辑分组下显示不同的逻辑分组文档，所以需要通过该节点下的group(分组名称)进行区分
 
 相关属性说明如下：
+
 |属性名称|是否必须|说明|
 |--|---|---|
 |group|true|逻辑分组名称,最终在逻辑分组时该属性需要传入|
 |name|true|自定义文档的分组名称，可以理解为开发者存在多个自定义文档，最终在Ui界面呈现时的一个分组名称|
 |location|true|提供自定义`.md`文件的路径或者文件|
+
+
+:::danger 重要提醒
+自Knife4j 4.0版本开始，下面的配置在使用`knife4j-openapi2-spring-boot-starter`组件时才需要，而使用`knife4j-openapi3-spring-boot-starter`或者`knife4j-openapi3-jakarta-spring-boot-starter`组件则**不需要！！！**，开发者需要注意。
+:::
 
 开发者配置好后,最核心的一步，也是最后最重要的一步，开发者需要在创建`Docket`逻辑分组对象时，通过`Knife4j`提供的工具对象`OpenApiExtensionResolver`将扩展属性进行赋值
 

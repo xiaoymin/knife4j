@@ -1,11 +1,12 @@
 # 3.6 接口排序
 
 :::caution 温馨提醒
-增强功能需要通过配置yml配置文件开启增强,自2.0.6开始
+1、增强功能需要通过配置yml配置文件开启增强,自2.0.6开始
 ```yml
 knife4j:
   enable: true
 ```
+2、自Knife4j 4.0版本，开发者必须使用`knife4j-openapi2-spring-boot-starter`组件才生效
 :::
 
 

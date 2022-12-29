@@ -1,11 +1,12 @@
 # 3.7 分组排序
 
 :::caution 温馨提醒
-增强功能需要通过配置yml配置文件开启增强,自2.0.7开始
+1、增强功能需要通过配置yml配置文件开启增强,自2.0.7开始
 ```yml
 knife4j:
   enable: true
 ```
+2、自Knife4j 4.0版本，开发者必须使用`knife4j-openapi2-spring-boot-starter`组件才生效
 :::
 
 Controller之间的排序主要有两种方式,排序的规则是倒序,但是排序的最小值必须大于0

@@ -50,8 +50,12 @@ knife4j:
   enable: true
   setting:
     # 对于调试中的请求参数是否缓存进行开启配置，该参数默认为true
-    enableRequestCache: true
+    enable-request-cache: true
 ```
+
+:::danger 重要提醒
+自Knife4j 4.0版本开始，下面的配置在使用`knife4j-openapi2-spring-boot-starter`组件时才需要，而使用`knife4j-openapi3-spring-boot-starter`或者`knife4j-openapi3-jakarta-spring-boot-starter`组件则**不需要！！！**，开发者需要注意。
+:::
 
 在配置文件中进行配置后,还需要在创建Docket对象时，通过调用Knife4j提供的工具对象`OpenApiExtensionResolver`提供一个OpenAPI的扩展属性结构
 

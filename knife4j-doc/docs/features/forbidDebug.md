@@ -15,12 +15,17 @@ knife4j:
 knife4j:
   enable: true
   setting:
-    enableDebug: false
+    enable-debug: false
 ```
 
 属性说明：
 
-- `enableDebug`:该属性是一个`Boolean`值，代表是否启用调试功能,默认值为`true`(代表开启调试)，如果要禁用调试，该值设为`false`
+- `enable-debug`:该属性是一个`Boolean`值，代表是否启用调试功能,默认值为`true`(代表开启调试)，如果要禁用调试，该值设为`false`
+
+
+:::danger 重要提醒
+自Knife4j 4.0版本开始，下面的配置在使用`knife4j-openapi2-spring-boot-starter`组件时才需要，而使用`knife4j-openapi3-spring-boot-starter`或者`knife4j-openapi3-jakarta-spring-boot-starter`组件则**不需要！！！**，开发者需要注意。
+:::
 
 开发者配置好后,最核心的一步，也是最后最重要的一步，开发者需要在创建`Docket`逻辑分组对象时，通过`Knife4j`提供的工具对象`OpenApiExtensionResolver`将扩展属性进行赋值
 
