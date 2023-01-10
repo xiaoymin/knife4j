@@ -111,8 +111,8 @@ public class OpenApiExtensionResolver {
         // 判断主页文档
         if (this.setting != null) {
             if (this.setting.isEnableHomeCustom()) {
-                if (StrUtil.isNotBlank(this.setting.getHomeCustomLocation())) {
-                    String content = readCustomHome(this.setting.getHomeCustomLocation());
+                if (StrUtil.isNotBlank(this.setting.getHomeCustomPath())) {
+                    String content = readCustomHome(this.setting.getHomeCustomPath());
                     // 赋值
                     this.setting.setHomeCustomLocation(content);
                 }
