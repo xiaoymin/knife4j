@@ -175,8 +175,9 @@ public class CommonUtils {
                 matcher = pattern.matcher(le);
                 if (matcher.matches()) {
                     title = matcher.group(1);
+                    break;
                 }
-                break;
+                continue;
             }
         } catch (UnsupportedEncodingException e) {
             // ignore
