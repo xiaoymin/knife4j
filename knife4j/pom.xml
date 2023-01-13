@@ -35,7 +35,7 @@
         </developer>
     </developers>
     <properties>
-        <revision>4.0.0-SNAPSHOT</revision>
+        <revision>4.1.0-SNAPSHOT</revision>
         <knife4j-project.build.sourceEncoding>UTF-8</knife4j-project.build.sourceEncoding>
         <knife4j-java.version>1.8</knife4j-java.version>
         <knife4j-spring.version>5.3.8</knife4j-spring.version>
@@ -219,6 +219,11 @@
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webmvc-core</artifactId>
+                <version>${knife4j-springdoc-openapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${knife4j-springdoc-openapi.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
