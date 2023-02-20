@@ -134,7 +134,7 @@ public class Knife4jSetting {
      * Customize Markdown document content of home page
      */
     private String homeCustomLocation;
-
+    
     /**
      * Customize Markdown document path of home page
      */
