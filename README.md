@@ -160,3 +160,11 @@ Demo示例见另外项目地址：[https://gitee.com/xiaoym/swagger-bootstrap-ui
 ![接口离线文档](static/6.png)
 
 ![SwaggerModels](static/7.png)
+
+
+## 特别鸣谢
+
+- 感谢 [JetBrains](https://jb.gg/OpenSourceSupport) 提供的免费开源 License：
+
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png"  width="100" height="100" />
+  
