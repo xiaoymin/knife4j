@@ -226,6 +226,7 @@ export default {
             var pkid = values.name + values.in;
             var nvl = { ...values, pkid: pkid };
             gpInstance.globalParameters.push(nvl);
+
             localStore.getItem(Constants.globalParameter).then(function (val) {
               const dfv = val;
               dfv[key] = gpInstance.globalParameters;

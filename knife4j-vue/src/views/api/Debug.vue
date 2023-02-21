@@ -38,7 +38,7 @@
               <template slot="tab">
                 <span>
                   <a-tag v-if="headerCountFlag" class="knife4j-debug-param-count">{{
-                      headerCount
+                    headerCount
                   }}</a-tag><span v-html="$t('debug.headers')">请求头部</span>
                 </span>
               </template>
@@ -57,8 +57,8 @@
                   <!--判断枚举类型-->
                   <a-row v-if="record.enums != null">
                     <!--不为空-->
-                    <a-select :mode="record.enumsMode" :defaultValue="text" :data-key="record.id"
-                      :options="record.enums" style="width: 100%" @change="headerContentEnumChnage">
+                    <a-select :mode="record.enumsMode" :defaultValue="text" :data-key="record.id" :options="record.enums"
+                      style="width: 100%" @change="headerContentEnumChnage">
                     </a-select>
                   </a-row>
                   <a-row v-else>
@@ -114,8 +114,8 @@
                 </div>
               </a-row>
               <a-row v-if="formFlag">
-                <a-table v-if="formTableFlag" bordered size="small" :rowSelection="rowFormSelection"
-                  :columns="formColumn" :pagination="pagination" :dataSource="formData" rowKey="id">
+                <a-table v-if="formTableFlag" bordered size="small" :rowSelection="rowFormSelection" :columns="formColumn"
+                  :pagination="pagination" :dataSource="formData" rowKey="id">
                   <!--参数名称-->
                   <template slot="formName" slot-scope="text, record">
                     <a-input :placeholder="record.description" :data-key="record.id" :defaultValue="text"
@@ -141,17 +141,16 @@
                         </a-select>
                       </a-row>
                       <a-row v-else>
-                        <a-input :placeholder="record.description"
-                          :class="'knife4j-debug-param-require' + record.require" :data-key="record.id"
-                          :defaultValue="text" @change="formContentChange" />
+                        <a-input :placeholder="record.description" :class="'knife4j-debug-param-require' + record.require"
+                          :data-key="record.id" :defaultValue="text" @change="formContentChange" />
                       </a-row>
                     </div>
                     <div v-else>
                       <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
                       <div>
                         <div style="display:none;" v-if="record.multipart">
-                          <input :id="'file' + record.id" multiple style="display:none;" type="file"
-                            :data-key="record.id" @change="formFileChange" />
+                          <input :id="'file' + record.id" multiple style="display:none;" type="file" :data-key="record.id"
+                            @change="formFileChange" />
                         </div>
                         <div style="display:none;" v-else>
                           <input :id="'file' + record.id" style="display:none;" type="file" :data-key="record.id"
@@ -222,9 +221,8 @@
                         </a-select>
                       </a-row>
                       <a-row v-else>
-                        <a-input :placeholder="record.description"
-                          :class="'knife4j-debug-param-require' + record.require" :data-key="record.id"
-                          :defaultValue="text" @change="rawFormContentChange" />
+                        <a-input :placeholder="record.description" :class="'knife4j-debug-param-require' + record.require"
+                          :data-key="record.id" :defaultValue="text" @change="rawFormContentChange" />
                       </a-row>
                     </template>
                     <a-row slot="operation" slot-scope="text, record">
@@ -533,6 +531,7 @@ export default {
       }
     },
     reloadUpdateHeader(tempglobalParameters) {
+      console.log('tempglobalParameters', tempglobalParameters)
       var newDataObject = this.reloadUpdateCommons(tempglobalParameters, this.headerData, "header");
       // 如果两种情况只需要1种情况存在更新,那么重新更新当前Header
       if (newDataObject.update) {
@@ -723,7 +722,7 @@ export default {
             id: KUtils.randomMd5(),
             name: param.name,
             content: param.value,
-            require: false,
+            require: true,
             description: "",
             enums: null, // 枚举下拉框
             // 枚举是否支持多选('default' | 'multiple' )
@@ -1276,6 +1275,7 @@ export default {
       }
     },
     addApiParameterToRaw(apiParameters) {
+      console.log('addApiParameterToRaw', apiParameters)
       // raw类型添加header
       if (KUtils.arrNotEmpty(apiParameters)) {
         var headers = apiParameters.filter(param => param.in == "header");
@@ -1308,6 +1308,7 @@ export default {
       }
     },
     addApiParameterToForm(apiParameters) {
+      console.log('addApiParameterToForm', apiParameters)
       // form-data类型
       if (KUtils.arrNotEmpty(apiParameters)) {
         apiParameters.forEach(param => {
@@ -1400,6 +1401,7 @@ export default {
       }
     },
     addApiParameterToRawForm(apiParameters) {
+      console.log('addApiParameterToRawForm', apiParameters)
       if (KUtils.arrNotEmpty(apiParameters)) {
         apiParameters.forEach(param => {
           if (param.in == "header") {

@@ -26,8 +26,8 @@
       <a-layout>
         <a-layout-header style="padding: 0;background: #fff;    height: 56px; line-height: 56px;">
           <GlobalHeader @searchKey="searchKey" @searchClear="searchClear" :documentTitle="documentTitle"
-            :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser"
-            :onCollapse="handleMenuCollapse" :onMenuClick="item => handleMenuClick(item)" />
+            :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse"
+            :onMenuClick="item => handleMenuClick(item)" />
         </a-layout-header>
         <context-menu :itemList="menuItemList" :visible.sync="menuVisible" @select="onMenuSelect" />
         <a-tabs hideAdd v-model="activeKey" @contextmenu.native="e => onContextmenu(e)" type="editable-card"
@@ -106,8 +106,8 @@ export default {
   },
   beforeCreate() { },
   created() {
-    //this.initSpringDocOpenApi();
-    this.initKnife4jSpringUi();
+    this.initSpringDocOpenApi();
+    //this.initKnife4jSpringUi();
     //this.initKnife4jJFinal();
     //this.initKnife4jFront();
     this.initI18n();
@@ -964,6 +964,4 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>
