@@ -10,7 +10,9 @@
 - knife4j-extension-edge:edge浏览器扩展程序
 - knife4j-ui:基于React+Antd框架编写的前端Ui层呈现
 
+# 架构设计
 
+![](../static/knife4j-front-architecture.png)
 
 
 # 模块说明
