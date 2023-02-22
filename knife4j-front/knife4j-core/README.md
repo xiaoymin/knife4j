@@ -17,7 +17,7 @@
 ```typescript
 enum SpecType{
 
-    Swagger2,OpenAPI3,AsyncAPI,PostMan
+    SWAGGER2,OPENAPI3,ASYNCAPI,POSTMAN
 }
 
 ```
@@ -27,21 +27,21 @@ enum SpecType{
 
 
 ```typescript
-interface Processer{
+interface SpecAdapter{
 
     /***
      * 转换接口
      */
-    convert(source:any):Knife4jInstance;
+    convert(source:any):Knife4jOpenAPI;
 }
 
 ```
 由于规范众多，解析实现版本各不同，例如：
 
-- Swagger2Processer
-- OpenAPI3Processer
-- PostmanProcesser
-- AsyncProcesser
+- Swagger2Adapter
+- OpenAPI3Adapter
+- PostmanAdapter
+- AsyncAPIAdapter
 - more...
 
 
@@ -49,12 +49,12 @@ interface Processer{
 定义实例创建抽象类
 
 ```typescript
-interface ProcesserFactory{
+interface SpecAdapterFactory{
 
     /***
      * 转换接口
      */
-    convert(type:SpecType):InstanceProcesser;
+    createAdapter(type:SpecType):SpecAdapter;
 }
 
 ```
@@ -62,22 +62,22 @@ interface ProcesserFactory{
 实现类：
 
 ```typescript
-class MyProcesserFactory implements ProcesserFactory{
+class DefaultAdapterFactory implements SpecAdapterFactory{
 
     /***
      * 转换接口
      */
-    convert(type:SpecType):InstanceProcesser{
+    createAdapter(type:SpecType):SpecAdapter{
         if(type==Swagger2){
-            return new Swagger2Processer();
+            return new Swagger2Adapter();
         }
         if(type==OpenAPI3){
-            return new OpenAPI3Processer();
+            return new OpenAPI3Adapter();
         }
         if(type==AsyncAPI){
-            return new AsyncProcesser();
+            return new AsyncAPIAdapter();
         }
-        return new DefaultProcess();
+        return new DefaultAdapter();
     }
 }
 
