@@ -1,4 +1,4 @@
-import Menu from '../menu/index'
+import Menu from '../core/menu/index'
 
 let a = new Menu('张飞');
 
