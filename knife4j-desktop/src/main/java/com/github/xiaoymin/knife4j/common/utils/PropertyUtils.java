@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
 
@@ -75,7 +76,30 @@ public class PropertyUtils {
             while (enumeration.hasMoreElements()) {
                 String name = Objects.toString(enumeration.nextElement(), "");
                 if (StrUtil.isNotBlank(name)) {
-                    propertyMap.put(name, properties.getProperty(name));
+                    String value = properties.getProperty(name);
+                    logger.debug("{}:{}",name,value);
+                    propertyMap.put(name, value);
+                }
+                // logger.info("propertyName:{}",name);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return propertyMap;
+    }
+
+    public static Map<String,String> load(InputStream inputStream){
+        Map<String, String> propertyMap = new HashMap<>();
+        try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8")) {
+            Properties properties = new Properties();
+            properties.load(inputStreamReader);
+            Enumeration<?> enumeration = properties.propertyNames();
+            while (enumeration.hasMoreElements()) {
+                String name = Objects.toString(enumeration.nextElement(), "");
+                if (StrUtil.isNotBlank(name)) {
+                    String value = properties.getProperty(name);
+                    logger.debug("{}:{}",name,value);
+                    propertyMap.put(name, value);
                 }
                 // logger.info("propertyName:{}",name);
             }
