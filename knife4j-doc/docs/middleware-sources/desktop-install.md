@@ -27,7 +27,7 @@ services:
   knife4j:
     container_name: knife4j-desktop
     restart: always
-    image: "xiaoymin/knfie4j:v2.0"
+    image: "xiaoymin/knife4j:v2.0"
     network_mode: "bridge"
     # 本地磁盘目录映射
     volumes:
@@ -60,7 +60,7 @@ services:
   knife4j:
     container_name: knife4j-desktop-nacos
     restart: always
-    image: "xiaoymin/knfie4j:v2.0"
+    image: "xiaoymin/knife4j:v2.0"
     network_mode: "bridge"
     # 端口映射
     ports:

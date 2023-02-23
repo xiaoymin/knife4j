@@ -51,7 +51,7 @@ services:
   knife4j:
     container_name: knife4j-desktop
     restart: always
-    image: "xiaoymin/knfie4j:v2.0"
+    image: "xiaoymin/knife4j:v2.0"
     network_mode: "bridge"
     # 本地磁盘目录映射
     volumes:
