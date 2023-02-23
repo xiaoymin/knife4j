@@ -5621,8 +5621,13 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
     // 存在schema属性,请求对象是实体类
     minfo.schema = true;
     var schemaObject = m['schema'];
+    console.log('schema', schemaObject)
     var schemaType = schemaObject['type'];
     minfo.type = schemaType;
+    let _tempSchemaParamDesc = KUtils.propValue('description', schemaObject, null);
+    if (KUtils.checkUndefined(_tempSchemaParamDesc)) {
+      minfo.description = _tempSchemaParamDesc;
+    }
     if (schemaType == 'array') {
       minfo.type = schemaType;
       var schItem = schemaObject['items'];
