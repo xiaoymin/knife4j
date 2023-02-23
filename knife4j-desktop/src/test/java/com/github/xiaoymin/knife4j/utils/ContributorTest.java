@@ -1,3 +1,20 @@
+/*
+ * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.utils;
 
 import cn.hutool.core.codec.Base64;
@@ -27,29 +44,29 @@ import java.util.List;
  */
 @Slf4j
 public class ContributorTest {
-
-
+    
     @Test
-    public void test_Avatar(){
-        String file="/Users/xiaoyumin/code/gitee/knife4j/knife4j-doc/static/json/contributors.json";
-        String body=FileUtil.readString(file, StandardCharsets.UTF_8);
-        Type type=new TypeToken<List<ContributorInfo>>(){}.getType();
-        ///Users/xiaoyumin/code/gitee/knife4j/knife4j-doc/static/images/website/contributor
-
-        List<ContributorInfo> contributorInfos=DesktopConstants.GSON.fromJson(body,type);
-        List<ContributorInfo> newInfo=new ArrayList<>();
-        for (ContributorInfo contributorInfo:contributorInfos ){
-            String fileImage="/Users/xiaoyumin/code/gitee/knife4j/knife4j-doc/static/images/website/contributor/"+contributorInfo.getName()+".png";
-            log.info("name:{},url:{}",contributorInfo.getName(),contributorInfo.getUrl());
-            if (StrUtil.isNotBlank(contributorInfo.getAvatar())){
-                String bodyContent=contributorInfo.getAvatar().substring(contributorInfo.getAvatar().indexOf(",",1)+1,contributorInfo.getAvatar().length());
-                byte[] imageBytes=Base64.decode(bodyContent);
-                FileUtil.writeBytes(imageBytes,fileImage);
-                contributorInfo.setAvatar("/images/website/contributor/"+contributorInfo.getName()+".png");
+    public void test_Avatar() {
+        String file = "/Users/xiaoyumin/code/gitee/knife4j/knife4j-doc/static/json/contributors.json";
+        String body = FileUtil.readString(file, StandardCharsets.UTF_8);
+        Type type = new TypeToken<List<ContributorInfo>>() {
+        }.getType();
+        /// Users/xiaoyumin/code/gitee/knife4j/knife4j-doc/static/images/website/contributor
+        
+        List<ContributorInfo> contributorInfos = DesktopConstants.GSON.fromJson(body, type);
+        List<ContributorInfo> newInfo = new ArrayList<>();
+        for (ContributorInfo contributorInfo : contributorInfos) {
+            String fileImage = "/Users/xiaoyumin/code/gitee/knife4j/knife4j-doc/static/images/website/contributor/" + contributorInfo.getName() + ".png";
+            log.info("name:{},url:{}", contributorInfo.getName(), contributorInfo.getUrl());
+            if (StrUtil.isNotBlank(contributorInfo.getAvatar())) {
+                String bodyContent = contributorInfo.getAvatar().substring(contributorInfo.getAvatar().indexOf(",", 1) + 1, contributorInfo.getAvatar().length());
+                byte[] imageBytes = Base64.decode(bodyContent);
+                FileUtil.writeBytes(imageBytes, fileImage);
+                contributorInfo.setAvatar("/images/website/contributor/" + contributorInfo.getName() + ".png");
                 newInfo.add(contributorInfo);
             }
         }
-        String newJson=DesktopConstants.GSON.toJson(newInfo);
-        FileUtil.writeString(newJson,new File("/Users/xiaoyumin/code/gitee/knife4j/knife4j-doc/static/json/contributors1.json"),StandardCharsets.UTF_8);
+        String newJson = DesktopConstants.GSON.toJson(newInfo);
+        FileUtil.writeString(newJson, new File("/Users/xiaoyumin/code/gitee/knife4j/knife4j-doc/static/json/contributors1.json"), StandardCharsets.UTF_8);
     }
 }

@@ -77,7 +77,7 @@ public class PropertyUtils {
                 String name = Objects.toString(enumeration.nextElement(), "");
                 if (StrUtil.isNotBlank(name)) {
                     String value = properties.getProperty(name);
-                    logger.debug("{}:{}",name,value);
+                    logger.debug("{}:{}", name, value);
                     propertyMap.put(name, value);
                 }
                 // logger.info("propertyName:{}",name);
@@ -87,8 +87,8 @@ public class PropertyUtils {
         }
         return propertyMap;
     }
-
-    public static Map<String,String> load(InputStream inputStream){
+    
+    public static Map<String, String> load(InputStream inputStream) {
         Map<String, String> propertyMap = new HashMap<>();
         try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8")) {
             Properties properties = new Properties();
@@ -98,7 +98,7 @@ public class PropertyUtils {
                 String name = Objects.toString(enumeration.nextElement(), "");
                 if (StrUtil.isNotBlank(name)) {
                     String value = properties.getProperty(name);
-                    logger.debug("{}:{}",name,value);
+                    logger.debug("{}:{}", name, value);
                     propertyMap.put(name, value);
                 }
                 // logger.info("propertyName:{}",name);
