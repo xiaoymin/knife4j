@@ -1057,7 +1057,7 @@ SwaggerBootstrapUi.prototype.setDefaultSettings = function () {
 SwaggerBootstrapUi.prototype.openV3Settings = function (data) {
   var that = this;
   // 判断是否包含extensions的增强
-  var openapi = data['extensions'];
+  var openapi = KUtils.getExtensions(data);
   if (KUtils.checkUndefined(openapi)) {
     // 包含，判断settings
     if (KUtils.checkUndefined(openapi['x-setting'])) {
@@ -1138,7 +1138,7 @@ SwaggerBootstrapUi.prototype.openDocuments = function (data) {
 SwaggerBootstrapUi.prototype.openV3Documents = function (data) {
   var that = this;
   // 判断是否包含x-openapi的增强
-  var openapi = data['extensions'];
+  var openapi = KUtils.getExtensions(data);
   if (KUtils.checkUndefined(openapi)) {
     // 判断是否包含markdown文档
     if (KUtils.arrNotEmpty(openapi['x-markdownFiles'])) {
@@ -2468,8 +2468,8 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
         tagorder = KUtils.getValue(tag, 'x-order', '', true);
       } else {
         // v3
-        if (KUtils.checkUndefined(tag['extensions'])) {
-          var tagexte = tag['extensions'];
+        if (KUtils.checkExtensionsUndefined(tag)) {
+          var tagexte = KUtils.getExtensions(tag);
           tagauth = KUtils.getValue(tagexte, 'x-author', '', true);
           tagorder = KUtils.getValue(tagexte, 'x-order', '', true);
         }
@@ -5077,8 +5077,8 @@ SwaggerBootstrapUi.prototype.readApiInfoInstanceExtOAS2 = function (swpinfo, api
  */
 SwaggerBootstrapUi.prototype.readApiInfoInstanceExtOAS3 = function (swpinfo, apiInfo) {
   // 获取扩展属性
-  if (apiInfo.hasOwnProperty('extensions') && KUtils.checkUndefined(apiInfo['extensions'])) {
-    var extensions = apiInfo['extensions'];
+  if (KUtils.checkExtensionsUndefined(apiInfo)) {
+    var extensions = KUtils.getExtensions(apiInfo);
     // 读取扩展属性x-ignoreParameters
     if (extensions.hasOwnProperty('x-ignoreParameters')) {
       var ignoArr = extensions['x-ignoreParameters'];
