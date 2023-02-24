@@ -25,7 +25,7 @@ knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 | knife4j-doc    | knife4j官方文档，基于Docusaurus编写，参与贡献请[参考文档](https://doc.xiaominfo.com/docs/community/joinus)      |
 | knife4j-vue      |当前Knife4j的前端源码，基于Vue2.0编写                         |
 | knife4j-vue3      |当前Knife4j的前端源码，基于Vue3.0编写，该代码库来自贡献者，目前尚未投入使用                        |
-| knife4j-front        | knife4j的前端架构代码,目前是规划阶段，该模块尚未编码    |
+| knife4j-front        | knife4j的前端架构代码,目前是规划阶段，该模块尚未编码,有想法的可以通过交流群与作者沟通    |
 
 
 
