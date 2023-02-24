@@ -52,7 +52,7 @@
         <knife4j-gson.version>2.8.9</knife4j-gson.version>
 
         <knife4j-swagger-models.version>1.6.6</knife4j-swagger-models.version>
-        <knife4j-swagger-models-v3.version>2.2.2</knife4j-swagger-models-v3.version>
+        <knife4j-swagger-models-v3.version>2.2.7</knife4j-swagger-models-v3.version>
         <knife4j-javassist.version>3.25.0-GA</knife4j-javassist.version>
         <knife4j-lombok.version>1.18.24</knife4j-lombok.version>
 
