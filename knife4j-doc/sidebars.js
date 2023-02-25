@@ -161,6 +161,7 @@ module.exports = {
             defaultStyle: true
         },
         "middleware-sources/middle-index",
+        "middleware-sources/spring-cloud-gateway/spring-gateway-introduction",
         {
             type: 'category',
             label: 'Aggregation微服务聚合中间件',
