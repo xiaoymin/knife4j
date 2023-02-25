@@ -44,9 +44,11 @@ public class BasicFilter {
         urlFilters.add(Pattern.compile(".*?/v2/api-docs.*", Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/v2/api-docs-ext.*", Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/swagger-resources.*", Pattern.CASE_INSENSITIVE));
-        urlFilters.add(Pattern.compile(".*?/swagger-ui\\.html.*", Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/ui.*", Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/security.*", Pattern.CASE_INSENSITIVE));
+        // https://gitee.com/xiaoym/knife4j/issues/I6H8BE
+        urlFilters.add(Pattern.compile(".*?/swagger-ui.*",Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/v3/api-docs.*",Pattern.CASE_INSENSITIVE));
     }
     
     /**
