@@ -17,7 +17,6 @@
         <knife4j-spring-boot3.version>3.0.0</knife4j-spring-boot3.version>
 
         <knife4j-springdoc-openapi.version>2.0.2</knife4j-springdoc-openapi.version>
-        <knife4j-servlet.version>6.0.0</knife4j-servlet.version>
 
         <knife4j-swagger-models-v3.version>2.2.7</knife4j-swagger-models-v3.version>
         <knife4j-javassist.version>3.29.2-GA</knife4j-javassist.version>
@@ -89,7 +88,7 @@
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <scope>provided</scope>
-            <version>${knife4j-servlet.version}</version>
+            <version>${knife4j-servlet-jakarta.version}</version>
         </dependency>
     </dependencies>
 

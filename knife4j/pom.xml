@@ -46,6 +46,8 @@
         <knife4j-spring-plugin.version>2.0.0.RELEASE</knife4j-spring-plugin.version>
         <knife4j-springdoc-openapi.version>1.6.14</knife4j-springdoc-openapi.version>
         <knife4j-servlet.version>3.1.0</knife4j-servlet.version>
+        <knife4j-servlet-jakarta.version>6.0.0</knife4j-servlet-jakarta.version>
+
         <knife4j-slf4j.version>1.7.28</knife4j-slf4j.version>
         <knife4j-hutool.version>5.4.1</knife4j-hutool.version>
         <knife4j-httpclient.version>4.5.13</knife4j-httpclient.version>

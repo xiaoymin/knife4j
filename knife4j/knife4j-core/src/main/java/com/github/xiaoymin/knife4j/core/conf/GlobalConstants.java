@@ -24,7 +24,16 @@ package com.github.xiaoymin.knife4j.core.conf;
  * 2019/02/02 19:57
  */
 public class GlobalConstants {
-    
+    /***
+     * basic auth验证
+     */
+    public static final String KNIFE4J_BASIC_AUTH_SESSION = "KNIFE4J_BASIC_AUTH_SESSION";
+
+    /**
+     * 校验Basic请求头
+     */
+    public static final String AUTH_HEADER_NAME="Authorization";
+
     /**
      * HTTP Schema
      */
@@ -79,4 +88,15 @@ public class GlobalConstants {
      * Knife4j增强扩展配置属性
      */
     public static final String EXTENSION_OPEN_MARKDOWN_NAME = "x-markdownFiles";
+
+
+    /**
+     * 响应HTTP状态码
+     */
+    public static final Integer BASIC_SECURITY_RESPONSE_CODE=401;
+
+    /**
+     * 生产环境屏蔽后自定义响应HTTP状态码
+     */
+    public static final Integer FORBIDDEN_CUSTOM_CODE = 200;
 }

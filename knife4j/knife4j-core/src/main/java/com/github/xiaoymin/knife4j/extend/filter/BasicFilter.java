@@ -47,6 +47,14 @@ public class BasicFilter {
         urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/ui.*", Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/security.*", Pattern.CASE_INSENSITIVE));
     }
+
+    /**
+     * 添加外部过滤规则，正则表达式
+     * @param rule 外部自定义规则
+     */
+    public void addRule(String rule){
+        this.urlFilters.add(Pattern.compile(rule,Pattern.CASE_INSENSITIVE));
+    }
     
     protected boolean match(String uri) {
         boolean match = false;
