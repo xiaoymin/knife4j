@@ -20,6 +20,7 @@ package com.github.xiaoymin.knife4j.spring.configuration;
 import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.extend.filter.basic.ServletSecurityBasicAuthFilter;
 import com.github.xiaoymin.knife4j.spring.extension.Knife4jOpenApiCustomizer;
+import com.github.xiaoymin.knife4j.spring.extension.Knife4jOperationCustomizer;
 import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.util.EnvironmentUtils;
 import org.slf4j.Logger;
@@ -60,6 +61,12 @@ public class Knife4jAutoConfiguration {
     public Knife4jOpenApiCustomizer knife4jOpenApiCustomizer(Knife4jProperties knife4jProperties) {
         logger.debug("Register Knife4jOpenApiCustomizer");
         return new Knife4jOpenApiCustomizer(knife4jProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public Knife4jOperationCustomizer knife4jOperationCustomizer(){
+        return new Knife4jOperationCustomizer();
     }
     /**
      * 配置Cors
