@@ -5240,6 +5240,18 @@ SwaggerBootstrapUi.prototype.readApiInfoInstanceExtOAS3 = function (swpinfo, api
         swpinfo.author = xauthor;
       }
     }
+  } else {
+    // 读取扩展属性x-order值
+    if (apiInfo.hasOwnProperty('x-order')) {
+      swpinfo.order = parseInt(apiInfo['x-order']);
+    }
+    // 读取扩展属性x-author
+    if (apiInfo.hasOwnProperty('x-author')) {
+      var xauthor = apiInfo['x-author'];
+      if (KUtils.strNotBlank(xauthor)) {
+        swpinfo.author = xauthor;
+      }
+    }
   }
 }
 
