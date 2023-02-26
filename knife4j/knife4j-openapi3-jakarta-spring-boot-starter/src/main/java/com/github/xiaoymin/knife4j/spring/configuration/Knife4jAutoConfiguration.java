@@ -20,6 +20,7 @@ package com.github.xiaoymin.knife4j.spring.configuration;
 import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.extend.filter.basic.JakartaServletSecurityBasicAuthFilter;
 import com.github.xiaoymin.knife4j.extend.filter.basic.ServletSecurityBasicAuthFilter;
+import com.github.xiaoymin.knife4j.spring.extension.Knife4jJakartaOperationCustomizer;
 import com.github.xiaoymin.knife4j.spring.extension.Knife4jOpenApiCustomizer;
 import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.util.EnvironmentUtils;
@@ -60,6 +61,12 @@ public class Knife4jAutoConfiguration {
     public Knife4jOpenApiCustomizer knife4jOpenApiCustomizer() {
         log.debug("Register Knife4jOpenApiCustomizer");
         return new Knife4jOpenApiCustomizer(this.properties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public Knife4jJakartaOperationCustomizer knife4jJakartaOperationCustomizer(){
+        return new Knife4jJakartaOperationCustomizer();
     }
     /**
      * 配置Cors
