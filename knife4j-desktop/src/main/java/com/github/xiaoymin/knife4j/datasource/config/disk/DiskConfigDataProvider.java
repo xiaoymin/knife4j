@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright 2017-2023 八一菜刀(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo
                         // 判断当前文件下是否包含配置文件
                         String contextPath = file.getName();
                         if (CommonUtils.checkContextPath(contextPath)) {
-                            log.debug("Disk project file:{}",file.getAbsolutePath());
+                            log.debug("Disk project file:{}", file.getAbsolutePath());
                             contextPathCollection.add(contextPath);
                             Long lastModifiedTime = this.cacheFileMap.get(contextPath);
                             if (lastModifiedTime == null) {

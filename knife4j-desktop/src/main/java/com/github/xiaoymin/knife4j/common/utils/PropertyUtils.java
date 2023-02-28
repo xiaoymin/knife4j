@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright 2017-2023 八一菜刀(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,8 +56,8 @@ public class PropertyUtils {
         while (enumeration.hasMoreElements()) {
             String name = Objects.toString(enumeration.nextElement(), "");
             if (StrUtil.isNotBlank(name)) {
-                String value=properties.getProperty(name);
-                logger.debug("{}:{}",name,value);
+                String value = properties.getProperty(name);
+                logger.debug("{}:{}", name, value);
                 propertyMap.put(name, value);
             }
             // logger.info("propertyName:{}",name);
@@ -88,7 +88,7 @@ public class PropertyUtils {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        logger.debug("file:{},property-size:{}",propertyFile.getAbsolutePath(),CollectionUtil.size(propertyMap));
+        logger.debug("file:{},property-size:{}", propertyFile.getAbsolutePath(), CollectionUtil.size(propertyMap));
         return propertyMap;
     }
     

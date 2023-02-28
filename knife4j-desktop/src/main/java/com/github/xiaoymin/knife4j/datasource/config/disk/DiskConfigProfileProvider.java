@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright 2017-2023 八一菜刀(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class DiskConfigProfileProvider implements ConfigProfileProvider<File, Di
     
     @Override
     public List<? extends ConfigProfile> resolver(File file, Class<DiskConfigProfileProps> metaClazz) {
-        log.debug("resolver file:{}",file.getName());
+        log.debug("resolver file:{}", file.getName());
         if (file == null || !file.exists()) {
             return Collections.EMPTY_LIST;
         }
@@ -128,7 +128,7 @@ public class DiskConfigProfileProvider implements ConfigProfileProvider<File, Di
         String basePath = file.getAbsolutePath() + File.separator;
         // disk模式，解析配置文件
         String cloudProperties = file.getAbsolutePath() + File.separator + ServiceMode.DISK.getPropertiesName();
-        log.debug("disk.properties path:{}",cloudProperties);
+        log.debug("disk.properties path:{}", cloudProperties);
         File cloudPropertiesFile = new File(cloudProperties);
         if (cloudPropertiesFile.exists()) {
             log.debug("disk.properties exists.");
