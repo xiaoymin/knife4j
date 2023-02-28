@@ -14,6 +14,8 @@ Knife4jAggregationDesktop是一款致力于基于OpenAPI2及OpenAPI3规范进行
 - 动态配置、实时生效预览
 - 不同文档提供单独鉴权(该特性还待开发中...)
 
+详细文档请参考[官方文档](https://doc.xiaominfo.com/docs/middleware-sources)
+
 ## 软件架构
 
 软件架构图如下：
@@ -71,3 +73,20 @@ docker-compose up
 接口在浏览器访问接口文档查看效果：http://localhost:10000/doc.html
 
 
+## 源码运行
+
+
+如果是Java开发者，则可以本地调试该项目，说明如下：
+- 
+- 本项目基于Spring Boot 3.0版本开发
+- JDK版本必须大于17
+- 项目启动时，需要传递启动参数，目前主要两种模式，分别是[Disk本地磁盘](https://doc.xiaominfo.com/docs/middleware-sources/desktop/config-disk)和[Nacos](https://doc.xiaominfo.com/docs/middleware-sources/desktop/config-nacos)
+
+
+Disk模式：代表当前数据文件存放到当前本地磁盘，启动参数如下：
+
+![](images/disk.jpg)
+
+Nacos模式：代表数据全部存放到Nacos配置中心，启动参数如下：
+
+![](images/nacos.jpg)
