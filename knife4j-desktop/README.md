@@ -78,7 +78,6 @@ docker-compose up
 
 如果是Java开发者，则可以本地调试该项目，说明如下：
 
-- 
 - 本项目基于Spring Boot 3.0版本开发
 - JDK版本必须大于17
 - 项目启动时，需要传递启动参数，目前主要两种模式，分别是[Disk本地磁盘](https://doc.xiaominfo.com/docs/middleware-sources/desktop/config-disk)和[Nacos](https://doc.xiaominfo.com/docs/middleware-sources/desktop/config-nacos)
