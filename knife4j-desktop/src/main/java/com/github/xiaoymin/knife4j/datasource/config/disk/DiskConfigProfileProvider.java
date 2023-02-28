@@ -48,11 +48,13 @@ public class DiskConfigProfileProvider implements ConfigProfileProvider<File, Di
     
     @Override
     public List<? extends ConfigProfile> resolver(File file, Class<DiskConfigProfileProps> metaClazz) {
+        log.debug("resolver file:{}",file.getName());
         if (file == null || !file.exists()) {
             return Collections.EMPTY_LIST;
         }
         log.info("resolver. file:{}", file.getAbsolutePath());
         if (ArrayUtil.isNotEmpty(file.list(((dir, name) -> StrUtil.equalsIgnoreCase(ServiceMode.CLOUD.getPropertiesName(), name))))) {
+            log.debug("Cloud Mode.");
             // cloud模式，解析配置文件
             String cloudProperties = file.getAbsolutePath() + File.separator + ServiceMode.CLOUD.getPropertiesName();
             File cloudPropertiesFile = new File(cloudProperties);
@@ -74,6 +76,7 @@ public class DiskConfigProfileProvider implements ConfigProfileProvider<File, Di
                 }
             }
         } else if (ArrayUtil.isNotEmpty(file.list(((dir, name) -> StrUtil.equalsIgnoreCase(ServiceMode.NACOS.getPropertiesName(), name))))) {
+            log.debug("Nacos Mode.");
             // nacos模式，解析配置文件
             String cloudProperties = file.getAbsolutePath() + File.separator + ServiceMode.NACOS.getPropertiesName();
             File cloudPropertiesFile = new File(cloudProperties);
@@ -95,6 +98,7 @@ public class DiskConfigProfileProvider implements ConfigProfileProvider<File, Di
                 }
             }
         } else if (ArrayUtil.isNotEmpty(file.list(((dir, name) -> StrUtil.equalsIgnoreCase(ServiceMode.EUREKA.getPropertiesName(), name))))) {
+            log.debug("Eureka Mode.");
             // EUREKA模式，解析配置文件
             String cloudProperties = file.getAbsolutePath() + File.separator + ServiceMode.EUREKA.getPropertiesName();
             File cloudPropertiesFile = new File(cloudProperties);
@@ -120,11 +124,14 @@ public class DiskConfigProfileProvider implements ConfigProfileProvider<File, Di
     }
     
     private List<? extends ConfigProfile> resolveDisk(File file, Class<DiskConfigProfileProps> metaClazz) {
+        log.debug("Disk Mode.");
         String basePath = file.getAbsolutePath() + File.separator;
-        // cloud模式，解析配置文件
+        // disk模式，解析配置文件
         String cloudProperties = file.getAbsolutePath() + File.separator + ServiceMode.DISK.getPropertiesName();
+        log.debug("disk.properties path:{}",cloudProperties);
         File cloudPropertiesFile = new File(cloudProperties);
         if (cloudPropertiesFile.exists()) {
+            log.debug("disk.properties exists.");
             Optional<DiskConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(cloudPropertiesFile, metaClazz);
             if (knife4jSettingPropertiesOptional.isPresent()) {
                 List<ConfigDefaultDiskProfile> diskRoutes = knife4jSettingPropertiesOptional.get().getKnife4j().getDisk();

@@ -90,6 +90,7 @@ public class DiskConfigDataProvider implements ConfigDataProvider<ConfigDiskInfo
                         // 判断当前文件下是否包含配置文件
                         String contextPath = file.getName();
                         if (CommonUtils.checkContextPath(contextPath)) {
+                            log.debug("Disk project file:{}",file.getAbsolutePath());
                             contextPathCollection.add(contextPath);
                             Long lastModifiedTime = this.cacheFileMap.get(contextPath);
                             if (lastModifiedTime == null) {

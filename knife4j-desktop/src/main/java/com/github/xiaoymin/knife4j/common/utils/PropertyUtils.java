@@ -48,6 +48,7 @@ public class PropertyUtils {
      */
     public static Map<String, String> loadProperties(Properties properties) {
         if (properties == null || properties.isEmpty()) {
+            logger.debug("properties is empty.");
             return Collections.EMPTY_MAP;
         }
         Map<String, String> propertyMap = new HashMap<>();
@@ -55,7 +56,9 @@ public class PropertyUtils {
         while (enumeration.hasMoreElements()) {
             String name = Objects.toString(enumeration.nextElement(), "");
             if (StrUtil.isNotBlank(name)) {
-                propertyMap.put(name, properties.getProperty(name));
+                String value=properties.getProperty(name);
+                logger.debug("{}:{}",name,value);
+                propertyMap.put(name, value);
             }
             // logger.info("propertyName:{}",name);
         }
@@ -85,6 +88,7 @@ public class PropertyUtils {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        logger.debug("file:{},property-size:{}",propertyFile.getAbsolutePath(),CollectionUtil.size(propertyMap));
         return propertyMap;
     }
     

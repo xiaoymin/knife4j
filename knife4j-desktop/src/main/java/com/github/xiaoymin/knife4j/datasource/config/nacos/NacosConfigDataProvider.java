@@ -67,8 +67,10 @@ public class NacosConfigDataProvider implements ConfigDataProvider<ConfigNacosIn
     @Override
     public List<? extends ConfigProfile> getConfigProfiles() {
         try {
+            log.debug("Get Nacos Config,NacosDataId:{},Group:{}",this.configInfo.getDataId(),this.configInfo.getGroup());
             // 获取远程配置信息
             String configContent = this.configService.getConfig(this.configInfo.getDataId(), this.configInfo.getGroup(), DesktopConstants.MIDDLE_WARE_CONNECTION_TIME_OUT);
+            log.debug("Nacos Config Content:{}",configContent);
             return this.profileProvider.resolver(configContent, NacosConfigProfileProps.class);
         } catch (NacosException e) {
             log.error(e.getMessage(), e);
