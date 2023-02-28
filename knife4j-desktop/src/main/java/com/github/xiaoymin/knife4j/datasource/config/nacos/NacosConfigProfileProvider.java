@@ -69,7 +69,7 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
     
     private List<ConfigProfile> loadByProperties(Properties properties, Class<NacosConfigProfileProps> metaClazz) {
         Map<String, String> map = PropertyUtils.loadProperties(properties);
-        log.debug("Nacos Config Properties Size:{}", CollectionUtil.size(map));
+        log.debug("load Properties Size:{}", CollectionUtil.size(map));
         Optional<NacosConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(map, metaClazz);
         if (knife4jSettingPropertiesOptional.isPresent()) {
             NacosConfigProfileProps profileInfo = knife4jSettingPropertiesOptional.get();

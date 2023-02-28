@@ -79,7 +79,7 @@ public class DocumentSessionHolder implements DisposableBean {
             List<String> clearKeys = this.documentMap.entrySet().stream().map(s -> s.getKey()).filter(s -> !contextPaths.contains(s)).collect(Collectors.toList());
             if (CollectionUtil.isNotEmpty(clearKeys)) {
                 for (String key : clearKeys) {
-                    log.info("remove contextPath:{}", key);
+                    log.debug("remove contextPath:{}", key);
                     this.documentMap.remove(key);
                 }
             }

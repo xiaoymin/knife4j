@@ -114,6 +114,7 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
                     List<String> documentIds = new ArrayList<>();
                     if (CollectionUtil.isNotEmpty(configRoutes)) {
                         for (ConfigProfile configProfile : configRoutes) {
+                            log.debug("document-contextPath:{}",configProfile.getContextPath());
                             Optional<ServiceDataProvider> providerOptional = this.sessionHolder.getServiceProvider(configProfile.serviceDataProvider());
                             ServiceDataProvider serviceDataProvider = null;
                             if (providerOptional.isPresent()) {
@@ -123,6 +124,7 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
                                 this.sessionHolder.addServiceProvider(configProfile.serviceDataProvider(), serviceDataProvider);
                             }
                             ServiceDocument serviceDocument = serviceDataProvider.getDocument(configProfile, this.configDataProvider.getConfigInfo());
+                            log.debug("Get ServiceDocument is Null:{}",serviceDocument==null);
                             if (serviceDocument != null) {
                                 documentIds.add(serviceDocument.getContextPath());
                                 Optional<ServiceDocument> documentOptional = this.sessionHolder.getContext(serviceDocument.getContextPath());
@@ -134,6 +136,7 @@ public class ConfigDataProviderHolder implements BeanFactoryAware, EnvironmentAw
                                         this.sessionHolder.addContext(serviceDocument);
                                     }
                                 } else {
+                                    log.info("document has not exists,add，context-path:{}", serviceDocument.getContextPath());
                                     this.sessionHolder.addContext(serviceDocument);
                                 }
                             }

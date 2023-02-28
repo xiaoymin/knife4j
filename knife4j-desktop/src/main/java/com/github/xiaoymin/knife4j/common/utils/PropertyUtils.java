@@ -57,11 +57,11 @@ public class PropertyUtils {
             String name = Objects.toString(enumeration.nextElement(), "");
             if (StrUtil.isNotBlank(name)) {
                 String value = properties.getProperty(name);
-                logger.debug("{}:{}", name, value);
                 propertyMap.put(name, value);
             }
             // logger.info("propertyName:{}",name);
         }
+        logger.debug("properties size:{}",CollectionUtil.size(propertyMap));
         return propertyMap;
     }
     
@@ -80,7 +80,7 @@ public class PropertyUtils {
                 String name = Objects.toString(enumeration.nextElement(), "");
                 if (StrUtil.isNotBlank(name)) {
                     String value = properties.getProperty(name);
-                    logger.debug("{}:{}", name, value);
+                    //logger.debug("{}:{}", name, value);
                     propertyMap.put(name, value);
                 }
                 // logger.info("propertyName:{}",name);
@@ -102,7 +102,7 @@ public class PropertyUtils {
                 String name = Objects.toString(enumeration.nextElement(), "");
                 if (StrUtil.isNotBlank(name)) {
                     String value = properties.getProperty(name);
-                    logger.debug("{}:{}", name, value);
+                    //logger.debug("{}:{}", name, value);
                     propertyMap.put(name, value);
                 }
                 // logger.info("propertyName:{}",name);
@@ -110,6 +110,7 @@ public class PropertyUtils {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        logger.debug("properties size:{}",CollectionUtil.size(propertyMap));
         return propertyMap;
     }
     
