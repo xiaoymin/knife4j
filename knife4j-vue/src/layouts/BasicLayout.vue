@@ -438,7 +438,7 @@ export default {
             let _url = "/demo/data/" + _demoCode + ".json";
             window.console.log("url:" + _url);
             this.initSwagger({
-              url: _url,
+              url: "/demo/data/openapi.json",
               baseSpringFox: true,
               store: this.$store,
               localStore: this.$localStore,
@@ -473,7 +473,7 @@ export default {
               let _url = "/demo/data/" + _demoCode + ".json";
               window.console.log("url:" + _url);
               this.initSwagger({
-                url: _url,
+                url: "/demo/data/openapi.json",
                 baseSpringFox: true,
                 store: this.$store,
                 localStore: this.$localStore,
