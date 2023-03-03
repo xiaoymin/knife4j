@@ -1,4 +1,4 @@
-# 参与其中
+# 如何贡献文档
 
 我们欢迎您参与`Knife4j`项目。有很多贡献方式，包括回答有关issues的问题，编写新代码，改进现有代码，协助编写文档，开发示例或教程，报告错误或仅提出建议。有关更多信息，请参见我们的[贡献](https://gitee.com/xiaoym/knife4j/issues/IZUCU)文档。
 
@@ -6,7 +6,7 @@
 **如何贡献文档**
 
 
-目前Knife4j的新版本文档启用Gitee提供的Pages服务,开发者可以直接通过编写Markdown文档的方式执行参与文档贡献。你的文档贡献能帮助到每一个使用Knife4j的人，社区的壮大离不开每个开发者的贡献。
+目前Knife4j的新版本文档开发者可以直接通过编写Markdown文档的方式执行参与文档贡献。你的文档贡献能帮助到每一个使用Knife4j的人，社区的壮大离不开每个开发者的贡献。
 
 
 Knife4j的文档通过Docusaurus进行编写，文档源码位于[Knife4j](https://gitee.com/xiaoym/knife4j/tree/dev/)项目dev分支下的`knife4j-doc`目录

@@ -14,7 +14,7 @@ module.exports = {
         defaultStyle: true
     },
         'quick-start/quick-start',
-        'v4/plan',
+        'community/joinus',
         'community/contributing',
     {
         type: 'category',
@@ -42,7 +42,6 @@ module.exports = {
         },
         items: [
             'community/community-get-helps',
-            'community/joinus',
             'community/sourcecode',
             'community/apache',
             'community/changelog',
@@ -89,19 +88,6 @@ module.exports = {
             'features/forbidSearch',
             'features/forbidOpenApi',
             'features/gitVersion'
-        ],
-    }, {
-        type: 'category',
-        label: '中间件生态',
-        collapsed: true,
-        link: {
-            type: 'doc',
-            id: 'middleware/middleware',
-        },
-        items: [
-            'middleware/knife4jCloud',
-            'middleware/knife4jAggregation',
-            'middleware/knife4jAggregationDesktop',
         ],
     },
     {
