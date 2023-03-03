@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Knife4j(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.spring.gateway.endpoint;
 
@@ -36,14 +37,15 @@ import java.util.SortedSet;
 @RestController
 @ConditionalOnProperty(name = "knife4j.gateway.enabled", havingValue = "true")
 public class SwaggerEndpoint {
+    
     private final Knife4jSwaggerContainer<? extends AbstractSwaggerResource> knife4jSwaggerContainer;
     private final Knife4jGatewayProperties knife4jGatewayProperties;
-
+    
     public SwaggerEndpoint(Knife4jSwaggerContainer<? extends AbstractSwaggerResource> knife4jSwaggerContainer, Knife4jGatewayProperties knife4jGatewayProperties) {
         this.knife4jSwaggerContainer = knife4jSwaggerContainer;
         this.knife4jGatewayProperties = knife4jGatewayProperties;
     }
-
+    
     @GetMapping("/v3/api-docs/swagger-config")
     public Mono<ResponseEntity<SwaggerV3Response>> swaggerConfig() {
         SwaggerV3Response response = new SwaggerV3Response();
@@ -53,7 +55,7 @@ public class SwaggerEndpoint {
         response.setValidatorUrl(this.knife4jGatewayProperties.getV3().getValidatorUrl());
         return Mono.just(ResponseEntity.ok().body(response));
     }
-
+    
     @GetMapping("/swagger-resources")
     @SuppressWarnings("java:S1452")
     public Mono<ResponseEntity<SortedSet<? extends AbstractSwaggerResource>>> swaggerResource() {

@@ -62,10 +62,10 @@ public class Knife4jAutoConfiguration {
         logger.debug("Register Knife4jOpenApiCustomizer");
         return new Knife4jOpenApiCustomizer(knife4jProperties);
     }
-
+    
     @Bean
     @ConditionalOnMissingBean
-    public Knife4jOperationCustomizer knife4jOperationCustomizer(){
+    public Knife4jOperationCustomizer knife4jOperationCustomizer() {
         return new Knife4jOperationCustomizer();
     }
     /**
