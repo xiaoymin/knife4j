@@ -4924,7 +4924,16 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     if (KUtils.strBlank(swpinfo.summary)) {
       swpinfo.summary = apiInfo.operationId;
     }
-    swpinfo.tags = apiInfo.tags;
+    //处理tags，预防存在带/的情况，导致与Knife4j的路由冲突
+    let _apiTags = [];
+    if (KUtils.arrNotEmpty(apiInfo.tags)) {
+      apiInfo.tags.forEach(_tag => {
+        _apiTags.push(KUtils.toString(_tag, '').replace(/\//g, '-'));
+      })
+    }
+    console.log('tag:', _apiTags)
+    //swpinfo.tags = apiInfo.tags;
+    swpinfo.tags = _apiTags;
     // 读取扩展属性
     this.readApiInfoInstanceExt(swpinfo, apiInfo);
     // operationId
@@ -4933,6 +4942,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     // 设置hashurl
     swpinfo.tags.forEach(function (tag) {
       var _hashUrl = '#/' + _groupName + '/' + tag + '/' + swpinfo.operationId;
+      console.log(_hashUrl)
       swpinfo.hashCollections.push(_hashUrl);
     })
     if (KUtils.checkUndefined(apiInfo.produces)) {
@@ -4947,7 +4957,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     // that.currentInstance.paths.push(swpinfo);
     for (var i = 0; i < apiInfo.tags.length; i++) {
       var tagName = apiInfo.tags[i];
-      that.mergeApiInfoSelfTags(tagName);
+      let _tagName = KUtils.toString(tagName, '').replace(/\//g, '-');
+      that.mergeApiInfoSelfTags(_tagName);
     }
   }
   // 二次截取判断start
