@@ -17,6 +17,7 @@
         <module>knife4j-openapi3-jakarta-spring-boot-starter</module>
         <module>knife4j-gateway-spring-boot-starter</module>
         <module>knife4j-openapi3-webflux-spring-boot-starter</module>
+        <module>knife4j-openapi3-webflux-jakarta-spring-boot-starter</module>
     </modules>
     <packaging>pom</packaging>
     <name>knife4j</name>
@@ -46,6 +47,8 @@
         <knife4j-springfox.version>2.10.5</knife4j-springfox.version>
         <knife4j-spring-plugin.version>2.0.0.RELEASE</knife4j-spring-plugin.version>
         <knife4j-springdoc-openapi.version>1.6.14</knife4j-springdoc-openapi.version>
+        <knife4j-springdoc-openapi-jakarta.version>2.0.2</knife4j-springdoc-openapi-jakarta.version>
+
         <knife4j-servlet.version>3.1.0</knife4j-servlet.version>
         <knife4j-servlet-jakarta.version>6.0.0</knife4j-servlet-jakarta.version>
 
