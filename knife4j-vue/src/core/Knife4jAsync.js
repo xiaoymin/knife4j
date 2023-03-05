@@ -4686,7 +4686,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
       if (swpinfo.consumes != undefined && swpinfo.consumes != null && swpinfo.consumes.length > 0) {
         var ctp = swpinfo.consumes[0];
         // if (ctp == 'multipart/form-data') {
-        // console.log('consumes:'+ctp)
+        // console.log('consumes:' + ctp)
         if (ctp.indexOf('multipart/form-data') >= 0) {
           swpinfo.contentType = ctp;
           swpinfo.contentValue = 'form-data';
@@ -4931,7 +4931,6 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
         _apiTags.push(KUtils.toString(_tag, '').replace(/\//g, '-'));
       })
     }
-    console.log('tag:', _apiTags)
     //swpinfo.tags = apiInfo.tags;
     swpinfo.tags = _apiTags;
     // 读取扩展属性
@@ -4942,7 +4941,6 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     // 设置hashurl
     swpinfo.tags.forEach(function (tag) {
       var _hashUrl = '#/' + _groupName + '/' + tag + '/' + swpinfo.operationId;
-      console.log(_hashUrl)
       swpinfo.hashCollections.push(_hashUrl);
     })
     if (KUtils.checkUndefined(apiInfo.produces)) {
@@ -5584,6 +5582,8 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
   var originalName = KUtils.propValue('name', m, '');
   var inType = KUtils.propValue('in', m, '');
   var minfo = new SwaggerBootstrapUiParameter();
+  //是否包含文件上传
+  let binaryRequest = false;
   // 解析是否过时参数
   minfo.deprecated = KUtils.propValue('deprecated', m, false);
   minfo.allowEmptyValue = KUtils.propValue('allowEmptyValue', m, false);
@@ -5644,7 +5644,6 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
     // 存在schema属性,请求对象是实体类
     minfo.schema = true;
     var schemaObject = m['schema'];
-    console.log('schema', schemaObject)
     var schemaType = schemaObject['type'];
     minfo.type = schemaType;
     let _tempSchemaParamDesc = KUtils.propValue('description', schemaObject, null);
@@ -5670,6 +5669,12 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
         // 此处判断Array的类型,如果
         if (sty == 'string') {
           minfo.value = '';
+          var _format = KUtils.propValue('format', schItem, '');
+          if (_format == 'binary') {
+            // 文件上传
+            minfo.schemaValue = 'file';
+            binaryRequest = true;
+          }
         }
         if (sty == 'integer') {
           // 判断format
@@ -5713,6 +5718,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
         if (_format == 'binary') {
           // 文件上传
           minfo.type = 'file';
+          binaryRequest = true;
         }
       }
       // 2.判断是否包含枚举
@@ -5837,6 +5843,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
           // 文件上传
           minfo.type = 'array';
           minfo.schemaValue = "file"
+          binaryRequest = true;
         }
 
 
@@ -5944,6 +5951,10 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
       // 第一层的对象要一直传递
       // deepTreeTableRefParameter(minfo, that, minfo.def, swpinfo);
     }
+  }
+  //临时解决方案，后面要重写这部分逻辑 2023/03/06
+  if (binaryRequest) {
+    swpinfo.consumes = [].concat("multipart/form-data");
   }
 }
 
