@@ -20,6 +20,7 @@ knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 | knife4j-openapi2-spring-boot-starter         | 基于 OpenAPI2 规范，在 Spring Boot < 3.0.0-M1 的单体架构下可以直接引用此 starter,该模块包含了 Ui 部分，底层依赖 springfox-swagger 2.10.5 项目 |
 | knife4j-openapi3-spring-boot-starter         | 基于 OpenAPI3 规范，在 Spring Boot < 3.0.0-M1 的单体架构下可以直接引用此 starter,该模块包含了 Ui 部分，底层基于 springdoc-openapi 项目 |
 | knife4j-openapi3-jakarta-spring-boot-starter | 基于 OpenAPI3 规范，在 Spring Boot >= 3.0.0-M1 的单体架构下可以直接引用此 starter,该模块包含了 Ui 部分，底层基于 springdoc-openapi 项目 |
+| knife4j-openapi3-webflux-spring-boot-starter | 基于 OpenAPI3 规范，在 Spring Boot <  3.0.0-M1 的单体架构下可以直接引用此 starter,该模块包含了 Ui 部分，底层基于 springdoc-openapi 项目 |
 
 ## 业务场景
 
