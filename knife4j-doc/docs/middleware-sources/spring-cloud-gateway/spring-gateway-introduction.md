@@ -10,7 +10,7 @@
 
 Maven坐标如下：
 
-```xml
+```xml   title="Spring Boot < 3.0.0-M1 "
 <dependency>
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
