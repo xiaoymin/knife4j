@@ -1,7 +1,9 @@
 # Spring Cloud Gateway网关聚合
 
 :::tip
-Knife4j 在[v4.0](../../upgrading/upgrading-to-v4)版本提供了基于Spring Cloud Gateway网关聚合文档的中间件
+1、Knife4j 在[v4.0](../../upgrading/upgrading-to-v4)版本提供了基于Spring Cloud Gateway网关聚合文档的中间件
+
+2、在使用该组件时，如果开发者在网关层面做了鉴权等操作，需要把Ui资源以及相关的API接口放开，否则会出现无法访问的情况，放开资源清单可以[参考文档](../../features/accessControl)
 :::
 
 在4.0版本中,Knife4j提供了一个针对在Spring Cloud Gateway网关进行聚合的简单小组件，开发者可以基于此组件轻松的聚合各个子服务的OpenAPI文档
