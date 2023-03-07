@@ -115,6 +115,7 @@ public class Knife4jAutoConfiguration {
                 authFilter.setEnableBasicAuth(knife4jProperties.getBasic().isEnable());
                 authFilter.setUserName(knife4jProperties.getBasic().getUsername());
                 authFilter.setPassword(knife4jProperties.getBasic().getPassword());
+                authFilter.addRule(knife4jProperties.getBasic().getInclude());
             }
         }
         return authFilter;
