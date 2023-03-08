@@ -57,7 +57,7 @@ public class Knife4jSwaggerV2Container extends AbstractKnife4jSwaggerContainer<S
         if(StringUtils.startsWithIgnoreCase(router.getUrl(), "https://") || StringUtils.startsWithIgnoreCase(router.getUrl(), "http://")) {
             swaggerResource.setUrl(router.getUrl());
         } else {
-            swaggerResource.setUrl(PathUtils.append(router.getServiceName(), router.getUrl()));
+            swaggerResource.setUrl(PathUtils.append(router.getServiceName(), Optional.ofNullable(router.getUrl()).orElse(super.apiDocsPath)));
         }
         swaggerResource.setContextPath(Optional.ofNullable(router.getContextPath()).orElse(this.apiPathPrefix));
         swaggerResource.setId(Base64.getEncoder().encodeToString(( swaggerResource.getName() + swaggerResource.getUrl() + swaggerResource.getContextPath() ).getBytes(StandardCharsets.UTF_8)));
