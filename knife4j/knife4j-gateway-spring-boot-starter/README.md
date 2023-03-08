@@ -21,24 +21,11 @@
 </dependency>
 ```
 
+
 ### 选择UI组件
-#### openapi v2
-```xml
-<dependency>
-	<groupId>com.github.xiaoymin</groupId>
-	<artifactId>knife4j-openapi2-ui</artifactId>
-    <version>${最新版本}</version>
-</dependency>
-```
-#### openapi v3
-```xml
-<dependency>
-	<groupId>com.github.xiaoymin</groupId>
-    <artifactId>knife4j-openapi3-ui</artifactId>
-    <version>${最新版本}</version>
-</dependency>
-```
+
 ### 配置文件
+
 #### v2最简配置
 ```yaml
 knife4j:
@@ -97,6 +84,7 @@ knife4j:
         order: 1
 ```
 #### 配置介绍
+
 | 配置属性名称                                       | 类型            | 描述                                                                            | 默认值                                                                               |
 |:---------------------------------------------|---------------|-------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
 | `knife4j.gateway.enabled`                    | boolean       | 是否开启使用Gateway网关聚合组件                                                           | `false`                                                                           |
@@ -118,5 +106,7 @@ knife4j:
 | `knife4j.gateway.routes[0].context-path`     | string        | 文档`context-path,context-path`会针对当前Route覆盖`${knife4j.gateway.api-path-prefix}` | `/`                                                                               |
 | `knife4j.gateway.routes[0].service-name`     | string        | 访问服务名称                                                                        | `null`                                                                            |
 | `knife4j.gateway.routes[0].order`            | int           | 排序                                                                            | 0                                                                                 |
+
 ### 访问地址
+
 http://{gateway.host}:{gateway.port}/doc.html
