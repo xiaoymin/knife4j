@@ -42,7 +42,6 @@ public abstract class AbstractKnife4jSwaggerContainer<T extends AbstractSwaggerR
     private final SortedSet<T> swaggerContainer = Collections.synchronizedSortedSet(new TreeSet<>());
     private final Set<String> excludedDiscoverServices = new HashSet<>();
     private Environment environment;
-    
     protected final String apiDocsPath;
     protected final Integer defaultDiscoveredOrder;
     
