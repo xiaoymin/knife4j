@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright 2017-2023 八一菜刀(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class DocumentSessionHolder implements DisposableBean {
             List<String> clearKeys = this.documentMap.entrySet().stream().map(s -> s.getKey()).filter(s -> !contextPaths.contains(s)).collect(Collectors.toList());
             if (CollectionUtil.isNotEmpty(clearKeys)) {
                 for (String key : clearKeys) {
-                    log.info("remove contextPath:{}", key);
+                    log.debug("remove contextPath:{}", key);
                     this.documentMap.remove(key);
                 }
             }

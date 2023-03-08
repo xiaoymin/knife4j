@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright 2017-2023 八一菜刀(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 
 package com.github.xiaoymin.knife4j.datasource.config.nacos;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.setting.yaml.YamlUtil;
@@ -46,6 +47,7 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
         // nacos配置则直接对当前config进行反射即可
         // PropertyUtils.resolveSingle()
         try {
+            log.debug("try nacos-properties config.");
             Properties properties = new Properties();
             properties.load(IoUtil.getReader(IoUtil.toStream(config, StandardCharsets.UTF_8), StandardCharsets.UTF_8));
             return loadByProperties(properties, metaClazz);
@@ -54,6 +56,7 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
         }
         // 处理两次，使用者可以使用properties类型的配置，也可以使用yml
         try {
+            log.debug("try nacos-yml config.");
             NacosConfigProfileProps profileProps = YamlUtil.load(IoUtil.toStream(config, StandardCharsets.UTF_8), NacosConfigProfileProps.class);
             if (profileProps != null && profileProps.getKnife4j() != null) {
                 return profileProps.getKnife4j().profiles();
@@ -66,6 +69,7 @@ public class NacosConfigProfileProvider implements ConfigProfileProvider<String,
     
     private List<ConfigProfile> loadByProperties(Properties properties, Class<NacosConfigProfileProps> metaClazz) {
         Map<String, String> map = PropertyUtils.loadProperties(properties);
+        log.debug("load Properties Size:{}", CollectionUtil.size(map));
         Optional<NacosConfigProfileProps> knife4jSettingPropertiesOptional = PropertyUtils.resolveSingle(map, metaClazz);
         if (knife4jSettingPropertiesOptional.isPresent()) {
             NacosConfigProfileProps profileInfo = knife4jSettingPropertiesOptional.get();

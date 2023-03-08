@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Knife4j(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.spring.gateway.utils;
 
@@ -30,17 +31,18 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
  * @since gateway-spring-boot-starter v4.0.0
  */
 public class PathUtils {
+    
     public static String append(String... paths) {
-        if(Objects.isNull(paths) || paths.length == 0) {
+        if (Objects.isNull(paths) || paths.length == 0) {
             return DEFAULT_API_PATH_PREFIX;
         }
         String fullPath = Arrays.stream(paths)
-            .filter(StringUtils::hasLength)
-            .map(path -> DEFAULT_API_PATH_PREFIX + path)
-            .collect(Collectors.joining());
+                .filter(StringUtils::hasLength)
+                .map(path -> DEFAULT_API_PATH_PREFIX + path)
+                .collect(Collectors.joining());
         return fullPath.replaceAll(DEFAULT_API_PATH_PREFIX + "+", DEFAULT_API_PATH_PREFIX);
     }
-
+    
     private PathUtils() {
     }
 }

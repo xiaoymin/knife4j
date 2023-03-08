@@ -258,7 +258,7 @@ const langOptions = {
     version: '版本',
     host: 'host',
     basePath: 'basePath',
-    serviceUrl: '服务Url',
+    serviceUrl: 'API服务条款',
     groupName: '分组名称',
     groupUrl: '分组Url',
     groupLocation: '分组location',

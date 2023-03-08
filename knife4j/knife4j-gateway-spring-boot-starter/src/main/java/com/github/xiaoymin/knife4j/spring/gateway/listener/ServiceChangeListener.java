@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Knife4j(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.spring.gateway.listener;
 
@@ -30,15 +31,16 @@ import org.springframework.context.event.EventListener;
  * @since gateway-spring-boot-starter v4.0.0
  */
 public class ServiceChangeListener {
+    
     private final DiscoveryClient discoveryClient;
     private final Knife4jSwaggerContainer<? extends AbstractSwaggerResource> abstractKnife4JSwaggerContainer;
-
+    
     public ServiceChangeListener(DiscoveryClient discoveryClient, Knife4jSwaggerContainer<? extends AbstractSwaggerResource> abstractKnife4JSwaggerContainer) {
         this.discoveryClient = discoveryClient;
         this.abstractKnife4JSwaggerContainer = abstractKnife4JSwaggerContainer;
     }
-
-    @EventListener(classes = { ApplicationReadyEvent.class, HeartbeatEvent.class, RefreshRoutesEvent.class })
+    
+    @EventListener(classes = {ApplicationReadyEvent.class, HeartbeatEvent.class, RefreshRoutesEvent.class})
     public void discover() {
         this.abstractKnife4JSwaggerContainer.discover(discoveryClient.getServices());
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Knife4j(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package com.github.xiaoymin.knife4j.spring.gateway.v3;
 
@@ -30,13 +31,14 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
  * @since gateway-spring-boot-starter v4.0.0
  */
 public class Knife4jSwaggerV3Container extends AbstractKnife4jSwaggerContainer<SwaggerV3Resource> {
+    
     protected final String apiPathPrefix;
-
+    
     public Knife4jSwaggerV3Container(String apiPathPrefix, String apiDocsPath, Integer defaultDiscoveredOrder) {
         super(apiDocsPath, defaultDiscoveredOrder);
         this.apiPathPrefix = apiPathPrefix;
     }
-
+    
     @Override
     public SwaggerV3Resource convert(String service) {
         SwaggerV3Resource swaggerResource = new SwaggerV3Resource(super.defaultDiscoveredOrder, Boolean.TRUE);
@@ -44,12 +46,12 @@ public class Knife4jSwaggerV3Container extends AbstractKnife4jSwaggerContainer<S
         swaggerResource.setUrl(PathUtils.append(this.apiPathPrefix, super.apiDocsPath));
         return swaggerResource;
     }
-
+    
     @Override
     public SwaggerV3Resource convert(Router router) {
         SwaggerV3Resource swaggerResource = new SwaggerV3Resource(router.getOrder(), Boolean.FALSE);
         swaggerResource.setName(router.getName());
-        if(StringUtils.startsWithIgnoreCase(router.getUrl(), "https://") || StringUtils.startsWithIgnoreCase(router.getUrl(), "http://")) {
+        if (StringUtils.startsWithIgnoreCase(router.getUrl(), "https://") || StringUtils.startsWithIgnoreCase(router.getUrl(), "http://")) {
             swaggerResource.setUrl(router.getUrl());
         } else {
             swaggerResource.setUrl(PathUtils.append(Optional.ofNullable(router.getContextPath()).orElse(this.apiPathPrefix), router.getServiceName(), router.getUrl()));

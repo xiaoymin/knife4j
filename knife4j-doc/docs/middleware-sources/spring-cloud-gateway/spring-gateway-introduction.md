@@ -1,6 +1,11 @@
 # knife4j-gateway-spring-boot-starter
 
 ## 简介
+:::tip
+1、Knife4j 在[v4.0](../../upgrading/upgrading-to-v4)版本提供了基于Spring Cloud Gateway网关聚合文档的中间件
+
+2、在使用该组件时，如果开发者在网关层面做了鉴权等操作，需要把Ui资源以及相关的API接口放开，否则会出现无法访问的情况，放开资源清单可以[参考文档](../../features/accessControl)
+:::
 
 该组件是在gateway网关下聚合Swagger文档，使用简单，只需要简单配置接口
 
@@ -13,7 +18,7 @@
 
 ### 在Spring Cloud Gateway网关中引入starter
 
-```xml
+```xml   title="Spring Boot < 3.0.0-M1 "
 <dependency>
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-gateway-spring-boot-starter</artifactId>

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Knife4j(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+
 package com.github.xiaoymin.knife4j.spring.gateway;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.lang.NonNull;
 
@@ -27,50 +29,50 @@ import java.util.Objects;
  * @since gateway-spring-boot-starter v4.0.0
  */
 public abstract class AbstractSwaggerResource implements Comparable<AbstractSwaggerResource>, Serializable {
+    
     private static final long serialVersionUID = 1L;
-
-
+    
     @JsonIgnore
     protected final transient Integer order;
     @JsonIgnore
     protected final transient Boolean discovered;
-
+    
     protected AbstractSwaggerResource(Integer order, Boolean discovered) {
         this.order = order;
         this.discovered = discovered;
     }
-
+    
     @Override
     public int compareTo(@NonNull AbstractSwaggerResource swaggerResource) {
         int sort = this.order.compareTo(swaggerResource.getOrder());
-        if(sort != 0) {
+        if (sort != 0) {
             return sort;
         }
         return this.getName().compareTo(swaggerResource.getName());
     }
-
+    
     public abstract String getName();
-
+    
     public Integer getOrder() {
         return order;
     }
-
+    
     public Boolean getDiscovered() {
         return discovered;
     }
-
+    
     @Override
     public boolean equals(Object o) {
-        if(this == o) {
+        if (this == o) {
             return true;
         }
-        if(o == null || getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         AbstractSwaggerResource that = (AbstractSwaggerResource) o;
         return Objects.equals(order, that.order) && Objects.equals(discovered, that.discovered);
     }
-
+    
     @Override
     public int hashCode() {
         return Objects.hash(order, discovered);

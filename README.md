@@ -35,6 +35,8 @@ knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 
 **官网文档：** [https://doc.xiaominfo.com/](https://doc.xiaominfo.com/)
 
+**预览地址:** [https://doc.xiaominfo.com/demo/doc.html](https://doc.xiaominfo.com/demo/doc.html)
+
 **Demo示例:** [https://gitee.com/xiaoym/swagger-bootstrap-ui-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo)
 
 **Demo说明：** [https://doc.xiaominfo.com/docs/action/action-simple](https://doc.xiaominfo.com/docs/action/action-simple)

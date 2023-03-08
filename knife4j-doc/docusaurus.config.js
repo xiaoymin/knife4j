@@ -33,6 +33,7 @@ module.exports = {
             '@docusaurus/preset-classic',
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
+                debug: true,
                 docs: {
                     showLastUpdateAuthor: true,
                     showLastUpdateTime: true,

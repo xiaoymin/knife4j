@@ -1,0 +1,51 @@
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Spring Webflux集成
+
+
+:::danger 注意事项
+
+Spring Webflux模式下的Knife4j仅仅是ui包，目前没有提供Knife4j的增强功能
+
+:::
+
+在目前Knife4j的版本中，虽没有直接提供在Spring Webflux框架下的集成starter包，但是开发者依然可以使用Knife4j的ui组件，这得益于springdoc-openapi项目的支持。
+
+使用方法
+
+1、针对单体Spring Webflux项目，开发者首先需要引入springdoc-openapi模块的jar包，Maven坐标如下：
+
+```xml  title="Spring Boot < 3.0.0-M1 "
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-webflux-ui</artifactId>
+    <version>1.6.14</version>
+</dependency>
+```
+
+参考demo：[knife4j-openapi3-spring-webflux-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-openapi3-spring-webflux-demo)
+
+如果你是Spring Boot 3，那么Maven坐标：
+
+```xml  title="Spring Boot >= 3.0.0-M1 "
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+    <version>2.0.2</version>
+</dependency>
+```
+
+参考demo：[knife4j-openapi3-spring-boot3-webflux-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-openapi3-spring-boot3-webflux-demo)
+
+2、引入Knife4j 4.0版本提供的OpenAPI3规范的ui组件包，Maven坐标如下：
+
+```xml
+<dependency>
+    <groupId>com.github.xiaoymin</groupId>
+    <artifactId>knife4j-openapi3-ui</artifactId>
+    <version>4.0.0</version>
+</dependency>
+
+```

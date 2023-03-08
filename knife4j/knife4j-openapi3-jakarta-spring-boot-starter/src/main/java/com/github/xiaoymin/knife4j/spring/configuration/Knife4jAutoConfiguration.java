@@ -51,7 +51,7 @@ public class Knife4jAutoConfiguration {
     
     private final Knife4jProperties properties;
     private final Environment environment;
-
+    
     /**
      * 增强自定义配置
      * @return
@@ -62,10 +62,10 @@ public class Knife4jAutoConfiguration {
         log.debug("Register Knife4jOpenApiCustomizer");
         return new Knife4jOpenApiCustomizer(this.properties);
     }
-
+    
     @Bean
     @ConditionalOnMissingBean
-    public Knife4jJakartaOperationCustomizer knife4jJakartaOperationCustomizer(){
+    public Knife4jJakartaOperationCustomizer knife4jJakartaOperationCustomizer() {
         return new Knife4jJakartaOperationCustomizer();
     }
     /**
@@ -90,7 +90,7 @@ public class Knife4jAutoConfiguration {
         CorsFilter corsFilter = new CorsFilter(source);
         return corsFilter;
     }
-
+    
     /**
      * Security with Basic Http
      * @param knife4jProperties Basic Properties
@@ -115,11 +115,12 @@ public class Knife4jAutoConfiguration {
                 authFilter.setEnableBasicAuth(knife4jProperties.getBasic().isEnable());
                 authFilter.setUserName(knife4jProperties.getBasic().getUsername());
                 authFilter.setPassword(knife4jProperties.getBasic().getPassword());
+                authFilter.addRule(knife4jProperties.getBasic().getInclude());
             }
         }
         return authFilter;
     }
-
+    
     @Bean
     @ConditionalOnMissingBean(ProductionSecurityFilter.class)
     @ConditionalOnProperty(name = "knife4j.production", havingValue = "true")

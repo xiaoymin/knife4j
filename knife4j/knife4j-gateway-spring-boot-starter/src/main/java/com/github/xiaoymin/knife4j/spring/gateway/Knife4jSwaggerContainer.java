@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Knife4j(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package com.github.xiaoymin.knife4j.spring.gateway;
 
 import java.util.List;
@@ -24,8 +25,9 @@ import java.util.SortedSet;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.0.0
  */
-public interface Knife4jSwaggerContainer<T extends AbstractSwaggerResource>{
+public interface Knife4jSwaggerContainer<T extends AbstractSwaggerResource> {
+    
     void discover(List<String> services);
-
+    
     SortedSet<T> getSwaggerResource();
 }

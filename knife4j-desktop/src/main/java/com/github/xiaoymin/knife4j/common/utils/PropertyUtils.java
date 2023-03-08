@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright 2017-2023 八一菜刀(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ public class PropertyUtils {
      */
     public static Map<String, String> loadProperties(Properties properties) {
         if (properties == null || properties.isEmpty()) {
+            logger.debug("properties is empty.");
             return Collections.EMPTY_MAP;
         }
         Map<String, String> propertyMap = new HashMap<>();
@@ -55,10 +56,12 @@ public class PropertyUtils {
         while (enumeration.hasMoreElements()) {
             String name = Objects.toString(enumeration.nextElement(), "");
             if (StrUtil.isNotBlank(name)) {
-                propertyMap.put(name, properties.getProperty(name));
+                String value = properties.getProperty(name);
+                propertyMap.put(name, value);
             }
             // logger.info("propertyName:{}",name);
         }
+        logger.debug("properties size:{}", CollectionUtil.size(propertyMap));
         return propertyMap;
     }
     
@@ -77,7 +80,7 @@ public class PropertyUtils {
                 String name = Objects.toString(enumeration.nextElement(), "");
                 if (StrUtil.isNotBlank(name)) {
                     String value = properties.getProperty(name);
-                    logger.debug("{}:{}", name, value);
+                    // logger.debug("{}:{}", name, value);
                     propertyMap.put(name, value);
                 }
                 // logger.info("propertyName:{}",name);
@@ -85,6 +88,7 @@ public class PropertyUtils {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        logger.debug("file:{},property-size:{}", propertyFile.getAbsolutePath(), CollectionUtil.size(propertyMap));
         return propertyMap;
     }
     
@@ -98,7 +102,7 @@ public class PropertyUtils {
                 String name = Objects.toString(enumeration.nextElement(), "");
                 if (StrUtil.isNotBlank(name)) {
                     String value = properties.getProperty(name);
-                    logger.debug("{}:{}", name, value);
+                    // logger.debug("{}:{}", name, value);
                     propertyMap.put(name, value);
                 }
                 // logger.info("propertyName:{}",name);
@@ -106,6 +110,7 @@ public class PropertyUtils {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        logger.debug("properties size:{}", CollectionUtil.size(propertyMap));
         return propertyMap;
     }
     

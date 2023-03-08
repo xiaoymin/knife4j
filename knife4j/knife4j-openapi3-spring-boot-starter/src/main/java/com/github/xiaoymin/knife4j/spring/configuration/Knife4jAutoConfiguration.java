@@ -62,10 +62,10 @@ public class Knife4jAutoConfiguration {
         logger.debug("Register Knife4jOpenApiCustomizer");
         return new Knife4jOpenApiCustomizer(knife4jProperties);
     }
-
+    
     @Bean
     @ConditionalOnMissingBean
-    public Knife4jOperationCustomizer knife4jOperationCustomizer(){
+    public Knife4jOperationCustomizer knife4jOperationCustomizer() {
         return new Knife4jOperationCustomizer();
     }
     /**
@@ -115,6 +115,7 @@ public class Knife4jAutoConfiguration {
                 authFilter.setEnableBasicAuth(knife4jProperties.getBasic().isEnable());
                 authFilter.setUserName(knife4jProperties.getBasic().getUsername());
                 authFilter.setPassword(knife4jProperties.getBasic().getPassword());
+                authFilter.addRule(knife4jProperties.getBasic().getInclude());
             }
         }
         return authFilter;

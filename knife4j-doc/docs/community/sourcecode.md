@@ -12,9 +12,9 @@
 如果你一般在GitHub活动,Knife4j的代码在GitHub也有备份库：
 
 
-[https://github.com/xiaoymin/swagger-bootstrap-ui](https://github.com/xiaoymin/swagger-bootstrap-ui)
+[https://github.com/xiaoymin/knife4j](https://github.com/xiaoymin/knife4j)
 
-**注意：GitHub仓库作者只是作为一个备份,代码可能不是最新,最新的代码都在Gitee仓库的dev分支,开发者如果想提交PR,也请在Gitee的dev分支下提交!!!**
+**注意：GitHub仓库作者只是作为一个备份,代码可能不是最新,最新的代码都在Gitee仓库的dev分支,开发者如果想提交PR,尽量在Gitee的dev分支下提交!!!**
 
 
 
