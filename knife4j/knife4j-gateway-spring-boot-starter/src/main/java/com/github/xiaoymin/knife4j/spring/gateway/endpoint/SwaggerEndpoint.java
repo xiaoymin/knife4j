@@ -47,9 +47,9 @@ public class SwaggerEndpoint {
     public Mono<ResponseEntity<SwaggerV3Response>> swaggerConfig() {
         SwaggerV3Response response = new SwaggerV3Response();
         response.setConfigUrl("/v3/api-docs/swagger-config");
-        response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getV3().getOauth2RedirectUrl());
+        response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getV3().getOauth2RedirectUrl());
         response.setUrls(knife4JOpenAPIContainer.getSwaggerResource());
-        response.setValidatorUrl(this.knife4jGatewayProperties.getV3().getValidatorUrl());
+        response.setValidatorUrl(this.knife4jGatewayProperties.getDiscover().getV3().getValidatorUrl());
         return Mono.just(ResponseEntity.ok().body(response));
     }
     

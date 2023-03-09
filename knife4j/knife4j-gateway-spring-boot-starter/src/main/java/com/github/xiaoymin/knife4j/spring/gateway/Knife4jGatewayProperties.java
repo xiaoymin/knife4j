@@ -52,23 +52,37 @@ public class Knife4jGatewayProperties {
     private boolean enabled = false;
 
     /**
-     * 网关聚合策略
+     * 网关聚合策略,默认手动配置
      */
-    private GatewayStrategy strategy;
+    private GatewayStrategy strategy = GatewayStrategy.MANUAL;
 
-    private OpenApiVersion version = OpenApiVersion.V3;
+    /**
+     * 接口路径前缀
+     */
     private String apiPathPrefix = DEFAULT_API_PATH_PREFIX;
     /**
      * 服务发现
      */
     private final Discover discover = new Discover();
-    /**
-     * 接口路由
-     */
-    private final List<Router> routes = new ArrayList<>();
-    private final OpenApiV3 v3 = new OpenApiV3();
-    private final OpenApiV2 v2 = new OpenApiV2();
 
+    /**
+     * 手动配置策略
+     */
+    private final Manual manual=new Manual();
+
+
+    /**
+     * 手动配置策略
+     */
+    @Getter
+    @Setter
+    public static class Manual{
+        /**
+         * 接口路由
+         */
+        private final List<Router> routes = new ArrayList<>();
+
+    }
 
     /**
      * 服务发现策略配置
@@ -85,8 +99,17 @@ public class Knife4jGatewayProperties {
          * 需要排除的服务名称(不区分大小写)
          */
         private Set<String> excludedServices = new HashSet<>();
-        
+
+        /**
+         * 排序(asc),默认不排序
+         */
         private Integer defaultOrder = DEFAULT_ORDER;
+
+        private OpenApiVersion version = OpenApiVersion.V3;
+
+        private final OpenApiV3 v3 = new OpenApiV3();
+        private final OpenApiV2 v2 = new OpenApiV2();
+
     }
     
     /**
@@ -101,7 +124,7 @@ public class Knife4jGatewayProperties {
         /**
          * 自服务加载url地址,例如：/v2/api-docs?group=default
          */
-        private String url;
+        private String url=DEFAULT_OPEN_API_V2_PATH;
         /**
          * 兼容OpenAPI3规范在聚合时丢失contextPath属性的异常情况，由开发者自己配置contextPath,Knife4j的前端Ui做兼容处理,与url属性独立不冲突，仅OpenAPI3规范聚合需要，OpenAPI2规范不需要设置此属性,默认为(apiPathPrefix)
          *
