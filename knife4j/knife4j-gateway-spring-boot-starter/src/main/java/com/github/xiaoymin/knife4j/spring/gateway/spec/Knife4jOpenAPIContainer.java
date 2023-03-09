@@ -15,7 +15,7 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.gateway;
+package com.github.xiaoymin.knife4j.spring.gateway.spec;
 
 import java.util.List;
 import java.util.SortedSet;
@@ -25,7 +25,7 @@ import java.util.SortedSet;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.0.0
  */
-public interface Knife4jSwaggerContainer<T extends AbstractSwaggerResource> {
+public interface Knife4jOpenAPIContainer<T extends AbstractOpenAPIResource> {
     
     void discover(List<String> services);
     

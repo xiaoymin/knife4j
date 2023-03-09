@@ -1,3 +1,20 @@
+/*
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.spring.gateway.test.utils;
 
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
@@ -15,14 +32,14 @@ import org.junit.runners.JUnit4;
 @Slf4j
 @RunWith(JUnit4.class)
 public class PathUtilsTest {
-
+    
     @Test
-    public void test_append(){
-        String path="/abc";
-        String appendPath=PathUtils.append(path);
+    public void test_append() {
+        String path = "/abc";
+        String appendPath = PathUtils.append(path);
         Assert.assertNotNull(appendPath);
-        log.info("path:{}",appendPath);
-        Assert.assertEquals(PathUtils.append(null),"/");
-        Assert.assertEquals(PathUtils.append("//abc"),"/abc");
+        log.info("path:{}", appendPath);
+        Assert.assertEquals(PathUtils.append(null), "/");
+        Assert.assertEquals(PathUtils.append("//abc"), "/abc");
     }
 }

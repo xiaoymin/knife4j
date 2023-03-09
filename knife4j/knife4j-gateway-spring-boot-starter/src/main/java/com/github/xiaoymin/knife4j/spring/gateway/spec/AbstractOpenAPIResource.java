@@ -15,7 +15,7 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.gateway;
+package com.github.xiaoymin.knife4j.spring.gateway.spec;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.lang.NonNull;
@@ -28,7 +28,7 @@ import java.util.Objects;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.0.0
  */
-public abstract class AbstractSwaggerResource implements Comparable<AbstractSwaggerResource>, Serializable {
+public abstract class AbstractOpenAPIResource implements Comparable<AbstractOpenAPIResource>, Serializable {
     
     private static final long serialVersionUID = 1L;
     
@@ -37,13 +37,13 @@ public abstract class AbstractSwaggerResource implements Comparable<AbstractSwag
     @JsonIgnore
     protected final transient Boolean discovered;
     
-    protected AbstractSwaggerResource(Integer order, Boolean discovered) {
+    protected AbstractOpenAPIResource(Integer order, Boolean discovered) {
         this.order = order;
         this.discovered = discovered;
     }
     
     @Override
-    public int compareTo(@NonNull AbstractSwaggerResource swaggerResource) {
+    public int compareTo(@NonNull AbstractOpenAPIResource swaggerResource) {
         int sort = this.order.compareTo(swaggerResource.getOrder());
         if (sort != 0) {
             return sort;
@@ -69,7 +69,7 @@ public abstract class AbstractSwaggerResource implements Comparable<AbstractSwag
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AbstractSwaggerResource that = (AbstractSwaggerResource) o;
+        AbstractOpenAPIResource that = (AbstractOpenAPIResource) o;
         return Objects.equals(order, that.order) && Objects.equals(discovered, that.discovered);
     }
     

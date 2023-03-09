@@ -19,8 +19,11 @@ package com.github.xiaoymin.knife4j.spring.gateway;
 
 import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
 import com.github.xiaoymin.knife4j.spring.gateway.listener.ServiceChangeListener;
-import com.github.xiaoymin.knife4j.spring.gateway.v2.Knife4jSwaggerV2Container;
-import com.github.xiaoymin.knife4j.spring.gateway.v3.Knife4jSwaggerV3Container;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractKnife4JOpenAPIContainer;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.Knife4jOpenAPIContainer;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.Knife4JOpenAPIV2Container;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.v3.Knife4JOpenAPIV3Container;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -41,12 +44,12 @@ public class Knife4jGatewayAutoConfiguration {
     
     @Bean
     @SuppressWarnings("java:S1452")
-    public Knife4jSwaggerContainer<? extends AbstractSwaggerResource> knife4jSwaggerContainer(Knife4jGatewayProperties knife4jGateway) {
-        AbstractKnife4jSwaggerContainer<? extends AbstractSwaggerResource> knife4jSwaggerContainer;
+    public Knife4jOpenAPIContainer<? extends AbstractOpenAPIResource> knife4jSwaggerContainer(Knife4jGatewayProperties knife4jGateway) {
+        AbstractKnife4JOpenAPIContainer<? extends AbstractOpenAPIResource> knife4jSwaggerContainer;
         if (knife4jGateway.getVersion().equals(OpenApiVersion.V2)) {
-            knife4jSwaggerContainer = new Knife4jSwaggerV2Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getV2().getApiDocsPath(), knife4jGateway.getDiscover().getDefaultOrder());
+            knife4jSwaggerContainer = new Knife4JOpenAPIV2Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getV2().getApiDocsPath(), knife4jGateway.getDiscover().getDefaultOrder());
         } else {
-            knife4jSwaggerContainer = new Knife4jSwaggerV3Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getV3().getApiDocsPath(), knife4jGateway.getDiscover().getDefaultOrder());
+            knife4jSwaggerContainer = new Knife4JOpenAPIV3Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getV3().getApiDocsPath(), knife4jGateway.getDiscover().getDefaultOrder());
         }
         knife4jSwaggerContainer.addForRoutes(knife4jGateway.getRoutes());
         knife4jSwaggerContainer.addExcludedDiscoverServices(knife4jGateway.getDiscover().getExcludedServices());
@@ -55,7 +58,7 @@ public class Knife4jGatewayAutoConfiguration {
     
     @Bean
     @ConditionalOnProperty(name = "knife4j.gateway.discover.enabled", matchIfMissing = true, havingValue = "true")
-    public ServiceChangeListener serviceChangeListener(DiscoveryClient discoveryClient, Knife4jSwaggerContainer<? extends AbstractSwaggerResource> knife4jSwaggerContainer) {
-        return new ServiceChangeListener(discoveryClient, knife4jSwaggerContainer);
+    public ServiceChangeListener serviceChangeListener(DiscoveryClient discoveryClient, Knife4jOpenAPIContainer<? extends AbstractOpenAPIResource> knife4JOpenAPIContainer) {
+        return new ServiceChangeListener(discoveryClient, knife4JOpenAPIContainer);
     }
 }

@@ -15,9 +15,9 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.gateway.v3;
+package com.github.xiaoymin.knife4j.spring.gateway.spec.v3;
 
-import com.github.xiaoymin.knife4j.spring.gateway.AbstractSwaggerResource;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
 
 import java.io.Serializable;
 import java.util.SortedSet;
@@ -33,7 +33,7 @@ public class SwaggerV3Response implements Serializable {
     private String configUrl;
     private String oauth2RedirectUrl;
     @SuppressWarnings("java:S1948")
-    private SortedSet<? extends AbstractSwaggerResource> urls;
+    private SortedSet<? extends AbstractOpenAPIResource> urls;
     private String validatorUrl;
     
     public String getConfigUrl() {
@@ -45,7 +45,7 @@ public class SwaggerV3Response implements Serializable {
     }
     
     @SuppressWarnings("java:S1452")
-    public SortedSet<? extends AbstractSwaggerResource> getUrls() {
+    public SortedSet<? extends AbstractOpenAPIResource> getUrls() {
         return urls;
     }
     
@@ -57,7 +57,7 @@ public class SwaggerV3Response implements Serializable {
         this.oauth2RedirectUrl = oauth2RedirectUrl;
     }
     
-    public void setUrls(SortedSet<? extends AbstractSwaggerResource> urls) {
+    public void setUrls(SortedSet<? extends AbstractOpenAPIResource> urls) {
         this.urls = urls;
     }
     

@@ -15,7 +15,7 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.gateway;
+package com.github.xiaoymin.knife4j.spring.gateway.spec;
 
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
@@ -37,7 +37,7 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.0.0
  */
-public abstract class AbstractKnife4jSwaggerContainer<T extends AbstractSwaggerResource> implements Knife4jSwaggerContainer<T>, EnvironmentAware {
+public abstract class AbstractKnife4JOpenAPIContainer<T extends AbstractOpenAPIResource> implements Knife4jOpenAPIContainer<T>, EnvironmentAware {
     
     private final SortedSet<T> swaggerContainer = Collections.synchronizedSortedSet(new TreeSet<>());
     private final Set<String> excludedDiscoverServices = new HashSet<>();
@@ -45,7 +45,7 @@ public abstract class AbstractKnife4jSwaggerContainer<T extends AbstractSwaggerR
     protected final String apiDocsPath;
     protected final Integer defaultDiscoveredOrder;
     
-    protected AbstractKnife4jSwaggerContainer(String apiDocsPath, Integer defaultDiscoveredOrder) {
+    protected AbstractKnife4JOpenAPIContainer(String apiDocsPath, Integer defaultDiscoveredOrder) {
         this.apiDocsPath = apiDocsPath;
         this.defaultDiscoveredOrder = defaultDiscoveredOrder;
     }
@@ -58,7 +58,7 @@ public abstract class AbstractKnife4jSwaggerContainer<T extends AbstractSwaggerR
                 .map(service -> service.equals(this.getApplicationName()) ? "/" : service)
                 .map(this::convert)
                 .collect(Collectors.toSet());
-        this.swaggerContainer.removeIf(AbstractSwaggerResource::getDiscovered);
+        this.swaggerContainer.removeIf(AbstractOpenAPIResource::getDiscovered);
         this.swaggerContainer.addAll(discoverSwaggerResource);
     }
     

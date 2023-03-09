@@ -15,9 +15,9 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.gateway.v3;
+package com.github.xiaoymin.knife4j.spring.gateway.spec.v2;
 
-import com.github.xiaoymin.knife4j.spring.gateway.AbstractSwaggerResource;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
 
 import java.util.Objects;
 
@@ -26,12 +26,14 @@ import java.util.Objects;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.0.0
  */
-public class SwaggerV3Resource extends AbstractSwaggerResource {
+public class OpenAPI2Resource extends AbstractOpenAPIResource {
     
     private String name;
     private String url;
+    private String contextPath;
+    private String id;
     
-    protected SwaggerV3Resource(Integer order, Boolean discovered) {
+    public OpenAPI2Resource(Integer order, Boolean discovered) {
         super(order, discovered);
     }
     
@@ -51,6 +53,22 @@ public class SwaggerV3Resource extends AbstractSwaggerResource {
         this.url = url;
     }
     
+    public String getContextPath() {
+        return contextPath;
+    }
+    
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+    
+    public String getId() {
+        return id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -59,12 +77,12 @@ public class SwaggerV3Resource extends AbstractSwaggerResource {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        SwaggerV3Resource that = (SwaggerV3Resource) o;
-        return Objects.equals(getName(), that.getName()) && Objects.equals(getUrl(), that.getUrl());
+        OpenAPI2Resource that = (OpenAPI2Resource) o;
+        return Objects.equals(getName(), that.getName()) && Objects.equals(getUrl(), that.getUrl()) && Objects.equals(getContextPath(), that.getContextPath()) && Objects.equals(getId(), that.getId());
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getUrl());
+        return Objects.hash(getName(), getUrl(), getContextPath(), getId());
     }
 }

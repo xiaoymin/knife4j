@@ -15,9 +15,9 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.gateway.v2;
+package com.github.xiaoymin.knife4j.spring.gateway.spec.v2;
 
-import com.github.xiaoymin.knife4j.spring.gateway.AbstractKnife4jSwaggerContainer;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractKnife4JOpenAPIContainer;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import org.springframework.util.StringUtils;
 
@@ -32,18 +32,18 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.0.0
  */
-public class Knife4jSwaggerV2Container extends AbstractKnife4jSwaggerContainer<SwaggerV2Resource> {
+public class Knife4JOpenAPIV2Container extends AbstractKnife4JOpenAPIContainer<OpenAPI2Resource> {
     
     protected final String apiPathPrefix;
     
-    public Knife4jSwaggerV2Container(String apiPathPrefix, String apiDocsPath, Integer defaultDiscoveredOrder) {
+    public Knife4JOpenAPIV2Container(String apiPathPrefix, String apiDocsPath, Integer defaultDiscoveredOrder) {
         super(apiDocsPath, defaultDiscoveredOrder);
         this.apiPathPrefix = apiPathPrefix;
     }
     
     @Override
-    public SwaggerV2Resource convert(String service) {
-        SwaggerV2Resource resource = new SwaggerV2Resource(super.defaultDiscoveredOrder, Boolean.TRUE);
+    public OpenAPI2Resource convert(String service) {
+        OpenAPI2Resource resource = new OpenAPI2Resource(super.defaultDiscoveredOrder, Boolean.TRUE);
         resource.setName(service);
         resource.setContextPath(this.apiPathPrefix);
         resource.setUrl(PathUtils.append(service, super.apiDocsPath));
@@ -52,8 +52,8 @@ public class Knife4jSwaggerV2Container extends AbstractKnife4jSwaggerContainer<S
     }
     
     @Override
-    public SwaggerV2Resource convert(Router router) {
-        SwaggerV2Resource swaggerResource = new SwaggerV2Resource(router.getOrder(), Boolean.FALSE);
+    public OpenAPI2Resource convert(Router router) {
+        OpenAPI2Resource swaggerResource = new OpenAPI2Resource(router.getOrder(), Boolean.FALSE);
         swaggerResource.setName(router.getName());
         if (StringUtils.startsWithIgnoreCase(router.getUrl(), "https://") || StringUtils.startsWithIgnoreCase(router.getUrl(), "http://")) {
             swaggerResource.setUrl(router.getUrl());

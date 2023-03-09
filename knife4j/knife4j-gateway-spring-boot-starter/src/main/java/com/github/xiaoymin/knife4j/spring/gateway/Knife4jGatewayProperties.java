@@ -17,7 +17,10 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway;
 
+import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayStrategy;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.ArrayList;
@@ -31,6 +34,8 @@ import java.util.Set;
  * @since gateway-spring-boot-starter v4.0.0
  */
 @SuppressWarnings("unused")
+@Getter
+@Setter
 @ConfigurationProperties(prefix = "knife4j.gateway")
 public class Knife4jGatewayProperties {
     
@@ -45,6 +50,12 @@ public class Knife4jGatewayProperties {
      * 是否启用聚合Swagger组件
      */
     private boolean enabled = false;
+
+    /**
+     * 网关聚合策略
+     */
+    private GatewayStrategy strategy;
+
     private OpenApiVersion version = OpenApiVersion.V3;
     private String apiPathPrefix = DEFAULT_API_PATH_PREFIX;
     /**
@@ -57,47 +68,13 @@ public class Knife4jGatewayProperties {
     private final List<Router> routes = new ArrayList<>();
     private final OpenApiV3 v3 = new OpenApiV3();
     private final OpenApiV2 v2 = new OpenApiV2();
-    
-    public boolean isEnabled() {
-        return enabled;
-    }
-    
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-    
-    public OpenApiVersion getVersion() {
-        return version;
-    }
-    
-    public void setVersion(OpenApiVersion version) {
-        this.version = version;
-    }
-    
-    public String getApiPathPrefix() {
-        return apiPathPrefix;
-    }
-    
-    public void setApiPathPrefix(String apiPathPrefix) {
-        this.apiPathPrefix = apiPathPrefix;
-    }
-    
-    public Discover getDiscover() {
-        return discover;
-    }
-    
-    public List<Router> getRoutes() {
-        return routes;
-    }
-    
-    public OpenApiV3 getV3() {
-        return v3;
-    }
-    
-    public OpenApiV2 getV2() {
-        return v2;
-    }
-    
+
+
+    /**
+     * 服务发现策略配置
+     */
+    @Getter
+    @Setter
     public static class Discover {
         
         /**
@@ -110,35 +87,13 @@ public class Knife4jGatewayProperties {
         private Set<String> excludedServices = new HashSet<>();
         
         private Integer defaultOrder = DEFAULT_ORDER;
-        
-        public Boolean getEnabled() {
-            return enabled;
-        }
-        
-        public void setEnabled(Boolean enabled) {
-            this.enabled = enabled;
-        }
-        
-        public Set<String> getExcludedServices() {
-            return excludedServices;
-        }
-        
-        public void setExcludedServices(Set<String> excludedServices) {
-            this.excludedServices = excludedServices;
-        }
-        
-        public Integer getDefaultOrder() {
-            return defaultOrder;
-        }
-        
-        public void setDefaultOrder(Integer defaultOrder) {
-            this.defaultOrder = defaultOrder;
-        }
     }
     
     /**
      * 自定义接口路由
      */
+    @Getter
+    @Setter
     public static class Router {
         
         private String name;
@@ -158,89 +113,21 @@ public class Knife4jGatewayProperties {
          * 排序(asc),默认不排序
          */
         private Integer order = DEFAULT_ORDER;
-        
-        public String getName() {
-            return name;
-        }
-        
-        public String getServiceName() {
-            return serviceName;
-        }
-        
-        public String getUrl() {
-            return url;
-        }
-        
-        public void setName(String name) {
-            this.name = name;
-        }
-        
-        public void setServiceName(String serviceName) {
-            this.serviceName = serviceName;
-        }
-        
-        public void setUrl(String url) {
-            this.url = url;
-        }
-        
-        public Integer getOrder() {
-            return order;
-        }
-        
-        public void setOrder(Integer order) {
-            this.order = order;
-        }
-        
-        public String getContextPath() {
-            return contextPath;
-        }
-        
-        public void setContextPath(String contextPath) {
-            this.contextPath = contextPath;
-        }
+
     }
-    
+
+    @Getter
+    @Setter
     public static class OpenApiV2 {
-        
         private String apiDocsPath = DEFAULT_OPEN_API_V2_PATH;
-        
-        public String getApiDocsPath() {
-            return apiDocsPath;
-        }
-        
-        public void setApiDocsPath(String apiDocsPath) {
-            this.apiDocsPath = apiDocsPath;
-        }
+
     }
-    
+
+    @Getter
+    @Setter
     public static class OpenApiV3 {
-        
         private String apiDocsPath = DEFAULT_OPEN_API_V3_PATH;
         private String oauth2RedirectUrl = "";
         private String validatorUrl = "";
-        
-        public String getApiDocsPath() {
-            return apiDocsPath;
-        }
-        
-        public void setApiDocsPath(String apiDocsPath) {
-            this.apiDocsPath = apiDocsPath;
-        }
-        
-        public String getOauth2RedirectUrl() {
-            return oauth2RedirectUrl;
-        }
-        
-        public void setOauth2RedirectUrl(String oauth2RedirectUrl) {
-            this.oauth2RedirectUrl = oauth2RedirectUrl;
-        }
-        
-        public String getValidatorUrl() {
-            return validatorUrl;
-        }
-        
-        public void setValidatorUrl(String validatorUrl) {
-            this.validatorUrl = validatorUrl;
-        }
     }
 }

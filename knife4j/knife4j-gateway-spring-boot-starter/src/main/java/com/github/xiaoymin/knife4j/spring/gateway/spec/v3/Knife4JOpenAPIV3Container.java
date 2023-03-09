@@ -15,9 +15,9 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.gateway.v3;
+package com.github.xiaoymin.knife4j.spring.gateway.spec.v3;
 
-import com.github.xiaoymin.knife4j.spring.gateway.AbstractKnife4jSwaggerContainer;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractKnife4JOpenAPIContainer;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import org.springframework.util.StringUtils;
 
@@ -30,26 +30,26 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.0.0
  */
-public class Knife4jSwaggerV3Container extends AbstractKnife4jSwaggerContainer<SwaggerV3Resource> {
+public class Knife4JOpenAPIV3Container extends AbstractKnife4JOpenAPIContainer<OpenAPIV3Resource> {
     
     protected final String apiPathPrefix;
     
-    public Knife4jSwaggerV3Container(String apiPathPrefix, String apiDocsPath, Integer defaultDiscoveredOrder) {
+    public Knife4JOpenAPIV3Container(String apiPathPrefix, String apiDocsPath, Integer defaultDiscoveredOrder) {
         super(apiDocsPath, defaultDiscoveredOrder);
         this.apiPathPrefix = apiPathPrefix;
     }
     
     @Override
-    public SwaggerV3Resource convert(String service) {
-        SwaggerV3Resource swaggerResource = new SwaggerV3Resource(super.defaultDiscoveredOrder, Boolean.TRUE);
+    public OpenAPIV3Resource convert(String service) {
+        OpenAPIV3Resource swaggerResource = new OpenAPIV3Resource(super.defaultDiscoveredOrder, Boolean.TRUE);
         swaggerResource.setName(service);
         swaggerResource.setUrl(PathUtils.append(this.apiPathPrefix, super.apiDocsPath));
         return swaggerResource;
     }
     
     @Override
-    public SwaggerV3Resource convert(Router router) {
-        SwaggerV3Resource swaggerResource = new SwaggerV3Resource(router.getOrder(), Boolean.FALSE);
+    public OpenAPIV3Resource convert(Router router) {
+        OpenAPIV3Resource swaggerResource = new OpenAPIV3Resource(router.getOrder(), Boolean.FALSE);
         swaggerResource.setName(router.getName());
         if (StringUtils.startsWithIgnoreCase(router.getUrl(), "https://") || StringUtils.startsWithIgnoreCase(router.getUrl(), "http://")) {
             swaggerResource.setUrl(router.getUrl());

@@ -17,8 +17,9 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.listener;
 
-import com.github.xiaoymin.knife4j.spring.gateway.AbstractSwaggerResource;
-import com.github.xiaoymin.knife4j.spring.gateway.Knife4jSwaggerContainer;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.Knife4jOpenAPIContainer;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.event.HeartbeatEvent;
@@ -30,18 +31,14 @@ import org.springframework.context.event.EventListener;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.0.0
  */
+@AllArgsConstructor
 public class ServiceChangeListener {
     
-    private final DiscoveryClient discoveryClient;
-    private final Knife4jSwaggerContainer<? extends AbstractSwaggerResource> abstractKnife4JSwaggerContainer;
-    
-    public ServiceChangeListener(DiscoveryClient discoveryClient, Knife4jSwaggerContainer<? extends AbstractSwaggerResource> abstractKnife4JSwaggerContainer) {
-        this.discoveryClient = discoveryClient;
-        this.abstractKnife4JSwaggerContainer = abstractKnife4JSwaggerContainer;
-    }
-    
+    final DiscoveryClient discoveryClient;
+    final Knife4jOpenAPIContainer<? extends AbstractOpenAPIResource> abstractKnife4JOpenAPIContainer;
+
     @EventListener(classes = {ApplicationReadyEvent.class, HeartbeatEvent.class, RefreshRoutesEvent.class})
     public void discover() {
-        this.abstractKnife4JSwaggerContainer.discover(discoveryClient.getServices());
+        this.abstractKnife4JOpenAPIContainer.discover(discoveryClient.getServices());
     }
 }

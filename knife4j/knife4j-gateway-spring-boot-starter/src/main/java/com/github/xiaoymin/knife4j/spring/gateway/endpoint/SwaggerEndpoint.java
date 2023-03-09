@@ -17,10 +17,11 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.endpoint;
 
-import com.github.xiaoymin.knife4j.spring.gateway.AbstractSwaggerResource;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
-import com.github.xiaoymin.knife4j.spring.gateway.Knife4jSwaggerContainer;
-import com.github.xiaoymin.knife4j.spring.gateway.v3.SwaggerV3Response;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.Knife4jOpenAPIContainer;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.v3.SwaggerV3Response;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,31 +35,27 @@ import java.util.SortedSet;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.0.0
  */
+@AllArgsConstructor
 @RestController
 @ConditionalOnProperty(name = "knife4j.gateway.enabled", havingValue = "true")
 public class SwaggerEndpoint {
     
-    private final Knife4jSwaggerContainer<? extends AbstractSwaggerResource> knife4jSwaggerContainer;
-    private final Knife4jGatewayProperties knife4jGatewayProperties;
-    
-    public SwaggerEndpoint(Knife4jSwaggerContainer<? extends AbstractSwaggerResource> knife4jSwaggerContainer, Knife4jGatewayProperties knife4jGatewayProperties) {
-        this.knife4jSwaggerContainer = knife4jSwaggerContainer;
-        this.knife4jGatewayProperties = knife4jGatewayProperties;
-    }
-    
+    final Knife4jOpenAPIContainer<? extends AbstractOpenAPIResource> knife4JOpenAPIContainer;
+    final Knife4jGatewayProperties knife4jGatewayProperties;
+
     @GetMapping("/v3/api-docs/swagger-config")
     public Mono<ResponseEntity<SwaggerV3Response>> swaggerConfig() {
         SwaggerV3Response response = new SwaggerV3Response();
         response.setConfigUrl("/v3/api-docs/swagger-config");
         response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getV3().getOauth2RedirectUrl());
-        response.setUrls(knife4jSwaggerContainer.getSwaggerResource());
+        response.setUrls(knife4JOpenAPIContainer.getSwaggerResource());
         response.setValidatorUrl(this.knife4jGatewayProperties.getV3().getValidatorUrl());
         return Mono.just(ResponseEntity.ok().body(response));
     }
     
     @GetMapping("/swagger-resources")
     @SuppressWarnings("java:S1452")
-    public Mono<ResponseEntity<SortedSet<? extends AbstractSwaggerResource>>> swaggerResource() {
-        return Mono.just(ResponseEntity.ok().body(this.knife4jSwaggerContainer.getSwaggerResource()));
+    public Mono<ResponseEntity<SortedSet<? extends AbstractOpenAPIResource>>> swaggerResource() {
+        return Mono.just(ResponseEntity.ok().body(this.knife4JOpenAPIContainer.getSwaggerResource()));
     }
 }
