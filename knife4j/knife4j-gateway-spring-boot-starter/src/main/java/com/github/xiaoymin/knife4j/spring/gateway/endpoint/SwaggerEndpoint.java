@@ -24,6 +24,8 @@ import com.github.xiaoymin.knife4j.spring.gateway.spec.v3.SwaggerV3Response;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -44,8 +46,12 @@ public class SwaggerEndpoint {
     final Knife4jGatewayProperties knife4jGatewayProperties;
 
     @GetMapping("/v3/api-docs/swagger-config")
-    public Mono<ResponseEntity<SwaggerV3Response>> swaggerConfig() {
+    public Mono<ResponseEntity<SwaggerV3Response>> swaggerConfig(ServerHttpRequest request) {
         SwaggerV3Response response = new SwaggerV3Response();
+        String contextPath = request.getPath().contextPath().value();
+        if (!StringUtils.hasLength(contextPath)){
+            contextPath="/";
+        }
         response.setConfigUrl("/v3/api-docs/swagger-config");
         response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getV3().getOauth2RedirectUrl());
         response.setUrls(knife4JOpenAPIContainer.getSwaggerResource());
@@ -55,7 +61,13 @@ public class SwaggerEndpoint {
     
     @GetMapping("/swagger-resources")
     @SuppressWarnings("java:S1452")
-    public Mono<ResponseEntity<SortedSet<? extends AbstractOpenAPIResource>>> swaggerResource() {
+    public Mono<ResponseEntity<SortedSet<? extends AbstractOpenAPIResource>>> swaggerResource(ServerHttpRequest request) {
+        //获取分组URL的时候，需要考虑Nginx等软件转发代理的情况
+        // 获取x-forward-for请求头
+        String contextPath = request.getPath().contextPath().value();
+        if (!StringUtils.hasLength(contextPath)){
+            contextPath="/";
+        }
         return Mono.just(ResponseEntity.ok().body(this.knife4JOpenAPIContainer.getSwaggerResource()));
     }
 }
