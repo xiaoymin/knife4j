@@ -18,6 +18,8 @@
 package com.github.xiaoymin.knife4j.spring.gateway.spec.v3;
 
 import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.SortedSet;
@@ -27,45 +29,39 @@ import java.util.SortedSet;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.0.0
  */
+@Getter
+@Setter
 @SuppressWarnings("unused")
 public class SwaggerV3Response implements Serializable {
     
+    /**
+     * ConfigUrl，eg: /v3/api-docs/swagger-config
+     */
     private String configUrl;
+    /**
+     * oauth2RedirectUrl,eg : http://192.168.10.103:17812/swagger-ui/oauth2-redirect.html
+     */
     private String oauth2RedirectUrl;
+    
+    /**
+     * operation接口排序规则
+     */
+    private String operationsSorter = "alpha";
+    
+    /**
+     * tag排序规则
+     */
+    private String tagsSorter = "alpha";
+    
+    /**
+     * group
+     */
     @SuppressWarnings("java:S1948")
     private SortedSet<? extends AbstractOpenAPIResource> urls;
+    
+    /**
+     * validatorUrl
+     */
     private String validatorUrl;
     
-    public String getConfigUrl() {
-        return configUrl;
-    }
-    
-    public String getOauth2RedirectUrl() {
-        return oauth2RedirectUrl;
-    }
-    
-    @SuppressWarnings("java:S1452")
-    public SortedSet<? extends AbstractOpenAPIResource> getUrls() {
-        return urls;
-    }
-    
-    public void setConfigUrl(String configUrl) {
-        this.configUrl = configUrl;
-    }
-    
-    public void setOauth2RedirectUrl(String oauth2RedirectUrl) {
-        this.oauth2RedirectUrl = oauth2RedirectUrl;
-    }
-    
-    public void setUrls(SortedSet<? extends AbstractOpenAPIResource> urls) {
-        this.urls = urls;
-    }
-    
-    public String getValidatorUrl() {
-        return validatorUrl;
-    }
-    
-    public void setValidatorUrl(String validatorUrl) {
-        this.validatorUrl = validatorUrl;
-    }
 }

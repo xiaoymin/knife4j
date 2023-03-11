@@ -36,7 +36,7 @@ public class ServiceChangeListener {
     
     final DiscoveryClient discoveryClient;
     final Knife4jOpenAPIContainer<? extends AbstractOpenAPIResource> abstractKnife4JOpenAPIContainer;
-
+    
     @EventListener(classes = {ApplicationReadyEvent.class, HeartbeatEvent.class, RefreshRoutesEvent.class})
     public void discover() {
         this.abstractKnife4JOpenAPIContainer.discover(discoveryClient.getServices());
