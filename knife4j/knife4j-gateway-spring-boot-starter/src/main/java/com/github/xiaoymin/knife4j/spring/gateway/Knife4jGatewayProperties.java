@@ -55,11 +55,7 @@ public class Knife4jGatewayProperties {
      * 网关聚合策略,默认手动配置
      */
     private GatewayStrategy strategy = GatewayStrategy.MANUAL;
-    
-    /**
-     * 接口路径前缀
-     */
-    private String apiPathPrefix = DEFAULT_API_PATH_PREFIX;
+
     /**
      * 服务发现
      */
@@ -95,7 +91,11 @@ public class Knife4jGatewayProperties {
         
         private final OpenApiV3 v3 = new OpenApiV3();
         private final OpenApiV2 v2 = new OpenApiV2();
-        
+
+        /**
+         * 接口路由(如果子服务存在分组的情况，那么则手动配置,避免通过default分组的方式聚合不完整的情况发生)
+         */
+        private final List<Router> routes = new ArrayList<>();
     }
     
     /**
