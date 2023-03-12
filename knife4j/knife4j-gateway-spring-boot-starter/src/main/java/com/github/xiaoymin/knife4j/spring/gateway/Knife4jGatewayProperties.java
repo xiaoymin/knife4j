@@ -104,11 +104,17 @@ public class Knife4jGatewayProperties {
     @Getter
     @Setter
     public static class Router {
-        
+
+        /**
+         * 分组名称
+         */
         private String name;
+        /**
+         * 服务名称(Optional)
+         */
         private String serviceName;
         /**
-         * 自服务加载url地址,例如：/v2/api-docs?group=default
+         * OpenAPI数据源加载url地址,例如：/v2/api-docs?group=default
          */
         private String url = DEFAULT_OPEN_API_V2_PATH;
         /**
@@ -128,17 +134,28 @@ public class Knife4jGatewayProperties {
     @Getter
     @Setter
     public static class OpenApiV2 {
-        
-        private String apiDocsPath = DEFAULT_OPEN_API_V2_PATH;
+
+        /**
+         * OpenAPI数据源加载url地址,例如：/v2/api-docs?group=default
+         */
+        private String url = DEFAULT_OPEN_API_V2_PATH;
         
     }
     
     @Getter
     @Setter
     public static class OpenApiV3 {
-        
-        private String apiDocsPath = DEFAULT_OPEN_API_V3_PATH;
+        /**
+         * OpenAPI数据源加载url地址,例如：/v3/api-docs?group=default
+         */
+        private String url = DEFAULT_OPEN_API_V3_PATH;
+        /**
+         * OAuth2重定向地址
+         */
         private String oauth2RedirectUrl = "";
+        /**
+         * validatorUrl
+         */
         private String validatorUrl = "";
     }
 }

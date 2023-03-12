@@ -48,10 +48,10 @@ public class Knife4jGatewayAutoConfiguration {
         AbstractKnife4JOpenAPIContainer<? extends AbstractOpenAPIResource> knife4jSwaggerContainer;
         if (knife4jGateway.getDiscover().getVersion().equals(OpenApiVersion.V2)) {
             knife4jSwaggerContainer =
-                    new Knife4JOpenAPIV2Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getDiscover().getV2().getApiDocsPath(), knife4jGateway.getDiscover().getDefaultOrder());
+                    new Knife4JOpenAPIV2Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getDiscover().getV2().getUrl(), knife4jGateway.getDiscover().getDefaultOrder());
         } else {
             knife4jSwaggerContainer =
-                    new Knife4JOpenAPIV3Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getDiscover().getV3().getApiDocsPath(), knife4jGateway.getDiscover().getDefaultOrder());
+                    new Knife4JOpenAPIV3Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getDiscover().getV3().getUrl(), knife4jGateway.getDiscover().getDefaultOrder());
         }
         // knife4jSwaggerContainer.addForRoutes(knife4jGateway.getRoutes());
         knife4jSwaggerContainer.addExcludedDiscoverServices(knife4jGateway.getDiscover().getExcludedServices());
