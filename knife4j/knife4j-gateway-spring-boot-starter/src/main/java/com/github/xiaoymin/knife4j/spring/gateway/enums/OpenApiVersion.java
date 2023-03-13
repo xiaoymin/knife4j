@@ -24,11 +24,11 @@ package com.github.xiaoymin.knife4j.spring.gateway.enums;
  */
 public enum OpenApiVersion {
     /**
-     * v2
+     * Swagger2规范，参考：https://github.com/OAI/OpenAPI-Specification/blob/main/versions/2.0.md
      */
-    V2,
+    Swagger2,
     /**
-     * v3
+     * OpenAPI3规范，参考：https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md
      */
-    V3
+    OpenAPI3
 }

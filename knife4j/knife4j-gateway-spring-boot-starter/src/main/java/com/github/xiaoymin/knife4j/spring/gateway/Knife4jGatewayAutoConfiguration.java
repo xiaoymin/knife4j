@@ -46,12 +46,12 @@ public class Knife4jGatewayAutoConfiguration {
     @SuppressWarnings("java:S1452")
     public Knife4jOpenAPIContainer<? extends AbstractOpenAPIResource> knife4jSwaggerContainer(Knife4jGatewayProperties knife4jGateway) {
         AbstractKnife4JOpenAPIContainer<? extends AbstractOpenAPIResource> knife4jSwaggerContainer;
-        if (knife4jGateway.getDiscover().getVersion().equals(OpenApiVersion.V2)) {
+        if (knife4jGateway.getDiscover().getVersion().equals(OpenApiVersion.Swagger2)) {
             knife4jSwaggerContainer =
-                    new Knife4JOpenAPIV2Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getDiscover().getV2().getUrl(), knife4jGateway.getDiscover().getDefaultOrder());
+                    new Knife4JOpenAPIV2Container("/", knife4jGateway.getDiscover().getSwagger2().getUrl(), 0);
         } else {
             knife4jSwaggerContainer =
-                    new Knife4JOpenAPIV3Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getDiscover().getV3().getUrl(), knife4jGateway.getDiscover().getDefaultOrder());
+                    new Knife4JOpenAPIV3Container("knife4jGateway.getApiPathPrefix()", knife4jGateway.getDiscover().getOpenAPI3().getUrl(), 0);
         }
         // knife4jSwaggerContainer.addForRoutes(knife4jGateway.getRoutes());
         knife4jSwaggerContainer.addExcludedDiscoverServices(knife4jGateway.getDiscover().getExcludedServices());
