@@ -51,7 +51,7 @@ public class Knife4jGatewayAutoConfiguration {
                     new Knife4JOpenAPIV2Container("/", knife4jGateway.getDiscover().getSwagger2().getUrl(), 0);
         } else {
             knife4jSwaggerContainer =
-                    new Knife4JOpenAPIV3Container("knife4jGateway.getApiPathPrefix()", knife4jGateway.getDiscover().getOpenAPI3().getUrl(), 0);
+                    new Knife4JOpenAPIV3Container("knife4jGateway.getApiPathPrefix()", knife4jGateway.getDiscover().getOas3().getUrl(), 0);
         }
         // knife4jSwaggerContainer.addForRoutes(knife4jGateway.getRoutes());
         knife4jSwaggerContainer.addExcludedDiscoverServices(knife4jGateway.getDiscover().getExcludedServices());
@@ -59,7 +59,7 @@ public class Knife4jGatewayAutoConfiguration {
     }
     
     @Bean
-    @ConditionalOnProperty(name = "knife4j.gateway.discover.enabled", matchIfMissing = true, havingValue = "true")
+    @ConditionalOnProperty(name = "knife4j.gateway.discover.enabled", havingValue = "true")
     public ServiceChangeListener serviceChangeListener(DiscoveryClient discoveryClient, Knife4jOpenAPIContainer<? extends AbstractOpenAPIResource> knife4JOpenAPIContainer) {
         return new ServiceChangeListener(discoveryClient, knife4JOpenAPIContainer);
     }

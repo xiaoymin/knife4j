@@ -89,7 +89,7 @@ public class Knife4jGatewayProperties {
         /**
          * 针对OpenAPI3规范的个性化配置
          */
-        private final OpenApiV3 openAPI3 = new OpenApiV3();
+        private final OpenApiV3 oas3 = new OpenApiV3();
         /**
          * 针对Swagger2规范的个性化配置
          */

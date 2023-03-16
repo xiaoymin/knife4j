@@ -35,12 +35,12 @@ import java.util.SortedSet;
 /**
  * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
  *     23/02/26 20:43
- * @since gateway-spring-boot-starter v4.0.0
+ * @since gateway-spring-boot-starter v4.1.0
  */
 @AllArgsConstructor
 @RestController
 @ConditionalOnProperty(name = "knife4j.gateway.enabled", havingValue = "true")
-public class SwaggerEndpoint {
+public class OpenAPIEndpoint {
     
     final Knife4jOpenAPIContainer<? extends AbstractOpenAPIResource> knife4JOpenAPIContainer;
     final Knife4jGatewayProperties knife4jGatewayProperties;
@@ -53,9 +53,9 @@ public class SwaggerEndpoint {
             contextPath = "/";
         }
         response.setConfigUrl("/v3/api-docs/swagger-config");
-        response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getV3().getOauth2RedirectUrl());
+        response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getOauth2RedirectUrl());
         response.setUrls(knife4JOpenAPIContainer.getSwaggerResource());
-        response.setValidatorUrl(this.knife4jGatewayProperties.getDiscover().getV3().getValidatorUrl());
+        response.setValidatorUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getValidatorUrl());
         return Mono.just(ResponseEntity.ok().body(response));
     }
     
