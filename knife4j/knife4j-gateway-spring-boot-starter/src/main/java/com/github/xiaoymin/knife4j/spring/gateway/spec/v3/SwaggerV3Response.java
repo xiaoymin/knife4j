@@ -17,7 +17,6 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.spec.v3;
 
-import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,7 +56,7 @@ public class SwaggerV3Response implements Serializable {
      * group
      */
     @SuppressWarnings("java:S1948")
-    private SortedSet<? extends AbstractOpenAPIResource> urls;
+    private SortedSet<?> urls;
     
     /**
      * validatorUrl

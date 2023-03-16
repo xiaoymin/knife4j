@@ -42,4 +42,11 @@ public class PathUtilsTest {
         Assert.assertEquals(PathUtils.append(null), "/");
         Assert.assertEquals(PathUtils.append("//abc"), "/abc");
     }
+
+    @Test
+    public void test_append1() {
+        String path = "//abc";
+        String appendPath = PathUtils.append(path,"//v2/api-dcos");
+        log.info("path:{}", appendPath);
+    }
 }

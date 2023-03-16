@@ -17,11 +17,14 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.endpoint;
 
+import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayStrategy;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.Knife4jOpenAPIContainer;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v3.SwaggerV3Response;
+import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -30,6 +33,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.SortedSet;
 
 /**
@@ -37,6 +41,7 @@ import java.util.SortedSet;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.1.0
  */
+@Slf4j
 @AllArgsConstructor
 @RestController
 @ConditionalOnProperty(name = "knife4j.gateway.enabled", havingValue = "true")
@@ -48,10 +53,27 @@ public class OpenAPIEndpoint {
     @GetMapping("/v3/api-docs/swagger-config")
     public Mono<ResponseEntity<SwaggerV3Response>> swaggerConfig(ServerHttpRequest request) {
         SwaggerV3Response response = new SwaggerV3Response();
+        // 解决nginx网关代理情况
         String contextPath = request.getPath().contextPath().value();
         if (!StringUtils.hasLength(contextPath)) {
             contextPath = "/";
         }
+        final String basePath = contextPath;
+        log.debug("forward-path:{}",basePath);
+        //判断当前模式是手动还是服务发现
+        if (knife4jGatewayProperties.getStrategy()== GatewayStrategy.MANUAL){
+            List<Knife4jGatewayProperties.Router> routers = knife4jGatewayProperties.getRoutes();
+            if (routers!=null&&!routers.isEmpty()){
+                routers.stream().forEach(router -> {
+                    router.setUrl(PathUtils.append(basePath,router.getUrl()));
+                    router.setContextPath(PathUtils.append(basePath,router.getContextPath()));
+                });
+            }
+            knife4jGatewayProperties.getRoutes();
+        }
+
+
+
         response.setConfigUrl("/v3/api-docs/swagger-config");
         response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getOauth2RedirectUrl());
         response.setUrls(knife4JOpenAPIContainer.getSwaggerResource());
