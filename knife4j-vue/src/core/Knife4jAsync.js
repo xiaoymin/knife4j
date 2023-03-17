@@ -4155,7 +4155,7 @@ SwaggerBootstrapUi.prototype.pluginSupportOrangeforms = function (swpinfo, apiIn
       //这里需要增加新Class类
       that.dynamicAddSchema(_schema);
     }
-    swpinfo.enterprisePlugins.orangeformsSchema = orangeforms["schema"];
+    //swpinfo.enterprisePlugins.orangeformsSchema = orangeforms["schema"];
     let oa3Data = that.currentInstance.swaggerData;
     if (KUtils.checkUndefined(oa3Data) && KUtils.checkUndefined(oa3Data.components)) {
       let _originalSchemas = oa3Data.components.schemas;
@@ -4246,10 +4246,13 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
                 //console.log("企业级插件orangeforms.")
                 // 此处有可能是array类型
                 let _enterpriseSchema = swpinfo.enterprisePlugins.orangeformsSchema;
-                let _enterpriseParam = that.bodyParameterResolverSchema(_enterpriseSchema, swpinfo.oas2);
-                if (KUtils.checkUndefined(_enterpriseParam)) {
-                  that.assembleParameterOAS3(_enterpriseParam, swpinfo, []);
+                if (KUtils.checkUndefined(_enterpriseSchema)) {
+                  let _enterpriseParam = that.bodyParameterResolverSchema(_enterpriseSchema, swpinfo.oas2);
+                  if (KUtils.checkUndefined(_enterpriseParam)) {
+                    that.assembleParameterOAS3(_enterpriseParam, swpinfo, []);
+                  }
                 }
+
               } else {
                 // 判断是否包含schema
                 var schema = consumeBody['schema'];
