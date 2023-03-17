@@ -15,10 +15,8 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.gateway.listener;
+package com.github.xiaoymin.knife4j.spring.gateway.discover;
 
-import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
-import com.github.xiaoymin.knife4j.spring.gateway.spec.Knife4jOpenAPIContainer;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -29,16 +27,16 @@ import org.springframework.context.event.EventListener;
 /**
  * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
  *     23/02/26 20:43
- * @since gateway-spring-boot-starter v4.0.0
+ * @since gateway-spring-boot-starter v4.1.0
  */
 @AllArgsConstructor
 public class ServiceChangeListener {
     
     final DiscoveryClient discoveryClient;
-    final Knife4jOpenAPIContainer<? extends AbstractOpenAPIResource> abstractKnife4JOpenAPIContainer;
+    final ServiceDiscoverHandler serviceDiscoverHandler;
     
     @EventListener(classes = {ApplicationReadyEvent.class, HeartbeatEvent.class, RefreshRoutesEvent.class})
     public void discover() {
-        this.abstractKnife4JOpenAPIContainer.discover(discoveryClient.getServices());
+        this.serviceDiscoverHandler.discover(discoveryClient.getServices());
     }
 }

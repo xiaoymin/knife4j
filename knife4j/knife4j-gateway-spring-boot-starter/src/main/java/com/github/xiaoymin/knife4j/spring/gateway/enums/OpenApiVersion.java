@@ -20,7 +20,7 @@ package com.github.xiaoymin.knife4j.spring.gateway.enums;
 /**
  * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
  *     23/02/26 20:43
- * @since gateway-spring-boot-starter v4.0.0
+ * @since gateway-spring-boot-starter v4.1.0
  */
 public enum OpenApiVersion {
     /**

@@ -28,7 +28,7 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
 /**
  * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
  *     23/02/26 20:43
- * @since gateway-spring-boot-starter v4.0.0
+ * @since gateway-spring-boot-starter v4.1.0
  */
 public class PathUtils {
     

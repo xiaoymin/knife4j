@@ -50,17 +50,20 @@ public class Knife4jGatewayProperties {
     
     /**
      * 网关聚合策略,默认手动配置
+     * @since 4.1.0
      */
     private GatewayStrategy strategy = GatewayStrategy.MANUAL;
-
+    
     /**
      * 服务发现模式
+     * @since 4.1.0
      */
     private final Discover discover = new Discover();
     
     /**
      * 聚合服务路由配置(如果是manual模式则配置此属性作为数据来源，服务发现模式则作为无法满足聚合要求的服务个性化定制配置)
      * 参考Discussions:https://github.com/xiaoymin/knife4j/discussions/547
+     * @since 4.0.0
      */
     private final List<Router> routes = new ArrayList<>();
     
@@ -80,12 +83,12 @@ public class Knife4jGatewayProperties {
          * 需要排除的服务名称(不区分大小写)
          */
         private Set<String> excludedServices = new HashSet<>();
-
+        
         /**
          * 当前规范版本，默认OpenAPI3
          */
         private OpenApiVersion version = OpenApiVersion.OpenAPI3;
-
+        
         /**
          * 针对OpenAPI3规范的个性化配置
          */
@@ -94,31 +97,46 @@ public class Knife4jGatewayProperties {
          * 针对Swagger2规范的个性化配置
          */
         private final OpenApiV2 swagger2 = new OpenApiV2();
-
+        
         /**
          * 各个子服务个性化配置，key：服务名称，value：当前服务的个性化配置
          */
-        private Map<String,ServiceConfigInfo> serviceConfig;
+        private final Map<String, ServiceConfigInfo> serviceConfig = new HashMap<>();
+        
+        /**
+         * 获取当前服务的URL，根据用户指定的版本类型获取
+         * @return
+         */
+        public String getUrl() {
+            if (this.version == OpenApiVersion.OpenAPI3) {
+                return this.oas3.getUrl();
+            }
+            if (this.version == OpenApiVersion.Swagger2) {
+                return this.swagger2.getUrl();
+            }
+            // 默认值
+            return DEFAULT_OPEN_API_V2_PATH;
+        }
     }
-
+    
     /**
      * 服务个性化配置
      * @since 4.1.0
      */
     @Getter
     @Setter
-    public static class ServiceConfigInfo{
-
+    public static class ServiceConfigInfo {
+        
         /**
          * 当前服务排序
          */
         private Integer order = DEFAULT_ORDER;
-
+        
         /**
          * 当前服务的分组名称，用于前端Ui展示title
          */
         private String groupName;
-
+        
         /**
          * 兼容OpenAPI3规范在聚合时丢失contextPath属性的异常情况，由开发者自己配置contextPath,Knife4j的前端Ui做兼容处理,与url属性独立不冲突，仅OpenAPI3规范聚合需要，OpenAPI2规范不需要设置此属性,默认为(apiPathPrefix)
          *
@@ -133,7 +151,7 @@ public class Knife4jGatewayProperties {
     @Getter
     @Setter
     public static class Router {
-
+        
         /**
          * 分组名称
          */
@@ -159,7 +177,7 @@ public class Knife4jGatewayProperties {
         private Integer order = DEFAULT_ORDER;
         
     }
-
+    
     /**
      * Swagger2规范的个性化配置
      * @since 4.1.0
@@ -167,15 +185,14 @@ public class Knife4jGatewayProperties {
     @Getter
     @Setter
     public static class OpenApiV2 {
-
+        
         /**
          * OpenAPI数据源加载url地址,例如：/v2/api-docs?group=default
          */
         private String url = DEFAULT_OPEN_API_V2_PATH;
         
     }
-
-
+    
     /**
      * OpenAPI3规范的个性化配置
      * @since 4.1.0
@@ -183,6 +200,7 @@ public class Knife4jGatewayProperties {
     @Getter
     @Setter
     public static class OpenApiV3 {
+        
         /**
          * OpenAPI数据源加载url地址,例如：/v3/api-docs?group=default
          */

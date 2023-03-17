@@ -21,7 +21,7 @@ package com.github.xiaoymin.knife4j.spring.gateway.enums;
  * 网关文档聚合方式
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/3/9 22:27
- * @since:knife4j
+ * @since:knife4j v4.1.0
  */
 public enum GatewayStrategy {
     /**

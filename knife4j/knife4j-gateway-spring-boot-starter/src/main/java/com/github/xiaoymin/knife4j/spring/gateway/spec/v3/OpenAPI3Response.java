@@ -21,17 +21,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.SortedSet;
+import java.util.List;
 
 /**
  * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
  *     23/02/26 20:43
- * @since gateway-spring-boot-starter v4.0.0
+ * @since gateway-spring-boot-starter v4.1.0
  */
 @Getter
 @Setter
 @SuppressWarnings("unused")
-public class SwaggerV3Response implements Serializable {
+public class OpenAPI3Response implements Serializable {
     
     /**
      * ConfigUrl，eg: /v3/api-docs/swagger-config
@@ -56,7 +56,7 @@ public class SwaggerV3Response implements Serializable {
      * group
      */
     @SuppressWarnings("java:S1948")
-    private SortedSet<?> urls;
+    private List<?> urls;
     
     /**
      * validatorUrl

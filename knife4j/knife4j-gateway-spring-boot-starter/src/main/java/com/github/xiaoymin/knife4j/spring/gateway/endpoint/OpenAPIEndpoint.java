@@ -17,15 +17,15 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.endpoint;
 
+import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceDiscoverHandler;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayStrategy;
-import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
-import com.github.xiaoymin.knife4j.spring.gateway.spec.Knife4jOpenAPIContainer;
-import com.github.xiaoymin.knife4j.spring.gateway.spec.v3.SwaggerV3Response;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.v3.OpenAPI3Response;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.StringUtils;
@@ -33,8 +33,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.SortedSet;
+import java.util.*;
 
 /**
  * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
@@ -47,49 +46,47 @@ import java.util.SortedSet;
 @ConditionalOnProperty(name = "knife4j.gateway.enabled", havingValue = "true")
 public class OpenAPIEndpoint {
     
-    final Knife4jOpenAPIContainer<? extends AbstractOpenAPIResource> knife4JOpenAPIContainer;
     final Knife4jGatewayProperties knife4jGatewayProperties;
-    
+    final ApplicationContext applicationContext;
+    /**
+     * OpenAPI Group Endpoint
+     * @param request request
+     * @return
+     */
     @GetMapping("/v3/api-docs/swagger-config")
-    public Mono<ResponseEntity<SwaggerV3Response>> swaggerConfig(ServerHttpRequest request) {
-        SwaggerV3Response response = new SwaggerV3Response();
+    public Mono<ResponseEntity<OpenAPI3Response>> swaggerConfig(ServerHttpRequest request) {
+        OpenAPI3Response response = new OpenAPI3Response();
         // 解决nginx网关代理情况
         String contextPath = request.getPath().contextPath().value();
         if (!StringUtils.hasLength(contextPath)) {
             contextPath = "/";
         }
         final String basePath = contextPath;
-        log.debug("forward-path:{}",basePath);
-        //判断当前模式是手动还是服务发现
-        if (knife4jGatewayProperties.getStrategy()== GatewayStrategy.MANUAL){
-            List<Knife4jGatewayProperties.Router> routers = knife4jGatewayProperties.getRoutes();
-            if (routers!=null&&!routers.isEmpty()){
-                routers.stream().forEach(router -> {
-                    router.setUrl(PathUtils.append(basePath,router.getUrl()));
-                    router.setContextPath(PathUtils.append(basePath,router.getContextPath()));
-                });
-            }
-            knife4jGatewayProperties.getRoutes();
-        }
-
-
-
         response.setConfigUrl("/v3/api-docs/swagger-config");
         response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getOauth2RedirectUrl());
-        response.setUrls(knife4JOpenAPIContainer.getSwaggerResource());
         response.setValidatorUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getValidatorUrl());
-        return Mono.just(ResponseEntity.ok().body(response));
-    }
-    
-    @GetMapping("/swagger-resources")
-    @SuppressWarnings("java:S1452")
-    public Mono<ResponseEntity<SortedSet<? extends AbstractOpenAPIResource>>> swaggerResource(ServerHttpRequest request) {
-        // 获取分组URL的时候，需要考虑Nginx等软件转发代理的情况
-        // 获取x-forward-for请求头
-        String contextPath = request.getPath().contextPath().value();
-        if (!StringUtils.hasLength(contextPath)) {
-            contextPath = "/";
+        List<Object> sortedSet = new LinkedList<>();
+        log.debug("forward-path:{}", basePath);
+        // 判断当前模式是手动还是服务发现
+        if (knife4jGatewayProperties.getStrategy() == GatewayStrategy.MANUAL) {
+            log.debug("manual strategy.");
+            List<Knife4jGatewayProperties.Router> routers = knife4jGatewayProperties.getRoutes();
+            if (routers != null && !routers.isEmpty()) {
+                Collections.sort(routers, Comparator.comparing(Knife4jGatewayProperties.Router::getOrder));
+                for (Knife4jGatewayProperties.Router router : routers) {
+                    router.setUrl(PathUtils.append(basePath, router.getUrl()));
+                    router.setContextPath(PathUtils.append(basePath, router.getContextPath()));
+                    sortedSet.add(router);
+                }
+            }
+        } else {
+            log.debug("discover strategy.");
+            ServiceDiscoverHandler serviceDiscoverHandler = applicationContext.getBean(ServiceDiscoverHandler.class);
+            if (serviceDiscoverHandler != null) {
+                response.setUrls(serviceDiscoverHandler.getResources(basePath));
+            }
         }
-        return Mono.just(ResponseEntity.ok().body(this.knife4JOpenAPIContainer.getSwaggerResource()));
+        response.setUrls(sortedSet);
+        return Mono.just(ResponseEntity.ok().body(response));
     }
 }
