@@ -34,23 +34,29 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(Knife4jGatewayProperties.class)
 @ComponentScan(basePackageClasses = Knife4jGatewayAutoConfiguration.class)
-@ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "discover")
+@ConditionalOnProperty(name = "knife4j.gateway.enabled", havingValue = "true")
 public class Knife4jGatewayAutoConfiguration {
-    
-    @Bean
-    public ServiceDiscoverHandler serviceDiscoverHandler(Knife4jGatewayProperties knife4jGatewayProperties) {
-        return new ServiceDiscoverHandler(knife4jGatewayProperties);
-        
+
+    @Configuration
+    @EnableConfigurationProperties(Knife4jGatewayProperties.class)
+    @ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "discover")
+    public static class Knife4jDiscoverConfiguration{
+        @Bean
+        public ServiceDiscoverHandler serviceDiscoverHandler(Knife4jGatewayProperties knife4jGatewayProperties) {
+            return new ServiceDiscoverHandler(knife4jGatewayProperties);
+
+        }
+        /**
+         * Service Listener
+         * @param discoveryClient Registry Service Discovery Client
+         * @param serviceDiscoverHandler Service Discover Handler
+         * @return
+         */
+        @Bean
+        public ServiceChangeListener serviceChangeListener(DiscoveryClient discoveryClient, ServiceDiscoverHandler serviceDiscoverHandler) {
+            return new ServiceChangeListener(discoveryClient, serviceDiscoverHandler);
+        }
     }
-    
-    /**
-     * Service Listener
-     * @param discoveryClient Registry Service Discovery Client
-     * @param serviceDiscoverHandler Service Discover Handler
-     * @return
-     */
-    @Bean
-    public ServiceChangeListener serviceChangeListener(DiscoveryClient discoveryClient, ServiceDiscoverHandler serviceDiscoverHandler) {
-        return new ServiceChangeListener(discoveryClient, serviceDiscoverHandler);
-    }
+
+
 }
