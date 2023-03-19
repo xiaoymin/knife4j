@@ -86,7 +86,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                 OpenAPI2Resource resource = new OpenAPI2Resource(order, true);
                 resource.setName(groupName);
                 resource.setContextPath(contextPath);
-                resource.setUrl(PathUtils.append(contextPath, url));
+                resource.setUrl(PathUtils.append(serviceName, url));
                 resource.setId(Base64.getEncoder().encodeToString((resource.getName() + resource.getUrl() + resource.getContextPath()).getBytes(StandardCharsets.UTF_8)));
                 resources.add(resource);
             }

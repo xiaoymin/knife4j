@@ -65,11 +65,11 @@ public class OpenAPIEndpoint {
         response.setConfigUrl("/v3/api-docs/swagger-config");
         response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getOauth2RedirectUrl());
         response.setValidatorUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getValidatorUrl());
-        List<Object> sortedSet = new LinkedList<>();
         log.debug("forward-path:{}", basePath);
         // 判断当前模式是手动还是服务发现
         if (knife4jGatewayProperties.getStrategy() == GatewayStrategy.MANUAL) {
             log.debug("manual strategy.");
+            List<Object> sortedSet = new LinkedList<>();
             List<Knife4jGatewayProperties.Router> routers = knife4jGatewayProperties.getRoutes();
             if (routers != null && !routers.isEmpty()) {
                 Collections.sort(routers, Comparator.comparing(Knife4jGatewayProperties.Router::getOrder));
@@ -78,6 +78,7 @@ public class OpenAPIEndpoint {
                     router.setContextPath(PathUtils.append(basePath, router.getContextPath()));
                     sortedSet.add(router);
                 }
+                response.setUrls(sortedSet);
             }
         } else {
             log.debug("discover strategy.");
@@ -86,7 +87,6 @@ public class OpenAPIEndpoint {
                 response.setUrls(serviceDiscoverHandler.getResources(basePath));
             }
         }
-        response.setUrls(sortedSet);
         return Mono.just(ResponseEntity.ok().body(response));
     }
 }

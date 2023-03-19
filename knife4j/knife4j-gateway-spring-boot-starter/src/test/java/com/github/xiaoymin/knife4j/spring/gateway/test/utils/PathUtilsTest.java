@@ -50,5 +50,6 @@ public class PathUtilsTest {
         log.info("path:{}", appendPath);
         log.info("path1:{}", PathUtils.append("/bbb", "user-service", "/v2/api-dcos"));
         log.info("path1:{}", PathUtils.append(null, "user-service", "/v2/api-dcos"));
+        log.info("path1:{}", PathUtils.append("user-service", "user-service", "/v2/api-dcos"));
     }
 }
