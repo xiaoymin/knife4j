@@ -129,6 +129,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
             Collections.sort(resources, Comparator.comparing(OpenAPI2Resource::getOrder));
             for (OpenAPI2Resource resource : resources) {
                 resource.setContextPath(PathUtils.append(forwardPath, resource.getContextPath()));
+                resource.setUrl(PathUtils.append(forwardPath, resource.getUrl()));
             }
             return resources;
         }

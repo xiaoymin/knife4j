@@ -24,6 +24,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.net.URI;
+
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/3/8 08:57
@@ -32,6 +34,13 @@ import org.junit.runners.JUnit4;
 @Slf4j
 @RunWith(JUnit4.class)
 public class PathUtilsTest {
+    
+    @Test
+    public void test_ref() {
+        String ref = "http://localhost:15013/s/doc.html";
+        URI uri = URI.create(ref);
+        log.info("path:{}", PathUtils.getContextPath(ref));
+    }
     
     @Test
     public void test_append() {

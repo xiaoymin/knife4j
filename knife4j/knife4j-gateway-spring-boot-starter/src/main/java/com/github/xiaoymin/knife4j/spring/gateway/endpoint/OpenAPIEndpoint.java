@@ -59,7 +59,15 @@ public class OpenAPIEndpoint {
         // 解决nginx网关代理情况
         String contextPath = request.getPath().contextPath().value();
         if (!StringUtils.hasLength(contextPath)) {
-            contextPath = "/";
+            // 从header中获取
+            List<String> referer = request.getHeaders().get("Referer");
+            if (referer != null && !referer.isEmpty()) {
+                String value = referer.get(0);
+                log.debug("Referer:{}", value);
+                contextPath = PathUtils.getContextPath(value);
+            } else {
+                contextPath = "/";
+            }
         }
         final String basePath = contextPath;
         response.setConfigUrl("/v3/api-docs/swagger-config");
