@@ -18,6 +18,7 @@
 package com.github.xiaoymin.knife4j.spring.gateway.discover;
 
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
+import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import lombok.Getter;
@@ -64,6 +65,8 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
     public void discover(List<String> service) {
         log.debug("service has change.");
         Set<String> excludeService = getExcludeService();
+        // 版本
+        OpenApiVersion apiVersion = this.gatewayProperties.getDiscover().getVersion();
         // 判断当前类型
         String url = this.gatewayProperties.getDiscover().getUrl();
         // 个性化服务的配置信息
@@ -86,6 +89,13 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                 OpenAPI2Resource resource = new OpenAPI2Resource(order, true);
                 resource.setName(groupName);
                 resource.setContextPath(contextPath);
+                // 判断版本
+                if (apiVersion == OpenApiVersion.OpenAPI3) {
+                    if (contextPath.equalsIgnoreCase("/")) {
+                        // 自动追加一个serviceName
+                        resource.setContextPath("/" + serviceName);
+                    }
+                }
                 resource.setUrl(PathUtils.append(serviceName, url));
                 resource.setId(Base64.getEncoder().encodeToString((resource.getName() + resource.getUrl() + resource.getContextPath()).getBytes(StandardCharsets.UTF_8)));
                 resources.add(resource);
