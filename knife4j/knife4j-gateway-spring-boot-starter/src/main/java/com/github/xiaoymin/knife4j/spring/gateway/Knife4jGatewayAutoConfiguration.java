@@ -36,15 +36,16 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackageClasses = Knife4jGatewayAutoConfiguration.class)
 @ConditionalOnProperty(name = "knife4j.gateway.enabled", havingValue = "true")
 public class Knife4jGatewayAutoConfiguration {
-
+    
     @Configuration
     @EnableConfigurationProperties(Knife4jGatewayProperties.class)
     @ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "discover")
-    public static class Knife4jDiscoverConfiguration{
+    public static class Knife4jDiscoverConfiguration {
+        
         @Bean
         public ServiceDiscoverHandler serviceDiscoverHandler(Knife4jGatewayProperties knife4jGatewayProperties) {
             return new ServiceDiscoverHandler(knife4jGatewayProperties);
-
+            
         }
         /**
          * Service Listener
@@ -57,6 +58,5 @@ public class Knife4jGatewayAutoConfiguration {
             return new ServiceChangeListener(discoveryClient, serviceDiscoverHandler);
         }
     }
-
-
+    
 }

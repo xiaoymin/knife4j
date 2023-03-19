@@ -421,7 +421,9 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
         location: KUtils.getValue(gu, 'url', '', true),
         swaggerVersion: '3.0.3',
         tagSort: KUtils.getValue(groupData, 'tagsSorter', 'order', true),
-        operationSort: KUtils.getValue(groupData, 'operationsSorter', 'order', true)
+        operationSort: KUtils.getValue(groupData, 'operationsSorter', 'order', true),
+        servicePath: KUtils.getValue(gu, 'servicePath', null, true),
+        contextPath: KUtils.getValue(gu, 'contextPath', null, true)
       };
       newGroupData.push(newGroup);
     })
@@ -434,7 +436,9 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
       location: KUtils.getValue(groupData, 'url', '', true),
       swaggerVersion: '3.0.3',
       tagSort: KUtils.getValue(groupData, 'tagsSorter', 'order', true),
-      operationSort: KUtils.getValue(groupData, 'operationsSorter', 'order', true)
+      operationSort: KUtils.getValue(groupData, 'operationsSorter', 'order', true),
+      servicePath: KUtils.getValue(groupData, 'servicePath', null, true),
+      contextPath: KUtils.getValue(groupData, 'contextPath', null, true)
     })
   }
   newGroupData.forEach(function (group) {
@@ -449,6 +453,9 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
     //排序规则2022.12.6
     g.tagSort = group.tagSort;
     g.operationSort = group.operationSort;
+    //增加basePath，主要是网关聚合的场景
+    g.servicePath = KUtils.getValue(group, 'servicePath', null, true);
+    g.contextPath = KUtils.getValue(group, 'contextPath', null, true);
     // g.url='/test/json';
     var newUrl = '';
     // 此处需要判断basePath路径的情况
