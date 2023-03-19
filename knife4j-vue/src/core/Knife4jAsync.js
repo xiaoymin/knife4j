@@ -4899,7 +4899,10 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     if (reg.test(pathname)) {
       tempPath = RegExp.$1;
     }
-    newfullPath += tempPath;
+    //聚合情况下，nginx转发代理的情况，需要避免重复添加
+    if (newfullPath.indexOf(tempPath) === -1) {
+      newfullPath += tempPath;
+    }
   }
   newfullPath += path;
   // 截取字符串
