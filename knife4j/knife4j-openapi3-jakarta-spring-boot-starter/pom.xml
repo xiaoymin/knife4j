@@ -30,7 +30,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
-            <version>${knife4j-spring-boot.version}</version>
+            <version>${knife4j-spring-boot3.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
