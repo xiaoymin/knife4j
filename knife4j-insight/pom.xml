@@ -176,7 +176,7 @@
                 </executions>-->
                 <configuration>
                     <imageName>knife4j</imageName>
-                    <mainClass>com.github.xiaoymin.knife4j.Knife4jDesktopApplication</mainClass>
+                    <mainClass>com.github.xiaoymin.knife4j.Knife4jInsightApplication</mainClass>
                     <skipNativeTests>true</skipNativeTests>
                 </configuration>
             </plugin>

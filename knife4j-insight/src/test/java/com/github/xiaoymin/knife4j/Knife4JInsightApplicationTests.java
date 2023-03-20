@@ -41,7 +41,7 @@ import java.util.Properties;
 
 @Slf4j
 @SpringBootTest
-class Knife4jDesktopApplicationTests {
+class Knife4JInsightApplicationTests {
     
     @Test
     void contextLoads() {

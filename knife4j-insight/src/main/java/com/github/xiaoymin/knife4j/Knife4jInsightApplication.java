@@ -28,12 +28,12 @@ import java.net.InetAddress;
 
 @Slf4j
 @SpringBootApplication
-public class Knife4jDesktopApplication {
+public class Knife4jInsightApplication {
     
     @SneakyThrows
     public static void main(String[] args) {
         // 启动项目
-        ConfigurableApplicationContext application = SpringApplication.run(Knife4jDesktopApplication.class, args);
+        ConfigurableApplicationContext application = SpringApplication.run(Knife4jInsightApplication.class, args);
         Environment env = application.getEnvironment();
         String host = InetAddress.getLocalHost().getHostAddress();
         String port = env.getProperty("server.port");

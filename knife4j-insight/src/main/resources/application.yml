@@ -5,4 +5,4 @@ spring:
     enabled: true
     suffix: .html
   application:
-    name: knife4j-desktop
+    name: knife4j-insight
