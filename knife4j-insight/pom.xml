@@ -5,19 +5,19 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.github.xiaoymin</groupId>
-    <artifactId>knife4j-desktop</artifactId>
+    <artifactId>knife4j-insight</artifactId>
     <version>2.0</version>
-    <name>knife4j-desktop</name>
-    <description>knife4j-desktop重构版本,基于Spring Boot重构,方便后期接入各种生态</description>
+    <name>knife4j-insight</name>
+    <description>knife4j-desktop重构版本，更名为Knife4jInsight,基于Spring Boot重构,方便后期接入各种生态</description>
     <properties>
         <java.version>18</java.version>
         <skipTests>true</skipTests>
         <slf4j.version>2.0.5</slf4j.version>
-        <hutool.version>5.8.10</hutool.version>
+        <hutool.version>5.8.15</hutool.version>
         <httpclient.version>4.5.14</httpclient.version>
         <gson.version>2.10</gson.version>
         <logback.version>1.4.5</logback.version>
