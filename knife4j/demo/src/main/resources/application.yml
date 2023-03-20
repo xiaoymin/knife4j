@@ -1,0 +1,23 @@
+knife4j:
+  enableAggregation: true
+  nacos:
+    enable: true
+#    service-url: http://192.168.0.112:8804/nacos/
+    serviceUrl: http://hopefun.win:28848/nacos/
+    routeAuth:
+      enable: true
+      username: hopefun
+      password: hopefun
+    routes:
+      - name: 用户服务
+        service-name: user
+        group-name: dev
+        namespace-id: w2002-xcl
+#        clusters: test
+        location: /v2/api-docs?group=default
+
+
+
+logging:
+  level:
+    com.github.xiaoymin.knife4j: debug
