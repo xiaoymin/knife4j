@@ -8,7 +8,7 @@
 :::
 
 
-Knife4jAggregationDesktop是一款致力于基于OpenAPI2及OpenAPI3规范进行聚合的独立中间件
+Knife4jInsight是一款致力于基于OpenAPI2及OpenAPI3规范进行聚合的独立中间件
 
 在[Knife4j 4.0](/docs/changelog/x/4.0)版本发布之际，作者也对该组件进行了了架构重新设计，代码重构。
 
@@ -27,16 +27,16 @@ Knife4jAggregationDesktop是一款致力于基于OpenAPI2及OpenAPI3规范进行
 
 **软件架构图**如下：
 
-![](/images/website/upgrade/v4-0/knife4j-desktop-architecture.png)
+![](/images/website/insight/knife4j-insight.png)
 
 整个架构设计分层说明如下：
 
 - **第一层(Web):**对外暴露接口文档层，限定只支持一级`context-path`目录,`context-path`名称由使用者自定义，该组件理论上支持**`N`个项目**的文档聚合展示。
 - **第二层(Security):**提供对当前单个项目文档的鉴权，提供两种鉴权机制，一种是配置写死，另外一种可对接第三方自定义鉴权接口(需符合该组件定义的规范)
-- **第三层(Gateway):**基于Knife4jDesktop，用户在真实调试时，基于当前流行的HttpClient、OkHttp组件库，实现从web层到真实各子服务的请求代理转发.
-- **第四层(DataContext):**数据层，该数据层是Knife4jDesktop的数据来源,主要分两大类型：
+- **第三层(Gateway):**基于Knife4jInsight，用户在真实调试时，基于当前流行的HttpClient、OkHttp组件库，实现从web层到真实各子服务的请求代理转发.
+- **第四层(DataContext):**数据层，该数据层是Knife4jInsight的数据来源,主要分两大类型：
     - **服务中心类型:** 各个服务注册中心模式的解析，通过将服务中心注册的微服务进行聚合，其核心还是RESTFul API接口
-    - **配置中心类型:** Knife4jDesktop支持的配置中心的类型，通过将数据源存放在配置中心中间件上，可以保证使用者灵活使用,目前暂支持了两种模式(本地磁盘(Disk)和Nacos)
+    - **配置中心类型:** Knife4jInsight支持的配置中心的类型，通过将数据源存放在配置中心中间件上，可以保证使用者灵活使用,目前暂支持了两种模式(本地磁盘(Disk)和Nacos)
 - **第五层(Base):**基础设施层,代表了当前组件所支持的规范类型(OpenAPI2+OpenAPI3),当然，后续有新的规范，在时间允许的情况下，我们都可以进行扩展支持。
 
 

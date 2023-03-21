@@ -167,7 +167,7 @@ module.exports = {
         },
         {
             type: 'category',
-            label: 'Desktop独立渲染组件',
+            label: 'Insight独立渲染组件',
             collapsed: true,
             link: {
                 type: 'doc',

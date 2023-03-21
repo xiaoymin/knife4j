@@ -1,8 +1,8 @@
 # Nacos配置中心模式
 
 
-Nacos配置中心模式在代表运行Desktop组件时，所有数据全部来源于Nacos配置中心，由于Nacos提供了可操作的Web界面，因此使用上也是较方便的。
-
+Nacos配置中心模式在代表运行Insight组件时，所有数据全部来源于Nacos配置中心，由于Nacos提供了可操作的Web界面，因此使用上也是较方便的。
+2
 
 ## 启动配置
 
@@ -16,7 +16,7 @@ Nacos配置中心模式在代表运行Desktop组件时，所有数据全部来�
 version: "2.0"
 services:
   knife4j:
-    container_name: knife4j-desktop-nacos
+    container_name: knife4j-insight-nacos
     restart: always
     image: "xiaoymin/knife4j:v2.0"
     network_mode: "bridge"
@@ -49,11 +49,11 @@ services:
 |knife4j.nacos.dataId|配置dataId|
 |knife4j.nacos.group|配置group名称|
 
-Nacos模式需要注意的是，使用者需要事先在Nacos配置中心中创建一个配置文件(仅支持properties和yml类型)以作为Desktop组件数据源启动运行，内容可以为空
+Nacos模式需要注意的是，使用者需要事先在Nacos配置中心中创建一个配置文件(仅支持properties和yml类型)以作为Insight组件数据源启动运行，内容可以为空
 
 创建的该配置所对应的namespace、dataId、group就是上面配置所对应的值。
 
-而该配置，则也是Desktop用来聚合各方OpenAPI数据的配置来源,下面介绍的四种模式的配置内容都存放在该配置中
+而该配置，则也是Insight用来聚合各方OpenAPI数据的配置来源,下面介绍的四种模式的配置内容都存放在该配置中
 
 ## 文档配置
 
@@ -66,7 +66,7 @@ Nacos配置中心模式则是**将所有文档的配置都配置在同一个配�
 
 ### Disk模式
 
-由于在[Disk本地配置中心](config-disk)模式中，我们聚合本地OpenAPI文件即可，而Nacos配置中心模式则有轻微不同，因为已经没有了磁盘文件，因此，用户可以将OpenAPI规范文件存放在Nacos配置中心中，这样就能利用Desktop进行聚合了
+由于在[Disk本地配置中心](config-disk)模式中，我们聚合本地OpenAPI文件即可，而Nacos配置中心模式则有轻微不同，因为已经没有了磁盘文件，因此，用户可以将OpenAPI规范文件存放在Nacos配置中心中，这样就能利用Insight进行聚合了
 
 示例配置如下：
 

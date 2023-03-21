@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 :::danger 注意事项
 
-由于目前Knife4j-desktop是以Docker的方式提供的服务，因此使用者在使用的时候有些事项还是需要注意，否则会导致一些问题发生
+由于目前Knife4jInsight是以Docker的方式提供的服务，因此使用者在使用的时候有些事项还是需要注意，否则会导致一些问题发生
 
 - 不管是Disk模式还是Nacos模式，如果是配置使用通过HTTP接口获取OpenAPI数据的服务类型(Cloud/Nacos/Eureka模式)，需要**保证Docker容器内的网络能够互通进行访问**
 - 如果是Nacos模式启动，注意启动参数`knife4j.nacos.namespace`的设定，要保持一致，否则会获取Nacos配置失败，导致聚合访问文档不成功
@@ -18,7 +18,7 @@ import TabItem from '@theme/TabItem';
 自2.0版本开始，不在提供发行版文件包的方式进行安装运行，推荐使用`docker-compose`的方式。
 
 
-Desktop组件自2.0版本开始，数据源开启支持配置中心中间件的模式，因此，相较于原1.0版本中只支持本地磁盘的方式，在使用上会有所不同，这取决于开发者自己选择。
+Knife4jInsight组件自2.0版本开始，数据源开启支持配置中心中间件的模式，因此，相较于原1.0版本中只支持本地磁盘的方式，在使用上会有所不同，这取决于开发者自己选择。
 
 目前的版本中，主要两种模式：
 
@@ -37,7 +37,7 @@ Desktop组件自2.0版本开始，数据源开启支持配置中心中间件的�
 version: "2.0"
 services:
   knife4j:
-    container_name: knife4j-desktop
+    container_name: knife4j-insight
     restart: always
     image: "xiaoymin/knife4j:v2.0.1"
     network_mode: "bridge"
@@ -70,7 +70,7 @@ services:
 version: "2.0"
 services:
   knife4j:
-    container_name: knife4j-desktop-nacos
+    container_name: knife4j-insight-nacos
     restart: always
     # 访问
     image: "xiaoymin/knife4j:v2.0.1"
