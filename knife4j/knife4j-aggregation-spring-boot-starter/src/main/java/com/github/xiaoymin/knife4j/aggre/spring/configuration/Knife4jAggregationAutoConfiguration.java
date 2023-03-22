@@ -28,12 +28,14 @@ import com.github.xiaoymin.knife4j.aggre.core.filter.Knife4jSecurityBasicAuthFil
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.repository.*;
+import com.github.xiaoymin.knife4j.aggre.spring.condiotion.PolarisSettingCondition;
 import com.github.xiaoymin.knife4j.aggre.spring.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
@@ -81,6 +83,7 @@ public class Knife4jAggregationAutoConfiguration {
     }
     
     @Bean(initMethod = "start", destroyMethod = "close")
+    @Conditional(PolarisSettingCondition.class)
     @ConditionalOnProperty(name = "knife4j.polaris.enable", havingValue = "true")
     public PolarisRepository polarisRepository(@Autowired Knife4jAggregationProperties knife4jAggregationProperties) {
         return new PolarisRepository(knife4jAggregationProperties.getPolaris());

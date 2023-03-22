@@ -32,90 +32,89 @@ import java.util.List;
  */
 @ConfigurationProperties(prefix = "knife4j.polaris")
 public class PolarisSetting {
-    
+
     Logger logger = LoggerFactory.getLogger(PolarisSetting.class);
-    
+
     /**
      * 是否启用
      */
     private boolean enable;
-    
+
     /**
      * Polaris注册中心服务地址,例如：http://192.168.1.200:8080/#/service
      */
     private String serviceUrl;
     /**
      * Polaris注册中心鉴权
-     * since 2.0.9
      */
     private BasicAuth serviceAuth;
-    
+
     /**
      * 接口访问密钥
      */
     private String jwtCookie;
-    
+
     /**
      * Polaris注册聚合服务路由集合
      */
     private List<PolarisRoute> routes;
-    
+
     /**
      * 配置的Route路由服务的公共Basic验证信息，仅作用与访问Swagger接口时使用，具体服务的其他接口不使用该配置
      */
     private BasicAuth routeAuth;
-    
+
     public boolean isEnable() {
         return enable;
     }
-    
+
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
-    
+
     public String getServiceUrl() {
         return serviceUrl;
     }
-    
+
     public void setServiceUrl(String serviceUrl) {
         this.serviceUrl = serviceUrl;
     }
-    
+
     public BasicAuth getServiceAuth() {
         return serviceAuth;
     }
-    
+
     public void setServiceAuth(BasicAuth serviceAuth) {
         this.serviceAuth = serviceAuth;
     }
-    
+
     public String getJwtCookie() {
         return jwtCookie;
     }
-    
+
     public void setJwtCookie(String jwtCookie) {
         if (logger.isDebugEnabled()) {
             logger.debug("Polaris JwtCookie update: {}", jwtCookie);
         }
         this.jwtCookie = jwtCookie;
     }
-    
+
     public List<PolarisRoute> getRoutes() {
         return routes;
     }
-    
+
     public void setRoutes(List<PolarisRoute> routes) {
         this.routes = routes;
     }
-    
+
     public BasicAuth getRouteAuth() {
         return routeAuth;
     }
-    
+
     public void setRouteAuth(BasicAuth routeAuth) {
         this.routeAuth = routeAuth;
     }
-    
+
     public void initJwtCookie() {
         if (this.serviceAuth != null && this.serviceAuth.isEnable()) {
             this.setJwtCookie(PolarisOpenApi.me().getJwtCookie(this.serviceUrl, this.serviceAuth));

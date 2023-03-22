@@ -59,7 +59,10 @@ public class Knife4jAggregationProperties {
      * 从Nacos注册中心中获取
      */
     private NacosSetting nacos;
-    
+
+    /**
+     * 从腾讯北极星Polaris获取
+     */
     private PolarisSetting polaris;
     
     /**
