@@ -17,10 +17,8 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway;
 
-import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
-import com.github.xiaoymin.knife4j.spring.gateway.listener.ServiceChangeListener;
-import com.github.xiaoymin.knife4j.spring.gateway.v2.Knife4jSwaggerV2Container;
-import com.github.xiaoymin.knife4j.spring.gateway.v3.Knife4jSwaggerV3Container;
+import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceDiscoverHandler;
+import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceChangeListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -39,23 +37,26 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(name = "knife4j.gateway.enabled", havingValue = "true")
 public class Knife4jGatewayAutoConfiguration {
     
-    @Bean
-    @SuppressWarnings("java:S1452")
-    public Knife4jSwaggerContainer<? extends AbstractSwaggerResource> knife4jSwaggerContainer(Knife4jGatewayProperties knife4jGateway) {
-        AbstractKnife4jSwaggerContainer<? extends AbstractSwaggerResource> knife4jSwaggerContainer;
-        if (knife4jGateway.getVersion().equals(OpenApiVersion.V2)) {
-            knife4jSwaggerContainer = new Knife4jSwaggerV2Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getV2().getApiDocsPath(), knife4jGateway.getDiscover().getDefaultOrder());
-        } else {
-            knife4jSwaggerContainer = new Knife4jSwaggerV3Container(knife4jGateway.getApiPathPrefix(), knife4jGateway.getV3().getApiDocsPath(), knife4jGateway.getDiscover().getDefaultOrder());
+    @Configuration
+    @EnableConfigurationProperties(Knife4jGatewayProperties.class)
+    @ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "discover")
+    public static class Knife4jDiscoverConfiguration {
+        
+        @Bean
+        public ServiceDiscoverHandler serviceDiscoverHandler(Knife4jGatewayProperties knife4jGatewayProperties) {
+            return new ServiceDiscoverHandler(knife4jGatewayProperties);
+            
         }
-        knife4jSwaggerContainer.addForRoutes(knife4jGateway.getRoutes());
-        knife4jSwaggerContainer.addExcludedDiscoverServices(knife4jGateway.getDiscover().getExcludedServices());
-        return knife4jSwaggerContainer;
+        /**
+         * Service Listener
+         * @param discoveryClient Registry Service Discovery Client
+         * @param serviceDiscoverHandler Service Discover Handler
+         * @return
+         */
+        @Bean
+        public ServiceChangeListener serviceChangeListener(DiscoveryClient discoveryClient, ServiceDiscoverHandler serviceDiscoverHandler) {
+            return new ServiceChangeListener(discoveryClient, serviceDiscoverHandler);
+        }
     }
     
-    @Bean
-    @ConditionalOnProperty(name = "knife4j.gateway.discover.enabled", matchIfMissing = true, havingValue = "true")
-    public ServiceChangeListener serviceChangeListener(DiscoveryClient discoveryClient, Knife4jSwaggerContainer<? extends AbstractSwaggerResource> knife4jSwaggerContainer) {
-        return new ServiceChangeListener(discoveryClient, knife4jSwaggerContainer);
-    }
 }

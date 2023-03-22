@@ -106,8 +106,8 @@ export default {
   },
   beforeCreate() { },
   created() {
-    //this.initSpringDocOpenApi();
-    this.initKnife4jSpringUi();
+    this.initSpringDocOpenApi();
+    //this.initKnife4jSpringUi();
     //this.initKnife4jDemoDoc();
     //this.initKnife4jJFinal();
     //this.initKnife4jFront();
@@ -622,36 +622,46 @@ export default {
         var regx = ".*?" + key + ".*";
         //console.log(this.cacheMenuData);
         this.cacheMenuData.forEach(function (menu) {
-          if (KUtils.arrNotEmpty(menu.children)) {
-            //遍历children
-            var tmpChildrens = [];
-            menu.children.forEach(function (children) {
-              var urlflag = KUtils.searchMatch(regx, children.url);
-              var sumflag = KUtils.searchMatch(regx, children.name);
-              var desflag = KUtils.searchMatch(regx, children.description);
-              if (urlflag || sumflag || desflag) {
+          console.log(menu)
+          //遍历children
+          var tmpChildrens = [];
+          let _tagNameFlag = KUtils.searchMatch(regx, menu.name);
+          if (_tagNameFlag) {
+            //tag名称符合要求，直接add
+            if (KUtils.arrNotEmpty(menu.children)) {
+              menu.children.forEach(children => {
                 tmpChildrens.push(children);
-              }
-            });
-            if (tmpChildrens.length > 0) {
-              var tmpObj = {
-                groupName: menu.groupName,
-                groupId: menu.groupId,
-                key: menu.key,
-                name: menu.name,
-                icon: menu.icon,
-                path: menu.path,
-                hasNew: menu.hasNew,
-                authority: menu.authority,
-                children: tmpChildrens
-              };
-              if (tmpMenu.filter(t => t.key === tmpObj.key).length == 0) {
-                tmpMenu.push(tmpObj);
-              }
+              })
+            }
+          } else {
+            if (KUtils.arrNotEmpty(menu.children)) {
+              menu.children.forEach(function (children) {
+                var urlflag = KUtils.searchMatch(regx, children.url);
+                var sumflag = KUtils.searchMatch(regx, children.name);
+                var desflag = KUtils.searchMatch(regx, children.description);
+                if (urlflag || sumflag || desflag) {
+                  tmpChildrens.push(children);
+                }
+              });
+            }
+          }
+          if (tmpChildrens.length > 0) {
+            var tmpObj = {
+              groupName: menu.groupName,
+              groupId: menu.groupId,
+              key: menu.key,
+              name: menu.name,
+              icon: menu.icon,
+              path: menu.path,
+              hasNew: menu.hasNew,
+              authority: menu.authority,
+              children: tmpChildrens
+            };
+            if (tmpMenu.filter(t => t.key === tmpObj.key).length == 0) {
+              tmpMenu.push(tmpObj);
             }
           }
         });
-        console.log(tmpMenu)
         this.localMenuData = tmpMenu;
       }
     },

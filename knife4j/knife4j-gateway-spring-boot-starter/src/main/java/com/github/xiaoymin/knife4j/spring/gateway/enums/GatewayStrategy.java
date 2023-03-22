@@ -18,17 +18,19 @@
 package com.github.xiaoymin.knife4j.spring.gateway.enums;
 
 /**
- * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
- *     23/02/26 20:43
- * @since gateway-spring-boot-starter v4.1.0
+ * 网关文档聚合方式
+ * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * 2023/3/9 22:27
+ * @since:knife4j v4.1.0
  */
-public enum OpenApiVersion {
+public enum GatewayStrategy {
     /**
-     * Swagger2规范，参考：https://github.com/OAI/OpenAPI-Specification/blob/main/versions/2.0.md
+     * 服务发现(自动聚合)
      */
-    Swagger2,
+    DISCOVER,
+    
     /**
-     * OpenAPI3规范，参考：https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md
+     * 手动配置路由
      */
-    OpenAPI3
+    MANUAL
 }

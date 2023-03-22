@@ -1,0 +1,8 @@
+server:
+  port: 10000
+spring:
+  freemarker:
+    enabled: true
+    suffix: .html
+  application:
+    name: knife4j-insight

@@ -17,10 +17,14 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties.DEFAULT_API_PATH_PREFIX;
@@ -28,9 +32,31 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
 /**
  * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
  *     23/02/26 20:43
- * @since gateway-spring-boot-starter v4.0.0
+ * @since gateway-spring-boot-starter v4.1.0
  */
+@Slf4j
 public class PathUtils {
+    
+    static final String DOC_URL = "/doc.html";
+    
+    static final Pattern PATTERN = Pattern.compile("(.*?)\\/doc\\.html", Pattern.CASE_INSENSITIVE);
+    
+    public static String getContextPath(String referer) {
+        if (StringUtils.hasLength(referer)) {
+            try {
+                URI uri = URI.create(referer);
+                String path = uri.getPath();
+                Matcher mather = PATTERN.matcher(path);
+                if (mather.find()) {
+                    return mather.group(1);
+                }
+            } catch (Exception e) {
+                // ignore
+                log.warn(e.getMessage());
+            }
+        }
+        return "/";
+    }
     
     public static String append(String... paths) {
         if (Objects.isNull(paths) || paths.length == 0) {
