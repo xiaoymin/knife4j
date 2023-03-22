@@ -17,38 +17,66 @@
 
 package com.github.xiaoymin.knife4j.aggre.polaris;
 
-import com.github.xiaoymin.knife4j.aggre.core.pojo.CommonAuthRoute;
+import java.util.Map;
 
 /**
  * @author zc
- * @date 2023/3/20 19:04
+ * @date 2023/3/21 16:50
  */
-public class PolarisRoute extends CommonAuthRoute {
-    
-    /**
-     * 服务名称,不能为空,代表需要聚合的服务
-     */
+public class PolarisInstance {
+
     private String service;
-    
-    /**
-     * 命名空间id
-     */
     private String namespace;
-    
+    private String host;
+    private int port;
+    private Double weight;
+    private Map<String, Object> metadata;
+
     public String getService() {
         return service;
     }
-    
+
     public void setService(String service) {
         this.service = service;
     }
-    
+
     public String getNamespace() {
         return namespace;
     }
-    
+
     public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
-    
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public Map<String, Object> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, Object> metadata) {
+        this.metadata = metadata;
+    }
 }

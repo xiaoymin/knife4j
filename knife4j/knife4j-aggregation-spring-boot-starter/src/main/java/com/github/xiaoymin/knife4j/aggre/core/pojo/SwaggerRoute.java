@@ -27,6 +27,8 @@ import com.github.xiaoymin.knife4j.aggre.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.aggre.eureka.EurekaRoute;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosInstance;
 import com.github.xiaoymin.knife4j.aggre.nacos.NacosRoute;
+import com.github.xiaoymin.knife4j.aggre.polaris.PolarisInstance;
+import com.github.xiaoymin.knife4j.aggre.polaris.PolarisRoute;
 import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
 
@@ -236,7 +238,36 @@ public class SwaggerRoute {
             // since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
             this.order = nacosRoute.getOrder();
         }
-        
+    }
+    
+    public SwaggerRoute(PolarisRoute polarisRoute, PolarisInstance polarisInstance) {
+        if (polarisRoute != null && polarisInstance != null) {
+            this.pkId = polarisRoute.pkId();
+            this.header = polarisRoute.pkId();
+            if (polarisRoute.getRouteAuth() != null && polarisRoute.getRouteAuth().isEnable()) {
+                this.basicAuth = polarisRoute.pkId();
+            }
+            this.name = polarisRoute.getService();
+            if (StrUtil.isNotBlank(polarisRoute.getName())) {
+                this.name = polarisRoute.getName();
+            }
+            // 调试地址
+            this.debugUrl = polarisRoute.getDebugUrl();
+            // 远程uri
+            this.uri = GlobalConstants.PROTOCOL_HTTP + polarisInstance.getHost() + ":" + polarisInstance.getPort();
+            if (StrUtil.isNotBlank(polarisRoute.getServicePath()) && !StrUtil.equals(polarisRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
+                // 判断是否是/开头
+                if (!StrUtil.startWith(polarisRoute.getServicePath(), RouteDispatcher.ROUTE_BASE_PATH)) {
+                    this.servicePath = RouteDispatcher.ROUTE_BASE_PATH + polarisRoute.getServicePath();
+                } else {
+                    this.servicePath = polarisRoute.getServicePath();
+                }
+            }
+            this.location = polarisRoute.getLocation();
+            this.swaggerVersion = polarisRoute.getSwaggerVersion();
+            // since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
+            this.order = polarisRoute.getOrder();
+        }
     }
     
     public String getPkId() {

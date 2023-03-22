@@ -17,52 +17,191 @@
 
 package com.github.xiaoymin.knife4j.aggre.repository;
 
-import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.aggre.core.ext.PoolingConnectionManager;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import cn.hutool.core.thread.ThreadUtil;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
+import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
+import com.github.xiaoymin.knife4j.aggre.polaris.PolarisInstance;
+import com.github.xiaoymin.knife4j.aggre.polaris.PolarisRoute;
+import com.github.xiaoymin.knife4j.aggre.polaris.PolarisService;
+import com.github.xiaoymin.knife4j.aggre.spring.support.PolarisSetting;
+import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 /**
  * @author zc
  * @date 2023/3/20 19:11
  */
-public class PolarisRepository {
-    
-    public static void main(String[] args) throws IOException {
-        final PoolingConnectionManager poolingConnectionManager = new PoolingConnectionManager();
-        
-        String api = "http://192.168.1.200:8080/core/v1/user/login";
-        HttpPost post = new HttpPost(api);
-        List<BasicNameValuePair> pairs = new ArrayList<>();
-        pairs.add(new BasicNameValuePair("name", "polaris"));
-        // 访问Nacos时bug
-        // https://gitee.com/xiaoym/knife4j/issues/I4UF84
-        pairs.add(new BasicNameValuePair("password", "polaris"));
-        post.setEntity(new UrlEncodedFormEntity(pairs, "UTF-8"));
-        CloseableHttpResponse response = poolingConnectionManager.getClient().execute(post);
-        if (response != null) {
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode == HttpStatus.SC_OK) {
-                String content = EntityUtils.toString(response.getEntity(), "UTF-8");
-                if (StrUtil.isNotBlank(content)) {
-                    JsonElement jsonElement = JsonParser.parseString(content);
-                    if (jsonElement != null && jsonElement.isJsonObject()) {
-                        System.out.println(jsonElement);
-                    }
-                }
-            } else {
-                post.abort();
-            }
+public class PolarisRepository extends AbstractRepository {
+
+    private volatile boolean stop = false;
+    private Thread thread;
+    Logger logger = LoggerFactory.getLogger(PolarisRepository.class);
+
+    private PolarisSetting polarisSetting;
+
+    final ThreadPoolExecutor threadPoolExecutor = ThreadUtil.newExecutor(5, 5);
+
+    private Map<String, PolarisInstance> polarisInstanceMap = new HashMap<>();
+
+    public PolarisRepository(PolarisSetting polarisSetting) {
+        this.polarisSetting = polarisSetting;
+        if (polarisSetting != null && CollectionUtils.isNotEmpty(polarisSetting.getRoutes())) {
+            this.initPolaris(polarisSetting);
+            this.applyRoutes(polarisSetting);
         }
     }
+
+    private void initPolaris(PolarisSetting polarisSetting) {
+        List<Future<Optional<PolarisInstance>>> optionalList = new ArrayList<>();
+        polarisSetting.initJwtCookie();
+        polarisSetting.getRoutes()
+                .forEach(route -> optionalList.add(threadPoolExecutor.submit(new PolarisService(polarisSetting, polarisSetting.getServiceUrl(), polarisSetting.getJwtCookie(), route))));
+        optionalList.forEach(optionalFuture -> {
+            try {
+                Optional<PolarisInstance> instanceOptional = optionalFuture.get();
+                instanceOptional.ifPresent(polarisInstance -> polarisInstanceMap.put(polarisInstance.getService(), polarisInstance));
+            } catch (Exception e) {
+                logger.error("Polaris get error:" + e.getMessage(), e);
+            }
+        });
+    }
+
+    private void applyRoutes(PolarisSetting polarisSetting) {
+        if (CollectionUtils.isNotEmpty(polarisInstanceMap)) {
+            polarisSetting.getRoutes().forEach(route -> {
+                if (route.getRouteAuth() == null || !route.getRouteAuth().isEnable()) {
+                    route.setRouteAuth(polarisSetting.getRouteAuth());
+                }
+                this.routeMap.put(route.pkId(), new SwaggerRoute(route, polarisInstanceMap.get(route.getService())));
+            });
+            polarisSetting.getRoutes().forEach(route -> this.routeMap.put(route.pkId(), new SwaggerRoute(route, polarisInstanceMap.get(route.getService()))));
+        }
+    }
+
+    @Override
+    public BasicAuth getAuth(String header) {
+        BasicAuth basicAuth = null;
+        if (polarisSetting != null && CollectionUtils.isNotEmpty(polarisSetting.getRoutes())) {
+            if (polarisSetting.getRouteAuth() != null && polarisSetting.getRouteAuth().isEnable()) {
+                basicAuth = polarisSetting.getRouteAuth();
+                // 判断route服务中是否再单独配置
+                BasicAuth routeBasicAuth = getAuthByRoute(header, polarisSetting.getRoutes());
+                if (routeBasicAuth != null) {
+                    basicAuth = routeBasicAuth;
+                }
+            } else {
+                basicAuth = getAuthByRoute(header, polarisSetting.getRoutes());
+            }
+        }
+        return basicAuth;
+    }
+
+    @Override
+    public void start() {
+        logger.info("start Polaris hearbeat Holder thread.");
+        thread = new Thread(() -> {
+            while (!stop) {
+                try {
+                    logger.debug("Polaris hearbeat start working...");
+                    // 校验该服务是否在线
+                    this.polarisSetting.getRoutes().forEach(route -> {
+                        try {
+                            PolarisService polarisService = new PolarisService(this.polarisSetting, this.polarisSetting.getServiceUrl(), this.polarisSetting.getJwtCookie(), route);
+                            // 单线程check即可
+                            Optional<PolarisInstance> instanceOptional = polarisService.call();
+                            if (instanceOptional.isPresent()) {
+                                this.routeMap.put(route.pkId(), new SwaggerRoute(route, instanceOptional.get()));
+                            } else {
+                                // 当前服务下线，剔除
+                                this.routeMap.remove(route.pkId());
+                            }
+                        } catch (Exception e) {
+                            // 发生异常,剔除服务
+                            this.routeMap.remove(route.pkId());
+                            logger.debug(e.getMessage(), e);
+                        }
+                    });
+                    // Nacos用户可能存在修改服务配置的情况，需要nacosSetting配置与缓存的routeMap做一次compare，避免出现重复服务的情况出现
+                    // https://gitee.com/xiaoym/knife4j/issues/I3ZPUS
+                    List<String> settingRouteIds = this.polarisSetting.getRoutes().stream().map(PolarisRoute::pkId).collect(Collectors.toList());
+                    this.heartRepeatClear(settingRouteIds);
+                } catch (Exception e) {
+                    logger.debug(e.getMessage(), e);
+                }
+                ThreadUtil.sleep(HEART_BEAT_DURATION);
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    @Override
+    public void close() {
+        logger.info("stop Polaris heartbeat Holder thread.");
+        this.stop = true;
+        if (thread != null) {
+            ThreadUtil.interrupt(thread, true);
+        }
+    }
+
+    // public void login() throws IOException {
+    // String api = "http://192.168.1.200:8080/core/v1/user/login";
+    // HttpPost post = new HttpPost(api);
+    // post.setHeader("Content-Type", "application/json");
+    // String body = "{\n" +
+    // " \"name\":\"polaris\",\n" +
+    // " \"password\":\"polaris\"" +
+    // "}";
+    // //设置请求体
+    // post.setEntity(new StringEntity(body));
+    // CloseableHttpResponse response = getClient().execute(post);
+    // if (response != null) {
+    // System.out.println(response.getHeaders("Set-Cookie")[0]);
+    // int statusCode = response.getStatusLine().getStatusCode();
+    // if (statusCode == HttpStatus.SC_OK) {
+    // String content = EntityUtils.toString(response.getEntity(), "UTF-8");
+    // if (StrUtil.isNotBlank(content)) {
+    // JsonElement jsonElement = JsonParser.parseString(content);
+    // if (jsonElement != null && jsonElement.isJsonObject()) {
+    // System.out.println(jsonElement);
+    // }
+    // }
+    // service(response.getHeaders("Set-Cookie")[0].getValue());
+    // } else {
+    // post.abort();
+    // }
+    // }
+    // }
+    //
+    // public void service(String cookie) throws IOException {
+    // String api = "http://192.168.1.200:8080/naming/v1/instances";
+    // List<String> params = new ArrayList<>();
+    // params.add("namespace=" + "zc");
+    // params.add("service=" + "goods");
+    // String parameter = CollectionUtil.join(params, "&");
+    // api = api + "?" + parameter;
+    // HttpGet get = new HttpGet(api);
+    // get.addHeader("Cookie", cookie);
+    // CloseableHttpResponse response = getClient().execute(get);
+    // if (response != null) {
+    // int statusCode = response.getStatusLine().getStatusCode();
+    // if (statusCode == HttpStatus.SC_OK) {
+    // String content = EntityUtils.toString(response.getEntity(), "UTF-8");
+    // if (StrUtil.isNotBlank(content)) {
+    // JsonElement jsonElement = JsonParser.parseString(content);
+    // if (jsonElement != null && jsonElement.isJsonObject()) {
+    // System.out.println(jsonElement);
+    // }
+    // }
+    // } else {
+    // get.abort();
+    // }
+    // }
+    // }
 }
