@@ -20,9 +20,8 @@ package com.github.xiaoymin.knife4j.annotations;
 import java.lang.annotation.*;
 
 /**
- * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
+ * Note: 自Knife4j 4.0版本起，功能保留，但目前阶段放弃维护此属性值，建议开发者建实体类，后续有迭代在更新
  */
-@Deprecated
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
