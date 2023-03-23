@@ -384,7 +384,7 @@ export default {
               this.$i18n.locale = tmpI18n;
               this.enableVersion = settings.enableVersion;
               this.initSwagger({
-                //url: "/services.json",
+                url: "/services.json",
                 baseSpringFox: true,
                 store: this.$store,
                 localStore: this.$localStore,

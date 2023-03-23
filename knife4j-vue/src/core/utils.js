@@ -3,7 +3,9 @@ import md5 from 'js-md5'
 import JSON5 from './json5'
 import isObject from 'lodash/isObject'
 import isNumber from 'lodash/isNumber'
-
+import IncludeAssemble from './IncludeAssemble';
+import has from 'lodash/has';
+import unset from 'lodash/unset';
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
 const binaryContentType = {
   "application/octet-stream": true,
@@ -753,6 +755,28 @@ const utils = {
     }
 
     return null;
+  },
+  ignoreJsonValue: function (_jsonValue, _ignoreParameters, _includeParameters) {
+    const newValue = (() => {
+      if (isObject(_jsonValue)) {
+        let cloneValue = null;
+        var tmpJson = this.json5parse(this.json5stringify(_jsonValue)); //  深拷贝对象或数组
+        // 判断include是否不为空
+        if (_includeParameters != null) {
+          cloneValue = new IncludeAssemble(tmpJson, _includeParameters).result();
+        } else {
+          cloneValue = tmpJson;
+          if (_ignoreParameters && isObject(_jsonValue)) {
+            Object.keys(_ignoreParameters || {}).forEach(key => {
+              let a = unset(cloneValue, key);
+            });
+          }
+        }
+        return cloneValue;
+      }
+      return null;
+    })();
+    return newValue;
   },
   getRefParameterName: function (item) {
     var regex = new RegExp("#/components/parameters/(.*)$", "ig");
