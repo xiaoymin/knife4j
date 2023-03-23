@@ -24,11 +24,11 @@ copyOpenAPI2ALL(){
     rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j/knife4j-openapi2-ui/src/main/resources/robots.txt
     rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j/knife4j-openapi2-ui/src/main/resources/favicon.ico
     echo "copy desktop"
-    rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j-desktop/src/main/resources/templates/doc.html
-    cp -r dist/doc.html /Users/xiaoyumin/code/gitee/knife4j/knife4j-desktop/src/main/resources/templates
-    sed -i "" "s/src\=webjars/src\=\/webjars/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-desktop/src/main/resources/templates/doc.html
-    sed -i "" "s/href\=favicon/href\=\/favicon/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-desktop/src/main/resources/templates/doc.html
-    sed -i "" "s/href\=webjars/href\=\/webjars/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-desktop/src/main/resources/templates/doc.html
+    rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j-insight/src/main/resources/templates/doc.html
+    cp -r dist/doc.html /Users/xiaoyumin/code/gitee/knife4j/knife4j-insight/src/main/resources/templates
+    sed -i "" "s/src\=webjars/src\=\/webjars/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-insight/src/main/resources/templates/doc.html
+    sed -i "" "s/href\=favicon/href\=\/favicon/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-insight/src/main/resources/templates/doc.html
+    sed -i "" "s/href\=webjars/href\=\/webjars/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-insight/src/main/resources/templates/doc.html
 
 }
 
