@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -43,9 +44,29 @@ public class BasicFilter {
         urlFilters.add(Pattern.compile(".*?/v2/api-docs.*", Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/v2/api-docs-ext.*", Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/swagger-resources.*", Pattern.CASE_INSENSITIVE));
-        urlFilters.add(Pattern.compile(".*?/swagger-ui\\.html.*", Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/ui.*", Pattern.CASE_INSENSITIVE));
         urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/security.*", Pattern.CASE_INSENSITIVE));
+        // https://gitee.com/xiaoym/knife4j/issues/I6H8BE
+        urlFilters.add(Pattern.compile(".*?/swagger-ui.*", Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/v3/api-docs.*", Pattern.CASE_INSENSITIVE));
+    }
+    
+    /**
+     * 添加外部过滤规则，正则表达式
+     * @param rule 外部自定义规则
+     */
+    public void addRule(String rule) {
+        this.urlFilters.add(Pattern.compile(rule, Pattern.CASE_INSENSITIVE));
+    }
+    
+    /**
+     * 添加外部过滤规则，正则表达式
+     * @param rules
+     */
+    public void addRule(Collection<String> rules) {
+        if (rules != null && !rules.isEmpty()) {
+            rules.forEach(this::addRule);
+        }
     }
     
     protected boolean match(String uri) {

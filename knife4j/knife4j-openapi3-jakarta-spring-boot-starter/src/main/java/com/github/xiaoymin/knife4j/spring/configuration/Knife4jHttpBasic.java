@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,17 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
+import lombok.Data;
+
+import java.util.List;
+
 /***
  * 配置文件
  * {@code @since } 1.9.6
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2019/08/27 15:40
  */
+@Data
 public class Knife4jHttpBasic {
     
     /**
@@ -40,27 +45,10 @@ public class Knife4jHttpBasic {
      */
     private String password;
     
-    public boolean isEnable() {
-        return enable;
-    }
+    /**
+     * All configured urls need to be verified by basic，Only support Regex
+     * since 4.1.0
+     */
+    private List<String> include;
     
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-    
-    public String getUsername() {
-        return username;
-    }
-    
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    
-    public String getPassword() {
-        return password;
-    }
-    
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

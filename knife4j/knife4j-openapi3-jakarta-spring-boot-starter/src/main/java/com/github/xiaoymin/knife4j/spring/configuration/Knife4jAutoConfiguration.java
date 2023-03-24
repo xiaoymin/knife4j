@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,15 @@
 
 package com.github.xiaoymin.knife4j.spring.configuration;
 
+import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
+import com.github.xiaoymin.knife4j.extend.filter.basic.JakartaServletSecurityBasicAuthFilter;
+import com.github.xiaoymin.knife4j.extend.filter.basic.ServletSecurityBasicAuthFilter;
+import com.github.xiaoymin.knife4j.spring.extension.Knife4jJakartaOperationCustomizer;
 import com.github.xiaoymin.knife4j.spring.extension.Knife4jOpenApiCustomizer;
 import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
-import com.github.xiaoymin.knife4j.spring.filter.SecurityBasicAuthFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.xiaoymin.knife4j.spring.util.EnvironmentUtils;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -38,21 +42,16 @@ import org.springframework.web.filter.CorsFilter;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2019/08/28 21:08
  */
+@Slf4j
+@AllArgsConstructor
 @Configuration
 @EnableConfigurationProperties({Knife4jProperties.class, Knife4jSetting.class})
 @ConditionalOnProperty(name = "knife4j.enable", havingValue = "true")
 public class Knife4jAutoConfiguration {
-
+    
     private final Knife4jProperties properties;
-    private final Knife4jSetting setting;
-
-    Logger logger = LoggerFactory.getLogger(Knife4jAutoConfiguration.class);
-
-    public Knife4jAutoConfiguration(Knife4jProperties properties, Knife4jSetting setting) {
-        this.properties = properties;
-        this.setting = setting;
-    }
-
+    private final Environment environment;
+    
     /**
      * 增强自定义配置
      * @return
@@ -60,8 +59,14 @@ public class Knife4jAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Knife4jOpenApiCustomizer knife4jOpenApiCustomizer() {
-        logger.debug("Register Knife4jOpenApiCustomizer");
+        log.debug("Register Knife4jOpenApiCustomizer");
         return new Knife4jOpenApiCustomizer(this.properties);
+    }
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public Knife4jJakartaOperationCustomizer knife4jJakartaOperationCustomizer() {
+        return new Knife4jJakartaOperationCustomizer();
     }
     /**
      * 配置Cors
@@ -72,7 +77,7 @@ public class Knife4jAutoConfiguration {
     @ConditionalOnMissingBean(CorsFilter.class)
     @ConditionalOnProperty(name = "knife4j.cors", havingValue = "true")
     public CorsFilter corsFilter() {
-        logger.info("init CorsFilter...");
+        log.info("init CorsFilter...");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
@@ -86,39 +91,34 @@ public class Knife4jAutoConfiguration {
         return corsFilter;
     }
     
+    /**
+     * Security with Basic Http
+     * @param knife4jProperties Basic Properties
+     * @return BasicAuthFilter
+     */
     @Bean
-    @ConditionalOnMissingBean(SecurityBasicAuthFilter.class)
+    @ConditionalOnMissingBean(ServletSecurityBasicAuthFilter.class)
     @ConditionalOnProperty(name = "knife4j.basic.enable", havingValue = "true")
-    public SecurityBasicAuthFilter securityBasicAuthFilter(Environment environment) {
-        boolean enableSwaggerBasicAuth = false;
-        String dftUserName = "admin", dftPass = "123321";
-        SecurityBasicAuthFilter securityBasicAuthFilter = null;
-        if (properties == null) {
-            if (environment != null) {
-                String enableAuth = environment.getProperty("knife4j.basic.enable");
-                enableSwaggerBasicAuth = Boolean.valueOf(enableAuth);
-                if (enableSwaggerBasicAuth) {
-                    // 如果开启basic验证,从配置文件中获取用户名和密码
-                    String pUser = environment.getProperty("knife4j.basic.username");
-                    String pPass = environment.getProperty("knife4j.basic.password");
-                    if (pUser != null && !"".equals(pUser)) {
-                        dftUserName = pUser;
-                    }
-                    if (pPass != null && !"".equals(pPass)) {
-                        dftPass = pPass;
-                    }
-                }
-                securityBasicAuthFilter = new SecurityBasicAuthFilter(enableSwaggerBasicAuth, dftUserName, dftPass);
-            }
+    public JakartaServletSecurityBasicAuthFilter securityBasicAuthFilter(Knife4jProperties knife4jProperties) {
+        JakartaServletSecurityBasicAuthFilter authFilter = new JakartaServletSecurityBasicAuthFilter();
+        if (knife4jProperties == null) {
+            authFilter.setEnableBasicAuth(EnvironmentUtils.resolveBool(environment, "knife4j.basic.enable", Boolean.FALSE));
+            authFilter.setUserName(EnvironmentUtils.resolveString(environment, "knife4j.basic.username", GlobalConstants.BASIC_DEFAULT_USERNAME));
+            authFilter.setPassword(EnvironmentUtils.resolveString(environment, "knife4j.basic.password", GlobalConstants.BASIC_DEFAULT_PASSWORD));
         } else {
             // 判断非空
-            if (properties.getBasic() == null) {
-                securityBasicAuthFilter = new SecurityBasicAuthFilter(enableSwaggerBasicAuth, dftUserName, dftPass);
+            if (knife4jProperties.getBasic() == null) {
+                authFilter.setEnableBasicAuth(Boolean.FALSE);
+                authFilter.setUserName(GlobalConstants.BASIC_DEFAULT_USERNAME);
+                authFilter.setPassword(GlobalConstants.BASIC_DEFAULT_PASSWORD);
             } else {
-                securityBasicAuthFilter = new SecurityBasicAuthFilter(properties.getBasic().isEnable(), properties.getBasic().getUsername(), properties.getBasic().getPassword());
+                authFilter.setEnableBasicAuth(knife4jProperties.getBasic().isEnable());
+                authFilter.setUserName(knife4jProperties.getBasic().getUsername());
+                authFilter.setPassword(knife4jProperties.getBasic().getPassword());
+                authFilter.addRule(knife4jProperties.getBasic().getInclude());
             }
         }
-        return securityBasicAuthFilter;
+        return authFilter;
     }
     
     @Bean
@@ -130,8 +130,8 @@ public class Knife4jAutoConfiguration {
         if (properties == null) {
             if (environment != null) {
                 String prodStr = environment.getProperty("knife4j.production");
-                if (logger.isDebugEnabled()) {
-                    logger.debug("swagger.production:{}", prodStr);
+                if (log.isDebugEnabled()) {
+                    log.debug("swagger.production:{}", prodStr);
                 }
                 prod = Boolean.valueOf(prodStr);
             }

@@ -36,7 +36,7 @@ const FeatureList = [
             <>
                 <ul>
                     <li>适配兼容Spring MVC</li>
-                    <li>适配兼容Spring Boot 2.2、2.3、2.4、2.5、2.6、2.7</li>
+                    <li>适配兼容Spring Boot 2.2、2.3、2.4、2.5、2.6、2.7、3.0</li>
                     <li>适配兼容Spring WebFlux</li>
                     <li>基于SpringFox2.x版本提供Swagger2规范的增强扩展</li>
                     <li>基于Springdoc-openapi项目提供OAS3规范的增强扩展</li>

@@ -1,0 +1,17 @@
+# 通过docker-compose可以快速部署knife4j服务
+version: "2.0"
+services:
+  knife4j:
+    container_name: knife4j-desktop
+    restart: always
+    image: "xiaoymin/knife4j:v2.0"
+    network_mode: "bridge"
+    # 本地磁盘目录映射
+    volumes:
+      - /tmp/data:/knife4j/data
+    ports:
+      - "10000:10000"
+    # 指定配置属性模式为disk本地磁盘
+    environment:
+      - knife4j.source=disk
+      - knife4j.disk.dir=/knife4j/data

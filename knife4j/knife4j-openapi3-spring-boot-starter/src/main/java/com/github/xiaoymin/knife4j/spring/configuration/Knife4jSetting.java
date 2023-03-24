@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,10 +131,14 @@ public class Knife4jSetting {
     private boolean enableHomeCustom = false;
     
     /**
-     * Customize Markdown document path of home page
+     * Customize Markdown document content of home page
      */
     private String homeCustomLocation;
     
+    /**
+     * Customize Markdown document path of home page
+     */
+    private String homeCustomPath;
     /**
      * Whether to display the group drop-down box, the default is true (that is, display). In general, if it is a single group, you can set this property to false, that is, the group will not be displayed, so you don't need to select it.
      */

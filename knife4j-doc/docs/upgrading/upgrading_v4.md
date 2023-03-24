@@ -27,11 +27,21 @@ import ApiLink from '@site/src/components/ApiLink';
 
 ## Spring Boot 2
 
+:::tip
+
+- Spring Boot 版本建议 2.4.0~3.0.0之间
+- Spring Boot 版本 < 2.4 版本则建议选择Knife4j 4.0之前的版本
+- Spring Boot 2 + OpenAPI2 demo:[knife4j-spring-boot27-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-spring-boot27-demo)
+- Spring Boot 2 + OpenAPI3 demo:[knife4j-springdoc-openapi-demo ](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-springdoc-openapi-demo)
+
+:::  
+
 如果开发者目前仍然使用的是Spring Boot 2.x的主版本号，那么不管是使用OpenAPI2(Swagger)的规范，还是使用OpenAPI3的规范,需要按下面不同的规范类型按需进行引用
 
 **开发者在使用的时候必须2选1，不能说使用2的注解，但是想用OpenAPI3的规范，这是不允许的。**
 
 ### OpenAPI2(Swagger)
+
 
 OpenAPI2的规范在开发者中，使用应该是最广的，开发者从一开始使用springfox项目开始一直使用，Knife4j在之前的版本中也是依赖springfox项目.
 

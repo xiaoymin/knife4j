@@ -33,7 +33,7 @@ function Hero() {
                                 <Link to="docs/quick-start" className={styles.getStarted}>Get Started</Link>
                                 <a href='https://gitee.com/xiaoym/knife4j/stargazers' className={styles.giteeStar}><img src='https://gitee.com/xiaoym/knife4j/badge/star.svg?theme=gvp' alt='star'></img></a>
 
-                                <iframe src="https://ghbtns.com/github-btn.html?user=xiaoymin&repo=swagger-bootstrap-ui&type=star&count=true&size=large" frameBorder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
+                                <iframe src="https://ghbtns.com/github-btn.html?user=xiaoymin&repo=knife4j&type=star&count=true&size=large" frameBorder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
 
                             </div>
                         </div>
@@ -142,7 +142,7 @@ function Knife4jFramWork() {
 
 
 function Contributors() {
-    const contributorDatas = require('../../static/json/contributors.json');
+    const contributorDatas = require('../../static/json/contributors1.json');
 
     return (
         <section className={clsx(styles.try, 'container')}>

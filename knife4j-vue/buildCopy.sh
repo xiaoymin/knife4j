@@ -13,12 +13,22 @@ copyOpenAPI2(){
     rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j/knife4j-openapi2-ui/src/main/resources/oauth
     rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j/knife4j-openapi2-ui/src/main/resources/robots.txt
     rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j/knife4j-openapi2-ui/src/main/resources/favicon.ico
+
+}
+
+copyOpenAPI2ALL(){
+    echo "构建openapi2"
+    rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j/knife4j-openapi2-ui/src/main/resources/*
+    cp -r dist/* /Users/xiaoyumin/code/gitee/knife4j/knife4j/knife4j-openapi2-ui/src/main/resources/
+    rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j/knife4j-openapi2-ui/src/main/resources/oauth
+    rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j/knife4j-openapi2-ui/src/main/resources/robots.txt
+    rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j/knife4j-openapi2-ui/src/main/resources/favicon.ico
     echo "copy desktop"
-    rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j-desktop/src/main/resources/templates/doc.html
-    cp -r dist/doc.html /Users/xiaoyumin/code/gitee/knife4j/knife4j-desktop/src/main/resources/templates
-    sed -i "" "s/src\=webjars/src\=\/webjars/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-desktop/src/main/resources/templates/doc.html
-    sed -i "" "s/href\=favicon/href\=\/favicon/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-desktop/src/main/resources/templates/doc.html
-    sed -i "" "s/href\=webjars/href\=\/webjars/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-desktop/src/main/resources/templates/doc.html
+    rm -rf /Users/xiaoyumin/code/gitee/knife4j/knife4j-insight/src/main/resources/templates/doc.html
+    cp -r dist/doc.html /Users/xiaoyumin/code/gitee/knife4j/knife4j-insight/src/main/resources/templates
+    sed -i "" "s/src\=webjars/src\=\/webjars/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-insight/src/main/resources/templates/doc.html
+    sed -i "" "s/href\=favicon/href\=\/favicon/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-insight/src/main/resources/templates/doc.html
+    sed -i "" "s/href\=webjars/href\=\/webjars/g" /Users/xiaoyumin/code/gitee/knife4j/knife4j-insight/src/main/resources/templates/doc.html
 
 }
 
@@ -36,6 +46,9 @@ if [ "3" = "$1" ]; then
     copyOpenAPI3
 elif [ "2" = "$1" ]; then
     copyOpenAPI2
+elif [ "4" = "$1" ]; then
+    copyOpenAPI2ALL
+
 else
     echo "参数非法,构建失败"
 fi

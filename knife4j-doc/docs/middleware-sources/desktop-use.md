@@ -1,4 +1,4 @@
-# 2.3 使用说明
+# Disk本地磁盘模式
 
 本篇文档主要介绍如何使用`Knife4jAggregationDesktop`
 

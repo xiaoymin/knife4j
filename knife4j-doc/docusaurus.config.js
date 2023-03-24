@@ -33,6 +33,7 @@ module.exports = {
             '@docusaurus/preset-classic',
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
+                debug: true,
                 docs: {
                     showLastUpdateAuthor: true,
                     showLastUpdateTime: true,
@@ -101,6 +102,10 @@ module.exports = {
                 sidebar: {
                     hideable: true,
                 },
+            },
+            tableOfContents: {
+                minHeadingLevel: 2,
+                maxHeadingLevel: 5
             },
             navbar: {
                 hideOnScroll: true,

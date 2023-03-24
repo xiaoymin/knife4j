@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 八一菜刀(xiaoymin@foxmail.com)
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,6 @@ public @interface ApiOperationSupport {
      * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
      * @return 动态类声明
      */
-    @Deprecated
     DynamicParameters params() default @DynamicParameters;
     
     /**
@@ -57,7 +56,6 @@ public @interface ApiOperationSupport {
      * @since 1.9.5
      * @return 响应类动态说明
      */
-    @Deprecated
     DynamicResponseParameters responses() default @DynamicResponseParameters;
     
     /**
@@ -71,7 +69,6 @@ public @interface ApiOperationSupport {
      * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
      * @return 过滤参数数组
      */
-    @Deprecated
     String[] ignoreParameters() default {};
     
     /**
@@ -80,7 +77,6 @@ public @interface ApiOperationSupport {
      * @since 2.0.3
      * @return 包含参数数组
      */
-    @Deprecated
     String[] includeParameters() default {};
     
 }

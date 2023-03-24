@@ -257,7 +257,7 @@ const langOptions = {
     version: 'Version',
     host: 'Host',
     basePath: 'BasePath',
-    serviceUrl: 'Service Url',
+    serviceUrl: 'termsOfService',
     groupName: 'Group Name',
     groupUrl: 'Group Url',
     groupLocation: 'Group Location',

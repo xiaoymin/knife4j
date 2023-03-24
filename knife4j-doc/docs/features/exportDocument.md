@@ -11,7 +11,7 @@
 
 对于使用者来说,能把过程简单化是最好的,而`Knfie4j`提供的导出功能就是如此简单
 
-在前端Ui界面中的`文档管理 => 离线文档` 菜单栏,我们点击后可以看到如下界面：
+在前端Ui界面中的[`文档管理 => 离线文档`](https://doc.xiaominfo.com/demo/doc.html#/documentManager/OfficelineDocument-Knife4j%E7%A4%BA%E4%BE%8B) 菜单栏,我们点击后可以看到如下界面：
 
 ![](/knife4j/images/documentation/exportOfficedoc.png)
 
@@ -27,7 +27,7 @@
 ![](/knife4j/images/knife4j/3.png)
 
 
-导出的Html效果,[点击我预览在线效果](https://doc.xiaominfo.com/Knife4j-Offline-Html.html)，如下图：
+导出的Html效果，如下图：
 
 ![](/knife4j/images/knife4j/5.png)
  

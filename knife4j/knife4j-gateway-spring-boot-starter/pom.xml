@@ -5,9 +5,10 @@
     <parent>
         <artifactId>knife4j</artifactId>
         <groupId>com.github.xiaoymin</groupId>
-        <version>4.0.0</version>
+        <version>4.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+
 
     <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
     <name>knife4j-gateway-spring-boot-starter</name>
@@ -24,30 +25,42 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <version>${knife4j-spring-boot.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
             <version>3.1.3</version>
-            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.28</version>
+            <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi2-ui</artifactId>
-        </dependency>
- 
     </dependencies>
 
 

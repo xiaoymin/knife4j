@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.xiaoymin</groupId>
+        <artifactId>knife4j</artifactId>
+        <version>4.1.0</version>
+    </parent>
+    <artifactId>knife4j-openapi3-webflux-jakarta-spring-boot-starter</artifactId>
+    <name>knife4j-openapi3-webflux-jakarta-spring-boot-starter</name>
+    <url>https://doc.xiaominfo.com</url>
+    <description>SpringWebflux with Knife4j,Only Support OpenAPI3</description>
+    <dependencies>
+        <!-- springdoc ui -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+            <version>${knife4j-springdoc-openapi-jakarta.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-ui</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

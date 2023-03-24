@@ -7,8 +7,10 @@
     "build": "vue-cli-service build",
     "build2": "vue-cli-service build && npm run buildCopy2",
     "build3": "vue-cli-service build && npm run buildCopy3",
+    "buildDesktop": "vue-cli-service build && npm run buildCopyAll",
     "buildCopy2": "./buildCopy.sh 2",
     "buildCopy3": "./buildCopy.sh 3",
+    "buildCopyAll": "./buildCopy.sh 4",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

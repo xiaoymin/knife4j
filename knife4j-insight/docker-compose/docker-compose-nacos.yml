@@ -1,0 +1,23 @@
+# 通过docker-compose可以快速部署knife4j服务
+version: "2.0"
+services:
+  knife4j:
+    container_name: knife4j-desktop
+    restart: always
+    image: "xiaoymin/knife4j:v2.0"
+    network_mode: "bridge"
+    # 本地磁盘目录映射
+    volumes:
+      - D:\Temp\data:/knife4j/data
+    ports:
+      - "10000:10000"
+    # 指定配置属性模式为disk本地磁盘
+    environment:
+      - knife4j.source=nacos
+      - knife4j.nacos.server=127.0.01:8848
+      - knife4j.nacos.username=nacos
+      - knife4j.nacos.password=nacos
+      # 使用者自行创建 namespace 、dataid、group
+      - knife4j.nacos.namespace=knife4j
+      - knife4j.nacos.dataId=knife4j_data_id
+      - knife4j.nacos.group=DEFAULT_GROUP

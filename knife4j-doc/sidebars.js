@@ -14,7 +14,7 @@ module.exports = {
         defaultStyle: true
     },
         'quick-start/quick-start',
-        'v4/plan',
+        'community/joinus',
         'community/contributing',
     {
         type: 'category',
@@ -42,7 +42,6 @@ module.exports = {
         },
         items: [
             'community/community-get-helps',
-            'community/joinus',
             'community/sourcecode',
             'community/apache',
             'community/changelog',
@@ -89,19 +88,6 @@ module.exports = {
             'features/forbidSearch',
             'features/forbidOpenApi',
             'features/gitVersion'
-        ],
-    }, {
-        type: 'category',
-        label: '中间件生态',
-        collapsed: true,
-        link: {
-            type: 'doc',
-            id: 'middleware/middleware',
-        },
-        items: [
-            'middleware/knife4jCloud',
-            'middleware/knife4jAggregation',
-            'middleware/knife4jAggregationDesktop',
         ],
     },
     {
@@ -161,6 +147,8 @@ module.exports = {
             defaultStyle: true
         },
         "middleware-sources/middle-index",
+        "middleware-sources/spring-cloud-gateway/spring-gateway-introduction",
+        "middleware-sources/spring-webflux/spring-webflux-introduction",
         {
             type: 'category',
             label: 'Aggregation微服务聚合中间件',
@@ -179,7 +167,7 @@ module.exports = {
         },
         {
             type: 'category',
-            label: 'Desktop独立渲染组件',
+            label: 'Insight独立渲染组件',
             collapsed: true,
             link: {
                 type: 'doc',
@@ -188,8 +176,27 @@ module.exports = {
             items: [
                 'middleware-sources/desktop-introduction',
                 'middleware-sources/desktop-install',
-                'middleware-sources/desktop-use',
-                'middleware-sources/desktop-test'
+                {
+                    type: 'category',
+                    label: '数据源-服务中心',
+                    collapsed: true,
+                    link: {
+                        type: 'doc',
+                        id: 'middleware-sources/desktop/service-introduction',
+                    }, items: []
+                },
+                {
+                    type: 'category',
+                    label: '数据源-配置中心',
+                    collapsed: true,
+                    link: {
+                        type: 'doc',
+                        id: 'middleware-sources/desktop/config-introduction',
+                    }, items: [
+                        'middleware-sources/desktop/config-disk',
+                        'middleware-sources/desktop/config-nacos',
+                    ]
+                }
             ],
         }
     ],

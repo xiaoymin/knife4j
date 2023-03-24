@@ -798,6 +798,12 @@ const utils = {
       result += new Array((6 - tail) / 2 + 1).join("=");
     }
     return result;
+  },
+  checkExtensionsUndefined: function (obj) {
+    return obj && (this.checkUndefined(obj['extensions']) || this.checkUndefined(obj['x-extensions']))
+  },
+  getExtensions: function (obj) {
+    return this.checkExtensionsUndefined(obj) ? (obj['extensions'] || obj['x-extensions']) : undefined
   }
 }
 

@@ -3,7 +3,9 @@ import md5 from 'js-md5'
 import JSON5 from './json5'
 import isObject from 'lodash/isObject'
 import isNumber from 'lodash/isNumber'
-
+import IncludeAssemble from './IncludeAssemble';
+import has from 'lodash/has';
+import unset from 'lodash/unset';
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
 const binaryContentType = {
   "application/octet-stream": true,
@@ -154,6 +156,37 @@ function isUrl(path) {
 }
 
 const utils = {
+  getLocationParams(name) {
+    var url = window.location.href;
+    let paramIndex = url.indexOf('?')
+    if (url.indexOf('?') == 1) { return false; }
+    url = url.substr(paramIndex + 1);
+    url = url.split('&');
+    var name = name || '';
+    var nameres;
+    // 获取全部参数及其值
+    for (var i = 0; i < url.length; i++) {
+      var info = url[i].split('=');
+      var obj = {};
+      obj[info[0]] = decodeURI(info[1]);
+      url[i] = obj;
+    }
+    // 如果传入一个参数名称，就匹配其值
+    if (name) {
+      for (var i = 0; i < url.length; i++) {
+        for (const key in url[i]) {
+          if (key == name) {
+            nameres = url[i][key];
+          }
+        }
+      }
+    } else {
+      nameres = url;
+    }
+    // 返回结果
+    return nameres;
+
+  },
   getOAuth2Html(production) {
     if (production) {
       return "webjars/oauth/oauth2.html";
@@ -723,6 +756,28 @@ const utils = {
 
     return null;
   },
+  ignoreJsonValue: function (_jsonValue, _ignoreParameters, _includeParameters) {
+    const newValue = (() => {
+      if (isObject(_jsonValue)) {
+        let cloneValue = null;
+        var tmpJson = this.json5parse(this.json5stringify(_jsonValue)); //  深拷贝对象或数组
+        // 判断include是否不为空
+        if (_includeParameters != null) {
+          cloneValue = new IncludeAssemble(tmpJson, _includeParameters).result();
+        } else {
+          cloneValue = tmpJson;
+          if (_ignoreParameters && isObject(_jsonValue)) {
+            Object.keys(_ignoreParameters || {}).forEach(key => {
+              let a = unset(cloneValue, key);
+            });
+          }
+        }
+        return cloneValue;
+      }
+      return null;
+    })();
+    return newValue;
+  },
   getRefParameterName: function (item) {
     var regex = new RegExp("#/components/parameters/(.*)$", "ig");
     if (regex.test(item)) {
@@ -781,6 +836,16 @@ const utils = {
         return str.toLocaleLowerCase();
       } else {
         return str.substr(0, 1).toLocaleLowerCase() + str.substr(1);
+      }
+    }
+    return "";
+  },
+  camelUpperCase: function (str) {
+    if (str != null && str != undefined && str != "") {
+      if (str.length == 1) {
+        return str.toUpperCase();
+      } else {
+        return str.substr(0, 1).toUpperCase() + str.substr(1);
       }
     }
     return "";

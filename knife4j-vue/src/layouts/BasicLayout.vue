@@ -26,8 +26,8 @@
       <a-layout>
         <a-layout-header style="padding: 0;background: #fff;    height: 56px; line-height: 56px;">
           <GlobalHeader @searchKey="searchKey" @searchClear="searchClear" :documentTitle="documentTitle"
-            :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser"
-            :onCollapse="handleMenuCollapse" :onMenuClick="item => handleMenuClick(item)" />
+            :collapsed="collapsed" :headerClass="headerClass" :currentUser="currentUser" :onCollapse="handleMenuCollapse"
+            :onMenuClick="item => handleMenuClick(item)" />
         </a-layout-header>
         <context-menu :itemList="menuItemList" :visible.sync="menuVisible" @select="onMenuSelect" />
         <a-tabs hideAdd v-model="activeKey" @contextmenu.native="e => onContextmenu(e)" type="editable-card"
@@ -108,6 +108,7 @@ export default {
   created() {
     //this.initSpringDocOpenApi();
     this.initKnife4jSpringUi();
+    //this.initKnife4jDemoDoc();
     //this.initKnife4jJFinal();
     //this.initKnife4jFront();
     this.initI18n();
@@ -403,6 +404,95 @@ export default {
         })
       })
     },
+    initKnife4jDemoDoc() {
+      window.console.log("231")
+      //该版本是最终打包到knife4j-spring-ui的模块,默认是调用该方法
+      var that = this;
+      var i18nParams = this.getI18nFromUrl();
+      var tmpI18n = i18nParams.i18n;
+      //console.log(tmpI18n)
+      //读取settings
+      this.$localStore.getItem(constant.globalSettingsKey).then(settingCache => {
+        var settings = this.getCacheSettings(settingCache);
+        //console.log("layout---")
+        //console.log(settings)
+        //重新赋值是否开启增强
+        if (!settings.enableSwaggerBootstrapUi) {
+          settings.enableSwaggerBootstrapUi = this.getPlusStatus();
+        }
+        settings.language = tmpI18n;
+        that.$localStore.setItem(constant.globalSettingsKey, settings);
+        this.$localStore.getItem(constant.globalGitApiVersionCaches).then(gitVal => {
+          var cacheApis = this.getCacheGitVersion(gitVal);
+          if (i18nParams.include) {
+            //写入本地缓存
+            this.$store.dispatch("globals/setLang", tmpI18n);
+            this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
+            this.$i18n.locale = tmpI18n;
+            this.enableVersion = settings.enableVersion;
+            let _winLocation = window.location;
+            window.console.log(_winLocation)
+            let _demoCode = KUtils.getLocationParams('code');
+            debugger
+            window.console.log("project-demo-code:" + _demoCode);
+            let _url = "/demo/data/" + _demoCode + ".json";
+            window.console.log("url:" + _url);
+            this.initSwagger({
+              url: "/demo/data/openapi.json",
+              baseSpringFox: true,
+              store: this.$store,
+              localStore: this.$localStore,
+              settings: settings,
+              cacheApis: cacheApis,
+              routeParams: that.$route.params,
+              plus: this.getPlusStatus(),
+              i18n: tmpI18n,
+              i18nVue: this.$i18n,
+              i18nFlag: i18nParams.include,
+              configSupport: false,
+              desktop: true,
+              i18nInstance: this.getCurrentI18nInstance()
+            })
+          } else {
+            //不包含
+            //console.log("不包含")
+            //初始化读取i18n的配置，add by xiaoymin 2020-5-16 09:51:51
+            this.$localStore.getItem(constant.globalI18nCache).then(i18n => {
+              if (KUtils.checkUndefined(i18n)) {
+                this.$store.dispatch("globals/setLang", i18n);
+                tmpI18n = i18n;
+              }
+              this.$i18n.locale = tmpI18n;
+              this.enableVersion = settings.enableVersion;
+
+              let _winLocation = window.location;
+              window.console.log(_winLocation)
+              let _demoCode = KUtils.getLocationParams('code');
+              debugger
+              window.console.log("project-demo-code:" + _demoCode);
+              let _url = "/demo/data/" + _demoCode + ".json";
+              window.console.log("url:" + _url);
+              this.initSwagger({
+                url: "/demo/data/openapi.json",
+                baseSpringFox: true,
+                store: this.$store,
+                localStore: this.$localStore,
+                settings: settings,
+                cacheApis: cacheApis,
+                routeParams: that.$route.params,
+                plus: this.getPlusStatus(),
+                i18n: tmpI18n,
+                i18nVue: this.$i18n,
+                i18nFlag: i18nParams.include,
+                configSupport: false,
+                desktop: true,
+                i18nInstance: this.getCurrentI18nInstance()
+              })
+            })
+          }
+        })
+      })
+    },
     initKnife4jJFinal() {
       //该版本是最终打包到knife4j-jfinal-ui的模块,默认是调用该方法
       var that = this;
@@ -532,36 +622,46 @@ export default {
         var regx = ".*?" + key + ".*";
         //console.log(this.cacheMenuData);
         this.cacheMenuData.forEach(function (menu) {
-          if (KUtils.arrNotEmpty(menu.children)) {
-            //遍历children
-            var tmpChildrens = [];
-            menu.children.forEach(function (children) {
-              var urlflag = KUtils.searchMatch(regx, children.url);
-              var sumflag = KUtils.searchMatch(regx, children.name);
-              var desflag = KUtils.searchMatch(regx, children.description);
-              if (urlflag || sumflag || desflag) {
+          console.log(menu)
+          //遍历children
+          var tmpChildrens = [];
+          let _tagNameFlag = KUtils.searchMatch(regx, menu.name);
+          if (_tagNameFlag) {
+            //tag名称符合要求，直接add
+            if (KUtils.arrNotEmpty(menu.children)) {
+              menu.children.forEach(children => {
                 tmpChildrens.push(children);
-              }
-            });
-            if (tmpChildrens.length > 0) {
-              var tmpObj = {
-                groupName: menu.groupName,
-                groupId: menu.groupId,
-                key: menu.key,
-                name: menu.name,
-                icon: menu.icon,
-                path: menu.path,
-                hasNew: menu.hasNew,
-                authority: menu.authority,
-                children: tmpChildrens
-              };
-              if (tmpMenu.filter(t => t.key === tmpObj.key).length == 0) {
-                tmpMenu.push(tmpObj);
-              }
+              })
+            }
+          } else {
+            if (KUtils.arrNotEmpty(menu.children)) {
+              menu.children.forEach(function (children) {
+                var urlflag = KUtils.searchMatch(regx, children.url);
+                var sumflag = KUtils.searchMatch(regx, children.name);
+                var desflag = KUtils.searchMatch(regx, children.description);
+                if (urlflag || sumflag || desflag) {
+                  tmpChildrens.push(children);
+                }
+              });
+            }
+          }
+          if (tmpChildrens.length > 0) {
+            var tmpObj = {
+              groupName: menu.groupName,
+              groupId: menu.groupId,
+              key: menu.key,
+              name: menu.name,
+              icon: menu.icon,
+              path: menu.path,
+              hasNew: menu.hasNew,
+              authority: menu.authority,
+              children: tmpChildrens
+            };
+            if (tmpMenu.filter(t => t.key === tmpObj.key).length == 0) {
+              tmpMenu.push(tmpObj);
             }
           }
         });
-        console.log(tmpMenu)
         this.localMenuData = tmpMenu;
       }
     },
@@ -964,6 +1064,4 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>
