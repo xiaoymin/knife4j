@@ -1,6 +1,9 @@
 const donateHtml = `
 <div class="sidebar_donate">
-    <div class="sidebar_sponsor">虚位以待</div>
+    <div class="sidebar_sponsor">
+        <a target="_blank" href="https://www.apifox.com/apiskills/apifox-auto-generates-api-docs/?utm_source=pay&utm_medium=knife4jg"><img src="/images/sponsor/apifox/Apifox IDEA@3x.png"/>
+        </a>
+    </div>
     <div class="sidebar_sponsor_submit">
         <a href="/docs/community/donate">成为赞助商</a>
     </div>
