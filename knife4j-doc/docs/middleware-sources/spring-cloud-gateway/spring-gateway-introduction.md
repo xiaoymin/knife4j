@@ -41,7 +41,7 @@ Maven坐标如下：
 knife4j:
   # 聚合swagger文档
   gateway:
-    enable: true
+    enabled: true
      # 指定手动配置的模式(默认为该模式)
     strategy: manual
     routes:
@@ -89,8 +89,9 @@ knife4j:
 
 ```yml
 knife4j:
+  gateway:
     # 是否开启
-    enable: true
+    enabled: true
     # 指定服务发现的模式聚合微服务文档，并且是默认`default`分组
     strategy: discover
     # 子服务存在其他分组情况，聚合其他分组，只能手动配置
@@ -109,7 +110,7 @@ knife4j:
     # 服务发现模式的配置
     discover:
         # 开启
-        enable: true
+      enabled: true
         # 指定版本号(swagger2|openapi3)
         version : openapi3
         # 需要排除的微服务(eg:网关服务) 
@@ -143,48 +144,51 @@ knife4j:
 2.1 所有子服务全部是OpenAPI3规范
 ```yml
 knife4j:
-    enable: true
+  gateway:
+    enabled: true
     # 指定服务发现的模式聚合微服务文档，并且是默认`default`分组
     strategy: discover
-    discover：
-        enable: true
-        # 指定版本号(Swagger2|OpenAPI3)
-        version : openapi3
-        # 需要排除的微服务(eg:网关服务)
-        excluded-services:
-            - gateway-service
+    discover:
+      enabled: true
+      # 指定版本号(Swagger2|OpenAPI3)
+      version : openapi3
+      # 需要排除的微服务(eg:网关服务)
+      excluded-services:
+        - gateway-service
 
  ```
 2.2 所有子服务全部是Swagger2规范，并且是默认`default`分组
 ```yml
 knife4j:
-    enable: true
+  gateway:
+    enabled: true
     # 指定服务发现的模式聚合微服务文档
     strategy: discover
-    discover：
-        enable: true
-        # 指定版本号(Swagger2|OpenAPI3)
-        version : swagger2
-        # 需要排除的微服务(eg:网关服务)
-        excluded-services:
-            - gateway-service
+    discover:
+      enabled: true
+      # 指定版本号(Swagger2|OpenAPI3)
+      version : swagger2
+      # 需要排除的微服务(eg:网关服务)
+      excluded-services:
+        - gateway-service
 ```         
 
 2.3     子服务中除了`default`分组，还有别的分组，测试，我们需要单独聚合(因为discover模式只聚合默认)，此时，则复用`routes`自定义属性
 ```yml
 knife4j:
-    enable: true
+  gateway:
+    enabled: true
     # 指定服务发现的模式聚合微服务文档
     strategy: discover
-    discover：
-        enable: true
-        # 指定版本号(Swagger2|OpenAPI3)
-        version : swagger2
-        # 需要排除的微服务(eg:网关服务)
-        excluded-services:
-            - gateway-service
-    # 个性化定制的部分子服务分组情况        
-    routes: 
+    discover:
+      enabled: true
+      # 指定版本号(Swagger2|OpenAPI3)
+      version : swagger2
+      # 需要排除的微服务(eg:网关服务)
+      excluded-services:
+        - gateway-service
+      # 个性化定制的部分子服务分组情况        
+      routes:
         - name: 用户服务
           service-name: user-service
           url: /user/v2/api-docs?group=组织管理
@@ -197,32 +201,33 @@ knife4j:
 2.4 在discover服务发现模式下，如果我们希望对聚合起来的微服务提供一些个性化配置，例如：排序、分组重命名、context-path配置等等，那么可以通过服务配置对每个服务进行配置，如下：
 ```yml
 knife4j:
-    enable: true
+  gateway:
+    enabled: true
     # 指定服务发现的模式聚合微服务文档
     strategy: discover
-    discover：
-        enable: true
-        # 指定版本号(Swagger2|OpenAPI3)
-        version : openapi3
-        # 需要排除的微服务(eg:网关服务)
-        excluded-services:
-            - gateway-service
-        # 各个聚合服务的个性化配置，key:注册中心中的服务名称，value：个性化配置
-        service-config:
-            user-service:
-                # 排序
-                order: 1
-                # 前端显示名称
-                group-name : 用户服务
-                # 重新指定basePath，一般在OpenAPI3规范中需要
-                context-path: /user
-            order-service:
-                # 排序
-                order: 2
-                # 前端显示名称
-                group-name : 订单服务
-                # 重新指定basePath，一般在OpenAPI3规范中需要
-                context-path: /order
+    discover:
+      enabled: true
+      # 指定版本号(Swagger2|OpenAPI3)
+      version : openapi3
+      # 需要排除的微服务(eg:网关服务)
+      excluded-services:
+        - gateway-service
+      # 各个聚合服务的个性化配置，key:注册中心中的服务名称，value：个性化配置
+      service-config:
+        user-service:
+          # 排序
+          order: 1
+          # 前端显示名称
+          group-name : 用户服务
+          # 重新指定basePath，一般在OpenAPI3规范中需要
+          context-path: /user
+        order-service:
+          # 排序
+          order: 2
+          # 前端显示名称
+          group-name : 订单服务
+          # 重新指定basePath，一般在OpenAPI3规范中需要
+          context-path: /order
  ```
 
 
