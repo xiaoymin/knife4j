@@ -1,3 +1,5 @@
+import { SpecType } from '../type'
+
 interface ParseOptions {
     allowCustomTags?: boolean;
     validateSchema?: boolean;
@@ -29,11 +31,6 @@ class AsyncAPISpec implements Specification {
     }
 }
 
-enum SpecType {
-    Swagger = "swagger",
-    OpenAPI = "openapi",
-    AsyncAPI = "asyncapi",
-}
 
 class SpecParseFactory {
     // 工厂类，实例化不同的规范解析实现

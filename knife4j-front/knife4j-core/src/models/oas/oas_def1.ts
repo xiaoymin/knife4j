@@ -1,9 +1,3 @@
-// 定义解析器类型
-enum SpecType {
-    Swagger = 'swagger',
-    OpenAPI = 'openapi',
-    AsyncAPI = 'asyncapi',
-}
 
 // 定义解析器接口
 interface ISpecParser {
