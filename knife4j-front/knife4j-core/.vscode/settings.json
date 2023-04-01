@@ -1,0 +1,18 @@
+{
+  // 在下框显示ESLint图标
+  "eslint.alwaysShowStatus": true, 
+  "editor.codeActionsOnSave": {
+      // 开启自动保存修复
+      "source.fixAll.eslint": true 
+    },
+  //开启保存自动格式化
+  "editor.formatOnSave": true,
+  // 书写时候检查代码
+  "eslint.run": "onSave", 
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript"
+    ],
+    "eslint.format.enable": true,
+  }

@@ -1,9 +1,7 @@
-import CommonUtils from '../../utils/common'
+import CommonUtils from '../../utils/common';
 
-
-
-test("testNumber", () => {
-    let n = CommonUtils.getNumber();
-    expect(1).toBe(n)
-    console.log("getNumber:", n)
-})
+test('testNumber', () => {
+  const n = CommonUtils.getNumber();
+  expect(1).toBe(n);
+  console.log('getNumber:', n);
+});
