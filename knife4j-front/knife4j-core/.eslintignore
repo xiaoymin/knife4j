@@ -1,2 +1,3 @@
 /lib/
-/src/__test__/**/*
+**/__tests__/*
+.eslintrc.cjs
