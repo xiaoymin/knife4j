@@ -1,0 +1,3 @@
+/lib/
+**/__tests__/*
+.eslintrc.cjs

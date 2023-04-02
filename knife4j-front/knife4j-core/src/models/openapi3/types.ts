@@ -1,7 +1,4 @@
 /**
  * OpenAPI结构
  */
-export interface OpenAPI {
-
-
-}
+export interface OpenAPI {}
