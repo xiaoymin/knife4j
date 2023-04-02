@@ -49,10 +49,15 @@ knife4j:
         # 真实子服务访问url地址-提供OpenAPI的文档
         url: /user-service/v2/api-docs?group=default
         service-name: user-service
+        # 路由前缀
+        # 兼容OpenAPI3规范在聚合时丢失contextPath属性的异常情况，由开发者自己配置contextPath,Knife4j的前端Ui做兼容处理,与url属性独立不冲突，仅OpenAPI3规范聚合需要，OpenAPI2规范不需要设置此属性,默认为(apiPathPrefix)
+        context-path: /
         order: 2
       - name: 订单服务
         url: /order-service/v2/api-docs?group=default
         service-name: order-service
+        # 路由前缀
+        context-path: /
         order: 3
 
 ```
@@ -69,6 +74,7 @@ knife4j:
 | `knife4j.gateway.routes[0].url`              | string        | 文档地址                                                                          | 子服务的Swagger资源接口地址(Swagger2默认/v2/api-docs,只需要配置group参数即可)，因为是从网关层走，开发者配置时别忘记了网关前缀地址。 |
 | `knife4j.gateway.routes[0].service-name`     | string        | 访问服务名称                                                                        | `null`                                                                            |
 | `knife4j.gateway.routes[0].order`            | int           | 排序                                                                            | 0                                                                                 |
+| `knife4j.gateway.routes[0].context-path`            | string           | 路由前缀,根据实际情况自行配置                                                                            | /                                                                                 |
 
 
 ### 服务发现模式(discover)
@@ -101,11 +107,15 @@ knife4j:
         url: /user-service/v2/api-docs?group=用户服务
         # 服务名称(Optional)
         service-name: user-service
+        # 路由前缀
+        context-path: /
         # 排序
         order: 2
       - name: 订单服务-2
         url: /order-service/v2/api-docs?group=订单服务
         service-name: order-service
+        # 路由前缀
+        context-path: /
         order: 3
     # 服务发现模式的配置
     discover:
