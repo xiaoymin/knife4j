@@ -151,13 +151,13 @@ export interface Paths {
 
 /**
  * Describes the operations available on a single path.
- * A Path Item may be empty, due to ACL constraints. 
+ * A Path Item may be empty, due to ACL constraints.  
  * The path itself is still exposed to the documentation viewer but they will not know which operations and parameters are available.
  */
 export interface PathItem {
     /**
      * Allows for an external definition of this path item. The referenced structure MUST be in the format of a Path Item Object. 
-     * If there are conflicts between the referenced definition and this Path Item's definition, the behavior is undefined.
+     * If there are conflicts between the referenced definition and this Path Item's definition, the behavior is undefined. 
      */
     $ref?: string;
     /**

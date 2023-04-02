@@ -7,6 +7,6 @@ import { Knife4jInstance } from '../knife4j/type';
  */
 export class AsyncAPIParser extends BaseCommonParser {
   parse(data: Record<string, any>, options: ParseOptions): Knife4jInstance {
-    return new Knife4jInstance();
+    return new Knife4jInstance('','','');
   }
 }

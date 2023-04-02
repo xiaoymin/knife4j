@@ -1,4 +1,6 @@
-import { Contact } from '../../../models/swagger2/types'
+import { Contact, Swagger } from '../../../models/swagger2/types'
+import SwagggerData from './swaggerdata'
+
 
 test("testClassTransformer", () => {
     const json = {
@@ -10,6 +12,9 @@ test("testClassTransformer", () => {
     console.log('name:', contactInstance.name)
 })
 
-
+test("swaggerdata", () => {
+    const swaggerInfo: Swagger = Object.assign({}, SwagggerData) as Swagger;
+    console.log(swaggerInfo.info.title + ":" + swaggerInfo.info.description + ",version:" + swaggerInfo.info.version)
+})
 
 
