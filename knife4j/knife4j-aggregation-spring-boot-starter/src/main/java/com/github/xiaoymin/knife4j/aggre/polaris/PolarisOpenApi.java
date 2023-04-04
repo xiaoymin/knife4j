@@ -33,20 +33,20 @@ import org.slf4j.LoggerFactory;
  * @date 2023/3/21 17:18
  */
 public class PolarisOpenApi extends PoolingConnectionManager {
-
+    
     Logger logger = LoggerFactory.getLogger(PolarisOpenApi.class);
-
+    
     private static final PolarisOpenApi INSTANCE = new PolarisOpenApi();
-
+    
     private static final String LOGIN_API = "/core/v1/user/login";
-
+    
     private PolarisOpenApi() {
     }
-
+    
     public static PolarisOpenApi me() {
         return INSTANCE;
     }
-
+    
     public String getJwtCookie(String serviceUrl, BasicAuth basicAuth) {
         if (serviceUrl == null) {
             throw new IllegalArgumentException("Polaris serviceUrl can't be Null!");
@@ -89,7 +89,7 @@ public class PolarisOpenApi extends PoolingConnectionManager {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
+        
         return null;
     }
 }
