@@ -1,7 +1,7 @@
 import Footer from '@/components/Footer';
 import { Question, SelectLang } from '@/components/RightContent';
 import { LinkOutlined } from '@ant-design/icons';
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
+import type { MenuDataItem, Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { Link } from '@umijs/max';
@@ -51,6 +51,39 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
+    ...initialState?.settings,
+
+    //自定义菜单头部，用于展示分组下拉框
+    menuHeaderRender: () => <GroupSelect />,
+    menu: {
+      params: initialState,
+      request: async (params, defaultMenuData: MenuDataItem[]) => {
+        console.log('重新请求菜单了', params, defaultMenuData);
+        let docMenu = {};
+        const reslut = defaultMenuData.map((m) => {
+          if (m.name === 'doc-detail') {
+            docMenu = m;
+            m.hideInMenu = true;
+          }
+          return m;
+        });
+
+        if (params.groupId === '2') {
+          for (let i = 0; i < 10; i++) {
+            reslut.push({
+              ...docMenu,
+              name: `文档名称${i}`,
+              path: '/doc-detail/' + i,
+              key: `doc_detail_${i}`,
+              hideInMenu: false,
+              locale: false,
+            });
+          }
+          console.log('加载文档：', reslut);
+        }
+        return reslut;
+      },
+    },
     //关闭折叠按钮
     collapsedButtonRender: false,
     actionsRender: () => [
@@ -88,8 +121,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
           </Link>,
         ]
       : [],
-    //自定义菜单头部，用于展示分组下拉框
-    menuHeaderRender: () => <GroupSelect />,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
 
@@ -116,7 +147,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         </>
       );
     },
-    ...initialState?.settings,
   };
 };
 

@@ -11,17 +11,17 @@
  * @doc https://umijs.org/docs/guides/routes
  */
 export default [
-  {
-    path: '/user',
-    layout: false,
-    routes: [
-      {
-        name: 'login',
-        path: '/user/login',
-        component: './User/Login',
-      },
-    ],
-  },
+  // {
+  //   path: '/user',
+  //   layout: false,
+  //   routes: [
+  //     {
+  //       name: 'login',
+  //       path: '/user/login',
+  //       component: './User/Login',
+  //     },
+  //   ],
+  // },
   {
     path: '/welcome',
     name: 'home',
@@ -51,6 +51,12 @@ export default [
     name: 'other-doc',
     icon: 'CloudServer',
     component: './Welcome',
+  },
+  {
+    path: '/doc-detail/:docId',
+    name: 'doc-detail',
+    icon: 'Cloud',
+    component: './DocumentDetail',
   },
   {
     path: '/admin',

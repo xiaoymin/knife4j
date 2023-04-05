@@ -92,6 +92,7 @@ function DragSider(props: { children: React.ReactNode; siderWidth: number }) {
 
   let asideStyle: CSSProperties = {
     width: navWidth,
+    height: '100vh',
     position: 'relative',
   };
 
@@ -126,6 +127,8 @@ export type MenuSiderProps = {
 };
 
 const MenuSider = (props: MenuSiderProps) => {
+  console.log('MenuSider:', props.menu);
+
   return (
     <>
       <DragSider siderWidth={props.menu.siderWidth as number}>{props.defaultDom}</DragSider>

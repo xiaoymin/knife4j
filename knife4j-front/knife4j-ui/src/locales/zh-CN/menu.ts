@@ -5,6 +5,7 @@ export default {
   'menu.swagger-models': 'Swagger Models',
   'menu.doc-mange': '文档管理',
   'menu.other-doc': '其他文档',
+  'menu.doc-detail': '文档Item',
   'menu.more-blocks': '更多区块',
   'menu.admin': '管理页',
   'menu.admin.sub-page': '二级管理页',

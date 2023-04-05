@@ -3,8 +3,21 @@
  */
 
 import { Select } from 'antd';
+import { useState } from 'react';
+import { useModel } from 'umi';
 
 const GroupSelect = () => {
+  const { initialState, setInitialState } = useModel('@@initialState');
+  const [groupValue, setGroupValue] = useState('default');
+
+  const onChange = (value: string) => {
+    setGroupValue(value);
+    setInitialState({
+      ...initialState,
+      groupId: value,
+    } as any);
+  };
+
   return (
     <>
       <Select
@@ -12,10 +25,10 @@ const GroupSelect = () => {
         style={{ width: '100%' }}
         placeholder="Select a person"
         optionFilterProp="children"
-        // onChange={onChange}
+        onChange={onChange}
         // onSearch={onSearch}
         filterOption={(input, option) => (option?.label ?? '').includes(input)}
-        value={'default'}
+        value={groupValue}
         options={[
           {
             value: 'default',
