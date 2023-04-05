@@ -70,14 +70,35 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 
         if (params.groupId === '2') {
           for (let i = 0; i < 10; i++) {
-            reslut.push({
+            const dmcMenu: MenuDataItem = {
               ...docMenu,
               name: `文档名称${i}`,
               path: '/doc-detail/' + i,
               key: `doc_detail_${i}`,
               hideInMenu: false,
               locale: false,
-            });
+            };
+            reslut.push(dmcMenu);
+            if (i === 2) {
+              dmcMenu.children = [
+                {
+                  ...docMenu,
+                  name: `儿子文档啊`,
+                  path: '/doc-detail/a_' + i,
+                  key: `doc_detail_chlid_${i}`,
+                  hideInMenu: false,
+                  locale: false,
+                },
+                {
+                  ...docMenu,
+                  name: `儿子文档2啊`,
+                  path: '/doc-detail/b_' + i,
+                  key: `doc_detail_chlid2_${i}`,
+                  hideInMenu: false,
+                  locale: false,
+                },
+              ];
+            }
           }
           console.log('加载文档：', reslut);
         }
