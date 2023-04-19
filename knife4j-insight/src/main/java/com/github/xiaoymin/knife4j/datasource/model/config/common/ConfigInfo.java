@@ -17,9 +17,10 @@
 
 package com.github.xiaoymin.knife4j.datasource.model.config.common;
 
+import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
 import com.github.xiaoymin.knife4j.datasource.config.disk.env.ConfigDiskInfo;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosInfo;
-import com.github.xiaoymin.knife4j.common.lang.ConfigMode;
+import com.github.xiaoymin.knife4j.datasource.config.polaris.evn.ConfigPolarisInfo;
 import lombok.Data;
 
 /**
@@ -29,24 +30,30 @@ import lombok.Data;
  */
 @Data
 public class ConfigInfo {
-    
+
     /**
      * 配置属性类别，参考{@link ConfigMode}
      */
     private String source;
-    
+
     /**
      * disk模式配置属性
      */
     private ConfigDiskInfo disk;
-    
+
     /**
      * Nacos配置属性
      */
     private ConfigNacosInfo nacos;
-    
+
+    /**
+     * Polaris配置属性
+     */
+    private ConfigPolarisInfo polaris;
+
     /**
      * 默认配置
+     *
      * @return
      */
     public static ConfigInfo defaultConfig() {
@@ -55,13 +62,15 @@ public class ConfigInfo {
         configInfo.setDisk(new ConfigDiskInfo());
         return configInfo;
     }
-    
+
     public ConfigCommonInfo getConfigInfo() {
         ConfigMode configMode = ConfigMode.config(this.source);
         if (configMode == ConfigMode.DISK) {
             return this.disk;
         } else if (configMode == ConfigMode.NACOS) {
             return this.nacos;
+        } else if (configMode == ConfigMode.POLARIS) {
+            return this.polaris;
         }
         return defaultConfig().getDisk();
     }

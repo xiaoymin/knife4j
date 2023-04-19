@@ -6,3 +6,4 @@ spring:
     suffix: .html
   application:
     name: knife4j-insight
+
