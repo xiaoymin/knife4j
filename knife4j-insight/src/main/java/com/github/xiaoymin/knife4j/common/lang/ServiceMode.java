@@ -22,6 +22,7 @@ import com.github.xiaoymin.knife4j.datasource.service.cloud.CloudDefaultServiceP
 import com.github.xiaoymin.knife4j.datasource.service.disk.DiskDefaultServiceProvider;
 import com.github.xiaoymin.knife4j.datasource.service.eureka.EurekaDefaultServiceProvider;
 import com.github.xiaoymin.knife4j.datasource.service.nacos.NacosDefaultServiceProvider;
+import com.github.xiaoymin.knife4j.datasource.service.polaris.PolarisDefaultServiceProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -33,7 +34,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ServiceMode {
-    
+
     /**
      * 本地磁盘OpenAPI文件
      */
@@ -49,15 +50,19 @@ public enum ServiceMode {
     /**
      * 基于Eureka注册中心获取OpenAPI数据，本质还是HTTP接口
      */
-    EUREKA("eureka", "基于Eureka注册中心获取OpenAPI数据", "eureka.properties", EurekaDefaultServiceProvider.class);
-    
+    EUREKA("eureka", "基于Eureka注册中心获取OpenAPI数据", "eureka.properties", EurekaDefaultServiceProvider.class),
+    /**
+     * 基于Polaris注册中心获取OpenAPI数据
+     */
+    POLARIS("polaris", "基于Polaris注册中心获取OpenAPI数据", "polaris.properties", PolarisDefaultServiceProvider.class);
+
     private String value;
     private String label;
     /**
      * 如果是本地模式，本地配置文件名称
      */
     private String propertiesName;
-    
+
     /**
      * 默认服务的Provider类型
      */
