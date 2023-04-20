@@ -23,12 +23,19 @@ import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.gateway.config.GatewayProperties;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.support.NameUtils;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties.DEFAULT_OPEN_API_V3_PATH;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -37,6 +44,13 @@ import java.util.*;
  */
 @Slf4j
 public class ServiceDiscoverHandler implements EnvironmentAware {
+
+    
+    @Autowired
+    private RouteLocator routeLocator;
+    
+    @Autowired
+    private GatewayProperties gatewayPropertiesDefault;
     
     /**
      * Knife4j gateway properties
@@ -60,6 +74,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
     
     /**
      * 处理注册中心的服务
+     *
      * @param service 服务列表集合
      */
     public void discover(List<String> service) {
@@ -117,8 +132,62 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
         this.gatewayResources = resources;
     }
     
+    public void discoverDefault(List<String> service) {
+        log.debug("service has change.");
+        Set<String> excludeService = getExcludeService();
+        // 版本
+        OpenApiVersion apiVersion = this.gatewayProperties.getDiscover().getVersion();
+        // 个性化服务的配置信息
+        Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = this.gatewayProperties.getDiscover().getServiceConfig();
+        List<OpenAPI2Resource> resources = new ArrayList<>();
+        // 所有配置的服务
+        Set<String> routes = new HashSet<>();
+        routeLocator.getRoutes().subscribe(route -> routes.add(route.getId()));
+        // 去除掉排除的服务
+        routes.removeAll(excludeService);
+        // 解析gatewayPropertiesDefault
+        gatewayPropertiesDefault.getRoutes().stream().filter(routeDefinition -> routes.contains(routeDefinition.getId()))
+                .forEach(route -> {
+                    route.getPredicates().stream().filter(predicateDefinition -> "Path".equalsIgnoreCase(predicateDefinition.getName()))
+                            .forEach(predicateDefinition -> {
+                                String id = route.getId();
+                                String knife4jMeta = (String) route.getMetadata().getOrDefault("knife4j", "");
+                                String url = predicateDefinition.getArgs()
+                                        .get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("**", knife4jMeta);
+                                Knife4jGatewayProperties.ServiceConfigInfo configInfo = configInfoMap.get(id);
+                                String contextPath="";
+                                //如果自定义了setting内容 拼接
+                                if(configInfo !=null && StringUtils.hasText(configInfo.getContextPath())){
+                                    contextPath= configInfo.getContextPath();
+                                }
+                                OpenAPI2Resource resource = new OpenAPI2Resource(route.getOrder(), true);
+                                resource.setContextPath(PathUtils.append(contextPath,url));
+                                resource.setName(id);
+                                resource.setUrl(PathUtils.append(resource.getContextPath(), DEFAULT_OPEN_API_V3_PATH));
+                                resource.setId(Base64.getEncoder().encodeToString((resource.getName() + resource.getUrl() + resource.getContextPath()).getBytes(StandardCharsets.UTF_8)));
+                                resources.add(resource);
+                            });
+                });
+        
+        // 在添加自己的配置的个性化的服务
+        if (this.gatewayProperties.getRoutes() != null) {
+            for (Knife4jGatewayProperties.Router router : this.gatewayProperties.getRoutes()) {
+                OpenAPI2Resource resource = new OpenAPI2Resource(router.getOrder(), false);
+                resource.setName(router.getName());
+                // 开发者配什么就返回什么
+                resource.setUrl(router.getUrl());
+                resource.setContextPath(router.getContextPath());
+                resource.setId(Base64.getEncoder().encodeToString((resource.getName() + resource.getUrl() + resource.getContextPath()).getBytes(StandardCharsets.UTF_8)));
+                resources.add(resource);
+            }
+        }
+        // 赋值
+        this.gatewayResources = resources;
+    }
+    
     /**
      * 获取所有OpenAPI资源列表
+     *
      * @param forwardPath 请求前缀contextPath路径，一般出现在Nginx代理的情况
      * @return
      */
@@ -138,6 +207,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
     
     /**
      * 获取排除的服务列表
+     *
      * @return
      */
     public Set<String> getExcludeService() {
@@ -152,6 +222,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
         }
         return excludeService;
     }
+    
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;

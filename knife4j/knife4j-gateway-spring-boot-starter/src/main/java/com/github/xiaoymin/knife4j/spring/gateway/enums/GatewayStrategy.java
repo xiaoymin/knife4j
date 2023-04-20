@@ -30,6 +30,11 @@ public enum GatewayStrategy {
     DISCOVER,
     
     /**
+     * 服务发现自动配置 并可用于前缀配置
+     */
+    DISCOVER_CONTEXT,
+    
+    /**
      * 手动配置路由
      */
     MANUAL

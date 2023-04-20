@@ -43,27 +43,27 @@ import java.util.concurrent.Callable;
  * @date 2023/3/21 16:50
  */
 public class PolarisService extends PoolingConnectionManager implements Callable<Optional<PolarisInstance>> {
-
+    
     Logger logger = LoggerFactory.getLogger(PolarisService.class);
     private static final String POLARIS_INSTANCES_API = "/naming/v1/instances";
-
+    
     private final PolarisSetting setting;
     private final String serviceUrl;
     private final String jwtCookie;
     private final PolarisRoute route;
-
+    
     public PolarisService(PolarisSetting setting, String serviceUrl, String jwtCookie, PolarisRoute route) {
         this.setting = setting;
         this.serviceUrl = serviceUrl;
         this.jwtCookie = jwtCookie;
         this.route = route;
     }
-
+    
     @Override
     public Optional<PolarisInstance> call() throws Exception {
         return this.getPolarisInstance();
     }
-
+    
     private Optional<PolarisInstance> getPolarisInstance() throws Exception {
         List<String> params = new ArrayList<>();
         params.add("namespace=" + route.getNamespace());
@@ -110,7 +110,7 @@ public class PolarisService extends PoolingConnectionManager implements Callable
                                 }
                             }
                         }
-
+                        
                     }
                 }
             } else {

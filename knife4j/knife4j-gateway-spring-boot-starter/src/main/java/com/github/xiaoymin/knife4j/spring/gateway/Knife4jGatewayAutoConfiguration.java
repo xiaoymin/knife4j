@@ -17,8 +17,9 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway;
 
-import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceDiscoverHandler;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceChangeListener;
+import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceDiscoverHandler;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -28,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- *     2022/12/03 15:41
+ * 2022/12/03 15:41
  * @since gateway-spring-boot-starter v4.0.0
  */
 @Configuration
@@ -39,7 +40,8 @@ public class Knife4jGatewayAutoConfiguration {
     
     @Configuration
     @EnableConfigurationProperties(Knife4jGatewayProperties.class)
-    @ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "discover")
+    // @ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "discover")
+    @ConditionalOnExpression(" '${knife4j.gateway.strategy}'.equalsIgnoreCase('discover') || '${knife4j.gateway.strategy}'.equalsIgnoreCase('discover_context')")
     public static class Knife4jDiscoverConfiguration {
         
         @Bean
@@ -47,9 +49,11 @@ public class Knife4jGatewayAutoConfiguration {
             return new ServiceDiscoverHandler(knife4jGatewayProperties);
             
         }
+        
         /**
          * Service Listener
-         * @param discoveryClient Registry Service Discovery Client
+         *
+         * @param discoveryClient        Registry Service Discovery Client
          * @param serviceDiscoverHandler Service Discover Handler
          * @return
          */
@@ -58,5 +62,4 @@ public class Knife4jGatewayAutoConfiguration {
             return new ServiceChangeListener(discoveryClient, serviceDiscoverHandler);
         }
     }
-    
 }
