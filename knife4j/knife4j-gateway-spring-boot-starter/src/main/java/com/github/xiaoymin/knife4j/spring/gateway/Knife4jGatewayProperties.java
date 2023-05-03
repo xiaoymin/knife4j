@@ -49,6 +49,11 @@ public class Knife4jGatewayProperties {
     private boolean enabled = false;
     
     /**
+     * Enable HTTP Basic authentication,default is false.
+     */
+    private Knife4jGatewayHttpBasic basic;
+    
+    /**
      * 网关聚合策略,默认手动配置
      * @since 4.1.0
      */
