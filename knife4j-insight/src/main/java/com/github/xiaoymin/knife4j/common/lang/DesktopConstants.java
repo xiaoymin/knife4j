@@ -26,7 +26,7 @@ import com.google.gson.GsonBuilder;
  * @since:knife4j-desktop
  */
 public class DesktopConstants {
-    
+
     /**
      * disk模式
      */
@@ -38,7 +38,16 @@ public class DesktopConstants {
             "knife4j.nacos.username", "knife4j.nacos.password",
             "knife4j.nacos.namespace", "knife4j.nacos.dataId",
             "knife4j.nacos.group"};
-    
+    public static final String[] CONFIG_POLARIS = new String[]{
+            "knife4j.polaris.serverUrl",
+            "knife4j.polaris.username",
+            "knife4j.polaris.password",
+            "knife4j.polaris.jwtCookie",
+            "knife4j.polaris.namespace",
+            "knife4j.polaris.group",
+            "knife4j.polaris.name"};
+
+
     /**
      * 全局Gson对象
      */
@@ -51,12 +60,12 @@ public class DesktopConstants {
      * 项目根目录
      */
     public static final String ROUTE_BASE_PATH = "/";
-    
+
     /**
      * 配置中心类别，参考{@link ConfigMode#getValue()}
      */
     public static final String DESKTOP_SOURCE_KEY = "knife4j.source";
-    
+
     /**
      * 默认本地disk模式临时目录名称
      */
@@ -89,7 +98,7 @@ public class DesktopConstants {
      * 正则表达式
      */
     public static final String WEBJAR_RESOURCE_PATTERN = "/(.*?)/(webjars.*)";
-    
+
     /**
      * 各个外部中间件服务连接超时时间
      */
@@ -98,10 +107,10 @@ public class DesktopConstants {
      * 各个外部中间件服务连接超时时间
      */
     public static final Long MIDDLE_WARE_QUICK_CONNECTION_TIME_OUT = 3000L;
-    
+
     /**
      * 401状态响应内容
      */
     public static final String RESPONSE_TEXT_FORBIDDEN = "You do not have permission to access this resource";
-    
+
 }

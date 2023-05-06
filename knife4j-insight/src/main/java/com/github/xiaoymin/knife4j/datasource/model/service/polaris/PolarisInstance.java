@@ -15,27 +15,20 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.gateway.enums;
+package com.github.xiaoymin.knife4j.datasource.model.service.polaris;
+
+import lombok.Data;
 
 /**
- * 网关文档聚合方式
- * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2023/3/9 22:27
- * @since:knife4j v4.1.0
+ * @author zc
+ * @date 2023/3/21 16:50
  */
-public enum GatewayStrategy {
-    /**
-     * 服务发现(自动聚合)
-     */
-    DISCOVER,
-    
-    /**
-     * 服务发现自动配置 并可用于前缀配置
-     */
-    DISCOVER_CONTEXT,
-    
-    /**
-     * 手动配置路由
-     */
-    MANUAL
+@Data
+public class PolarisInstance {
+
+    private String service;
+    private String namespace;
+    private String host;
+    private int port;
+    private Double weight;
 }

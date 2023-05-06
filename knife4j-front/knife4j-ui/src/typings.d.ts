@@ -16,6 +16,5 @@ declare module '@antv/data-set';
 declare module 'mockjs';
 declare module 'react-fittext';
 declare module 'bizcharts-plugin-slider';
-declare module 'react-resizable';
 
 declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;

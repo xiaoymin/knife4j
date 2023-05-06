@@ -18,17 +18,21 @@
 package com.github.xiaoymin.knife4j.common.lang;
 
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.datasource.config.ConfigDataProvider;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigParamsConvert;
 import com.github.xiaoymin.knife4j.datasource.config.ConfigProfileProvider;
-import com.github.xiaoymin.knife4j.datasource.config.ConfigDataProvider;
+import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigDataProvider;
 import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigParamsConvert;
 import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigProfileProvider;
-import com.github.xiaoymin.knife4j.datasource.config.disk.DiskConfigDataProvider;
 import com.github.xiaoymin.knife4j.datasource.config.disk.env.ConfigDiskInfo;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigDataProvider;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigParamsConvert;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.NacosConfigProfileProvider;
 import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosInfo;
+import com.github.xiaoymin.knife4j.datasource.config.polaris.PolarisConfigDataProvider;
+import com.github.xiaoymin.knife4j.datasource.config.polaris.PolarisConfigParamsConvert;
+import com.github.xiaoymin.knife4j.datasource.config.polaris.PolarisConfigProfileProvider;
+import com.github.xiaoymin.knife4j.datasource.config.polaris.evn.ConfigPolarisInfo;
 import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,7 +45,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ConfigMode {
-    
+
     /**
      * 本地磁盘配置
      */
@@ -49,37 +53,40 @@ public enum ConfigMode {
     /**
      * Nacos配置中心
      */
-    NACOS("nacos", "NACOS配置中心", NacosConfigDataProvider.class, NacosConfigProfileProvider.class, ConfigNacosInfo.class, NacosConfigParamsConvert.class);
-    
+    NACOS("nacos", "NACOS配置中心", NacosConfigDataProvider.class, NacosConfigProfileProvider.class, ConfigNacosInfo.class, NacosConfigParamsConvert.class),
+
+    POLARIS("polaris", "POLARIS北极星配置中心", PolarisConfigDataProvider.class, PolarisConfigProfileProvider.class, ConfigPolarisInfo.class, PolarisConfigParamsConvert.class);
+
     /**
      * knife4j.source主要类型
      */
     private String value;
-    
+
     private String label;
-    
+
     /**
      * 实现类
      */
     private Class<? extends ConfigDataProvider> configDataProviderClazz;
-    
+
     /**
      * 元数据实现
      */
     private Class<? extends ConfigProfileProvider> configProfileClazz;
-    
+
     /**
      * 配置中心初始化配置属性clazz
      */
     private Class<? extends ConfigCommonInfo> configClazz;
-    
+
     /**
      * 配置属性转换
      */
     private Class<? extends ConfigParamsConvert> convertClazz;
-    
+
     /**
      * 获取当前配置类型
+     *
      * @param value
      * @return
      */
@@ -91,5 +98,5 @@ public enum ConfigMode {
         }
         return ConfigMode.DISK;
     }
-    
-}
+
+    }

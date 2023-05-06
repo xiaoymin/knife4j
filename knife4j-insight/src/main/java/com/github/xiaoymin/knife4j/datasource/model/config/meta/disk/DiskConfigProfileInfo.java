@@ -18,6 +18,7 @@
 package com.github.xiaoymin.knife4j.datasource.model.config.meta.disk;
 
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultCloudProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultPolarisProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.disk.service.ConfigDefaultDiskProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultEurekaProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosProfile;
@@ -49,4 +50,9 @@ public class DiskConfigProfileInfo {
      * eureka模式
      */
     private List<ConfigDefaultEurekaProfile> eureka;
+
+    /**
+     * polaris模式
+     */
+    private List<ConfigDefaultPolarisProfile> polaris;
 }

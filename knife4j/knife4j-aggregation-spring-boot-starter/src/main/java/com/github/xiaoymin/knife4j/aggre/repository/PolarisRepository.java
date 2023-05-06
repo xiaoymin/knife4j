@@ -38,17 +38,17 @@ import java.util.stream.Collectors;
  * @date 2023/3/20 19:11
  */
 public class PolarisRepository extends AbstractRepository {
-
+    
     private volatile boolean stop = false;
     private Thread thread;
     Logger logger = LoggerFactory.getLogger(PolarisRepository.class);
-
+    
     private PolarisSetting polarisSetting;
-
+    
     final ThreadPoolExecutor threadPoolExecutor = ThreadUtil.newExecutor(5, 5);
-
+    
     private Map<String, PolarisInstance> polarisInstanceMap = new HashMap<>();
-
+    
     public PolarisRepository(PolarisSetting polarisSetting) {
         this.polarisSetting = polarisSetting;
         if (polarisSetting != null && CollectionUtils.isNotEmpty(polarisSetting.getRoutes())) {
@@ -56,7 +56,7 @@ public class PolarisRepository extends AbstractRepository {
             this.applyRoutes(polarisSetting);
         }
     }
-
+    
     private void initPolaris(PolarisSetting polarisSetting) {
         List<Future<Optional<PolarisInstance>>> optionalList = new ArrayList<>();
         polarisSetting.initJwtCookie();
@@ -71,7 +71,7 @@ public class PolarisRepository extends AbstractRepository {
             }
         });
     }
-
+    
     private void applyRoutes(PolarisSetting polarisSetting) {
         if (CollectionUtils.isNotEmpty(polarisInstanceMap)) {
             polarisSetting.getRoutes().forEach(route -> {
@@ -83,7 +83,7 @@ public class PolarisRepository extends AbstractRepository {
             polarisSetting.getRoutes().forEach(route -> this.routeMap.put(route.pkId(), new SwaggerRoute(route, polarisInstanceMap.get(route.getService()))));
         }
     }
-
+    
     @Override
     public BasicAuth getAuth(String header) {
         BasicAuth basicAuth = null;
@@ -101,7 +101,7 @@ public class PolarisRepository extends AbstractRepository {
         }
         return basicAuth;
     }
-
+    
     @Override
     public void start() {
         logger.info("start Polaris hearbeat Holder thread.");
@@ -140,7 +140,7 @@ public class PolarisRepository extends AbstractRepository {
         thread.setDaemon(true);
         thread.start();
     }
-
+    
     @Override
     public void close() {
         logger.info("stop Polaris heartbeat Holder thread.");
@@ -149,5 +149,5 @@ public class PolarisRepository extends AbstractRepository {
             ThreadUtil.interrupt(thread, true);
         }
     }
-
+    
 }

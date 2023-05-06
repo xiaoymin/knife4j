@@ -15,27 +15,28 @@
  */
 
 
-package com.github.xiaoymin.knife4j.spring.gateway.enums;
+package com.github.xiaoymin.knife4j.datasource.model.config.route;
+
+
+import com.github.xiaoymin.knife4j.datasource.model.ConfigRoute;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
- * 网关文档聚合方式
- * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2023/3/9 22:27
- * @since:knife4j v4.1.0
+ * @author zc
+ * @date 2023/4/10 19:04
  */
-public enum GatewayStrategy {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class PolarisRoute extends ConfigRoute {
+
     /**
-     * 服务发现(自动聚合)
+     * 服务名称,不能为空,代表需要聚合的服务
      */
-    DISCOVER,
-    
+    private String service;
+
     /**
-     * 服务发现自动配置 并可用于前缀配置
+     * 命名空间id
      */
-    DISCOVER_CONTEXT,
-    
-    /**
-     * 手动配置路由
-     */
-    MANUAL
+    private String namespace;
 }
