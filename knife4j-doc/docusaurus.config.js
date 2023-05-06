@@ -11,7 +11,7 @@ module.exports = {
     trailingSlash: false,
     organizationName: 'xiaoymin',
     projectName: 'swagger-bootstrap-ui',
-    scripts: ['/js/custom.js', '/js/baidu.js'],
+    scripts: ['/js/custom.js', '/js/baidu.js', '/js/google_adsense.js'],
     favicon: 'img/favicon.ico',
     i18n: {
         defaultLocale: 'zh-Hans',
