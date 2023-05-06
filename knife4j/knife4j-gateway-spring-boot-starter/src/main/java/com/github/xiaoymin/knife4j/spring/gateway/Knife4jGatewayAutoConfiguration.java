@@ -17,15 +17,20 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway;
 
+import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceChangeListener;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceDiscoverHandler;
+import com.github.xiaoymin.knife4j.spring.gateway.filter.basic.WebFluxSecurityBasicAuthFilter;
+import com.github.xiaoymin.knife4j.spring.gateway.utils.EnvironmentUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -33,10 +38,16 @@ import org.springframework.context.annotation.Configuration;
  * @since gateway-spring-boot-starter v4.0.0
  */
 @Configuration
-@EnableConfigurationProperties(Knife4jGatewayProperties.class)
+@EnableConfigurationProperties({Knife4jGatewayProperties.class, Knife4jGatewayHttpBasic.class})
 @ComponentScan(basePackageClasses = Knife4jGatewayAutoConfiguration.class)
 @ConditionalOnProperty(name = "knife4j.gateway.enabled", havingValue = "true")
 public class Knife4jGatewayAutoConfiguration {
+    
+    private final Environment environment;
+    
+    public Knife4jGatewayAutoConfiguration(Environment environment) {
+        this.environment = environment;
+    }
     
     @Configuration
     @EnableConfigurationProperties(Knife4jGatewayProperties.class)
@@ -61,5 +72,35 @@ public class Knife4jGatewayAutoConfiguration {
         public ServiceChangeListener serviceChangeListener(DiscoveryClient discoveryClient, ServiceDiscoverHandler serviceDiscoverHandler) {
             return new ServiceChangeListener(discoveryClient, serviceDiscoverHandler);
         }
+    }
+    
+    /**
+     * Security with Basic Http
+     * @param knife4jGatewayProperties Basic Properties
+     * @return BasicAuthFilter
+     */
+    @Bean
+    @ConditionalOnMissingBean(WebFluxSecurityBasicAuthFilter.class)
+    @ConditionalOnProperty(name = "knife4j.gateway.basic.enable", havingValue = "true")
+    public WebFluxSecurityBasicAuthFilter securityBasicAuthFilter(Knife4jGatewayProperties knife4jGatewayProperties) {
+        WebFluxSecurityBasicAuthFilter authFilter = new WebFluxSecurityBasicAuthFilter();
+        if (knife4jGatewayProperties == null) {
+            authFilter.setEnableBasicAuth(EnvironmentUtils.resolveBool(environment, "knife4j.gateway.basic.enable", Boolean.FALSE));
+            authFilter.setUserName(EnvironmentUtils.resolveString(environment, "knife4j.gateway.basic.username", GlobalConstants.BASIC_DEFAULT_USERNAME));
+            authFilter.setPassword(EnvironmentUtils.resolveString(environment, "knife4j.gateway.basic.password", GlobalConstants.BASIC_DEFAULT_PASSWORD));
+        } else {
+            // 判断非空
+            if (knife4jGatewayProperties.getBasic() == null) {
+                authFilter.setEnableBasicAuth(Boolean.FALSE);
+                authFilter.setUserName(GlobalConstants.BASIC_DEFAULT_USERNAME);
+                authFilter.setPassword(GlobalConstants.BASIC_DEFAULT_PASSWORD);
+            } else {
+                authFilter.setEnableBasicAuth(knife4jGatewayProperties.getBasic().isEnable());
+                authFilter.setUserName(knife4jGatewayProperties.getBasic().getUsername());
+                authFilter.setPassword(knife4jGatewayProperties.getBasic().getPassword());
+                authFilter.addRule(knife4jGatewayProperties.getBasic().getInclude());
+            }
+        }
+        return authFilter;
     }
 }
