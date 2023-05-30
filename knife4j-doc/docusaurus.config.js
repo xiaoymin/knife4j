@@ -258,7 +258,9 @@ module.exports = {
             algolia: {
                 appId: '3CRIMRK623',
                 apiKey: 'ae4f57f208e3c7749017e09582f0b8a4', // search only (public) API key
+                //apiKey: '00582ca6a8e46a55856c975ccedf9368', // search only (public) API key
                 indexName: 'xiaominfo',
+                contextualSearch: false,
                 debug: true
             },
         }),
