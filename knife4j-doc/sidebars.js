@@ -359,6 +359,13 @@ module.exports = {
                 'action/springfox/springfox20',
                 'action/springfox/springfox21'
             ]
+        }, {
+            type: 'category',
+            label: '其他',
+            collapsed: true,
+            items: [
+                'action/others/doc-search'
+            ]
         }
     ]
 }
