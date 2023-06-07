@@ -27,7 +27,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
+import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -58,8 +60,10 @@ public class Knife4jGatewayAutoConfiguration {
         
         @Bean
         public ServiceDiscoverHandler serviceDiscoverHandler(RouteDefinitionRepository routeDefinitionRepository,
+                                                             RouteLocator routeLocator,
+                                                             GatewayProperties gatewayPropertiesDefault,
                                                              Knife4jGatewayProperties gatewayProperties) {
-            return new ServiceDiscoverHandler(routeDefinitionRepository, gatewayProperties);
+            return new ServiceDiscoverHandler(routeDefinitionRepository, routeLocator, gatewayPropertiesDefault, gatewayProperties);
             
         }
         
