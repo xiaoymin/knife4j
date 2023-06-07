@@ -17,9 +17,9 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.endpoint;
 
+import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceDiscoverHandler;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayStrategy;
-import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v3.OpenAPI3Response;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import lombok.AllArgsConstructor;
@@ -82,8 +82,16 @@ public class OpenAPIEndpoint {
             if (routers != null && !routers.isEmpty()) {
                 Collections.sort(routers, Comparator.comparing(Knife4jGatewayProperties.Router::getOrder));
                 for (Knife4jGatewayProperties.Router router : routers) {
-                    router.setUrl(PathUtils.append(basePath, router.getUrl()));
-                    router.setContextPath(PathUtils.append(basePath, router.getContextPath()));
+                    Map<String, String> urlMap = PathUtils.getUrlMap();
+                    if (!urlMap.containsKey(router.getServiceName())) {
+                        urlMap.put(router.getServiceName(), router.getUrl());
+                    }
+                    router.setUrl(PathUtils.append(basePath, urlMap.get(router.getServiceName())));
+                    Map<String, String> contextPathMap = PathUtils.getContextPathMap();
+                    if (!contextPathMap.containsKey(router.getServiceName())) {
+                        contextPathMap.put(router.getServiceName(), router.getContextPath());
+                    }
+                    router.setContextPath(PathUtils.append(basePath, contextPathMap.get(router.getServiceName())));
                     sortedSet.add(router);
                 }
                 response.setUrls(sortedSet);
