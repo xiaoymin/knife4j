@@ -17,12 +17,16 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.utils;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,6 +40,16 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
  */
 @Slf4j
 public class PathUtils {
+    
+    /** k-serviceName v-url */
+    @Getter
+    @Setter
+    private static Map<String, String> urlMap = new ConcurrentHashMap<>();
+    
+    /** k-serviceName v-contextPath */
+    @Getter
+    @Setter
+    private static Map<String, String> contextPathMap = new ConcurrentHashMap<>();
     
     static final String DOC_URL = "/doc.html";
     

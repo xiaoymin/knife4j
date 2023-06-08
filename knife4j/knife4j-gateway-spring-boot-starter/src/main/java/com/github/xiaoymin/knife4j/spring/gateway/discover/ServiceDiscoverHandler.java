@@ -24,7 +24,6 @@ import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.support.NameUtils;
@@ -44,7 +43,6 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
  */
 @Slf4j
 public class ServiceDiscoverHandler implements EnvironmentAware {
-
     
     @Autowired
     private RouteLocator routeLocator;
@@ -155,13 +153,13 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                                 String url = predicateDefinition.getArgs()
                                         .get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("**", knife4jMeta);
                                 Knife4jGatewayProperties.ServiceConfigInfo configInfo = configInfoMap.get(id);
-                                String contextPath="";
-                                //如果自定义了setting内容 拼接
-                                if(configInfo !=null && StringUtils.hasText(configInfo.getContextPath())){
-                                    contextPath= configInfo.getContextPath();
+                                String contextPath = "";
+                                // 如果自定义了setting内容 拼接
+                                if (configInfo != null && StringUtils.hasText(configInfo.getContextPath())) {
+                                    contextPath = configInfo.getContextPath();
                                 }
                                 OpenAPI2Resource resource = new OpenAPI2Resource(route.getOrder(), true);
-                                resource.setContextPath(PathUtils.append(contextPath,url));
+                                resource.setContextPath(PathUtils.append(contextPath, url));
                                 resource.setName(id);
                                 resource.setUrl(PathUtils.append(resource.getContextPath(), DEFAULT_OPEN_API_V3_PATH));
                                 resource.setId(Base64.getEncoder().encodeToString((resource.getName() + resource.getUrl() + resource.getContextPath()).getBytes(StandardCharsets.UTF_8)));
@@ -197,6 +195,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
             // 排序
             Collections.sort(resources, Comparator.comparing(OpenAPI2Resource::getOrder));
             for (OpenAPI2Resource resource : resources) {
+                // todo nginx叠上叠 k ?
                 resource.setContextPath(PathUtils.append(forwardPath, resource.getContextPath()));
                 resource.setUrl(PathUtils.append(forwardPath, resource.getUrl()));
             }
