@@ -17,13 +17,17 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.discover;
 
+import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
+import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayStrategy;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.event.HeartbeatEvent;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.context.event.EventListener;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
@@ -35,16 +39,15 @@ public class ServiceChangeListener {
     
     final DiscoveryClient discoveryClient;
     final ServiceDiscoverHandler serviceDiscoverHandler;
+    final Knife4jGatewayProperties knife4jGatewayProperties;
     
-    @ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "discover")
     @EventListener(classes = {ApplicationReadyEvent.class, HeartbeatEvent.class, RefreshRoutesEvent.class})
     public void discover() {
-        this.serviceDiscoverHandler.discover(discoveryClient.getServices());
-    }
-    
-    @ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "DISCOVER_CONTEXT")
-    @EventListener(classes = {ApplicationReadyEvent.class, HeartbeatEvent.class, RefreshRoutesEvent.class})
-    public void discoverDefault() {
-        this.serviceDiscoverHandler.discoverDefault(discoveryClient.getServices());
+        List<String> services = discoveryClient.getServices();
+        if (Objects.equals(knife4jGatewayProperties.getStrategy(), GatewayStrategy.DISCOVER)) {
+            this.serviceDiscoverHandler.discover(services);
+        } else if (Objects.equals(knife4jGatewayProperties.getStrategy(), GatewayStrategy.DISCOVER_CONTEXT)) {
+            this.serviceDiscoverHandler.discoverDefault(services);
+        }
     }
 }

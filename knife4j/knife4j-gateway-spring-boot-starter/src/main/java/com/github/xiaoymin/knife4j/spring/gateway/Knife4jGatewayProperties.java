@@ -138,9 +138,14 @@ public class Knife4jGatewayProperties {
         private Integer order = DEFAULT_ORDER;
         
         /**
-         * 当前服务的分组名称，用于前端Ui展示title
+         * 当前服务的分组名称，用于前端Ui展示title,当配置了groupNames时此参数无效
          */
         private String groupName;
+        
+        /**
+         * 组名称集合，如果为服务接口较多而进行了分组，则可以配置此参数，集合中的项应该和目标服务的 springdoc.group-configs指定的group参数一致
+         */
+        private List<String> groupNames;
         
         /**
          * 兼容OpenAPI3规范在聚合时丢失contextPath属性的异常情况，由开发者自己配置contextPath,Knife4j的前端Ui做兼容处理,与url属性独立不冲突，仅OpenAPI3规范聚合需要，OpenAPI2规范不需要设置此属性,默认为(apiPathPrefix)
