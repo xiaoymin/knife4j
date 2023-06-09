@@ -3442,6 +3442,85 @@ SwaggerBootstrapUi.prototype.initApiInfoAsync = function (swpinfo) {
   }
 }
 
+
+/**
+ * analysisAllOfOAS2 解析allOf OAS2
+ * @param {*} allOf 
+ * @returns {string} 返回新的模型名
+ */
+SwaggerBootstrapUi.prototype.analysisAllOfOAS2 = function (allOf) {
+  var that = this;
+  // 原对象
+  const originalRef = allOf[0].$ref;
+  const regex = new RegExp('#/definitions/(.*)$', 'ig');
+  const originalObjNameMatch = regex.exec(originalRef);
+  if (!originalObjNameMatch) {
+    that.error("Unable to parse original object name from " + originalRef);
+    return;
+  }
+  const originalObjName = originalObjNameMatch[1];
+  const menu = that.currentInstance.swaggerData;
+  const definitions = menu.definitions;
+  const originalObjCopy = JSON.parse(JSON.stringify(definitions[originalObjName]));
+  // 需要修补的属性
+  const patchProperties = allOf[1].properties;
+  // 合并
+  originalObjCopy.properties = Object.assign(originalObjCopy.properties, patchProperties);
+  // 新的模型名
+  const patchPropertiesNames = []
+  for (const key in patchProperties) {
+    if (patchProperties.hasOwnProperty(key)) {
+      const element = patchProperties[key];
+      // 一般对象
+      if (element.hasOwnProperty("$ref")) {
+        const regex = new RegExp('#/definitions/(.*)$', 'ig');
+        const elementObjNameMatch = regex.exec(element.$ref);
+        if (!elementObjNameMatch) {
+          that.error("Unable to parse element object name from " + element.$ref);
+          return;
+        }
+        const elementObjName = elementObjNameMatch[1];
+        patchPropertiesNames.push(elementObjName);
+      }
+      // 数组
+      if (element.hasOwnProperty("items")) {
+        const regex = new RegExp('#/definitions/(.*)$', 'ig');
+        const elementObjNameMatch = regex.exec(element.items.$ref);
+        if (!elementObjNameMatch) {
+          that.error("Unable to parse element object name from " + element.items.$ref);
+          return;
+        }
+        const elementObjName = elementObjNameMatch[1];
+        patchPropertiesNames.push("[]"+elementObjName);
+      }
+      // 基本类型
+      if (element.hasOwnProperty("type" && element.type != "array")) {
+        patchPropertiesNames.push(element.type);
+      }
+    }
+  }
+  const patchPropertiesName = patchPropertiesNames.join(',');
+  const newModelName = `${originalObjName}<${patchPropertiesName}>`;
+  // 检查definitions是否已有
+  if (definitions[newModelName]) 
+    return newModelName;
+  
+  // 放入原始definitions
+  definitions[newModelName] = originalObjCopy;
+  // 放入difarrs对象中
+  const swud = new SwaggerBootstrapUiDefinition();
+  swud.name = newModelName;
+  swud.ignoreFilterName = newModelName;
+  that.currentInstance.difArrs.push(swud);
+  // 所有类classModel的treeTable参数
+  const swudTree = new SwaggerBootstrapUiTreeTableRefParameter();
+  swudTree.name = newModelName;
+  swudTree.id = md5(newModelName);
+  // 存放值
+  that.currentInstance.swaggerTreeTableModels[newModelName] = swudTree;
+  return newModelName;
+}
+
 /**
  * 解析oas2的接口
  * @param {*} swpinfo
@@ -3608,6 +3687,20 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2 = function (swpinfo) {
                 }
               }
             }
+          }
+
+          // allOf类型
+          if (schema.hasOwnProperty('allOf')) {
+            console.log("allOf类型");
+            // 获取多引用类型的名称
+            const allOf = schema['allOf'];
+            const newName = that.analysisAllOfOAS2(allOf);
+            // 重新赋值
+            rptype = newName;
+            swpinfo.responseParameterRefName = rptype;
+            swaggerResp.responseParameterRefName = rptype;
+            definitionType = rptype;
+            swaggerResp.schema = rptype;
           }
         }
         if (rptype != null) {
