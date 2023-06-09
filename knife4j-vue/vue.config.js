@@ -5,6 +5,9 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const CopyWebPackPlugin = require('copy-webpack-plugin');
 const productionGzipExtensions = ["js", "css"];
 module.exports = {
+  transpileDependencies: [
+    /[/\\]node_modules[/\\](.+?)?mermaid(.*)/
+  ],
   publicPath: ".",
   assetsDir: "webjars",
   outputDir: "dist",
