@@ -5,6 +5,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:SpringDocOpenApi": "cross-env VITE_RELEASE_APP_TYPE=SpringDocOpenApi vite build",
+    "build:Knife4jSpringUi": "cross-env VITE_RELEASE_APP_TYPE=Knife4jSpringUi vite build",
+    "build:Knife4jJFinal": "cross-env VITE_RELEASE_APP_TYPE=Knife4jJFinal vite build",
+    "build:Knife4jFront": "cross-env VITE_RELEASE_APP_TYPE=Knife4jFront vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -34,6 +38,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
+    "cross-env": "^7.0.3",
     "less": "^4.1.3",
     "less-loader": "^11.1.3",
     "unplugin-vue-components": "^0.25.1",
