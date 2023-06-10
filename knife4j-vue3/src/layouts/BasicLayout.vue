@@ -108,7 +108,8 @@ const state = reactive({
   menuVisible: false,
   nextUrl: '',
   nextKey: '',
-  menuItemList: []
+  menuItemList: [],
+  remove
 })
 
 const globalsStore = useGlobalsStore()
@@ -390,6 +391,7 @@ function initKnife4jFront() {
     routeParams: route.params,
     plus: getPlusStatus(),
     i18n: tmpI18n,
+    localStore: localStore,
     configSupport: false,
     i18nInstance: getCurrentI18nInstance(),
     //覆盖url地址,多个服务的组合
