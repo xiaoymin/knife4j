@@ -1,7 +1,7 @@
 const donateHtml = `
 <div class="sidebar_donate">
     <div class="sidebar_sponsor"> 
-        <a target="_blank" href="http://tiaocanshu.com?utm_source=knife4j"><img src="/images/sponsor/tiaocanshu/logo.png"/>
+        <a target="_blank" href="https://tiaocanshu.com?utm_source=knife4j"><img src="/images/sponsor/tiaocanshu/logo.png"/>
         </a>
     </div>
     <div class="sidebar_sponsor sidebar_sponsor_sec">
