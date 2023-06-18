@@ -1,6 +1,10 @@
 const donateHtml = `
 <div class="sidebar_donate">
-    <div class="sidebar_sponsor">
+    <div class="sidebar_sponsor"> 
+        <a target="_blank" href="http://tiaocanshu.com?utm_source=knife4j"><img src="/images/sponsor/tiaocanshu/logo.png"/>
+        </a>
+    </div>
+    <div class="sidebar_sponsor sidebar_sponsor_sec">
         <a target="_blank" href="https://www.apifox.com/apiskills/apifox-auto-generates-api-docs/?utm_source=pay&utm_medium=knife4jg"><img src="/images/sponsor/apifox/Apifox IDEA@3x.png"/>
         </a>
     </div>
