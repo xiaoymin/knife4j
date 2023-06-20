@@ -1,0 +1,101 @@
+---
+id: start-knife4j-version
+title: Knife4j版本参考
+description: Knife4j适配Spring Boot版本
+---
+
+
+以下是关于Knife4j适配不同Spring Boot版本的说明文档
+
+:::tip 版本规范说明
+
+本文档旨在帮助开发者选择适合其项目的Knife4j版本与Spring Boot版本的适配。请根据您的项目要求和使用的Spring Boot版本选择适当的Knife4j版本。
+
+:::
+
+
+## 1.前世今生
+
+在更名为`Knife4j`之前,原来的名称是叫`swagger-bootstrap-ui`，这是两种不一样风格的Ui,对比情况如下：
+
+|名称|开发语言&框架|状态|最后版本|风格|
+|-----|-------|------|------|----|
+|Knife4j	|Java、JavaScript、Vue	|持续更新中...|无|黑色|
+|swagger-bootstrap-ui|Java、JavaScript、jQuery|停更|1.9.6|蓝色|
+
+Knife4j从开源至今,目前主要经历版本的变化，分别如下：
+
+|版本|说明|
+|----|----|
+|1.0~1.9.6|名称是叫`swagger-bootstrap-ui`,蓝色风格Ui|
+|1.9.6|蓝色皮肤风格,开始更名，增加更多后端模块|
+|2.0~2.0.5|Ui基于Vue2.0+AntdV重写,黑色风格,参考[示例](https://doc.xiaominfo.com/demo/doc.html)，底层依赖的springfox框架版本是2.9.2,仅提供Swagger2规范的适配|
+|2.0.6~2.0.9|底层springfox框架版本升级知2.10.5,,仅提供Swagger2规范的适配|
+|3.0~3.0.3|底层依赖springfox框架版本升级至3.0.3,OpenAPI规范是v3,过度版本，**建议开发者不要使用**|
+|4.0~|区分OpenAPI2和Swagger3的Maven坐标artifactId<br /> OpenAPI2规范服务端解析框架稳定在springfox2.10.5<br />OpenAPI3框架服务端解析跟随springdoc项目更新迭代<br />**建议开发者使用该版本**|
+
+## 2.Spring Boot版本兼容性
+
+首先，确保您了解您的项目所使用的Spring Boot版本。
+
+以下是一些常见的Spring Boot版本及其对应的Knife4j版本兼容推荐：
+
+|Spring Boot版本|Knife4j Swagger2规范|Knife4j OpenAPI3规范|
+|-----|-------|------|
+|1.5.x~2.0.0|<Knife4j 2.0.0|>=Knife4j 4.0.0|
+|2.0~2.2|Knife4j 2.0.0 ~ 2.0.6|>=Knife4j 4.0.0|
+|2.2.x~2.4.0|Knife4j 2.0.6 ~ 2.0.9|>=Knife4j 4.0.0|
+|2.4.0~2.7.x|>=Knife4j 4.0.0|>=Knife4j 4.0.0|
+|>= 3.0|>=Knife4j 4.0.0|>=Knife4j 4.0.0|
+
+Knife4j在之前的版本更新中，逐渐提供了一些服务端适配的增强特性功能。
+
+但是开发者应该明白，不管是Swagger2规范还是OpenAPI3规范，Knife4j的最新版本的纯Ui版本，是可以适配Spring Boot所有版本的。
+
+**如果你不考虑使用Knife4j提供的服务端增强功能，引入Knife4j的纯Ui版本没有任何限制。只需要考虑不同的规范即可**
+
+## 3.规范说明
+
+针对[Swagger2规范](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/2.0.md)和[OpenAPI3规范](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md)的说明：
+
+:::tip 服务端规范解析说明
+
+在Spring Boot框架中,Knife4j对于服务端将Spring的开放接口解析成Swagger2或者OpenAPI3规范的框架，也是依赖的第三方框架组件。说明如下：
+
+- **Swagger2规范**：依赖[Springfox](https://github.com/springfox/springfox)项目，该项目目前几乎处于停更状态，但很多老项目依然使用的是该规范，所以Knife4j在更新前端Ui的同时也继续保持了兼容
+- **OpenAPI3规范**：依赖[Springdoc](https://github.com/springdoc/springdoc-openapi)项目，更新发版频率非常快，建议开发者尽快迁移过来使用OpenAPI3规范,Knife4j后面的重心也会在这里。
+
+:::
+
+|Knife4j版本|Swagger2规范|OpenAPI3规范|说明|
+|-----|-----|------|-----|
+|1.0~1.9.6|springfox 2.9.2|无|Knife4j的前身，名称为`swagger-bootstrap-ui`|
+|1.9.6~2.0.5|springfox 2.9.2|无||
+|2.0.6~2.0.9|springfox 2.10.5|无||
+|3.0.0~3.0.3|springfox 3.0.3|无|过度版本，**建议开发者不要使用**|
+|4.0.0~|springfox 2.10.5|>=springdoc-openapi 1.6.9|Swagger2规范稳定使用springfox2.10.5保持不变。开发者应该尽早迁移到OpenAPI3规范上来|
+
+## 4.网关聚合
+
+自4.0版本后,Knife4j提供了一个针对在Spring Cloud Gateway网关进行聚合的组件，开发者可以基于此组件轻松的聚合各个子服务的OpenAPI文档
+
+Maven坐标如下：
+
+```xml
+<dependency>
+    <groupId>com.github.xiaoymin</groupId>
+    <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
+    <version>{大于4.0.0版本}</version>
+</dependency>
+```
+
+由于开发网关聚合组件时，Knife4j所引用的Spring Cloud Gateway的依赖全部为`Optional`类型，常规操作下，开发者应该是在Gateway的任意版本中都能使用，但还是给出最低的推荐版本配置：
+
+|Spring Boot版本|Knife4j Gateway网关聚合版本|
+|-----|-----|
+|>=2.4.8~3.x|>=4.0.0|
+
+
+## 5.最后
+
+如果您在选择使用Knife4j的版本过程中仍然存在疑惑，可以通过关注文档底部的微信公众号，点击菜单加入微信交流群，与作者当面对话。

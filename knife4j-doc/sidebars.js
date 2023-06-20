@@ -21,6 +21,7 @@ module.exports = {
         defaultStyle: true
     },
         'quick-start/quick-start',
+        'quick-start/start-knife4j-version',
         'community/joinus',
         'community/contributing',
     {
