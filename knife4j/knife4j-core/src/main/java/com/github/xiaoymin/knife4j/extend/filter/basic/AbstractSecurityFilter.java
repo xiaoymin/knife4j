@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/2/25 18:52
- * @since:knife4j
+ * @since knife4j
  */
 @Data
 public abstract class AbstractSecurityFilter extends BasicFilter {

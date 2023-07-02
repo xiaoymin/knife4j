@@ -29,7 +29,7 @@ import java.io.IOException;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/2/25 19:06
- * @since:knife4j
+ * @since knife4j
  */
 @Data
 public class ServletSecurityBasicAuthFilter extends AbstractSecurityFilter implements Filter {

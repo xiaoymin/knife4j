@@ -42,7 +42,7 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/3/17 22:59
- * @since:knife4j v4.1.0
+ * @since knife4j v4.1.0
  */
 @Slf4j
 public class ServiceDiscoverHandler implements EnvironmentAware {

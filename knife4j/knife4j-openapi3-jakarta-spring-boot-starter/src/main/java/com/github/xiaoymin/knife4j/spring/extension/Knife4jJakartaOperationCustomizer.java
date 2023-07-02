@@ -29,7 +29,7 @@ import org.springframework.web.method.HandlerMethod;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/2/26 12:14
- * @since:knife4j
+ * @since knife4j
  */
 @Slf4j
 public class Knife4jJakartaOperationCustomizer implements GlobalOperationCustomizer {

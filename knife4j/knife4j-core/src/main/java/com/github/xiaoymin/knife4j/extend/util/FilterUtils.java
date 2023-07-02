@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/2/25 18:56
- * @since:knife4j
+ * @since knife4j
  */
 public class FilterUtils {
     
