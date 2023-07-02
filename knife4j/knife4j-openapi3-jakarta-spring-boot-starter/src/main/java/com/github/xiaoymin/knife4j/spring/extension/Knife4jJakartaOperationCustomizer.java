@@ -18,6 +18,7 @@
 package com.github.xiaoymin.knife4j.spring.extension;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.github.xiaoymin.knife4j.core.conf.ExtensionsConstants;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import io.swagger.v3.oas.models.Operation;
@@ -45,6 +46,14 @@ public class Knife4jJakartaOperationCustomizer implements GlobalOperationCustomi
             }
             if (operationSupport.order() != 0) {
                 operation.addExtension(ExtensionsConstants.EXTENSION_ORDER, operationSupport.order());
+            }
+        }else{
+            //如果方法级别不存在，再找一次class级别的
+            ApiSupport apiSupport=AnnotationUtils.findAnnotation(handlerMethod.getMethod().getClass(),ApiSupport.class);
+            if (apiSupport!=null){
+                if (StrUtil.isNotBlank(apiSupport.author())){
+                    operation.addExtension(ExtensionsConstants.EXTENSION_AUTHOR, apiSupport.author());
+                }
             }
         }
         return operation;
