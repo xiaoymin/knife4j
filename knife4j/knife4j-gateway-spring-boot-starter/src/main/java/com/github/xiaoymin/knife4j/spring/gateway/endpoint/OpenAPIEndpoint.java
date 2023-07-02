@@ -51,7 +51,7 @@ public class OpenAPIEndpoint {
     /**
      * OpenAPI Group Endpoint
      * @param request request
-     * @return
+     * @return group element
      */
     @GetMapping("/v3/api-docs/swagger-config")
     public Mono<ResponseEntity<OpenAPI3Response>> swaggerConfig(ServerHttpRequest request) {
@@ -73,6 +73,9 @@ public class OpenAPIEndpoint {
         response.setConfigUrl("/v3/api-docs/swagger-config");
         response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getOauth2RedirectUrl());
         response.setValidatorUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getValidatorUrl());
+        //设置排序规则,add at 2023/07/02 11:30:00
+        response.setTagsSorter(this.knife4jGatewayProperties.getTagsSorter().name());
+        response.setOperationsSorter(this.knife4jGatewayProperties.getOperationsSorter().name());
         log.debug("forward-path:{}", basePath);
         // 判断当前模式是手动还是服务发现
         if (knife4jGatewayProperties.getStrategy() == GatewayStrategy.MANUAL) {

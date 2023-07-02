@@ -18,6 +18,7 @@
 package com.github.xiaoymin.knife4j.spring.gateway;
 
 import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayStrategy;
+import com.github.xiaoymin.knife4j.spring.gateway.enums.GroupOrderStrategy;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
 import lombok.Getter;
 import lombok.Setter;
@@ -58,6 +59,18 @@ public class Knife4jGatewayProperties {
      * @since 4.1.0
      */
     private GatewayStrategy strategy = GatewayStrategy.MANUAL;
+
+    /**
+     * tag排序规则
+     * @since 4.2.0
+     */
+    private GroupOrderStrategy tagsSorter=GroupOrderStrategy.alpha;
+
+    /**
+     * operation接口排序规则
+     * @since 4.2.0
+     */
+    private GroupOrderStrategy operationsSorter=GroupOrderStrategy.alpha;
     
     /**
      * 服务发现模式
@@ -67,7 +80,7 @@ public class Knife4jGatewayProperties {
     
     /**
      * 聚合服务路由配置(如果是manual模式则配置此属性作为数据来源，服务发现模式则作为无法满足聚合要求的服务个性化定制配置)
-     * 参考Discussions:https://github.com/xiaoymin/knife4j/discussions/547
+     * 参考Discussions:<a href="https://github.com/xiaoymin/knife4j/discussions/547">GitHub-discussions#547</a>
      * @since 4.0.0
      */
     private final List<Router> routes = new ArrayList<>();
