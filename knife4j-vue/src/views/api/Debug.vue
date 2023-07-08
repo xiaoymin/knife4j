@@ -2448,9 +2448,9 @@ export default {
       // console.log(formParams)
       if (["post", "put", "patch"].includes(methodType.toLowerCase())) {
         if (KUtils.checkUndefined(formParams)) {
-          // requestData = qs.stringify(formParams);
+          requestData = qs.stringify(formParams);
           // 改回query的形式？
-          requestParams = formParams;
+          // requestParams = formParams;
         }
       } else {
         //requestData = formParams;
