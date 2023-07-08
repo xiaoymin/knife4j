@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j</artifactId>
-    <version>4.1.0</version>
+    <version>4.2.0-SNAPSHOT</version>
     <modules>
         <module>knife4j-core</module>
         <module>knife4j-dependencies</module>
@@ -47,7 +47,7 @@
         <knife4j-springfox.version>2.10.5</knife4j-springfox.version>
         <knife4j-spring-plugin.version>2.0.0.RELEASE</knife4j-spring-plugin.version>
         <knife4j-springdoc-openapi.version>1.7.0</knife4j-springdoc-openapi.version>
-        <knife4j-springdoc-openapi-jakarta.version>2.1.0</knife4j-springdoc-openapi-jakarta.version>
+        <knife4j-springdoc-openapi-jakarta.version>2.0.4</knife4j-springdoc-openapi-jakarta.version>
 
         <knife4j-servlet.version>3.1.0</knife4j-servlet.version>
         <knife4j-servlet-jakarta.version>6.0.0</knife4j-servlet-jakarta.version>
@@ -96,17 +96,17 @@
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-core</artifactId>
-                <version>4.1.0</version>
+                <version>4.2.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi2-ui</artifactId>
-                <version>4.1.0</version>
+                <version>4.2.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi3-ui</artifactId>
-                <version>4.1.0</version>
+                <version>4.2.0-SNAPSHOT</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
             <dependency>

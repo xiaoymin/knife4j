@@ -46,29 +46,29 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
  */
 @Slf4j
 public class ServiceDiscoverHandler implements EnvironmentAware {
-
+    
     final RouteDefinitionRepository routeDefinitionRepository;
     final RouteLocator routeLocator;
     final GatewayProperties gatewayPropertiesDefault;
-
+    
     /**
      * Knife4j gateway properties
      */
     final Knife4jGatewayProperties gatewayProperties;
     private final String LB = "lb://";
     private final String PATH = "Path";
-
+    
     /**
      * 聚合内容
      */
     @Getter
     private List<OpenAPI2Resource> gatewayResources;
-
+    
     /**
      * Spring Environment
      */
     private Environment environment;
-
+    
     public ServiceDiscoverHandler(RouteDefinitionRepository routeDefinitionRepository,
                                   RouteLocator routeLocator,
                                   GatewayProperties gatewayPropertiesDefault,
@@ -78,7 +78,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
         this.gatewayPropertiesDefault = gatewayPropertiesDefault;
         this.gatewayProperties = gatewayProperties;
     }
-
+    
     /**
      * 处理注册中心的服务
      *
@@ -129,13 +129,13 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                 resources.add(buildResource(targetUrl, order, groupName, contextPath));
             }
         }
-
+        
         addCustomerResources(resources);
-
+        
         // 赋值
         this.gatewayResources = resources;
     }
-
+    
     /**
      * 处理注册中心的服务（通过解析路由配置）
      *
@@ -154,18 +154,18 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                 .filter(routeDefinition -> routeDefinition.getUri().toString().startsWith(LB))
                 .filter(routeDefinition -> isInclude(service, excludeService, routeDefinition))
                 .forEach(routeDefinition -> parseRouteDefinition(resources, configInfoMap, routeDefinition));
-
+        
         // 动态路由
         routeDefinitionRepository.getRouteDefinitions()
                 .filter(routeDefinition -> routeDefinition.getUri().toString().startsWith(LB))
                 .filter(routeDefinition -> isInclude(service, excludeService, routeDefinition))
                 .subscribe(routeDefinition -> parseRouteDefinition(resources, configInfoMap, routeDefinition));
-
+        
         addCustomerResources(resources);
         // 赋值
         this.gatewayResources = new ArrayList<>(resources);
     }
-
+    
     /**
      * 获取所有OpenAPI资源列表
      *
@@ -186,7 +186,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
         }
         return Collections.EMPTY_LIST;
     }
-
+    
     /**
      * 获取排除的服务列表
      *
@@ -204,12 +204,12 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
         }
         return excludeService;
     }
-
+    
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
-
+    
     private void addCustomerResources(Collection<OpenAPI2Resource> resources) {
         // 在添加自己的配置的个性化的服务
         if (this.gatewayProperties.getRoutes() != null) {
@@ -224,7 +224,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
             }
         }
     }
-
+    
     /**
      * 构建资源
      *
@@ -246,7 +246,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                 resource.getContextPath()).getBytes(StandardCharsets.UTF_8)));
         return resource;
     }
-
+    
     private void parseRouteDefinition(Set<OpenAPI2Resource> resources,
                                       Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap,
                                       RouteDefinition routeDefinition) {
@@ -286,7 +286,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                     resources.add(buildResource(targetUrl, order, groupName, contextPath));
                 });
     }
-
+    
     private boolean isInclude(List<String> service, Set<String> excludeService, RouteDefinition routeDefinition) {
         String serviceName = routeDefinition.getUri().getHost();
         return service.contains(serviceName) && !excludeService.contains(serviceName);

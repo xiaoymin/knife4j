@@ -59,18 +59,18 @@ public class Knife4jGatewayProperties {
      * @since 4.1.0
      */
     private GatewayStrategy strategy = GatewayStrategy.MANUAL;
-
+    
     /**
      * tag排序规则
      * @since 4.2.0
      */
-    private GroupOrderStrategy tagsSorter=GroupOrderStrategy.alpha;
-
+    private GroupOrderStrategy tagsSorter = GroupOrderStrategy.alpha;
+    
     /**
      * operation接口排序规则
      * @since 4.2.0
      */
-    private GroupOrderStrategy operationsSorter=GroupOrderStrategy.alpha;
+    private GroupOrderStrategy operationsSorter = GroupOrderStrategy.alpha;
     
     /**
      * 服务发现模式

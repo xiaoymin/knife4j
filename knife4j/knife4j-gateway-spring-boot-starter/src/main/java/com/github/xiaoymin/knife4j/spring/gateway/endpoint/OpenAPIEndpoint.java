@@ -73,7 +73,7 @@ public class OpenAPIEndpoint {
         response.setConfigUrl("/v3/api-docs/swagger-config");
         response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getOauth2RedirectUrl());
         response.setValidatorUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getValidatorUrl());
-        //设置排序规则,add at 2023/07/02 11:30:00
+        // 设置排序规则,add at 2023/07/02 11:30:00
         response.setTagsSorter(this.knife4jGatewayProperties.getTagsSorter().name());
         response.setOperationsSorter(this.knife4jGatewayProperties.getOperationsSorter().name());
         log.debug("forward-path:{}", basePath);
