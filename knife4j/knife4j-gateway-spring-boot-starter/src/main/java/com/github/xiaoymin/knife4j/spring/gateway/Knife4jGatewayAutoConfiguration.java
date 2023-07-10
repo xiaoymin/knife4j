@@ -20,6 +20,8 @@ package com.github.xiaoymin.knife4j.spring.gateway;
 import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceChangeListener;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceDiscoverHandler;
+import com.github.xiaoymin.knife4j.spring.gateway.discover.spi.GatewayServiceExcludeService;
+import com.github.xiaoymin.knife4j.spring.gateway.discover.spi.impl.DefaultGatewayServiceExcludeService;
 import com.github.xiaoymin.knife4j.spring.gateway.filter.basic.WebFluxSecurityBasicAuthFilter;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.EnvironmentUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -30,6 +32,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -58,12 +61,18 @@ public class Knife4jGatewayAutoConfiguration {
     @ConditionalOnExpression(" '${knife4j.gateway.strategy}'.equalsIgnoreCase('discover') || '${knife4j.gateway.strategy}'.equalsIgnoreCase('discover_context')")
     public static class Knife4jDiscoverConfiguration {
         
+        @Bean("defaultGatewayServiceExcludeService")
+        public GatewayServiceExcludeService defaultGatewayServiceExcludeService() {
+            return new DefaultGatewayServiceExcludeService();
+        }
+        
         @Bean
         public ServiceDiscoverHandler serviceDiscoverHandler(RouteDefinitionRepository routeDefinitionRepository,
                                                              RouteLocator routeLocator,
                                                              GatewayProperties gatewayPropertiesDefault,
-                                                             Knife4jGatewayProperties gatewayProperties) {
-            return new ServiceDiscoverHandler(routeDefinitionRepository, routeLocator, gatewayPropertiesDefault, gatewayProperties);
+                                                             Knife4jGatewayProperties gatewayProperties,
+                                                             ApplicationContext applicationContext) {
+            return new ServiceDiscoverHandler(routeDefinitionRepository, routeLocator, gatewayPropertiesDefault, gatewayProperties, applicationContext);
             
         }
         

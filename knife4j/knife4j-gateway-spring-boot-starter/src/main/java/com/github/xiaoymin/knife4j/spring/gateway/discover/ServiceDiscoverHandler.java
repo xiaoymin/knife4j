@@ -18,6 +18,7 @@
 package com.github.xiaoymin.knife4j.spring.gateway.discover;
 
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
+import com.github.xiaoymin.knife4j.spring.gateway.discover.spi.GatewayServiceExcludeService;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
@@ -29,6 +30,7 @@ import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.support.NameUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
@@ -55,6 +57,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
      * Knife4j gateway properties
      */
     final Knife4jGatewayProperties gatewayProperties;
+    final ApplicationContext applicationContext;
     private final String LB = "lb://";
     private final String PATH = "Path";
     
@@ -72,11 +75,33 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
     public ServiceDiscoverHandler(RouteDefinitionRepository routeDefinitionRepository,
                                   RouteLocator routeLocator,
                                   GatewayProperties gatewayPropertiesDefault,
-                                  Knife4jGatewayProperties gatewayProperties) {
+                                  Knife4jGatewayProperties gatewayProperties, ApplicationContext applicationContext) {
         this.routeDefinitionRepository = routeDefinitionRepository;
         this.routeLocator = routeLocator;
         this.gatewayPropertiesDefault = gatewayPropertiesDefault;
         this.gatewayProperties = gatewayProperties;
+        this.applicationContext = applicationContext;
+    }
+    
+    /**
+     * 扩展排除服务列表的钩子函数，开发者自定义实现，since 4.2.0
+     * @param service 注册中心服务列表
+     * @return 排除服务列表
+     */
+    private Set<String> getExcludeService(List<String> service) {
+        // 扩展排除服务列表的钩子函数，开发者自定义实现，since 4.2.0
+        // https://gitee.com/xiaoym/knife4j/issues/I6YLMB
+        Map<String, GatewayServiceExcludeService> excludeServiceMap = applicationContext.getBeansOfType(GatewayServiceExcludeService.class);
+        Set<String> excludeService = new HashSet<>();
+        if (!excludeServiceMap.isEmpty()) {
+            for (Map.Entry<String, GatewayServiceExcludeService> entry : excludeServiceMap.entrySet()) {
+                Set<String> stringSet = entry.getValue().exclude(this.environment, this.gatewayProperties, service);
+                if (stringSet != null && !stringSet.isEmpty()) {
+                    excludeService.addAll(stringSet);
+                }
+            }
+        }
+        return excludeService;
     }
     
     /**
@@ -86,7 +111,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
      */
     public void discover(List<String> service) {
         log.debug("service has change.");
-        Set<String> excludeService = getExcludeService();
+        Set<String> excludeService = getExcludeService(service);
         // 版本
         OpenApiVersion apiVersion = this.gatewayProperties.getDiscover().getVersion();
         // 判断当前类型
@@ -143,7 +168,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
      */
     public void discoverDefault(List<String> service) {
         log.debug("service has change ,do discover doc for default route.");
-        Set<String> excludeService = getExcludeService();
+        Set<String> excludeService = getExcludeService(service);
         // 个性化服务的配置信息
         Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = this.gatewayProperties.getDiscover()
                 .getServiceConfig();
@@ -170,13 +195,13 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
      * 获取所有OpenAPI资源列表
      *
      * @param forwardPath 请求前缀contextPath路径，一般出现在Nginx代理的情况
-     * @return
+     * @return 资源列表
      */
     public List<OpenAPI2Resource> getResources(String forwardPath) {
         List<OpenAPI2Resource> resources = getGatewayResources();
         if (resources != null && !resources.isEmpty()) {
             // 排序
-            Collections.sort(resources, Comparator.comparing(OpenAPI2Resource::getOrder));
+            resources.sort(Comparator.comparing(OpenAPI2Resource::getOrder));
             for (OpenAPI2Resource resource : resources) {
                 // todo nginx叠上叠 k ?
                 resource.setContextPath(PathUtils.append(forwardPath, resource.getContextPath()));
@@ -184,25 +209,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
             }
             return resources;
         }
-        return Collections.EMPTY_LIST;
-    }
-    
-    /**
-     * 获取排除的服务列表
-     *
-     * @return
-     */
-    public Set<String> getExcludeService() {
-        Set<String> excludeService = new HashSet<>();
-        String gatewayService = this.environment.getProperty("spring.application.name");
-        if (StringUtils.hasLength(gatewayService)) {
-            excludeService.add(gatewayService);
-        }
-        Set<String> configServices = this.gatewayProperties.getDiscover().getExcludedServices();
-        if (configServices != null && !configServices.isEmpty()) {
-            excludeService.addAll(configServices);
-        }
-        return excludeService;
+        return new ArrayList<>();
     }
     
     @Override
