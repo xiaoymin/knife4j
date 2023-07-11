@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * @since  4.0.0
- * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/17 21:41
  */
 @Data

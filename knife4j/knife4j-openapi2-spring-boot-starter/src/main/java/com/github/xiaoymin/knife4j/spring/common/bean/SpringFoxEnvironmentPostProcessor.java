@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * @since  4.0.0
- * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/11 21:52
  */
 public class SpringFoxEnvironmentPostProcessor implements EnvironmentPostProcessor {

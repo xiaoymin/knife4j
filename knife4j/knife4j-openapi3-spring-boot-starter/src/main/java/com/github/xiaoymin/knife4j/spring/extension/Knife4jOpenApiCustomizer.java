@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * 增强扩展属性支持
  * @since 
- * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/11 22:40
  */
 @Slf4j

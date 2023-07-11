@@ -19,7 +19,7 @@ package com.github.xiaoymin.knife4j.core.enums;
 
 /**
  * @since 
- * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/21 09:36
  */
 public enum ApiRuleEnums {

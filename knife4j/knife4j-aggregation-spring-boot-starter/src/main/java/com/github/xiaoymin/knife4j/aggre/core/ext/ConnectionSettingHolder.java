@@ -23,7 +23,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 /**
  * @since  4.0
- * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/28 19:17
  */
 public class ConnectionSettingHolder {
