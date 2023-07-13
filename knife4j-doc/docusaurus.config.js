@@ -132,9 +132,9 @@ module.exports = {
                         className: 'changelog',
                     },
                     {
-                        to: 'docs/oas',
-                        label: 'OAS规范',
-                        activeBasePath: '/docs/oas',
+                        to: 'docs/blog',
+                        label: 'Blog',
+                        activeBasePath: '/docs/blog',
                         position: 'left',
                         className: 'changelog',
                     },
