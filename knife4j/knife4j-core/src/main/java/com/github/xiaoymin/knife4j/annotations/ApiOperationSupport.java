@@ -44,6 +44,14 @@ public @interface ApiOperationSupport {
     String author() default "";
     
     /**
+     * 作者,提供数组形式以展示多个，会和{@link #author()}进行合并展示 <p />
+     * issues: <a href="https://gitee.com/xiaoym/knife4j/issues/I6SZMK">Gitee#I6SZMK</a>
+     * @since v4.2.0
+     * @return 作者
+     */
+    String[] authors() default {};
+    
+    /**
      * A list of {@link DynamicParameter}s available to the API operation.
      * Note: 自Knife4j 4.0版本起，放弃维护此属性值，建议开发者建实体类
      * @return 动态类声明

@@ -21,6 +21,7 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.github.xiaoymin.knife4j.core.conf.ExtensionsConstants;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.extend.util.ExtensionUtils;
 import io.swagger.v3.oas.models.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.customizers.GlobalOperationCustomizer;
@@ -41,8 +42,9 @@ public class Knife4jOperationCustomizer implements GlobalOperationCustomizer {
         // https://gitee.com/xiaoym/knife4j/issues/I6FB9I
         ApiOperationSupport operationSupport = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), ApiOperationSupport.class);
         if (operationSupport != null) {
-            if (StrUtil.isNotBlank(operationSupport.author())) {
-                operation.addExtension(ExtensionsConstants.EXTENSION_AUTHOR, operationSupport.author());
+            String author = ExtensionUtils.getAuthors(operationSupport);
+            if (StrUtil.isNotBlank(author)) {
+                operation.addExtension(ExtensionsConstants.EXTENSION_AUTHOR, author);
             }
             if (operationSupport.order() != 0) {
                 operation.addExtension(ExtensionsConstants.EXTENSION_ORDER, operationSupport.order());
@@ -51,8 +53,9 @@ public class Knife4jOperationCustomizer implements GlobalOperationCustomizer {
             // 如果方法级别不存在，再找一次class级别的
             ApiSupport apiSupport = AnnotationUtils.findAnnotation(handlerMethod.getMethod().getClass(), ApiSupport.class);
             if (apiSupport != null) {
-                if (StrUtil.isNotBlank(apiSupport.author())) {
-                    operation.addExtension(ExtensionsConstants.EXTENSION_AUTHOR, apiSupport.author());
+                String author = ExtensionUtils.getAuthor(apiSupport);
+                if (StrUtil.isNotBlank(author)) {
+                    operation.addExtension(ExtensionsConstants.EXTENSION_AUTHOR, author);
                 }
             }
         }
