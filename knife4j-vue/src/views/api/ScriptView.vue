@@ -25,7 +25,7 @@ import {
 export default {
   name: "ScriptView",
   components: {
-    "EditorScript":()=>import('./EditorScript')
+    "EditorScript": () => import('./EditorScript')
   },
   props: {
     api: {
@@ -56,7 +56,7 @@ export default {
     let tsFun = '';
     try {
       jsComment = getComment(this.api);
-      jsFun =  getJsFunctionDeclaration(config);
+      jsFun = getJsFunctionDeclaration(config);
 
       interfaceName = upperFirstCase(`${config.name}`);
       tsParamsInterface = config.bodyParams[0]
@@ -67,7 +67,7 @@ export default {
         : ''; // 响应interface
       tsComment = getComment(this.api); // 函数注释
       tsFun = getTsFunctionDeclaration(config, interfaceName); // 函数本体
-    } catch(err) {
+    } catch (err) {
       console.error(err);
     }
     this.jsCode = jsComment + jsFun;
