@@ -37,6 +37,7 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi2-ui</artifactId>
