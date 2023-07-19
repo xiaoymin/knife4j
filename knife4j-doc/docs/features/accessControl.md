@@ -1,10 +1,13 @@
 # 3.5 访问权限控制
 :::caution 温馨提醒
-增强功能需要通过配置yml配置文件开启增强,自2.0.7开始
+- 增强功能需要通过配置yml配置文件开启增强,自2.0.7开始
 ```yml
 knife4j:
   enable: true
 ```
+
+- 参考Blog-[生产环境如何屏蔽Knife4j、Swagger等Ui资源和接口](/docs/blog/production-forbidden-ui)
+
 :::
 
 
@@ -22,15 +25,25 @@ knife4j:
 
 目前`Springfox-Swagger`以及`Knife4j`提供的资源接口包括如下：
 
-| 资源                                      | 说明                                    |
-| ----------------------------------------- | --------------------------------------- |
-| /doc.html                                 | Knife4j提供的文档访问地址    |
-| /v2/api-docs-ext                             | Knife4j提供的增强接口地址,自`2.0.6`版本后删除    |
-| /swagger-resources                        | Springfox-Swagger提供的分组接口         |
-| /v2/api-docs                                 | Springfox-Swagger提供的分组实例详情接口 |
-| /swagger-ui.html                          | Springfox-Swagger提供的文档访问地址     |
-| /swagger-resources/configuration/ui       | Springfox-Swagger提供                   |
-| /swagger-resources/configuration/security | Springfox-Swagger提供                   |
+| 资源                                      | 说明                                          |
+| ----------------------------------------- | --------------------------------------------- |
+| /doc.html                                 | Knife4j提供的文档访问地址                     |
+| /v2/api-docs-ext                          | Knife4j提供的增强接口地址,自`2.0.6`版本后删除 |
+| /swagger-resources                        | Springfox-Swagger提供的分组接口               |
+| /v2/api-docs                              | Springfox-Swagger提供的分组实例详情接口       |
+| /swagger-ui.html                          | Springfox-Swagger提供的文档访问地址           |
+| /swagger-resources/configuration/ui       | Springfox-Swagger提供                         |
+| /swagger-resources/configuration/security | Springfox-Swagger提供                         |
+
+`springdoc`以及`Knife4j`提供的资源接口包括如下：
+
+| 资源                        | 说明                        |
+| --------------------------- | --------------------------- |
+| /doc.html                   | Knife4j提供的文档访问地址   |
+| /v3/api-docs                | springdoc提供的实例接口     |
+| /v3/api-docs/swagger-config | springdoc提供的分组接口     |
+| /v3/api-docs/**             | 分组                        |
+| /swagger-ui/index.html      | springdoc提供的文档访问地址 |
 
 当我们部署系统到生产系统,为了接口安全,需要屏蔽所有Swagger的相关资源
 
