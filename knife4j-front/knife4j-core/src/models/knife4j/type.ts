@@ -1,3 +1,6 @@
+import {Knife4jTagObject} from "./knife4jTag"
+import lodash from "lodash"
+
 /**
  * 该类是所有parse方法最重输出的对象
  */
@@ -6,6 +9,11 @@ export class Knife4jInstance {
     name:string;
     url:string;
     version:string;
+    //分组
+    tagNames:Array<string>=[];
+    tags:Array<Knife4jTagObject>=[];
+    // 原始结构数据
+    originalRecord?:Record<string, any>;
     /**
      * 构造函数
      * @param name 名称
@@ -19,4 +27,19 @@ export class Knife4jInstance {
         this.version=version;
     }
 
+    /**
+     * 标签分组
+     * @param tag 接口分组
+     * @returns 
+     */
+    addTag(tag:Knife4jTagObject):void{
+        if(tag===null){
+            return;
+        }
+        //避免重复添加
+        if(!lodash.includes(this.tagNames,tag.name)){
+            this.tagNames.push(tag.name)
+            this.tags.push(tag)
+        }
+    }
 }

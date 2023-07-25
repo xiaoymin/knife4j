@@ -251,6 +251,11 @@ export type TagObject = {
   description?: string;
 
   /**
+   * Knife4j扩展属性，排序规则
+   */
+  "x-order"?:number;
+
+  /**
    * Additional external documentation for this tag.
    */
   externalDocs?: ExternalDocumentationObject;

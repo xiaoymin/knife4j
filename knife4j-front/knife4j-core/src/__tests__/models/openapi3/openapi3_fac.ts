@@ -6,8 +6,12 @@ import data from "./test.json"
 test("testClassTransformer-o3", () => {
 
     let factory = new SpecParserFactory();
-    let parser = factory.getParser(SpecType.OpenAPI);
+    let spec = factory.getParser(SpecType.OpenAPI);
     console.log('name: Openapi3')
-    console.log(data)
-    console.log(parser.parse({ "aa": "ccc" }, {}))
+    let instance = spec.parse(data, {});
+    //console.log(instance)
+    console.log("tags:", instance.tags.length)
+    instance.tags.forEach(tag => {
+        console.log(tag)
+    })
 })
