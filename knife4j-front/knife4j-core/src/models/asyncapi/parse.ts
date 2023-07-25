@@ -1,4 +1,4 @@
-import { BaseCommonParser, ParseOptions } from '../index';
+import { BaseCommonParser, ParseOptions } from '../knife4j/baseParse';
 
 import { Knife4jInstance } from '../knife4j/type';
 
