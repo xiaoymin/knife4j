@@ -9,9 +9,10 @@ test("testClassTransformer-o3", () => {
     let spec = factory.getParser(SpecType.OpenAPI);
     console.log('name: Openapi3')
     let instance = spec.parse(data, {});
-    //console.log(instance)
+    //console.log(instance) sd 
     console.log("tags:", instance.tags.length)
     instance.tags.forEach(tag => {
-        console.log(tag)
+        // console.log(tag)
     })
+    console.log("info:", instance.info)
 })

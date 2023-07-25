@@ -1,9 +1,9 @@
-import {Knife4jExternalDocumentationObject} from "./ExternalObject"
+import { Knife4jExternalDocumentationObject } from "./ExternalObject"
 
 /**
  * tag内容
  */
-export class Knife4jTagObject{
+export class Knife4jTagObject {
     /**
      * REQUIRED. The name of the tag.
      */
@@ -17,12 +17,12 @@ export class Knife4jTagObject{
     /**
      * tag顺序
      */
-    order=0;
+    order = 0;
 
     /**
      * 支持多级别的Tag
      */
-    children:Array<Knife4jTagObject>=[];
+    children: Array<Knife4jTagObject> = [];
 
     /**
      * Additional external documentation for this tag.
@@ -33,8 +33,8 @@ export class Knife4jTagObject{
      * 构造函数
      * @param name tag名称
      */
-    constructor(name:string){
-        this.name=name
+    constructor(name: string) {
+        this.name = name
     }
 }
 
