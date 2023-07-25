@@ -1,3 +1,4 @@
 /lib/
+/src/
 **/__tests__/*
 .eslintrc.cjs
