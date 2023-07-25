@@ -20,6 +20,11 @@ export class Knife4jTagObject {
     order = 0;
 
     /**
+     * 当前tag下拥有的接口数量
+     */
+    count = 0;
+
+    /**
      * 支持多级别的Tag
      */
     children: Array<Knife4jTagObject> = [];

@@ -1,18 +1,15 @@
 import { SpecParserFactory } from "../../../models/index"
 import { SpecType } from "../../../models/type"
-
 import data from "./test.json"
 
 test("testClassTransformer-o3", () => {
 
     let factory = new SpecParserFactory();
     let spec = factory.getParser(SpecType.OpenAPI);
-    console.log('name: Openapi3')
+    //console.log('name: Openapi3')
     let instance = spec.parse(data, {});
     //console.log(instance) sd 
-    console.log("tags:", instance.tags.length)
-    instance.tags.forEach(tag => {
-        // console.log(tag)
-    })
-    console.log("info:", instance.info)
+    //console.log("tags:", instance.tags.length)
+    //console.log("info:", instance.info)
+    console.log(instance.tagNames)
 })
