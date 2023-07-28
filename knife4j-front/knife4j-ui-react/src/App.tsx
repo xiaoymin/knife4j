@@ -10,13 +10,15 @@ import {
 } from '@ant-design/icons';
 import { Layout, Menu, Button, Select, Input, ConfigProvider, Tabs, theme } from 'antd';
 import { Resizable } from 'react-resizable';
-
+import { Route, useNavigate, Outlet } from 'react-router-dom';
 const { Header, Sider, Content, Footer } = Layout;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 const defaultPanes = new Array(2).fill(null).map((_, index) => {
   const id = String(index + 1);
   return { label: `Tab ${id}`, children: `Content of Tab Pane ${index + 1}`, key: id };
 });
+
+
 
 const footerStyle: React.CSSProperties = {
   textAlign: 'center',
@@ -30,6 +32,7 @@ const footerStyle: React.CSSProperties = {
 const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [siderWidth, setSiderWidth] = useState(320);
+  const navigate = useNavigate();
 
   const handleResize = (_e: React.SyntheticEvent, data: { size: { width: number; height: number } }) => {
     setSiderWidth(data.size.width);
@@ -37,12 +40,30 @@ const App: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
+  const [selectedKey, setSelectedKey] = useState('1');
   // tabs
 
   const [activeKey, setActiveKey] = useState(defaultPanes[0].key);
   const [items, setItems] = useState(defaultPanes);
   const newTabIndex = useRef(0);
+
+
+  // TabPane.js
+  const TabPane = ({ title }) => {
+    return <div>{title}</div>
+  }
+
+  //menu
+  const menuClick = (menu) => {
+    setSelectedKey(menu.key);
+    // 执行其他处理逻辑
+    console.log('Clicked menu item:', menu);
+    //const newActiveKey = `newTab${newTabIndex.current++}`;
+    //setItems([...items, { label: 'New Tab', children: '23', key: newActiveKey }]);
+    //setActiveKey(newActiveKey);
+    navigate(menu.key)
+  }
+
 
   const onChange = (key: string) => {
     setActiveKey(key);
@@ -119,32 +140,30 @@ const App: React.FC = () => {
             <Menu
               theme="dark"
               mode="inline"
+              selectedKeys={[selectedKey]}
+              onClick={menuClick}
               defaultSelectedKeys={['1']}
               items={[
                 {
-                  key: '1',
+                  key: '/group/home',
                   icon: <UserOutlined />,
                   label: '主页',
                 },
                 {
-                  key: '2',
+                  key: '/group/schema',
                   icon: <VideoCameraOutlined />,
                   label: '实体类列表',
                 },
                 {
-                  key: '3',
+                  key: '/group/Settings',
                   icon: <UploadOutlined />,
                   label: '文档管理',
                 }, {
-                  key: '4',
-                  icon: <UploadOutlined />,
-                  label: '用户管理模块',
-                }, {
-                  key: '5',
+                  key: '/group/authorize',
                   icon: <UploadOutlined />,
                   label: '鉴权中心模块',
                 }, {
-                  key: '6',
+                  key: '/group/tag1/api1',
                   icon: <UploadOutlined />,
                   label: '开放接口模块',
                 },
@@ -197,7 +216,9 @@ const App: React.FC = () => {
                 items={items}
                 // 将Tabs的父容器高度设置为100%
                 style={{ flex: 1, margin: '2px 2px' }}
-              />
+              >
+                <Route path="/content/:tabId" element={<TabPane title={'234'} />} />
+              </Tabs>
             </div>
           </Content>
           <Footer style={footerStyle}>Apache License 2.0 | Copyright  2019-Knife4j v5.0</Footer>
