@@ -1,0 +1,60 @@
+/* styles.css */
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+}
+
+.sidebar {
+    flex: 0 0 250px;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    transition: flex 0.3s;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+}
+
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+.footer {
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+/* 左边菜单样式 */
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+
+.menu li:last-child {
+    border-bottom: none;
+}
