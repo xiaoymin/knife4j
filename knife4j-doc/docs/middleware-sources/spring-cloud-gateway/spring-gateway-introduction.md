@@ -25,7 +25,7 @@ Maven坐标如下：
 <dependency>
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
-    <version>4.1.0</version>
+    <version>4.2.0</version>
 </dependency>
 ```
 
@@ -65,16 +65,16 @@ knife4j:
 配置属性说明：
 
 
-| 配置属性名称                                       | 类型            | 描述                                                                            | 默认值                                                                               |
-|:---------------------------------------------|---------------|-------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-| `knife4j.gateway.enabled`                    | boolean       | 是否开启使用Gateway网关聚合组件                                                           | `false`                                                                           |
-| `knife4j.gateway.strategy`                    | enum       | 聚合的策略，主要支持两种，分别是手动配置(`manual`)、服务发现(`discover`)                                                           | `manual`                                                                           |
-| `knife4j.gateway.routes`                     | array{Router} | 通过路由注册文档                                                                      |                                                                                   |
-| `knife4j.gateway.routes[0].name`             | string        | 界面显示分组名称                                                                      | `null`                                                                            |
-| `knife4j.gateway.routes[0].url`              | string        | 文档地址                                                                          | 子服务的Swagger资源接口地址(Swagger2默认/v2/api-docs,只需要配置group参数即可)，因为是从网关层走，开发者配置时别忘记了网关前缀地址。 |
-| `knife4j.gateway.routes[0].service-name`     | string        | 访问服务名称                                                                        | `null`                                                                            |
-| `knife4j.gateway.routes[0].order`            | int           | 排序                                                                            | 0                                                                                 |
-| `knife4j.gateway.routes[0].context-path`            | string           | 路由前缀,根据实际情况自行配置                                                                            | /                                                                                 |
+| 配置属性名称                             | 类型          | 描述                                                                     | 默认值                                                                                                                              |
+| :--------------------------------------- | ------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `knife4j.gateway.enabled`                | boolean       | 是否开启使用Gateway网关聚合组件                                          | `false`                                                                                                                             |
+| `knife4j.gateway.strategy`               | enum          | 聚合的策略，主要支持两种，分别是手动配置(`manual`)、服务发现(`discover`) | `manual`                                                                                                                            |
+| `knife4j.gateway.routes`                 | array{Router} | 通过路由注册文档                                                         |                                                                                                                                     |
+| `knife4j.gateway.routes[0].name`         | string        | 界面显示分组名称                                                         | `null`                                                                                                                              |
+| `knife4j.gateway.routes[0].url`          | string        | 文档地址                                                                 | 子服务的Swagger资源接口地址(Swagger2默认/v2/api-docs,只需要配置group参数即可)，因为是从网关层走，开发者配置时别忘记了网关前缀地址。 |
+| `knife4j.gateway.routes[0].service-name` | string        | 访问服务名称                                                             | `null`                                                                                                                              |
+| `knife4j.gateway.routes[0].order`        | int           | 排序                                                                     | 0                                                                                                                                   |
+| `knife4j.gateway.routes[0].context-path` | string        | 路由前缀,根据实际情况自行配置                                            | /                                                                                                                                   |
 
 
 ### 服务发现模式(discover)
@@ -144,8 +144,35 @@ knife4j:
             group-name: 订单服务名称
             # 兼容OpenAPI3规范在聚合时丢失contextPath属性的异常情况，由开发者自己配置contextPath,Knife4j的前端Ui做兼容处理,与url属性独立不冲突，仅OpenAPI3规范聚合需要，OpenAPI2规范不需要设置此属性,默认为(apiPathPrefix)
             context-path: /
+            # 该属性自4.2.0添加，支持子服务非`default`分组的其他分组聚合
+            # 参考 https://gitee.com/xiaoym/knife4j/pulls/87
+            group-names:
+              - 分组1
+              - 分组2
 
 
+```
+
+#### 排除服务
+
+自4.2.0版本，在Spring Cloud Gateway网关聚合时，开发者可自定义排除服务的规则，实现`Knife4j`开放的接口即可
+> 主要解决在Dubbo等服务的场景中聚合了不必要的服务。参考[Gitee#I6YLMB](https://gitee.com/xiaoym/knife4j/issues/I6YLMB)
+
+
+```javascript
+@Slf4j
+@Component
+public class MyExcludeService implements GatewayServiceExcludeService {
+    @Override
+    public Set<String> exclude(Environment environment, Knife4jGatewayProperties properties, List<String> services) {
+        log.info("自定义过滤器.");
+        if (!CollectionUtils.isEmpty(services)){
+						// 排除注册中心包含order字眼的服务
+            return services.stream().filter(s -> s.contains("order")).collect(Collectors.toSet());
+        }
+        return new TreeSet<>();
+    }
+}
 ```
 
 #### 场景case
