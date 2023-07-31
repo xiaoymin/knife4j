@@ -99,7 +99,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                 }
             }
         }
-        log.debug("exclude-service-size:{},value:{}",excludeService.size(),String.join(",",excludeService));
+        log.debug("exclude-service-size:{},value:{}", excludeService.size(), String.join(",", excludeService));
         return excludeService;
     }
     /**
