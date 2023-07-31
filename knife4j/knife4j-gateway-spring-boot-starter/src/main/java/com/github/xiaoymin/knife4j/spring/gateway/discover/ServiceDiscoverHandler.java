@@ -99,6 +99,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                 }
             }
         }
+        log.debug("exclude-service-size:{},value:{}",excludeService.size(),String.join(",",excludeService));
         return excludeService;
     }
     /**
@@ -135,17 +136,23 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
      * @return 资源列表
      */
     public List<OpenAPI2Resource> getResources(String forwardPath) {
+        List<OpenAPI2Resource> resourceList = new ArrayList<>();
         List<OpenAPI2Resource> resources = getGatewayResources();
         if (resources != null && !resources.isEmpty()) {
             // 排序
             resources.sort(Comparator.comparing(OpenAPI2Resource::getOrder));
             for (OpenAPI2Resource resource : resources) {
-                resource.setContextPath(PathUtils.processContextPath(PathUtils.append(forwardPath, resource.getContextPath())));
-                resource.setUrl(PathUtils.append(forwardPath, resource.getUrl()));
+                // copy one,https://gitee.com/xiaoym/knife4j/issues/I73AOG
+                OpenAPI2Resource copy = resource.copy();
+                copy.setContextPath(PathUtils.processContextPath(PathUtils.append(forwardPath, copy.getContextPath())));
+                copy.setUrl(PathUtils.append(forwardPath, copy.getUrl()));
+                log.debug("api-resources:{}", copy);
+                // 添加
+                resourceList.add(copy);
             }
-            return resources;
+            return resourceList;
         }
-        return new ArrayList<>();
+        return resourceList;
     }
     
     @Override

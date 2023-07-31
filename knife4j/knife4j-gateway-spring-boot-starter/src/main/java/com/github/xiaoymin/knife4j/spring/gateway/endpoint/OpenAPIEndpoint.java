@@ -57,6 +57,7 @@ public class OpenAPIEndpoint {
     public Mono<ResponseEntity<OpenAPI3Response>> swaggerConfig(ServerHttpRequest request) {
         OpenAPI3Response response = new OpenAPI3Response();
         final String basePath = PathUtils.getDefaultContextPath(request);
+        log.debug("base-path:{}", basePath);
         response.setConfigUrl("/v3/api-docs/swagger-config");
         response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getOauth2RedirectUrl());
         response.setValidatorUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getValidatorUrl());
@@ -79,8 +80,8 @@ public class OpenAPIEndpoint {
                     copyRouter.setUrl(PathUtils.append(basePath, copyRouter.getUrl()));
                     // 得到contextPath后再处理一次
                     copyRouter.setContextPath(PathUtils.processContextPath(PathUtils.append(basePath, copyRouter.getContextPath())));
+                    log.debug("api-resources:{}", copyRouter);
                     sortedSet.add(copyRouter);
-                    
                 }
                 response.setUrls(sortedSet);
             }

@@ -20,6 +20,7 @@ package com.github.xiaoymin.knife4j.spring.gateway.discover;
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayStrategy;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.event.HeartbeatEvent;
@@ -34,6 +35,7 @@ import java.util.Objects;
  * 23/02/26 20:43
  * @since gateway-spring-boot-starter v4.1.0
  */
+@Slf4j
 @AllArgsConstructor
 public class ServiceChangeListener {
     
@@ -43,6 +45,7 @@ public class ServiceChangeListener {
     
     @EventListener(classes = {ApplicationReadyEvent.class, HeartbeatEvent.class, RefreshRoutesEvent.class})
     public void discover() {
+        log.debug("discover service.");
         List<String> services = discoveryClient.getServices();
         if (Objects.equals(knife4jGatewayProperties.getStrategy(), GatewayStrategy.DISCOVER)) {
             this.serviceDiscoverHandler.discover(services);

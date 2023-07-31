@@ -97,4 +97,24 @@ public class OpenAPI2Resource extends AbstractOpenAPIResource {
         return Objects.hash(getName(), getUrl(), getContextPath(), getId());
     }
     
+    /**
+     * 赋值一个新对象
+     * @return resource对象实例
+     * @since v4.2.0
+     */
+    public OpenAPI2Resource copy() {
+        return new OpenAPI2Resource(this.url, this.order, this.discovered, this.name, this.contextPath);
+    }
+    
+    @Override
+    public String toString() {
+        return "OpenAPI2Resource{" +
+                "name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", contextPath='" + contextPath + '\'' +
+                ", id='" + id + '\'' +
+                ", order=" + order +
+                ", discovered=" + discovered +
+                '}';
+    }
 }
