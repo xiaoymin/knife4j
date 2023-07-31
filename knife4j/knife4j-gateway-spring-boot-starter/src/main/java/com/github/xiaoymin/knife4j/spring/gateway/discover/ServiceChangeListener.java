@@ -46,8 +46,6 @@ public class ServiceChangeListener {
         List<String> services = discoveryClient.getServices();
         if (Objects.equals(knife4jGatewayProperties.getStrategy(), GatewayStrategy.DISCOVER)) {
             this.serviceDiscoverHandler.discover(services);
-        } else if (Objects.equals(knife4jGatewayProperties.getStrategy(), GatewayStrategy.DISCOVER_CONTEXT)) {
-            this.serviceDiscoverHandler.discoverDefault(services);
         }
     }
 }

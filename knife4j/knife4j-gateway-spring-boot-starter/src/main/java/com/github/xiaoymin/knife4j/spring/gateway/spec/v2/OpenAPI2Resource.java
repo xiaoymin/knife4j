@@ -58,6 +58,28 @@ public class OpenAPI2Resource extends AbstractOpenAPIResource {
                 router.getContextPath()).getBytes(StandardCharsets.UTF_8));
     }
     
+    /**
+     * 基于参数配置构建Resource对象
+     * @param url 分组url
+     * @param order 排序
+     * @param discover 是否服务发现
+     * @param groupName 名称
+     * @param contextPath 当前contextPath
+     * @since v4.2.0
+     */
+    public OpenAPI2Resource(String url,
+                            int order,
+                            boolean discover,
+                            String groupName,
+                            String contextPath) {
+        super(order, discover);
+        this.name = groupName;
+        this.url = url;
+        this.contextPath = contextPath;
+        this.id = Base64.getEncoder().encodeToString((groupName + url +
+                contextPath).getBytes(StandardCharsets.UTF_8));
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
