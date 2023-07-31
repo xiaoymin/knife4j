@@ -24,7 +24,6 @@ import com.github.xiaoymin.knife4j.spring.gateway.discover.spi.GatewayServiceExc
 import com.github.xiaoymin.knife4j.spring.gateway.discover.spi.impl.DefaultGatewayServiceExcludeService;
 import com.github.xiaoymin.knife4j.spring.gateway.filter.basic.WebFluxSecurityBasicAuthFilter;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.EnvironmentUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -57,8 +56,7 @@ public class Knife4jGatewayAutoConfiguration {
     
     @Configuration
     @EnableConfigurationProperties(Knife4jGatewayProperties.class)
-    // @ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "discover")
-    @ConditionalOnExpression(" '${knife4j.gateway.strategy}'.equalsIgnoreCase('discover') || '${knife4j.gateway.strategy}'.equalsIgnoreCase('discover_context')")
+    @ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "discover")
     public static class Knife4jDiscoverConfiguration {
         
         @Bean("defaultGatewayServiceExcludeService")

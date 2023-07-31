@@ -56,7 +56,6 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
      */
     final Knife4jGatewayProperties knife4jGatewayProperties;
     final ApplicationContext applicationContext;
-    private final String LB = "lb://";
     private final String PATH = "Path";
     
     /**
