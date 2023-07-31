@@ -82,11 +82,6 @@ export class Knife4jPathItemObject {
      */
     servers?: [];
 
-    /**
-     * 原始数据
-     */
-    originalRecord?: Record<string, any>
-
     constructor(url: string, methodType: string) {
         this.url = url;
         this.methodType = methodType

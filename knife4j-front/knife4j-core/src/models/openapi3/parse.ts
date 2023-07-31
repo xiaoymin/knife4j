@@ -127,7 +127,6 @@ export class OpenAPIParser extends BaseCommonParser {
         }
         //此处只解析基础对象
         let _operation = new Knife4jPathItemObject(url, methodType)
-        _operation.originalRecord = operation;
         _operation.summary = lodash.defaultTo(operation.summary, '')
         _operation.description = lodash.defaultTo(operation.description, '')
         _operation.operationId = lodash.defaultTo(operation.operationId, '')

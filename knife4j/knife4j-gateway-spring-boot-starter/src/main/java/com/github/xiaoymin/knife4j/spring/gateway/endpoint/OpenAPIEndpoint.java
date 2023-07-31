@@ -75,9 +75,9 @@ public class OpenAPIEndpoint {
                     // copy one,https://gitee.com/xiaoym/knife4j/issues/I73AOG
                     // 在nginx代理情况下，刷新文档会叠加是由于直接使用了Router对象进行Set操作，导致每次刷新都从内存拿属性值对象产生了叠加的bug
                     // 此处每次调用时直接copy新对象进行赋值返回，避免和开发者在Config配置时对象属性冲突
-                    OpenAPI2Resource copyRouter=new OpenAPI2Resource(router);
+                    OpenAPI2Resource copyRouter = new OpenAPI2Resource(router);
                     copyRouter.setUrl(PathUtils.append(basePath, copyRouter.getUrl()));
-                    //得到contextPath后再处理一次
+                    // 得到contextPath后再处理一次
                     copyRouter.setContextPath(PathUtils.processContextPath(PathUtils.append(basePath, copyRouter.getContextPath())));
                     sortedSet.add(copyRouter);
                     

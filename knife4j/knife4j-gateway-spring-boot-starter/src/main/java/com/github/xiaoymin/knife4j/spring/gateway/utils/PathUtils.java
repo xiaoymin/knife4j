@@ -94,8 +94,7 @@ public class PathUtils {
         }
         return contextPath;
     }
-
-
+    
     /**
      * 数据校验，主要是针对ContextPath属性，两个要求：
      * <ul>
@@ -106,14 +105,14 @@ public class PathUtils {
      * @param contextPath 当前接口或服务ContextPath路径
      * @since v4.2.0
      */
-    public static String processContextPath(String contextPath){
-        String validateContextPath=contextPath;
-        if (DEFAULT_CONTEXT_PATH.equals(validateContextPath)){
-            validateContextPath="";
+    public static String processContextPath(String contextPath) {
+        String validateContextPath = contextPath;
+        if (DEFAULT_CONTEXT_PATH.equals(validateContextPath)) {
+            validateContextPath = "";
         }
-        if (validateContextPath.endsWith(DEFAULT_CONTEXT_PATH)){
-            //去除尾部/字符
-            validateContextPath=validateContextPath.substring(0,validateContextPath.length()-1);
+        if (validateContextPath.endsWith(DEFAULT_CONTEXT_PATH)) {
+            // 去除尾部/字符
+            validateContextPath = validateContextPath.substring(0, validateContextPath.length() - 1);
         }
         return validateContextPath;
     }

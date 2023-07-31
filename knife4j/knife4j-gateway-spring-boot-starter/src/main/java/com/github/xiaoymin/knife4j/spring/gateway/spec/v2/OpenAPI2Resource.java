@@ -43,22 +43,21 @@ public class OpenAPI2Resource extends AbstractOpenAPIResource {
     public OpenAPI2Resource(Integer order, Boolean discovered) {
         super(order, discovered);
     }
-
-
+    
     /**
      * 基于Router配置对象构建接口Resource
      * @param router Config配置对象
      * @since v4.2.0
      */
-    public OpenAPI2Resource(Knife4jGatewayProperties.Router router){
-        super(router.getOrder(),false);
-        this.name=router.getName();
-        this.url=router.getUrl();
-        this.contextPath=router.getContextPath();
-        this.id= Base64.getEncoder().encodeToString((router.getName() + router.getUrl() +
+    public OpenAPI2Resource(Knife4jGatewayProperties.Router router) {
+        super(router.getOrder(), false);
+        this.name = router.getName();
+        this.url = router.getUrl();
+        this.contextPath = router.getContextPath();
+        this.id = Base64.getEncoder().encodeToString((router.getName() + router.getUrl() +
                 router.getContextPath()).getBytes(StandardCharsets.UTF_8));
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -75,7 +74,5 @@ public class OpenAPI2Resource extends AbstractOpenAPIResource {
     public int hashCode() {
         return Objects.hash(getName(), getUrl(), getContextPath(), getId());
     }
-
-
-
+    
 }

@@ -1,5 +1,5 @@
 import { SpecType } from './type';
-import {ISpecParser} from './knife4j/baseParse'
+import { ISpecParser } from './knife4j/baseParse'
 import { OpenAPIParser } from './openapi3/parse';
 import { SwaggerParser } from './swagger2/parse';
 import { AsyncAPIParser } from './asyncapi/parse';
