@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.xiaoymin</groupId>
         <artifactId>knife4j</artifactId>
-        <version>4.2.0-SNAPSHOT</version>
+        <version>4.2.0</version>
     </parent>
 
     <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
