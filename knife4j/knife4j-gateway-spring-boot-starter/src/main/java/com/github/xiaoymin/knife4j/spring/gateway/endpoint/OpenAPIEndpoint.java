@@ -20,6 +20,7 @@ package com.github.xiaoymin.knife4j.spring.gateway.endpoint;
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceDiscoverHandler;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayStrategy;
+import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v3.OpenAPI3Response;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -56,20 +56,7 @@ public class OpenAPIEndpoint {
     @GetMapping("/v3/api-docs/swagger-config")
     public Mono<ResponseEntity<OpenAPI3Response>> swaggerConfig(ServerHttpRequest request) {
         OpenAPI3Response response = new OpenAPI3Response();
-        // 解决nginx网关代理情况
-        String contextPath = request.getPath().contextPath().value();
-        if (!StringUtils.hasLength(contextPath)) {
-            // 从header中获取
-            List<String> referer = request.getHeaders().get("Referer");
-            if (referer != null && !referer.isEmpty()) {
-                String value = referer.get(0);
-                log.debug("Referer:{}", value);
-                contextPath = PathUtils.getContextPath(value);
-            } else {
-                contextPath = "/";
-            }
-        }
-        final String basePath = contextPath;
+        final String basePath = PathUtils.getDefaultContextPath(request);
         response.setConfigUrl("/v3/api-docs/swagger-config");
         response.setOauth2RedirectUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getOauth2RedirectUrl());
         response.setValidatorUrl(this.knife4jGatewayProperties.getDiscover().getOas3().getValidatorUrl());
@@ -83,28 +70,24 @@ public class OpenAPIEndpoint {
             List<Object> sortedSet = new LinkedList<>();
             List<Knife4jGatewayProperties.Router> routers = knife4jGatewayProperties.getRoutes();
             if (routers != null && !routers.isEmpty()) {
-                Collections.sort(routers, Comparator.comparing(Knife4jGatewayProperties.Router::getOrder));
+                routers.sort(Comparator.comparing(Knife4jGatewayProperties.Router::getOrder));
                 for (Knife4jGatewayProperties.Router router : routers) {
-                    Map<String, String> urlMap = PathUtils.getUrlMap();
-                    if (!urlMap.containsKey(router.getServiceName())) {
-                        urlMap.put(router.getServiceName(), router.getUrl());
-                    }
-                    router.setUrl(PathUtils.append(basePath, urlMap.get(router.getServiceName())));
-                    Map<String, String> contextPathMap = PathUtils.getContextPathMap();
-                    if (!contextPathMap.containsKey(router.getServiceName())) {
-                        contextPathMap.put(router.getServiceName(), router.getContextPath());
-                    }
-                    router.setContextPath(PathUtils.append(basePath, contextPathMap.get(router.getServiceName())));
-                    sortedSet.add(router);
+                    // copy one,https://gitee.com/xiaoym/knife4j/issues/I73AOG
+                    // 在nginx代理情况下，刷新文档会叠加是由于直接使用了Router对象进行Set操作，导致每次刷新都从内存拿属性值对象产生了叠加的bug
+                    // 此处每次调用时直接copy新对象进行赋值返回，避免和开发者在Config配置时对象属性冲突
+                    OpenAPI2Resource copyRouter=new OpenAPI2Resource(router);
+                    copyRouter.setUrl(PathUtils.append(basePath, copyRouter.getUrl()));
+                    //得到contextPath后再处理一次
+                    copyRouter.setContextPath(PathUtils.processContextPath(PathUtils.append(basePath, copyRouter.getContextPath())));
+                    sortedSet.add(copyRouter);
+                    
                 }
                 response.setUrls(sortedSet);
             }
         } else {
             log.debug("discover strategy.");
             ServiceDiscoverHandler serviceDiscoverHandler = applicationContext.getBean(ServiceDiscoverHandler.class);
-            if (serviceDiscoverHandler != null) {
-                response.setUrls(serviceDiscoverHandler.getResources(basePath));
-            }
+            response.setUrls(serviceDiscoverHandler.getResources(basePath));
         }
         return Mono.just(ResponseEntity.ok().body(response));
     }

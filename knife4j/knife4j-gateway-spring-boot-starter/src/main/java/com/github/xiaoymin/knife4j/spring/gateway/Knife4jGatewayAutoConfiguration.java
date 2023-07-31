@@ -81,7 +81,7 @@ public class Knife4jGatewayAutoConfiguration {
          *
          * @param discoveryClient        Registry Service Discovery Client
          * @param serviceDiscoverHandler Service Discover Handler
-         * @return
+         * @return ServiceListener
          */
         @Bean
         public ServiceChangeListener serviceChangeListener(DiscoveryClient discoveryClient, ServiceDiscoverHandler serviceDiscoverHandler, Knife4jGatewayProperties knife4jGatewayProperties) {

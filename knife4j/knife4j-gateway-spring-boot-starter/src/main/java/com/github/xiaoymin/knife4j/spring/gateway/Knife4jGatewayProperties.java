@@ -192,13 +192,12 @@ public class Knife4jGatewayProperties {
          *
          * @since v4.1.0
          */
-        private String contextPath;
+        private String contextPath = "/";
         
         /**
          * 排序(asc),默认不排序
          */
         private Integer order = DEFAULT_ORDER;
-        
     }
     
     /**

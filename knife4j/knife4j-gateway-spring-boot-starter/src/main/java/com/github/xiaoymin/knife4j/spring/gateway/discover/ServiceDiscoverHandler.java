@@ -203,8 +203,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
             // 排序
             resources.sort(Comparator.comparing(OpenAPI2Resource::getOrder));
             for (OpenAPI2Resource resource : resources) {
-                // todo nginx叠上叠 k ?
-                resource.setContextPath(PathUtils.append(forwardPath, resource.getContextPath()));
+                resource.setContextPath(PathUtils.processContextPath(PathUtils.append(forwardPath, resource.getContextPath())));
                 resource.setUrl(PathUtils.append(forwardPath, resource.getUrl()));
             }
             return resources;

@@ -17,8 +17,13 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.spec.v2;
 
+import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Objects;
 
 /**
@@ -26,6 +31,8 @@ import java.util.Objects;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.1.0
  */
+@Setter
+@Getter
 public class OpenAPI2Resource extends AbstractOpenAPIResource {
     
     private String name;
@@ -36,39 +43,22 @@ public class OpenAPI2Resource extends AbstractOpenAPIResource {
     public OpenAPI2Resource(Integer order, Boolean discovered) {
         super(order, discovered);
     }
-    
-    public String getName() {
-        return name;
+
+
+    /**
+     * 基于Router配置对象构建接口Resource
+     * @param router Config配置对象
+     * @since v4.2.0
+     */
+    public OpenAPI2Resource(Knife4jGatewayProperties.Router router){
+        super(router.getOrder(),false);
+        this.name=router.getName();
+        this.url=router.getUrl();
+        this.contextPath=router.getContextPath();
+        this.id= Base64.getEncoder().encodeToString((router.getName() + router.getUrl() +
+                router.getContextPath()).getBytes(StandardCharsets.UTF_8));
     }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public String getUrl() {
-        return url;
-    }
-    
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    
-    public String getContextPath() {
-        return contextPath;
-    }
-    
-    public void setContextPath(String contextPath) {
-        this.contextPath = contextPath;
-    }
-    
-    public String getId() {
-        return id;
-    }
-    
-    public void setId(String id) {
-        this.id = id;
-    }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -85,4 +75,7 @@ public class OpenAPI2Resource extends AbstractOpenAPIResource {
     public int hashCode() {
         return Objects.hash(getName(), getUrl(), getContextPath(), getId());
     }
+
+
+
 }

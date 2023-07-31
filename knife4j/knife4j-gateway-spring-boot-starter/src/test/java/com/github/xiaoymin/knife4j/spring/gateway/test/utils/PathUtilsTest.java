@@ -34,7 +34,15 @@ import java.net.URI;
 @Slf4j
 @RunWith(JUnit4.class)
 public class PathUtilsTest {
-    
+
+    @Test
+    public void test_contextPath(){
+        log.info(PathUtils.processContextPath("/"));
+        log.info(PathUtils.processContextPath("/abc"));
+        log.info(PathUtils.processContextPath("/abc/"));
+
+    }
+
     @Test
     public void test_ref() {
         String ref = "http://localhost:15013/s/doc.html";
