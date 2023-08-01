@@ -215,7 +215,7 @@ module.exports = {
                             },
                         ],
                     }, {
-                        title: '社区',
+                        title: '社区&友链',
                         items: [
                             {
                                 label: 'Gitter',
@@ -224,6 +224,10 @@ module.exports = {
                             {
                                 label: '开源中国',
                                 href: 'https://www.oschina.net/question/tag/swagger-bootstrap-ui',
+                            },
+                            {
+                                label: 'spring中文文档',
+                                href: 'https://springdoc.cn/',
                             }
                         ],
                     },
