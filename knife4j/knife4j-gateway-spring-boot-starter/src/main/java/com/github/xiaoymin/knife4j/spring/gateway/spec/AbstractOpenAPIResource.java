@@ -18,6 +18,7 @@
 package com.github.xiaoymin.knife4j.spring.gateway.spec;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
@@ -28,12 +29,13 @@ import java.util.Objects;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.1.0
  */
+@Getter
 public abstract class AbstractOpenAPIResource implements Comparable<AbstractOpenAPIResource>, Serializable {
     
     private static final long serialVersionUID = 1L;
     
     @JsonIgnore
-    protected final transient Integer order;
+    protected final Integer order;
     @JsonIgnore
     protected final transient Boolean discovered;
     
@@ -52,14 +54,6 @@ public abstract class AbstractOpenAPIResource implements Comparable<AbstractOpen
     }
     
     public abstract String getName();
-    
-    public Integer getOrder() {
-        return order;
-    }
-    
-    public Boolean getDiscovered() {
-        return discovered;
-    }
     
     @Override
     public boolean equals(Object o) {

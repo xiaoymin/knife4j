@@ -18,6 +18,7 @@
 package com.github.xiaoymin.knife4j.spring.plugin;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.extend.util.ExtensionUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -26,9 +27,7 @@ import springfox.documentation.service.VendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.OperationContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /***
  *
@@ -48,7 +47,8 @@ public class OperationAuthorBuilderPlugin extends AbstractOperationBuilderPlugin
     public void apply(OperationContext context) {
         Optional<ApiOperationSupport> apiOperationSupportOptional = context.findAnnotation(ApiOperationSupport.class);
         if (apiOperationSupportOptional.isPresent()) {
-            String author = apiOperationSupportOptional.get().author();
+            ApiOperationSupport apiOperationSupport = apiOperationSupportOptional.get();
+            String author = ExtensionUtils.getAuthors(apiOperationSupport);
             // 判断非空
             if (author != null && !"".equals(author) && !"null".equals(author)) {
                 List<VendorExtension> vendorExtensions = new ArrayList<>();

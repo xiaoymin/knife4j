@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @since 
- * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/17 21:50
  */
 @Component

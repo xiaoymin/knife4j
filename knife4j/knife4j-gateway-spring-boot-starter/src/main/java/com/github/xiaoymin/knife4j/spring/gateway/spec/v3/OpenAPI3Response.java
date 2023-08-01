@@ -38,7 +38,7 @@ public class OpenAPI3Response implements Serializable {
      */
     private String configUrl;
     /**
-     * oauth2RedirectUrl,eg : http://192.168.10.103:17812/swagger-ui/oauth2-redirect.html
+     * oauth2RedirectUrl,eg : <a href="http://192.168.10.103:17812/swagger-ui/oauth2-redirect.html">http://192.168.10.103:17812/swagger-ui/oauth2-redirect.html</a>
      */
     private String oauth2RedirectUrl;
     

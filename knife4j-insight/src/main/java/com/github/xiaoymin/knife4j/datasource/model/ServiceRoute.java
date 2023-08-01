@@ -23,14 +23,12 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.github.xiaoymin.knife4j.common.lang.DesktopConstants;
-import com.github.xiaoymin.knife4j.datasource.model.config.route.CloudRoute;
-import com.github.xiaoymin.knife4j.datasource.model.config.route.DiskRoute;
-import com.github.xiaoymin.knife4j.datasource.model.service.eureka.EurekaInstance;
-import com.github.xiaoymin.knife4j.datasource.model.config.route.EurekaRoute;
-import com.github.xiaoymin.knife4j.datasource.model.config.route.NacosRoute;
 import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.core.util.CommonUtils;
+import com.github.xiaoymin.knife4j.datasource.model.config.route.*;
+import com.github.xiaoymin.knife4j.datasource.model.service.eureka.EurekaInstance;
 import com.github.xiaoymin.knife4j.datasource.model.service.nacos.NacosInstance;
+import com.github.xiaoymin.knife4j.datasource.model.service.polaris.PolarisInstance;
 import lombok.Data;
 import lombok.ToString;
 
@@ -45,14 +43,14 @@ import java.util.Objects;
 @Data
 @ToString
 public class ServiceRoute {
-    
+
     private String name;
     /**
      * 唯一主键id
      * add since 4.0.0
      */
     private transient String pkId;
-    
+
     /**
      * 调试地址,开发者可自定义，获取OpenAPI地址与最终Debug调试的地址可以不相同
      * add since 4.0.0
@@ -85,14 +83,16 @@ public class ServiceRoute {
     private boolean local = false;
     /**
      * 增加聚合显示顺序,参考issues：https://gitee.com/xiaoym/knife4j/issues/I27ST2
+     *
      * @since 2.0.9
      */
     private transient Integer order = 1;
-    
+
     /**
      * 本地聚合模式
+     *
      * @param diskRoute 配置
-     * @param content 本地OpenAPI规范JSON具体内容
+     * @param content   本地OpenAPI规范JSON具体内容
      */
     public ServiceRoute(DiskRoute diskRoute, String content) {
         if (diskRoute != null && StrUtil.isNotBlank(content)) {
@@ -136,9 +136,10 @@ public class ServiceRoute {
             this.order = diskRoute.getOrder();
         }
     }
-    
+
     /**
      * 根据Cloud配置创建
+     *
      * @param cloudRoute 云端配置
      */
     public ServiceRoute(CloudRoute cloudRoute) {
@@ -170,10 +171,11 @@ public class ServiceRoute {
             this.order = cloudRoute.getOrder();
         }
     }
-    
+
     /**
      * 根据Eureka配置创建
-     * @param eurekaRoute eureka配置
+     *
+     * @param eurekaRoute    eureka配置
      * @param eurekaInstance eureka实例
      */
     public ServiceRoute(EurekaRoute eurekaRoute, EurekaInstance eurekaInstance) {
@@ -189,7 +191,7 @@ public class ServiceRoute {
             // 微服务模式下的服务需要关注ip变化
             this.pkId = MD5.create().digestHex(eurekaRoute.pkId() + this.uri);
             this.header = this.pkId;
-            
+
             if (StrUtil.isNotBlank(eurekaRoute.getServicePath()) && !StrUtil.equals(eurekaRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
                 // 判断是否是/开头
                 if (!StrUtil.startWith(eurekaRoute.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
@@ -204,9 +206,11 @@ public class ServiceRoute {
             this.order = eurekaRoute.getOrder();
         }
     }
+
     /**
      * 根据nacos配置
-     * @param nacosRoute nacos配置
+     *
+     * @param nacosRoute    nacos配置
      * @param nacosInstance nacos实例
      */
     public ServiceRoute(NacosRoute nacosRoute, NacosInstance nacosInstance) {
@@ -235,11 +239,13 @@ public class ServiceRoute {
             // since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
             this.order = nacosRoute.getOrder();
         }
-        
+
     }
+
     /**
      * 根据nacos配置
-     * @param nacosRoute nacos配置
+     *
+     * @param nacosRoute    nacos配置
      * @param nacosInstance nacos实例
      */
     public ServiceRoute(NacosRoute nacosRoute, Instance nacosInstance) {
@@ -268,7 +274,37 @@ public class ServiceRoute {
             // since 2.0.9 add by xiaoymin 2021年5月4日 13:08:42
             this.order = nacosRoute.getOrder();
         }
-        
+
     }
-    
+
+    /**
+     * 根据polaris配置
+     * @param route         Polaris配置
+     * @param instance      Polaris实例
+     */
+    public ServiceRoute(PolarisRoute route, PolarisInstance instance) {
+        if (route != null && instance != null) {
+            this.name = route.getService();
+            if (StrUtil.isNotBlank(route.getName())) {
+                this.name = route.getName();
+            }
+            // 调试地址
+            this.debugUrl = route.getDebugUrl();
+            // 远程uri
+            this.uri = GlobalConstants.PROTOCOL_HTTP + instance.getHost() + ":" + instance.getPort();
+            this.pkId = MD5.create().digestHex(route.pkId() + this.uri);
+            this.header = this.pkId;
+            if (StrUtil.isNotBlank(route.getServicePath()) && !StrUtil.equals(route.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
+                // 判断是否是/开头
+                if (!StrUtil.startWith(route.getServicePath(), DesktopConstants.ROUTE_BASE_PATH)) {
+                    this.servicePath = DesktopConstants.ROUTE_BASE_PATH + route.getServicePath();
+                } else {
+                    this.servicePath = route.getServicePath();
+                }
+            }
+            this.location = route.getLocation();
+            this.swaggerVersion = route.getSwaggerVersion();
+            this.order = route.getOrder();
+        }
+    }
 }

@@ -29,7 +29,7 @@ import java.io.IOException;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/2/25 19:06
- * @since:knife4j
+ * @since knife4j
  */
 @Data
 public class ServletSecurityBasicAuthFilter extends AbstractSecurityFilter implements Filter {
@@ -50,7 +50,7 @@ public class ServletSecurityBasicAuthFilter extends AbstractSecurityFilter imple
         Object sessionObject = request.getSession().getAttribute(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION);
         String auth = request.getHeader(GlobalConstants.AUTH_HEADER_NAME);
         if (this.tryCommonBasic(url, sessionObject, auth)) {
-            if (sessionObject == null) {
+            if (this.match(url) && sessionObject == null) {
                 request.getSession().setAttribute(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION, getUserName());
             }
             chain.doFilter(servletRequest, servletResponse);

@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  * @since 
- * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/12/10 21:53
  */
 

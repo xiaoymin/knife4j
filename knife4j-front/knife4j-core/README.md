@@ -9,6 +9,39 @@
 - 提供对Knife4j框架本身的扩展支持
 
 
+项目代码结构：
+```properties
+
+.
+├── src/
+│   ├── index.ts        # 核心解析器的入口文件
+│   ├── parser/
+│   │   ├── openapi3.ts # OpenAPI3 规范的解析器
+│   │   ├── swagger2.ts # Swagger2 规范的解析器
+│   │   └── asyncapi.ts # AsyncAPI 规范的解析器
+│   ├── models/
+│   │   ├── openapi3/   # OpenAPI3 规范的模型类
+│   │   ├── swagger2/   # Swagger2 规范的模型类
+│   │   └── asyncapi/   # AsyncAPI 规范的模型类
+│   └── utils/
+│       ├── common.ts   # 公共工具函数
+│       ├── openapi3.ts # OpenAPI3 规范的工具函数
+│       ├── swagger2.ts # Swagger2 规范的工具函数
+│       └── asyncapi.ts # AsyncAPI 规范的工具函数
+├── __tests/
+│   ├── parser/         # 解析器的单元测试
+│   ├── models/         # 模型类的单元测试
+│   └── utils/          # 工具函数的单元测试
+├── dist/               # 构建输出目录
+├── typings/            # 类型声明文件
+├── package.json
+├── tsconfig.json
+├── webpack.config.js
+├── .eslintrc.json
+├── .prettierrc.json
+└── README.md
+```
+
 
 
 ## 架构设计

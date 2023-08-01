@@ -20,7 +20,7 @@ package com.github.xiaoymin.knife4j.core.conf;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/2/26 16:05
- * @since:knife4j
+ * @since knife4j
  */
 public class ExtensionsConstants {
     

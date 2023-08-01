@@ -24,6 +24,7 @@ import com.github.xiaoymin.knife4j.datasource.config.nacos.env.ConfigNacosInfo;
 import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigCommonInfo;
 import com.github.xiaoymin.knife4j.datasource.model.config.common.ConfigEnv;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 
 import java.util.HashMap;
@@ -39,7 +40,7 @@ import java.util.Optional;
 public class NacosConfigParamsConvert implements ConfigParamsConvert {
     
     private Environment environment;
-    
+
     @Override
     public ConfigCommonInfo getConfigInfo() {
         Map<String, String> params = new HashMap<>();
@@ -47,7 +48,7 @@ public class NacosConfigParamsConvert implements ConfigParamsConvert {
         for (String key : DesktopConstants.CONFIG_NACOS) {
             String value = environment.getProperty(key);
             log.debug("Env -> {}:{}", key, value);
-            params.put(key, value);
+            params.put(key, StringUtils.isNotBlank(value) ? value : "");
         }
         Optional<ConfigEnv> configEnvOptional = PropertyUtils.resolveSingle(params, ConfigEnv.class);
         if (configEnvOptional.isPresent()) {
@@ -55,7 +56,7 @@ public class NacosConfigParamsConvert implements ConfigParamsConvert {
         }
         return new ConfigNacosInfo();
     }
-    
+
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;

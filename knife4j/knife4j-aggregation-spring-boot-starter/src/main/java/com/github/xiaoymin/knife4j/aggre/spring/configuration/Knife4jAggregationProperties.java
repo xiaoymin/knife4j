@@ -18,10 +18,7 @@
 package com.github.xiaoymin.knife4j.aggre.spring.configuration;
 
 import com.github.xiaoymin.knife4j.aggre.core.pojo.BasicAuth;
-import com.github.xiaoymin.knife4j.aggre.spring.support.DiskSetting;
-import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
-import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
-import com.github.xiaoymin.knife4j.aggre.spring.support.CloudSetting;
+import com.github.xiaoymin.knife4j.aggre.spring.support.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -62,6 +59,11 @@ public class Knife4jAggregationProperties {
      * 从Nacos注册中心中获取
      */
     private NacosSetting nacos;
+    
+    /**
+     * 从腾讯北极星Polaris获取
+     */
+    private PolarisSetting polaris;
     
     /**
      * http链接对象属性配置
@@ -122,5 +124,13 @@ public class Knife4jAggregationProperties {
     
     public void setNacos(NacosSetting nacos) {
         this.nacos = nacos;
+    }
+    
+    public PolarisSetting getPolaris() {
+        return polaris;
+    }
+    
+    public void setPolaris(PolarisSetting polaris) {
+        this.polaris = polaris;
     }
 }

@@ -22,6 +22,7 @@ import com.github.xiaoymin.knife4j.datasource.model.ConfigProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultCloudProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultEurekaProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultNacosProfile;
+import com.github.xiaoymin.knife4j.datasource.model.config.meta.common.ConfigDefaultPolarisProfile;
 import com.github.xiaoymin.knife4j.datasource.model.config.meta.nacos.service.NacosConfigDiskProfile;
 import lombok.Data;
 
@@ -52,6 +53,11 @@ public class NacosConfigProfileInfo {
      * eureka模式
      */
     private List<ConfigDefaultEurekaProfile> eureka;
+
+    /**
+     * polaris模式
+     */
+    private List<ConfigDefaultPolarisProfile> polaris;
     
     /**
      * 获取当前Nacos配置中所有模式的profile集合
@@ -71,6 +77,9 @@ public class NacosConfigProfileInfo {
         }
         if (CollectionUtil.isNotEmpty(this.eureka)) {
             profiles.addAll(this.eureka);
+        }
+        if (CollectionUtil.isNotEmpty(this.polaris)) {
+            profiles.addAll(this.polaris);
         }
         return profiles;
     }

@@ -4,7 +4,11 @@
         "module": "commonjs",
         "declaration": true,
         "outDir": "./lib",
-        "strict": true
+        "rootDir": "./src",
+        "sourceMap": true,
+        "strict": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true
     },
     "include": [
         "src"

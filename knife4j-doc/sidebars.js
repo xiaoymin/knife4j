@@ -1,6 +1,10 @@
 const donateHtml = `
 <div class="sidebar_donate">
-    <div class="sidebar_sponsor">虚位以待</div>
+    <div class="sidebar_sponsor"> 
+        <a target="_blank" href="https://tiaocanshu.com?utm_source=knife4j"><img src="/images/sponsor/tiaocanshu/logo.png"/>
+        </a>
+    </div>
+    
     <div class="sidebar_sponsor_submit">
         <a href="/docs/community/donate">成为赞助商</a>
     </div>
@@ -14,6 +18,7 @@ module.exports = {
         defaultStyle: true
     },
         'quick-start/quick-start',
+        'quick-start/start-knife4j-version',
         'community/joinus',
         'community/contributing',
     {
@@ -355,6 +360,13 @@ module.exports = {
                 'action/springfox/springfox19',
                 'action/springfox/springfox20',
                 'action/springfox/springfox21'
+            ]
+        }, {
+            type: 'category',
+            label: '其他',
+            collapsed: true,
+            items: [
+                'action/others/doc-search'
             ]
         }
     ]

@@ -17,8 +17,13 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.spec.v2;
 
+import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Objects;
 
 /**
@@ -26,6 +31,8 @@ import java.util.Objects;
  *     23/02/26 20:43
  * @since gateway-spring-boot-starter v4.1.0
  */
+@Setter
+@Getter
 public class OpenAPI2Resource extends AbstractOpenAPIResource {
     
     private String name;
@@ -37,36 +44,40 @@ public class OpenAPI2Resource extends AbstractOpenAPIResource {
         super(order, discovered);
     }
     
-    public String getName() {
-        return name;
+    /**
+     * 基于Router配置对象构建接口Resource
+     * @param router Config配置对象
+     * @since v4.2.0
+     */
+    public OpenAPI2Resource(Knife4jGatewayProperties.Router router) {
+        super(router.getOrder(), false);
+        this.name = router.getName();
+        this.url = router.getUrl();
+        this.contextPath = router.getContextPath();
+        this.id = Base64.getEncoder().encodeToString((router.getName() + router.getUrl() +
+                router.getContextPath()).getBytes(StandardCharsets.UTF_8));
     }
     
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public String getUrl() {
-        return url;
-    }
-    
-    public void setUrl(String url) {
+    /**
+     * 基于参数配置构建Resource对象
+     * @param url 分组url
+     * @param order 排序
+     * @param discover 是否服务发现
+     * @param groupName 名称
+     * @param contextPath 当前contextPath
+     * @since v4.2.0
+     */
+    public OpenAPI2Resource(String url,
+                            int order,
+                            boolean discover,
+                            String groupName,
+                            String contextPath) {
+        super(order, discover);
+        this.name = groupName;
         this.url = url;
-    }
-    
-    public String getContextPath() {
-        return contextPath;
-    }
-    
-    public void setContextPath(String contextPath) {
         this.contextPath = contextPath;
-    }
-    
-    public String getId() {
-        return id;
-    }
-    
-    public void setId(String id) {
-        this.id = id;
+        this.id = Base64.getEncoder().encodeToString((groupName + url +
+                contextPath).getBytes(StandardCharsets.UTF_8));
     }
     
     @Override
@@ -84,5 +95,26 @@ public class OpenAPI2Resource extends AbstractOpenAPIResource {
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getUrl(), getContextPath(), getId());
+    }
+    
+    /**
+     * 赋值一个新对象
+     * @return resource对象实例
+     * @since v4.2.0
+     */
+    public OpenAPI2Resource copy() {
+        return new OpenAPI2Resource(this.url, this.order, this.discovered, this.name, this.contextPath);
+    }
+    
+    @Override
+    public String toString() {
+        return "OpenAPI2Resource{" +
+                "name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", contextPath='" + contextPath + '\'' +
+                ", id='" + id + '\'' +
+                ", order=" + order +
+                ", discovered=" + discovered +
+                '}';
     }
 }

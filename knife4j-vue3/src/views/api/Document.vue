@@ -917,12 +917,12 @@
  }
 
  .api-title {
-   margin-top: 10px;
-   margin-bottom: 5px;
+   margin-top: 12px;
+   margin-bottom: 8px;
    font-size: 16px;
    font-weight: 600;
-   height: 30px;
-   line-height: 30px;
+   height: 24px;
+   line-height: 24px;
    border-left: 4px solid #00ab6d;
    text-indent: 8px;
  }

@@ -45,7 +45,7 @@ import org.springframework.web.filter.CorsFilter;
 @Slf4j
 @AllArgsConstructor
 @Configuration
-@EnableConfigurationProperties({Knife4jProperties.class, Knife4jSetting.class})
+@EnableConfigurationProperties({Knife4jProperties.class, Knife4jSetting.class, Knife4jHttpBasic.class})
 @ConditionalOnProperty(name = "knife4j.enable", havingValue = "true")
 public class Knife4jAutoConfiguration {
     

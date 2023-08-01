@@ -11,7 +11,10 @@ module.exports = {
     trailingSlash: false,
     organizationName: 'xiaoymin',
     projectName: 'swagger-bootstrap-ui',
-    scripts: ['/js/custom.js', '/js/baidu.js'],
+    scripts: ['/js/custom.js', '/js/baidu.js', {
+        src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1589206801610969', async: true,
+        crossorigin: "anonymous"
+    }],
     favicon: 'img/favicon.ico',
     i18n: {
         defaultLocale: 'zh-Hans',
@@ -129,9 +132,9 @@ module.exports = {
                         className: 'changelog',
                     },
                     {
-                        to: 'docs/oas',
-                        label: 'OAS规范',
-                        activeBasePath: '/docs/oas',
+                        to: 'docs/blog',
+                        label: 'Blog',
+                        activeBasePath: '/docs/blog',
                         position: 'left',
                         className: 'changelog',
                     },
@@ -254,11 +257,11 @@ module.exports = {
             },
             algolia: {
                 appId: '3CRIMRK623',
-                apiKey: '69d77aed70b67e21c81c6b4a38d0cf1a', // search only (public) API key
+                apiKey: 'ae4f57f208e3c7749017e09582f0b8a4', // search only (public) API key
+                //apiKey: '00582ca6a8e46a55856c975ccedf9368', // search only (public) API key
                 indexName: 'xiaominfo',
-                algoliaOptions: {
-                    facetFilters: ['version:VERSION'],
-                },
+                contextualSearch: false,
+                debug: true
             },
         }),
 };

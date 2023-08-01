@@ -60,7 +60,7 @@ import ThreeMenu from "@/components/SiderMenu/ThreeMenu.vue";
 //右键菜单
 import ContextMenu from "@/components/common/ContextMenu.vue";
 import constant from "@/store/constants";
-import { computed, markRaw, onUpdated, reactive, shallowRef, watch } from 'vue'
+import { computed, markRaw, onUpdated, reactive, shallowRef, watch, onMounted } from 'vue'
 import { useGlobalsStore } from '@/store/modules/global.js'
 import { useHeadersStore } from '@/store/modules/header.js'
 import { useRoute, useRouter } from 'vue-router'
@@ -108,7 +108,8 @@ const state = reactive({
   menuVisible: false,
   nextUrl: '',
   nextKey: '',
-  menuItemList: []
+  menuItemList: [],
+  remove
 })
 
 const globalsStore = useGlobalsStore()
@@ -390,6 +391,7 @@ function initKnife4jFront() {
     routeParams: route.params,
     plus: getPlusStatus(),
     i18n: tmpI18n,
+    localStore: localStore,
     configSupport: false,
     i18nInstance: getCurrentI18nInstance(),
     //覆盖url地址,多个服务的组合
@@ -408,8 +410,29 @@ function initI18n() {
   state.menuItemList = state.i18n.menu.menuItemList;
 }
 
-initSpringDocOpenApi()
-initI18n()
+onMounted(() => {
+  const appReleaseType = import.meta.env.VITE_RELEASE_APP_TYPE
+  console.log("appReleaseType:" + appReleaseType);
+  switch (appReleaseType) {
+    case 'SpringDocOpenApi':
+      initSpringDocOpenApi()
+      break;
+    case 'Knife4jSpringUi':
+      initKnife4jSpringUi()
+      break;
+    case 'Knife4jJFinal':
+      initKnife4jJFinal()
+      break;
+    case 'Knife4jFront':
+      initKnife4jFront()
+      break;
+    default:
+      initSpringDocOpenApi()
+      break;
+  }
+
+  initI18n()
+})
 
 function updateMenuI18n() {
   //根据i18n的切换,更新菜单的显示

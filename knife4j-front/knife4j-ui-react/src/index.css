@@ -1,0 +1,30 @@
+:root {}
+
+
+
+
+body {
+  margin: 0;
+
+}
+
+.knife4j-logo-collapsed {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.react-resizable {
+  position: relative;
+}
+
+.react-resizable-handle {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  right: 0;
+  bottom: 0;
+  cursor: ew-resize;
+  background: #000;
+  opacity: 0.2;
+  z-index: 1;
+}

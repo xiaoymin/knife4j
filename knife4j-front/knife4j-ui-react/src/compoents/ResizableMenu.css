@@ -1,0 +1,25 @@
+/* ResizableMenu.css */
+.resizable-menu {
+    display: flex;
+    height: 100%;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #f0f0f0;
+    transition: flex 0.3s;
+    position: relative;
+}
+
+.drag-handle {
+    position: absolute;
+    top: 0;
+    right: -3px;
+    width: 6px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 999;
+    background-color: #f0f0f0;
+}

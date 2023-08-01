@@ -29,11 +29,19 @@ import java.net.URI;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/3/8 08:57
- * @since:knife4j
+ * @since knife4j
  */
 @Slf4j
 @RunWith(JUnit4.class)
 public class PathUtilsTest {
+    
+    @Test
+    public void test_contextPath() {
+        log.info(PathUtils.processContextPath("/"));
+        log.info(PathUtils.processContextPath("/abc"));
+        log.info(PathUtils.processContextPath("/abc/"));
+        
+    }
     
     @Test
     public void test_ref() {

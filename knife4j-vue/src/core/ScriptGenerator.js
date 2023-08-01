@@ -8,7 +8,7 @@ import generate from "@babel/generator";
  * @param {string} str
  * @returns
  */
- export function upperFirstCase(str) {
+export function upperFirstCase(str) {
   const temp = str.split('');
   temp[0] = temp[0].toUpperCase();
   return temp.join('');
@@ -18,10 +18,10 @@ import generate from "@babel/generator";
  *  当url含有路径参数时候获取url数组
  * @param {string} url
  */
- export function getUrls(url) {
+export function getUrls(url) {
   const arr = url.split('{');
   const res = arr.map(u => {
-    if(u.includes('}')) {
+    if (u.includes('}')) {
       return u.split('}')[1]
     }
     return u
@@ -48,22 +48,22 @@ export function getTemplateUrl(urls, pathParams, queryParams) {
   const quasis = [];
   const expressions = [];
   // 既不存在path也不存在query参数时
-  if(pathParams.length === 0 && queryParams.length === 0) {
+  if (pathParams.length === 0 && queryParams.length === 0) {
     urls.map(u => quasis.push(getTemplateElement(u)));
   }
   // 存在path但不存在query参数时
-  else if(pathParams.length > 0 && queryParams.length === 0) {
+  else if (pathParams.length > 0 && queryParams.length === 0) {
     urls.map(u => quasis.push(getTemplateElement(u)));
     pathParams.map(p => expressions.push(t.identifier(p.name)));
   }
   // 存在query但不存在path参数时
-  else if(pathParams.length === 0 && queryParams.length > 0) {
+  else if (pathParams.length === 0 && queryParams.length > 0) {
     // 针对第一项的query特殊处理 /url/path?name=name
     quasis.push(getTemplateElement(`${urls[0]}?${queryParams[0].name}=`));
     expressions.push(t.identifier(queryParams[0].name));
     // 第一项以后的处理方式
     queryParams.map((query, index) => {
-      if(index > 0) {
+      if (index > 0) {
         quasis.push(getTemplateElement(`&${query.name}=`));
         expressions.push(t.identifier(query.name));
       }
@@ -74,7 +74,7 @@ export function getTemplateUrl(urls, pathParams, queryParams) {
   else {
     urls.map((u, i) => {
       // 针对最后一个url特殊处理
-      if(i + 1 === urls.length) {
+      if (i + 1 === urls.length) {
         quasis.push(getTemplateElement(`${u}?${queryParams[0].name}=`));
       } else {
         quasis.push(getTemplateElement(u));
@@ -82,8 +82,8 @@ export function getTemplateUrl(urls, pathParams, queryParams) {
     });
     pathParams.map(p => expressions.push(t.identifier(p.name)));
     expressions.push(t.identifier(queryParams[0].name));
-    queryParams.map((q, i) =>{
-      if(i > 0) {
+    queryParams.map((q, i) => {
+      if (i > 0) {
         quasis.push(getTemplateElement(`&${q.name}=`));
         expressions.push(t.identifier(q.name));
       }
@@ -104,7 +104,7 @@ export function isLoopObject(obj) {
   try {
     JSON.stringify(obj);
   }
-  catch(err){
+  catch (err) {
     res = err;
   }
   const resStr = res.toString();
@@ -122,7 +122,7 @@ function getResParams(resParams, resRefParams) {
   const params = [];
   resParams.map(res => {
     const schema = resRefParams.filter(ref => ref.name === res.schemaValue)[0];
-    if(schema) {
+    if (schema) {
       res.children = schema.params
       getResParams(res.children, resRefParams)
     }
@@ -147,9 +147,9 @@ export function formatApi(api) {
     bodyParams: [], // body请求参数
     resParam: {}, // res响应参数
   };
-  if(Array.isArray(api.parameters)) {
+  if (Array.isArray(api.parameters)) {
     api.parameters.map(p => {
-      switch(p.in) {
+      switch (p.in) {
         case 'path':
           config.pathParams.push({
             name: p.name,
@@ -159,20 +159,20 @@ export function formatApi(api) {
         case 'query':
           config.queryParams.push({
             name: p.name,
-            type:  getBaseType(p.type)
+            type: getBaseType(p.type)
           });
           break;
         default:
           config.bodyParams.push({
             name: 'params',
-            type:  p.type === 'array' ? 'array' : 'object',
+            type: p.type === 'array' ? 'array' : 'object',
             children: p.children
           });
           break;
       }
     })
   }
-  if(Array.isArray(api.responseCodes)) {
+  if (Array.isArray(api.responseCodes)) {
     // let loopObj = {}; // 被循环引用的对象
     // const resRefParamsTemp = api.responseRefParameters.map(ref =>
     //   ref.params && ref.params.map(param => {
@@ -185,9 +185,9 @@ export function formatApi(api) {
     //   })
     // )
     let type = '';
-    if(api.responseJson instanceof Array) {
+    if (api.responseJson instanceof Array) {
       type = 'array';
-    } else if(api.responseJson instanceof Object) {
+    } else if (api.responseJson instanceof Object) {
       type = 'object';
     }
     // else {
@@ -208,7 +208,7 @@ export function formatApi(api) {
  */
 export function getBaseType(type) {
   let res = null;
-  switch(type) {
+  switch (type) {
     case 'string':
       res = 'string'
       break;
@@ -242,7 +242,7 @@ export function getBaseType(type) {
  * @param {string} name
  * @returns
  */
-function getReferenceTSType (name) {
+function getReferenceTSType(name) {
   return t.tsTypeReference(t.identifier(name))
 }
 
@@ -266,12 +266,20 @@ function getRecordAny() {
  * @param {boolean} openOptional
  */
 export function getInterfaceBody(props, openOptional) {
- return props.map(p => {
-    return t.tsPropertySignature(
-      t.identifier(p.name),
-      t.tsTypeAnnotation(getTsType(p, getBaseType(p.type), openOptional)),
+  return props.map(p => {
+    let ta = t.tsTypeAnnotation(getTsType(p, getBaseType(p.type), openOptional), p.description);
+    let key = t.identifier(p.name);
+    let pro = t.tsPropertySignature(
+      key,
+      ta,
       openOptional ? !p.require : false,
     )
+    // 增加注释
+    pro.leadingComments = [{
+      type: "CommentBlock",
+      value: `${p.description} `
+    }]
+    return pro;
   })
 }
 
@@ -287,7 +295,7 @@ export function getTsType(prop, type, openOptional) {
     return getReferenceTSType(type);
   }
   if (type === 'object') {
-    if(prop.children) {
+    if (prop.children) {
       const InterfaceBody = getInterfaceBody(prop.children, openOptional);
       return t.tsTypeLiteral(InterfaceBody);
     } else {
@@ -295,7 +303,7 @@ export function getTsType(prop, type, openOptional) {
     }
   }
   if (type === 'array') {
-    if(prop.children) {
+    if (prop.children) {
       const InterfaceBody = getInterfaceBody(prop.children, openOptional);
       return t.tsArrayType(t.tsTypeLiteral(InterfaceBody));
     } else {
@@ -313,8 +321,8 @@ export function getTsType(prop, type, openOptional) {
  * @returns
  */
 function getChildCommon(common, data, parent) {
-  if(Array.isArray(data)) {
-    data.map(child=>{
+  if (Array.isArray(data)) {
+    data.map(child => {
       common += ` * @param {${getBaseType(child.type)}} ${parent}.${child.name} ${child.description}\n`
       getChildCommon(common, child.children, `${parent}.${child.name}`)
     })
@@ -334,17 +342,17 @@ export function getComment(api) {
   common += `/** \n`
   common += ` * ${summary}\n`
   Array.isArray(parameters) && parameters.map(parameter => {
-    if(parameter.in === 'path') {
+    if (parameter.in === 'path') {
       common += ` * @param {string} ${parameter.name} ${parameter.description}\n `
     }
-    if(parameter.in === 'query') {
+    if (parameter.in === 'query') {
       common += ` * @param {string} ${parameter.name} ${parameter.description}\n `
     }
-    if(parameter.in === 'body') {
-      if(parameter.def && parameter.def.type === 'object' || parameter.type === "object") {
+    if (parameter.in === 'body') {
+      if (parameter.def && parameter.def.type === 'object' || parameter.type === "object") {
         common += ` * @param {object} params ${parameter.description}\n`
         common = getChildCommon(common, parameter.children, 'params')
-      } else if(parameter.def && parameter.def.type === 'array'|| parameter.type === "array") {
+      } else if (parameter.def && parameter.def.type === 'array' || parameter.type === "array") {
         common += ` * @param {array} params ${parameter.description}\n`
       }
     }
@@ -359,7 +367,7 @@ export function getComment(api) {
  * @param {object} param
  * @returns
  */
-export function getTypeAnnotation (param) {
+export function getTypeAnnotation(param) {
   // url参数取name，body参数取data,query参数取params
   let arg = t.identifier(param.name);
   // 缺少ref类型转化
@@ -425,15 +433,15 @@ export function getJsFunctionDeclaration(api) {
  */
 export function getTsInterfaceDeclaration(prop, interfaceName, openOptional) {
   let declaration = null;
-  if(prop.type === 'object') {
-    if(!prop.children) return '\n';
+  if (prop.type === 'object') {
+    if (!prop.children) return '\n';
     const InterfaceBody = getInterfaceBody(prop.children, openOptional);
     declaration = t.tsInterfaceDeclaration(
       t.identifier(interfaceName),
       t.tsInterfaceBody(InterfaceBody),
     )
   } else if (prop.type === 'array') {
-    if(!prop.children) return '\n';
+    if (!prop.children) return '\n';
     const InterfaceBody = getInterfaceBody(prop.children, openOptional);
     declaration = t.tsInterfaceDeclaration(
       t.identifier(interfaceName),
@@ -445,7 +453,7 @@ export function getTsInterfaceDeclaration(prop, interfaceName, openOptional) {
       t.tsInterfaceBody([]),
     )
   }
-  return generate(t.exportNamedDeclaration(declaration)).code + '\n\n';
+  return generate(t.exportNamedDeclaration(declaration), { comments: true }).code + '\n\n';
 }
 
 /**
@@ -454,7 +462,7 @@ export function getTsInterfaceDeclaration(prop, interfaceName, openOptional) {
  * @param {string} interfaceName
  * @returns
  */
- export function getTsFunctionDeclaration(api, interfaceName) {
+export function getTsFunctionDeclaration(api, interfaceName) {
   const {
     name,
     method,
@@ -474,10 +482,10 @@ export function getTsInterfaceDeclaration(prop, interfaceName, openOptional) {
   })
   bodyParams.map(param => {
     // 指定接口类型名称
-    if(param.type === 'array') {
-      funParams.push(getTypeAnnotation({name: param.name, type: `any[]`}));
-    } else if(param.type === 'object') {
-      funParams.push(getTypeAnnotation({name: param.name, type: `${interfaceName}Params`}));
+    if (param.type === 'array') {
+      funParams.push(getTypeAnnotation({ name: param.name, type: `any[]` }));
+    } else if (param.type === 'object') {
+      funParams.push(getTypeAnnotation({ name: param.name, type: `${interfaceName}Params` }));
     }
     requestParams.push(t.identifier(param.name));
   })

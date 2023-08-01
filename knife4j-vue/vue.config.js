@@ -5,6 +5,9 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const CopyWebPackPlugin = require('copy-webpack-plugin');
 const productionGzipExtensions = ["js", "css"];
 module.exports = {
+  transpileDependencies: [
+    /[/\\]node_modules[/\\](.+?)?mermaid(.*)/
+  ],
   publicPath: ".",
   assetsDir: "webjars",
   outputDir: "dist",
@@ -24,8 +27,8 @@ module.exports = {
     },
     proxy: {
       "/": {
-        target: 'http://localhost:8990/',
-        //target: 'http://localhost:17812',
+        //target: 'http://localhost:8990/',
+        target: 'http://localhost:17813',
         /* target: 'http://knife4j.xiaominfo.com/', */
         ws: true,
         changeOrigin: true

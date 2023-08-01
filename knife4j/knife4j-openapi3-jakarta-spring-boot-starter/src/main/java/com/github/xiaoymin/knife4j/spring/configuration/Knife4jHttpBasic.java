@@ -18,6 +18,7 @@
 package com.github.xiaoymin.knife4j.spring.configuration;
 
 import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
@@ -28,10 +29,11 @@ import java.util.List;
  * 2019/08/27 15:40
  */
 @Data
+@ConfigurationProperties(prefix = "knife4j.basic")
 public class Knife4jHttpBasic {
     
     /**
-     * basick是否开启,默认为false
+     * basic是否开启,默认为false
      */
     private boolean enable = false;
     

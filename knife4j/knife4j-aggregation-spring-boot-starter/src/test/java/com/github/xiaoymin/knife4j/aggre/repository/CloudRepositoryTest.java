@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * @since 
- * @auth <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/10 21:05
  */
 public class CloudRepositoryTest {

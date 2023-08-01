@@ -51,7 +51,7 @@ html[data-theme='dark'] {
     --ifm-footer-background-color: #272c3d;
     --ifm-footer-title-color: #f2f3fb;
     --ifm-footer-link-color: #f2f3fb;
-    --max-layout-width: 1680px; 
+    --max-layout-width: 1680px;
 
     --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 
@@ -401,17 +401,21 @@ html.plugin-typedoc-api .theme-doc-sidebar-menu>li:nth-child(6)::before {
 
 
 .sidebar_donate {
-
     text-align: center;
 }
 
 .sidebar_sponsor {
+
     height: 60px;
-    border: 1px dashed gray;
+    /* border: 1px dashed gray; */
     line-height: 60px;
 }
 
-.sidebar_sponsor:hover{
+.sidebar_sponsor_sec {
+    margin-top: 2px;
+}
+
+.sidebar_sponsor:hover {
     cursor: pointer;
 }
 
