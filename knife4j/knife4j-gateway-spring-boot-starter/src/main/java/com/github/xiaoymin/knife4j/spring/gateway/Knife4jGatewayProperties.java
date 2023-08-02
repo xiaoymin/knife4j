@@ -37,7 +37,7 @@ import java.util.*;
 @Setter
 @ConfigurationProperties(prefix = "knife4j.gateway")
 public class Knife4jGatewayProperties {
-
+    
     /**
      * 是否启用聚合OpenAPI规范文档聚合
      */

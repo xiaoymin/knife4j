@@ -48,8 +48,7 @@ public class StrUtil {
     public static boolean isNotBlank(CharSequence str) {
         return !isBlank(str);
     }
-
-
+    
     /**
      * 判断当前内容是否非空，如果是空，这用默认值替换
      * @param value 判断值
@@ -57,10 +56,10 @@ public class StrUtil {
      * @return 非空判断值
      * @since v4.3.0
      */
-    public static String defaultTo(String value,String defaultStr){
-        if (isNotBlank(value)){
+    public static String defaultTo(String value, String defaultStr) {
+        if (isNotBlank(value)) {
             return value;
-        }else{
+        } else {
             return defaultStr;
         }
     }

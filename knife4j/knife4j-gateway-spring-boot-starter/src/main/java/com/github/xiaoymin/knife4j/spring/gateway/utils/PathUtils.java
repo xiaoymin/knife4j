@@ -30,7 +30,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-
 /**
  * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
  *     23/02/26 20:43
@@ -116,14 +115,14 @@ public class PathUtils {
         }
         return validateContextPath;
     }
-
+    
     /**
      * 判断ContextPath非空,并且不等于"/"字符串
      * @param contextPath contextPath
      * @return True-空，FALSE-不满足
      * @since v4.3.0
      */
-    public static boolean contextPathNull(String contextPath){
+    public static boolean contextPathNull(String contextPath) {
         return StrUtil.isNotBlank(contextPath) && !contextPath.equalsIgnoreCase(PathUtils.DEFAULT_CONTEXT_PATH);
     }
     

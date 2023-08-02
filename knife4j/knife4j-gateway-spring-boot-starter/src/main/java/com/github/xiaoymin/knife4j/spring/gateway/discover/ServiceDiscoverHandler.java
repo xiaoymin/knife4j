@@ -41,7 +41,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/3/17 22:59
@@ -123,47 +122,45 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                 .stream()
                 .filter(routeDefinition -> ServiceUtils.startLoadBalance(routeDefinition.getUri()))
                 .filter(routeDefinition -> ServiceUtils.includeService(routeDefinition.getUri(), service, excludeService))
-                .forEach(routeDefinition -> parseRouteDefinition(resources, configInfoMap, routeDefinition.getPredicates(),routeDefinition.getId(),routeDefinition.getUri().getHost()));
+                .forEach(routeDefinition -> parseRouteDefinition(resources, configInfoMap, routeDefinition.getPredicates(), routeDefinition.getId(), routeDefinition.getUri().getHost()));
         // 动态路由
         routeDefinitionRepository.getRouteDefinitions()
                 .filter(routeDefinition -> ServiceUtils.startLoadBalance(routeDefinition.getUri()))
                 .filter(routeDefinition -> ServiceUtils.includeService(routeDefinition.getUri(), service, excludeService))
-                .subscribe(routeDefinition -> parseRouteDefinition(resources, configInfoMap, routeDefinition.getPredicates(),routeDefinition.getId(),routeDefinition.getUri().getHost()));
+                .subscribe(routeDefinition -> parseRouteDefinition(resources, configInfoMap, routeDefinition.getPredicates(), routeDefinition.getId(), routeDefinition.getUri().getHost()));
         // 考虑到不配置路由的情况，直接使用子服务名称作为路由转发的场景
-        if (gatewayProperties.getRoutes().isEmpty()){
-            //使用子服务名称
-            List<String> serviceList=service.stream().filter(s -> !excludeService.contains(s)).collect(Collectors.toList());
-            if (discoveryLocatorProperties.getPredicates().isEmpty()&&discoveryLocatorProperties.isEnabled()){
-                for (String s:serviceList){
-                    //判断当前s是否包含config配置
-                    Knife4jGatewayProperties.ServiceConfigInfo serviceConfigInfo=configInfoMap.get(s);
-                    if (serviceConfigInfo!=null){
-                        String pathPrefix = "/"+(discoveryLocatorProperties.isLowerCaseServiceId()?s.toLowerCase():s);
-                        String contextPath=PathUtils.append(pathPrefix,serviceConfigInfo.getContextPath());
-                        //此分组名称外部ui展示使用，非OpenAPI规范url中的groupName
+        if (gatewayProperties.getRoutes().isEmpty()) {
+            // 使用子服务名称
+            List<String> serviceList = service.stream().filter(s -> !excludeService.contains(s)).collect(Collectors.toList());
+            if (discoveryLocatorProperties.isEnabled()) {
+                for (String s : serviceList) {
+                    // 判断当前s是否包含config配置
+                    Knife4jGatewayProperties.ServiceConfigInfo serviceConfigInfo = configInfoMap.get(s);
+                    if (serviceConfigInfo != null) {
+                        String pathPrefix = "/" + (discoveryLocatorProperties.isLowerCaseServiceId() ? s.toLowerCase() : s);
+                        String contextPath = PathUtils.append(pathPrefix, serviceConfigInfo.getContextPath());
+                        // 此分组名称外部ui展示使用，非OpenAPI规范url中的groupName
                         String groupName = serviceConfigInfo.getGroupName();
                         int order = serviceConfigInfo.getOrder();
-                        String targetUrl = ServiceUtils.getOpenAPIURL(knife4jGatewayProperties.getDiscover().getVersion(), pathPrefix,null);
-                        //判断是否多个分组
-                        if (!CollectionUtils.isEmpty(serviceConfigInfo.getGroupNames())){
-                            //但是如果一个子服务中配置了多个分组实例，那么groupName和Knife4j的下拉框分组服务的name等价
-                            serviceConfigInfo.getGroupNames().forEach(g->{
-                                String _url=ServiceUtils.getOpenAPIURL(knife4jGatewayProperties.getDiscover().getVersion(), pathPrefix,g);
-                                //添加默认分组
-                                resources.add(new OpenAPI2Resource(_url,order,true,g,contextPath));
+                        String targetUrl = ServiceUtils.getOpenAPIURL(knife4jGatewayProperties.getDiscover().getVersion(), pathPrefix, null);
+                        // 判断是否多个分组
+                        if (!CollectionUtils.isEmpty(serviceConfigInfo.getGroupNames())) {
+                            // 但是如果一个子服务中配置了多个分组实例，那么groupName和Knife4j的下拉框分组服务的name等价
+                            serviceConfigInfo.getGroupNames().forEach(g -> {
+                                String _url = ServiceUtils.getOpenAPIURL(knife4jGatewayProperties.getDiscover().getVersion(), pathPrefix, g);
+                                // 添加默认分组
+                                resources.add(new OpenAPI2Resource(_url, order, true, g, contextPath));
                             });
-                        }else{
-                            //添加默认分组
-                            resources.add(new OpenAPI2Resource(targetUrl,order,true,groupName,contextPath));
+                        } else {
+                            // 添加默认分组
+                            resources.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath));
                         }
                     }
+                    //predicates再判断一次
+                    parseRouteDefinition(resources, configInfoMap, discoveryLocatorProperties.getPredicates(), s, s);
                 }
-            }else{
-                serviceList.forEach(s -> parseRouteDefinition(resources, configInfoMap, discoveryLocatorProperties.getPredicates(),s,s));
             }
         }
-
-
         ServiceUtils.addCustomerResources(resources, this.knife4jGatewayProperties);
         // 赋值
         this.gatewayResources = new ArrayList<>(resources);
@@ -202,7 +199,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
     
     private void parseRouteDefinition(Set<OpenAPI2Resource> resources,
                                       Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap,
-                                      List<PredicateDefinition>  predicateDefinitions,String id,String serviceName) {
+                                      List<PredicateDefinition> predicateDefinitions, String id, String serviceName) {
         predicateDefinitions
                 .stream()
                 .filter(predicateDefinition -> PATH.equalsIgnoreCase(predicateDefinition.getName()))
@@ -232,9 +229,9 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                             groupNames.forEach(_groupName -> resources.add(new OpenAPI2Resource(PathUtils.append(url, _groupName), sort, true, _groupName, ctx)));
                             return;
                         }
-                    }else{
-                        //如果没有配置service-config，追加一个子服务的前缀contextPath
-                        contextPath=PathUtils.processContextPath(pathPrefix);
+                    } else {
+                        // 如果没有配置service-config，追加一个子服务的前缀contextPath
+                        contextPath = PathUtils.processContextPath(pathPrefix);
                     }
                     resources.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath));
                 });
