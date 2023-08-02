@@ -14,7 +14,7 @@ import { Route, useNavigate, Outlet } from 'react-router-dom';
 const { Header, Sider, Content, Footer } = Layout;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 const defaultPanes = new Array(1).fill(null).map((_, index) => {
-  return { label: '主页', children: <Home />, key: '/group/home' };
+  return { label: '主页', children: '', key: '/group/home' };
 });
 
 import Home from './pages/Home';
@@ -61,7 +61,7 @@ const App: React.FC = () => {
     if (!tabExists) {
 
       const title = menu.item.props.title;
-      setItems([...items, { label: title, children: <Home />, key: newActiveKey }]);
+      setItems([...items, { label: title, children: '', key: newActiveKey }]);
     }
     setSelectedKey(newActiveKey);
     setActiveKey(newActiveKey);
