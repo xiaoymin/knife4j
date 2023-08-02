@@ -24,7 +24,27 @@ package com.github.xiaoymin.knife4j.spring.gateway.conf;
  * 2019/02/02 19:57
  */
 public class GlobalConstants {
-    
+    public static final String DEFAULT_API_PATH_PREFIX = "/";
+    /**
+     * 默认排序值
+     */
+    public static final Integer DEFAULT_ORDER = 0;
+
+    /**
+     * swagger2接口默认待拼接的地址
+     * @since v4.3.0
+     */
+    public static final String DEFAULT_SWAGGER2_APPEND_PATH="/v2/api-docs?group=";
+    /**
+     * 默认分组名称
+     * @since v4.3.0
+     */
+    public static final String DEFAULT_GROUP_NAME="default";
+    @SuppressWarnings("java:S1075")
+    public static final String DEFAULT_OPEN_API_V2_PATH = "/v2/api-docs?group=default";
+    @SuppressWarnings("java:S1075")
+    public static final String DEFAULT_OPEN_API_V3_PATH = "/v3/api-docs";
+
     /***
      * basic auth验证
      */

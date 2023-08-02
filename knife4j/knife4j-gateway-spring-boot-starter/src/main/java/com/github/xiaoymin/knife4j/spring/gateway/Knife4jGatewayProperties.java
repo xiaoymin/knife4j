@@ -17,6 +17,7 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway;
 
+import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayStrategy;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.GroupOrderStrategy;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
@@ -36,14 +37,7 @@ import java.util.*;
 @Setter
 @ConfigurationProperties(prefix = "knife4j.gateway")
 public class Knife4jGatewayProperties {
-    
-    public static final String DEFAULT_API_PATH_PREFIX = "/";
-    public static final Integer DEFAULT_ORDER = 0;
-    @SuppressWarnings("java:S1075")
-    public static final String DEFAULT_OPEN_API_V2_PATH = "/v2/api-docs?group=default";
-    @SuppressWarnings("java:S1075")
-    public static final String DEFAULT_OPEN_API_V3_PATH = "/v3/api-docs";
-    
+
     /**
      * 是否启用聚合OpenAPI规范文档聚合
      */
@@ -123,7 +117,7 @@ public class Knife4jGatewayProperties {
         
         /**
          * 获取当前服务的URL，根据用户指定的版本类型获取
-         * @return
+         * @return 当前地址
          */
         public String getUrl() {
             if (this.version == OpenApiVersion.OpenAPI3) {
@@ -133,7 +127,7 @@ public class Knife4jGatewayProperties {
                 return this.swagger2.getUrl();
             }
             // 默认值
-            return DEFAULT_OPEN_API_V2_PATH;
+            return GlobalConstants.DEFAULT_OPEN_API_V2_PATH;
         }
     }
     
@@ -148,15 +142,16 @@ public class Knife4jGatewayProperties {
         /**
          * 当前服务排序
          */
-        private Integer order = DEFAULT_ORDER;
+        private Integer order = GlobalConstants.DEFAULT_ORDER;
         
         /**
-         * 当前服务的分组名称，用于前端Ui展示title,当配置了groupNames时此参数无效
+         * 当前服务的分组名称，用于前端Ui展示title
          */
         private String groupName;
         
         /**
-         * 组名称集合，如果为服务接口较多而进行了分组，则可以配置此参数，集合中的项应该和目标服务的 springdoc.group-configs指定的group参数一致
+         * 组名称集合，如果微服务接口较多而进行了分组，则可以配置此参数，集合中的项应该和目标服务的 springdoc.group-configs指定的group参数一致
+         * @since v4.2.0
          */
         private List<String> groupNames;
         
@@ -186,18 +181,18 @@ public class Knife4jGatewayProperties {
         /**
          * OpenAPI数据源加载url地址,例如：/v2/api-docs?group=default
          */
-        private String url = DEFAULT_OPEN_API_V2_PATH;
+        private String url = GlobalConstants.DEFAULT_OPEN_API_V2_PATH;
         /**
          * 兼容OpenAPI3规范在聚合时丢失contextPath属性的异常情况，由开发者自己配置contextPath,Knife4j的前端Ui做兼容处理,与url属性独立不冲突，仅OpenAPI3规范聚合需要，OpenAPI2规范不需要设置此属性,默认为(apiPathPrefix)
          *
          * @since v4.1.0
          */
-        private String contextPath = "/";
+        private String contextPath = GlobalConstants.DEFAULT_API_PATH_PREFIX;
         
         /**
          * 排序(asc),默认不排序
          */
-        private Integer order = DEFAULT_ORDER;
+        private Integer order = GlobalConstants.DEFAULT_ORDER;
     }
     
     /**
@@ -211,7 +206,7 @@ public class Knife4jGatewayProperties {
         /**
          * OpenAPI数据源加载url地址,例如：/v2/api-docs?group=default
          */
-        private String url = DEFAULT_OPEN_API_V2_PATH;
+        private String url = GlobalConstants.DEFAULT_OPEN_API_V2_PATH;
         
     }
     
@@ -226,7 +221,7 @@ public class Knife4jGatewayProperties {
         /**
          * OpenAPI数据源加载url地址,例如：/v3/api-docs?group=default
          */
-        private String url = DEFAULT_OPEN_API_V3_PATH;
+        private String url = GlobalConstants.DEFAULT_OPEN_API_V3_PATH;
         /**
          * OAuth2重定向地址
          */

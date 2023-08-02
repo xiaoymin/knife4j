@@ -18,6 +18,8 @@
 package com.github.xiaoymin.knife4j.spring.gateway.utils;
 
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
+import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
+import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +37,30 @@ import java.util.*;
 public class ServiceUtils {
     
     private final static String LB = "lb://";
-    
+
+
+    /**
+     * 根据OpenAPI规范及分组名称不同获取不同的默认地址
+     * @param apiVersion 规范版本
+     * @param contextPath contextPath
+     * @param groupName 分组名称
+     * @return openapi地址
+     * @since v4.3.0
+     */
+    public static String getOpenAPIURL(OpenApiVersion apiVersion,String contextPath,String groupName){
+        StringBuilder urlBuilder=new StringBuilder();
+        String _defaultPath=PathUtils.processContextPath(contextPath);
+        String _groupName=StrUtil.defaultTo(groupName,GlobalConstants.DEFAULT_GROUP_NAME);
+        String groupUrl="";
+        if (apiVersion==OpenApiVersion.Swagger2){
+            groupUrl= GlobalConstants.DEFAULT_SWAGGER2_APPEND_PATH+_groupName;
+        }else if (apiVersion==OpenApiVersion.OpenAPI3){
+            groupUrl=PathUtils.append(GlobalConstants.DEFAULT_OPEN_API_V3_PATH,_groupName);
+        }
+        urlBuilder.append(PathUtils.append(_defaultPath,groupUrl));
+        return urlBuilder.toString();
+    }
+
     /**
      * 判断服务路由是否负载配置
      * @param uri 路由

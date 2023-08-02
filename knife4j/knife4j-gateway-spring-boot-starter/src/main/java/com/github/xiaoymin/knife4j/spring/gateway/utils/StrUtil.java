@@ -38,7 +38,7 @@ public class StrUtil {
         
         for (int i = 0; i < length; i++) {
             // 只要有一个非空字符即为非空字符串
-            if (false == isBlankChar(str.charAt(i))) {
+            if (!isBlankChar(str.charAt(i))) {
                 return false;
             }
         }
@@ -46,6 +46,22 @@ public class StrUtil {
     }
     
     public static boolean isNotBlank(CharSequence str) {
-        return false == isBlank(str);
+        return !isBlank(str);
+    }
+
+
+    /**
+     * 判断当前内容是否非空，如果是空，这用默认值替换
+     * @param value 判断值
+     * @param defaultStr 默认值
+     * @return 非空判断值
+     * @since v4.3.0
+     */
+    public static String defaultTo(String value,String defaultStr){
+        if (isNotBlank(value)){
+            return value;
+        }else{
+            return defaultStr;
+        }
     }
 }
