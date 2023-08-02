@@ -51,7 +51,7 @@ public class Knife4jOperationCustomizer implements GlobalOperationCustomizer {
             }
         } else {
             // 如果方法级别不存在，再找一次class级别的
-            ApiSupport apiSupport = AnnotationUtils.findAnnotation(handlerMethod.getMethod().getClass(), ApiSupport.class);
+            ApiSupport apiSupport = AnnotationUtils.findAnnotation(handlerMethod.getBeanType(), ApiSupport.class);
             if (apiSupport != null) {
                 String author = ExtensionUtils.getAuthor(apiSupport);
                 if (StrUtil.isNotBlank(author)) {
