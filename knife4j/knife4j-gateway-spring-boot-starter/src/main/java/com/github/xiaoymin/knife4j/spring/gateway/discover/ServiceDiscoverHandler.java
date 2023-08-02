@@ -156,8 +156,6 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                             resources.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath));
                         }
                     }
-                    //predicates再判断一次
-                    parseRouteDefinition(resources, configInfoMap, discoveryLocatorProperties.getPredicates(), s, s);
                 }
             }
         }
