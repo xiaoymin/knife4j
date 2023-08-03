@@ -22,10 +22,12 @@ import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * 在服务发现(Discover)场景下的聚合辅助工具类
@@ -85,7 +87,31 @@ public class ServiceUtils {
      */
     public static boolean includeService(URI uri, Collection<String> service, Collection<String> excludeService) {
         String serviceName = uri.getHost();
-        return service.contains(serviceName) && !excludeService.contains(serviceName);
+        return service.contains(serviceName) && !excludeServices(serviceName, excludeService);
+    }
+    
+    /**
+     * 判断当前服务是否在排除服务列表中
+     * @param serviceName 服务名称
+     * @param excludeService 排除服务规则列表，支持正则表达式(4.3.0版本)
+     * @return True-在排除服务列表中，False-不满足规则
+     * @since v4.3.0
+     */
+    public static boolean excludeServices(String serviceName, Collection<String> excludeService) {
+        if (CollectionUtils.isEmpty(excludeService)) {
+            return false;
+        }
+        for (String es : excludeService) {
+            // 首先根据服务名称直接判断一次
+            if (es.equalsIgnoreCase(serviceName)) {
+                return true;
+            }
+            // 增加正则表达式判断
+            if (Pattern.compile(es, Pattern.CASE_INSENSITIVE).matcher(serviceName).matches()) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**

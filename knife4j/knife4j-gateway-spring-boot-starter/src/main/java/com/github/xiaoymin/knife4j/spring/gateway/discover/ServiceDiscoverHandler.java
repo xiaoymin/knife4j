@@ -131,7 +131,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
         // 考虑到不配置路由的情况，直接使用子服务名称作为路由转发的场景
         if (gatewayProperties.getRoutes().isEmpty()) {
             // 使用子服务名称
-            List<String> serviceList = service.stream().filter(s -> !excludeService.contains(s)).collect(Collectors.toList());
+            List<String> serviceList = service.stream().filter(s -> !ServiceUtils.excludeServices(s, excludeService)).collect(Collectors.toList());
             if (discoveryLocatorProperties.isEnabled()) {
                 for (String s : serviceList) {
                     // 判断当前s是否包含config配置
