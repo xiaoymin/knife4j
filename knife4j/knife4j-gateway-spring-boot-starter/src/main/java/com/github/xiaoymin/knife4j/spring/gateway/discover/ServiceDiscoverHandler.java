@@ -89,11 +89,11 @@ public class ServiceDiscoverHandler implements EnvironmentAware, ApplicationCont
     public void discover(List<String> service) {
         log.debug("service has change ,do discover doc for default route.");
         Set<String> excludeService = getExcludeService(service);
-        ServiceRouterHolder holder=new ServiceRouterHolder(service,excludeService);
-        Map<String,ServiceRouterConvert> routerConvertMap = applicationContext.getBeansOfType(ServiceRouterConvert.class);
+        ServiceRouterHolder holder = new ServiceRouterHolder(service, excludeService);
+        Map<String, ServiceRouterConvert> routerConvertMap = applicationContext.getBeansOfType(ServiceRouterConvert.class);
         List<ServiceRouterConvert> serviceRouterConverts = new ArrayList<>(routerConvertMap.values());
         serviceRouterConverts.sort(Comparator.comparing(ServiceRouterConvert::order));
-        for (ServiceRouterConvert routerConvert:serviceRouterConverts){
+        for (ServiceRouterConvert routerConvert : serviceRouterConverts) {
             routerConvert.process(holder);
         }
         // 赋值

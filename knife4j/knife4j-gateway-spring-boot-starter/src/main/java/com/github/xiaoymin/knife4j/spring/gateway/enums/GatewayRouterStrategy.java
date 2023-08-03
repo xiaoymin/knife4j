@@ -30,26 +30,27 @@ import org.springframework.cloud.gateway.support.NameUtils;
 @Getter
 @AllArgsConstructor
 public enum GatewayRouterStrategy {
+    
     /**
      * 基于gateway配置routes，spring.gateway.routes的方式
      */
-    CONFIG(NameUtils.GENERATED_NAME_PREFIX + "0",1),
+    CONFIG(NameUtils.GENERATED_NAME_PREFIX + "0", 1),
     /**
      * 动态注入路由的方式
      */
-    DYNAMIC(NameUtils.GENERATED_NAME_PREFIX + "0",2),
+    DYNAMIC(NameUtils.GENERATED_NAME_PREFIX + "0", 2),
     /**
      * 基于discoverClient客户端默认发现，配置的默认规则，路由keys为：pattern正则
      */
-    REACTIVE("pattern",3),
+    REACTIVE("pattern", 3),
     /**
      * knife4j自定义配置的routes规则，排序最后，rule规则为空，因为是从knife4j.gateway.routes数据中进行读取
      */
-    CUSTOM("",4);
+    CUSTOM("", 4);
     /**
      * 路由规则
      */
     final String rule;
     final int order;
-
+    
 }

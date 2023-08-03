@@ -65,8 +65,7 @@ public class Knife4jGatewayAutoConfiguration {
     @EnableConfigurationProperties(Knife4jGatewayProperties.class)
     @ConditionalOnProperty(name = "knife4j.gateway.strategy", havingValue = "discover")
     public static class Knife4jDiscoverConfiguration {
-
-
+        
         /**
          * 基于Spring Cloud Gateway配置的路由策略
          * @param gatewayProperties 网关配置
@@ -76,10 +75,10 @@ public class Knife4jGatewayAutoConfiguration {
          */
         @Bean
         public ConfigRouteServiceConvert configRouteServiceConvert(GatewayProperties gatewayProperties,
-                                                                   Knife4jGatewayProperties knife4jGatewayProperties){
-            return new ConfigRouteServiceConvert(gatewayProperties,knife4jGatewayProperties);
+                                                                   Knife4jGatewayProperties knife4jGatewayProperties) {
+            return new ConfigRouteServiceConvert(gatewayProperties, knife4jGatewayProperties);
         }
-
+        
         /**
          * 动态网关路由配置
          * @param routeDefinitionRepository 动态路由
@@ -89,10 +88,10 @@ public class Knife4jGatewayAutoConfiguration {
          */
         @Bean
         public DynamicRouteServiceConvert dynamicRouteServiceConvert(RouteDefinitionRepository routeDefinitionRepository,
-                                                                     Knife4jGatewayProperties knife4jGatewayProperties){
-            return new DynamicRouteServiceConvert(routeDefinitionRepository,knife4jGatewayProperties);
+                                                                     Knife4jGatewayProperties knife4jGatewayProperties) {
+            return new DynamicRouteServiceConvert(routeDefinitionRepository, knife4jGatewayProperties);
         }
-
+        
         /**
          * 基于Knife4j在discover模式下默认配置的routes规则，添加
          * @param knife4jGatewayProperties knife4j配置
@@ -100,11 +99,9 @@ public class Knife4jGatewayAutoConfiguration {
          * @since v4.3.0
          */
         @Bean
-        public CustomerServiceConvert customerServiceConvert(Knife4jGatewayProperties knife4jGatewayProperties){
+        public CustomerServiceConvert customerServiceConvert(Knife4jGatewayProperties knife4jGatewayProperties) {
             return new CustomerServiceConvert(knife4jGatewayProperties);
         }
-
-
         
         @Bean("defaultGatewayServiceExcludeService")
         public GatewayServiceExcludeService defaultGatewayServiceExcludeService() {
@@ -129,8 +126,7 @@ public class Knife4jGatewayAutoConfiguration {
         public ServiceChangeListener serviceChangeListener(DiscoveryClient discoveryClient, ServiceDiscoverHandler serviceDiscoverHandler, Knife4jGatewayProperties knife4jGatewayProperties) {
             return new ServiceChangeListener(discoveryClient, serviceDiscoverHandler, knife4jGatewayProperties);
         }
-
-
+        
         /**
          * 在依赖DiscoverClient模式自动聚合路由的场景下，才注入{@link DiscoverClientRouteServiceConvert}处理方法
          * @since v4.3.0
@@ -138,14 +134,14 @@ public class Knife4jGatewayAutoConfiguration {
         @Configuration(proxyBeanMethods = false)
         @ConditionalOnProperty(value = "spring.cloud.discovery.reactive.enabled", matchIfMissing = true)
         public static class ReactiveDiscoveryClientRouteDefinitionLocatorConfiguration {
-
+            
             @Bean
             @ConditionalOnProperty(name = "spring.cloud.gateway.discovery.locator.enabled")
             public DiscoverClientRouteServiceConvert discoverClientRouteServiceConvert(
-                    DiscoveryClientRouteDefinitionLocator discoveryClient, Knife4jGatewayProperties knife4jGatewayProperties) {
+                                                                                       DiscoveryClientRouteDefinitionLocator discoveryClient, Knife4jGatewayProperties knife4jGatewayProperties) {
                 return new DiscoverClientRouteServiceConvert(discoveryClient, knife4jGatewayProperties);
             }
-
+            
         }
     }
     
