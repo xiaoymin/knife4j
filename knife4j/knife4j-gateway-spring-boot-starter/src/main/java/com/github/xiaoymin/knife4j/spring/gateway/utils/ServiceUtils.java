@@ -42,13 +42,14 @@ public class ServiceUtils {
     
     /**
      * 根据OpenAPI规范及分组名称不同获取不同的默认地址
-     * @param apiVersion 规范版本
+     * @param discover 服务发现配置
      * @param contextPath contextPath
      * @param groupName 分组名称
      * @return openapi地址
      * @since v4.3.0
      */
-    public static String getOpenAPIURL(OpenApiVersion apiVersion, String contextPath, String groupName) {
+    public static String getOpenAPIURL(Knife4jGatewayProperties.Discover discover, String contextPath, String groupName) {
+        OpenApiVersion apiVersion = discover.getVersion();
         StringBuilder urlBuilder = new StringBuilder();
         String _defaultPath = PathUtils.processContextPath(contextPath);
         String _groupName = StrUtil.defaultTo(groupName, GlobalConstants.DEFAULT_GROUP_NAME);
