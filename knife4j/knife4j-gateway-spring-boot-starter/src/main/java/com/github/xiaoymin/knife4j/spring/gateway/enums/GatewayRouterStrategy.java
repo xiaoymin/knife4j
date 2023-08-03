@@ -41,7 +41,11 @@ public enum GatewayRouterStrategy {
     /**
      * 基于discoverClient客户端默认发现，配置的默认规则，路由keys为：pattern正则
      */
-    REACTIVE("pattern",3);
+    REACTIVE("pattern",3),
+    /**
+     * knife4j自定义配置的routes规则，排序最后，rule规则为空，因为是从knife4j.gateway.routes数据中进行读取
+     */
+    CUSTOM("",4);
     /**
      * 路由规则
      */

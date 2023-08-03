@@ -115,34 +115,4 @@ public class ServiceUtils {
         }
         return false;
     }
-
-    public static String getContextPathByRoutePredicate(Map<String, String> args, GatewayRouterStrategy routerStrategy){
-
-        return "";
-    }
-
-
-    /**
-     * 添加默认开发者自定义配置的资源聚合路由
-     * @param resources 路由集合
-     * @param gatewayProperties 开发者个性化配置
-     */
-    public static void addCustomerResources(Collection<OpenAPI2Resource> resources, Knife4jGatewayProperties gatewayProperties) {
-        if (resources == null || resources.isEmpty() || gatewayProperties == null) {
-            return;
-        }
-        // 在添加自己的配置的个性化的服务
-        if (gatewayProperties.getRoutes() != null) {
-            for (Knife4jGatewayProperties.Router router : gatewayProperties.getRoutes()) {
-                OpenAPI2Resource resource = new OpenAPI2Resource(router.getOrder(), false);
-                resource.setName(router.getName());
-                // 开发者配什么就返回什么
-                resource.setUrl(router.getUrl());
-                resource.setContextPath(router.getContextPath());
-                resource.setId(Base64.getEncoder().encodeToString((resource.getName() + resource.getUrl() + resource.getContextPath()).getBytes(StandardCharsets.UTF_8)));
-                resources.add(resource);
-            }
-        }
-    }
-    
 }
