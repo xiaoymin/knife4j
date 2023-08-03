@@ -24,8 +24,13 @@ package com.github.xiaoymin.knife4j.spring.gateway.conf;
  * 2019/02/02 19:57
  */
 public class GlobalConstants {
-    
+
     public static final String DEFAULT_API_PATH_PREFIX = "/";
+    /**
+     * 获取gateway断言的规则名称
+     * @since v4.3.0
+     */
+    public static final String ROUTER_PATH_NAME = "Path";
     /**
      * 默认排序值
      */

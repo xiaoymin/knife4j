@@ -18,7 +18,6 @@
 package com.github.xiaoymin.knife4j.spring.gateway.discover;
 
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
-import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.spi.GatewayServiceExcludeService;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
@@ -26,13 +25,15 @@ import com.github.xiaoymin.knife4j.spring.gateway.utils.ServiceUtils;
 import io.netty.util.internal.StringUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
 import org.springframework.cloud.gateway.config.GatewayProperties;
-import org.springframework.cloud.gateway.discovery.DiscoveryLocatorProperties;
+import org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.support.NameUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
@@ -46,18 +47,15 @@ import java.util.stream.Collectors;
  * @since knife4j v4.1.0
  */
 @Slf4j
-public class ServiceDiscoverHandler implements EnvironmentAware {
+public class ServiceDiscoverHandler implements EnvironmentAware, ApplicationContextAware {
     
     final RouteDefinitionRepository routeDefinitionRepository;
     final RouteLocator routeLocator;
     final GatewayProperties gatewayProperties;
-    final DiscoveryLocatorProperties discoveryLocatorProperties;
-    
     /**
      * Knife4j gateway properties
      */
     final Knife4jGatewayProperties knife4jGatewayProperties;
-    final ApplicationContext applicationContext;
     private final String PATH = "Path";
     
     /**
@@ -70,17 +68,16 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
      * Spring Environment
      */
     private Environment environment;
+    private ApplicationContext applicationContext;
     
     public ServiceDiscoverHandler(RouteDefinitionRepository routeDefinitionRepository,
                                   RouteLocator routeLocator,
                                   GatewayProperties gatewayProperties,
-                                  DiscoveryLocatorProperties discoveryLocatorProperties, Knife4jGatewayProperties knife4jGatewayProperties, ApplicationContext applicationContext) {
+                                  Knife4jGatewayProperties knife4jGatewayProperties) {
         this.routeDefinitionRepository = routeDefinitionRepository;
         this.routeLocator = routeLocator;
         this.gatewayProperties = gatewayProperties;
-        this.discoveryLocatorProperties = discoveryLocatorProperties;
         this.knife4jGatewayProperties = knife4jGatewayProperties;
-        this.applicationContext = applicationContext;
     }
     
     /**
@@ -113,6 +110,14 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
     public void discover(List<String> service) {
         log.debug("service has change ,do discover doc for default route.");
         Set<String> excludeService = getExcludeService(service);
+        ServiceRouterHolder holder=new ServiceRouterHolder(service,excludeService);
+        Map<String,ServiceRouterConvert> routerConvertMap = applicationContext.getBeansOfType(ServiceRouterConvert.class);
+        List<ServiceRouterConvert> serviceRouterConverts = new ArrayList<>(routerConvertMap.values());
+        serviceRouterConverts.sort(Comparator.comparing(ServiceRouterConvert::order));
+        for (ServiceRouterConvert routerConvert:serviceRouterConverts){
+            routerConvert.process(holder);
+        }
+
         // 个性化服务的配置信息
         Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = this.knife4jGatewayProperties.getDiscover().getServiceConfig();
         Set<OpenAPI2Resource> resources = new TreeSet<>(Comparator.comparing(OpenAPI2Resource::getOrder));
@@ -131,34 +136,44 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                         routeDefinition.getUri().getHost()));
         // 考虑到不配置路由的情况，直接使用子服务名称作为路由转发的场景
         if (gatewayProperties.getRoutes().isEmpty()) {
-            // 使用子服务名称
-            List<String> serviceList = service.stream().filter(s -> !ServiceUtils.excludeServices(s, excludeService)).collect(Collectors.toList());
-            if (discoveryLocatorProperties.isEnabled()) {
-                for (String s : serviceList) {
-                    // 判断当前s是否包含config配置
-                    Knife4jGatewayProperties.ServiceConfigInfo serviceConfigInfo = configInfoMap.get(s);
-                    if (serviceConfigInfo != null) {
-                        String pathPrefix = GlobalConstants.DEFAULT_API_PATH_PREFIX + (discoveryLocatorProperties.isLowerCaseServiceId() ? s.toLowerCase() : s);
-                        String contextPath = PathUtils.append(pathPrefix, serviceConfigInfo.getContextPath());
-                        // 此分组名称外部ui展示使用，非OpenAPI规范url中的groupName
-                        String groupName = serviceConfigInfo.getGroupName();
-                        int order = serviceConfigInfo.getOrder();
-                        String targetUrl = ServiceUtils.getOpenAPIURL(knife4jGatewayProperties.getDiscover(), pathPrefix, null);
-                        // 判断是否多个分组
-                        if (!CollectionUtils.isEmpty(serviceConfigInfo.getGroupNames())) {
-                            // 但是如果一个子服务中配置了多个分组实例，那么groupName和Knife4j的下拉框分组服务的name等价
-                            serviceConfigInfo.getGroupNames().forEach(g -> {
-                                String _url = ServiceUtils.getOpenAPIURL(knife4jGatewayProperties.getDiscover(), pathPrefix, g);
-                                // 添加默认分组
-                                resources.add(new OpenAPI2Resource(_url, order, true, g, contextPath));
-                            });
-                        } else {
-                            // 添加默认分组
-                            resources.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath));
-                        }
-                    }
-                }
+            try {
+                DiscoveryClientRouteDefinitionLocator discoveryClientRouteDefinitionLocator = this.applicationContext.getBean(DiscoveryClientRouteDefinitionLocator.class);
+                // 取默认子服务的路径规则
+                discoveryClientRouteDefinitionLocator.getRouteDefinitions().filter(routeDefinition -> ServiceUtils.startLoadBalance(routeDefinition.getUri()))
+                        .filter(routeDefinition -> ServiceUtils.includeService(routeDefinition.getUri(), service, excludeService))
+                        .subscribe(routeDefinition -> parseRouteDefinition(resources, this.knife4jGatewayProperties.getDiscover(), routeDefinition.getPredicates(), routeDefinition.getId(),
+                                routeDefinition.getUri().getHost()));
+            } catch (Exception e) {
+                // ignore,DiscoveryClientRouteDefinitionLocator有可能不存在，不在Spring容器中
             }
+            // // 使用子服务名称
+            // List<String> serviceList = service.stream().filter(s -> !ServiceUtils.excludeServices(s, excludeService)).collect(Collectors.toList());
+            // if (discoveryLocatorProperties.isEnabled()) {
+            // for (String s : serviceList) {
+            // // 判断当前s是否包含config配置
+            // Knife4jGatewayProperties.ServiceConfigInfo serviceConfigInfo = configInfoMap.get(s);
+            // if (serviceConfigInfo != null) {
+            // String pathPrefix = GlobalConstants.DEFAULT_API_PATH_PREFIX + (discoveryLocatorProperties.isLowerCaseServiceId() ? s.toLowerCase() : s);
+            // String contextPath = PathUtils.append(pathPrefix, serviceConfigInfo.getContextPath());
+            // // 此分组名称外部ui展示使用，非OpenAPI规范url中的groupName
+            // String groupName = serviceConfigInfo.getGroupName();
+            // int order = serviceConfigInfo.getOrder();
+            // String targetUrl = ServiceUtils.getOpenAPIURL(knife4jGatewayProperties.getDiscover(), pathPrefix, null);
+            // // 判断是否多个分组
+            // if (!CollectionUtils.isEmpty(serviceConfigInfo.getGroupNames())) {
+            // // 但是如果一个子服务中配置了多个分组实例，那么groupName和Knife4j的下拉框分组服务的name等价
+            // serviceConfigInfo.getGroupNames().forEach(g -> {
+            // String _url = ServiceUtils.getOpenAPIURL(knife4jGatewayProperties.getDiscover(), pathPrefix, g);
+            // // 添加默认分组
+            // resources.add(new OpenAPI2Resource(_url, order, true, g, contextPath));
+            // });
+            // } else {
+            // // 添加默认分组
+            // resources.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath));
+            // }
+            // }
+            // }
+            // }
         }
         ServiceUtils.addCustomerResources(resources, this.knife4jGatewayProperties);
         // 赋值
@@ -235,5 +250,10 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
                     }
                     resources.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath));
                 });
+    }
+    
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

@@ -19,6 +19,7 @@ package com.github.xiaoymin.knife4j.spring.gateway.utils;
 
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
+import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayRouterStrategy;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -114,7 +115,13 @@ public class ServiceUtils {
         }
         return false;
     }
-    
+
+    public static String getContextPathByRoutePredicate(Map<String, String> args, GatewayRouterStrategy routerStrategy){
+
+        return "";
+    }
+
+
     /**
      * 添加默认开发者自定义配置的资源聚合路由
      * @param resources 路由集合
