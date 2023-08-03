@@ -120,7 +120,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware, ApplicationCont
 
         // 个性化服务的配置信息
         Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = this.knife4jGatewayProperties.getDiscover().getServiceConfig();
-        Set<OpenAPI2Resource> resources = new TreeSet<>(Comparator.comparing(OpenAPI2Resource::getOrder));
+        Set<OpenAPI2Resource> resources = new TreeSet<>();
         // 获取路由定义，并解析
         gatewayProperties.getRoutes()
                 .stream()
