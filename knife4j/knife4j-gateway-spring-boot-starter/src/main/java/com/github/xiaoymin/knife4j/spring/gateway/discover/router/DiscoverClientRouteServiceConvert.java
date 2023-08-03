@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/8/3 16:02
- * @since knife4j
+ * @since knife4j v4.3.0
  */
 @AllArgsConstructor
 @Slf4j
