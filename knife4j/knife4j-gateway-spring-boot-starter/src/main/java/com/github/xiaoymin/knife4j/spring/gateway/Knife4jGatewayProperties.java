@@ -93,6 +93,7 @@ public class Knife4jGatewayProperties {
         private Boolean enabled = Boolean.FALSE;
         /**
          * 需要排除的服务名称(不区分大小写)
+         * @since v4.3.0 版本开始支持正则表达式
          */
         private Set<String> excludedServices = new HashSet<>();
         
