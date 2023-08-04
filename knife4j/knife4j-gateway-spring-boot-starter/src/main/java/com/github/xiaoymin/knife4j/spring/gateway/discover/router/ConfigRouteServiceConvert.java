@@ -50,7 +50,7 @@ public class ConfigRouteServiceConvert extends AbstactServiceRouterConvert {
                 .stream()
                 .filter(routeDefinition -> ServiceUtils.startLoadBalance(routeDefinition.getUri()))
                 .filter(routeDefinition -> ServiceUtils.includeService(routeDefinition.getUri(), routerHolder.getService(), routerHolder.getExcludeService()))
-                .forEach(routeDefinition -> parseRouteDefinition(routerHolder, this.knife4jGatewayProperties.getDiscover(), routeDefinition.getPredicates(), routeDefinition.getId(),
+                .forEach(routeDefinition -> parseRouteDefinition(routerHolder, this.knife4jGatewayProperties.getDiscover(), routeDefinition.getPredicates(), routeDefinition.getUri().getHost(),
                         routeDefinition.getUri().getHost()));
     }
     
