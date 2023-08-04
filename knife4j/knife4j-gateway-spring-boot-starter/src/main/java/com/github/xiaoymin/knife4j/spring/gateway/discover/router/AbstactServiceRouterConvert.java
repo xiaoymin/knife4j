@@ -27,7 +27,6 @@ import com.github.xiaoymin.knife4j.spring.gateway.utils.ServiceUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
-import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -56,6 +55,7 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
                 .filter(predicateDefinition -> GlobalConstants.ROUTER_PATH_NAME.equalsIgnoreCase(predicateDefinition.getName()))
                 .findFirst()
                 .ifPresent(predicateDefinition -> {
+                    log.debug("serviceId:{},serviceName:{}", id, serviceName);
                     Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = discover.getServiceConfig();
                     // String pathPrefix = predicateDefinition.getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("**",StringUtil.EMPTY_STRING);
                     String pathPrefix = convertPathPrefix(predicateDefinition.getArgs());
@@ -80,14 +80,14 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
                             int sort = order;
                             String ctx = contextPath;
                             String url = targetUrl;
-                            groupNames.forEach(_groupName -> routerHolder.add(new OpenAPI2Resource(PathUtils.append(url, _groupName), sort, true, _groupName, ctx)));
+                            groupNames.forEach(_groupName -> routerHolder.add(new OpenAPI2Resource(PathUtils.append(url, _groupName), sort, true, _groupName, ctx, serviceName)));
                             return;
                         }
                     } else {
                         // 如果没有配置service-config，追加一个子服务的前缀contextPath
                         contextPath = PathUtils.processContextPath(pathPrefix);
                     }
-                    routerHolder.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath));
+                    routerHolder.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath, serviceName));
                 });
     }
 }

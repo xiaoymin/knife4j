@@ -21,10 +21,11 @@ import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -44,10 +45,11 @@ public class ServiceRouterHolder {
      * 需要排除的服务列表
      */
     final Set<String> excludeService;
+    
     /**
-     * 整合的分组资源
+     * discoverHandler
      */
-    final Set<OpenAPI2Resource> resources = new TreeSet<>();
+    final ServiceDiscoverHandler discoverHandler;
     
     /**
      * 添加资源
@@ -59,6 +61,22 @@ public class ServiceRouterHolder {
             return;
         }
         log.debug("add resource:{}", resource);
-        this.resources.add(resource);
+        this.discoverHandler.add(resource);
+    }
+    
+    /**
+     * 每次服务发现处理时，清除已经下线的服务
+     */
+    public void clearService() {
+        Set<OpenAPI2Resource> openAPI2Resources = this.discoverHandler.getGatewayResources();
+        if (CollectionUtils.isEmpty(openAPI2Resources)) {
+            return;
+        }
+        // 获取已经下线的服务列表
+        List<String> downService = openAPI2Resources.stream().map(OpenAPI2Resource::getServiceName).filter(s -> !this.service.contains(s)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(downService)) {
+            return;
+        }
+        downService.forEach(this.discoverHandler::remove);
     }
 }

@@ -52,6 +52,7 @@ public class CustomerServiceConvert implements ServiceRouterConvert {
                 resource.setUrl(router.getUrl());
                 resource.setContextPath(router.getContextPath());
                 resource.setId(Base64.getEncoder().encodeToString((resource.getName() + resource.getUrl() + resource.getContextPath()).getBytes(StandardCharsets.UTF_8)));
+                resource.setServiceName(router.getServiceName());
                 routerHolder.add(resource);
             }
         }

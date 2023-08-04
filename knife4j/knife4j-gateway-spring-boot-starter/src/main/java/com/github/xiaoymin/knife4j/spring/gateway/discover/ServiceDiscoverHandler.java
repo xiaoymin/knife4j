@@ -28,9 +28,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -48,7 +48,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware, ApplicationCont
      * 聚合内容
      */
     @Getter
-    private List<OpenAPI2Resource> gatewayResources;
+    final Set<OpenAPI2Resource> gatewayResources = new TreeSet<>();
     
     /**
      * Spring Environment
@@ -84,27 +84,20 @@ public class ServiceDiscoverHandler implements EnvironmentAware, ApplicationCont
     }
     /**
      * 处理注册中心的服务（通过解析路由配置）
-     *
      * @param service 服务列表集合
      */
     public void discover(List<String> service) {
         log.debug("service has change ,do discover doc for default route.");
         Set<String> excludeService = getExcludeService(service);
-        ServiceRouterHolder holder = new ServiceRouterHolder(service, excludeService);
+        ServiceRouterHolder holder = new ServiceRouterHolder(service, excludeService, this);
+        // 每次服务发现回调处理之前，清除已经下线的服务
+        holder.clearService();
         Map<String, ServiceRouterConvert> routerConvertMap = applicationContext.getBeansOfType(ServiceRouterConvert.class);
         List<ServiceRouterConvert> serviceRouterConverts = new ArrayList<>(routerConvertMap.values());
         serviceRouterConverts.sort(Comparator.comparing(ServiceRouterConvert::order));
         for (ServiceRouterConvert routerConvert : serviceRouterConverts) {
             routerConvert.process(holder);
         }
-        log.debug("discover process finished");
-        try {
-            TimeUnit.SECONDS.sleep(3L);
-        } catch (InterruptedException e) {
-            // ignore..
-        }
-        // 赋值
-        this.gatewayResources = new ArrayList<>(holder.getResources());
     }
     
     /**
@@ -115,10 +108,8 @@ public class ServiceDiscoverHandler implements EnvironmentAware, ApplicationCont
      */
     public List<OpenAPI2Resource> getResources(String forwardPath) {
         List<OpenAPI2Resource> resourceList = new ArrayList<>();
-        List<OpenAPI2Resource> resources = getGatewayResources();
-        if (resources != null && !resources.isEmpty()) {
-            // 排序
-            resources.sort(Comparator.comparing(OpenAPI2Resource::getOrder));
+        Set<OpenAPI2Resource> resources = getGatewayResources();
+        if (!CollectionUtils.isEmpty(resources)) {
             for (OpenAPI2Resource resource : resources) {
                 // copy one,https://gitee.com/xiaoym/knife4j/issues/I73AOG
                 OpenAPI2Resource copy = resource.copy();
@@ -140,5 +131,23 @@ public class ServiceDiscoverHandler implements EnvironmentAware, ApplicationCont
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+    
+    /**
+     * 添加分组资源
+     * @param resource 资源
+     * @since v4.3.0
+     */
+    public void add(OpenAPI2Resource resource) {
+        this.gatewayResources.add(resource);
+    }
+    
+    /**
+     * 根据服务名称下线，作用于discover模式下
+     * @param serviceName 服务名称
+     * @since v4.3.0
+     */
+    public void remove(String serviceName) {
+        this.gatewayResources.removeIf(resource -> resource.getServiceName().equalsIgnoreCase(serviceName));
     }
 }
