@@ -32,6 +32,7 @@ public class GlobalConstants {
      * @since v4.3.0
      */
     public static Duration DEFAULT_BLOCK_TIME = Duration.ofSeconds(5L);
+    
     public static final String DEFAULT_API_PATH_PREFIX = "/";
     /**
      * 获取gateway断言的规则名称

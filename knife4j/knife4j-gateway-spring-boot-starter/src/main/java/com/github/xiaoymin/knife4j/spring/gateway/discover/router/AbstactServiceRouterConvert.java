@@ -21,9 +21,11 @@ import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceRouterConvert;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceRouterHolder;
+import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.ServiceUtils;
+import com.github.xiaoymin.knife4j.spring.gateway.utils.StrUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
@@ -60,7 +62,7 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
                     // String pathPrefix = predicateDefinition.getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("**",StringUtil.EMPTY_STRING);
                     String pathPrefix = convertPathPrefix(predicateDefinition.getArgs());
                     log.debug("pathPrefix:{}", pathPrefix);
-                    String contextPath;
+                    String contextPath = GlobalConstants.EMPTY_STR;
                     String groupName = id;
                     int order = 0;
                     String targetUrl = ServiceUtils.getOpenAPIURL(discover, pathPrefix, null);
@@ -69,7 +71,17 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
                     Knife4jGatewayProperties.ServiceConfigInfo configInfo = configInfoMap.get(serviceName);
                     if (configInfo != null) {
                         order = configInfo.getOrder();
-                        contextPath = PathUtils.append(pathPrefix, configInfo.getContextPath());
+                        if (discover.getVersion() == OpenApiVersion.OpenAPI3) {
+                            // 如果是springfox-swagger2，springfox框架会自动根据targetUrl访问追加一个basePath路径到Swagger2规范中
+                            // 避免重复追加ContextPath路径，此规则只作用与openapi3
+                            contextPath = PathUtils.append(pathPrefix, configInfo.getContextPath());
+                        } else if (discover.getVersion() == OpenApiVersion.Swagger2) {
+                            // 如果是swagger2场景，判断当前contextPath配置的是否为空
+                            if (StrUtil.isNotBlank(configInfo.getContextPath()) && !GlobalConstants.DEFAULT_API_PATH_PREFIX.equals(configInfo.getContextPath())) {
+                                // 用户自行设定，追加
+                                contextPath = configInfo.getContextPath();
+                            }
+                        }
                         // 复用contextPath的路径
                         targetUrl = PathUtils.append(contextPath, ServiceUtils.getOpenAPIURL(discover, GlobalConstants.DEFAULT_API_PATH_PREFIX, null));
                         List<String> groupNames = configInfo.getGroupNames();
@@ -85,7 +97,10 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
                         }
                     } else {
                         // 如果没有配置service-config，追加一个子服务的前缀contextPath
-                        contextPath = PathUtils.processContextPath(pathPrefix);
+                        // 仅在openapi3框架下追加，springfox-swagger2会默认根据url的请求，自动在Swagger2规范中设置一个basePath属性
+                        if (discover.getVersion() == OpenApiVersion.OpenAPI3) {
+                            contextPath = PathUtils.processContextPath(pathPrefix);
+                        }
                     }
                     routerHolder.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath, serviceName));
                 });
