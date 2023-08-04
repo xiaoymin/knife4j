@@ -148,6 +148,7 @@ public class ServiceDiscoverHandler implements EnvironmentAware, ApplicationCont
      * @since v4.3.0
      */
     public void remove(String serviceName) {
+        log.debug("Service `{}` has been offline, removed", serviceName);
         this.gatewayResources.removeIf(resource -> resource.getServiceName().equalsIgnoreCase(serviceName));
     }
 }
