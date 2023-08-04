@@ -114,12 +114,12 @@ public class OpenAPI2Resource extends AbstractOpenAPIResource {
             return false;
         }
         OpenAPI2Resource that = (OpenAPI2Resource) o;
-        return Objects.equals(getName(), that.getName()) && Objects.equals(getUrl(), that.getUrl()) && Objects.equals(getContextPath(), that.getContextPath()) && Objects.equals(getId(), that.getId());
+        return Objects.equals(getName(), that.getName()) && Objects.equals(getUrl(), that.getUrl()) && Objects.equals(getContextPath(), that.getContextPath()) && Objects.equals(getId(), that.getId()  )&& Objects.equals(getServiceName(),that.getServiceName());
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getUrl(), getContextPath(), getId());
+        return Objects.hash(getName(), getUrl(), getContextPath(), getId(),getServiceName());
     }
     
     /**
