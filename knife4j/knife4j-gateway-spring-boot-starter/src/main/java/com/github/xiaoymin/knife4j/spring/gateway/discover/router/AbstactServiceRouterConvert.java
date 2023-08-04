@@ -24,7 +24,10 @@ import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceRouterHolder;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.ServiceUtils;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -35,6 +38,8 @@ import java.util.Map;
  * 2023/8/3 15:03
  * @since knife4j v4.3.0
  */
+@AllArgsConstructor
+@Slf4j
 public abstract class AbstactServiceRouterConvert implements ServiceRouterConvert {
     
     /**
@@ -54,6 +59,7 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
                     Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = discover.getServiceConfig();
                     // String pathPrefix = predicateDefinition.getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("**",StringUtil.EMPTY_STRING);
                     String pathPrefix = convertPathPrefix(predicateDefinition.getArgs());
+                    log.debug("pathPrefix:{}", pathPrefix);
                     String contextPath;
                     String groupName = id;
                     int order = 0;
@@ -64,7 +70,8 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
                     if (configInfo != null) {
                         order = configInfo.getOrder();
                         contextPath = PathUtils.append(pathPrefix, configInfo.getContextPath());
-                        targetUrl = PathUtils.append(contextPath, targetUrl);
+                        // 复用contextPath的路径
+                        targetUrl = PathUtils.append(contextPath, ServiceUtils.getOpenAPIURL(discover, GlobalConstants.DEFAULT_API_PATH_PREFIX, null));
                         List<String> groupNames = configInfo.getGroupNames();
                         if (CollectionUtils.isEmpty(groupNames)) {
                             groupName = configInfo.getGroupName();

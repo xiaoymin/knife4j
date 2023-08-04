@@ -19,6 +19,7 @@ package com.github.xiaoymin.knife4j.spring.gateway.spec.v2;
 
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.AbstractOpenAPIResource;
+import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -75,7 +76,7 @@ public class OpenAPI2Resource extends AbstractOpenAPIResource {
         super(order, discover);
         this.name = groupName;
         this.url = url;
-        this.contextPath = contextPath;
+        this.contextPath = PathUtils.processContextPath(contextPath);
         this.id = Base64.getEncoder().encodeToString((groupName + url +
                 contextPath).getBytes(StandardCharsets.UTF_8));
     }

@@ -20,6 +20,7 @@ package com.github.xiaoymin.knife4j.spring.gateway.discover;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,7 @@ import java.util.TreeSet;
  * 2023/8/3 14:49
  * @since knife4j v4.3.0
  */
+@Slf4j
 @Getter
 @AllArgsConstructor
 public class ServiceRouterHolder {
@@ -52,7 +54,11 @@ public class ServiceRouterHolder {
      * @param resource 分组聚合资源
      */
     public void add(OpenAPI2Resource resource) {
+        if (resource == null) {
+            log.warn("resource is null");
+            return;
+        }
+        log.debug("add resource:{}", resource);
         this.resources.add(resource);
     }
-    
 }

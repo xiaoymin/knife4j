@@ -18,6 +18,7 @@
 package com.github.xiaoymin.knife4j.spring.gateway.discover.router;
 
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
+import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceRouterHolder;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayRouterStrategy;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.ServiceUtils;
@@ -25,8 +26,11 @@ import com.github.xiaoymin.knife4j.spring.gateway.utils.StrUtil;
 import io.netty.util.internal.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
+import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,12 +46,12 @@ public class DynamicRouteServiceConvert extends AbstactServiceRouterConvert {
     final Knife4jGatewayProperties knife4jGatewayProperties;
     
     @Override
-    public void process(ServiceRouterHolder routerHolder) {
-        // 动态路由
+    public void process(ServiceRouterHolder holder) {
+        log.debug("Spring Cloud Gateway Dynamic Route process...");
         routeDefinitionRepository.getRouteDefinitions()
                 .filter(routeDefinition -> ServiceUtils.startLoadBalance(routeDefinition.getUri()))
-                .filter(routeDefinition -> ServiceUtils.includeService(routeDefinition.getUri(), routerHolder.getService(), routerHolder.getExcludeService()))
-                .subscribe(routeDefinition -> parseRouteDefinition(routerHolder, this.knife4jGatewayProperties.getDiscover(), routeDefinition.getPredicates(), routeDefinition.getId(),
+                .filter(routeDefinition -> ServiceUtils.includeService(routeDefinition.getUri(), holder.getService(), holder.getExcludeService()))
+                .subscribe(routeDefinition -> parseRouteDefinition(holder, this.knife4jGatewayProperties.getDiscover(), routeDefinition.getPredicates(), routeDefinition.getId(),
                         routeDefinition.getUri().getHost()));
     }
     
@@ -58,5 +62,10 @@ public class DynamicRouteServiceConvert extends AbstactServiceRouterConvert {
             return value.replace("**", StringUtil.EMPTY_STRING);
         }
         return StringUtil.EMPTY_STRING;
+    }
+    
+    @Override
+    public int order() {
+        return GatewayRouterStrategy.DYNAMIC.getOrder();
     }
 }

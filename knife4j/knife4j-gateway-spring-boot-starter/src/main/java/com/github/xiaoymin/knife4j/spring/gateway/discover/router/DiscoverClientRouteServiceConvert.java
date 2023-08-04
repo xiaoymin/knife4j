@@ -26,7 +26,6 @@ import io.netty.util.internal.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator;
-
 import java.util.Map;
 
 /**
@@ -42,8 +41,10 @@ public class DiscoverClientRouteServiceConvert extends AbstactServiceRouterConve
     final Knife4jGatewayProperties knife4jGatewayProperties;
     @Override
     public void process(ServiceRouterHolder holder) {
+        log.debug("Spring Cloud Gateway DiscoverClient process.");
         // 取默认子服务的路径规则
-        discoveryClientRouteDefinitionLocator.getRouteDefinitions().filter(routeDefinition -> ServiceUtils.startLoadBalance(routeDefinition.getUri()))
+        discoveryClientRouteDefinitionLocator.getRouteDefinitions()
+                .filter(routeDefinition -> ServiceUtils.startLoadBalance(routeDefinition.getUri()))
                 .filter(routeDefinition -> ServiceUtils.includeService(routeDefinition.getUri(), holder.getService(), holder.getExcludeService()))
                 .subscribe(routeDefinition -> parseRouteDefinition(holder, this.knife4jGatewayProperties.getDiscover(), routeDefinition.getPredicates(), routeDefinition.getId(),
                         routeDefinition.getUri().getHost()));

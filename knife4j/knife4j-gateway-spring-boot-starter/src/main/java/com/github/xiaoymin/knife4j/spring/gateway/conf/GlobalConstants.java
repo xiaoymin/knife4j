@@ -17,6 +17,8 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.conf;
 
+import java.time.Duration;
+
 /***
  *
  * @since  1.9.0
@@ -25,6 +27,11 @@ package com.github.xiaoymin.knife4j.spring.gateway.conf;
  */
 public class GlobalConstants {
     
+    /**
+     * 默认阻塞时间
+     * @since v4.3.0
+     */
+    public static Duration DEFAULT_BLOCK_TIME = Duration.ofSeconds(5L);
     public static final String DEFAULT_API_PATH_PREFIX = "/";
     /**
      * 获取gateway断言的规则名称

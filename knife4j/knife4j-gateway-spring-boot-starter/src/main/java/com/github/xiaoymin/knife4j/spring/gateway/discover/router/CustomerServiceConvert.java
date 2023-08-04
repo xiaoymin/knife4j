@@ -23,6 +23,7 @@ import com.github.xiaoymin.knife4j.spring.gateway.discover.ServiceRouterHolder;
 import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayRouterStrategy;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -33,6 +34,7 @@ import java.util.Base64;
  * 2023/8/3 16:16
  * @since knife4j v4.3.0
  */
+@Slf4j
 @AllArgsConstructor
 public class CustomerServiceConvert implements ServiceRouterConvert {
     
@@ -40,6 +42,7 @@ public class CustomerServiceConvert implements ServiceRouterConvert {
     
     @Override
     public void process(ServiceRouterHolder routerHolder) {
+        log.debug("Knife4j Gateway Routes Config process...");
         // 在添加自己的配置的个性化的服务
         if (knife4jGatewayProperties.getRoutes() != null) {
             for (Knife4jGatewayProperties.Router router : knife4jGatewayProperties.getRoutes()) {
@@ -56,6 +59,6 @@ public class CustomerServiceConvert implements ServiceRouterConvert {
     
     @Override
     public int order() {
-        return GatewayRouterStrategy.CONFIG.getOrder();
+        return GatewayRouterStrategy.CUSTOM.getOrder();
     }
 }

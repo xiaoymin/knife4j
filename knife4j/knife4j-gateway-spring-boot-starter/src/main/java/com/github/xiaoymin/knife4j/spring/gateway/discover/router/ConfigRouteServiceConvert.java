@@ -44,6 +44,7 @@ public class ConfigRouteServiceConvert extends AbstactServiceRouterConvert {
     
     @Override
     public void process(ServiceRouterHolder routerHolder) {
+        log.debug("Spring Cloud Gateway Routes Config process.");
         // 获取路由定义，并解析
         gatewayProperties.getRoutes()
                 .stream()

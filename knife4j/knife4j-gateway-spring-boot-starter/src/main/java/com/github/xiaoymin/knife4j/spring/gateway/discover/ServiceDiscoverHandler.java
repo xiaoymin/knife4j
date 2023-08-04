@@ -30,6 +30,7 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -95,6 +96,12 @@ public class ServiceDiscoverHandler implements EnvironmentAware, ApplicationCont
         serviceRouterConverts.sort(Comparator.comparing(ServiceRouterConvert::order));
         for (ServiceRouterConvert routerConvert : serviceRouterConverts) {
             routerConvert.process(holder);
+        }
+        log.debug("discover process finished");
+        try {
+            TimeUnit.SECONDS.sleep(3L);
+        } catch (InterruptedException e) {
+            // ignore..
         }
         // 赋值
         this.gatewayResources = new ArrayList<>(holder.getResources());
