@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * 在discover服务发现场景下，针对自定义添加的routes，默认再次追加
+ * 在discover服务发现场景下，针对自定义添加的routes，默认再次追加，数据来源：knife4j.gateway.routes
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/8/3 16:16
  * @since knife4j v4.3.0

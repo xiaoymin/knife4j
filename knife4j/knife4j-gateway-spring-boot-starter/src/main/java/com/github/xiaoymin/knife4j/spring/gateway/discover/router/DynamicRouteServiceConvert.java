@@ -30,6 +30,7 @@ import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
 import java.util.Map;
 
 /**
+ * 接收编码方式动态注入Spring Cloud Gateway网关的路由，进行聚合转发
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/8/3 16:00
  * @since knife4j v4.3.0
