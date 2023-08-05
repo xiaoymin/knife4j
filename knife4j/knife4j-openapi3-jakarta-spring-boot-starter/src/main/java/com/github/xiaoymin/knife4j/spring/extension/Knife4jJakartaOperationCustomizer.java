@@ -57,6 +57,9 @@ public class Knife4jJakartaOperationCustomizer implements GlobalOperationCustomi
                 if (StrUtil.isNotBlank(author)) {
                     operation.addExtension(ExtensionsConstants.EXTENSION_AUTHOR, author);
                 }
+                if (apiSupport.order() != 0) {
+                    operation.addExtension(ExtensionsConstants.EXTENSION_ORDER, apiSupport.order());
+                }
             }
         }
         return operation;
