@@ -156,6 +156,32 @@ function isUrl(path) {
 }
 
 const utils = {
+  /**
+   * 判断类型，是否为JSON格式
+   * @param {*} produces produces
+   */
+  assertProducesJson(produces) {
+    if (!this.checkUndefined(produces)) {
+      return false;
+    }
+    // 追加一个自定义json的MIME类型实现，issues：https://github.com/xiaoymin/knife4j/issues/597
+    // MIME类型是：application/vnd.dim.s.v1+json
+    //  "application/vnd.dim.s.v1+json" 是一种自定义的MIME类型，其中的 "vnd.dim.s.v1" 表示可能是某个特定厂商、组织或项目的标识符、版本，而 "application/json" 则是标准的JSON数据格式的MIME类型。
+    // 针对OpenAPI3的规范,由于统一添加了blob类型，此处需要判断
+    if (produces == "application/json" ||
+      produces == "application/xml" ||
+      produces == "text/html" ||
+      produces == "text/plain") {
+      return true;
+    } else {
+      //判断自定义扩展的MIME类型
+      // application/vnd.dim.s.v1+json
+      if (produces.toLowerCase().indexOf("json") > -1) {
+        return true;
+      }
+    }
+    return false;
+  },
   getLocationParams(name) {
     var url = window.location.href;
     let paramIndex = url.indexOf('?')

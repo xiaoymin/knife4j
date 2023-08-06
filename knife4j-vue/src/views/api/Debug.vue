@@ -3189,11 +3189,15 @@ export default {
           // 判断是否是blob类型
           var contentDisposition = KUtils.propValue("content-disposition", headers, "");
           if (resp.responseType == "blob" || KUtils.strNotBlank(contentDisposition)) {
+            // 追加一个自定义json的MIME类型实现，issues：https://github.com/xiaoymin/knife4j/issues/597
+            // MIME类型是：application/vnd.dim.s.v1+json
+            //  "application/vnd.dim.s.v1+json" 是一种自定义的MIME类型，其中的 "vnd.dim.s.v1" 表示可能是某个特定厂商、组织或项目的标识符、版本，而 "application/json" 则是标准的JSON数据格式的MIME类型。
             // 针对OpenAPI3的规范,由于统一添加了blob类型，此处需要判断
-            if (res.data.type == "application/json" ||
-              res.data.type == "application/xml" ||
-              res.data.type == "text/html" ||
-              res.data.type == "text/plain") {
+            if (KUtils.assertProducesJson(res.data.type)) {
+              // if (res.data.type == "application/json" ||
+              //   res.data.type == "application/xml" ||
+              //   res.data.type == "text/html" ||
+              //   res.data.type == "text/plain") {
               // 服务端返回JSON数据,Blob对象转为JSON
               const reader = new FileReader();
               reader.onload = e => {
