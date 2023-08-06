@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j</artifactId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.3.0</version>
     <modules>
         <module>knife4j-core</module>
         <module>knife4j-dependencies</module>
@@ -37,7 +37,7 @@
         </developer>
     </developers>
     <properties>
-        <revision>4.2.0</revision>
+        <revision>4.3.0</revision>
         <knife4j-project.build.sourceEncoding>UTF-8</knife4j-project.build.sourceEncoding>
         <knife4j-java.version>1.8</knife4j-java.version>
         <knife4j-spring.version>5.3.20</knife4j-spring.version>
@@ -108,17 +108,17 @@
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-core</artifactId>
-                <version>4.3.0-SNAPSHOT</version>
+                <version>4.3.0</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi2-ui</artifactId>
-                <version>4.3.0-SNAPSHOT</version>
+                <version>4.3.0</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi3-ui</artifactId>
-                <version>4.3.0-SNAPSHOT</version>
+                <version>4.3.0</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
             <dependency>
