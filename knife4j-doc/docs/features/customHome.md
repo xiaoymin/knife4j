@@ -14,12 +14,16 @@ knife4j:
   enable: true
   setting:
     enable-home-custom: true
+    # 自4.1.0版本开始，该属性过时，请使用下面home-custom-path属性
     home-custom-location: classpath:markdown/home.md
+    # 自4.1.0版本开始，替代home-custom-location属性，开发者请使用该配置
+    home-custom-path: classpath:markdown/home.md
 ```
 
 属性说明：
 - `enable-home-custom`:该属性为Boolean值,默认`false`，如果开发者要自定义主页内容,该选项设置为`true`
 - `home-custom-location`:提供一个主页的Markdown文件位置
+- `home-custom-path`:提供一个主页的Markdown文件位置
 
 
 :::danger 重要提醒
