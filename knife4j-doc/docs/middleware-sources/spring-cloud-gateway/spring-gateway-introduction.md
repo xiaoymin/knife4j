@@ -42,6 +42,10 @@ knife4j:
   # 聚合swagger文档
   gateway:
     enabled: true
+    # 排序规则(tag/operation排序自4.2.0版本新增)
+    # 取值：alpha-默认排序规则，官方swagger-ui默认实现,order-Knife4j提供的增强排序规则，开发者可扩展x-order，根据数值来自定义排序
+    tags-sorter: order
+    operations-sorter: order
      # 指定手动配置的模式(默认为该模式)
     strategy: manual
     routes:
@@ -98,6 +102,10 @@ knife4j:
   gateway:
     # 是否开启
     enabled: true
+    # 排序规则(tag/operation排序自4.2.0版本新增)
+    # 取值：alpha-默认排序规则，官方swagger-ui默认实现,order-Knife4j提供的增强排序规则，开发者可扩展x-order，根据数值来自定义排序
+    tags-sorter: order
+    operations-sorter: order
     # 指定服务发现的模式聚合微服务文档，并且是默认`default`分组
     strategy: discover
     # 子服务存在其他分组情况，聚合其他分组，只能手动配置

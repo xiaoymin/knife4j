@@ -17,6 +17,7 @@
 
 package com.github.xiaoymin.knife4j.spring.gateway.utils;
 
+import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.StringUtils;
@@ -28,8 +29,6 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties.DEFAULT_API_PATH_PREFIX;
 
 /**
  * @author <a href="milo.xiaomeng@gmail.com">milo.xiaomeng@gmail.com</a>
@@ -63,13 +62,13 @@ public class PathUtils {
     
     public static String append(String... paths) {
         if (Objects.isNull(paths) || paths.length == 0) {
-            return DEFAULT_API_PATH_PREFIX;
+            return GlobalConstants.DEFAULT_API_PATH_PREFIX;
         }
         String fullPath = Arrays.stream(paths)
                 .filter(StringUtils::hasLength)
-                .map(path -> DEFAULT_API_PATH_PREFIX + path)
+                .map(path -> GlobalConstants.DEFAULT_API_PATH_PREFIX + path)
                 .collect(Collectors.joining());
-        return fullPath.replaceAll(DEFAULT_API_PATH_PREFIX + "+", DEFAULT_API_PATH_PREFIX);
+        return fullPath.replaceAll(GlobalConstants.DEFAULT_API_PATH_PREFIX + "+", GlobalConstants.DEFAULT_API_PATH_PREFIX);
     }
     
     /**
@@ -115,6 +114,16 @@ public class PathUtils {
             validateContextPath = validateContextPath.substring(0, validateContextPath.length() - 1);
         }
         return validateContextPath;
+    }
+    
+    /**
+     * 判断ContextPath非空,并且不等于"/"字符串
+     * @param contextPath contextPath
+     * @return True-空，FALSE-不满足
+     * @since v4.3.0
+     */
+    public static boolean contextPathNull(String contextPath) {
+        return StrUtil.isNotBlank(contextPath) && !contextPath.equalsIgnoreCase(PathUtils.DEFAULT_CONTEXT_PATH);
     }
     
     private PathUtils() {

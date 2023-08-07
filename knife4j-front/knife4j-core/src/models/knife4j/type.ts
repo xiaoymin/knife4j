@@ -1,7 +1,9 @@
 import { Knife4jTagObject } from "./knife4jTag"
 import { Knife4jInfoObject } from "./knife4jInfo"
 import { Knife4jPathItemObject } from "./knife4jPath";
+import { Knife4jExternalDocumentationObject } from "./ExternalObject";
 import lodash from "lodash"
+import { Knife4jServer } from "./knife4jServers";
 
 /**
  * 该类是所有parse方法最重输出的对象
@@ -20,6 +22,9 @@ export class Knife4jInstance {
     tags: Array<Knife4jTagObject> = [];
     //分组接口
     paths: Array<Knife4jPathItemObject> = [];
+    servers: Array<Knife4jServer> = [];
+    //外部扩展配置
+    extDoc?: Knife4jExternalDocumentationObject;
     /**
      * 构造函数
      * @param name 名称
@@ -73,5 +78,21 @@ export class Knife4jInstance {
      */
     addOperation(operation: Knife4jPathItemObject): void {
         this.paths.push(operation);
+    }
+
+    /**
+     * 设置外部文档对象
+     * @param ext 设置外部文档对象
+     */
+    setExtDoc(ext: Knife4jExternalDocumentationObject) {
+        this.extDoc = ext;
+    }
+
+    /**
+     * 设置servers信息
+     * @param server server信息
+     */
+    addServer(server: Knife4jServer) {
+        this.servers.push(server)
     }
 }

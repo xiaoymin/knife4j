@@ -21,23 +21,16 @@ import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.discover.spi.GatewayServiceExcludeService;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
-import com.github.xiaoymin.knife4j.spring.gateway.utils.ServiceUtils;
-import io.netty.util.internal.StringUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.gateway.config.GatewayProperties;
-import org.springframework.cloud.gateway.route.RouteDefinition;
-import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.support.NameUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-
-import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties.DEFAULT_OPEN_API_V3_PATH;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -45,39 +38,26 @@ import static com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayPropertie
  * @since knife4j v4.1.0
  */
 @Slf4j
-public class ServiceDiscoverHandler implements EnvironmentAware {
-    
-    final RouteDefinitionRepository routeDefinitionRepository;
-    final RouteLocator routeLocator;
-    final GatewayProperties gatewayProperties;
+public class ServiceDiscoverHandler implements EnvironmentAware, ApplicationContextAware {
     
     /**
      * Knife4j gateway properties
      */
     final Knife4jGatewayProperties knife4jGatewayProperties;
-    final ApplicationContext applicationContext;
-    private final String PATH = "Path";
-    
     /**
      * 聚合内容
      */
     @Getter
-    private List<OpenAPI2Resource> gatewayResources;
+    final Set<OpenAPI2Resource> gatewayResources = new TreeSet<>();
     
     /**
      * Spring Environment
      */
     private Environment environment;
+    private ApplicationContext applicationContext;
     
-    public ServiceDiscoverHandler(RouteDefinitionRepository routeDefinitionRepository,
-                                  RouteLocator routeLocator,
-                                  GatewayProperties gatewayProperties,
-                                  Knife4jGatewayProperties knife4jGatewayProperties, ApplicationContext applicationContext) {
-        this.routeDefinitionRepository = routeDefinitionRepository;
-        this.routeLocator = routeLocator;
-        this.gatewayProperties = gatewayProperties;
+    public ServiceDiscoverHandler(Knife4jGatewayProperties knife4jGatewayProperties) {
         this.knife4jGatewayProperties = knife4jGatewayProperties;
-        this.applicationContext = applicationContext;
     }
     
     /**
@@ -104,29 +84,20 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
     }
     /**
      * 处理注册中心的服务（通过解析路由配置）
-     *
      * @param service 服务列表集合
      */
     public void discover(List<String> service) {
         log.debug("service has change ,do discover doc for default route.");
         Set<String> excludeService = getExcludeService(service);
-        // 个性化服务的配置信息
-        Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = this.knife4jGatewayProperties.getDiscover().getServiceConfig();
-        Set<OpenAPI2Resource> resources = new TreeSet<>(Comparator.comparing(OpenAPI2Resource::getOrder));
-        // 获取路由定义，并解析
-        gatewayProperties.getRoutes()
-                .stream()
-                .filter(routeDefinition -> ServiceUtils.startLoadBalance(routeDefinition.getUri()))
-                .filter(routeDefinition -> ServiceUtils.includeService(routeDefinition.getUri(), service, excludeService))
-                .forEach(routeDefinition -> parseRouteDefinition(resources, configInfoMap, routeDefinition));
-        // 动态路由
-        routeDefinitionRepository.getRouteDefinitions()
-                .filter(routeDefinition -> ServiceUtils.startLoadBalance(routeDefinition.getUri()))
-                .filter(routeDefinition -> ServiceUtils.includeService(routeDefinition.getUri(), service, excludeService))
-                .subscribe(routeDefinition -> parseRouteDefinition(resources, configInfoMap, routeDefinition));
-        ServiceUtils.addCustomerResources(resources, this.knife4jGatewayProperties);
-        // 赋值
-        this.gatewayResources = new ArrayList<>(resources);
+        ServiceRouterHolder holder = new ServiceRouterHolder(service, excludeService, this);
+        // 每次服务发现回调处理之前，清除已经下线的服务
+        holder.clearService();
+        Map<String, ServiceRouterConvert> routerConvertMap = applicationContext.getBeansOfType(ServiceRouterConvert.class);
+        List<ServiceRouterConvert> serviceRouterConverts = new ArrayList<>(routerConvertMap.values());
+        serviceRouterConverts.sort(Comparator.comparing(ServiceRouterConvert::order));
+        for (ServiceRouterConvert routerConvert : serviceRouterConverts) {
+            routerConvert.process(holder);
+        }
     }
     
     /**
@@ -137,10 +108,8 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
      */
     public List<OpenAPI2Resource> getResources(String forwardPath) {
         List<OpenAPI2Resource> resourceList = new ArrayList<>();
-        List<OpenAPI2Resource> resources = getGatewayResources();
-        if (resources != null && !resources.isEmpty()) {
-            // 排序
-            resources.sort(Comparator.comparing(OpenAPI2Resource::getOrder));
+        Set<OpenAPI2Resource> resources = getGatewayResources();
+        if (!CollectionUtils.isEmpty(resources)) {
             for (OpenAPI2Resource resource : resources) {
                 // copy one,https://gitee.com/xiaoym/knife4j/issues/I73AOG
                 OpenAPI2Resource copy = resource.copy();
@@ -159,43 +128,27 @@ public class ServiceDiscoverHandler implements EnvironmentAware {
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
     
-    private void parseRouteDefinition(Set<OpenAPI2Resource> resources,
-                                      Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap,
-                                      RouteDefinition routeDefinition) {
-        routeDefinition.getPredicates()
-                .stream()
-                .filter(predicateDefinition -> PATH.equalsIgnoreCase(predicateDefinition.getName()))
-                .findFirst()
-                .ifPresent(predicateDefinition -> {
-                    String id = routeDefinition.getId();
-                    String serviceName = routeDefinition.getUri().getHost();
-                    String pathPrefix = predicateDefinition.getArgs()
-                            .get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("**",
-                                    StringUtil.EMPTY_STRING);
-                    String contextPath = StringUtil.EMPTY_STRING;
-                    String groupName = id;
-                    int order = 0;
-                    String targetUrl = PathUtils.append(pathPrefix, DEFAULT_OPEN_API_V3_PATH);
-                    // 如果自定义了setting内容 拼接
-                    Knife4jGatewayProperties.ServiceConfigInfo configInfo = configInfoMap.get(serviceName);
-                    if (configInfo != null) {
-                        order = configInfo.getOrder();
-                        contextPath = PathUtils.append(pathPrefix, configInfo.getContextPath());
-                        targetUrl = PathUtils.append(contextPath, DEFAULT_OPEN_API_V3_PATH);
-                        List<String> groupNames = configInfo.getGroupNames();
-                        if (CollectionUtils.isEmpty(groupNames)) {
-                            groupName = configInfo.getGroupName();
-                        } else {
-                            // 服务内接口分组
-                            int sort = order;
-                            String ctx = contextPath;
-                            String url = targetUrl;
-                            groupNames.forEach(_groupName -> resources.add(new OpenAPI2Resource(PathUtils.append(url, _groupName), sort, true, _groupName, ctx)));
-                            return;
-                        }
-                    }
-                    resources.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath));
-                });
+    /**
+     * 添加分组资源
+     * @param resource 资源
+     * @since v4.3.0
+     */
+    public void add(OpenAPI2Resource resource) {
+        this.gatewayResources.add(resource);
+    }
+    
+    /**
+     * 根据服务名称下线，作用于discover模式下
+     * @param serviceName 服务名称
+     * @since v4.3.0
+     */
+    public void remove(String serviceName) {
+        log.debug("Service `{}` has been offline, removed", serviceName);
+        this.gatewayResources.removeIf(resource -> resource.getServiceName().equalsIgnoreCase(serviceName));
     }
 }

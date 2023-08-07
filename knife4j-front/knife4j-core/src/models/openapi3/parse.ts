@@ -4,8 +4,9 @@ import { Knife4jTagObject } from "../knife4j/knife4jTag"
 import { Knife4jExternalDocumentationObject } from "../knife4j/ExternalObject"
 import { Knife4jInfoObject } from "../knife4j/knife4jInfo"
 import lodash from 'lodash'
-import { TagObject, InfoObject, PathsObject, OperationObject } from "./types"
+import { TagObject, InfoObject, PathsObject, OperationObject, ExternalDocumentationObject, ServerObject } from "./types"
 import { Knife4jPathItemObject } from '../knife4j/knife4jPath'
+import { Knife4jServer, Knife4jServerVariableObject } from '../knife4j/knife4jServers'
 
 /**
  * 解析OpenAPI3的规范,参考规范文档：https://spec.openapis.org/oas/v3.1.0
@@ -21,17 +22,25 @@ export class OpenAPIParser extends BaseCommonParser {
     parse(data: Record<string, any>, options: ParseOptions): Knife4jInstance {
         console.log(options)
         let t1 = lodash.now()
-        const instance = new Knife4jInstance('1', '2', '3');
+        // 当前openapi规范的版本
+        const specVersion = lodash.defaultTo(data["openapi"] as string, "3.0");
+        const instance = new Knife4jInstance('1', '2', specVersion);
         instance.originalRecord = data;
         // info信息
         const info = data["info"] as InfoObject;
         this.resolveInfo(info, instance);
-        const tagArray = data["tags"] as TagObject[];
         //解析tag
+        const tagArray = data["tags"] as TagObject[];
         this.resolveTag(tagArray, instance);
         //解析path接口
         const paths = data["paths"] as PathsObject;
         this.resolvePaths(paths, instance);
+        // 解析externalDocs外部文档
+        const extDoc = data["externalDocs"] as ExternalDocumentationObject;
+        this.resolveExternalDoc(extDoc, instance);
+        // 解析servers
+        const serverArray = data["servers"] as ServerObject[];
+        this.resolveServers(serverArray, instance);
         return instance;
     }
 
@@ -142,5 +151,44 @@ export class OpenAPIParser extends BaseCommonParser {
         instance.addOperation(_operation);
     }
 
+
+    /**
+     * 解析外部扩展文档信息
+     * @param extdoc 外部扩展文档信息
+     * @param instance 当前对象实例
+     */
+    resolveExternalDoc(extdoc: ExternalDocumentationObject, instance: Knife4jInstance): void {
+        const _ext = new Knife4jExternalDocumentationObject(extdoc.url);
+        _ext.description = extdoc.description;
+        instance.setExtDoc(_ext);
+    }
+
+    /**
+     * 解析servers节点
+     * @param servers servers数组信息
+     * @param instance  对象实例
+     */
+    resolveServers(servers: ServerObject[], instance: Knife4jInstance): void {
+        if (lodash.isEmpty(servers)) {
+            return;
+        }
+        servers.forEach(server => {
+            const _server = new Knife4jServer(server.url);
+            _server.description = lodash.defaultTo(server.description, "");
+            if (!lodash.isEmpty(server.variables)) {
+                for (let _varKey in server.variables) {
+                    let _varValue = server.variables[_varKey];
+                    if (lodash.isEmpty(_varValue)) {
+                        continue;
+                    }
+                    const _serverMap = new Knife4jServerVariableObject(_varValue.default)
+                    _serverMap.description = lodash.defaultTo(_varValue.description, '')
+                    _serverMap.enum = lodash.defaultTo(_varValue.enum, []);
+                    _server.addVariable(_varKey, _serverMap)
+                }
+            }
+            instance.addServer(_server);
+        })
+    }
 }
 

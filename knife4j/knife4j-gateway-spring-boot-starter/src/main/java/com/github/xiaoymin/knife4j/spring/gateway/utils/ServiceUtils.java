@@ -18,12 +18,17 @@
 package com.github.xiaoymin.knife4j.spring.gateway.utils;
 
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
+import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
+import com.github.xiaoymin.knife4j.spring.gateway.enums.GatewayRouterStrategy;
+import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
 import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * 在服务发现(Discover)场景下的聚合辅助工具类
@@ -35,6 +40,29 @@ import java.util.*;
 public class ServiceUtils {
     
     private final static String LB = "lb://";
+    
+    /**
+     * 根据OpenAPI规范及分组名称不同获取不同的默认地址
+     * @param discover 服务发现配置
+     * @param contextPath contextPath
+     * @param groupName 分组名称
+     * @return openapi地址
+     * @since v4.3.0
+     */
+    public static String getOpenAPIURL(Knife4jGatewayProperties.Discover discover, String contextPath, String groupName) {
+        OpenApiVersion apiVersion = discover.getVersion();
+        StringBuilder urlBuilder = new StringBuilder();
+        String _defaultPath = PathUtils.processContextPath(contextPath);
+        String _groupName = StrUtil.defaultTo(groupName, GlobalConstants.DEFAULT_GROUP_NAME);
+        String groupUrl = "";
+        if (apiVersion == OpenApiVersion.Swagger2) {
+            groupUrl = GlobalConstants.DEFAULT_SWAGGER2_APPEND_PATH + _groupName;
+        } else if (apiVersion == OpenApiVersion.OpenAPI3) {
+            groupUrl = PathUtils.append(GlobalConstants.DEFAULT_OPEN_API_V3_PATH, _groupName);
+        }
+        urlBuilder.append(PathUtils.append(_defaultPath, groupUrl));
+        return urlBuilder.toString();
+    }
     
     /**
      * 判断服务路由是否负载配置
@@ -61,30 +89,30 @@ public class ServiceUtils {
      */
     public static boolean includeService(URI uri, Collection<String> service, Collection<String> excludeService) {
         String serviceName = uri.getHost();
-        return service.contains(serviceName) && !excludeService.contains(serviceName);
+        return service.contains(serviceName) && !excludeServices(serviceName, excludeService);
     }
     
     /**
-     * 添加默认开发者自定义配置的资源聚合路由
-     * @param resources 路由集合
-     * @param gatewayProperties 开发者个性化配置
+     * 判断当前服务是否在排除服务列表中
+     * @param serviceName 服务名称
+     * @param excludeService 排除服务规则列表，支持正则表达式(4.3.0版本)
+     * @return True-在排除服务列表中，False-不满足规则
+     * @since v4.3.0
      */
-    public static void addCustomerResources(Collection<OpenAPI2Resource> resources, Knife4jGatewayProperties gatewayProperties) {
-        if (resources == null || resources.isEmpty() || gatewayProperties == null) {
-            return;
+    public static boolean excludeServices(String serviceName, Collection<String> excludeService) {
+        if (CollectionUtils.isEmpty(excludeService)) {
+            return false;
         }
-        // 在添加自己的配置的个性化的服务
-        if (gatewayProperties.getRoutes() != null) {
-            for (Knife4jGatewayProperties.Router router : gatewayProperties.getRoutes()) {
-                OpenAPI2Resource resource = new OpenAPI2Resource(router.getOrder(), false);
-                resource.setName(router.getName());
-                // 开发者配什么就返回什么
-                resource.setUrl(router.getUrl());
-                resource.setContextPath(router.getContextPath());
-                resource.setId(Base64.getEncoder().encodeToString((resource.getName() + resource.getUrl() + resource.getContextPath()).getBytes(StandardCharsets.UTF_8)));
-                resources.add(resource);
+        for (String es : excludeService) {
+            // 首先根据服务名称直接判断一次
+            if (es.equalsIgnoreCase(serviceName)) {
+                return true;
+            }
+            // 增加正则表达式判断
+            if (Pattern.compile(es, Pattern.CASE_INSENSITIVE).matcher(serviceName).matches()) {
+                return true;
             }
         }
+        return false;
     }
-    
 }

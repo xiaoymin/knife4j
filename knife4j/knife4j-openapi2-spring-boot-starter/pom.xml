@@ -5,7 +5,7 @@
     <parent>
         <artifactId>knife4j</artifactId>
         <groupId>com.github.xiaoymin</groupId>
-        <version>4.2.0</version>
+        <version>4.3.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,12 +26,12 @@
             <version>${knife4j-spring-boot.version}</version>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${knife4j-spring.version}</version>
-            <scope>provided</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-web</artifactId>-->
+<!--            <version>${knife4j-spring.version}</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.github.xiaoymin</groupId>

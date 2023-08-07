@@ -44,6 +44,9 @@ const router = createBrowserRouter([
                 element: <ApiHome />
             }
         ],
+    }, {
+        path: "test",
+        element: <Home />
     }
 ]);
 

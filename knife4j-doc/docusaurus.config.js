@@ -11,10 +11,12 @@ module.exports = {
     trailingSlash: false,
     organizationName: 'xiaoymin',
     projectName: 'swagger-bootstrap-ui',
-    scripts: ['/js/custom.js', '/js/baidu.js', {
-        src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1589206801610969', async: true,
-        crossorigin: "anonymous"
-    }],
+    scripts: ['/js/custom.js', '/js/baidu.js'
+        // , {
+        //     src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1589206801610969', async: true,
+        //     crossorigin: "anonymous"
+        // }
+    ],
     favicon: 'img/favicon.ico',
     i18n: {
         defaultLocale: 'zh-Hans',
@@ -215,7 +217,7 @@ module.exports = {
                             },
                         ],
                     }, {
-                        title: '社区',
+                        title: '社区&友链',
                         items: [
                             {
                                 label: 'Gitter',
@@ -224,6 +226,10 @@ module.exports = {
                             {
                                 label: '开源中国',
                                 href: 'https://www.oschina.net/question/tag/swagger-bootstrap-ui',
+                            },
+                            {
+                                label: 'spring中文文档',
+                                href: 'https://springdoc.cn/',
                             }
                         ],
                     },

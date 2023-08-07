@@ -1963,6 +1963,10 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
                   propValue = {};
                 }
               }
+              //增加title的属性支持
+              if (KUtils.checkUndefined(propobj.title)) {
+                spropObj.description = propobj.title + ":" + spropObj.description;
+              }
               spropObj.value = propValue;
               // 判断是否有format,如果是integer,判断是64位还是32位
               if (spropObj.format != null && spropObj.format != undefined && spropObj.format != '') {
@@ -2189,6 +2193,10 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                         description = description + KUtils.enumAvalibleLabel(that.i18nInstance, p.enum);
                       }
                       refp.description = KUtils.replaceMultipLineStr(description);
+                      //增加title的属性支持
+                      if (KUtils.checkUndefined(p.title)) {
+                        refp.description = p.title + ":" + refp.description;
+                      }
                       that.validateJSR303(refp, p);
                       // models添加所有属性
                       originalTreeTableModel.params.push(refp);
@@ -2279,7 +2287,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                     refp.type = def.type;
                     refp.example = def.example;
                     //description = '可用值:' + def['enum'].join(',');
-                    description = spropObj.description + KUtils.enumAvalibleLabel(that.i18nInstance, def['enum']);
+                    description = def.description + KUtils.enumAvalibleLabel(that.i18nInstance, def['enum']);
                     refp.description = KUtils.replaceMultipLineStr(description);
                     // models添加所有属性
                     originalTreeTableModel.params.push(refp);
@@ -3606,7 +3614,7 @@ SwaggerBootstrapUi.prototype.analysisAllOfOAS2 = function (allOf) {
           return;
         }
         const elementObjName = elementObjNameMatch[1];
-        patchPropertiesNames.push("[]"+elementObjName);
+        patchPropertiesNames.push("[]" + elementObjName);
       }
       // 基本类型
       if (element.hasOwnProperty("type" && element.type != "array")) {
@@ -6009,7 +6017,10 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
       minfo.value = '';
     }
   }
-
+  //增加title的属性支持
+  if (KUtils.checkUndefined(m.title)) {
+    minfo.description = m.title + ":" + minfo.description;
+  }
   if (minfo.in == 'body') {
     if (isUndefined(minfo.txtValue) || isNull(minfo.txtValue)) {
       //  ********************************************************************

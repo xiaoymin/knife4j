@@ -12,4 +12,8 @@ test("testClassTransformer-o3", () => {
     //console.log("tags:", instance.tags.length)
     //console.log("info:", instance.info)
     console.log(instance.tagNames)
+    console.log("extDoc.")
+    console.log(instance.extDoc)
+    console.log("server")
+    console.log(instance.servers)
 })

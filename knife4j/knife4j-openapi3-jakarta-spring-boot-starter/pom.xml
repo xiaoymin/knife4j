@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.xiaoymin</groupId>
         <artifactId>knife4j</artifactId>
-        <version>4.2.0</version>
+        <version>4.3.0</version>
     </parent>
 
     <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
@@ -14,19 +14,13 @@
     <properties>
         <knife4j-java.version>17</knife4j-java.version>
         <knife4j-spring3.version>6.0.6</knife4j-spring3.version>
-        <knife4j-spring-boot3.version>3.0.7</knife4j-spring-boot3.version>
+        <knife4j-spring-boot3.version>3.0.4</knife4j-spring-boot3.version>
 
         <knife4j-javassist.version>3.29.2-GA</knife4j-javassist.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <knife4j-skipTests>true</knife4j-skipTests>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>${knife4j-spring-boot3.version}</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
@@ -45,41 +39,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${knife4j-spring3.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${knife4j-spring3.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-common</artifactId>
-            <version>${knife4j-springdoc-openapi-jakarta.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-            <version>${knife4j-springdoc-openapi-jakarta.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${knife4j-springdoc-openapi-jakarta.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations-jakarta</artifactId>
-            <version>${knife4j-swagger-models-v3.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-models-jakarta</artifactId>
-            <version>${knife4j-swagger-models-v3.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>

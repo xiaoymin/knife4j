@@ -13,11 +13,11 @@ import { Resizable } from 'react-resizable';
 import { Route, useNavigate, Outlet } from 'react-router-dom';
 const { Header, Sider, Content, Footer } = Layout;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
-const defaultPanes = new Array(2).fill(null).map((_, index) => {
-  const id = String(index + 1);
-  return { label: `Tab ${id}`, children: `Content of Tab Pane ${index + 1}`, key: id };
+const defaultPanes = new Array(1).fill(null).map((_, index) => {
+  return { label: '主页', children: '', key: '/group/home' };
 });
 
+import Home from './pages/Home';
 
 
 const footerStyle: React.CSSProperties = {
@@ -55,7 +55,16 @@ const App: React.FC = () => {
 
   //menu
   const menuClick = (menu) => {
-    setSelectedKey(menu.key);
+    console.log(menu)
+    const newActiveKey = menu.key;
+    const tabExists = items.some((pane) => pane.key === newActiveKey);
+    if (!tabExists) {
+
+      const title = menu.item.props.title;
+      setItems([...items, { label: title, children: '', key: newActiveKey }]);
+    }
+    setSelectedKey(newActiveKey);
+    setActiveKey(newActiveKey);
     // 执行其他处理逻辑
     console.log('Clicked menu item:', menu);
     //const newActiveKey = `newTab${newTabIndex.current++}`;
@@ -148,24 +157,29 @@ const App: React.FC = () => {
                   key: '/group/home',
                   icon: <UserOutlined />,
                   label: '主页',
+                  title: '主页'
                 },
                 {
                   key: '/group/schema',
                   icon: <VideoCameraOutlined />,
                   label: '实体类列表',
+                  title: '实体类列表'
                 },
                 {
                   key: '/group/Settings',
                   icon: <UploadOutlined />,
                   label: '文档管理',
+                  title: '文档管理'
                 }, {
                   key: '/group/authorize',
                   icon: <UploadOutlined />,
                   label: '鉴权中心模块',
+                  title: '鉴权中心模块'
                 }, {
                   key: '/group/tag1/api1',
                   icon: <UploadOutlined />,
                   label: '开放接口模块',
+                  title: '开放接口模块',
                 },
               ]}
             />
@@ -217,8 +231,9 @@ const App: React.FC = () => {
                 // 将Tabs的父容器高度设置为100%
                 style={{ flex: 1, margin: '2px 2px' }}
               >
-                <Route path="/content/:tabId" element={<TabPane title={'234'} />} />
+
               </Tabs>
+
             </div>
           </Content>
           <Footer style={footerStyle}>Apache License 2.0 | Copyright  2019-Knife4j v5.0</Footer>
