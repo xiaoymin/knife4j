@@ -2742,8 +2742,17 @@ export default {
         }
         // 需要判断是否是下载请求
         // https://gitee.com/xiaoym/knife4j/issues/I1U4LA
-        if (this.debugStreamFlag()) {
-          // 流请求
+        // 判断当前接口规范是OAS3还是Swagger2
+        if (this.oas2) {
+          // OAS2规范制定了produces的定义,需要判断请求头
+          // 需要判断是否是下载请求
+          if (this.debugStreamFlag()) {
+            // 流请求
+            requestConfig = { ...requestConfig, responseType: "blob" };
+          }
+        } else {
+          // 统一追加一个blob类型的响应,在OpenAPI3.0的规范中,没有关于produces的设定，因此无法判断当前请求是否是流的请求
+          // https://gitee.com/xiaoym/knife4j/issues/I374SP
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
         // console(headers);
