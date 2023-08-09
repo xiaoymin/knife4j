@@ -5,12 +5,18 @@ import { Knife4jExternalDocumentationObject } from "./ExternalObject";
 import lodash from "lodash"
 import { Knife4jServer } from "./knife4jServers";
 
+import { ISpecParser } from "./baseParse";
+import { ParseOptions } from "./baseParse";
+
 /**
  * 该类是所有parse方法最重输出的对象
  */
 export class Knife4jInstance {
     // 原始结构数据
     originalRecord: Record<string, any> = {};
+    /**当前规范数据的解析器，方便异步解析操作 */
+    parseFactory: ISpecParser;
+    parseOptions: ParseOptions;
     id: string;
     name: string;
     url: string;
@@ -31,11 +37,13 @@ export class Knife4jInstance {
      * @param location OpenAPI接口资源地址
      * @param version 版本，2.0或者3.0
      */
-    constructor(name: string, location: string, version: string) {
+    constructor(name: string, location: string, version: string, factory: ISpecParser, options: ParseOptions) {
         this.id = "12";
         this.name = name;
         this.url = location;
         this.version = version;
+        this.parseFactory = factory;
+        this.parseOptions = options;
     }
 
     /**
@@ -94,5 +102,21 @@ export class Knife4jInstance {
      */
     addServer(server: Knife4jServer) {
         this.servers.push(server)
+    }
+
+    /**
+     * 根据接口路径path解析规则
+     * @param path 接口路径path
+     * @param methodType 接口类型，例如：post、get、delete等等
+     */
+    resolveSinglePathAsync(path: string, methodType: string) {
+        if (lodash.isEmpty(path)) {
+            return;
+        }
+        console.log("async path:", path)
+        console.log(this.parseFactory)
+        //从集合中找出当前对象
+        this.paths.filter(operation => operation.url == path && operation.methodType == methodType);
+        //this.parseFactory.parsePathAsync(path, this.originalRecord, this.parseOptions)
     }
 }

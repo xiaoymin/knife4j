@@ -3,7 +3,7 @@ import { Knife4jInstance } from '../knife4j/type'
 import { Knife4jTagObject } from "../knife4j/knife4jTag"
 import { Knife4jExternalDocumentationObject } from "../knife4j/ExternalObject"
 import { Knife4jInfoObject } from "../knife4j/knife4jInfo"
-import lodash from 'lodash'
+import lodash, { constant } from 'lodash'
 import { TagObject, InfoObject, PathsObject, OperationObject, ExternalDocumentationObject, ServerObject } from "./types"
 import { Knife4jPathItemObject } from '../knife4j/knife4jPath'
 import { Knife4jServer, Knife4jServerVariableObject } from '../knife4j/knife4jServers'
@@ -24,7 +24,9 @@ export class OpenAPIParser extends BaseCommonParser {
         let t1 = lodash.now()
         // 当前openapi规范的版本
         const specVersion = lodash.defaultTo(data["openapi"] as string, "3.0");
-        const instance = new Knife4jInstance('1', '2', specVersion);
+        //赋值解析器,当前对象本身
+        const instance = new Knife4jInstance('1', '2', specVersion, this, options);
+        //赋值原始数据
         instance.originalRecord = data;
         // info信息
         const info = data["info"] as InfoObject;
@@ -44,6 +46,20 @@ export class OpenAPIParser extends BaseCommonParser {
         return instance;
     }
 
+    /**
+     * 异步解析Path节点，只有在打开文档展示页的情况下才解析该配置，避免前端解析渲染性能问题
+     * @param data path节点的数据
+     * @param options 个性化解析配置选项
+    */
+    parsePathAsync(operation: Knife4jPathItemObject, data: Record<string, any>, options: ParseOptions): void {
+        console.log("异步解析path节点")
+        const paths = data["paths"] as PathsObject;
+        const methods = paths[operation.url];
+        if (lodash.isEmpty(methods)) {
+            return;
+        }
+        let _operation = methods[operation.methodType] as OperationObject;
+    }
 
     /**
      * 解析tag

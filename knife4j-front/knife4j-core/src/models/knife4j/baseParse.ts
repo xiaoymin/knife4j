@@ -1,4 +1,5 @@
 import { Knife4jInstance } from "./type"
+import { Knife4jPathItemObject } from "./knife4jPath";
 /**
  * 解析个性化自定义参数配置选项
  */
@@ -17,6 +18,14 @@ export interface ISpecParser {
    * @param options 个性化解析配置项
    */
   parse(data: Record<string, any>, options: ParseOptions): Knife4jInstance;
+
+  /**
+   * 异步解析Path节点，只有在打开文档展示页的情况下才解析该配置，避免前端解析渲染性能问题
+   * @param operation Knife4j的Operation对象
+   * @param data OpenAPI3\Swagger2\AsyncAPI规范数据
+   * @param options 个性化解析配置选项
+   */
+  parsePathAsync(operation: Knife4jPathItemObject, data: Record<string, any>, options: ParseOptions): void;
 }
 
 /**
@@ -32,4 +41,11 @@ export abstract class BaseCommonParser implements ISpecParser {
    * @param options  个性化解析配置项
    */
   abstract parse(data: Record<string, any>, options: ParseOptions): Knife4jInstance;
+
+  /**
+   * 异步解析Path节点，只有在打开文档展示页的情况下才解析该配置，避免前端解析渲染性能问题
+   * @param data path节点的数据
+   * @param options 个性化解析配置选项
+   */
+  abstract parsePathAsync(operation: Knife4jPathItemObject, data: Record<string, any>, options: ParseOptions): void;
 }
