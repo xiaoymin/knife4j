@@ -4,9 +4,11 @@ import { Knife4jTagObject } from "../knife4j/knife4jTag"
 import { Knife4jExternalDocumentationObject } from "../knife4j/ExternalObject"
 import { Knife4jInfoObject } from "../knife4j/knife4jInfo"
 import lodash, { constant } from 'lodash'
-import { TagObject, InfoObject, PathsObject, OperationObject, ExternalDocumentationObject, ServerObject } from "./types"
+import { TagObject, InfoObject, PathsObject, OperationObject, ExternalDocumentationObject, ServerObject, ParameterObject, ReferenceObject } from "./types"
 import { Knife4jPathItemObject } from '../knife4j/knife4jPath'
 import { Knife4jServer, Knife4jServerVariableObject } from '../knife4j/knife4jServers'
+import OpenAPI3TypeUtils from './typeCheck'
+import { Knife4jParameter } from '../knife4j/knife4jParameter'
 
 /**
  * 解析OpenAPI3的规范,参考规范文档：https://spec.openapis.org/oas/v3.1.0
@@ -58,7 +60,42 @@ export class OpenAPIParser extends BaseCommonParser {
         if (lodash.isEmpty(methods)) {
             return;
         }
+        console.log("operation", operation)
         let _operation = methods[operation.methodType] as OperationObject;
+        console.log("original:", _operation)
+        //解析请求参数parameters
+        this.asyncResolveParameters(_operation.parameters, operation)
+
+    }
+
+    /**
+     * 异步解析参数
+     * @param parameters 参数集合
+     * @param operation 当前operation对象
+     */
+    asyncResolveParameters(parameters: (ParameterObject | ReferenceObject)[] | undefined, operation: Knife4jPathItemObject) {
+        //解析请求参数parameters
+        if (lodash.isEmpty(parameters) || !lodash.isArray(parameters)) {
+            return;
+        }
+        //遍历param
+        parameters.forEach(param => {
+            //判断类型
+            if (OpenAPI3TypeUtils.isParameterObject(param)) {
+                const originalParam = param as ParameterObject;
+                //基础表单参数
+                const _param = new Knife4jParameter(originalParam.name, originalParam.in)
+                //基础赋值
+                _param.resolveOpenAPI3Basic(originalParam);
+
+                operation.addParameter(_param)
+            }
+            //暂时不解析ref
+            if (OpenAPI3TypeUtils.isReferenceObject(param)) {
+                const _param = param as ReferenceObject;
+            }
+
+        })
     }
 
     /**
@@ -163,6 +200,8 @@ export class OpenAPIParser extends BaseCommonParser {
         _tags.forEach(_tagName => {
             instance.addTagCount(_tagName)
         })
+        //解析doc
+        _operation.resolveOpenAPI3ExtDoc(operation.externalDocs);
         //添加paths
         instance.addOperation(_operation);
     }

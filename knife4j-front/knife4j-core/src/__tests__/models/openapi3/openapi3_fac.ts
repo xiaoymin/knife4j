@@ -16,5 +16,5 @@ test("testClassTransformer-o3", () => {
     console.log(instance.extDoc)
     console.log("server")
     console.log(instance.servers)
-    instance.resolveSinglePathAsync("/api/login")
+    instance.resolveSinglePathAsync("/pet/findByStatus", "get")
 })

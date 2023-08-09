@@ -1,3 +1,9 @@
+import { Knife4jParameter } from "./knife4jParameter";
+import lodash from 'lodash'
+//ExternalDocumentationObject
+import { ExternalDocumentationObject } from "../openapi3/types";
+//Knife4jExternalDocumentationObject
+import { Knife4jExternalDocumentationObject } from "./ExternalObject";
 /**
 * Describes the operations available on a single path.
 * A Path Item MAY be empty, due to ACL constraints.
@@ -38,9 +44,9 @@ export class Knife4jPathItemObject {
     tags?: string[];
 
     /**
-     * Additional external documentation for this operation.
+     *  Additional external documentation for this operation.
      */
-    externalDocs?: {};
+    extDoc?: Knife4jExternalDocumentationObject;
 
     /**
      * Unique string used to identify the operation.
@@ -50,7 +56,7 @@ export class Knife4jPathItemObject {
     /**
      * A list of parameters that are applicable for this operation.
      */
-    parameters?: [];
+    parameters: Knife4jParameter[] = [];
 
     /**
      * The request body applicable for this operation.
@@ -85,5 +91,31 @@ export class Knife4jPathItemObject {
     constructor(url: string, methodType: string) {
         this.url = url;
         this.methodType = methodType
+    }
+
+    /**
+     * 新增参数
+     * @param param 参数
+     */
+    addParameter(param: Knife4jParameter) {
+        if (lodash.isEmpty(param)) {
+            return;
+        }
+        console.log("addParam:", param)
+        this.parameters.push(param)
+    }
+
+    /**
+     * 解析OpenAPI3规范的外部文档参数
+     * @param doc 外部文档
+     */
+    resolveOpenAPI3ExtDoc(doc: ExternalDocumentationObject | undefined) {
+        if (lodash.isEmpty(doc)) {
+            return;
+        }
+        //解析
+        const _doc = new Knife4jExternalDocumentationObject(doc.url);
+        _doc.description = doc.description;
+        this.extDoc = _doc;
     }
 }

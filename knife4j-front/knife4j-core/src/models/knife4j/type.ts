@@ -116,7 +116,11 @@ export class Knife4jInstance {
         console.log("async path:", path)
         console.log(this.parseFactory)
         //从集合中找出当前对象
-        this.paths.filter(operation => operation.url == path && operation.methodType == methodType);
-        //this.parseFactory.parsePathAsync(path, this.originalRecord, this.parseOptions)
+        const pathFilters = this.paths.filter(operation => operation.url == path && operation.methodType == methodType);
+        if (lodash.isEmpty(pathFilters)) {
+            return;
+        }
+        const pathObject = pathFilters[0];
+        this.parseFactory.parsePathAsync(pathObject, this.originalRecord, this.parseOptions)
     }
 }
