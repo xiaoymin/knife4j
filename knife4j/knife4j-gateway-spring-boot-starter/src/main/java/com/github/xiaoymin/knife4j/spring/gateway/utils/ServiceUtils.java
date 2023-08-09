@@ -89,7 +89,7 @@ public class ServiceUtils {
      */
     public static boolean includeService(URI uri, Collection<String> service, Collection<String> excludeService) {
         String serviceName = uri.getHost();
-        return service.contains(serviceName) && !excludeServices(serviceName, excludeService);
+        return service.stream().anyMatch(serviceName::equalsIgnoreCase) && !excludeServices(serviceName, excludeService);
     }
     
     /**
