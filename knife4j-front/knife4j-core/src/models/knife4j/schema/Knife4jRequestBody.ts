@@ -1,8 +1,8 @@
 
-import { SchemaObject } from "../openapi3/types";
-import { Knife4jSchema } from "./knife4jParameter";
+import { SchemaObject } from "../../openapi3/types";
+import { Knife4jSchema } from "./Knife4jSchema";
 import lodash from 'lodash'
-import { Knife4jParamType } from "./knife4jTypeParameter";
+import { Knife4jParamType } from "../enums/Knife4jParamType";
 
 export class Knife4jRequestBody {
     /**

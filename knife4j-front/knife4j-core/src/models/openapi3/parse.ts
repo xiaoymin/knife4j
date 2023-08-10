@@ -1,12 +1,14 @@
-import { BaseCommonParser, ParseOptions } from '../knife4j/baseParse'
-import { Knife4jInstance } from '../knife4j/type'
-import { Knife4jTagObject } from "../knife4j/knife4jTag"
-import { Knife4jExternalDocumentationObject } from "../knife4j/ExternalObject"
-import { Knife4jInfoObject } from "../knife4j/knife4jInfo"
+import { BaseCommonParser } from '../knife4j/BaseCommonParser'
+import { Knife4jParseOptions } from '../knife4j/Knife4jParseOptions'
+import { Knife4jInstance } from '../knife4j/Knife4jInstance'
+import { Knife4jTagObject } from '../knife4j/tag/Knife4jTagObject'
+import { Knife4jExternalDocumentationObject } from '../knife4j/externalDoc/Knife4jExternalDocumentationObject'
+import { Knife4jInfoObject } from '../knife4j/info/Knife4jInfoObject'
 import lodash, { constant } from 'lodash'
 import { TagObject, InfoObject, PathsObject, OperationObject, ExternalDocumentationObject, ServerObject, ParameterObject, ReferenceObject } from "./types"
-import { Knife4jPathItemObject } from '../knife4j/knife4jPath'
-import { Knife4jServer, Knife4jServerVariableObject } from '../knife4j/knife4jServers'
+import { Knife4jPathItemObject } from '../knife4j/operation/Knife4jPathItemObject'
+import { Knife4jServer } from '../knife4j/servers/Knife4jServer'
+import { Knife4jServerVariableObject } from '../knife4j/servers/Knife4jServerVariableObject'
 import OpenAPI3TypeUtils from './typeCheck'
 
 /**
@@ -20,7 +22,7 @@ export class OpenAPIParser extends BaseCommonParser {
      * @param options 解析Options
      * @returns 
      */
-    parse(data: Record<string, any>, options: ParseOptions): Knife4jInstance {
+    parse(data: Record<string, any>, options: Knife4jParseOptions): Knife4jInstance {
         console.log(options)
         let t1 = lodash.now()
         // 当前openapi规范的版本
@@ -52,7 +54,7 @@ export class OpenAPIParser extends BaseCommonParser {
      * @param data path节点的数据
      * @param options 个性化解析配置选项
     */
-    parsePathAsync(operation: Knife4jPathItemObject, data: Record<string, any>, options: ParseOptions): void {
+    parsePathAsync(operation: Knife4jPathItemObject, data: Record<string, any>, options: Knife4jParseOptions): void {
         console.log("异步解析path节点")
         const paths = data["paths"] as PathsObject;
         const methods = paths[operation.url];

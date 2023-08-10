@@ -1,5 +1,5 @@
-import { SpecParserFactory } from "../../../models/index"
-import { SpecType } from "../../../models/type"
+import { SpecParserFactory } from "../../../models/SpecParserFactory"
+import { SpecType } from "../../../models/SpecType"
 import data from "./test.json"
 
 test("testClassTransformer-o3", () => {

@@ -1,13 +1,15 @@
-import { BaseCommonParser, ParseOptions } from '../knife4j/baseParse'
-import { Knife4jInstance } from '../knife4j/type'
-import { Knife4jPathItemObject } from '../knife4j/knife4jPath'
+
+import { Knife4jInstance } from '../knife4j/Knife4jInstance'
+import { Knife4jPathItemObject } from '../knife4j/operation/Knife4jPathItemObject'
+import { BaseCommonParser } from '../knife4j/BaseCommonParser'
+import { Knife4jParseOptions } from '../knife4j/Knife4jParseOptions'
 
 /**
  * 解析Swagger2的规范
  */
 export class SwaggerParser extends BaseCommonParser {
 
-    parse(data: Record<string, any>, options: ParseOptions): Knife4jInstance {
+    parse(data: Record<string, any>, options: Knife4jParseOptions): Knife4jInstance {
         console.log("swagger-parser")
         console.log(data)
         console.log(options)
@@ -19,7 +21,7 @@ export class SwaggerParser extends BaseCommonParser {
     * @param data path节点的数据
     * @param options 个性化解析配置选项
    */
-    parsePathAsync(operation: Knife4jPathItemObject, data: Record<string, any>, options: ParseOptions): void {
+    parsePathAsync(operation: Knife4jPathItemObject, data: Record<string, any>, options: Knife4jParseOptions): void {
         console.log("异步解析path节点")
     }
 }

@@ -1,12 +1,12 @@
-import { Knife4jTagObject } from "./knife4jTag"
-import { Knife4jInfoObject } from "./knife4jInfo"
-import { Knife4jPathItemObject } from "./knife4jPath";
-import { Knife4jExternalDocumentationObject } from "./ExternalObject";
 import lodash from "lodash"
-import { Knife4jServer } from "./knife4jServers";
 
-import { ISpecParser } from "./baseParse";
-import { ParseOptions } from "./baseParse";
+import { Knife4jTagObject } from "./tag/Knife4jTagObject";
+import { Knife4jInfoObject } from "./info/Knife4jInfoObject";
+import { Knife4jExternalDocumentationObject } from "./externalDoc/Knife4jExternalDocumentationObject";
+import { Knife4jServer } from "./servers/Knife4jServer";
+import { Knife4jParseOptions } from "./Knife4jParseOptions";
+import { Knife4jPathItemObject } from "./operation/Knife4jPathItemObject";
+import { ISpecParser } from "./ISpecParser";
 
 /**
  * 该类是所有parse方法最重输出的对象
@@ -16,7 +16,7 @@ export class Knife4jInstance {
     originalRecord: Record<string, any> = {};
     /**当前规范数据的解析器，方便异步解析操作 */
     parseFactory: ISpecParser;
-    parseOptions: ParseOptions;
+    parseOptions: Knife4jParseOptions;
     id: string;
     name: string;
     url: string;
@@ -37,7 +37,7 @@ export class Knife4jInstance {
      * @param location OpenAPI接口资源地址
      * @param version 版本，2.0或者3.0
      */
-    constructor(name: string, location: string, version: string, factory: ISpecParser, options: ParseOptions) {
+    constructor(name: string, location: string, version: string, factory: ISpecParser, options: Knife4jParseOptions) {
         this.id = "12";
         this.name = name;
         this.url = location;

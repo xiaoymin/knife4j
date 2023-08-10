@@ -1,15 +1,13 @@
-import { Knife4jSchema } from "./knife4jParameter";
 import lodash from 'lodash'
 //ExternalDocumentationObject
-import { ExternalDocumentationObject } from "../openapi3/types";
 //Knife4jExternalDocumentationObject
-import { Knife4jExternalDocumentationObject } from "./ExternalObject";
-import { Knife4jRequestBody } from "./knife4jRequestaBody";
+import { Knife4jExternalDocumentationObject } from "../externalDoc/Knife4jExternalDocumentationObject";
+import { Knife4jRequestBody } from '../schema/Knife4jRequestBody';
+import { Knife4jSchema } from '../schema/Knife4jSchema';
 //ParameterObject
-import { ParameterObject } from "../openapi3/types";
-import OpenAPI3TypeUtils from "../openapi3/typeCheck";
+import { ParameterObject, RequestBodyObject, ExternalDocumentationObject } from "../../openapi3/types";
+import OpenAPI3TypeUtils from "../../openapi3/typeCheck";
 //RequestBodyObject
-import { RequestBodyObject } from "../openapi3/types";
 /**
 * Describes the operations available on a single path.
 * A Path Item MAY be empty, due to ACL constraints.

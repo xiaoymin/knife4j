@@ -1,11 +1,8 @@
 import lodash from 'lodash'
-//ParameterObject
-//Knife4jValidateObject
-import { Knife4jValidateObject } from './knife4jJSR';
-import { ParameterObject, SchemaObject } from '../openapi3/types';
-
-import OpenAPI3TypeUtils from '../openapi3/typeCheck';
-import KUtils from './utils/knife4jUtils';
+import { Knife4jValidateObject } from '../validate/Knife4jValidateObject';
+import { SchemaObject, ParameterObject } from '../../openapi3/types';
+import OpenAPI3TypeUtils from '../../openapi3/typeCheck';
+import KUtils from '../utils/KUtils';
 /**
  * Knife4j封装参数类，按树组件的格式进行封装
  */

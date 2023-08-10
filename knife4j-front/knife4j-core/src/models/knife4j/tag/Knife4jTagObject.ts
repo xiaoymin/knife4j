@@ -1,4 +1,4 @@
-import { Knife4jExternalDocumentationObject } from "./ExternalObject"
+import { Knife4jExternalDocumentationObject } from "../externalDoc/Knife4jExternalDocumentationObject";
 
 /**
  * tag内容
