@@ -1,5 +1,6 @@
-import { Knife4jParseOptions } from "./ParseOptions";
+import { Knife4jParseOptions } from "./Knife4jParseOptions";
 import { Knife4jPathItemObject } from "./operation/Knife4jPathItemObject";
+import { Knife4jInstance } from "./Knife4jInstance";
 
 /**
  * 抽象接口，不同子类需要实现该接口，主要实现包括Swagger2、OpenAPI3、AsyncAPI等等规范
