@@ -253,7 +253,7 @@ export type TagObject = {
   /**
    * Knife4j扩展属性，排序规则
    */
-  "x-order"?:number;
+  "x-order"?: number;
 
   /**
    * Additional external documentation for this tag.
@@ -344,6 +344,7 @@ export type XMLObject = {
 
 /**
  * Schema Object
+ * https://datatracker.ietf.org/doc/html/draft-bhutton-json-schema-validation-00#page-6
  */
 export type SchemaObject = {
   /**
@@ -406,6 +407,9 @@ export type SchemaObject = {
    */
   uniqueItems?: boolean;
 
+  maxContains?: number;
+  minContains?: number;
+
   /**
    * Maximum number of properties allowed in an object.
    */
@@ -435,7 +439,10 @@ export type SchemaObject = {
    * List of schemas that this schema must conform to all of.
    */
   allOf?: SchemaObject[];
-
+  /**
+     * Reference to the object.
+     */
+  $ref?: string;
   /**
    * List of schemas that this schema must conform to one of.
    */
@@ -454,7 +461,7 @@ export type SchemaObject = {
   /**
    * Schema(s) for the items in an array.
    */
-  items?: SchemaObject | SchemaObject[];
+  items?: SchemaObject;
 
   /**
    * List of properties in an object.
@@ -681,6 +688,10 @@ export type ExampleObject = {
    * URL to the external example.
    */
   externalValue?: string;
+  /**
+   * Reference to the object.
+   */
+  $ref?: string;
 };
 
 /**
@@ -840,7 +851,7 @@ export type PathItemObject = {
    * A unique parameter is defined by a combination of a name and location.
    * The list can use the Reference Object to link to parameters that are defined at the OpenAPI Object's components/parameters.
    */
-  parameters?: (ParameterObject | ReferenceObject)[];
+  parameters?: ParameterObject[];
   /**
    * Allows extensions to the OpenAPI Schema. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object. Can have any valid JSON format value.
    */
@@ -879,12 +890,12 @@ export type OperationObject = {
   /**
    * A list of parameters that are applicable for this operation.
    */
-  parameters?: (ParameterObject | ReferenceObject)[];
+  parameters?: ParameterObject[];
 
   /**
    * The request body applicable for this operation.
    */
-  requestBody?: RequestBodyObject | ReferenceObject;
+  requestBody?: RequestBodyObject;
 
   /**
    * Expected responses for this operation.
@@ -925,7 +936,10 @@ export type ParameterObject = {
    * The location of the parameter.
    */
   in: string;
-
+  /**
+   * Reference to the object.
+   */
+  $ref?: string;
   /**
    * A brief description of the parameter. This could contain examples of use.
    */
@@ -964,7 +978,7 @@ export type ParameterObject = {
   /**
    * The schema defining the type used for the parameter.
    */
-  schema?: SchemaObject | ReferenceObject;
+  schema?: SchemaObject;
 
   /**
    * Example of the media type. The example SHOULD match the specified schema and encoding properties if present.
@@ -1000,6 +1014,11 @@ export type RequestBodyObject = {
    * Determines if the request body is required in the request. Defaults to false.
    */
   required?: boolean;
+
+  /**
+   * Reference to the object.
+   */
+  $ref?: string;
 };
 
 /**
@@ -1015,17 +1034,17 @@ export type ResponsesObject = {
    * The documentation of responses other than the ones declared for specific HTTP response codes.
    * It can be used to cover undeclared responses.
    */
-  [httpStatusCode: string]: ResponseObject | ReferenceObject;
+  [httpStatusCode: string]: ResponseObject;
 
   /**
    * The documentation of a successful response.
    */
-  200: ResponseObject | ReferenceObject;
+  200: ResponseObject;
 
   /**
    * The documentation of responses to other error situations.
    */
-  default: ResponseObject | ReferenceObject;
+  default: ResponseObject;
 };
 
 /**
@@ -1084,6 +1103,11 @@ export type ResponseObject = {
    * A map of operations links that can be followed from the response.
    */
   links?: { [link: string]: LinkObject | ReferenceObject };
+
+  /**
+  * Reference to the object.
+  */
+  $ref?: string;
 };
 
 /**

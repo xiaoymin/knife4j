@@ -1,9 +1,15 @@
-import { Knife4jParameter } from "./knife4jParameter";
+import { Knife4jSchema } from "./knife4jParameter";
 import lodash from 'lodash'
 //ExternalDocumentationObject
 import { ExternalDocumentationObject } from "../openapi3/types";
 //Knife4jExternalDocumentationObject
 import { Knife4jExternalDocumentationObject } from "./ExternalObject";
+import { Knife4jRequestBody } from "./knife4jRequestaBody";
+//ParameterObject
+import { ParameterObject } from "../openapi3/types";
+import OpenAPI3TypeUtils from "../openapi3/typeCheck";
+//RequestBodyObject
+import { RequestBodyObject } from "../openapi3/types";
 /**
 * Describes the operations available on a single path.
 * A Path Item MAY be empty, due to ACL constraints.
@@ -54,14 +60,25 @@ export class Knife4jPathItemObject {
     operationId?: string;
 
     /**
+     * 请求类型
+     */
+    consumer: string = "*/*";
+
+    /**
+     * 响应类型
+     */
+    produces: string = "*/*";
+
+    /**
      * A list of parameters that are applicable for this operation.
      */
-    parameters: Knife4jParameter[] = [];
+    parameters: Knife4jSchema[] = [];
 
     /**
      * The request body applicable for this operation.
+     * include 多种类型
      */
-    requestBody?: {};
+    requestBody: Knife4jRequestBody[] = [];
 
     /**
      * Expected responses for this operation.
@@ -97,7 +114,7 @@ export class Knife4jPathItemObject {
      * 新增参数
      * @param param 参数
      */
-    addParameter(param: Knife4jParameter) {
+    addParameter(param: Knife4jSchema) {
         if (lodash.isEmpty(param)) {
             return;
         }
@@ -117,5 +134,49 @@ export class Knife4jPathItemObject {
         const _doc = new Knife4jExternalDocumentationObject(doc.url);
         _doc.description = doc.description;
         this.extDoc = _doc;
+    }
+    /**
+     * 异步解析参数-OpenAPI3
+     * @param parameters 参数集合
+     * @param operation 当前operation对象
+     */
+    asyncResolveParameters(parameters: ParameterObject[] | undefined) {
+        //解析请求参数parameters
+        if (lodash.isEmpty(parameters) || !lodash.isArray(parameters)) {
+            return;
+        }
+        //遍历param
+        parameters.forEach(param => {
+            //判断类型
+            const originalParam = param as ParameterObject;
+            //基础表单参数
+            const _param = new Knife4jSchema(originalParam.name, originalParam.in)
+            //基础赋值
+            _param.resolveOpenAPI3Basic(originalParam);
+            this.addParameter(_param)
+        })
+    }
+    /**
+     * 异步解析请求参数
+     * @param body 请求参数
+     */
+    asyncResolveRequestBody(body: RequestBodyObject | undefined) {
+        if (lodash.isEmpty(body) || lodash.isEmpty(body.content)) {
+            return;
+        }
+        const content = body.content;
+        const _description = lodash.defaultTo(body.description, "");
+        const _required = lodash.defaultTo(body.required, false);
+        //遍历
+        for (let media in content) {
+            const _schema = content[media];
+            if (lodash.isEmpty(media) || lodash.isEmpty(_schema)) {
+                continue;
+            }
+            const _requestBody = new Knife4jRequestBody(media);
+            _requestBody.resolveBody(_description, _required, _schema);
+            this.requestBody.push(_requestBody);
+        }
+
     }
 }

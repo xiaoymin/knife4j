@@ -1,5 +1,8 @@
 import { ParameterObject } from "./types"
 import { ReferenceObject } from "./types";
+import lodash from 'lodash'
+//SchemaObject
+import { SchemaObject } from "./types";
 
 const OpenAPI3TypeUtils = {
 
@@ -10,8 +13,11 @@ const OpenAPI3TypeUtils = {
      */
     isParameterObject(obj: any): obj is ParameterObject {
         try {
-            let _param = obj as ParameterObject;
-            return true;
+            if (!lodash.isEmpty(obj)) {
+                let _param = obj as ParameterObject;
+                return true;
+            }
+
         } catch (e) {
 
         }
@@ -24,8 +30,22 @@ const OpenAPI3TypeUtils = {
      */
     isReferenceObject(obj: any): obj is ReferenceObject {
         try {
-            let _param = obj as ReferenceObject;
-            return true;
+            if (!lodash.isEmpty(obj)) {
+                let _param = obj as ReferenceObject;
+                return true;
+            }
+
+        } catch (e) {
+
+        }
+        return false;
+    },
+    isSchemaObject(obj: any): obj is SchemaObject {
+        try {
+            if (!lodash.isEmpty(obj)) {
+                let _param = obj as SchemaObject;
+                return true;
+            }
         } catch (e) {
 
         }

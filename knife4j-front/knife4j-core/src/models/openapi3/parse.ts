@@ -8,7 +8,6 @@ import { TagObject, InfoObject, PathsObject, OperationObject, ExternalDocumentat
 import { Knife4jPathItemObject } from '../knife4j/knife4jPath'
 import { Knife4jServer, Knife4jServerVariableObject } from '../knife4j/knife4jServers'
 import OpenAPI3TypeUtils from './typeCheck'
-import { Knife4jParameter } from '../knife4j/knife4jParameter'
 
 /**
  * 解析OpenAPI3的规范,参考规范文档：https://spec.openapis.org/oas/v3.1.0
@@ -64,38 +63,10 @@ export class OpenAPIParser extends BaseCommonParser {
         let _operation = methods[operation.methodType] as OperationObject;
         console.log("original:", _operation)
         //解析请求参数parameters
-        this.asyncResolveParameters(_operation.parameters, operation)
+        operation.asyncResolveParameters(_operation.parameters)
+        //解析请求参数
+        operation.asyncResolveRequestBody(_operation.requestBody)
 
-    }
-
-    /**
-     * 异步解析参数
-     * @param parameters 参数集合
-     * @param operation 当前operation对象
-     */
-    asyncResolveParameters(parameters: (ParameterObject | ReferenceObject)[] | undefined, operation: Knife4jPathItemObject) {
-        //解析请求参数parameters
-        if (lodash.isEmpty(parameters) || !lodash.isArray(parameters)) {
-            return;
-        }
-        //遍历param
-        parameters.forEach(param => {
-            //判断类型
-            if (OpenAPI3TypeUtils.isParameterObject(param)) {
-                const originalParam = param as ParameterObject;
-                //基础表单参数
-                const _param = new Knife4jParameter(originalParam.name, originalParam.in)
-                //基础赋值
-                _param.resolveOpenAPI3Basic(originalParam);
-
-                operation.addParameter(_param)
-            }
-            //暂时不解析ref
-            if (OpenAPI3TypeUtils.isReferenceObject(param)) {
-                const _param = param as ReferenceObject;
-            }
-
-        })
     }
 
     /**
