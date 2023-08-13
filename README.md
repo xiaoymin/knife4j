@@ -63,10 +63,33 @@ knife4j的前身是`swagger-bootstrap-ui`，为了契合微服务的架构发展
 
 ![接口调试](static/8.png)
 
-
-## 特别鸣谢
+  
+## 🤝 特别鸣谢 
 
 - 感谢 [JetBrains](https://jb.gg/OpenSourceSupport) 提供的免费开源 License：
 
 <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png"  width="100" height="100" />
 
+
+<h2 align="center">
+💪 Contributors 💪
+</h2>
+
+<p align="center">
+Our contributors have made this project possible. Thank you! 🙏
+</p>
+
+ 
+<a href="https://github.com/xiaoymin/knife4j/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=xiaoymin/knife4j" width="100%"/>
+</a>
+<div align="center">
+<sub>Made with <a href="https://contrib.rocks">contrib.rocks</a>.</sub>
+</div>
+ 
+
+<p align="center">
+  <a href="https://star-history.com/#xiaoymin/knife4j&Date">
+    <img src="https://api.star-history.com/svg?repos=xiaoymin/knife4j&type=Date" alt="Star History Chart">
+  </a>
+</p>
