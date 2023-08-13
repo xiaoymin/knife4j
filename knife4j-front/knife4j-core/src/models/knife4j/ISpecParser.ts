@@ -16,8 +16,8 @@ export interface ISpecParser {
     /**
      * 异步解析Path节点，只有在打开文档展示页的情况下才解析该配置，避免前端解析渲染性能问题
      * @param operation Knife4j的Operation对象
-     * @param data OpenAPI3\Swagger2\AsyncAPI规范数据
+     * @param instance 当前实例对象
      * @param options 个性化解析配置选项
      */
-    parsePathAsync(operation: Knife4jPathItemObject, data: Record<string, any>, options: Knife4jParseOptions): void;
+    parsePathAsync(operation: Knife4jPathItemObject, instance: Knife4jInstance, options: Knife4jParseOptions): void;
 }

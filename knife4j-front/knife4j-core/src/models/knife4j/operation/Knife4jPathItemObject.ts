@@ -7,6 +7,7 @@ import { Knife4jSchema } from '../schema/Knife4jSchema';
 //ParameterObject
 import { ParameterObject, RequestBodyObject, ExternalDocumentationObject } from "../../openapi3/types";
 import OpenAPI3TypeUtils from "../../openapi3/typeCheck";
+import { Knife4jInstance } from '../Knife4jInstance';
 //RequestBodyObject
 /**
 * Describes the operations available on a single path.
@@ -158,7 +159,7 @@ export class Knife4jPathItemObject {
      * 异步解析请求参数
      * @param body 请求参数
      */
-    asyncResolveRequestBody(body: RequestBodyObject | undefined) {
+    asyncResolveRequestBody(body: RequestBodyObject | undefined, instance: Knife4jInstance) {
         if (lodash.isEmpty(body) || lodash.isEmpty(body.content)) {
             return;
         }
@@ -172,7 +173,7 @@ export class Knife4jPathItemObject {
                 continue;
             }
             const _requestBody = new Knife4jRequestBody(media);
-            _requestBody.resolveBody(_description, _required, _schema);
+            _requestBody.resolveBody(_description, _required, _schema, instance);
             this.requestBody.push(_requestBody);
         }
 

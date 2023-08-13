@@ -180,6 +180,11 @@ export class Knife4jSchema {
      * @param schema schema对象
      */
     asyncResolveProperties(schema: SchemaObject) {
+        //基础赋值
+        this.deprecated = lodash.defaultTo(schema.deprecated, false);
+        this.description = KUtils.wrapLine(lodash.defaultTo(schema.description, ''));
+        //解析普通属性
+        this.resolveOpenAPI3SchemaBasic(schema);
 
     }
 

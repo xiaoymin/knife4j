@@ -3,6 +3,7 @@ import { SchemaObject } from "../../openapi3/types";
 import { Knife4jSchema } from "./Knife4jSchema";
 import lodash from 'lodash'
 import { Knife4jParamType } from "../enums/Knife4jParamType";
+import { Knife4jInstance } from "../Knife4jInstance";
 
 export class Knife4jRequestBody {
     /**
@@ -36,13 +37,14 @@ export class Knife4jRequestBody {
      * @param required 是否必须
      * @param schema schema
      */
-    resolveBody(description: string, required: boolean, schema: SchemaObject) {
+    resolveBody(description: string, required: boolean, schema: SchemaObject, instance: Knife4jInstance) {
         this.description = description;
         this.required = required;
         //此处直接解析schema的properties属性
         if (lodash.isEmpty(schema) || lodash.isEmpty(schema.properties)) {
             return;
         }
+        //如果是properties，直接解析
         const _properties = schema.properties;
         for (let _propName in _properties) {
             //如果是属性级别，默认query类型

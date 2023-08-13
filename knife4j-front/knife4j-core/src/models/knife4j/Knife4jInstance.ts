@@ -7,6 +7,7 @@ import { Knife4jServer } from "./servers/Knife4jServer";
 import { Knife4jParseOptions } from "./Knife4jParseOptions";
 import { Knife4jPathItemObject } from "./operation/Knife4jPathItemObject";
 import { ISpecParser } from "./ISpecParser";
+import { Knife4jSchema } from "./schema/Knife4jSchema";
 
 /**
  * 该类是所有parse方法最重输出的对象
@@ -31,6 +32,8 @@ export class Knife4jInstance {
     servers: Array<Knife4jServer> = [];
     //外部扩展配置
     extDoc?: Knife4jExternalDocumentationObject;
+    //存储当前Scheme类结构
+    schemaDict: { [schemaName: string]: Knife4jSchema } = {}
     /**
      * 构造函数
      * @param name 名称
@@ -121,6 +124,7 @@ export class Knife4jInstance {
             return;
         }
         const pathObject = pathFilters[0];
-        this.parseFactory.parsePathAsync(pathObject, this.originalRecord, this.parseOptions)
+        const instance = this;
+        instance.parseFactory.parsePathAsync(pathObject, instance, instance.parseOptions)
     }
 }

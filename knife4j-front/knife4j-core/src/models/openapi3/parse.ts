@@ -51,11 +51,12 @@ export class OpenAPIParser extends BaseCommonParser {
 
     /**
      * 异步解析Path节点，只有在打开文档展示页的情况下才解析该配置，避免前端解析渲染性能问题
-     * @param data path节点的数据
+     * @param instance 对象实例
      * @param options 个性化解析配置选项
     */
-    parsePathAsync(operation: Knife4jPathItemObject, data: Record<string, any>, options: Knife4jParseOptions): void {
+    parsePathAsync(operation: Knife4jPathItemObject, instance: Knife4jInstance, options: Knife4jParseOptions): void {
         console.log("异步解析path节点")
+        const data = instance.originalRecord;
         const paths = data["paths"] as PathsObject;
         const methods = paths[operation.url];
         if (lodash.isEmpty(methods)) {
@@ -67,7 +68,7 @@ export class OpenAPIParser extends BaseCommonParser {
         //解析请求参数parameters
         operation.asyncResolveParameters(_operation.parameters)
         //解析请求参数
-        operation.asyncResolveRequestBody(_operation.requestBody)
+        operation.asyncResolveRequestBody(_operation.requestBody, instance)
 
     }
 
