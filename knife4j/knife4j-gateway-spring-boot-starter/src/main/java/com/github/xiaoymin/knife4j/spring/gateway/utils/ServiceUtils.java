@@ -53,10 +53,11 @@ public class ServiceUtils {
         OpenApiVersion apiVersion = discover.getVersion();
         StringBuilder urlBuilder = new StringBuilder();
         String _defaultPath = PathUtils.processContextPath(contextPath);
-        String _groupName = StrUtil.defaultTo(groupName, GlobalConstants.DEFAULT_GROUP_NAME);
+        //String _groupName = StrUtil.defaultTo(groupName, GlobalConstants.DEFAULT_GROUP_NAME);
+        String _groupName = "";
         String groupUrl = "";
         if (apiVersion == OpenApiVersion.Swagger2) {
-            groupUrl = GlobalConstants.DEFAULT_SWAGGER2_APPEND_PATH + _groupName;
+            groupUrl = GlobalConstants.DEFAULT_OPEN_API_V2_PATH + _groupName;
         } else if (apiVersion == OpenApiVersion.OpenAPI3) {
             groupUrl = PathUtils.append(GlobalConstants.DEFAULT_OPEN_API_V3_PATH, _groupName);
         }
