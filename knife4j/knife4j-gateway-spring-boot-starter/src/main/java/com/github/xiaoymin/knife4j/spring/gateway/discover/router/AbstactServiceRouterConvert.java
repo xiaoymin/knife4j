@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-
 package com.github.xiaoymin.knife4j.spring.gateway.discover.router;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.util.CollectionUtils;
 
 import com.github.xiaoymin.knife4j.spring.gateway.Knife4jGatewayProperties;
 import com.github.xiaoymin.knife4j.spring.gateway.conf.GlobalConstants;
@@ -26,83 +31,119 @@ import com.github.xiaoymin.knife4j.spring.gateway.spec.v2.OpenAPI2Resource;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.PathUtils;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.ServiceUtils;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.StrUtil;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
-import org.springframework.util.CollectionUtils;
-
-import java.util.List;
-import java.util.Map;
 
 /**
- * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
- * 2023/8/3 15:03
+ * 服务路由转换接口抽象处理类
+ * 
+ * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a><br>
+ *         2023/8/3 15:03
  * @since knife4j v4.3.0
  */
 @AllArgsConstructor
 @Slf4j
 public abstract class AbstactServiceRouterConvert implements ServiceRouterConvert {
-    
+
     /**
      * 获取路由前缀
+     * 
      * @param predicateArgs 参数
      * @return 路由前缀
      */
     abstract String convertPathPrefix(Map<String, String> predicateArgs);
-    
+
+    /**
+     * 解析gateway的路由定义
+     * 
+     * @param routerHolder
+     * @param discover
+     * @param predicateDefinitions
+     * @param id
+     * @param serviceName
+     */
     protected void parseRouteDefinition(ServiceRouterHolder routerHolder, Knife4jGatewayProperties.Discover discover,
-                                        List<PredicateDefinition> predicateDefinitions, String id, String serviceName) {
-        predicateDefinitions
-                .stream()
-                .filter(predicateDefinition -> GlobalConstants.ROUTER_PATH_NAME.equalsIgnoreCase(predicateDefinition.getName()))
-                .findFirst()
-                .ifPresent(predicateDefinition -> {
-                    log.debug("serviceId:{},serviceName:{}", id, serviceName);
-                    Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = discover.getServiceConfig();
-                    // String pathPrefix = predicateDefinition.getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("**",StringUtil.EMPTY_STRING);
-                    String pathPrefix = convertPathPrefix(predicateDefinition.getArgs());
-                    log.debug("pathPrefix:{}", pathPrefix);
-                    String contextPath = GlobalConstants.EMPTY_STR;
-                    String groupName = id;
-                    int order = 0;
-                    String targetUrl = ServiceUtils.getOpenAPIURL(discover, pathPrefix, null);
-                    // String targetUrl = PathUtils.append(pathPrefix, GlobalConstants.DEFAULT_OPEN_API_V3_PATH);
-                    // 如果自定义了setting内容 拼接
-                    Knife4jGatewayProperties.ServiceConfigInfo configInfo = configInfoMap.get(serviceName);
-                    if (configInfo != null) {
-                        order = configInfo.getOrder();
-                        if (discover.getVersion() == OpenApiVersion.OpenAPI3) {
-                            // 如果是springfox-swagger2，springfox框架会自动根据targetUrl访问追加一个basePath路径到Swagger2规范中
-                            // 避免重复追加ContextPath路径，此规则只作用与openapi3
-                            contextPath = PathUtils.append(pathPrefix, configInfo.getContextPath());
-                        } else if (discover.getVersion() == OpenApiVersion.Swagger2) {
-                            // 如果是swagger2场景，判断当前contextPath配置的是否为空
-                            if (StrUtil.isNotBlank(configInfo.getContextPath()) && !GlobalConstants.DEFAULT_API_PATH_PREFIX.equals(configInfo.getContextPath())) {
-                                // 用户自行设定，追加
-                                contextPath = configInfo.getContextPath();
-                            }
-                        }
-                        // 复用contextPath的路径
-                        targetUrl = PathUtils.append(contextPath, ServiceUtils.getOpenAPIURL(discover, GlobalConstants.DEFAULT_API_PATH_PREFIX, null));
-                        List<String> groupNames = configInfo.getGroupNames();
-                        if (CollectionUtils.isEmpty(groupNames)) {
-                            groupName = configInfo.getGroupName();
-                        } else {
-                            // 服务内接口分组
-                            int sort = order;
-                            String ctx = contextPath;
-                            String url = targetUrl;
-                            groupNames.forEach(_groupName -> routerHolder.add(new OpenAPI2Resource(PathUtils.append(url, _groupName), sort, true, _groupName, ctx, serviceName)));
-                            return;
-                        }
-                    } else {
-                        // 如果没有配置service-config，追加一个子服务的前缀contextPath
-                        // 仅在openapi3框架下追加，springfox-swagger2会默认根据url的请求，自动在Swagger2规范中设置一个basePath属性
-                        if (discover.getVersion() == OpenApiVersion.OpenAPI3) {
-                            contextPath = PathUtils.processContextPath(pathPrefix);
-                        }
-                    }
-                    routerHolder.add(new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath, serviceName));
-                });
+            List<PredicateDefinition> predicateDefinitions, String id, String serviceName) {
+        predicateDefinitions.stream().filter(
+                predicateDefinition -> GlobalConstants.ROUTER_PATH_NAME.equalsIgnoreCase(predicateDefinition.getName()))
+                .findFirst().ifPresent(predicateDefinition -> this.processRouteDefinition(routerHolder, discover, id,
+                        serviceName, predicateDefinition));
     }
+
+    /**
+     * 处理gateway的路由定义
+     * 
+     * @param routerHolder
+     * @param discover
+     * @param id
+     * @param serviceName
+     * @param predicateDefinition
+     */
+    private void processRouteDefinition(ServiceRouterHolder routerHolder, Knife4jGatewayProperties.Discover discover,
+            String id, String serviceName, PredicateDefinition predicateDefinition) {
+        log.debug("serviceId:{},serviceName:{}", id, serviceName);
+        Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = discover.getServiceConfig();
+        String pathPrefix = this.convertPathPrefix(predicateDefinition.getArgs());
+        log.debug("pathPrefix:{}", pathPrefix);
+        String contextPath = GlobalConstants.EMPTY_STR;
+        String groupName = id;
+        int order = 0;
+        String targetUrl = ServiceUtils.getOpenAPIURL(discover, pathPrefix, null);
+        // 如果自定义了setting内容 拼接
+        Knife4jGatewayProperties.ServiceConfigInfo configInfo = configInfoMap.get(serviceName);
+        if (configInfo != null) {
+            order = configInfo.getOrder();
+            if (discover.getVersion() == OpenApiVersion.OpenAPI3) {
+                // 如果是springfox-swagger2，springfox框架会自动根据targetUrl访问追加一个basePath路径到Swagger2规范中
+                // 避免重复追加ContextPath路径，此规则只作用与openapi3
+                contextPath = PathUtils.append(pathPrefix, configInfo.getContextPath());
+            } else if (discover.getVersion() == OpenApiVersion.Swagger2) {
+                // 如果是swagger2场景，判断当前contextPath配置的是否为空
+                if (StrUtil.isNotBlank(configInfo.getContextPath())
+                        && !GlobalConstants.DEFAULT_API_PATH_PREFIX.equals(configInfo.getContextPath())) {
+                    // 用户自行设定，追加
+                    contextPath = configInfo.getContextPath();
+                }
+            }
+            // 复用contextPath的路径
+            targetUrl = PathUtils.append(contextPath,
+                    ServiceUtils.getOpenAPIURL(discover, GlobalConstants.DEFAULT_API_PATH_PREFIX, null));
+            List<String> groupNames = configInfo.getGroupNames();
+            if (CollectionUtils.isEmpty(groupNames)) {
+                groupName = configInfo.getGroupName();
+            } else {
+                // 服务内接口分组
+                int sort = order;
+                String ctx = contextPath;
+                String url = targetUrl;
+                groupNames.forEach(name -> routerHolder
+                        .add(this.buildOpenApi2Resource(serviceName, ctx, name, sort, PathUtils.append(url, name))));
+                return;
+            }
+        } else {
+            // 如果没有配置service-config，追加一个子服务的前缀contextPath
+            // 仅在openapi3框架下追加，springfox-swagger2会默认根据url的请求，自动在Swagger2规范中设置一个basePath属性
+            if (discover.getVersion() == OpenApiVersion.OpenAPI3) {
+                contextPath = PathUtils.processContextPath(pathPrefix);
+            }
+        }
+        routerHolder.add(this.buildOpenApi2Resource(serviceName, contextPath, groupName, order, targetUrl));
+    }
+
+    /**
+     * 构建资源
+     * 
+     * @param serviceName
+     * @param contextPath
+     * @param groupName
+     * @param order
+     * @param targetUrl
+     * @return
+     */
+    private OpenAPI2Resource buildOpenApi2Resource(String serviceName, String contextPath, String groupName, int order,
+            String targetUrl) {
+        return new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath, serviceName);
+    }
+
 }
