@@ -55,43 +55,48 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
     abstract String convertPathPrefix(Map<String, String> predicateArgs);
 
     /**
+     * 获取服务发现策略配置信息
+     * 
+     * @return 服务发现策略配置信息
+     */
+    abstract Knife4jGatewayProperties.Discover getDiscover();
+
+    /**
      * 解析gateway的路由定义
      * 
      * @param routerHolder
-     * @param discover
      * @param predicateDefinitions
      * @param id
      * @param serviceName
      */
-    protected void parseRouteDefinition(ServiceRouterHolder routerHolder, Knife4jGatewayProperties.Discover discover,
+    protected void parseRouteDefinition(ServiceRouterHolder routerHolder,
             List<PredicateDefinition> predicateDefinitions, String id, String serviceName) {
         predicateDefinitions.stream().filter(
                 predicateDefinition -> GlobalConstants.ROUTER_PATH_NAME.equalsIgnoreCase(predicateDefinition.getName()))
-                .findFirst().ifPresent(predicateDefinition -> this.processRouteDefinition(routerHolder, discover, id,
-                        serviceName, predicateDefinition));
+                .findFirst().ifPresent(predicateDefinition -> this.processRouteDefinition(routerHolder, id, serviceName,
+                        predicateDefinition));
     }
 
     /**
      * 处理gateway的路由定义
      * 
      * @param routerHolder
-     * @param discover
      * @param id
      * @param serviceName
      * @param predicateDefinition
      */
-    private void processRouteDefinition(ServiceRouterHolder routerHolder, Knife4jGatewayProperties.Discover discover,
-            String id, String serviceName, PredicateDefinition predicateDefinition) {
+    private void processRouteDefinition(ServiceRouterHolder routerHolder, String id, String serviceName,
+            PredicateDefinition predicateDefinition) {
         log.debug("serviceId:{},serviceName:{}", id, serviceName);
-        Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = discover.getServiceConfig();
         String pathPrefix = this.convertPathPrefix(predicateDefinition.getArgs());
         log.debug("pathPrefix:{}", pathPrefix);
         String contextPath = GlobalConstants.EMPTY_STR;
         String groupName = id;
         int order = 0;
+        Knife4jGatewayProperties.Discover discover = this.getDiscover();
         String targetUrl = ServiceUtils.getOpenAPIURL(discover, pathPrefix, null);
         // 如果自定义了setting内容 拼接
-        Knife4jGatewayProperties.ServiceConfigInfo configInfo = configInfoMap.get(serviceName);
+        Knife4jGatewayProperties.ServiceConfigInfo configInfo = this.getServiceConfigInfo(serviceName);
         if (configInfo != null) {
             order = configInfo.getOrder();
             if (discover.getVersion() == OpenApiVersion.OpenAPI3) {
@@ -129,6 +134,17 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
             }
         }
         routerHolder.add(this.buildOpenApi2Resource(serviceName, contextPath, groupName, order, targetUrl));
+    }
+
+    /**
+     * 从配置里面获取服务配置信息
+     * 
+     * @param serviceName
+     * @return
+     */
+    private Knife4jGatewayProperties.ServiceConfigInfo getServiceConfigInfo(String serviceName) {
+        Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = this.getDiscover().getServiceConfig();
+        return configInfoMap.get(serviceName);
     }
 
     /**

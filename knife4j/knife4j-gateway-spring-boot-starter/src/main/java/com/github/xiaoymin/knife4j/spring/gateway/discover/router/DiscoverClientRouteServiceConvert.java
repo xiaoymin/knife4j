@@ -54,7 +54,7 @@ public class DiscoverClientRouteServiceConvert extends AbstactServiceRouterConve
         discoveryClientRouteDefinitionLocator.getRouteDefinitions()
                 .filter(routeDefinition -> ServiceUtils.startLoadBalance(routeDefinition.getUri()))
                 .filter(routeDefinition -> ServiceUtils.includeService(routeDefinition.getUri(), holder.getService(), holder.getExcludeService()))
-                .subscribe(routeDefinition -> parseRouteDefinition(holder, this.knife4jGatewayProperties.getDiscover(), routeDefinition.getPredicates(), routeDefinition.getUri().getHost(),
+                .subscribe(routeDefinition -> parseRouteDefinition(holder, routeDefinition.getPredicates(), routeDefinition.getUri().getHost(),
                         routeDefinition.getUri().getHost()));
     }
     
@@ -71,4 +71,10 @@ public class DiscoverClientRouteServiceConvert extends AbstactServiceRouterConve
     public int order() {
         return GatewayRouterStrategy.REACTIVE.getOrder();
     }
+
+    @Override
+    Knife4jGatewayProperties.Discover getDiscover() {
+        return this.knife4jGatewayProperties.getDiscover();
+    }
+    
 }
