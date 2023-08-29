@@ -64,10 +64,10 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
     /**
      * 解析gateway的路由定义
      * 
-     * @param routerHolder
-     * @param predicateDefinitions
-     * @param id
-     * @param serviceName
+     * @param routerHolder 当前路由处理
+     * @param predicateDefinitions 断言definitions
+     * @param id id
+     * @param serviceName 服务名称
      */
     protected void parseRouteDefinition(ServiceRouterHolder routerHolder,
             List<PredicateDefinition> predicateDefinitions, String id, String serviceName) {
@@ -80,10 +80,10 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
     /**
      * 处理gateway的路由定义
      * 
-     * @param routerHolder
-     * @param id
-     * @param serviceName
-     * @param predicateDefinition
+     * @param routerHolder 当前路由处理
+     * @param id id
+     * @param serviceName 服务名称
+     * @param predicateDefinition 断言definitions
      */
     private void processRouteDefinition(ServiceRouterHolder routerHolder, String id, String serviceName,
             PredicateDefinition predicateDefinition) {
@@ -139,8 +139,8 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
     /**
      * 从配置里面获取服务配置信息
      * 
-     * @param serviceName
-     * @return
+     * @param serviceName 服务名称
+     * @return 服务配置
      */
     private Knife4jGatewayProperties.ServiceConfigInfo getServiceConfigInfo(String serviceName) {
         Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = this.getDiscover().getServiceConfig();
@@ -150,12 +150,12 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
     /**
      * 构建资源
      * 
-     * @param serviceName
-     * @param contextPath
-     * @param groupName
-     * @param order
-     * @param targetUrl
-     * @return
+     * @param serviceName 服务名称
+     * @param contextPath contextPath
+     * @param groupName 分组名称
+     * @param order 排序
+     * @param targetUrl 目标地址
+     * @return 资源
      */
     private OpenAPI2Resource buildOpenApi2Resource(String serviceName, String contextPath, String groupName, int order,
             String targetUrl) {
