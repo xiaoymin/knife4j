@@ -27,7 +27,7 @@ description: 如何贡献代码给Knife4j
 
 - [knife4j-desktop](https://gitee.com/xiaoym/knife4j/tree/dev/knife4j-desktop):Knife4j的独立中间件，基于Java编写，可以独立运行渲染OpenAPI规范文件
 - [knife4j-doc](https://gitee.com/xiaoym/knife4j/tree/dev/knife4j-doc): 官网文档，基于[Docusaurus](https://docusaurus.io/zh-CN/)进行编写
-- [knife4j-vue](https://gitee.com/xiaoym/knife4j/tree/dev/knife4j-vue): 前端源码，基于Vue框架编写
+- [knife4j-vue](https://gitee.com/xiaoym/knife4j/tree/dev/knife4j-vue): 前端源码，基于Vue2框架编写
 - [knife4j](https://gitee.com/xiaoym/knife4j/tree/dev/knife4j): Java端代码，包括所有公开使用的starter组件封装
 
 ### 指导方针
@@ -36,3 +36,69 @@ description: 如何贡献代码给Knife4j
 - 所有功能可通过Github或者Gitee的[issues](https://github.com/xiaoymin/swagger-bootstrap-ui/discussions)进行沟通讨论，避免浪费大家的时间。
 - 如果是重大功能更新，建议你在编码开发的同时，将该功能的设计、思想、实现以及使用说明通过文档进行输出。最好是合并在Knife4j的官方文档上
 - 提交PR时，需要将PR请求提交到**dev分支**！！！
+
+
+## 调试代码
+
+目前[knife4j-vue](https://gitee.com/xiaoym/knife4j/tree/dev/knife4j-vue)是前端代码，基于Vue2框架编写编写
+
+开发者如果想贡献代码或者自己改造，得启动此项目进行调试
+
+
+1、环境准备
+
+首先，开发者本地需要安装Node环境，目前该版本的Node依赖比较低，作者本地使用的版本是`v15.14.0`,可以通过`nvm`工具切换安装不同的node版本，高版本的Node目前可能会存在问题，保持一致即可
+
+
+2、安装依赖
+
+执行命令
+```shell
+npm install 
+```
+
+3、后端接口准备
+
+
+目前Knife4j组件还是以Java生态为主，所以在调试获取OpenAPI数据源时，是根据解析框架做兼容适配，主要是两个框架：
+
+- springfox：提供Swagger2规范的解析，在Spring Boot框架生态下提供服务，参考demo工程：[knife4j-spring-boot27-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-spring-boot27-demo)
+- springdoc：提供OpenAPI3规范的解析，在Spring Boot框架生态下提供服务,参考demo工程：[knife4j-springdoc-openapi-demo](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-springdoc-openapi-demo)
+
+而Knife4j-vue前端代码目前还是比较笨拙的方式，主要体现在`knife4j-vue/src/layouts/BasicLayout.vue`文件中
+
+在`create()`方法时会存在区别
+```javascript
+ created() {
+    // 调试springdoc框架时，使用该方法，注释下面的this.initKnife4jSpringUi()方法
+    this.initSpringDocOpenApi();
+    // 调试springfox框架时，使用该方法，注释上面的 this.initSpringDocOpenApi()方法
+    //this.initKnife4jSpringUi();
+    this.initI18n();
+  },
+```
+
+**这种方法在打包构建时，也同样如此**
+
+4、服务端代理端口
+
+在`knife4j-vue/vue.config.js`配置文件中，修改`proxy`节点下的配置
+
+> 在上面springfox和springdoc两个demo工程下，服务启动后，修改为相应的端口即可
+
+```json
+devServer: {
+    watchOptions: {
+      ignored: /node_modules/
+    },
+    proxy: {
+      "/": {
+        // 代理服务端端口
+        target: 'http://localhost:8990/',
+        ws: true,
+        changeOrigin: true
+      }
+    }
+  },
+
+```
