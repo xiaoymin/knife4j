@@ -106,9 +106,9 @@ export default {
   },
   beforeCreate() { },
   created() {
-    this.initSpringDocOpenApi();
+    //this.initSpringDocOpenApi();
     //this.initKnife4jSpringUi();
-    //this.initKnife4jDemoDoc();
+    this.initKnife4jInsight();
     //this.initKnife4jJFinal();
     //this.initKnife4jFront();
     this.initI18n();
@@ -404,8 +404,7 @@ export default {
         })
       })
     },
-    initKnife4jDemoDoc() {
-      window.console.log("231")
+    initKnife4jInsight() {
       //该版本是最终打包到knife4j-spring-ui的模块,默认是调用该方法
       var that = this;
       var i18nParams = this.getI18nFromUrl();
@@ -414,8 +413,6 @@ export default {
       //读取settings
       this.$localStore.getItem(constant.globalSettingsKey).then(settingCache => {
         var settings = this.getCacheSettings(settingCache);
-        //console.log("layout---")
-        //console.log(settings)
         //重新赋值是否开启增强
         if (!settings.enableSwaggerBootstrapUi) {
           settings.enableSwaggerBootstrapUi = this.getPlusStatus();
@@ -430,15 +427,8 @@ export default {
             this.$localStore.setItem(constant.globalI18nCache, tmpI18n);
             this.$i18n.locale = tmpI18n;
             this.enableVersion = settings.enableVersion;
-            let _winLocation = window.location;
-            window.console.log(_winLocation)
-            let _demoCode = KUtils.getLocationParams('code');
-            debugger
-            window.console.log("project-demo-code:" + _demoCode);
-            let _url = "/demo/data/" + _demoCode + ".json";
-            window.console.log("url:" + _url);
             this.initSwagger({
-              url: "/demo/data/openapi.json",
+              insight: true,
               baseSpringFox: true,
               store: this.$store,
               localStore: this.$localStore,
@@ -464,16 +454,9 @@ export default {
               }
               this.$i18n.locale = tmpI18n;
               this.enableVersion = settings.enableVersion;
-
-              let _winLocation = window.location;
-              window.console.log(_winLocation)
-              let _demoCode = KUtils.getLocationParams('code');
-              debugger
-              window.console.log("project-demo-code:" + _demoCode);
-              let _url = "/demo/data/" + _demoCode + ".json";
-              window.console.log("url:" + _url);
               this.initSwagger({
-                url: "/demo/data/openapi.json",
+                // url: "/services.json",
+                insight: true,
                 baseSpringFox: true,
                 store: this.$store,
                 localStore: this.$localStore,

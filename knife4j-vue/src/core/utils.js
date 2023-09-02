@@ -156,6 +156,19 @@ function isUrl(path) {
 }
 
 const utils = {
+  insightUrl(url) {
+    let newUrl = url;
+    var pathname = window.location.pathname;
+    var reg = new RegExp('(.*?)/doc\.html.*$', 'ig');
+    var tempPath = '';
+    if (reg.test(pathname)) {
+      tempPath = RegExp.$1;
+    }
+    if (tempPath != '') {
+      newUrl = url.replace(tempPath, '');
+    }
+    return newUrl;
+  },
   /**
    * 判断类型，是否为JSON格式
    * @param {*} produces produces

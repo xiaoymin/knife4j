@@ -79,6 +79,8 @@ marked.setOptions({
 
 function SwaggerBootstrapUi(options) {
   this.swaggerData = null;
+  // 添加insight组件的支持 2023/09/02 22:00
+  this.insight = options.insight || false;
   //  默认false
   this.springdoc = options.springdoc || false;
   //  此处判断底层springfox版本
@@ -5034,6 +5036,11 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     }
     tempUrl = tempUrl + newfullPath;
     newurl = tempUrl;
+  }
+  //添加Knife4jInsight组件的支持
+  if (that.insight) {
+    // 如果是insight组件，此处的url默认直接显示原路径
+    newurl = KUtils.insightUrl(newurl);
   }
   // var startApiTime = new Date().getTime();
   swpinfo.showUrl = newurl;
