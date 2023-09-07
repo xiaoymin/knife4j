@@ -105,7 +105,7 @@ Knife4jInsight这个产品的思路我自认为还是得发展下去,只不过�
 
 - 接口的i18n转化：本身Knife4j提供的界面目前是支持中英文的，但是开发者如果要提供英文的接口文档描述，通常在项目开发阶段，或者定义OpenAPI接口规范时，技术层面就需要提供支持，而如果通过平台中大模型的翻译工具，基于Prompt工程，将OpenAPI数据源直接生成对应的目标语言，那么开发者就无需在技术启动接口考虑i18n的事情，Knife4jInsight平台中自动集成即可快速实现。
 
-  ![图6.LLM大模型](/images/blog/product-new-idea/LLM大模型.png)
+  ![图6.LLM大模型](/images/blog/product-new-idea/llm1.png)
 
 - 代码模版：将Prompt工程+OpenAPI规范结合，植入到Knife4j到每一个功能点中，包括代码示例生成、curl等等不同的场景，调试LLM大模型的Prompt工程，将幂等性的接口输出到应用测，给予开发者更多的便利。
 
