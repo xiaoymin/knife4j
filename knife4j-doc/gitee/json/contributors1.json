@@ -5,6 +5,76 @@
         "avatar": "/images/website/contributor/八一菜刀.png"
     },
     {
+        "name": "鬼剑士",
+        "url": "https://github.com/4379711",
+        "avatar": "/images/website/contributor/33949826.png"
+    },
+    {
+        "name": "lhzsdnu",
+        "url": "https://gitee.com/lhzsdnu",
+        "avatar": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAAAAXNSR0IArs4c6QAAAvtJREFUeF7t3D1qlWEUxPEnELCxEsRSEMTSzjKtSxG0cAeWFtZ2LsAdWImde1CwFDEE0cKA4scVBKsgd4q5LzOHf+rDeefMjyfpcvTh0Y3d4mdsA0cAj7X9exjAs30BHu4LMMDTGxh+H3+DAR7ewPDzeMEAD29g+Hm8YICHNzD8PF4wwMMbGH4eLxjg4Q0MP48XDPDwBoafxwsGeHgDw8/jBQM8vIHh5/GCAR7ewPDzeMEAD29g+Hm8YICHNzD8PF4wwMMbGH4eLxjg4Q0MP48XDPDwBoafxwsGeHgDw8/jBQOc28Dlkwfr0s2TCwG/vXm5zl8/yw2+YbLqF3z14at1fOX6hbp+nr1bZ0/vblhj7qcAzrWxJAPYUmPuEoBzbSzJALbUmLsE4FwbSzKALTXmLgE418aSDGBLjblLAM61sSQD2FJj7hKAc20syQC21Ji7BOBcG0sygC015i4BONfGkgxgS425SwDOtbEkA9hSY+4SgHNtLMkAttSYuwTgXBtLMoAtNeYuATjXxpIMYEuNuUsAzrWxJAPYUmPuEoBzbSzJALbUmLsE4FwbSzKALTXmLgE418aSDGBLjblLAM61sSQD2FJj7hKAc20syQC21Ji7ZCTw2u3Wry/vra3/OH27Pj+/Z925xbKZwAdobvf96/r4+PYBNh92JcBivwCLRTnH/vd/spzf+LcL4EO0umcnwPtL7/4Vff/FOr52a/+Vhonf55/W6ZM7hk3brqgG3raqzq8B3OkmpwZYrqpzEOBONzk1wHJVnYMAd7rJqQGWq+ocBLjTTU4NsFxV5yDAnW5yaoDlqjoHAe50k1MDLFfVOQhwp5ucGmC5qs5BgDvd5NQAy1V1DgLc6SanBliuqnMQ4E43OTXAclWdgwB3usmpAZar6hwEuNNNTg2wXFXnIMCdbnJqgOWqOgcB7nSTUwMsV9U5CHCnm5waYLmqzkGAO93k1ADLVXUOAtzpJqcGWK6qcxDgTjc5NcByVZ2DAHe6yakBlqvqHPwDHxY77+1XXMgAAAAASUVORK5CYII="
+    },
+    {
+        "name": "谢进伟",
+        "url": "https://gitee.com/xiejinwei",
+        "avatar": "/images/website/contributor/486046_xiejinwei_1578925361.png"
+    },
+    {
+        "name": "最怕的、其实是孤单。。。",
+        "url": "https://gitee.com/sky-0914",
+        "avatar": "data:image/png;base64,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"
+    },
+    {
+        "name": "当幸福碰错了头",
+        "url": "https://gitee.com/chenshifeng001",
+        "avatar": "/images/website/contributor/5102563_chenshifeng001_1616486639.png"
+    },
+    {
+        "name": "fengshi20102010",
+        "url": "https://gitee.com/fengshi20102010",
+        "avatar": "/images/website/contributor/398866_fengshi20102010_1578922679.jpg"
+    },
+    {
+        "name": "wear工程师",
+        "url": "https://github.com/zskzskabcd",
+        "avatar": "/images/website/contributor/63706387.jpeg"
+    },
+    {
+        "name": "King-Run",
+        "url": "https://github.com/King-Run",
+        "avatar": "/images/website/contributor/57865422.jpeg"
+    },
+    {
+        "name": "liuyd-cc",
+        "url": "https://github.com/liuyd-cc",
+        "avatar": "/images/website/contributor/17865425.png"
+    },
+    {
+        "name": "1990lsf",
+        "url": "https://github.com/1990lsf",
+        "avatar": "/images/website/contributor/3351027.jpeg"
+    },
+    {
+        "name": "ocean-zhc",
+        "url": "https://github.com/ocean-zhc",
+        "avatar": "/images/website/contributor/46189785.jpeg"
+    },
+    {
+        "name": "Pastor0370",
+        "url": "https://github.com/Pastor0370",
+        "avatar": "/images/website/contributor/71577061.jpeg"
+    },
+    {
+        "name": "milo-xm",
+        "url": "https://gitee.com/moil-xm",
+        "avatar": "/images/website/contributor/5228318_moil-xm_1614837793.png"
+    },
+    {
+        "name": "暇享",
+        "url": "https://gitee.com/iot2000x",
+        "avatar": "data:image/png;base64,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"
+    },
+    {
         "name": "linghengqian",
         "url": "https://github.com/linghengqian",
         "avatar": "/images/website/contributor/linghengqian.jpeg"
@@ -42,12 +112,12 @@
     {
         "name": "tianchaohongyu",
         "url": "https://gitee.com/tianchaohongyu",
-        "avatar": "https://portrait.gitee.com/uploads/avatars/user/507/1522755_tianchaohongyu_1578953588.png!avatar200"
+        "avatar": "/images/website/contributor/1522755_tianchaohongyu_1578953588.png"
     },
     {
         "name": "miaoyinjun",
         "url": "https://gitee.com/miaoyinjun",
-        "avatar": "https://portrait.gitee.com/uploads/avatars/user/201/604134_miaoyinjun_1641539847.png!avatar200"
+        "avatar": "/images/website/contributor/604134_miaoyinjun_1641539847.png"
     },
     {
         "name": "mhuang",
