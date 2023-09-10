@@ -429,6 +429,7 @@ export default {
             this.enableVersion = settings.enableVersion;
             this.initSwagger({
               insight: true,
+              url: 'knife4jInsight/group',
               baseSpringFox: true,
               store: this.$store,
               localStore: this.$localStore,
@@ -456,6 +457,7 @@ export default {
               this.enableVersion = settings.enableVersion;
               this.initSwagger({
                 // url: "/services.json",
+                url: 'knife4jInsight/group',
                 insight: true,
                 baseSpringFox: true,
                 store: this.$store,

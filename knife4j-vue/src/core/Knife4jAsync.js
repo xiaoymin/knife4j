@@ -778,7 +778,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       }
       if (KUtils.checkUndefined(this.currentInstance.header)) {
         // Knife4j自研Aggreration微服务聚合组件请求头
-        reqHeaders = Object.assign({}, reqHeaders, { 'knfie4j-gateway-request': that.currentInstance.header });
+        reqHeaders = Object.assign({}, reqHeaders, { 'knife4j-gateway-request': that.currentInstance.header });
       }
       if (KUtils.checkUndefined(this.currentInstance.basicAuth)) {
         reqHeaders = Object.assign({}, reqHeaders, { 'knife4j-gateway-basic-request': that.currentInstance.basicAuth });
