@@ -148,6 +148,12 @@ module.exports = {
                         className: 'changelog',
                     },
                     {
+                        href: 'http://knife4j.net',
+                        label: '聚合平台',
+                        position: 'left',
+                        className: 'changelog',
+                    },
+                    {
                         to: 'docs/changelog',
                         label: '更新日志',
                         activeBasePath: '/docs/changelog',
