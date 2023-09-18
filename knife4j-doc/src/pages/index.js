@@ -75,7 +75,7 @@ const mavenDependency = `<!--引入Knife4j的官方start包,该指南选择Sprin
 <dependency>
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
-    <version>4.0.0</version>
+    <version>4.3.0</version>
 </dependency>
 
 `

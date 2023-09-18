@@ -1,7 +1,7 @@
 const donateHtml = `
 <div class="sidebar_donate">
     <div class="sidebar_sponsor"> 
-        <a target="_blank" href="http://knife4j.net?utm_source=knife4j"><img src="/images/sponsor/knife4j/logo1.png"/>
+        <a target="_blank" href="http://knife4j.net?utm_source=knife4j"><img src="/images/sponsor/knife4j/logo2.png"/>
         </a>
     </div>
     
