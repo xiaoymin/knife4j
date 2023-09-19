@@ -101,9 +101,9 @@ public class WebFluxSecurityBasicAuthFilter extends AbstractBasicAuthFilter impl
 	}
 
 	private void writeForbiddenCode(ServerHttpResponse serverHttpResponse) {
-		serverHttpResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
+		serverHttpResponse.setRawStatusCode(HttpStatus.UNAUTHORIZED.value());
 		serverHttpResponse.getHeaders().add(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=\"Restricted Area\"");
-		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED.value(), null, null);
 	}
 
 }
