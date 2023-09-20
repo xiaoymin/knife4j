@@ -18,6 +18,7 @@
 package com.github.xiaoymin.knife4j.spring.configuration;
 
 import com.github.xiaoymin.knife4j.core.model.MarkdownProperty;
+import com.github.xiaoymin.knife4j.spring.configuration.insight.Knife4jInsightProperties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -67,4 +68,10 @@ public class Knife4jProperties {
      * The group of Custom Markdown resources
      */
     private List<MarkdownProperty> documents;
+
+    /**
+     * Knife4jInsight 配置功能
+     * @since v4.4.0
+     */
+    private Knife4jInsightProperties insight;
 }
