@@ -1,3 +1,20 @@
+/*
+ * Copyright © 2017-2023 Knife4j(xiaoymin@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.github.xiaoymin.knife4j.spring.common.insight;
 
 import com.github.xiaoymin.knife4j.spring.configuration.insight.Knife4jInsightProperties;
@@ -16,28 +33,28 @@ import org.springframework.core.env.Environment;
  */
 @Slf4j
 public class Knife4jInsightDiscoveryBootstrapper implements CommandLineRunner, BeanFactoryAware, EnvironmentAware {
-
+    
     final Knife4jInsightProperties insightProperties;
     private BeanFactory beanFactory;
     private Environment environment;
-
+    
     public Knife4jInsightDiscoveryBootstrapper(Knife4jInsightProperties insightProperties) {
         this.insightProperties = insightProperties;
     }
-
+    
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory=beanFactory;
+        this.beanFactory = beanFactory;
     }
-
+    
     @Override
     public void run(String... args) throws Exception {
-        //启动时进行异步注册任务
-        new Thread(new Knife4jInsightDiscoveryRunnable(environment,insightProperties,beanFactory)).start();
+        // 启动时进行异步注册任务
+        new Thread(new Knife4jInsightDiscoveryRunnable(environment, insightProperties, beanFactory)).start();
     }
-
+    
     @Override
     public void setEnvironment(Environment environment) {
-        this.environment=environment;
+        this.environment = environment;
     }
 }

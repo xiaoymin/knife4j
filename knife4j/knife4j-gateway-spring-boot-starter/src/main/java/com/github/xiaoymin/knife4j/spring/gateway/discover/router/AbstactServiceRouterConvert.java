@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package com.github.xiaoymin.knife4j.spring.gateway.discover.router;
 
 import java.util.List;
@@ -45,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Slf4j
 public abstract class AbstactServiceRouterConvert implements ServiceRouterConvert {
-
+    
     /**
      * 获取路由前缀
      * 
@@ -53,14 +54,14 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
      * @return 路由前缀
      */
     abstract String convertPathPrefix(Map<String, String> predicateArgs);
-
+    
     /**
      * 获取服务发现策略配置信息
      * 
      * @return 服务发现策略配置信息
      */
     abstract Knife4jGatewayProperties.Discover getDiscover();
-
+    
     /**
      * 解析gateway的路由定义
      * 
@@ -70,13 +71,13 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
      * @param serviceName 服务名称
      */
     protected void parseRouteDefinition(ServiceRouterHolder routerHolder,
-            List<PredicateDefinition> predicateDefinitions, String id, String serviceName) {
+                                        List<PredicateDefinition> predicateDefinitions, String id, String serviceName) {
         predicateDefinitions.stream().filter(
                 predicateDefinition -> GlobalConstants.ROUTER_PATH_NAME.equalsIgnoreCase(predicateDefinition.getName()))
                 .findFirst().ifPresent(predicateDefinition -> this.processRouteDefinition(routerHolder, id, serviceName,
                         predicateDefinition));
     }
-
+    
     /**
      * 处理gateway的路由定义
      * 
@@ -86,7 +87,7 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
      * @param predicateDefinition 断言definitions
      */
     private void processRouteDefinition(ServiceRouterHolder routerHolder, String id, String serviceName,
-            PredicateDefinition predicateDefinition) {
+                                        PredicateDefinition predicateDefinition) {
         log.debug("serviceId:{},serviceName:{}", id, serviceName);
         String pathPrefix = this.convertPathPrefix(predicateDefinition.getArgs());
         log.debug("pathPrefix:{}", pathPrefix);
@@ -135,7 +136,7 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
         }
         routerHolder.add(this.buildOpenApi2Resource(serviceName, contextPath, groupName, order, targetUrl));
     }
-
+    
     /**
      * 从配置里面获取服务配置信息
      * 
@@ -146,7 +147,7 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
         Map<String, Knife4jGatewayProperties.ServiceConfigInfo> configInfoMap = this.getDiscover().getServiceConfig();
         return configInfoMap.get(serviceName);
     }
-
+    
     /**
      * 构建资源
      * 
@@ -158,8 +159,8 @@ public abstract class AbstactServiceRouterConvert implements ServiceRouterConver
      * @return 资源
      */
     private OpenAPI2Resource buildOpenApi2Resource(String serviceName, String contextPath, String groupName, int order,
-            String targetUrl) {
+                                                   String targetUrl) {
         return new OpenAPI2Resource(targetUrl, order, true, groupName, contextPath, serviceName);
     }
-
+    
 }

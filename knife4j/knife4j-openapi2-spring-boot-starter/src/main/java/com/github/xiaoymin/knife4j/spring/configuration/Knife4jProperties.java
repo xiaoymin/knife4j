@@ -68,7 +68,7 @@ public class Knife4jProperties {
      * The group of Custom Markdown resources
      */
     private List<MarkdownProperty> documents;
-
+    
     /**
      * Knife4jInsight 配置功能
      * @since v4.4.0

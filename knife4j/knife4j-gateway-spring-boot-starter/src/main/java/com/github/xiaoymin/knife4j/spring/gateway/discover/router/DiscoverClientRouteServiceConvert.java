@@ -71,7 +71,7 @@ public class DiscoverClientRouteServiceConvert extends AbstactServiceRouterConve
     public int order() {
         return GatewayRouterStrategy.REACTIVE.getOrder();
     }
-
+    
     @Override
     Knife4jGatewayProperties.Discover getDiscover() {
         return this.knife4jGatewayProperties.getDiscover();

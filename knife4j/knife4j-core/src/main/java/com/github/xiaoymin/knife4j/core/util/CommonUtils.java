@@ -209,6 +209,17 @@ public class CommonUtils {
         }
     }
     
+    public static void close(OutputStream outputStream) {
+        if (outputStream != null) {
+            try {
+                outputStream.flush();
+                outputStream.close();
+            } catch (Exception e) {
+                logger.warn("close error,message:{}", e.getMessage());
+            }
+        }
+    }
+    
     public static void main(String[] args) {
         System.out.println(getRandomBeanName("测试一下吧"));
         System.out.println(getRandomBeanName("测试一下吧-=13【】13【-1=31=-3=1313"));

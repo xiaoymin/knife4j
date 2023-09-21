@@ -65,7 +65,7 @@ public class DynamicRouteServiceConvert extends AbstactServiceRouterConvert {
     public int order() {
         return GatewayRouterStrategy.DYNAMIC.getOrder();
     }
-
+    
     @Override
     Knife4jGatewayProperties.Discover getDiscover() {
         return this.knife4jGatewayProperties.getDiscover();

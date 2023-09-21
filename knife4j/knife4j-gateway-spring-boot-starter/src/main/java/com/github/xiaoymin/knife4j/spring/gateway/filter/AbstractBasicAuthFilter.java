@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package com.github.xiaoymin.knife4j.spring.gateway.filter;
 
 import java.util.ArrayList;
@@ -35,81 +36,81 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 public abstract class AbstractBasicAuthFilter {
-	
-	public static final String BASIC = "Basic";
-
-	protected List<Pattern> urlFilters = null;
-
-	protected AbstractBasicAuthFilter() {
-		urlFilters = new ArrayList<>();
-		urlFilters.add(Pattern.compile(".*?/doc\\.html.*", Pattern.CASE_INSENSITIVE));
-		urlFilters.add(Pattern.compile(".*?/v2/api-docs.*", Pattern.CASE_INSENSITIVE));
-		urlFilters.add(Pattern.compile(".*?/v2/api-docs-ext.*", Pattern.CASE_INSENSITIVE));
-		urlFilters.add(Pattern.compile(".*?/swagger-resources.*", Pattern.CASE_INSENSITIVE));
-		urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/ui.*", Pattern.CASE_INSENSITIVE));
-		urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/security.*", Pattern.CASE_INSENSITIVE));
-		// https://gitee.com/xiaoym/knife4j/issues/I6H8BE
-		urlFilters.add(Pattern.compile(".*?/swagger-ui.*", Pattern.CASE_INSENSITIVE));
-		urlFilters.add(Pattern.compile(".*?/v3/api-docs.*", Pattern.CASE_INSENSITIVE));
-	}
-
-	/**
-	 * 添加外部过滤规则，正则表达式
-	 * 
-	 * @param rule 外部自定义规则
-	 */
-	public void addRule(String rule) {
-		this.urlFilters.add(Pattern.compile(rule, Pattern.CASE_INSENSITIVE));
-	}
-
-	/**
-	 * 添加外部过滤规则，正则表达式
-	 * 
-	 * @param rules
-	 */
-	public void addRule(Collection<String> rules) {
-		if (rules != null && !rules.isEmpty()) {
-			rules.forEach(this::addRule);
-		}
-	}
-
-	/**
-	 * 判断是否匹配
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	protected boolean match(String uri) {
-		// 考虑双斜杠的问题会绕过校验
-		if (uri != null) {
-			// https://gitee.com/xiaoym/knife4j/issues/I4XDYE
-			String newUri = uri.replaceAll("/+", "/");
-			for (Pattern pattern : getUrlFilters()) {
-				if (pattern.matcher(newUri).matches()) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * base64解码
-	 * 
-	 * @param source
-	 * @return
-	 */
-	protected String decodeBase64(String source) {
-		String decodeStr = null;
-		if (source != null) {
-			try {
-				byte[] bytes = Base64.getDecoder().decode(source);
-				decodeStr = new String(bytes);
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
-		}
-		return decodeStr;
-	}
-
+    
+    public static final String BASIC = "Basic";
+    
+    protected List<Pattern> urlFilters = null;
+    
+    protected AbstractBasicAuthFilter() {
+        urlFilters = new ArrayList<>();
+        urlFilters.add(Pattern.compile(".*?/doc\\.html.*", Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/v2/api-docs.*", Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/v2/api-docs-ext.*", Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/swagger-resources.*", Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/ui.*", Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/swagger-resources/configuration/security.*", Pattern.CASE_INSENSITIVE));
+        // https://gitee.com/xiaoym/knife4j/issues/I6H8BE
+        urlFilters.add(Pattern.compile(".*?/swagger-ui.*", Pattern.CASE_INSENSITIVE));
+        urlFilters.add(Pattern.compile(".*?/v3/api-docs.*", Pattern.CASE_INSENSITIVE));
+    }
+    
+    /**
+     * 添加外部过滤规则，正则表达式
+     * 
+     * @param rule 外部自定义规则
+     */
+    public void addRule(String rule) {
+        this.urlFilters.add(Pattern.compile(rule, Pattern.CASE_INSENSITIVE));
+    }
+    
+    /**
+     * 添加外部过滤规则，正则表达式
+     * 
+     * @param rules
+     */
+    public void addRule(Collection<String> rules) {
+        if (rules != null && !rules.isEmpty()) {
+            rules.forEach(this::addRule);
+        }
+    }
+    
+    /**
+     * 判断是否匹配
+     * 
+     * @param uri
+     * @return
+     */
+    protected boolean match(String uri) {
+        // 考虑双斜杠的问题会绕过校验
+        if (uri != null) {
+            // https://gitee.com/xiaoym/knife4j/issues/I4XDYE
+            String newUri = uri.replaceAll("/+", "/");
+            for (Pattern pattern : getUrlFilters()) {
+                if (pattern.matcher(newUri).matches()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * base64解码
+     * 
+     * @param source
+     * @return
+     */
+    protected String decodeBase64(String source) {
+        String decodeStr = null;
+        if (source != null) {
+            try {
+                byte[] bytes = Base64.getDecoder().decode(source);
+                decodeStr = new String(bytes);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+        return decodeStr;
+    }
+    
 }

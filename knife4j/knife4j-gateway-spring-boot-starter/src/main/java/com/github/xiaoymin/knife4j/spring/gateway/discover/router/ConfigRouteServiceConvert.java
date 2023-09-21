@@ -67,7 +67,7 @@ public class ConfigRouteServiceConvert extends AbstactServiceRouterConvert {
     public int order() {
         return GatewayRouterStrategy.CONFIG.getOrder();
     }
-
+    
     @Override
     Knife4jGatewayProperties.Discover getDiscover() {
         return this.knife4jGatewayProperties.getDiscover();

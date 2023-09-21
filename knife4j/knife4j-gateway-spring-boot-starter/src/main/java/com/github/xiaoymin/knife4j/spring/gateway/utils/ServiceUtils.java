@@ -53,7 +53,7 @@ public class ServiceUtils {
         OpenApiVersion apiVersion = discover.getVersion();
         StringBuilder urlBuilder = new StringBuilder();
         String _defaultPath = PathUtils.processContextPath(contextPath);
-        //String _groupName = StrUtil.defaultTo(groupName, GlobalConstants.DEFAULT_GROUP_NAME);
+        // String _groupName = StrUtil.defaultTo(groupName, GlobalConstants.DEFAULT_GROUP_NAME);
         String _groupName = "";
         String groupUrl = "";
         if (apiVersion == OpenApiVersion.Swagger2) {

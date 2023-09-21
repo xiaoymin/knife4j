@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package com.github.xiaoymin.knife4j.spring.gateway.filter.basic;
 
 import java.util.Base64;
@@ -44,66 +45,66 @@ import reactor.core.publisher.Mono;
 @Setter
 @Getter
 public class WebFluxSecurityBasicAuthFilter extends AbstractBasicAuthFilter implements WebFilter {
-
-	/***
-	 * 是否开启basic验证,默认不开启
-	 */
-	private boolean enableBasicAuth = false;
-
-	private String userName;
-
-	private String password;
-
-	@Override
-	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-		// 只拦截Knife4J资源
-		if (this.enableBasicAuth && this.match(exchange.getRequest().getURI().toString())) {
-			return exchange.getSession().doOnNext(session -> this.doFilter(exchange, session))
-					.then(chain.filter(exchange));
-		}
-		return chain.filter(exchange);
-	}
-
-	/**
-	 * 过滤处理
-	 * 
-	 * @param exchange
-	 * @param session
-	 */
-	private void doFilter(ServerWebExchange exchange, WebSession session) {
-		Object attribute = session.getAttribute(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION);
-		if (attribute != null) {
-			return;
-		}
-		String authorization = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-		ServerHttpResponse response = exchange.getResponse();
-		if (authorization == null) {
-			writeForbiddenCode(response);
-		}
-
-		String[] parts = authorization.split(" ");
-		// 验证是否符合规则
-		if (parts.length != 2 || !parts[0].equals(BASIC)) {
-			writeForbiddenCode(response);
-		}
-
-		String credentials = new String(Base64.getDecoder().decode(parts[1]));
-		String[] usernameAndPassword = credentials.split(":");
-		// 验证用户名密码是否匹配
-		if (usernameAndPassword.length != 2 || !usernameAndPassword[0].equals(this.userName)
-				|| !usernameAndPassword[1].equals(this.password)) {
-			writeForbiddenCode(response);
-		} else {
-			exchange.getSession().doOnNext(
-					session1 -> session1.getAttributes().put(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION, this.userName))
-					.subscribe();
-		}
-	}
-
-	private void writeForbiddenCode(ServerHttpResponse serverHttpResponse) {
-		serverHttpResponse.setRawStatusCode(HttpStatus.UNAUTHORIZED.value());
-		serverHttpResponse.getHeaders().add(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=\"Restricted Area\"");
-		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED.value(), null, null);
-	}
-
+    
+    /***
+     * 是否开启basic验证,默认不开启
+     */
+    private boolean enableBasicAuth = false;
+    
+    private String userName;
+    
+    private String password;
+    
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        // 只拦截Knife4J资源
+        if (this.enableBasicAuth && this.match(exchange.getRequest().getURI().toString())) {
+            return exchange.getSession().doOnNext(session -> this.doFilter(exchange, session))
+                    .then(chain.filter(exchange));
+        }
+        return chain.filter(exchange);
+    }
+    
+    /**
+     * 过滤处理
+     * 
+     * @param exchange
+     * @param session
+     */
+    private void doFilter(ServerWebExchange exchange, WebSession session) {
+        Object attribute = session.getAttribute(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION);
+        if (attribute != null) {
+            return;
+        }
+        String authorization = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        ServerHttpResponse response = exchange.getResponse();
+        if (authorization == null) {
+            writeForbiddenCode(response);
+        }
+        
+        String[] parts = authorization.split(" ");
+        // 验证是否符合规则
+        if (parts.length != 2 || !parts[0].equals(BASIC)) {
+            writeForbiddenCode(response);
+        }
+        
+        String credentials = new String(Base64.getDecoder().decode(parts[1]));
+        String[] usernameAndPassword = credentials.split(":");
+        // 验证用户名密码是否匹配
+        if (usernameAndPassword.length != 2 || !usernameAndPassword[0].equals(this.userName)
+                || !usernameAndPassword[1].equals(this.password)) {
+            writeForbiddenCode(response);
+        } else {
+            exchange.getSession().doOnNext(
+                    session1 -> session1.getAttributes().put(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION, this.userName))
+                    .subscribe();
+        }
+    }
+    
+    private void writeForbiddenCode(ServerHttpResponse serverHttpResponse) {
+        serverHttpResponse.setRawStatusCode(HttpStatus.UNAUTHORIZED.value());
+        serverHttpResponse.getHeaders().add(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=\"Restricted Area\"");
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED.value(), null, null);
+    }
+    
 }
