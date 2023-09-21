@@ -44,16 +44,16 @@ public class Knife4jInsightDiscoveryBootstrapper implements CommandLineRunner, E
     @Override
     public void run(String... args) throws Exception {
         // 启动时进行异步注册任务
-        Knife4jInsightCommonInfo commonInfo=new Knife4jInsightCommonInfo();
-        //属性赋值
+        Knife4jInsightCommonInfo commonInfo = new Knife4jInsightCommonInfo();
+        // 属性赋值
         commonInfo.setContextPath(EnvironmentUtils.resolveContextPath(environment));
         commonInfo.setSpec(InsightConstants.SPEC_OPENAPI3);
-        commonInfo.setServiceName(EnvironmentUtils.resolveString(environment,"spring.application.name",""));
+        commonInfo.setServiceName(EnvironmentUtils.resolveString(environment, "spring.application.name", ""));
         commonInfo.setSecret(insightProperties.getSecret());
         commonInfo.setNamespace(insightProperties.getNamespace());
-        commonInfo.setPort(EnvironmentUtils.resolveString(environment,"server.port","8080"));
+        commonInfo.setPort(EnvironmentUtils.resolveString(environment, "server.port", "8080"));
         commonInfo.setServer(insightProperties.getServer());
-        Knife4jInsightUploadRunner uploadRunner=new Knife4jInsightUploadRunner(commonInfo);
+        Knife4jInsightUploadRunner uploadRunner = new Knife4jInsightUploadRunner(commonInfo);
         new Thread(uploadRunner).start();
     }
     

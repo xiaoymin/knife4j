@@ -51,31 +51,32 @@ public class Knife4jUtils {
         }
         return null;
     }
-
-    public static String getRetry(String url,int retry){
-        for (int i=0;i<retry;i++){
-            String result=get(url);
-            if (result!=null){
+    
+    public static String getRetry(String url, int retry) {
+        for (int i = 0; i < retry; i++) {
+            String result = get(url);
+            if (result != null) {
                 return result;
             }
         }
         return null;
     }
-
-    public static String get(String url){
+    
+    public static String get(String url) {
         URL apiUrl = null;
         try {
             log.debug("url:{}", url);
             apiUrl = new URL(url);
             HttpURLConnection connection = getGetUrlConnection(apiUrl);
             String response = getEntity(connection);
-            if (response != null) return response;
+            if (response != null)
+                return response;
         } catch (Exception e) {
             log.debug(e.getMessage(), e);
         }
         return null;
     }
-
+    
     private static String getEntity(HttpURLConnection connection) throws IOException {
         int responseCode = connection.getResponseCode();
         if (responseCode == 200) {
@@ -90,7 +91,7 @@ public class Knife4jUtils {
         }
         return null;
     }
-
+    
     /**
      * http post
      * @param url http url
@@ -109,7 +110,8 @@ public class Knife4jUtils {
             os.write(body.getBytes());
             CommonUtils.close(os);
             String response = getEntity(connection);
-            if (response != null) return response;
+            if (response != null)
+                return response;
         } catch (Exception e) {
             log.debug(e.getMessage(), e);
         }
@@ -126,7 +128,7 @@ public class Knife4jUtils {
         setConnection(connection);
         return connection;
     }
-
+    
     private static HttpURLConnection getGetUrlConnection(URL apiUrl) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
         // 基础属性
@@ -135,8 +137,8 @@ public class Knife4jUtils {
         setConnection(connection);
         return connection;
     }
-
-    private static void setConnection(HttpURLConnection connection){
+    
+    private static void setConnection(HttpURLConnection connection) {
         // 设置通用的请求属性
         connection.setRequestProperty("Accept", "*/*");
         connection.setRequestProperty("Connection", "Keep-Alive");
@@ -148,6 +150,6 @@ public class Knife4jUtils {
         // 设置读取超时时间
         connection.setReadTimeout(20000);
         connection.setConnectTimeout(20000);
-
+        
     }
 }

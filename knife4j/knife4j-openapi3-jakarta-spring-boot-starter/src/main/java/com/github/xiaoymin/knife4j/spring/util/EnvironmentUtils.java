@@ -28,13 +28,14 @@ import java.util.Objects;
  * 2022/8/18 22:26
  */
 public class EnvironmentUtils {
+    
     /**
      * 处理程序contextPath
      * @param environment 环境变量
      * @return contextPath
      * @since v4.4.0
      */
-    public static String resolveContextPath(Environment environment){
+    public static String resolveContextPath(Environment environment) {
         String contextPath = "";
         // Spring Boot 1.0
         String v1BasePath = environment.getProperty("server.context-path");
@@ -47,7 +48,7 @@ public class EnvironmentUtils {
         }
         return contextPath;
     }
-
+    
     /**
      * get String property
      * @param environment Spring Context Environment
