@@ -19,18 +19,24 @@ package com.github.xiaoymin.knife4j.insight.upload;
 
 import com.github.xiaoymin.knife4j.insight.config.Knife4jInsightCommonInfo;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2023/9/21 21:07
  * @since knife4j
  */
+@Slf4j
 @AllArgsConstructor
 public class Knife4jInsightUploadRunner implements Runnable {
     
     final Knife4jInsightCommonInfo knife4jInsightCommonInfo;
     @Override
     public void run() {
-        
+        try {
+            Knife4jInsightUploader.upload(knife4jInsightCommonInfo);
+        } catch (Exception e) {
+            log.debug(e.getMessage(), e);
+        }
     }
 }
