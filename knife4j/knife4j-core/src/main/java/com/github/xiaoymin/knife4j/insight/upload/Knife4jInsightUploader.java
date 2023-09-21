@@ -27,8 +27,11 @@ import com.github.xiaoymin.knife4j.insight.config.Knife4jInsightCommonInfo;
 import com.github.xiaoymin.knife4j.insight.openapi3.Knife4jInsightOpenAPI3Config;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 
 import static com.github.xiaoymin.knife4j.insight.InsightConstants.KNIFE4J_CLOUD_API;
 
@@ -67,7 +70,13 @@ public class Knife4jInsightUploader {
                     Knife4jInsightRoute knife4jCloudRoute = new Knife4jInsightRoute();
                     knife4jCloudRoute.setPath(route.getUrl());
                     knife4jCloudRoute.setGroupName(route.getName());
-                    String apiUrl = "http://localhost:" + commonInfo.getPort() + route.getUrl();
+                    String apiUrl = null;
+                    try {
+                        // get请求会出现中文group的情况，encode处理
+                        apiUrl = "http://localhost:" + commonInfo.getPort() + URLEncoder.encode(route.getUrl(), StandardCharsets.UTF_8.name());
+                    } catch (UnsupportedEncodingException e) {
+                        log.warn(e.getMessage());
+                    }
                     log.debug("apiUrl:{}", apiUrl);
                     knife4jCloudRoute.setContent(Knife4jUtils.getRetry(apiUrl, 3));
                     knife4jCloudDiscoveryInfo.addRoute(knife4jCloudRoute);
