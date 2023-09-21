@@ -70,13 +70,7 @@ public class Knife4jInsightUploader {
                     Knife4jInsightRoute knife4jCloudRoute = new Knife4jInsightRoute();
                     knife4jCloudRoute.setPath(route.getUrl());
                     knife4jCloudRoute.setGroupName(route.getName());
-                    String apiUrl = null;
-                    try {
-                        // get请求会出现中文group的情况，encode处理
-                        apiUrl = "http://localhost:" + commonInfo.getPort() + URLEncoder.encode(route.getUrl(), StandardCharsets.UTF_8.name());
-                    } catch (UnsupportedEncodingException e) {
-                        log.warn(e.getMessage());
-                    }
+                    String apiUrl = "http://localhost:" + commonInfo.getPort() + route.getUrl();
                     log.debug("apiUrl:{}", apiUrl);
                     knife4jCloudRoute.setContent(Knife4jUtils.getRetry(apiUrl, 3));
                     knife4jCloudDiscoveryInfo.addRoute(knife4jCloudRoute);

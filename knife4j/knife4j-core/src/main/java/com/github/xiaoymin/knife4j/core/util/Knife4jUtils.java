@@ -19,13 +19,13 @@ package com.github.xiaoymin.knife4j.core.util;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -34,6 +34,28 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 public class Knife4jUtils {
+    
+    public static void main(String[] args) {
+        System.out.println(GetUrl("http://localhost:17812/v3/api-docs/用户模块"));
+    }
+    
+    public static String GetUrl(String url) {
+        // 提取中文字符
+        Pattern pattern = Pattern.compile("[\\u4e00-\\u9fa5]+");
+        Matcher matcher = pattern.matcher(url);
+        while (matcher.find()) {
+            String chinese = matcher.group();
+            try {
+                // 进行URL编码
+                String encodedChinese = URLEncoder.encode(chinese, StandardCharsets.UTF_8.name());
+                // 替换原始URL中的中文字符
+                url = url.replace(chinese, encodedChinese);
+            } catch (UnsupportedEncodingException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+        return url;
+    }
     
     /**
      * 重试次数
@@ -65,8 +87,9 @@ public class Knife4jUtils {
     public static String get(String url) {
         URL apiUrl = null;
         try {
-            log.debug("url:{}", url);
-            apiUrl = new URL(url);
+            String realUrl = GetUrl(url);
+            log.debug("url:{}", realUrl);
+            apiUrl = new URL(realUrl);
             HttpURLConnection connection = getGetUrlConnection(apiUrl);
             String response = getEntity(connection);
             if (response != null)
