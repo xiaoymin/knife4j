@@ -51,7 +51,46 @@ public class Knife4jUtils {
         }
         return null;
     }
-    
+
+    public static String getRetry(String url,int retry){
+        for (int i=0;i<retry;i++){
+            String result=get(url);
+            if (result!=null){
+                return result;
+            }
+        }
+        return null;
+    }
+
+    public static String get(String url){
+        URL apiUrl = null;
+        try {
+            log.debug("url:{}", url);
+            apiUrl = new URL(url);
+            HttpURLConnection connection = getGetUrlConnection(apiUrl);
+            String response = getEntity(connection);
+            if (response != null) return response;
+        } catch (Exception e) {
+            log.debug(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    private static String getEntity(HttpURLConnection connection) throws IOException {
+        int responseCode = connection.getResponseCode();
+        if (responseCode == 200) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            CommonUtils.close(in);
+            return response.toString();
+        }
+        return null;
+    }
+
     /**
      * http post
      * @param url http url
@@ -69,17 +108,8 @@ public class Knife4jUtils {
             OutputStream os = connection.getOutputStream();
             os.write(body.getBytes());
             CommonUtils.close(os);
-            int responseCode = connection.getResponseCode();
-            if (responseCode == 200) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
-                String inputLine;
-                StringBuilder response = new StringBuilder();
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                CommonUtils.close(in);
-                return response.toString();
-            }
+            String response = getEntity(connection);
+            if (response != null) return response;
         } catch (Exception e) {
             log.debug(e.getMessage(), e);
         }
@@ -91,18 +121,33 @@ public class Knife4jUtils {
         // 基础属性
         connection.setRequestMethod("POST");
         // 设置通用的请求属性
+        // 默认JSON
+        connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+        setConnection(connection);
+        return connection;
+    }
+
+    private static HttpURLConnection getGetUrlConnection(URL apiUrl) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
+        // 基础属性
+        connection.setRequestMethod("GET");
+        // 设置通用的请求属性
+        setConnection(connection);
+        return connection;
+    }
+
+    private static void setConnection(HttpURLConnection connection){
+        // 设置通用的请求属性
         connection.setRequestProperty("Accept", "*/*");
         connection.setRequestProperty("Connection", "Keep-Alive");
         connection.setRequestProperty("User-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
         // 默认JSON
-        connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
-        
         connection.setDoOutput(true);
         connection.setDoInput(true);
         // 设置请求链接超时时间为20000毫秒（20秒）
         // 设置读取超时时间
         connection.setReadTimeout(20000);
         connection.setConnectTimeout(20000);
-        return connection;
+
     }
 }

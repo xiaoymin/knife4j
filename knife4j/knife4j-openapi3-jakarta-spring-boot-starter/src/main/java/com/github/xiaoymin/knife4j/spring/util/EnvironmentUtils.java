@@ -23,18 +23,37 @@ import org.springframework.core.env.Environment;
 import java.util.Objects;
 
 /**
- * @since 
+ * @since knife4j v2.0.9
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2022/8/18 22:26
  */
 public class EnvironmentUtils {
-    
+    /**
+     * 处理程序contextPath
+     * @param environment 环境变量
+     * @return contextPath
+     * @since v4.4.0
+     */
+    public static String resolveContextPath(Environment environment){
+        String contextPath = "";
+        // Spring Boot 1.0
+        String v1BasePath = environment.getProperty("server.context-path");
+        // Spring Boot 2.0 & 3.0
+        String basePath = environment.getProperty("server.servlet.context-path");
+        if (StrUtil.isNotBlank(v1BasePath) && !"/".equals(v1BasePath)) {
+            contextPath = v1BasePath;
+        } else if (StrUtil.isNotBlank(basePath) && !"/".equals(basePath)) {
+            contextPath = basePath;
+        }
+        return contextPath;
+    }
+
     /**
      * get String property
      * @param environment Spring Context Environment
      * @param key hash-key
      * @param defaultValue default
-     * @return
+     * @return String property
      */
     public static String resolveString(Environment environment, String key, String defaultValue) {
         if (environment != null) {
@@ -51,7 +70,7 @@ public class EnvironmentUtils {
      * @param environment 环境变量
      * @param key 变量
      * @param defaultValue 默认值
-     * @return
+     * @return int
      */
     public static Integer resolveInt(Environment environment, String key, Integer defaultValue) {
         if (environment != null) {
@@ -66,7 +85,7 @@ public class EnvironmentUtils {
      * @param environment 环境变量
      * @param key 变量
      * @param defaultValue 默认值
-     * @return
+     * @return bool
      */
     public static Boolean resolveBool(Environment environment, String key, Boolean defaultValue) {
         if (environment != null) {

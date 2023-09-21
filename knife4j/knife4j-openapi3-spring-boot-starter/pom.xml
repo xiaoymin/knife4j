@@ -27,6 +27,7 @@
             <version>${knife4j-spring-boot.version}</version>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-core</artifactId>
