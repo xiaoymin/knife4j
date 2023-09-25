@@ -44,11 +44,11 @@ public class Knife4jInsightDiscoveryBootstrapper implements CommandLineRunner, E
     }
     @Override
     public void run(String... args) throws Exception {
-        String serviceName= insightProperties.getServiceName();
-        if (StrUtil.isBlank(serviceName)){
-            serviceName=EnvironmentUtils.resolveString(environment,"spring.application.name","");
+        String serviceName = insightProperties.getServiceName();
+        if (StrUtil.isBlank(serviceName)) {
+            serviceName = EnvironmentUtils.resolveString(environment, "spring.application.name", "");
         }
-        if (StrUtil.isBlank(serviceName)){
+        if (StrUtil.isBlank(serviceName)) {
             log.warn("service-name must set one,upload refused.");
             return;
         }

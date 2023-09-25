@@ -66,11 +66,11 @@ public class Knife4jInsightDiscoveryRunnable implements Runnable {
             } else if (StrUtil.isNotBlank(basePath) && !"/".equals(basePath)) {
                 contextPath = basePath;
             }
-            String serviceName= insightProperties.getServiceName();
-            if (StrUtil.isBlank(serviceName)){
-                serviceName=EnvironmentUtils.resolveString(environment,"spring.application.name","");
+            String serviceName = insightProperties.getServiceName();
+            if (StrUtil.isBlank(serviceName)) {
+                serviceName = EnvironmentUtils.resolveString(environment, "spring.application.name", "");
             }
-            if (StrUtil.isBlank(serviceName)){
+            if (StrUtil.isBlank(serviceName)) {
                 log.warn("service-name must set one,upload refused.");
                 return;
             }

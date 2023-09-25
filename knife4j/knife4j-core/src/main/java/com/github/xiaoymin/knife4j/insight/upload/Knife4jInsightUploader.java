@@ -39,6 +39,7 @@ import static com.github.xiaoymin.knife4j.insight.InsightConstants.KNIFE4J_CLOUD
  */
 @Slf4j
 public class Knife4jInsightUploader {
+    
     /**
      * 上传OpenAPI3规范
      * @param commonInfo 配置信息
