@@ -17,6 +17,7 @@
 
 package com.github.xiaoymin.knife4j.spring.insight;
 
+import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.insight.InsightConstants;
 import com.github.xiaoymin.knife4j.insight.config.Knife4jInsightCommonInfo;
 import com.github.xiaoymin.knife4j.insight.upload.Knife4jInsightUploadRunner;
@@ -43,12 +44,20 @@ public class Knife4jInsightDiscoveryBootstrapper implements CommandLineRunner, E
     }
     @Override
     public void run(String... args) throws Exception {
+        String serviceName= insightProperties.getServiceName();
+        if (StrUtil.isBlank(serviceName)){
+            serviceName=EnvironmentUtils.resolveString(environment,"spring.application.name","");
+        }
+        if (StrUtil.isBlank(serviceName)){
+            log.warn("service-name must set one,upload refused.");
+            return;
+        }
         // 启动时进行异步注册任务
         Knife4jInsightCommonInfo commonInfo = new Knife4jInsightCommonInfo();
         // 属性赋值
         commonInfo.setContextPath(EnvironmentUtils.resolveContextPath(environment));
         commonInfo.setSpec(InsightConstants.SPEC_OPENAPI3);
-        commonInfo.setServiceName(EnvironmentUtils.resolveString(environment, "spring.application.name", ""));
+        commonInfo.setServiceName(serviceName);
         commonInfo.setSecret(insightProperties.getSecret());
         commonInfo.setNamespace(insightProperties.getNamespace());
         commonInfo.setPort(EnvironmentUtils.resolveString(environment, "server.port", "8080"));

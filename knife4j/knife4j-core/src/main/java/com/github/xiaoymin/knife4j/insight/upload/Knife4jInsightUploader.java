@@ -27,11 +27,8 @@ import com.github.xiaoymin.knife4j.insight.config.Knife4jInsightCommonInfo;
 import com.github.xiaoymin.knife4j.insight.openapi3.Knife4jInsightOpenAPI3Config;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 
 import static com.github.xiaoymin.knife4j.insight.InsightConstants.KNIFE4J_CLOUD_API;
 
@@ -42,7 +39,6 @@ import static com.github.xiaoymin.knife4j.insight.InsightConstants.KNIFE4J_CLOUD
  */
 @Slf4j
 public class Knife4jInsightUploader {
-    
     /**
      * 上传OpenAPI3规范
      * @param commonInfo 配置信息

@@ -23,6 +23,7 @@ import com.github.xiaoymin.knife4j.insight.InsightConstants;
 import com.github.xiaoymin.knife4j.insight.Knife4jInsightDiscoveryInfo;
 import com.github.xiaoymin.knife4j.insight.Knife4jInsightRoute;
 import com.github.xiaoymin.knife4j.spring.configuration.insight.Knife4jInsightProperties;
+import com.github.xiaoymin.knife4j.spring.util.EnvironmentUtils;
 import io.swagger.models.Swagger;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,9 +66,17 @@ public class Knife4jInsightDiscoveryRunnable implements Runnable {
             } else if (StrUtil.isNotBlank(basePath) && !"/".equals(basePath)) {
                 contextPath = basePath;
             }
+            String serviceName= insightProperties.getServiceName();
+            if (StrUtil.isBlank(serviceName)){
+                serviceName=EnvironmentUtils.resolveString(environment,"spring.application.name","");
+            }
+            if (StrUtil.isBlank(serviceName)){
+                log.warn("service-name must set one,upload refused.");
+                return;
+            }
             DocumentationCache documentationCache = beanFactory.getBean(DocumentationCache.class);
-            Map<String, Documentation> alldoc = documentationCache.all();
-            if (alldoc != null && !alldoc.isEmpty()) {
+            Map<String, Documentation> allDocumentations = documentationCache.all();
+            if (allDocumentations != null && !allDocumentations.isEmpty()) {
                 ServiceModelToSwagger2Mapper swagger2Mapper = beanFactory.getBean(ServiceModelToSwagger2Mapper.class);
                 JsonSerializer jsonSerializer = beanFactory.getBean(JsonSerializer.class);
                 Knife4jInsightDiscoveryInfo knife4jCloudDiscoveryInfo = new Knife4jInsightDiscoveryInfo();
@@ -78,8 +87,9 @@ public class Knife4jInsightDiscoveryRunnable implements Runnable {
                 knife4jCloudDiscoveryInfo.setPort(environment.getProperty("server.port"));
                 knife4jCloudDiscoveryInfo.setAccessKey(insightProperties.getSecret());
                 knife4jCloudDiscoveryInfo.setNamespace(insightProperties.getNamespace());
+                knife4jCloudDiscoveryInfo.setServiceName(serviceName);
                 // 分组
-                for (Map.Entry<String, Documentation> entry : alldoc.entrySet()) {
+                for (Map.Entry<String, Documentation> entry : allDocumentations.entrySet()) {
                     if (StrUtil.isNotBlank(entry.getKey())) {
                         Knife4jInsightRoute knife4jCloudRoute = new Knife4jInsightRoute();
                         String path = contextPath + InsightConstants.SWAGGER_PATH + "?group=" + entry.getKey();
