@@ -23,6 +23,7 @@ import lombok.Data;
 
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
@@ -74,9 +75,15 @@ public abstract class AbstractSecurityFilter extends BasicFilter {
                 if (sessionAuth == null) {
                     // 获取请求头Authorization
                     if (StrUtil.isBlank(auth)) {
-                        return Boolean.FALSE;
+                        return false;
+                    }
+                    if (auth.length() < 6) {
+                        return false;
                     }
                     String userAndPass = decodeBase64(auth.substring(6));
+                    if (userAndPass == null) {
+                        return false;
+                    }
                     String[] upArr = userAndPass.split(":");
                     if (upArr.length != 2) {
                         return false;
@@ -84,11 +91,7 @@ public abstract class AbstractSecurityFilter extends BasicFilter {
                         String iptUser = upArr[0];
                         String iptPass = upArr[1];
                         // 匹配服务端用户名及密码
-                        if (iptUser.equals(getUserName()) && iptPass.equals(getPassword())) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return Objects.equals(iptUser, getUserName()) && Objects.equals(iptPass, getPassword());
                     }
                 }
             }
