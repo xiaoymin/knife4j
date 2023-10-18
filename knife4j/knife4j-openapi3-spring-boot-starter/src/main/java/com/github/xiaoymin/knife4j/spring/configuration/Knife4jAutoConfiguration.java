@@ -25,6 +25,7 @@ import com.github.xiaoymin.knife4j.spring.filter.ProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.util.EnvironmentUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.SpringDocConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -54,13 +55,15 @@ public class Knife4jAutoConfiguration {
     /**
      * 增强自定义配置
      * @param knife4jProperties
+     * @param docProperties
      * @return
      */
     @Bean
     @ConditionalOnMissingBean
-    public Knife4jOpenApiCustomizer knife4jOpenApiCustomizer(Knife4jProperties knife4jProperties) {
+    public Knife4jOpenApiCustomizer knife4jOpenApiCustomizer(Knife4jProperties knife4jProperties,
+                                                             SpringDocConfigProperties docProperties) {
         logger.debug("Register Knife4jOpenApiCustomizer");
-        return new Knife4jOpenApiCustomizer(knife4jProperties);
+        return new Knife4jOpenApiCustomizer(knife4jProperties,docProperties);
     }
     
     @Bean
