@@ -36,7 +36,7 @@ import java.util.Enumeration;
  * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2019/01/18 17:15
  */
-public class ProductionSecurityFilter extends BasicFilter implements Filter {
+public class JakartaProductionSecurityFilter extends BasicFilter implements Filter {
     
     /***
      * 是否生产环境,如果是生成环境,过滤Swagger的相关资源请求
@@ -76,11 +76,11 @@ public class ProductionSecurityFilter extends BasicFilter implements Filter {
         
     }
     
-    public ProductionSecurityFilter(boolean production) {
+    public JakartaProductionSecurityFilter(boolean production) {
         this.production = production;
     }
     
-    public ProductionSecurityFilter() {
+    public JakartaProductionSecurityFilter() {
     }
     
     public boolean isProduction() {
