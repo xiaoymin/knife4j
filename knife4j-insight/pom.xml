@@ -20,7 +20,7 @@
         <hutool.version>5.8.15</hutool.version>
         <httpclient.version>4.5.14</httpclient.version>
         <gson.version>2.10</gson.version>
-        <logback.version>1.4.5</logback.version>
+        <logback.version>1.4.12</logback.version>
         <knife4j-spotless-maven-plugin.version>2.22.1</knife4j-spotless-maven-plugin.version>
     </properties>
     <repositories>
