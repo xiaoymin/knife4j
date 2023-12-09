@@ -63,7 +63,7 @@ public class Knife4jAutoConfiguration {
     public Knife4jOpenApiCustomizer knife4jOpenApiCustomizer(Knife4jProperties knife4jProperties,
                                                              SpringDocConfigProperties docProperties) {
         logger.debug("Register Knife4jOpenApiCustomizer");
-        return new Knife4jOpenApiCustomizer(knife4jProperties,docProperties);
+        return new Knife4jOpenApiCustomizer(knife4jProperties, docProperties);
     }
     
     @Bean

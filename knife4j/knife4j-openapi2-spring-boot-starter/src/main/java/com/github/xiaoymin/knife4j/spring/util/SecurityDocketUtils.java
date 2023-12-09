@@ -67,7 +67,7 @@ public class SecurityDocketUtils {
                     securitySchemes.add(new ApiKey(authInfo.getKeyName(), authInfo.getName(), API_KEY_DEFAULT_PASS));
                 }
                 SecurityContext securityContext = SecurityContext.builder()
-                        .securityReferences(Arrays.asList(new SecurityReference(authInfo.getName(), createAuthScope(authInfo.getScopes(), true).toArray(new AuthorizationScope[]{}))))
+                        .securityReferences(Arrays.asList(new SecurityReference(authInfo.getKeyName(), createAuthScope(authInfo.getScopes(), true).toArray(new AuthorizationScope[]{}))))
                         .forPaths(RequestHandlerSelectorUtils.multiplePathSelector(authInfo.getPaths()))
                         .build();
                 securityContexts.add(securityContext);
