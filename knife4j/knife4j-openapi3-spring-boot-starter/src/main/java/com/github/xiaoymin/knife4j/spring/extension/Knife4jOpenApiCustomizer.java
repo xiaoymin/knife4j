@@ -107,15 +107,17 @@ public class Knife4jOpenApiCustomizer implements GlobalOpenApiCustomizer {
                         }
                     });
             // 往openApi tags字段添加x-order增强属性
-            openApi
-                    .getTags()
-                    .forEach(
-                            tag -> {
-                                if (tagOrderMap.containsKey(tag.getName())) {
-                                    tag.addExtension(
-                                            ExtensionsConstants.EXTENSION_ORDER, tagOrderMap.get(tag.getName()));
-                                }
-                            });
+            if (openApi.getTags()!=null){
+                openApi
+                        .getTags()
+                        .forEach(
+                                tag -> {
+                                    if (tagOrderMap.containsKey(tag.getName())) {
+                                        tag.addExtension(
+                                                ExtensionsConstants.EXTENSION_ORDER, tagOrderMap.get(tag.getName()));
+                                    }
+                                });
+            }
         }
     }
     
