@@ -5,7 +5,7 @@ export function getDocumentVueTemplatesUS(title, resumecss, dataStr) {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1.0">
       <title>${title}</title>
-      <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@1.4.10/dist/antd.min.css" />
+      <link rel="stylesheet" href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/ant-design-vue/1.7.8/antd.min.css" />
       <style>
       ${resumecss}
       </style>
@@ -333,8 +333,8 @@ export function getDocumentVueTemplatesUS(title, resumecss, dataStr) {
 
       </div>
       </div>
-      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script>
+      <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue/2.6.9/vue.js"></script>
+      <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/ant-design-vue/1.7.8/antd.min.js"></script>
       <script type="text/javascript">
       function getData(){
         var datas=${dataStr};
