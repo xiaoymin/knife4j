@@ -66,9 +66,9 @@ public class SpringFoxEnvironmentPostProcessor implements EnvironmentPostProcess
                 Map<String, Object> sources = new HashMap<>();
                 // springfox使用的策略是AntPathMatcher
                 sources.put(SPRING_MVC_MATCHING_STRATEGY, "ant_path_matcher");
-                DefaultPropertiesPropertySource defaultPropertiesPropertySource = new DefaultPropertiesPropertySource(sources);
-                // 更新，添加一个默认值
-                environment.getPropertySources().addLast(defaultPropertiesPropertySource);
+                // 添加
+                // fixed https://github.com/xiaoymin/knife4j/issues/686
+                DefaultPropertiesPropertySource.addOrMerge(sources, environment.getPropertySources());
             }
         }
     }
