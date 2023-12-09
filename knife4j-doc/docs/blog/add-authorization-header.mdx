@@ -1,0 +1,198 @@
+---
+id: add-authorization-header
+title: OpenAPI3规范中添加Authorization鉴权请求Header不生效？
+description: OpenAPI3规范中添加Authorization鉴权请求Header不生效
+keywords:
+- knife4j-openapi3 安全认证不生效
+- Authorization鉴权不生效
+- knife4j中Authorization不生效
+sidebar_position: 4
+author: 八一菜刀
+data: 2023年12月09日
+---
+
+本文主要分享很多开发者在Knife4j的issue中反馈针对鉴权Authorization不生效问题，这里我们将针对这个问题进行详细的说明。
+
+关联Issues：
+
+- ✅ [knife4j-openapi3 安全认证不生效](https://github.com/xiaoymin/knife4j/issues/653)
+- ✅ [全局请求头Authorization无效的问题](https://github.com/xiaoymin/knife4j/issues/545)
+- ✅ [4.0 openapi3 模块 无法全局携带鉴权头问题](https://github.com/xiaoymin/knife4j/issues/524)
+- ✅ [设置了全局安全验证，但是调试请求时不生效（v4.0.0）](https://github.com/xiaoymin/knife4j/issues/523)
+- ✅ [Authorize 不生效](https://github.com/xiaoymin/knife4j/issues/630)
+- ✅ [Authorize 未生效，请求接口时Header里未包含token参数，swagger-ui中能正常携带该Header参数](https://gitee.com/xiaoym/knife4j/issues/I7WDK9)
+- ✅ [[Bug] Authorize页面设置好请求头之后并未在接口中启用](https://gitee.com/xiaoym/knife4j/issues/I7B10Z)
+- ......
+
+
+## Security在规范中的定义
+
+先来看OpenAPI3规范对于Security的定义说明，主要分为两部分：
+
+- 在compoents组件下定义Security的鉴权方案类型
+- 在接口级别的Operation对象级别下的security属性中引用compoents组件中定义的Security的鉴权方案类型
+
+一个接口实例的Opertation对象定义示例如下：
+
+```yaml
+tags:
+- pet
+summary: Updates a pet in the store with form data
+operationId: updatePetWithForm
+parameters:
+- name: petId
+  in: path
+  description: ID of pet that needs to be updated
+  required: true
+  schema:
+    type: string
+requestBody:
+  content:
+    'application/x-www-form-urlencoded':
+      schema:
+       type: object
+       properties:
+          name: 
+            description: Updated name of the pet
+            type: string
+          status:
+            description: Updated status of the pet
+            type: string
+       required:
+         - status
+responses:
+  '200':
+    description: Pet updated.
+    content: 
+      'application/json': {}
+      'application/xml': {}
+  '405':
+    description: Method Not Allowed
+    content: 
+      'application/json': {}
+      'application/xml': {}
+# 接口级别，这里引用鉴权方案
+security:
+- petstore_auth:
+  - write:pets
+  - read:pets
+
+```
+
+这里在Operation接口级别下，使用了security属性，表示该接口需要鉴权，但是此处我们并不知道鉴权的方案是什么
+
+OpenAPI3规范对该属性的定义如下：
+
+![图1.OpenAPI3规范对接口下的security定义](/images/blog/add-authorization-header/operation-security.png)
+
+翻译过来的意思就是声明哪些安全方案（Security Scheme）被应用于该接口操作使用
+
+这里就会和Knife4j目前的解析规则给开发者会造成困扰，因为Knife4j目前的解析规则是：
+
+- 如果当前OpenAPI3规范中的接口定义并没有`security`属性对象，那么Knife4j会认为该接口不需要鉴权
+
+而security的鉴权类型定义，则是在OpenAPI3规范的`compoents`节点下定义的，规范说明如下图
+
+![图2.OpenAPI3规范对鉴权方案的security定义](/images/blog/add-authorization-header/compoents-security.png)
+
+规范参考地址：[https://spec.openapis.org/oas/latest.html#securitySchemeObject](https://spec.openapis.org/oas/latest.html#securitySchemeObject)
+
+在`compoents`节点下的Security对象明确定义了接口的鉴权类型，主流的包括：apiKey、http、oauth2、openIdConnect
+
+开发者一般使用最多的`Authorization`最终在OpenAPI3规范下的定义如下：
+
+```json
+"components": {
+    "securitySchemes": {
+        "Authorization": {
+            "type": "http",
+            "scheme": "bearer"
+        }
+    }
+}
+
+```
+
+## Knife4j界面调试界面不显示
+
+对于上面OpenAPI3的规范有了初步了解后，再来看在Knife4j中为什么不显示的问题，很多开发者创建了OpenAPI的`@Bean`配置，代码如下：
+
+```java
+@Bean
+public OpenAPI customOpenAPI() {
+    return new OpenAPI()
+            .info(new Info()
+                    .title("XXX用户系统API")
+                    .version("1.0")
+
+                    .description( "Knife4j集成springdoc-openapi示例")
+                    .termsOfService("http://doc.xiaominfo.com")
+                    .license(new License().name("Apache 2.0")
+                            .url("http://doc.xiaominfo.com"))
+                    ).addSecurityItem(new SecurityRequirement().addList(HttpHeaders.AUTHORIZATION))
+            .components(new Components().addSecuritySchemes(HttpHeaders.AUTHORIZATION,new SecurityScheme()
+                    .name(HttpHeaders.AUTHORIZATION).type(SecurityScheme.Type.HTTP).scheme("bearer")));
+}
+```
+
+这样的定义方式，会在Knife4j的界面将OpenAPI3规范中定义的鉴权方案显示出来，但是在调试界面中并不会显示，为什么？
+
+
+参考[springdoc-openapi的文档](https://springdoc.org/#how-do-i-add-authorization-header-in-requests)，你还需要在接口层面定义使用，如下：
+
+```java
+@Operation(security = { @SecurityRequirement(name = HttpHeaders.AUTHORIZATION) })
+```
+或者
+```java
+@SecurityRequirement(name = HttpHeaders.AUTHORIZATION)
+@Operation(summary = "描述1")
+@PostMapping("/description")
+public ResponseEntity<ConfigPageParam> description(@ParameterObject ConfigPageParam configPageParam){
+    return ResponseEntity.ok(configPageParam);
+}
+```
+
+只有定义了了全局的接口鉴权方案，并且在接口层面使用了`@Operation`注解，确认接口使用那种鉴权方案，这样Knife4j才会在调试界面中显示出来
+
+对于这样的策略，我认为目前Knife4j的Ui版本处理方式并没有说明问题。
+
+**如果当前OpenAPI3规范中的接口定义并没有`security`属性对象，那么Knife4j会认为该接口不需要鉴权**
+
+
+## 解决方案
+
+从上面的规范定义，以及了解了使用方法后，开发者又会提出疑问？
+
+接口众多，每个接口都添加`@SecurityRequirement`注解那不是要疯掉了么？
+
+好在springdoc-openapi提供的架构设计是非常强的，早就考虑到了这点，在之前的博客[如何自定义添加API接口在Knife4j界面中显示](customer-add-api#-springdoc)中我就分享了springdoc项目提供的`customizer`接口
+
+- 🏜️ `GlobalOperationCustomizer`：针对Operation级别的全局自定义扩展钩子函数，开发者可以对接口中每一个Operation进行扩展自定义实现，或调整，或修改，或增加扩展都行，Knife4j的部分增强特性就是基于此函数实现，可以参考代码[Knife4jJakartaOperationCustomizer.java](https://gitee.com/xiaoym/knife4j/blob/dev/knife4j/knife4j-openapi3-jakarta-spring-boot-starter/src/main/java/com/github/xiaoymin/knife4j/spring/extension/Knife4jJakartaOperationCustomizer.java)
+- 🏝️ `GlobalOpenApiCustomizer`：是针对整个OpenAPI级别的,开发者在分组或者分包后，得到的单个OpenAPI实例，开发者可以操纵全局的OpenAPI实例，该OpenAPI对象已经是springdoc解析过的实例对象，例如该issues中的需求，开发者只需要自定义创建新Operation对象，然后通过OpenAPI实例对象进行add添加即可完成此需求，部分扩展可以参考代码：[Knife4jOpenApiCustomizer.java](https://gitee.com/xiaoym/knife4j/blob/dev/knife4j/knife4j-openapi3-jakarta-spring-boot-starter/src/main/java/com/github/xiaoymin/knife4j/spring/extension/Knife4jOpenApiCustomizer.java)
+
+
+开发者可以借助`GlobalOpenApiCustomizer`接口，给某一个OpenAPI实例分组下的所有接口添加鉴权方案，代码如下：
+
+```java
+@Bean
+public GlobalOpenApiCustomizer orderGlobalOpenApiCustomizer() {
+    return openApi -> {
+        // 全局添加鉴权参数
+        if(openApi.getPaths()!=null){
+            openApi.getPaths().forEach((s, pathItem) -> {
+                // 为所有接口添加鉴权
+                pathItem.readOperations().forEach(operation -> {
+                    peration.addSecurityItem(new SecurityRequirement().addList(HttpHeaders.AUTHORIZATION));
+                });
+            });
+        }
+
+    };
+}
+```
+
+这样就可以实现所有接口都添加鉴权方案，而不需要在每个接口上添加`@SecurityRequirement`注解了，而这样处理的方式也有几个好处：
+
+- 满足开发者的全局鉴权需求
+- 开发者可以通过代码灵活的控制接口是否需要鉴权，比如接口的url路径、方法等
