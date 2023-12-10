@@ -35,7 +35,7 @@ public class Knife4jInsightProperties {
      */
     private boolean enable = false;
     /**
-     * 上报Knife4jInsight数据源地址，可以使用在线版本，例如：<a href="https://console.knife4j.net">https://console.knife4j.net</a>
+     * 上报Knife4jInsight数据源地址，可以使用在线版本，例如：<a href="http://console.knife4j.net">http://console.knife4j.net</a>
      */
     private String server;
     /**
