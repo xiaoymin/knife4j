@@ -1,5 +1,11 @@
 # Knife4jInsight
 
+> 开源版本Knife4jInsight不再提供维护支持，有需要请购买商业版本，地址：http://knife4j.net/
+>
+> 开源版本Knife4jInsight不再提供维护支持，有需要请购买商业版本，地址：http://knife4j.net/
+>
+> 开源版本Knife4jInsight不再提供维护支持，有需要请购买商业版本，地址：http://knife4j.net/
+
 Knife4jInsight是一款致力于基于OpenAPI2及OpenAPI3规范进行聚合的独立中间件
 
 在Knife4j 4.0版本发布之际，作者也对该组件进行了了架构重新设计，代码重构。
