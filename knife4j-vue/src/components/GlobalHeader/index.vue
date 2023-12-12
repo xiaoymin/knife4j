@@ -1,11 +1,20 @@
 <template>
   <div class="header knife4j-header-default" :class="headerClass">
-    <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="toggle" />
+    <a-icon
+      class="trigger"
+      :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+      @click="toggle"
+    />
     <span class="knife4j-header-title">{{ documentTitle }}</span>
 
     <div class="right">
-      <HeaderSearch v-if="settings.enableSearch" class="action search" :placeholder="$t('searchHolderText')"
-        :onSearch="value => onSearch(value)" :onPressEnter="value => onPressEnter(value)" />
+      <HeaderSearch
+        v-if="settings.enableSearch"
+        class="action search"
+        :placeholder="$t('searchHolderText')"
+        :onSearch="(value) => onSearch(value)"
+        :onPressEnter="(value) => onPressEnter(value)"
+      />
       <a-dropdown v-if="currentUser.name">
         <a-menu slot="overlay" class="menu">
           <a-menu-item v-if="settings.enableDocumentManage">
@@ -23,6 +32,9 @@
           <a-menu-item key="triggerError" @click="changeEn">
             <a-icon type="environment" /> English
           </a-menu-item>
+          <a-menu-item key="langJp" @click="changeJp">
+            <a-icon type="environment" /> 日本語
+          </a-menu-item>
         </a-menu>
         <span class="action account">
           <span class="name" v-html="$t('langText')"></span>
@@ -38,46 +50,46 @@ import constant from "@/store/constants";
 export default {
   name: "GlobalHeader",
   components: {
-    HeaderSearch
+    HeaderSearch,
   },
   props: {
     documentTitle: {
       type: String,
-      default: "Knife4j接口文档"
+      default: "Knife4j接口文档",
     },
     headerClass: {
-      type: String
+      type: String,
     },
     currentUser: {
-      type: Object
+      type: Object,
     },
     collapsed: {
-      type: Boolean
+      type: Boolean,
     },
     onCollapse: {
-      type: Function
+      type: Function,
     },
     onNoticeVisibleChange: {
-      type: Function
+      type: Function,
     },
     onNoticeClear: {
-      type: Function
+      type: Function,
     },
     fetchingNotices: {
-      type: Boolean
+      type: Boolean,
     },
     notices: {
-      type: Array
+      type: Array,
     },
     onMenuClick: {
       type: Function,
-      default: () => { }
-    }
+      default: () => {},
+    },
   },
   computed: {
     settings() {
       return this.$store.state.globals.settings;
-    }
+    },
   },
   data() {
     return {};
@@ -96,6 +108,13 @@ export default {
       this.$i18n.locale = "en-US";
       this.$store.dispatch("globals/setLang", "en-US");
       this.$localStore.setItem(constant.globalI18nCache, "en-US");
+    },
+    changeJp() {
+      // 日文
+      // console.log(this);
+      this.$i18n.locale = "ja-JP";
+      this.$store.dispatch("globals/setLang", "ja-JP");
+      this.$localStore.setItem(constant.globalI18nCache, "ja-JP");
     },
     handleMenuClick() {
       // console("handleMenuClick");
@@ -120,10 +139,10 @@ export default {
     clearLocalCache() {
       try {
         this.$localStore.clear();
-      } catch (error) { }
+      } catch (error) {}
       this.$message.info("清除本地缓存成功");
-    }
-  }
+    },
+  },
 };
 </script>
 

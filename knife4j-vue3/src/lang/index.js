@@ -1,10 +1,12 @@
 import { createI18n } from 'vue-i18n'
 import enLocale from './en';
 import zhLocale from './zh';
+import jpLocale from './jp';
 
 const messages = {
   'zh-CN': zhLocale,
   'en-US': enLocale,
+  'ja-JP': jpLocale,
 }
 
 const i18n = createI18n({
