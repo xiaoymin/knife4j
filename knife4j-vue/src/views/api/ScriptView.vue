@@ -60,10 +60,10 @@ export default {
 
       interfaceName = upperFirstCase(`${config.name}`);
       tsParamsInterface = config.bodyParams[0]
-        ? '// 参数接口\n' + getTsInterfaceDeclaration(config.bodyParams[0], `${interfaceName}Params`, true)
+        ? '// Parameter interface\n' + getTsInterfaceDeclaration(config.bodyParams[0], `${interfaceName}Params`, true)
         : ''; // 参数interface
       tsResInterface = config.resParam
-        ? '// 响应接口\n' + getTsInterfaceDeclaration(config.resParam, `${interfaceName}Res`, false)
+        ? '// Response interface\n' + getTsInterfaceDeclaration(config.resParam, `${interfaceName}Res`, false)
         : ''; // 响应interface
       tsComment = getComment(this.api); // 函数注释
       tsFun = getTsFunctionDeclaration(config, interfaceName); // 函数本体
