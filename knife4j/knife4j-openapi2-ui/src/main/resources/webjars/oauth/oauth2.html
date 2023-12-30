@@ -69,8 +69,6 @@
             "grant_type":"authorization_code",
             "code":this.code,
             "redirect_uri":decodeURIComponent(this.cacheValue.redirectUri),
-            "client_id":this.cacheValue.clientId,
-            "client_secret":this.cacheValue.clientSecret
         }
         let instance=axios.create();
         let requestConfig={
@@ -79,7 +77,7 @@
             timeout: 0,
             //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
             //否则axios会忽略请求头Content-Type
-            data: null,
+            data: `client_id=${this.cacheValue.clientId}&client_secret=${this.cacheValue.clientSecret}`,
             params:params
         }
         instance.request(requestConfig).then(res=>{
