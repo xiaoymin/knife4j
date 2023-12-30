@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.github.xiaoymin</groupId>
         <artifactId>knife4j</artifactId>
-        <version>4.4.0</version>
+        <version>4.4.1-SNAPSHOT</version>
     </parent>
     <artifactId>knife4j-openapi3-webflux-spring-boot-starter</artifactId>
     <name>knife4j-openapi3-webflux-spring-boot-starter</name>
