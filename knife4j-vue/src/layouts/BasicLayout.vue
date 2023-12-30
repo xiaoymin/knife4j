@@ -106,9 +106,9 @@ export default {
   },
   beforeCreate() { },
   created() {
-    //this.initSpringDocOpenApi();
+    this.initSpringDocOpenApi();
     //this.initKnife4jSpringUi();
-    this.initKnife4jInsight();
+    //this.initKnife4jInsight();
     //this.initKnife4jJFinal();
     //this.initKnife4jFront();
     this.initI18n();

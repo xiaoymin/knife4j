@@ -4293,7 +4293,12 @@ SwaggerBootstrapUi.prototype.pluginSupportOrangeforms = function (swpinfo, apiIn
       //console.log("_generateNewSchemas,", _generateNewSchemas);
       oa3Data["components"].schemas = _generateNewSchemas;
     }
-    //console.log('schemas,', that.currentInstance.swaggerData)
+    //参数忽略，兼容springdoc-@ParameterObject注解的情况，针对spring.default-flat-param-object:true属性的设定
+    let orangeformsIgnoreParameters = apiInfo["x-orangeforms-ignore-parameters"];
+    if (KUtils.checkUndefined(orangeformsIgnoreParameters)) {
+      swpinfo.enterprisePlugins.orangeformsIgnoreParameters = orangeformsIgnoreParameters;
+    }
+
   }
 }
 
@@ -4308,13 +4313,20 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
     let oa3Data = that.currentInstance.swaggerData;
     let refParameterObject = oa3Data['components']['parameters'];
     let responseExample = null;
+    // 企业级插件属性支持 2023.3.15
+    that.pluginSupportOrangeforms(swpinfo, apiInfo);
     // 如果当前对象未初始化,进行初始化
     if (apiInfo.hasOwnProperty('parameters')) {
       var pameters = apiInfo['parameters'];
-      pameters.forEach(function (m) {
-        // })
-        // $.each(pameters, function (i, m) {
+      pameters.forEach(m => {
         var originalName = KUtils.propValue('name', m, '');
+        let _enterpriseSchema = swpinfo.enterprisePlugins.orangeforms;
+        if (_enterpriseSchema) {
+          // 企业级插件orangeforms,过滤parameters
+          if (swpinfo.enterprisePlugins.orangeformsIgnoreParameters.includes(originalName)) {
+            return;
+          }
+        }
         var inType = KUtils.propValue('in', m, '');
         // 判断是否包含$ref
         // https://gitee.com/xiaoym/knife4j/issues/I2A89C
@@ -4352,8 +4364,6 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
         // }
       })
     }
-    // 企业级插件属性支持 2023.3.15
-    that.pluginSupportOrangeforms(swpinfo, apiInfo);
     // 判断是否包含requestBody
     if (apiInfo.hasOwnProperty('requestBody')) {
       var bodyParameter = apiInfo['requestBody'];
@@ -4427,6 +4437,19 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
         }
       }
 
+    } else {
+      //企业级插件oranges-forms支持
+      if (swpinfo.enterprisePlugins.orangeforms) {
+        //console.log("企业级插件orangeforms.")
+        // 此处有可能是array类型
+        let _enterpriseSchema = swpinfo.enterprisePlugins.orangeformsSchema;
+        if (KUtils.checkUndefined(_enterpriseSchema)) {
+          let _enterpriseParam = that.bodyParameterResolverSchema(_enterpriseSchema, swpinfo.oas2);
+          if (KUtils.checkUndefined(_enterpriseParam)) {
+            that.assembleParameterOAS3(_enterpriseParam, swpinfo, []);
+          }
+        }
+      }
     }
 
     var definitionType = null;
@@ -7140,7 +7163,9 @@ var SwaggerBootstrapUiApiInfo = function () {
   // 企业级插件属性定义
   this.enterprisePlugins = {
     orangeforms: false,
-    orangeformsSchema: null
+    orangeformsSchema: null,
+    //忽律的参数名称合集
+    orangeformsIgnoreParameters: []
   }
 }
 
