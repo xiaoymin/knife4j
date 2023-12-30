@@ -11,13 +11,14 @@ import {
   Icon
 } from 'ant-design-vue'
 
-import {Menu,Input,Select,Table,Tabs,
-  Radio,Layout,Button,
-  Tag,Divider,Tree,Dropdown,Form,Modal,
-  Col,Row,AutoComplete,Tooltip,Spin,Badge,Card,
-  Collapse,Checkbox,message
+import {
+  Menu, Input, Select, Table, Tabs,
+  Radio, Layout, Button,
+  Tag, Divider, Tree, Dropdown, Form, Modal,
+  Col, Row, AutoComplete, Tooltip, Spin, Badge, Card,
+  Collapse, Checkbox, message
 } from 'ant-design-vue'
-Vue.prototype.$message=message;
+Vue.prototype.$message = message;
 //Vue.use(message)
 Vue.use(Card)
 Vue.use(Badge);
@@ -42,7 +43,7 @@ Vue.use(Button)
 Vue.use(Tag)
 Vue.use(Divider)
 Vue.use(Tree)
-Vue.use(Dropdown) 
+Vue.use(Dropdown)
 
 
 import kloading from '@/components/loading'
@@ -132,13 +133,15 @@ String.prototype.startWith = function (str) {
 
 import i18nZH from '@/assets/common/lang/zh'
 import i18nEN from '@/assets/common/lang/en'
+import i18nJP from '@/assets/common/lang/jp'
 
 //i18n
 const i18n = new VueI18n({
   locale: 'zh-CN',
   messages: {
     'zh-CN': i18nZH,
-    'en-US': i18nEN
+    'en-US': i18nEN,
+    'ja-JP': i18nJP
   }
 })
 

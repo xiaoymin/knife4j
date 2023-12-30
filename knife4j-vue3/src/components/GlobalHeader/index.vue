@@ -1,12 +1,17 @@
 <template>
   <div class="header knife4j-header-default" :class="headerClass">
-      <menu-unfold-outlined class="trigger" v-if="collapsed" @click="toggle"/>
-      <menu-fold-outlined class="trigger" v-else @click="toggle"/>
+    <menu-unfold-outlined class="trigger" v-if="collapsed" @click="toggle" />
+    <menu-fold-outlined class="trigger" v-else @click="toggle" />
     <span class="knife4j-header-title">{{ documentTitle }}</span>
 
     <div class="right">
-      <HeaderSearch v-if="settings.enableSearch" class="action search" :placeholder="$t('searchHolderText')"
-        :onSearch="value => onSearch(value)" :onPressEnter="value => onPressEnter(value)" />
+      <HeaderSearch
+        v-if="settings.enableSearch"
+        class="action search"
+        :placeholder="$t('searchHolderText')"
+        :onSearch="(value) => onSearch(value)"
+        :onPressEnter="(value) => onPressEnter(value)"
+      />
       <a-dropdown v-if="currentUser.name">
         <template #overlay>
           <a-menu class="menu">
@@ -25,6 +30,9 @@
             <a-menu-item key="triggerError" @click="changeEn">
               <environment-outlined /> English
             </a-menu-item>
+            <a-menu-item key="langJp" @click="changeJp">
+              <environment-outlined /> 日本語
+            </a-menu-item>
           </a-menu>
         </template>
         <span class="action account">
@@ -38,15 +46,19 @@
 <script>
 import HeaderSearch from "../HeaderSearch/index.vue";
 import constant from "@/store/constants.js";
-import { useGlobalsStore } from '@/store/modules/global.js'
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { message } from 'ant-design-vue'
-import { MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, DeleteOutlined,
-    EnvironmentOutlined
-} from '@ant-design/icons-vue'
-import { useI18n } from 'vue-i18n'
-import localStore from '@/store/local.js'
+import { useGlobalsStore } from "@/store/modules/global.js";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { message } from "ant-design-vue";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  SettingOutlined,
+  DeleteOutlined,
+  EnvironmentOutlined,
+} from "@ant-design/icons-vue";
+import { useI18n } from "vue-i18n";
+import localStore from "@/store/local.js";
 
 export default {
   name: "GlobalHeader",
@@ -56,51 +68,51 @@ export default {
     MenuUnfoldOutlined,
     SettingOutlined,
     DeleteOutlined,
-    EnvironmentOutlined
+    EnvironmentOutlined,
   },
   props: {
     documentTitle: {
       type: String,
-      default: "Knife4j接口文档"
+      default: "Knife4j接口文档",
     },
     headerClass: {
-      type: String
+      type: String,
     },
     currentUser: {
-      type: Object
+      type: Object,
     },
     collapsed: {
-      type: Boolean
+      type: Boolean,
     },
     onCollapse: {
-      type: Function
+      type: Function,
     },
     onNoticeVisibleChange: {
-      type: Function
+      type: Function,
     },
     onNoticeClear: {
-      type: Function
+      type: Function,
     },
     fetchingNotices: {
-      type: Boolean
+      type: Boolean,
     },
     notices: {
-      type: Array
+      type: Array,
     },
     onMenuClick: {
       type: Function,
-      default: () => { }
-    }
+      default: () => {},
+    },
   },
-  setup(props, {emit}) {
-    const globalsStore = useGlobalsStore()
-    const router = useRouter()
+  setup(props, { emit }) {
+    const globalsStore = useGlobalsStore();
+    const router = useRouter();
 
-    const { locale } = useI18n()
+    const { locale } = useI18n();
 
     function changeZh() {
       locale.value = "zh-CN";
-      globalsStore.setLang("zh-CN")
+      globalsStore.setLang("zh-CN");
       localStore.setItem(constant.globalI18nCache, "zh-CN");
     }
     function changeEn() {
@@ -110,7 +122,13 @@ export default {
       globalsStore.setLang("en-US");
       localStore.setItem(constant.globalI18nCache, "en-US");
     }
-
+    function changeJp() {
+      // 日语
+      // console.log(this);
+      locale.value = "ja-JP";
+      globalsStore.setLang("ja-JP");
+      localStore.setItem(constant.globalI18nCache, "ja-JP");
+    }
 
     return {
       settings: computed(() => {
@@ -118,6 +136,7 @@ export default {
       }),
       changeZh,
       changeEn,
+      changeJp,
       handleMenuClick: () => {},
       jumpSettings: () => {
         router.push({ path: "/documentManager/Settings" });
@@ -140,15 +159,12 @@ export default {
         try {
           // TODO
           // this.$localStore.clear();
-        } catch (error) { }
+        } catch (error) {}
         message.info("清除本地缓存成功");
-      }
-    }
+      },
+    };
   },
-  methods: {
-
-
-  }
+  methods: {},
 };
 </script>
 
