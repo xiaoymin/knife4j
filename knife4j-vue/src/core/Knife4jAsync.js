@@ -2136,6 +2136,9 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                 // console.log('def');
                 // 根据def的properties解析
                 if (KUtils.checkUndefined(def)) {
+                  //response对象的值赋值一个description
+                  originalTreeTableModel.description = KUtils.propValue("description", def, "");
+
                   if (def.hasOwnProperty('properties')) {
                     var props = def['properties'];
                     // console.log(props)
@@ -2145,8 +2148,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                     for (var pkey in props) {
                       var p = props[pkey];
                       p.refType = that.getSwaggerModelRefType(p, oas2);
-                      //  console.log('------------------analyslsldiflsjfdlsfaaaaaaaaaaaaaaaaaaa')
-                      //  console.log(p);
+                      //console.log('------------------analyslsldiflsjfdlsfaaaaaaaaaaaaaaaaaaa')
+                      //console.log(p);
                       var refp = new SwaggerBootstrapUiParameter();
                       refp.pid = originalTreeTableModel.id;
                       refp.readOnly = p.readOnly;
@@ -2204,12 +2207,18 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                       originalTreeTableModel.params.push(refp);
                       // 判断类型是否基础类型
                       if (KUtils.checkUndefined(p.refType) && !KUtils.checkIsBasicType(p.refType)) {
-                        // //console('schema类型--------------' + p.refType)
+                        //console.log('schema类型--------------' + p.refType)
                         refp.schemaValue = p.refType;
                         refp.schema = true;
                         // console.log(refp)
                         // 属性名称不同,或者ref类型不同
                         var deepDef = that.getOriginalDefinitionByName(p.refType, definitions);
+                        //判断description,如果是class，再赋值一次
+                        if (KUtils.checkUndefined(refp.description)) {
+                          refp.description = KUtils.propValue('description', deepDef, '');
+                        }
+                        //console.log(refp)
+                        //console.log('def,', definitions)
                         // console.log('find-deepdef')
                         // console.log(deepDef)
                         if (KUtils.checkUndefined(deepDef)) {
@@ -2317,6 +2326,7 @@ SwaggerBootstrapUi.prototype.getOriginalDefinitionByName = function (name, defin
   for (var key in definitions) {
     if (key == name) {
       def['properties'] = definitions[key];
+      def['description'] = KUtils.propValue('description', definitions[key], '');
       break;
     }
   }
