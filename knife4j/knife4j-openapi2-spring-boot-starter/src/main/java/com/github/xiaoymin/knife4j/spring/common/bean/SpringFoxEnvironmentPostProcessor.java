@@ -23,6 +23,9 @@ import org.springframework.boot.DefaultPropertiesPropertySource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
 import org.springframework.util.ClassUtils;
 
 import java.util.HashMap;
@@ -34,18 +37,18 @@ import java.util.Map;
  * 2022/8/11 21:52
  */
 public class SpringFoxEnvironmentPostProcessor implements EnvironmentPostProcessor {
-    
+
     /**
      * 配置名称key值
      */
     final static String SPRING_MVC_MATCHING_STRATEGY = "spring.mvc.pathmatch.matching-strategy";
-    
+
     /**
      * 当前策略枚举类全路径
      */
     final static String MATCHING_CLASS_NAME = "org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties.MatchingStrategy";
     Logger logger = LoggerFactory.getLogger(SpringFoxEnvironmentPostProcessor.class);
-    
+
     /**
      * 处理springfox2.x版本兼容高版本Spring Boot出现空指针的异常的情况，为开发者自动配置matchingStrategy策略(如果开发者没要求的情况下)
      * springfox2 默认使用{@link org.springframework.util.AntPathMatcher}
@@ -68,7 +71,14 @@ public class SpringFoxEnvironmentPostProcessor implements EnvironmentPostProcess
                 sources.put(SPRING_MVC_MATCHING_STRATEGY, "ant_path_matcher");
                 // 添加
                 // fixed https://github.com/xiaoymin/knife4j/issues/686
-                DefaultPropertiesPropertySource.addOrMerge(sources, environment.getPropertySources());
+                // 如果environment中存在defaultProperties则直接将配置加入到该PropertySource中，不存在则创建新的defaultProperties加入到environment中
+                MutablePropertySources propertySources = environment.getPropertySources();
+                PropertySource<?> defaultProperties = propertySources.remove(DefaultPropertiesPropertySource.NAME);
+                if (defaultProperties == null) {
+                    defaultProperties = new MapPropertySource(DefaultPropertiesPropertySource.NAME, new HashMap<>());
+                }
+                ((MapPropertySource) defaultProperties).getSource().putAll(sources);
+                propertySources.addLast(defaultProperties);
             }
         }
     }
