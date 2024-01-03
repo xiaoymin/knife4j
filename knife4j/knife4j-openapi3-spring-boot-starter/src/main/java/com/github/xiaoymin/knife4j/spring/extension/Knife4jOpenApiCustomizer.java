@@ -24,12 +24,9 @@ import com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties;
 import com.github.xiaoymin.knife4j.spring.configuration.Knife4jSetting;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.OpenAPI;
-import java.lang.annotation.Annotation;
-import java.util.*;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.*;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springdoc.core.SpringDocConfigProperties;
 import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -37,6 +34,10 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.lang.annotation.Annotation;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 增强扩展属性支持
@@ -83,6 +84,7 @@ public class Knife4jOpenApiCustomizer implements GlobalOpenApiCustomizer {
         Set<String> packagesToScan =
                 properties.getGroupConfigs().stream()
                         .map(SpringDocConfigProperties.GroupConfig::getPackagesToScan)
+                        .filter(toScan -> !CollectionUtils.isEmpty(toScan))
                         .flatMap(List::stream)
                         .collect(Collectors.toSet());
         if (CollectionUtils.isEmpty(packagesToScan)) {
