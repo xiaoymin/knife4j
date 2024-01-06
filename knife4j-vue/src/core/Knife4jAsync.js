@@ -1967,9 +1967,9 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
               }
               //增加title的属性支持
               if (KUtils.checkUndefined(propobj.title)) {
-                if(KUtils.checkUndefined(spropObj.description)){
+                if(KUtils.checkUndefined(spropObj.description) && spropObj.description!=""){
                   spropObj.description = propobj.title + ":" + spropObj.description;
-                }else{
+                }else {
                   spropObj.description = propobj.title;
                 }
               }
@@ -2204,7 +2204,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                       refp.description = KUtils.replaceMultipLineStr(description);
                       //增加title的属性支持
                       if (KUtils.checkUndefined(p.title)) {
-                        if(KUtils.checkUndefined(refp.description)){
+                        if(KUtils.checkUndefined(refp.description) && refp.description!=""){
                           refp.description = p.title + ":" + refp.description;
                         }else {
                           refp.description = p.title;
@@ -6067,9 +6067,9 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
   }
   //增加title的属性支持
   if (KUtils.checkUndefined(m.title)) {
-    if(KUtils.checkUndefined(minfo.description)){
+    if(KUtils.checkUndefined(minfo.description) && minfo.description!=""){
       minfo.description = m.title + ":" + minfo.description;
-    }else{
+    }else {
       minfo.description = m.title;
     }
   }
