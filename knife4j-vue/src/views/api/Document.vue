@@ -736,9 +736,13 @@ export default {
                           schemaName
                         );
                         model = that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id, model);
-                        if (KUtils.checkUndefined(model.description)) {
-                          param.description = model.description;
+                        if (!KUtils.checkUndefined(param.description)) {
+                          //如果参数已经有description，那么就不赋值，否则，取model的description
+                          if (KUtils.checkUndefined(model.description)) {
+                            param.description = model.description;
+                          }
                         }
+
                         //console.log('params-model', model)
                         if (model && model.params) {
                           param.children = model.params.map(child => {

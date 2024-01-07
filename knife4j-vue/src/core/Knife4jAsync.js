@@ -2142,7 +2142,6 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                 if (KUtils.checkUndefined(def)) {
                   //response对象的值赋值一个description
                   originalTreeTableModel.description = KUtils.propValue("description", def, "");
-
                   if (def.hasOwnProperty('properties')) {
                     var props = def['properties'];
                     // console.log(props)
@@ -3859,25 +3858,6 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS2 = function (swpinfo) {
           }
         }
         if (rptype != null) {
-          // 查询
-          /*  for (var i = 0; i < that.currentInstance.difArrs.length; i++) {
-             var ref = that.currentInstance.difArrs[i];
-             if (ref.name == rptype) {
-               if(!ref.init){
-                 // 如果该类没有加载,则进行加载
-                 that.analysisDefinitionAsync(that.currentInstance.swaggerData,ref);
-               }
-               if (arr) {
-                 var na = new Array();
-                 na.push(ref.value);
-                 swaggerResp.responseValue = JSON.stringify(na, null, '\t');
-                 swaggerResp.responseJson = na;
-               } else {
-                 swaggerResp.responseValue = JSON.stringify(ref.value, null, '\t');
-                 swaggerResp.responseJson = ref.value;
-               }
-             }
-           } */
           // 响应参数
           var def = that.getDefinitionByName(rptype, swpinfo.oas2);
           if (def != null) {
@@ -6488,7 +6468,7 @@ function deepResponseRefParameter(swpinfo, that, def, resParam) {
         swpinfo.responseRefParameters.push(refParam);
         if (def.hasOwnProperty('properties')) {
           var props = def['properties'];
-          props.forEach(function (p) {
+          props.forEach(p => {
             // })
             // $.each(props,function (i, p) {
             var refp = new SwaggerBootstrapUiParameter();
