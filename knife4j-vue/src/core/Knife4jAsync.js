@@ -1967,7 +1967,11 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
               }
               //增加title的属性支持
               if (KUtils.checkUndefined(propobj.title)) {
-                spropObj.description = propobj.title + ":" + spropObj.description;
+                if(KUtils.checkUndefined(spropObj.description) && spropObj.description!=""){
+                  spropObj.description = propobj.title + ":" + spropObj.description;
+                }else {
+                  spropObj.description = propobj.title;
+                }
               }
               spropObj.value = propValue;
               // 判断是否有format,如果是integer,判断是64位还是32位
@@ -2200,7 +2204,11 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                       refp.description = KUtils.replaceMultipLineStr(description);
                       //增加title的属性支持
                       if (KUtils.checkUndefined(p.title)) {
-                        refp.description = p.title + ":" + refp.description;
+                        if(KUtils.checkUndefined(refp.description) && refp.description!=""){
+                          refp.description = p.title + ":" + refp.description;
+                        }else {
+                          refp.description = p.title;
+                        }
                       }
                       that.validateJSR303(refp, p);
                       // models添加所有属性
@@ -6059,7 +6067,11 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
   }
   //增加title的属性支持
   if (KUtils.checkUndefined(m.title)) {
-    minfo.description = m.title + ":" + minfo.description;
+    if(KUtils.checkUndefined(minfo.description) && minfo.description!=""){
+      minfo.description = m.title + ":" + minfo.description;
+    }else {
+      minfo.description = m.title;
+    }
   }
   if (minfo.in == 'body') {
     if (isUndefined(minfo.txtValue) || isNull(minfo.txtValue)) {
