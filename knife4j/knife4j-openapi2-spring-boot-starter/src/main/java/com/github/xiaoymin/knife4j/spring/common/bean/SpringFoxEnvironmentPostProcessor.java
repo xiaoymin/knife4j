@@ -37,18 +37,18 @@ import java.util.Map;
  * 2022/8/11 21:52
  */
 public class SpringFoxEnvironmentPostProcessor implements EnvironmentPostProcessor {
-
+    
     /**
      * 配置名称key值
      */
     final static String SPRING_MVC_MATCHING_STRATEGY = "spring.mvc.pathmatch.matching-strategy";
-
+    
     /**
      * 当前策略枚举类全路径
      */
     final static String MATCHING_CLASS_NAME = "org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties.MatchingStrategy";
     Logger logger = LoggerFactory.getLogger(SpringFoxEnvironmentPostProcessor.class);
-
+    
     /**
      * 处理springfox2.x版本兼容高版本Spring Boot出现空指针的异常的情况，为开发者自动配置matchingStrategy策略(如果开发者没要求的情况下)
      * springfox2 默认使用{@link org.springframework.util.AntPathMatcher}
