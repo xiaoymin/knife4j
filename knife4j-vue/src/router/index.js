@@ -33,16 +33,16 @@ const routes = [{
     path: '/SwaggerModels/:groupName',
     component: () => import('@/views/settings/SwaggerModels')
   }, {
-    path: '/documentManager/GlobalParameters-:groupName',
+    path: '/documentManager/GlobalParameters$:groupName',
     component: () => import('@/views/settings/GlobalParameters')
   }, {
-    path: '/documentManager/OfficelineDocument-:groupName',
+    path: '/documentManager/OfficelineDocument$:groupName',
     component: () => import('@/views/settings/OfficelineDocument')
   }, {
     path: '/documentManager/Settings',
     component: () => import('@/views/settings/Settings')
   }, {
-    path: '/:groupName@:mdid@omd/:id',
+    path: '/:groupName$:mdid$omd/:id',
     component: () => import('@/views/othermarkdown/index')
   }
   ]

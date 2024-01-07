@@ -3372,7 +3372,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         i18n: 'globalsettings',
         tabName: this.getI18n().menu.globalsettings + '(' + groupName + ')',
         component: 'GlobalParameters',
-        path: 'GlobalParameters-' + groupName
+        path: 'GlobalParameters$' + groupName
       },
       {
         groupName: groupName,
@@ -3384,7 +3384,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         i18n: 'officeline',
         tabName: this.getI18n().menu.officeline + '(' + groupName + ')',
         component: 'OfficelineDocument',
-        path: 'OfficelineDocument-' + groupName
+        path: 'OfficelineDocument$' + groupName
       },
       {
         groupName: groupName,
@@ -3413,7 +3413,7 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         i18n: 'other',
         icon: 'icon-APIwendang',
         // https://gitee.com/xiaoym/knife4j/issues/I8EKAQ
-        path: groupName + '@' + mdid + '@omd',
+        path: groupName + '$' + mdid + '$omd',
         children: []
       };
       if (KUtils.arrNotEmpty(mdTag.children)) {
