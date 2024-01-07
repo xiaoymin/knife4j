@@ -117,7 +117,7 @@ public class Knife4jOpenApiCustomizer implements GlobalOpenApiCustomizer {
             }
         }
     }
-
+    
     private Tag getTag(Class<?> clazz) {
         // 从类上获取
         Tag tag = clazz.getAnnotation(Tag.class);
@@ -136,9 +136,9 @@ public class Knife4jOpenApiCustomizer implements GlobalOpenApiCustomizer {
         }
         return tag;
     }
-
+    
     private Set<Class<?>> scanPackageByAnnotation(
-            String packageName, final Class<? extends Annotation> annotationClass) {
+                                                  String packageName, final Class<? extends Annotation> annotationClass) {
         ClassPathScanningCandidateComponentProvider scanner =
                 new ClassPathScanningCandidateComponentProvider(false);
         scanner.addIncludeFilter(new AnnotationTypeFilter(annotationClass));
@@ -148,7 +148,7 @@ public class Knife4jOpenApiCustomizer implements GlobalOpenApiCustomizer {
                 Class<?> clazz = Class.forName(beanDefinition.getBeanClassName());
                 classes.add(clazz);
             } catch (ClassNotFoundException ignore) {
-
+                
             }
         }
         return classes;
