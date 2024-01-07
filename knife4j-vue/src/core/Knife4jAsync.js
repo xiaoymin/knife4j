@@ -2133,7 +2133,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
             for (var key in definitions) {
               if (key == originalTreeTableModel.name) {
                 var def = definitions[key];
-                // console.log('def');
+                //console.log('def', def);
                 // 根据def的properties解析
                 if (KUtils.checkUndefined(def)) {
                   //response对象的值赋值一个description
@@ -2198,6 +2198,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                         description = description + KUtils.enumAvalibleLabel(that.i18nInstance, p.enum);
                       }
                       refp.description = KUtils.replaceMultipLineStr(description);
+                      //console.log('key:', pkey, ",desc:", KUtils.replaceMultipLineStr(description))
                       //增加title的属性支持
                       if (KUtils.checkUndefined(p.title)) {
                         refp.description = p.title + ":" + refp.description;
@@ -2214,7 +2215,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                         // 属性名称不同,或者ref类型不同
                         var deepDef = that.getOriginalDefinitionByName(p.refType, definitions);
                         //判断description,如果是class，再赋值一次
-                        if (KUtils.checkUndefined(refp.description)) {
+                        if (!KUtils.checkUndefined(refp.description)) {
+                          //console.log("aa")
                           refp.description = KUtils.propValue('description', deepDef, '');
                         }
                         //console.log(refp)
@@ -2441,7 +2443,7 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp, definitions, deepDef
           // https://gitee.com/xiaoym/knife4j/issues/I51G01
           // 获取当前Schema的介绍信息,如果存在，就赋值
           let tmpDescriptionValue = KUtils.propValue('description', def, null);
-          if (tmpDescriptionValue != null) {
+          if (tmpDescriptionValue != null && !KUtils.checkUndefined(parentRefp.description)) {
             parentRefp.description = tmpDescriptionValue;
           }
           if (def.hasOwnProperty('properties')) {
