@@ -3412,7 +3412,8 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         name: mdTag.name,
         i18n: 'other',
         icon: 'icon-APIwendang',
-        path: groupName + '-' + mdid + '-omd',
+        // https://gitee.com/xiaoym/knife4j/issues/I8EKAQ
+        path: groupName + '@' + mdid + '@omd',
         children: []
       };
       if (KUtils.arrNotEmpty(mdTag.children)) {

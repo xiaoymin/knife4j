@@ -42,7 +42,7 @@ const routes = [{
     path: '/documentManager/Settings',
     component: () => import('@/views/settings/Settings')
   }, {
-    path: '/:groupName-:mdid-omd/:id',
+    path: '/:groupName@:mdid@omd/:id',
     component: () => import('@/views/othermarkdown/index')
   }
   ]
