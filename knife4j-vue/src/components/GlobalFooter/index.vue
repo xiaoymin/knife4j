@@ -5,7 +5,7 @@
     </a-row>
     <a-row v-else-if="settings.enableFooter">
       <div class="copyright">Apache License 2.0 | Copyright
-        <a-icon type="copyright" /> 2019-<a target="_blank" href="https://gitee.com/xiaoym/knife4j">Knife4j-v4.4.1</a>
+        <a-icon type="copyright" /> 2019-<a target="_blank" href="https://gitee.com/xiaoym/knife4j">Knife4j-v4.5.0</a>
       </div>
     </a-row>
   </div>
