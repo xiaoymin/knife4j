@@ -1967,9 +1967,9 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
               }
               //增加title的属性支持
               if (KUtils.checkUndefined(propobj.title)) {
-                if(KUtils.checkUndefined(spropObj.description) && spropObj.description!=""){
+                if (KUtils.checkUndefined(spropObj.description) && spropObj.description != "") {
                   spropObj.description = propobj.title + ":" + spropObj.description;
-                }else {
+                } else {
                   spropObj.description = propobj.title;
                 }
               }
@@ -2205,9 +2205,9 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                       //console.log('key:', pkey, ",desc:", KUtils.replaceMultipLineStr(description))
                       //增加title的属性支持
                       if (KUtils.checkUndefined(p.title)) {
-                        if(KUtils.checkUndefined(refp.description) && refp.description!=""){
+                        if (KUtils.checkUndefined(refp.description) && refp.description != "") {
                           refp.description = p.title + ":" + refp.description;
-                        }else {
+                        } else {
                           refp.description = p.title;
                         }
                       }
@@ -2446,6 +2446,7 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp, definitions, deepDef
     for (var key in definitions) {
       if (key == deepDef.name) {
         var def = definitions[key];
+        //console.log('key:', key, ",def:", def)
         // 根据def的properties解析
         if (KUtils.checkUndefined(def)) {
           // https://gitee.com/xiaoym/knife4j/issues/I51G01
@@ -2477,6 +2478,11 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp, definitions, deepDef
                   // 修复针对schema类型的参数,显示类型为schema类型
                   refp.type = p.refType;
                 }
+              }
+              // 判断format
+              var _format = KUtils.propValue('format', p, null);
+              if (KUtils.checkUndefined(_format)) {
+                refp.type = refp.type + '(' + _format + ')';
               }
               // refp.in = minfo.in;
               if (KUtils.checkUndefined(p.require)) {
@@ -6069,9 +6075,9 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
   }
   //增加title的属性支持
   if (KUtils.checkUndefined(m.title)) {
-    if(KUtils.checkUndefined(minfo.description) && minfo.description!=""){
+    if (KUtils.checkUndefined(minfo.description) && minfo.description != "") {
       minfo.description = m.title + ":" + minfo.description;
-    }else {
+    } else {
       minfo.description = m.title;
     }
   }
