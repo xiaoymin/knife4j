@@ -2508,6 +2508,16 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp, definitions, deepDef
                 //description = description + '可用值:' + p.enum.join(',');
                 description = description + KUtils.enumAvalibleLabel(that.i18nInstance, p.enum);
               }
+
+              //增加title属性的支持
+              if (KUtils.checkUndefined(p.title)) {
+                if (KUtils.checkUndefined(description) && description != "") {
+                  description = p.title + ":" + description;
+                } else {
+                  description = p.title;
+                }
+              }
+
               refp.description = KUtils.replaceMultipLineStr(description);
               // KUtils.validateJSR303(refp, p);
               // models添加所有属性
