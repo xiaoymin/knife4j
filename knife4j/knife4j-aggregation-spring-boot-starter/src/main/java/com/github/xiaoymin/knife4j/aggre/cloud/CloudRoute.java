@@ -30,6 +30,10 @@ public class CloudRoute extends CommonAuthRoute {
      * OpenAPi Instance URI，example：http://192.179.0.1:8999
      */
     private String uri;
+    /**
+     * 健康检查地址
+     */
+    private String health;
     
     public String getUri() {
         return uri;
@@ -37,5 +41,13 @@ public class CloudRoute extends CommonAuthRoute {
     
     public void setUri(String uri) {
         this.uri = uri;
+    }
+    
+    public String getHealth() {
+        return health;
+    }
+    
+    public void setHealth(String health) {
+        this.health = health;
     }
 }
