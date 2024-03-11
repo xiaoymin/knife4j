@@ -132,6 +132,7 @@ public class Knife4jGatewayAutoConfiguration {
         public static class ReactiveDiscoveryClientRouteDefinitionLocatorConfiguration {
             
             @Bean
+            @ConditionalOnMissingBean(DiscoverClientRouteServiceConvert.class)
             @ConditionalOnProperty(name = "spring.cloud.gateway.discovery.locator.enabled")
             public DiscoverClientRouteServiceConvert discoverClientRouteServiceConvert(
                                                                                        DiscoveryClientRouteDefinitionLocator discoveryClient, Knife4jGatewayProperties knife4jGatewayProperties) {
