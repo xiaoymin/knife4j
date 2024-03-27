@@ -37,7 +37,7 @@ public class ServiceUtils {
     private ServiceUtils() {
     }
 
-    private static final String LB = "lb://";
+    private static final String LB = "lb";
 
     /**
      * 根据OpenAPI规范及分组名称不同获取不同的默认地址
@@ -75,11 +75,11 @@ public class ServiceUtils {
         if (uri == null) {
             return false;
         }
-        String path = uri.toString();
-        if (path == null || path.isEmpty()) {
+        String scheme = uri.getScheme();
+        if (scheme == null || scheme.isEmpty()) {
             return false;
         }
-        return path.startsWith(LB);
+        return scheme.equalsIgnoreCase(LB);
     }
 
     /**

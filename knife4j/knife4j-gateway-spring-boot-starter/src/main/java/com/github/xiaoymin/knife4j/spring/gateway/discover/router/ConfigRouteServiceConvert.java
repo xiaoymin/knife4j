@@ -57,6 +57,12 @@ public class ConfigRouteServiceConvert extends AbstactServiceRouterConvert {
     @Override
     String convertPathPrefix(Map<String, String> predicateArgs) {
         String value = predicateArgs.get(GatewayRouterStrategy.CONFIG.getRule());
+        
+        // 如果获取简洁写法失败，则尝试获取完整写法
+        if (StrUtil.isBlank(value)) {
+            value = predicateArgs.get(GatewayRouterStrategy.REACTIVE.getRule());
+        }
+        
         if (StrUtil.isNotBlank(value)) {
             return value.replace("**", StringUtil.EMPTY_STRING);
         }
