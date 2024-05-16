@@ -56,7 +56,7 @@
         <knife4j-servlet-jakarta.version>6.0.0</knife4j-servlet-jakarta.version>
 
         <knife4j-slf4j.version>1.7.28</knife4j-slf4j.version>
-        <knife4j-hutool.version>5.8.15</knife4j-hutool.version>
+        <knife4j-hutool.version>5.8.21</knife4j-hutool.version>
         <knife4j-httpclient.version>4.5.14</knife4j-httpclient.version>
         <knife4j-gson.version>2.10.1</knife4j-gson.version>
 
