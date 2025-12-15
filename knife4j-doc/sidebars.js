@@ -1,10 +1,21 @@
 const donateHtml = `
 <div class="sidebar_donate">
-    <div class="sidebar_sponsor"> 
+    <div class="sidebar_sponsor" style="margin-top:10px"> 
+        <a target="_blank" href="https://www.orangeforms.com?utm_source=knife4j"><img src="/images/sponsor/orangeforms/logo.jpg"/>
+        </a>
+    </div>
+    <div class="sidebar_sponsor" style="margin-top:10px"> 
+        <a target="_blank" href="https://www.torchv.com/?utm_source=knife4j"><img src="/images/sponsor/torchv/logo3.png"/>
+        </a>
+    </div>
+    <div class="sidebar_sponsor" style="margin-top:10px"> 
         <a target="_blank" href="http://knife4j.net?utm_source=knife4j"><img src="/images/sponsor/knife4j/logo2.png"/>
         </a>
     </div>
-    
+    <div class="sidebar_sponsor" style="margin-top:10px"> 
+        <a target="_blank" href="https://api-buddy.cn/?utm_source=Knife4j&utm_medium=affiliate&utm_campaign=product"><img src="/images/sponsor/fastrequest/fastRequest.svg"/>
+        </a>
+    </div>
     <div class="sidebar_sponsor_submit">
         <a href="/docs/community/donate">成为赞助商</a>
     </div>

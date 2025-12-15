@@ -414,7 +414,7 @@ const langOptions = {
     openCache: 'Enable request parameter cache',
     dynamicParameter: 'Enable dynamic request parameters',
     showApi: 'Enable Menu Api Address Display',
-    tagDes: 'Enable Grouping tag displays dsecription description properties',
+    tagDes: 'Enable Grouping tag displays description properties',
     apiFilter: 'Open RequestMapping Interface Filtering,Default',
     openCacheApi: 'Enable Open cached open API documents',
     plus: 'Enabling enhancements provided by Knife4j',

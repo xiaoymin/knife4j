@@ -33,7 +33,7 @@ import java.io.IOException;
  */
 @Data
 public class JakartaServletSecurityBasicAuthFilter extends AbstractSecurityFilter implements Filter {
-    
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.initServletConfig(filterConfig.getInitParameterNames(),
@@ -46,18 +46,22 @@ public class JakartaServletSecurityBasicAuthFilter extends AbstractSecurityFilte
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String url = request.getRequestURI();
-        Object sessionObject = request.getSession().getAttribute(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION);
-        String auth = request.getHeader(GlobalConstants.AUTH_HEADER_NAME);
-        if (this.tryCommonBasic(url, sessionObject, auth)) {
-            if (this.match(url) && sessionObject == null) {
-                request.getSession().setAttribute(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION, getUserName());
+        if (this.isEnableBasicAuth() && this.match(url)) {
+            Object sessionObject = request.getSession().getAttribute(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION);
+            String auth = request.getHeader(GlobalConstants.AUTH_HEADER_NAME);
+            if (this.tryCommonBasic(url, sessionObject, auth)) {
+                if (sessionObject == null) {
+                    request.getSession().setAttribute(GlobalConstants.KNIFE4J_BASIC_AUTH_SESSION, getUserName());
+                }
+                filterChain.doFilter(servletRequest, servletResponse);
+            } else {
+                FilterUtils.writeJakartaForbiddenCode(response);
             }
-            filterChain.doFilter(servletRequest, servletResponse);
         } else {
-            FilterUtils.writeJakartaForbiddenCode(response);
+            filterChain.doFilter(servletRequest, servletResponse);
         }
     }
-    
+
     @Override
     public void destroy() {
         this.urlFilters = null;

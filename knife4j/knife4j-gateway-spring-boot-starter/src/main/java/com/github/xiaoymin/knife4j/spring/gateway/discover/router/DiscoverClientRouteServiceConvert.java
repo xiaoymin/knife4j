@@ -24,6 +24,7 @@ import com.github.xiaoymin.knife4j.spring.gateway.utils.ServiceUtils;
 import com.github.xiaoymin.knife4j.spring.gateway.utils.StrUtil;
 import io.netty.util.internal.StringUtil;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator;
@@ -43,10 +44,12 @@ import java.util.Map;
  */
 @AllArgsConstructor
 @Slf4j
+@Getter
 public class DiscoverClientRouteServiceConvert extends AbstactServiceRouterConvert {
     
-    final DiscoveryClientRouteDefinitionLocator discoveryClientRouteDefinitionLocator;
-    final Knife4jGatewayProperties knife4jGatewayProperties;
+    protected final DiscoveryClientRouteDefinitionLocator discoveryClientRouteDefinitionLocator;
+    protected final Knife4jGatewayProperties knife4jGatewayProperties;
+    
     @Override
     public void process(ServiceRouterHolder holder) {
         log.debug("Spring Cloud Gateway DiscoverClient process.");

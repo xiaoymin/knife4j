@@ -180,7 +180,7 @@ module.exports = {
                         ],
                     },
                     {
-                        href: 'https://github.com/xiaoymin/swagger-bootstrap-ui',
+                        href: 'https://github.com/xiaoymin/knife4j',
                         label: 'GitHub',
                         title: 'View on GitHub',
                         position: 'right',

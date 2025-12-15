@@ -56,8 +56,6 @@ function createApiRequestParameters(apiInfo, markdownCollections) {
   let reqParameters = apiInfo.reqParameters;
   markdownLines(markdownCollections);
   markdownCollections.push('**请求参数**:');
-  markdownLines(markdownCollections);
-  markdownCollections.push('**请求参数**:');
   // 判断是否拥有请求参数
   if (reqParameters.length > 0) {
     markdownLines(markdownCollections);

@@ -431,8 +431,7 @@ export default {
       }
       let reqParameters = [];
       if (data != null && data.length > 0) {
-        // console("初始化请求参数----------");
-        // console(data);
+        // console.log("初始化请求参数:", JSON.parse(JSON.stringify(data)));
         data.forEach(function (param) {
           if (param.pid == "-1") {
             param.children = null;
@@ -440,23 +439,20 @@ export default {
             if (param.schema) {
               // 判断当前缓存是否存在
               var schemaName = param.schemaValue;
-              // console.log("param,", param)
+              // console.log("param:", param);
               if (KUtils.checkUndefined(schemaName)) {
-                //  //console("schemaValue--checkUndefined");
+                // console.log("key:", key);
+                // console.log("schemaName:", schemaName);
+                // console.log("that.$Knife4jModels.exists:", that.$Knife4jModels.exists(key, schemaName));
                 if (that.$Knife4jModels.exists(key, schemaName)) {
-                  // //console("存在-不用查找---" + schemaName);
-                  // //console(that.$Knife4jModels.instance);
-                  var model = that.$Knife4jModels.getByModelName(
-                    key,
-                    schemaName
-                  );
+                  var model = that.$Knife4jModels.getByModelName(key, schemaName);
+                  // console.log("当前model:", JSON.parse(JSON.stringify(model)));
                   model = that.swagger.analysisDefinitionRefTableModel(that.swaggerInstance.id, model);
-                  // console.log("findmodel")
-                  // console.log(model)
+                  // console.log("当前model:", JSON.parse(JSON.stringify(model)));
                   if (model && model.params) {
                     const childrens = model.params
                       .filter(({ name }) => {
-                        //  过滤第一层忽略的参数
+                        // 过滤第一层忽略的参数
                         return !(
                           (
                             ignoreParameterAllKeys.includes(name) || //  处理 form 表单提交
@@ -510,6 +506,7 @@ export default {
             reqParameters.push(param);
           }
         });
+        // console.log("当前reqParameters:", JSON.parse(JSON.stringify(reqParameters)));
       }
       // 此处需要递归去除include之外的parameters
       if (apiInfo.includeParameters != null) {
@@ -551,8 +548,7 @@ export default {
       } else {
         that.reqParameters = reqParameters;
       }
-      // console.log("document")
-      //console.log(reqParameters);
+      // console.log("当前reqParameters:", JSON.parse(JSON.stringify(reqParameters)));
     },
     deepRootKeys(tmpIncludeKeys, rootKeys) {
       var tmpRooks = [];

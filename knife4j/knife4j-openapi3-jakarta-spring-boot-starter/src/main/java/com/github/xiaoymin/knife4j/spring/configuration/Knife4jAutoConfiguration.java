@@ -18,17 +18,21 @@
 package com.github.xiaoymin.knife4j.spring.configuration;
 
 import com.github.xiaoymin.knife4j.core.conf.GlobalConstants;
+import com.github.xiaoymin.knife4j.extend.filter.basic.AbstractSecurityFilter;
 import com.github.xiaoymin.knife4j.extend.filter.basic.JakartaServletSecurityBasicAuthFilter;
 import com.github.xiaoymin.knife4j.spring.extension.Knife4jJakartaOperationCustomizer;
 import com.github.xiaoymin.knife4j.spring.extension.Knife4jOpenApiCustomizer;
 import com.github.xiaoymin.knife4j.spring.filter.JakartaProductionSecurityFilter;
 import com.github.xiaoymin.knife4j.spring.util.EnvironmentUtils;
+import jakarta.servlet.DispatcherType;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.properties.SpringDocConfigProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -48,10 +52,10 @@ import org.springframework.web.filter.CorsFilter;
 @EnableConfigurationProperties({Knife4jProperties.class, Knife4jSetting.class, Knife4jHttpBasic.class})
 @ConditionalOnProperty(name = "knife4j.enable", havingValue = "true")
 public class Knife4jAutoConfiguration {
-    
+
     private final Knife4jProperties properties;
     private final Environment environment;
-    
+
     /**
      * 增强自定义配置
      * @return
@@ -62,7 +66,7 @@ public class Knife4jAutoConfiguration {
         log.debug("Register Knife4jOpenApiCustomizer");
         return new Knife4jOpenApiCustomizer(this.properties, docProperties);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public Knife4jJakartaOperationCustomizer knife4jJakartaOperationCustomizer() {
@@ -90,7 +94,7 @@ public class Knife4jAutoConfiguration {
         CorsFilter corsFilter = new CorsFilter(source);
         return corsFilter;
     }
-    
+
     /**
      * Security with Basic Http
      * @param knife4jProperties Basic Properties
@@ -98,8 +102,8 @@ public class Knife4jAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(JakartaServletSecurityBasicAuthFilter.class)
-    @ConditionalOnProperty(name = "knife4j.basic.enable", havingValue = "true")
-    public JakartaServletSecurityBasicAuthFilter securityBasicAuthFilter(Knife4jProperties knife4jProperties) {
+    @ConditionalOnExpression("${knife4j.production:false} && ${knife4j.basic.enable:true}")
+    public FilterRegistrationBean<JakartaServletSecurityBasicAuthFilter> securityBasicAuthFilter(Knife4jProperties knife4jProperties) {
         JakartaServletSecurityBasicAuthFilter authFilter = new JakartaServletSecurityBasicAuthFilter();
         if (knife4jProperties == null) {
             authFilter.setEnableBasicAuth(EnvironmentUtils.resolveBool(environment, "knife4j.basic.enable", Boolean.FALSE));
@@ -118,13 +122,17 @@ public class Knife4jAutoConfiguration {
                 authFilter.addRule(knife4jProperties.getBasic().getInclude());
             }
         }
-        return authFilter;
+        FilterRegistrationBean<JakartaServletSecurityBasicAuthFilter> registration = new FilterRegistrationBean<>();
+        registration.setDispatcherTypes(DispatcherType.REQUEST);
+        registration.setFilter(authFilter);
+        registration.setOrder(AbstractSecurityFilter.SPRING_FILTER_ORDER);
+        return registration;
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(JakartaProductionSecurityFilter.class)
     @ConditionalOnProperty(name = "knife4j.production", havingValue = "true")
-    public JakartaProductionSecurityFilter productionSecurityFilter(Environment environment) {
+    public FilterRegistrationBean<JakartaProductionSecurityFilter> productionSecurityFilter(Environment environment) {
         boolean prod = false;
         JakartaProductionSecurityFilter p = null;
         if (properties == null) {
@@ -139,8 +147,11 @@ public class Knife4jAutoConfiguration {
         } else {
             p = new JakartaProductionSecurityFilter(properties.isProduction());
         }
-        
-        return p;
+        FilterRegistrationBean<JakartaProductionSecurityFilter> registration = new FilterRegistrationBean<>();
+        registration.setDispatcherTypes(DispatcherType.REQUEST);
+        registration.setFilter(p);
+        registration.setOrder(AbstractSecurityFilter.SPRING_FILTER_ORDER - 1);
+        return registration;
     }
-    
+
 }

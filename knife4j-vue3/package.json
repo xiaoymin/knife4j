@@ -44,6 +44,7 @@
     "unplugin-vue-components": "^0.25.1",
     "vite": "^4.3.9",
     "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-remove-console": "^2.1.1"
   }
 }

@@ -183,7 +183,7 @@ public GlobalOpenApiCustomizer orderGlobalOpenApiCustomizer() {
             openApi.getPaths().forEach((s, pathItem) -> {
                 // 为所有接口添加鉴权
                 pathItem.readOperations().forEach(operation -> {
-                    peration.addSecurityItem(new SecurityRequirement().addList(HttpHeaders.AUTHORIZATION));
+                    operation.addSecurityItem(new SecurityRequirement().addList(HttpHeaders.AUTHORIZATION));
                 });
             });
         }

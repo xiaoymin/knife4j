@@ -32,7 +32,12 @@ import java.util.Objects;
  */
 @Data
 public abstract class AbstractSecurityFilter extends BasicFilter {
-    
+
+    /**
+     * Spring过滤器顺序
+     */
+    public static final int SPRING_FILTER_ORDER = Integer.MAX_VALUE;
+
     /***
      * 是否开启basic验证,默认不开启
      */

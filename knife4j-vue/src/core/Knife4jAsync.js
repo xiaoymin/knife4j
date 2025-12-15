@@ -238,7 +238,7 @@ SwaggerBootstrapUi.prototype.main = function () {
  * 初始化请求参数
  * 开启请求参数缓存：cache=1
  * 菜单Api地址显示: showMenuApi=1
- * 分组tag显示dsecription说明属性: showDes=1
+ * 分组tag显示description说明属性: showDes=1
  * 开启RequestMapping接口过滤,默认只显示: filterApi=1  filterApiType=post
  * 开启缓存已打开的api文档:cacheApi=1
  * 启用SwaggerBootstrapUi提供的增强功能:plus=1
@@ -1445,11 +1445,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2 = function (menu, swud,
               // 判断是否包含枚举
               if (propobj.hasOwnProperty('enum')) {
                 spropObj.enum = propobj['enum'];
-                if (spropObj.description != '') {
-                  spropObj.description += ',';
-                }
                 //spropObj.description = spropObj.description + '可用值:' + spropObj.enum.join(',');
-                spropObj.description = spropObj.description + KUtils.enumAvalibleLabel(that.i18nInstance, spropObj.enum);
+                spropObj.description = KUtils.enumAvalibleLabel(that.i18nInstance, spropObj.enum, spropObj.description);
               }
               if (spropObj.type == 'string') {
                 // spropObj.example = String(KUtils.propValue('example', propobj, ''));
@@ -1583,11 +1580,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS2 = function (menu, swud,
                     }
                     // 判断是否存在枚举
                     if (items.hasOwnProperty('enum')) {
-                      if (spropObj.description != '') {
-                        spropObj.description += ',';
-                      }
                       //spropObj.description = spropObj.description + '可用值:' + items['enum'].join(',');
-                      spropObj.description = spropObj.description + KUtils.enumAvalibleLabel(that.i18nInstance, items['enum']);
+                      spropObj.description = KUtils.enumAvalibleLabel(that.i18nInstance, items['enum'], spropObj.description);
 
                     }
                     var regex = new RegExp(KUtils.oasmodel(oas2), 'ig');
@@ -1738,11 +1732,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
               // 判断是否包含枚举
               if (propobj.hasOwnProperty('enum')) {
                 spropObj.enum = propobj['enum'];
-                if (spropObj.description != '') {
-                  spropObj.description += ',';
-                }
                 //spropObj.description = spropObj.description + '可用值:' + spropObj.enum.join(',');
-                spropObj.description = spropObj.description + KUtils.enumAvalibleLabel(that.i18nInstance, spropObj.enum);
+                spropObj.description = KUtils.enumAvalibleLabel(that.i18nInstance, spropObj.enum, spropObj.description);
               }
               if (spropObj.type == 'string') {
                 // spropObj.example = String(KUtils.propValue('example', propobj, ''));
@@ -1896,11 +1887,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
                     }
                     // 判断是否存在枚举
                     if (items.hasOwnProperty('enum')) {
-                      if (spropObj.description != '') {
-                        spropObj.description += ',';
-                      }
                       //spropObj.description = spropObj.description + '可用值:' + items['enum'].join(',');
-                      spropObj.description = spropObj.description + KUtils.enumAvalibleLabel(that.i18nInstance, items['enum']);
+                      spropObj.description = KUtils.enumAvalibleLabel(that.i18nInstance, items['enum'], spropObj.description);
                     }
                     var regex = new RegExp(KUtils.oasmodel(oas2), 'ig');
                     if (regex.test(ref)) {
@@ -2107,8 +2095,7 @@ SwaggerBootstrapUi.prototype.dynamicAddSchema = function (name) {
  * @param {model对象} treeTableModel
  */
 SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanceId, treeTableModel) {
-  // console.log('analysisDefinitionRefTableModel-异步解析Model的名称-SwaggerModel功能需要');
-  //console.log(treeTableModel);
+  // console.log("当前treeTableModel:", JSON.parse(JSON.stringify(treeTableModel)));
   var that = this;
   var originalTreeTableModel = treeTableModel;
   if (!treeTableModel.init) {
@@ -2118,8 +2105,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
         instance = ins;
       }
     })
-    // console.log('当前实例')
-    // console.log(instance)
+    // console.log("当前实例:", JSON.parse(JSON.stringify(instance)));
     for (name in instance.swaggerTreeTableModels) {
       if (name == treeTableModel.name) {
         originalTreeTableModel = instance.swaggerTreeTableModels[name];
@@ -2130,6 +2116,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
           // var definitions=instance.swaggerData['definitions'];
           // console.log(instance)
           var definitions = instance.getOASDefinitions();
+          // console.log("当前definitions:", JSON.parse(JSON.stringify(definitions)));
           var oas2 = instance.oas2();
           // console.log('analysisDefinitionRefTableModel:----------------'+oas2);
           // console.log(definitions)
@@ -2137,7 +2124,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
             for (var key in definitions) {
               if (key == originalTreeTableModel.name) {
                 var def = definitions[key];
-                //console.log('def', def);
+                // console.log("当前def:", JSON.parse(JSON.stringify(def)));
                 // 根据def的properties解析
                 if (KUtils.checkUndefined(def)) {
                   //response对象的值赋值一个description
@@ -2147,12 +2134,10 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                     // console.log(props)
                     // 获取required属性
                     var requiredArrs = def.hasOwnProperty('required') ? def['required'] : new Array();
-                    // console.log(props);
                     for (var pkey in props) {
                       var p = props[pkey];
                       p.refType = that.getSwaggerModelRefType(p, oas2);
-                      //console.log('------------------analyslsldiflsjfdlsfaaaaaaaaaaaaaaaaaaa')
-                      //console.log(p);
+                      // console.log("当前p:", JSON.parse(JSON.stringify(p)));
                       var refp = new SwaggerBootstrapUiParameter();
                       refp.pid = originalTreeTableModel.id;
                       refp.readOnly = p.readOnly;
@@ -2194,11 +2179,13 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                       var description = KUtils.propValue('description', p, '');
                       // 判断是否包含枚举
                       if (p.hasOwnProperty('enum')) {
-                        if (description != '') {
-                          description += ',';
-                        }
-                        //description = description + '可用值:' + p.enum.join(',');
-                        description = description + KUtils.enumAvalibleLabel(that.i18nInstance, p.enum);
+                        description = KUtils.enumAvalibleLabel(that.i18nInstance, p.enum, description);
+                        // console.log("当前枚举description:", description);
+                      } 
+                      // 处理枚举列表类型的参数
+                      else if (p.items && p.items.hasOwnProperty('enum')) {
+                        description = KUtils.enumAvalibleLabel(that.i18nInstance, p.items.enum, description);
+                        // console.log("当前枚举description:", description);
                       }
                       refp.description = KUtils.replaceMultipLineStr(description);
                       //console.log('key:', pkey, ",desc:", KUtils.replaceMultipLineStr(description))
@@ -2211,8 +2198,6 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                         }
                       }
                       that.validateJSR303(refp, p);
-                      // models添加所有属性
-                      originalTreeTableModel.params.push(refp);
                       // 判断类型是否基础类型
                       if (KUtils.checkUndefined(p.refType) && !KUtils.checkIsBasicType(p.refType)) {
                         //console.log('schema类型--------------' + p.refType)
@@ -2267,6 +2252,9 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
 
                         }
                       }
+                      // console.log("最终的refp:", JSON.parse(JSON.stringify(refp)));
+                      // models添加所有属性
+                      originalTreeTableModel.params.push(refp);
                     }
                   } else if (def.hasOwnProperty('additionalProperties')) {
                     // map类型
@@ -2307,11 +2295,10 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                     refp.type = def.type;
                     refp.example = def.example;
                     //description = '可用值:' + def['enum'].join(',');
-                    description = def.description + KUtils.enumAvalibleLabel(that.i18nInstance, def['enum']);
+                    description = KUtils.enumAvalibleLabel(that.i18nInstance, def['enum'], def.description);
                     refp.description = KUtils.replaceMultipLineStr(description);
                     // models添加所有属性
                     originalTreeTableModel.params.push(refp);
-
                   }
                 }
               }
@@ -2322,6 +2309,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
       }
     }
   }
+  // console.log("最终的originalTreeTableModel:", JSON.parse(JSON.stringify(originalTreeTableModel)))
   return originalTreeTableModel;
 }
 
@@ -2396,9 +2384,9 @@ SwaggerBootstrapUi.prototype.getSwaggerModelRefType = function (propobj, oas2) {
               refType = RegExp.$1;
             }
           }
-        } else {
-          refType = type;
         }
+      } else {
+        refType = type;
       }
     } else {
       if (type == 'array') {
@@ -2502,12 +2490,19 @@ function deepSwaggerModelsTreeTableRefParameter(parentRefp, definitions, deepDef
               var description = KUtils.propValue('description', p, '');
               // 判断是否包含枚举
               if (p.hasOwnProperty('enum')) {
-                if (description != '') {
-                  description += ',';
-                }
                 //description = description + '可用值:' + p.enum.join(',');
-                description = description + KUtils.enumAvalibleLabel(that.i18nInstance, p.enum);
+                description = KUtils.enumAvalibleLabel(that.i18nInstance, p.enum, description);
               }
+
+              //增加title属性的支持
+              if (KUtils.checkUndefined(p.title)) {
+                if (KUtils.checkUndefined(description) && description != "") {
+                  description = p.title + ":" + description;
+                } else {
+                  description = p.title;
+                }
+              }
+
               refp.description = KUtils.replaceMultipLineStr(description);
               // KUtils.validateJSR303(refp, p);
               // models添加所有属性
@@ -5275,7 +5270,7 @@ SwaggerBootstrapUi.prototype.readOpenApiSpeci = function (path, swpinfo, apiInfo
       copyOpenApi['definitions'] = def;
     } else {
       def = this.readOpenApiSpeciOAS3(apiInfo, swaggerData);
-      copyOpenApi['components'] = def;
+      copyOpenApi['components'] = { schemas: def };
     }
     swpinfo.openApiRaw = copyOpenApi;
     // 查询definitions节点
@@ -5500,13 +5495,7 @@ SwaggerBootstrapUi.prototype.assembleParameter = function (m, swpinfo) {
     // that.log(minfo);
     // 枚举类型,描述显示可用值
     //var avaiableArrStr = m.enum.join(',');
-    if (m.description != null && m.description != undefined && m.description != '') {
-      //minfo.description = m.description + ',可用值:' + avaiableArrStr;
-      minfo.description = m.description + ',' + KUtils.enumAvalibleLabel(that.i18nInstance, m.enum);
-    } else {
-      //minfo.description = '枚举类型,可用值:' + avaiableArrStr;
-      minfo.description = KUtils.enumAvalibleLabel(that.i18nInstance, m.enum);
-    }
+    minfo.description = KUtils.enumAvalibleLabel(that.i18nInstance, m.enum, m.description);
 
   }
   // 判断你是否有默认值(后台)
@@ -5808,14 +5797,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
     minfo.enum = m.enum;
     // that.log(minfo);
     // 枚举类型,描述显示可用值
-    var avaiableArrStr = m.enum.join(',');
-    if (m.description != null && m.description != undefined && m.description != '') {
-      //minfo.description = m.description + ',可用值:' + avaiableArrStr;
-      minfo.description = m.description + ',' + KUtils.enumAvalibleLabel(that.i18nInstance, m.enum);
-    } else {
-      //minfo.description = '枚举类型,可用值:' + avaiableArrStr;
-      minfo.description = '枚举类型,' + KUtils.enumAvalibleLabel(that.i18nInstance, m.enum);
-    }
+    minfo.description = m.description + KUtils.enumAvalibleLabel(that.i18nInstance, m.enum, m.description);
 
   }
   // 判断你是否有默认值(后台)
@@ -5900,14 +5882,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
           // 枚举不为空
           minfo.enum = _enumArray;
           // 枚举类型,描述显示可用值
-          //var avaiableArrStr = _enumArray.join(',');
-          if (m.description != null && m.description != undefined && m.description != '') {
-            //minfo.description = m.description + ',可用值:' + avaiableArrStr;
-            minfo.description = m.description + ',' + KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray);
-          } else {
-            //minfo.description = '枚举类型,可用值:' + avaiableArrStr;
-            minfo.description = KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray);
-          }
+          minfo.description = KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray, m.description);
         }
       }
     } else if (KUtils.checkIsBasicType(schemaType)) {
@@ -5931,13 +5906,7 @@ SwaggerBootstrapUi.prototype.assembleParameterOAS3 = function (m, swpinfo, requi
         minfo.enum = _enumArray;
         // 枚举类型,描述显示可用值
         // var avaiableArrStr = _enumArray.join(',');
-        if (m.description != null && m.description != undefined && m.description != '') {
-          //minfo.description = m.description + ',可用值:' + avaiableArrStr;
-          minfo.description = m.description + ',' + KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray);
-        } else {
-          //minfo.description = '枚举类型,可用值:' + avaiableArrStr;
-          minfo.description = KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray);
-        }
+        minfo.description = KUtils.enumAvalibleLabel(that.i18nInstance, _enumArray, m.description);
       }
       // 3.判断是否包含default默认值
       if (schemaObject.hasOwnProperty('default')) {

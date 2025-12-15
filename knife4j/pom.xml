@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xiaoymin</groupId>
     <artifactId>knife4j</artifactId>
-    <version>4.5.0</version>
+    <version>4.6.0-SNAPSHOT</version>
     <modules>
         <module>knife4j-core</module>
         <module>knife4j-dependencies</module>
@@ -40,33 +40,34 @@
     <properties>
         <knife4j-project.build.sourceEncoding>UTF-8</knife4j-project.build.sourceEncoding>
         <knife4j-java.version>1.8</knife4j-java.version>
-        <knife4j-spring.version>5.3.20</knife4j-spring.version>
-        <knife4j-spring-boot.version>2.6.8</knife4j-spring-boot.version>
-        <knife4j-junit-jupiter-api.version>5.7.2</knife4j-junit-jupiter-api.version>
+        <knife4j-spring.version>5.3.31</knife4j-spring.version>
+        <knife4j-spring-boot.version>2.7.18</knife4j-spring-boot.version>
+        <knife4j-spring3.version>6.2.0</knife4j-spring3.version>
+        <knife4j-spring-boot3.version>3.4.0</knife4j-spring-boot3.version>
+        <knife4j-junit-jupiter-api.version>5.11.3</knife4j-junit-jupiter-api.version>
 
         <knife4j-springfox.version>2.10.5</knife4j-springfox.version>
         <knife4j-spring-plugin.version>2.0.0.RELEASE</knife4j-spring-plugin.version>
 
-        <knife4j-springdoc-openapi.version>1.7.0</knife4j-springdoc-openapi.version>
-        <knife4j-swagger-models.version>1.6.6</knife4j-swagger-models.version>
+        <knife4j-springdoc-openapi.version>1.8.0</knife4j-springdoc-openapi.version>
+        <knife4j-swagger-models.version>1.6.14</knife4j-swagger-models.version>
 
-        <knife4j-springdoc-openapi-jakarta.version>2.3.0</knife4j-springdoc-openapi-jakarta.version>
-        <knife4j-swagger-models-v3.version>2.2.19</knife4j-swagger-models-v3.version>
+        <knife4j-springdoc-openapi-jakarta.version>2.7.0</knife4j-springdoc-openapi-jakarta.version>
+        <knife4j-swagger-models-v3.version>2.2.26</knife4j-swagger-models-v3.version>
 
-        <knife4j-servlet.version>3.1.0</knife4j-servlet.version>
-        <knife4j-servlet-jakarta.version>6.0.0</knife4j-servlet-jakarta.version>
+        <knife4j-servlet.version>4.0.1</knife4j-servlet.version>
+        <knife4j-servlet-jakarta.version>6.1.0</knife4j-servlet-jakarta.version>
 
-        <knife4j-slf4j.version>1.7.28</knife4j-slf4j.version>
-        <knife4j-hutool.version>5.8.15</knife4j-hutool.version>
+        <knife4j-slf4j.version>2.0.16</knife4j-slf4j.version>
+        <knife4j-hutool.version>5.8.34</knife4j-hutool.version>
         <knife4j-httpclient.version>4.5.14</knife4j-httpclient.version>
-        <knife4j-gson.version>2.10.1</knife4j-gson.version>
+        <knife4j-gson.version>2.11.0</knife4j-gson.version>
 
 
+        <knife4j-javassist.version>3.30.2-GA</knife4j-javassist.version>
+        <knife4j-lombok.version>1.18.36</knife4j-lombok.version>
 
-        <knife4j-javassist.version>3.25.0-GA</knife4j-javassist.version>
-        <knife4j-lombok.version>1.18.24</knife4j-lombok.version>
-
-        <knife4j-spotless-maven-plugin.version>2.22.1</knife4j-spotless-maven-plugin.version>
+        <knife4j-spotless-maven-plugin.version>2.43.0</knife4j-spotless-maven-plugin.version>
         <!-- 打包跳过单元测试1 -->
         <knife4j-skipTests>true</knife4j-skipTests>
     </properties>
@@ -112,17 +113,17 @@
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-core</artifactId>
-                <version>4.5.0</version>
+                <version>4.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi2-ui</artifactId>
-                <version>4.5.0</version>
+                <version>4.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi3-ui</artifactId>
-                <version>4.5.0</version>
+                <version>4.6.0-SNAPSHOT</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
             <dependency>

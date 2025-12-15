@@ -38,7 +38,7 @@ public abstract class Assert {
     }
     
     public static void isTrue(boolean flag, String message) {
-        if (flag) {
+        if (flag == false) {
             throw new IllegalArgumentException(message);
         }
     }

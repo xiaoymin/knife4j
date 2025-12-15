@@ -404,7 +404,7 @@ const langOptions = {
     openCache: '开启请求参数缓存',
     dynamicParameter: '开启动态请求参数',
     showApi: '菜单Api地址显示',
-    tagDes: '分组tag显示dsecription说明属性',
+    tagDes: '分组tag显示description说明属性',
     apiFilter: '开启RequestMapping接口过滤,默认只显示',
     openCacheApi: '开启缓存已打开的api文档',
     plus: '启用Knife4j提供的增强功能',

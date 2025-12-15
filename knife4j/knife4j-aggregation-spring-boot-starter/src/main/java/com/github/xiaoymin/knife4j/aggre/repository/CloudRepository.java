@@ -31,6 +31,7 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 /***
  * 基于本地配置的方式动态聚合云端(http)任意OpenAPI
  * @since  2.0.8
- * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a> 
+ * @author <a href="mailto:xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
  * 2020/10/29 20:11
  */
 public class CloudRepository extends AbstractRepository {
@@ -90,11 +91,15 @@ public class CloudRepository extends AbstractRepository {
                     if (this.cloudSetting != null && CollectionUtil.isNotEmpty(this.cloudSetting.getRoutes())) {
                         this.cloudSetting.getRoutes().forEach(cloudRoute -> {
                             String uri = cloudRoute.getUri();
+                            String health = cloudRoute.getHealth();
                             StringBuilder urlBuilder = new StringBuilder();
                             if (!StrUtil.startWith(uri, "http")) {
                                 urlBuilder.append("http://");
                             }
                             urlBuilder.append(uri);
+                            if (StrUtil.isNotBlank(health)) {
+                                urlBuilder.append(StrUtil.startWith(health, "/") ? health : "/" + health);
+                            }
                             if (logger.isDebugEnabled()) {
                                 logger.debug("hearbeat url:{}", urlBuilder.toString());
                             }

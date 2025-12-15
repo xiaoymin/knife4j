@@ -27,7 +27,7 @@
                   v-html="$t('debug.response.download')">下载文件</a-button>
               </div>
             </a-row>
-            <a-row :id="'responseEditorContent' + api.id" v-else>
+            <a-row :id="'responseEditorContent' + api.id" v-else class="knife4j-debug-editor-container">
               <editor-debug-show @showDescription="showEditorFieldDescription" @debugEditorChange="debugEditorChange"
                 :debugResponse="debugResponse" :value="responseContent.text" :mode="responseContent.mode">
               </editor-debug-show>

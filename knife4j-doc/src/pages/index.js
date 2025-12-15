@@ -129,6 +129,13 @@ function Contributor({ name, url, avatar }) {
     </div>);
 }
 
+function Organization({ name, url, avatar }) {
+    return (<div className={styles.organization}>
+        <a href={url} target='_blank'>
+            <div alt={name} title={name}><img src={avatar} /></div>
+        </a>
+    </div>);
+}
 
 function Knife4jFramWork() {
     return (
@@ -164,6 +171,28 @@ function Contributors() {
 }
 
 
+function UseOrganization() {
+    const contributorDatas = require('../../static/json/use_organization.json');
+
+    return (
+        <section className={clsx(styles.try, 'container')}>
+            <div className="col">
+                <div className={styles.organizationsHeader}>
+                    <h1>正在使用 Knife4j 的企业 / 机构</h1>
+                    <div>（如果您的企业也使用了 Knife4j，您可以 <a href='https://gitee.com/xiaoym/knife4j/issues/I6PIPK' target='_blank'>在此</a>提交）</div>
+                </div>
+                <div className={styles.organizations}>
+                    {
+                        contributorDatas.map((props, idx) => (
+                            <Organization key={idx} {...props} />
+                        ))
+                    }
+                </div>
+            </div>
+        </section>
+    );
+}
+
 export default function Home() {
     const SvgLogo = require('../../static/img/knife4j-logo.svg').default;
     const { siteConfig } = useDocusaurusContext();
@@ -174,8 +203,10 @@ export default function Home() {
             <Hero />
             <Hightlights />
             <Knife4jFramWork />
+            <UseOrganization />
             <Contributors />
             <ActorExample />
+
             <div className="container">
                 <div className="row">
                     <div className="col text--center padding-top--lg padding-bottom--xl">

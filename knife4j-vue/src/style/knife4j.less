@@ -133,7 +133,7 @@
 
 
 .knife4j-menu-line {
-  /* left: 10px; 
+  /* left: 10px;
   position: absolute;
   */
   width: 65px;
@@ -686,6 +686,8 @@
 
 .knife4j-debug-response {
   min-height: @DebugContentBodyHeight;
+  height: auto;
+  max-height: none;
 }
 
 .knife4j-debug-response-mt {
@@ -721,10 +723,17 @@
 }
 
 .knife4j-debug-ace-editor {
-  overflow-y: hidden;
+  overflow-y: auto;
+  height: auto;
+  // 后续可以考虑优化json区域底部延伸到页面底部
+  max-height: 600px;
 
   .ace_scrollbar-v {
-    overflow-y: hidden;
+    overflow-y: auto;
+  }
+
+  .ace_editor {
+    height: auto !important;
   }
 }
 
@@ -735,4 +744,59 @@
 .knife4j-debug-editor-field-description {
   position: absolute;
   color: #8c8c8c;
+}
+
+.knife4j-debug-editor-container {
+  overflow: visible;
+  height: auto;
+  max-height: none;
+}
+
+// 文件拖拽上传样式
+.knife4j-file-upload-area {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+
+  &.knife4j-file-drag-over {
+    border-color: #1890ff;
+    background-color: rgba(24, 144, 255, 0.05);
+
+    .knife4j-file-drop-zone {
+      opacity: 1;
+      transform: scale(1.02);
+    }
+  }
+}
+
+.knife4j-file-drop-zone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px dashed #d9d9d9;
+  border-radius: 4px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.knife4j-file-drop-text {
+  color: #666;
+  font-size: 12px;
+  text-align: center;
+}
+
+// 确保拖拽区域在文件类型时才显示
+.ant-table-row:hover {
+  .knife4j-file-drop-zone {
+    opacity: 0.8;
+  }
 }

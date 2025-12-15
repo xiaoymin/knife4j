@@ -146,8 +146,11 @@
                       </a-row>
                     </div>
                     <div v-else>
-                      <!-- <input type="file" :data-key="record.id" @change="formFileChange" /> -->
-                      <div>
+                      <!-- 文件上传区域，支持拖拽 -->
+                      <div class="knife4j-file-upload-area"
+                           @drop="handleFileDrop($event, record)"
+                           @dragover="handleFileDragOver($event)"
+                           @dragleave="handleFileDragLeave($event)">
                         <div style="display:none;" v-if="record.multipart">
                           <input :id="'file' + record.id" multiple style="display:none;" type="file" :data-key="record.id"
                             @change="formFileChange" />
@@ -162,6 +165,9 @@
                           <a-button v-html="$t('debug.form.upload')" @click="formFileUploadClick(record)"
                             class="knife4j-api-send" style="width:80px;" type="primary">选择文件</a-button>
                         </a-input-group>
+                        <div class="knife4j-file-drop-zone" v-if="record.type == 'file'">
+                          <span class="knife4j-file-drop-text">或拖拽文件到此处上传</span>
+                        </div>
                       </div>
                     </div>
                   </template>
@@ -510,6 +516,7 @@ export default {
               id: KUtils.randomMd5(),
               name: tpdata.name,
               content: tpdata.value,
+              value: tpdata.value,
               require: true,
               description: "",
               enums: null, // 枚举下拉框
@@ -3476,7 +3483,44 @@ export default {
     },
     debugShowFieldDescriptionChange(flag) {
       this.responseFieldDescriptionChecked = flag;
-    }
+    },
+    handleFileDrop(event, record) {
+      event.preventDefault();
+      event.stopPropagation();
+      // 移除拖拽样式
+      event.currentTarget.classList.remove('knife4j-file-drag-over');
+      const files = event.dataTransfer.files;
+      if (files && files.length > 0) {
+        const fileStr = [];
+        for (let i = 0; i < files.length; i++) {
+          fileStr.push(files[i].name);
+        }
+        const fileStrValue = fileStr.join(',');
+        // 更新表单数据
+        this.formData.forEach(form => {
+          if (form.id === record.id) {
+            form.content = fileStrValue;
+            form.target = { files: files };
+            form.new = false;
+          }
+        });
+        // 如果是新行，添加新行
+        if (record.new) {
+          this.addNewLineFormValue();
+        }
+        this.initFormSelections(record.id);
+      }
+    },
+    handleFileDragOver(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.currentTarget.classList.add('knife4j-file-drag-over');
+    },
+    handleFileDragLeave(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.currentTarget.classList.remove('knife4j-file-drag-over');
+    },
   }
 };
 </script>

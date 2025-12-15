@@ -258,8 +258,41 @@ html[data-theme='dark'] .features {
     cursor: pointer;
 }
 
+
 .contributor {
     width: 110px;
     height: 110px;
     text-align: center;
+}
+
+
+.organization {
+    width: 200px;
+    height: 100px;
+    text-align: center;
+}
+
+
+.organizationsHeader {
+    text-align: center;
+}
+
+.organizations {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.organizations img {
+    margin: 5px;
+    border-radius: 0%;
+    max-width: 250px;
+    width: 200px;
+    height: 100px;
+}
+
+.organizations:hover {
+    cursor: pointer;
 }
