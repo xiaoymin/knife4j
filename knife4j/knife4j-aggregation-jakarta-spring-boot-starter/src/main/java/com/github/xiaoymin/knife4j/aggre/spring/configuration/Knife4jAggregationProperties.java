@@ -24,7 +24,6 @@ import com.github.xiaoymin.knife4j.aggre.spring.support.EurekaSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.NacosSetting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.OpenAPIV3Setting;
 import com.github.xiaoymin.knife4j.aggre.spring.support.PolarisSetting;
-import com.github.xiaoymin.knife4j.core.enums.GroupOrderStrategy;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
