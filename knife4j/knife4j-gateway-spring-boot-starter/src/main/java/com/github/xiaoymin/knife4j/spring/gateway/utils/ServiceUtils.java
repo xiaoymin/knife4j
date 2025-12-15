@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package com.github.xiaoymin.knife4j.spring.gateway.utils;
 
 import java.net.URI;
@@ -33,12 +34,12 @@ import com.github.xiaoymin.knife4j.spring.gateway.enums.OpenApiVersion;
  * @since knife4j v4.2.0
  */
 public class ServiceUtils {
-
+    
     private ServiceUtils() {
     }
-
+    
     private static final String LB = "lb";
-
+    
     /**
      * 根据OpenAPI规范及分组名称不同获取不同的默认地址
      * 
@@ -49,7 +50,7 @@ public class ServiceUtils {
      * @since v4.3.0
      */
     public static String getOpenAPIURL(Knife4jGatewayProperties.Discover discover, String contextPath,
-            String groupName) {
+                                       String groupName) {
         OpenApiVersion apiVersion = discover.getVersion();
         StringBuilder urlBuilder = new StringBuilder();
         String _defaultPath = PathUtils.processContextPath(contextPath);
@@ -64,7 +65,7 @@ public class ServiceUtils {
         urlBuilder.append(PathUtils.append(_defaultPath, groupUrl));
         return urlBuilder.toString();
     }
-
+    
     /**
      * 判断服务路由是否负载配置
      * 
@@ -81,7 +82,7 @@ public class ServiceUtils {
         }
         return scheme.equalsIgnoreCase(LB);
     }
-
+    
     /**
      * 判断是否包含服务
      * 
@@ -98,7 +99,7 @@ public class ServiceUtils {
         return service.stream().anyMatch(serviceName::equalsIgnoreCase)
                 && !excludeServices(serviceName, excludeService);
     }
-
+    
     /**
      * 判断当前服务是否在排除服务列表中
      * 

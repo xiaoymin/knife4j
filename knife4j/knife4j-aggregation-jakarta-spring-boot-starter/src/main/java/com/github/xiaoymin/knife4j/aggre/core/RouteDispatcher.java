@@ -367,7 +367,7 @@ public class RouteDispatcher {
                 OpenAPI2Resource copyRouter = new OpenAPI2Resource(router);
                 copyRouter.setUrl(PathUtils.append(copyRouter.getContextPath(), copyRouter.getUrl()));
                 // 得到contextPath后再处理一次
-//                copyRouter.setContextPath(PathUtils.processContextPath(PathUtils.append(basePath, copyRouter.getContextPath())));
+                // copyRouter.setContextPath(PathUtils.processContextPath(PathUtils.append(basePath, copyRouter.getContextPath())));
                 copyRouter.setContextPath(PathUtils.processContextPath(copyRouter.getContextPath()));
                 logger.debug("api-resources:{}", copyRouter);
                 sortedSet.add(copyRouter);

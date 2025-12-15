@@ -143,11 +143,11 @@ public class Knife4jAggregationProperties {
     public void setPolaris(PolarisSetting polaris) {
         this.polaris = polaris;
     }
-
+    
     public OpenAPIV3Setting getOpenAPIV3() {
         return openAPIV3;
     }
-
+    
     public void setOpenAPIV3(OpenAPIV3Setting openAPIV3) {
         this.openAPIV3 = openAPIV3;
     }
