@@ -39,7 +39,7 @@ import java.util.*;
 public class Knife4jGatewayProperties {
     
     /**
-     * 是否启用聚合OpenAPI规范文档聚合
+     * 是否启用聚合OpenAPI规范文档聚合, default to true
      */
     private boolean enabled = false;
     

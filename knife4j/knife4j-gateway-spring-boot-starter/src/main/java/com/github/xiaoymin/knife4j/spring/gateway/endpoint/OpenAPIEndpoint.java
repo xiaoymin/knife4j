@@ -64,6 +64,11 @@ public class OpenAPIEndpoint {
         // 设置排序规则,add at 2023/07/02 11:30:00
         response.setTagsSorter(this.knife4jGatewayProperties.getTagsSorter().name());
         response.setOperationsSorter(this.knife4jGatewayProperties.getOperationsSorter().name());
+        /** 
+         * 增加聚合字段，使得openapi3-ui可以动态判断当前是否为聚合状态
+         * Author: Neal 2025-12-18
+         */
+        response.setEnableAggregation(this.knife4jGatewayProperties.isEnabled());
         log.debug("forward-path:{}", basePath);
         // 判断当前模式是手动还是服务发现
         if (knife4jGatewayProperties.getStrategy() == GatewayStrategy.MANUAL) {

@@ -27,6 +27,7 @@ import com.github.xiaoymin.knife4j.aggre.core.pojo.HeaderWrapper;
 import com.github.xiaoymin.knife4j.aggre.core.pojo.SwaggerRoute;
 import com.github.xiaoymin.knife4j.aggre.spec.v2.OpenAPI2Resource;
 import com.github.xiaoymin.knife4j.aggre.spec.v3.OpenAPI3Response;
+import com.github.xiaoymin.knife4j.aggre.spring.configuration.Knife4jAggregationProperties;
 import com.github.xiaoymin.knife4j.aggre.spring.support.OpenAPIV3Setting;
 import com.github.xiaoymin.knife4j.aggre.utils.PathUtils;
 
@@ -90,16 +91,16 @@ public class RouteDispatcher {
     
     private RouteCache<String, SwaggerRoute> routeCache;
     
-    private OpenAPIV3Setting openAPIV3Setting;
+    private Knife4jAggregationProperties knife4jProperties;
     
     private Set<String> ignoreHeaders = new HashSet<>();
     
     public RouteDispatcher(RouteRepository routeRepository, RouteCache<String, SwaggerRoute> routeRouteCache,
-                           ExecutorEnum executorEnum, String rootPath, OpenAPIV3Setting openAPIV3Setting) {
+                           ExecutorEnum executorEnum, String rootPath, Knife4jAggregationProperties knife4jAggregationProperties) {
         this.routeRepository = routeRepository;
         this.routeCache = routeRouteCache;
         this.rootPath = rootPath;
-        this.openAPIV3Setting = openAPIV3Setting;
+        this.knife4jProperties = knife4jAggregationProperties;
         initExecutor(executorEnum);
         ignoreHeaders.addAll(Arrays.asList(new String[]{
                 "host", "content-length", ROUTE_PROXY_HEADER_NAME, ROUTE_PROXY_HEADER_BASIC_NAME, "Request-Origion", "language", "knife4j-gateway-code"
@@ -351,11 +352,19 @@ public class RouteDispatcher {
         OpenAPI3Response response = new OpenAPI3Response();
         final String basePath = PathUtils.getDefaultContextPath(request);
         logger.debug("base-path:{}", basePath);
+        
+        OpenAPIV3Setting openAPIV3 = knife4jProperties.getOpenAPIV3();
         response.setConfigUrl(GlobalConstants.DEFAULT_OPEN_API_V3_CONFIG_PATH);
-        response.setOauth2RedirectUrl("");
-        response.setValidatorUrl("");
-        response.setTagsSorter(this.openAPIV3Setting.getTagsSorter().name());
-        response.setOperationsSorter(this.openAPIV3Setting.getOperationsSorter().name());
+        response.setOauth2RedirectUrl(openAPIV3.getOauth2RedirectUrl());
+        response.setValidatorUrl(openAPIV3.getValidatorUrl());
+        response.setTagsSorter(openAPIV3.getTagsSorter().name());
+        response.setOperationsSorter(openAPIV3.getOperationsSorter().name());
+        /** 
+         * 增加聚合字段，使得openapi3-ui可以动态判断当前是否为聚合状态
+         * Author: Neal 2025-12-18
+         */
+        response.setEnableAggregation(knife4jProperties.isEnableAggregation());
+        
         List<Object> sortedSet = new LinkedList<>();
         List<SwaggerRoute> routers = routeRepository.getRoutes();
         if (routers != null && !routers.isEmpty()) {
@@ -367,7 +376,7 @@ public class RouteDispatcher {
                 OpenAPI2Resource copyRouter = new OpenAPI2Resource(router);
                 copyRouter.setUrl(PathUtils.append(copyRouter.getContextPath(), copyRouter.getUrl()));
                 // 得到contextPath后再处理一次
-//                copyRouter.setContextPath(PathUtils.processContextPath(PathUtils.append(basePath, copyRouter.getContextPath())));
+                // copyRouter.setContextPath(PathUtils.processContextPath(PathUtils.append(basePath, copyRouter.getContextPath())));
                 copyRouter.setContextPath(PathUtils.processContextPath(copyRouter.getContextPath()));
                 logger.debug("api-resources:{}", copyRouter);
                 sortedSet.add(copyRouter);

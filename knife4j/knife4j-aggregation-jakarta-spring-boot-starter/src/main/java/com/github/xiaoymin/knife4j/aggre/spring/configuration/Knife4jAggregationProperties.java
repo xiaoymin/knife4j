@@ -38,9 +38,9 @@ import org.springframework.stereotype.Component;
 public class Knife4jAggregationProperties {
     
     /**
-     * 是否开启Knife4j聚合模式
+     * 是否开启Knife4j聚合模式，default：true
      */
-    private boolean enableAggregation = false;
+    private boolean enableAggregation = true;
     
     /**
      * 文档Basic保护
@@ -143,11 +143,11 @@ public class Knife4jAggregationProperties {
     public void setPolaris(PolarisSetting polaris) {
         this.polaris = polaris;
     }
-
+    
     public OpenAPIV3Setting getOpenAPIV3() {
         return openAPIV3;
     }
-
+    
     public void setOpenAPIV3(OpenAPIV3Setting openAPIV3) {
         this.openAPIV3 = openAPIV3;
     }
