@@ -16,7 +16,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-resizable": "^3.0.5",
-    "react-router-dom": "^6.14.2"
+    "react-router-dom": "^6.30.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
