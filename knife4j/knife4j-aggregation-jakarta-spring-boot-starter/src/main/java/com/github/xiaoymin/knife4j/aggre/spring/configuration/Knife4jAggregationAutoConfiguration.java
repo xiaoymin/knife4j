@@ -110,7 +110,7 @@ public class Knife4jAggregationAutoConfiguration {
                 contextPath = RouteDispatcher.ROUTE_BASE_PATH + contextPath;
             }
         }
-        return new RouteDispatcher(routeRepository, routeCache, ExecutorEnum.APACHE, contextPath, knife4jAggregationProperties.getOpenAPIV3());
+        return new RouteDispatcher(routeRepository, routeCache, ExecutorEnum.APACHE, contextPath, knife4jAggregationProperties);
     }
     
     @Bean

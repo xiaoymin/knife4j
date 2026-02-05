@@ -33,7 +33,7 @@ import java.io.IOException;
  */
 @Data
 public class JakartaServletSecurityBasicAuthFilter extends AbstractSecurityFilter implements Filter {
-
+    
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.initServletConfig(filterConfig.getInitParameterNames(),
@@ -61,7 +61,7 @@ public class JakartaServletSecurityBasicAuthFilter extends AbstractSecurityFilte
             filterChain.doFilter(servletRequest, servletResponse);
         }
     }
-
+    
     @Override
     public void destroy() {
         this.urlFilters = null;

@@ -32,9 +32,9 @@ import java.util.List;
  */
 @Getter
 @Setter
-@SuppressWarnings("unused")
 public class OpenAPI3Response implements Serializable {
     
+    private static final long serialVersionUID = 1L;
     /**
      * ConfigUrl，eg: /v3/api-docs/swagger-config
      */
@@ -64,5 +64,9 @@ public class OpenAPI3Response implements Serializable {
      * validatorUrl
      */
     private String validatorUrl;
-    
+    /**
+     * 是否开启Knife4j聚合模式，默认开启
+     * Author: Neal 2025-12-19
+     */
+    private boolean enableAggregation = true;
 }

@@ -33,7 +33,7 @@ import java.io.IOException;
  */
 @Data
 public class ServletSecurityBasicAuthFilter extends AbstractSecurityFilter implements Filter {
-
+    
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.initServletConfig(filterConfig.getInitParameterNames(),
@@ -41,7 +41,7 @@ public class ServletSecurityBasicAuthFilter extends AbstractSecurityFilter imple
                 filterConfig.getInitParameter("userName"),
                 filterConfig.getInitParameter("password"));
     }
-
+    
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -62,7 +62,7 @@ public class ServletSecurityBasicAuthFilter extends AbstractSecurityFilter imple
             chain.doFilter(servletRequest, servletResponse);
         }
     }
-
+    
     @Override
     public void destroy() {
         this.urlFilters = null;

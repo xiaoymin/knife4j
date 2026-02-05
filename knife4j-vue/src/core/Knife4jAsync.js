@@ -89,15 +89,9 @@ function SwaggerBootstrapUi(options) {
   //  swagger请求api地址
   if (this.springdoc) {
     //  copy from https://gitee.com/xiaoym/knife4j/pulls/61/files
-    const path = window.location.pathname;
-    const index = path.lastIndexOf('/');
-    const basePath = path.length == index + 1 ? path : path.substring(0, index);
+    const basePath = KUtils.getDesktopCode()
     //   swagger请求api地址
-    if (basePath != '' && basePath != '/') {
-      this.url = options.url || basePath + '/v3/api-docs/swagger-config';
-    } else {
-      this.url = options.url || 'v3/api-docs/swagger-config';
-    }
+    this.url = options.url || basePath + '/v3/api-docs/swagger-config';
     //  console.log(this.url)
     //  this.url = options.url || 'v3/api-docs/swagger-config'
   } else {
@@ -411,6 +405,16 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
   } else {
     groupData = data;
   }
+  /**
+   * 根据swagger-config接口的返回值，重置desktop字段，可以动态兼容aggregation模式和single模式
+   * 减少对项目编译入口的Hard Coding：BasicLayout.vue -> created()
+   * 此字段以在knife4j-aggregation-jakarta-spring-boot-starter 和 knife4j-gateway-spring-boot-starter 中支持
+   * 
+   * 聚合模式下，忽略当前默认的basePath，路径完全依赖于 contextPath,
+   * Author: Neal 2025-12-18 
+   */
+  that.desktop = KUtils.getValue(data, 'enableAggregation', false, true);
+
   that.log('响应分组json数据');
   that.log(groupData);
   var serviceOptions = [];
@@ -473,13 +477,19 @@ SwaggerBootstrapUi.prototype.analysisSpringDocOpenApiGroupSuccess = function (da
       that.validateExtUrl = g.extUrl;
     }
     // 判断当前分组url是否存在basePath
+    /**
+     * 此处应该不会有basePath了，先暂时注释掉
+     * Author: Neal 2025-12-18
+     */
+    /**
     if (
       group.basePath != null &&
       group.basePath != undefined &&
       group.basePath != ''
     ) {
       g.baseUrl = group.basePath;
-    }
+    } */
+   
     // 赋值查找缓存的id
     if (that.cacheApis.length > 0) {
       var cainstance = null;
@@ -756,7 +766,21 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
         if (idx == 0) {
           api = api.substr(1);
         }
+      } else if (!that.desktop) {
+        /** 
+         * 非aggregation且是springdoc3，需要加basePath。
+         * 主要场景是兼容nginx或gateway等做路由转发的场景，与contextPath、servicePath同理
+         * 上述注释说springdoc-openapi会默认带basePath，目前我没有碰到。
+         * 环境：SpringBoot 3.x
+         * Author：Neal 2025-12-18
+         */
+        var basePath = KUtils.getDesktopCode();
+        if (!KUtils.appendBasePath(api, basePath)) {
+          api = basePath + api;
+        }
       }
+      this.log("======api======")
+      this.log(api)
       // 测试
       // api = 'run.json';
       // 此处加上transformResponse参数,防止Long类型在前端丢失精度
@@ -1363,13 +1387,12 @@ SwaggerBootstrapUi.prototype.basicInfoOAS3 = function (menu) {
       let _tempBasePath = KUtils.getValue(menu, 'basePath', '/', true);
       // 2022.12.5 aggregation组件聚合openapi3存在404的问题
       if (_tempBasePath == '/') {
-        let dkCode = KUtils.getDesktopCode();
-        if (dkCode != 'ROOT') {
-          _tempBasePath = "/" + dkCode;
-        }
+        _tempBasePath = KUtils.getDesktopCode();
       }
       //that.currentInstance.basePath = KUtils.getValue(menu, 'basePath', '/', true);
       that.currentInstance.basePath = _tempBasePath;
+      that.log("basicInfoOAS3 currentInstance----")
+      that.log(that.currentInstance)
     } else {
       title = that.currentInstance.title;
     }
@@ -4987,6 +5010,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (pathKey, mtype, a
   var that = this;
   const path = apiInfo.showUrl ? apiInfo.showUrl : pathKey
   var swpinfo = new SwaggerBootstrapUiApiInfo();
+  that.log("createApiInfoInstance----")
+  that.log(that.currentInstance)
   // console.log(that.currentInstance)
   // 给接口增加一个版本属性
   if (that.currentInstance.oas2()) {
@@ -5017,6 +5042,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (pathKey, mtype, a
     // 如果非空,非根目录
     basePathFlag = true;
   }
+  that.log("----1-----")
+  that.log(newfullPath)
   // 在微服务的情况下springfox不会追加basePath
   // 单体架构下springfox会追加basePath
   // 根据appendBasePathFlag标志位判断是否需要追加basePath
@@ -5028,26 +5055,32 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (pathKey, mtype, a
       }
     }
   }
+  that.log("----2-----")
+  that.log(newfullPath)
   // 此处追加springdoc-openapi的逻辑
   // springdoc-openapi版本中对于接口不会再paths节点追加basePath,所以Knife4j自动化处理
   // 2022.12.5 针对openapi3规范，没有basePath属性，跟随项目Context-Path路径走，避免404
-  if (that.springdoc || !swpinfo.oas2) {
-    var pathname = window.location.pathname;
-    var reg = new RegExp('(.*?)/doc\.html.*$', 'ig');
-    var tempPath = '';
-    if (reg.test(pathname)) {
-      tempPath = RegExp.$1;
-    }
+  /**
+   * 此处非desktop，也即非aggregation模式下，才需要追加basePath，但是basePath在contextPath之后，感觉不太对。
+   * 理论上contextPath是aggregation的产物，在aggregation模式下，basePath不应该起作用
+   * Author：Neal 2025-12-18
+   */
+  if (!that.desktop && (that.springdoc || !swpinfo.oas2)) {
+    var tempPath = KUtils.getDesktopCode();
     //聚合情况下，nginx转发代理的情况，需要避免重复添加
     if (newfullPath.indexOf(tempPath) === -1) {
       newfullPath += tempPath;
     }
   }
+  that.log("----3-----")
+  that.log(newfullPath)
   newfullPath += path;
   // 截取字符串
   // var newurl = newfullPath.substring(newfullPath.indexOf('/'));
   // that.log('新的url:'+newurl)
   // newurl = newurl.replace('//', '/');
+  that.log("----4-----")
+  that.log(newfullPath)
   var newurl = newfullPath;
   // 判断应用实例的baseurl
   /* if (that.currentInstance.baseUrl != '' && that.currentInstance.baseUrl != '/') {
@@ -5067,6 +5100,8 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (pathKey, mtype, a
     // 如果是insight组件，此处的url默认直接显示原路径
     newurl = KUtils.insightUrl(newurl);
   }
+  that.log("----5-----")
+  that.log(newurl)
   // var startApiTime = new Date().getTime();
 
   swpinfo.showUrl = newurl;
@@ -7485,10 +7520,10 @@ function checkFiledExistsAndEqStr(object, filed, eq) {
  * @param msg
  */
 SwaggerBootstrapUi.prototype.log = function (msg) {
-  /* if (window.console) {
+  if (window.console) {
     // 正式版不开启console功能
     window.console.log(msg)
-  } */
+  }
 }
 SwaggerBootstrapUi.prototype.ajax = function (config, success, error) {
   var ajax = DebugAxios.create();

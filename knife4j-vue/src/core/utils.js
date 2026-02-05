@@ -260,15 +260,28 @@ const utils = {
     }
     return gname;
   },
+  // 获取basePath，返回的path中不包含最后的斜杠，方便与后续uri直接叠加。默认返回空串
   getDesktopCode() {
     var loc = window.location.pathname;
     // 默认根目录
-    var code = 'ROOT';
-    var reg = new RegExp('(?:/(.*?))?/doc.html', 'ig');
-    if (reg.exec(loc)) {
-      var c = RegExp.$1;
-      if (this.strNotBlank(c)) {
-        code = c;
+    var code = '';
+    /** 
+     * 包含doc.html才需要提取前缀，否则直接返回，
+     * 兼容测试场景：直接运行knife-vue，并通过nginx或gateway代理转路由转发
+     * Author：Neal 2025-12-18
+     * */
+    if (loc.endsWith("doc.html")) {
+      var reg = new RegExp('((.*?))?/doc\.html', 'ig');
+      if (reg.exec(loc)) {
+        var c = RegExp.$1;
+        if (this.strNotBlank(c)) {
+          code = c;
+        }
+      }
+    } else if (this.strNotBlank(loc)) {
+      code = loc;
+      if (code.endsWith('/')) {
+        code = code.substring(0, code.length - 1)
       }
     }
     return code;
