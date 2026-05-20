@@ -284,6 +284,7 @@ import { useI18n } from 'vue-i18n'
 import { message } from 'ant-design-vue'
 import localStore from '@/store/local.js'
 import { UnlockOutlined, DownOutlined } from '@ant-design/icons-vue'
+import { applyRequestInterceptors } from "@/core/Knife4jExtension";
 
 export default {
   name: "Debug",
@@ -315,6 +316,9 @@ export default {
     const enableReloadCacheParameter = computed(() => {
       return globalsStore.enableReloadCacheParameter;
     })
+    const settings = computed(() => {
+      return globalsStore.settings || {};
+    })
 
     const knife4jModels = useknife4jModels()
     const { messages } = useI18n()
@@ -322,6 +326,7 @@ export default {
       language,
       enableAfterScript,
       enableReloadCacheParameter,
+      settings,
       knife4jModels,
       messages
     }
@@ -421,6 +426,7 @@ export default {
       responseHeaders: [],
       responseRawText: "",
       responseCurlText: "",
+      debugRequestHeadersForCurl: null,
       responseStatus: null,
       responseContent: null,
       responseFieldDescriptionChecked: true,
@@ -2474,6 +2480,25 @@ export default {
       // console.log("校验结果："+flag);
       return flag;
     },
+    buildRequestInterceptorContext(requestType, headers) {
+      return {
+        api: this.api,
+        swaggerInstance: this.swaggerInstance,
+        requestType: requestType,
+        settings: this.settings,
+        headers: headers
+      };
+    },
+    applyDebugRequestInterceptors(requestConfig, requestType) {
+      var nextConfig = applyRequestInterceptors(
+        requestConfig,
+        this.buildRequestInterceptorContext(requestType, requestConfig.headers)
+      );
+      nextConfig.headers = nextConfig.headers || {};
+      this.debugRequestHeadersForCurl = nextConfig.headers;
+      nextConfig.withCredentials = this.debugSendHasCookie(nextConfig.headers);
+      return nextConfig;
+    },
     applyRequestParams(formParams, methodType) {
       var requestData = null;
       var requestParams = null;
@@ -2585,6 +2610,7 @@ export default {
           // https://gitee.com/xiaoym/knife4j/issues/I374SP
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
+        requestConfig = this.applyDebugRequestInterceptors(requestConfig, "urlForm");
         // console.log(requestConfig);
         const debugInstance = DebugAxios.create();
         // get请求编码问题
@@ -2690,6 +2716,7 @@ export default {
           // 流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
+        requestConfig = this.applyDebugRequestInterceptors(requestConfig, "form");
         let debugInstance = DebugAxios.create();
         // console(headers);
         // console(requestConfig);
@@ -2777,6 +2804,7 @@ export default {
           // 流请求
           requestConfig = { ...requestConfig, responseType: "blob" };
         }
+        requestConfig = this.applyDebugRequestInterceptors(requestConfig, "raw");
         // console(headers);
         // console(this.rawText);
         var startTime = new Date();
@@ -2994,7 +3022,7 @@ export default {
       curlified.push("curl");
       curlified.push("-X", this.debugMethodType.toUpperCase());
       // 设置请求头
-      var headers = this.debugHeaders();
+      var headers = this.debugRequestHeadersForCurl || this.debugHeaders();
       var ignoreHeaders = [];
       ignoreHeaders.push("knfie4j-gateway-request");
       ignoreHeaders.push("knife4j-gateway-code");

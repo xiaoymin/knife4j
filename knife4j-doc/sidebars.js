@@ -89,6 +89,7 @@ module.exports = {
             'features/dynamicResponseDescription',
             'features/host',
             'features/afterScript',
+            'features/customScript',
             'features/oauth2',
             'features/postman',
             'features/globalParameter',
