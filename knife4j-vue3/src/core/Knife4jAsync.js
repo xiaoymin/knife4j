@@ -49,6 +49,7 @@ import isUndefined from 'lodash/isUndefined';
 // import xml2js from 'xml2js';
 import DebugAxios from 'axios';
 import { useGlobalsStore } from '@/store/modules/global.js'
+import { loadCustomScripts } from './Knife4jExtension';
 
 marked.setOptions({
   gfm: true,
@@ -167,6 +168,7 @@ function SwaggerBootstrapUi(options) {
     enableCacheOpenApiTable: false, // 是否开启缓存已打开的api文档
     enableHost: false,// 是否启用Host
     enableHostText: '',// 启用Host后文本
+    customJavaScriptUrls: [], // 自定义JavaScript脚本地址
     language: options.i18n || 'zh-CN' // 默认语言版本
   };
   // SwaggerBootstrapUi增强注解地址
@@ -902,6 +904,7 @@ SwaggerBootstrapUi.prototype.resolvedOASVersion = function (openApi) {
  * 全局配置set操作
  */
 SwaggerBootstrapUi.prototype.dispatchSettings = function () {
+  loadCustomScripts(this.settings.customJavaScriptUrls)
   const globalsStore = useGlobalsStore()
   globalsStore.setAfterScript(this.settings.enableAfterScript)
   globalsStore.setReloadCacheParameter(this.settings.enableReloadCacheParameter)
