@@ -82,12 +82,11 @@ public class PathUtils {
         String contextPath = request.getPath().contextPath().value();
         if (!StringUtils.hasLength(contextPath)) {
             // 从header中获取
-            List<String> referer = request.getHeaders().get("Referer");
-            if (referer != null && !referer.isEmpty()) {
-                String value = referer.get(0);
+            String value = request.getHeaders().getFirst("Referer");
+            if (StringUtils.hasLength(value)) {
                 log.debug("Referer:{}", value);
                 contextPath = PathUtils.getContextPath(value);
-            } else {
+            } else if (!StringUtils.hasLength(contextPath)) {
                 contextPath = DEFAULT_CONTEXT_PATH;
             }
         }
